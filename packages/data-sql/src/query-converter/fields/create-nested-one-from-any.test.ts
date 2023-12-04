@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedOne } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedOne, AbstractQueryFieldNodeNestedSingleOne } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { afterAll, expect, test, vi } from 'vitest';
 import type { A2ORelation, AbstractSqlNestedOneFromAny, AbstractSqlQuery } from '../../index.js';
@@ -18,8 +18,8 @@ test.todo('getNestedOne with a single identifier', () => {
 	const randomPkValue = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedOne = {
-		type: 'nested-one',
+	const field: AbstractQueryFieldNodeNestedSingleOne = {
+		type: 'nested-single-one',
 		fields: [
 			{
 				type: 'primitive',
@@ -27,8 +27,18 @@ test.todo('getNestedOne with a single identifier', () => {
 				alias: foreignIdFieldAlias,
 			},
 		],
-		isA2O: true,
 		alias: manyAlias,
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [],
+			},
+			foreign: {
+				store: randomIdentifier(),
+				collection: randomIdentifier(),
+				fields: [],
+			},
+		},
 	};
 
 	const result = getNestedOneFromAny(field);

@@ -53,7 +53,7 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'nested-one') {
+		if (abstractField.type === 'nested-single-one') {
 			/**
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
@@ -62,13 +62,9 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			if (abstractField.isA2O) {
-				// convert node into a root query and a query in form of of a function which has the collection relation as parameters
-			}
-
-			if (abstractField.meta?.type === 'm2o') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
+			if (abstractField.nesting?.type === 'relational-many') {
+				const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
+				const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
@@ -83,7 +79,11 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'nested-many') {
+		if (abstractField.type === 'nested-union-one') {
+			// convert node into a root query and a query in form of of a function which has the collection relation as parameters
+		}
+
+		if (abstractField.type === 'nested-single-many') {
 			/*
 			 * nested many nodes are handled by the driver.
 			 * As a default behavior, we do separate queries for each o part result row.

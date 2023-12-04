@@ -159,16 +159,14 @@ test('convert sort on nested item', () => {
 				field: randomIdentifier(),
 			},
 			meta: {
-				type: 'm2o',
-				join: {
-					local: {
-						fields: [randomIdentifier()],
-					},
-					foreign: {
-						store: randomIdentifier(),
-						collection: randomIdentifier(),
-						fields: [randomIdentifier()],
-					},
+				type: 'relational-many',
+				local: {
+					fields: [randomIdentifier()],
+				},
+				foreign: {
+					store: randomIdentifier(),
+					collection: randomIdentifier(),
+					fields: [randomIdentifier()],
 				},
 			},
 		},

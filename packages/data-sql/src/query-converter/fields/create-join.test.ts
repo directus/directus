@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeRelationalManyToOne } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedRelationalMany } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
@@ -12,17 +12,15 @@ test('Convert m2o relation on single field ', () => {
 	const randomExternalField = randomIdentifier();
 	const randomAlias = randomIdentifier();
 
-	const node: AbstractQueryFieldNodeRelationalManyToOne = {
-		type: 'm2o',
-		join: {
-			local: {
-				fields: [randomCurrentField],
-			},
-			foreign: {
-				store: randomExternalStore,
-				collection: randomExternalCollection,
-				fields: [randomExternalField],
-			},
+	const node: AbstractQueryFieldNodeNestedRelationalMany = {
+		type: 'relational-many',
+		local: {
+			fields: [randomCurrentField],
+		},
+		foreign: {
+			store: randomExternalStore,
+			collection: randomExternalCollection,
+			fields: [randomExternalField],
 		},
 	};
 
@@ -63,17 +61,15 @@ test('Convert m2o relation with composite keys', () => {
 	const randomExternalField2 = randomIdentifier();
 	const randomGeneratedAlias = randomIdentifier();
 
-	const node: AbstractQueryFieldNodeRelationalManyToOne = {
-		type: 'm2o',
-		join: {
-			local: {
-				fields: [randomCurrentField, randomCurrentField2],
-			},
-			foreign: {
-				store: randomExternalStore,
-				collection: randomExternalCollection,
-				fields: [randomExternalField, randomExternalField2],
-			},
+	const node: AbstractQueryFieldNodeNestedRelationalMany = {
+		type: 'relational-many',
+		local: {
+			fields: [randomCurrentField, randomCurrentField2],
+		},
+		foreign: {
+			store: randomExternalStore,
+			collection: randomExternalCollection,
+			fields: [randomExternalField, randomExternalField2],
 		},
 	};
 
