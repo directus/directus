@@ -46,6 +46,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		let uid = generateUid();
 		let reconnectAttempts = 0;
 		let reconnecting = false;
+		let isConnected = false;
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
 
@@ -163,21 +164,28 @@ export function realtime(config: WebSocketConfig = {}) {
 
 					ws.addEventListener('open', async (evt: Event) => {
 						if (config.authMode === 'handshake' && hasAuth(self)) {
-							const access_token = await self.getToken();
+							const access_token = await self.getToken() as string;
 
-							if (access_token) ws.send(auth({ access_token }));
+							ws.send(auth({ access_token }));
+							const confirm = await messageCallback(ws);
+
+							if ( ! (confirm && 'type' in confirm && 'status' in confirm && confirm['type'] === 'auth' && confirm['status'] === 'ok')) {
+								throw new Error('Authentication failed while opening websocket connection');
+							}
 						}
 
 						resolved = true;
 						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
 
 						handleMessages(ws, self);
+						isConnected = true;
 						resolve();
 					});
 
 					ws.addEventListener('error', (evt: Event) => {
 						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
 						ws.close();
+						isConnected = false;
 						if (!resolved) reject(evt);
 					});
 
@@ -185,6 +193,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 						resetConnection();
 						reconnect.call(this);
+						isConnected = false;
 						if (!resolved) reject(evt);
 					});
 
@@ -239,7 +248,10 @@ export function realtime(config: WebSocketConfig = {}) {
 				collection: Collection,
 				options = {} as Options,
 			) {
-				if (!socket || socket.readyState !== WebSocketState.OPEN) await this.connect();
+				if (!socket || !isConnected) {
+					throw new Error('Cannot subscribe without an open connection. Make sure you are calling "await client.connect()" before subscribing.');
+				}
+
 				if ('uid' in options === false) options.uid = uid.next().value;
 
 				let subscribed = true;
@@ -253,7 +265,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					void,
 					unknown
 				> {
-					while (subscribed && ws && ws.readyState === WebSocketState.OPEN) {
+					while (subscribed && ws && isConnected) {
 						const message = await messageCallback(ws).catch(() => {
 							/* let the loop continue */
 						});
