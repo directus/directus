@@ -16,13 +16,10 @@ beforeEach(() => {
 	duration = 10;
 	key = 'rate-limiter-key';
 	limiter = new LimiterLocal({ points, duration });
-
-	vi.useFakeTimers();
 });
 
 afterEach(() => {
 	vi.clearAllMocks();
-	vi.useRealTimers();
 });
 
 describe('constructor', () => {

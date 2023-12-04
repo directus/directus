@@ -22,13 +22,10 @@ beforeEach(() => {
 	duration = 10;
 	key = 'rate-limiter-key';
 	limiter = new LimiterRedis({ redis, namespace, points, duration });
-
-	vi.useFakeTimers();
 });
 
 afterEach(() => {
 	vi.clearAllMocks();
-	vi.useRealTimers();
 });
 
 describe('constructor', () => {

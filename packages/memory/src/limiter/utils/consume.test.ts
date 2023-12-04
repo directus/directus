@@ -13,10 +13,13 @@ beforeEach(() => {
 	key = 'limiter-test-key';
 	points = 5;
 	limiter = new RateLimiterMemory({ points, duration: 15 });
+
+	vi.useFakeTimers();
 });
 
 afterEach(() => {
 	vi.clearAllMocks();
+	vi.useRealTimers();
 });
 
 test('Consumes point from rate-limiter', async () => {
