@@ -1,15 +1,8 @@
+import { APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES, APP_SHARED_DEPS } from '@directus/extensions';
 import {
-	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/extensions';
-import {
-	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
-	getLocalExtensions,
-	getPackageExtensions,
-	resolvePackageExtensions,
+	resolveDependencyExtensions,
+	resolveExtensions,
 } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import UnheadVite from '@unhead/addons/vite';
@@ -143,12 +136,16 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
-		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await resolveExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const dependencyExtensions = await resolveDependencyExtensions(EXTENSIONS_PATH);
 
-		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+		/**
+		 * @TODO
+		 * These aren't deduplicated, whereas the production ones are. This has seemingly
+		 * always been the case. Is this a bug?
+		 * @see /api/src/extensions/lib/get-extensions.ts
+		 */
+		const extensions = [...packageExtensions, ...dependencyExtensions];
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}
