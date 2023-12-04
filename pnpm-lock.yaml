@@ -757,6 +757,9 @@ importers:
       flatpickr:
         specifier: 4.6.13
         version: 4.6.13
+      fs-extra:
+        specifier: 11.1.1
+        version: 11.1.1
       geojson:
         specifier: 0.5.0
         version: 0.5.0
