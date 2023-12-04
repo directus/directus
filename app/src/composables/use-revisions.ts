@@ -18,7 +18,7 @@ type UseRevisionsOptions = {
 export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
-	version: Ref<ContentVersion | null>,
+	version: Ref<ContentVersion | null | undefined>,
 	options?: UseRevisionsOptions,
 ) {
 	const { t } = useI18n();
@@ -55,7 +55,7 @@ export function useRevisions(
 						},
 					},
 					{
-						version: version.value
+						version: version?.value
 							? {
 									_eq: version.value.id,
 							  }
