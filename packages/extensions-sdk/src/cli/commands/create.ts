@@ -9,7 +9,6 @@ import type {
 import {
 	BUNDLE_EXTENSION_TYPES,
 	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
@@ -165,7 +164,7 @@ async function createExtension({
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
 	const packageManifest: Record<string, any> = {
-		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
+		name: name,
 		description: 'Please enter a description for your extension',
 		icon: 'extension',
 		version: '1.0.0',
