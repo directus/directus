@@ -6,7 +6,6 @@ import type {
 } from '@directus/extensions';
 import {
 	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	ExtensionManifest,
@@ -145,8 +144,6 @@ export default async function add(): Promise<void> {
 			process.exit(1);
 		}
 
-		const oldName = extensionManifest.name.match(EXTENSION_NAME_REGEX)?.[1] ?? extensionManifest.name;
-
 		const { type, name, language, convertName, extensionName, alternativeSource } = await inquirer.prompt<{
 			type: NestedExtensionType;
 			name: string;
@@ -177,14 +174,15 @@ export default async function add(): Promise<void> {
 				type: 'input',
 				name: 'convertName',
 				message: 'Choose a name for the extension that is converted to an entry',
-				default: oldName,
+				default: extensionManifest.name,
 				validate: (name: string) => (name.length === 0 ? 'Entry name can not be empty.' : true),
 			},
 			{
 				type: 'input',
 				name: 'extensionName',
 				message: 'Choose a name for the extension',
-				default: ({ convertName }: { convertName: string }) => (convertName !== oldName ? oldName : null),
+				default: ({ convertName }: { convertName: string }) =>
+					convertName !== extensionManifest.name ? extensionManifest.name : null,
 				validate: (name: string) => (name.length === 0 ? 'Extension name can not be empty.' : true),
 			},
 			{
@@ -255,7 +253,7 @@ export default async function add(): Promise<void> {
 
 		const newExtensionManifest = {
 			...extensionManifest,
-			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
+			name: extensionName,
 			keywords: ['directus', 'directus-extension', `directus-custom-bundle`],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: await getExtensionDevDeps(
