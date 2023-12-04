@@ -70,19 +70,8 @@ export interface AbstractSqlNestedOneFromAny {
  */
 export type A2ORelation = {
 	/** One or multiple foreign key relations */
-	fk: AtLeastOneElement<AnyRelation>[];
+	foreignKey: AtLeastOneElement<string | number>;
 
 	/** The related table */
 	table: string;
-};
-
-/**
- * Specifies the relation for a2o and o2a since in those cases the relation is dynamic.
- */
-type AnyRelation = {
-	/** The primary key column */
-	column: string;
-
-	/** The value of the foreign primary key, so basically the "foreign key" */
-	foreignKey: string;
 };

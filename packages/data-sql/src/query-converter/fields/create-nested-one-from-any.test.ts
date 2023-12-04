@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedOne, AbstractQueryFieldNodeNestedSingleOne } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { afterAll, expect, test, vi } from 'vitest';
 import type { A2ORelation, AbstractSqlNestedOneFromAny, AbstractSqlQuery } from '../../index.js';
@@ -18,26 +18,29 @@ test.todo('getNestedOne with a single identifier', () => {
 	const randomPkValue = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedSingleOne = {
-		type: 'nested-single-one',
-		fields: [
-			{
-				type: 'primitive',
-				field: desiredForeignField,
-				alias: foreignIdFieldAlias,
-			},
-		],
+	const field: AbstractQueryFieldNodeNestedUnionOne = {
+		type: 'nested-union-one',
 		alias: manyAlias,
 		nesting: {
-			type: 'relational-many',
-			local: {
-				fields: [],
-			},
-			foreign: {
-				store: randomIdentifier(),
-				collection: randomIdentifier(),
-				fields: [],
-			},
+			type: 'relational-any',
+			field: randomIdentifier(),
+			collections: [
+				{
+					fields: [
+						{
+							type: 'primitive',
+							field: desiredForeignField,
+							alias: foreignIdFieldAlias,
+						},
+					],
+					relational: {
+						store: randomIdentifier(),
+						collectionName: randomIdentifier(),
+						collectionIdentifier: randomIdentifier(),
+						field: [randomIdentifier()],
+					},
+				},
+			],
 		},
 	};
 
@@ -50,14 +53,9 @@ test.todo('getNestedOne with a single identifier', () => {
 
 	expect(result).toStrictEqual(expected);
 
-	// this is returned from the database. it's a JSON column which stores the relation
+	// the dynamic data stored in the database
 	const a2ORelation: A2ORelation = {
-		fk: [
-			{
-				column: desiredForeignField,
-				value: randomPkValue,
-			},
-		],
+		foreignKey: [randomPkValue],
 		table: randomIdentifier(),
 	};
 
@@ -83,7 +81,7 @@ test.todo('getNestedOne with a single identifier', () => {
 					target: {
 						type: 'primitive',
 						table: a2ORelation.table,
-						column: a2ORelation.fk[0]!.column,
+						column: field.nesting.collections[0]!.relational.field[0]!,
 					},
 					compareTo: {
 						type: 'value',
@@ -93,7 +91,7 @@ test.todo('getNestedOne with a single identifier', () => {
 				negate: false,
 			},
 		},
-		parameters: [a2ORelation.fk[0]!.value],
+		parameters: [a2ORelation.foreignKey[0]],
 		aliasMapping: new Map([[`${desiredForeignField}_RANDOM`, [foreignIdFieldAlias]]]),
 		nestedManys: [],
 	};

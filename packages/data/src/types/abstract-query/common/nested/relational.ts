@@ -60,7 +60,7 @@ export interface AbstractQueryFieldNodeNestedRelationalMany {
 export interface AbstractQueryFieldNodeNestedRelationalAny {
 	type: 'relational-any';
 
-	fieldName: string;
+	field: string;
 
 	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
 }
@@ -70,10 +70,8 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 
 	relational: {
 		store: string;
-
 		collectionName: string;
 		collectionIdentifier: string;
-
-		fieldNames: AtLeastOneElement<string>;
+		field: AtLeastOneElement<string>;
 	};
 }
