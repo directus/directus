@@ -2351,7 +2351,7 @@ onboarding:
 
       Be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
   project:
-    title: Let's setup your project
+    title: Let's set up your project
     text: |
       We built Directus to be completely customizable. From colors to logo, you can give your project a distinct identity to make it truly *yours*.
 
@@ -2361,7 +2361,7 @@ onboarding:
     work: Business
     exploring: Just exploring
   user:
-    title: Let's setup your user
+    title: Let's set up your user
     text: |
       Each user has a unique identity within Directus, and this information is used to tailor the app to you. Don't worry if you need to change values later on, these are fully editable inside of your user settings.
     mailinglist_name: Product Updates
@@ -2374,7 +2374,7 @@ onboarding:
     data_scientist: Data Scientist
     nontechnical: Non-Technical User
   theming-project:
-    title: Let's setup your project theme
+    title: Let's set up your project theme
     text: |
       The Directus Theming Engine contains two customizable themes — Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
   loading:
