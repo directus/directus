@@ -212,6 +212,15 @@ export const sections = {
 					},
 				],
 			},
+			{
+				title: 'Modules',
+				items: [
+					{
+						display: 'Create a Custom Portal Module',
+						path: '/guides/extensions/modules-build-portal',
+					},
+				],
+			},
 		],
 	},
 	administration: {
