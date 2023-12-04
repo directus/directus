@@ -60,6 +60,7 @@ export interface AbstractQueryFieldNodeNestedRelationalMany {
 export interface AbstractQueryFieldNodeNestedRelationalAny {
 	type: 'relational-any';
 
+	/** The field name which holds the relational information */
 	field: string;
 
 	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
@@ -80,6 +81,6 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 		collectionIdentifier: string;
 
 		/** The column(s) of the foreign collection which store the primary key(s) */
-		field: AtLeastOneElement<string>;
+		fields: AtLeastOneElement<string>;
 	};
 }
