@@ -11,14 +11,12 @@ import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import { getNestedMany } from './create-nested-manys.js';
-import { getNestedOneFromAny } from './create-nested-one-from-any.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
 	nestedManys: AbstractSqlNestedMany[];
-	nestedOneFromAny: AbstractSqlNestedOneFromAny[];
 };
 
 /**
@@ -89,10 +87,7 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			// convert node into a root query and a query in form of of a function which has the collection relation as parameters
-			const res = getNestedOneFromAny(abstractField);
-			nestedOneFromAny.push(res);
-			continue;
+			// @TODO convert node into a root query and a query in form of of a function which has the collection relation as parameters
 		}
 
 		if (abstractField.type === 'nested-single-many') {
@@ -132,6 +127,5 @@ export const convertFieldNodes = (
 		parameters,
 		aliasMapping: aliasRelationalMapping,
 		nestedManys,
-		nestedOneFromAny,
 	};
 };
