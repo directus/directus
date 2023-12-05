@@ -14,7 +14,7 @@ import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { MessageChannel } from 'node:worker_threads'
+import { MessageChannel } from 'node:worker_threads';
 import emitter from '../emitter.js';
 
 const router = Router();

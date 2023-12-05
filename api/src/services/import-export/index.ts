@@ -33,7 +33,7 @@ import { UsersService } from '../users.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 type ImportRuntime = 'node' | 'worker';
-type ImportOptions =  AbstractServiceOptions & { runtime?: ImportRuntime; port?: MessagePort; };
+type ImportOptions = AbstractServiceOptions & { runtime?: ImportRuntime; port?: MessagePort };
 
 export class ImportService {
 	knex: Knex;
