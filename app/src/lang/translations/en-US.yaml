@@ -1240,6 +1240,9 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
   directus_settings:
@@ -1271,6 +1274,12 @@ fields:
     public_background: Public Background
     public_note: Public Note
     theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
+    default_theme_directus: Directus Default
+    default_theme_minimal: Directus Minimal
+    default_theme_colormatch: Directus Color Match
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage

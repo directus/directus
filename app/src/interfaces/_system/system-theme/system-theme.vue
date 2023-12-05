@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
+import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -27,7 +28,9 @@ const systemTheme = computed(() => {
 		: serverStore.info.project!.default_theme_light;
 });
 
-const items = computed(() => themeStore.themes[props.appearance].map((theme) => theme.name));
+const items = computed(() =>
+	themeStore.themes[props.appearance].map((theme) => ({ name: theme.name, label: theme.label })),
+);
 
 const valueWithDefault = computed(() => {
 	if (props.includeNull) {
@@ -53,16 +56,16 @@ const valueWithDefault = computed(() => {
 
 		<button
 			v-for="theme of items"
-			:key="theme"
-			:class="{ active: theme === valueWithDefault }"
+			:key="theme.name"
+			:class="{ active: theme.name === valueWithDefault }"
 			class="theme"
-			@click="$emit('input', theme)"
+			@click="$emit('input', theme.name)"
 		>
-			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme" />
+			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.name" />
 
 			<div class="label">
-				<v-icon :name="theme === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
-				<v-text-overflow :text="theme" />
+				<v-icon :name="theme.name === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
+				<v-text-overflow :text="translate(theme.label)" />
 			</div>
 		</button>
 	</div>

@@ -2,6 +2,7 @@ import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
 	name: 'Directus Minimal',
+	label: '$t:fields.directus_settings.default_theme_minimal',
 	appearance: 'light',
 	rules: {
 		borderWidth: '1px',

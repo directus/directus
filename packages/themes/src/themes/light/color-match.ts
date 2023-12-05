@@ -2,6 +2,7 @@ import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
 	name: 'Directus Color Match',
+	label: '$t:fields.directus_settings.default_theme_colormatch',
 	appearance: 'light',
 	rules: {
 		background: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
