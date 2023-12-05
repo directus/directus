@@ -59,6 +59,7 @@ extension_layout: Diseño
 extension_panel: Panel
 extension_hook: Hook
 extension_modules: Módulos
+extension_bundles: Bundles
 enable: Habilitado
 custom: Personalizar
 hook: Hook
@@ -107,6 +108,7 @@ rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
+save_version: Guardar Versión
 promote_version_preview: Vista previa
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
@@ -158,8 +160,8 @@ validationError:
   istarts_with: El valor debe comenzar con {substring}
   nstarts_with: El valor no puede comenzar con {substring}
   nistarts_with: El valor no puede comenzar con {substring}
-  ends_with: El valor debe terminar con {substring}
-  iends_with: El valor debe terminar con {substring}
+  ends_with: El valor debe finalizar con {substring}
+  iends_with: El valor debe finalizar con {substring}
   nends_with: El valor no puede terminar con {substring}
   niends_with: El valor no puede terminar con {substring}
 all_access: Acceso total
@@ -340,6 +342,7 @@ clear_items: Limpiar elementos
 reset_to_default: Restablecer ajustes por defecto
 undo_changes: Revertir Cambios
 notifications: Notificaciones
+archive_all: Archivar todo
 show_all_activity: Mostrar Toda La Actividad
 page_not_found: Página no encontrada
 page_not_found_body: Parece que la página que está buscando no existe.
