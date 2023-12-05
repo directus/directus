@@ -6,9 +6,9 @@
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
 	convertQuery,
+	getMappedQueriesStream,
 	type AbstractSqlQuery,
 	type ParameterizedSqlStatement,
-	getMappedQueriesStream,
 } from '@directus/data-sql';
 import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';

@@ -41,6 +41,8 @@ export function getMappedQueriesStream(
 
 				controller.enqueue(result);
 			}
+
+			controller.close();
 		},
 	});
 }
