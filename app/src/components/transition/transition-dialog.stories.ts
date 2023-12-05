@@ -1,4 +1,5 @@
 import TransitionDialog from './dialog.vue';
+import type { StoryFn } from '@storybook/vue3';
 
 document.body.classList.add('light');
 
@@ -8,7 +9,7 @@ export default {
 	argTypes: {},
 };
 
-const Template = (args) => ({
+const Template: StoryFn = (args) => ({
 	setup() {
 		return { args };
 	},
