@@ -90,18 +90,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
-		watch(
-			sortField,
-			(value) => {
-				if (!value) {
-					return;
-				}
-
-				onSortChange({ by: value, desc: false });
-			},
-			{ immediate: true },
-		);
-
 		return {
 			tableHeaders,
 			items,
