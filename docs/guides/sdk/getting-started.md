@@ -57,8 +57,8 @@ need. The client starts as an empty wrapper without any functionality. To add fe
 - `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and
   .`refresh()` to the client.
 - `staticToken()`: Authentication functions for static tokens.
-- `realtime()`: WebSocket connectivity, adds `.connect()`, `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the
-  client.
+- `realtime()`: WebSocket connectivity, adds `.connect()`, `.subscribe(...)`, `.sendMessage(...)` and
+  `.onWebSocket(...)` to the client.
 
 For example, to create a client with REST or GraphQL support, use the following:
 
