@@ -164,12 +164,20 @@ export function realtime(config: WebSocketConfig = {}) {
 
 					ws.addEventListener('open', async (evt: Event) => {
 						if (config.authMode === 'handshake' && hasAuth(self)) {
-							const access_token = await self.getToken() as string;
+							const access_token = (await self.getToken()) as string;
 
 							ws.send(auth({ access_token }));
 							const confirm = await messageCallback(ws);
 
-							if ( ! (confirm && 'type' in confirm && 'status' in confirm && confirm['type'] === 'auth' && confirm['status'] === 'ok')) {
+							if (
+								!(
+									confirm &&
+									'type' in confirm &&
+									'status' in confirm &&
+									confirm['type'] === 'auth' &&
+									confirm['status'] === 'ok'
+								)
+							) {
 								throw new Error('Authentication failed while opening websocket connection');
 							}
 						}
@@ -230,7 +238,9 @@ export function realtime(config: WebSocketConfig = {}) {
 			sendMessage(message: string | Record<string, any>) {
 				if (!socket || !isConnected) {
 					// TODO use directus error
-					throw new Error('Cannot send messages without an open connection. Make sure you are calling "await client.connect()".');
+					throw new Error(
+						'Cannot send messages without an open connection. Make sure you are calling "await client.connect()".',
+					);
 				}
 
 				if (typeof message === 'string') {
@@ -249,7 +259,9 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if (!socket || !isConnected) {
-					throw new Error('Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".');
+					throw new Error(
+						'Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".',
+					);
 				}
 
 				if ('uid' in options === false) options.uid = uid.next().value;
