@@ -223,7 +223,7 @@ describe('increment', () => {
 		expect(kv['redis'].incrby).toHaveBeenCalledWith(mockNamespacedKey, mockAmount);
 	});
 
-	test.todo('Returns incremented value from Redis', async () => {
+	test('Returns incremented value from Redis', async () => {
 		const mockAmount = 15;
 		const mockResult = 42;
 

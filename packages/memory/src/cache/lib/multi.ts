@@ -40,20 +40,4 @@ export class CacheMulti implements Cache {
 	async has(key: string) {
 		return await this.redis.has(key);
 	}
-
-	async increment(key: string, amount: number = 1) {
-		const value = await this.redis.increment(key, amount);
-		await this.local.set(key, value);
-		return value;
-	}
-
-	async setMax(key: string, value: number) {
-		const wasSet = await this.redis.setMax(key, value);
-
-		if (wasSet) {
-			this.local.set(key, value);
-		}
-
-		return wasSet;
-	}
 }

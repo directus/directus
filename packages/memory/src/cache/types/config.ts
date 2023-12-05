@@ -17,7 +17,7 @@ export interface CacheConfigLocal extends CacheConfigAbstract {
 	/**
 	 * Maximum number of keys to store in the cache
 	 */
-	maxKeys: number;
+	maxKeys?: number;
 }
 
 export interface CacheConfigRedis extends CacheConfigAbstract {
