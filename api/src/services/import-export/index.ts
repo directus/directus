@@ -111,16 +111,7 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
-						if (this.runtime === 'worker' && !!this.port) {
-							// the core emitter does not work within a worker process
-							for (const nestedActionEvent of nestedActionEvents) {
-								this.port.postMessage(JSON.stringify(nestedActionEvent));
-							}
-						} else {
-							for (const nestedActionEvent of nestedActionEvents) {
-								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-							}
-						}
+						this.emitImportEvents(nestedActionEvents);
 
 						return resolve();
 					});
@@ -186,16 +177,7 @@ export class ImportService {
 						if (!saveQueue.started) return resolve();
 
 						saveQueue.drain(() => {
-							if (this.runtime === 'worker' && !!this.port) {
-								// the core emitter does not work within a worker process
-								for (const nestedActionEvent of nestedActionEvents) {
-									this.port.postMessage(JSON.stringify(nestedActionEvent));
-								}
-							} else {
-								for (const nestedActionEvent of nestedActionEvents) {
-									emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-								}
-							}
+							this.emitImportEvents(nestedActionEvents);
 
 							return resolve();
 						});
@@ -206,6 +188,20 @@ export class ImportService {
 				});
 			});
 		});
+	}
+
+	private emitImportEvents(events: ActionEventParams[]) {
+		if (this.runtime === 'worker' && !!this.port) {
+			// the core emitter does not work within a worker process
+			for (const nestedActionEvent of events) {
+				this.port.postMessage(JSON.stringify(nestedActionEvent));
+			}
+		} else {
+			for (const nestedActionEvent of events) {
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+			}
+		}
+
 	}
 }
 
