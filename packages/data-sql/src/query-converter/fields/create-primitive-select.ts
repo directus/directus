@@ -1,4 +1,3 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { AbstractSqlQuerySelectNode } from '../../types/index.js';
 
 /**
@@ -8,13 +7,13 @@ import type { AbstractSqlQuerySelectNode } from '../../types/index.js';
  */
 export const createPrimitiveSelect = (
 	collection: string,
-	abstractPrimitive: AbstractQueryFieldNodePrimitive,
+	field: string,
 	generatedAlias: string,
 ): AbstractSqlQuerySelectNode => {
 	const primitive: AbstractSqlQuerySelectNode = {
 		type: 'primitive',
 		table: collection,
-		column: abstractPrimitive.field,
+		column: field,
 		as: generatedAlias,
 	};
 

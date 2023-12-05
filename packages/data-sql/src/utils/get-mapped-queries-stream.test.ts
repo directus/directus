@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { makeSubQueriesAndMergeWithRoot } from './nested-many.js';
+import { makeSubQueriesAndMergeWithRoot } from './get-mapped-queries-stream.js';
 import type { AbstractSqlNestedMany } from '../index.js';
 import { ReadableStream } from 'node:stream/web';
 import { randomAlpha, randomIdentifier } from '@directus/random';

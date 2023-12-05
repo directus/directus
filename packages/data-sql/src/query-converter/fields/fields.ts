@@ -48,7 +48,7 @@ export const convertFieldNodes = (
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
 
 			// query conversion
-			const selectNode = createPrimitiveSelect(collection, abstractField, generatedAlias);
+			const selectNode = createPrimitiveSelect(collection, abstractField.field, generatedAlias);
 			select.push(selectNode);
 
 			continue;
@@ -92,12 +92,12 @@ export const convertFieldNodes = (
 			 * like do a sub query in the statement or a join.
 			 */
 
-			// @TODO
-			// we need to make sure, that the identifier field is included as primitive field node
-			// so we can use the returning value as parameter for the sub queries
+			const nestedManyResult = getNestedMany(collection, abstractField);
 
-			const nestedManyQueries = getNestedMany(abstractField);
-			subQueries.push(...nestedManyQueries);
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
+
+			subQueries.push(nestedManyResult.subQuery);
+			select.push(...nestedManyResult.select);
 
 			continue;
 		}
