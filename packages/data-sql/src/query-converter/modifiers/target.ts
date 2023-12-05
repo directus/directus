@@ -53,11 +53,9 @@ export function convertNestedOneTarget(
 	nestedTarget: AbstractQueryTargetNestedOne,
 	idxGenerator: Generator<number, number, number>,
 ): TargetConversionResult {
-	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');
+	const externalCollectionAlias = createUniqueAlias(nestedTarget.nesting.foreign.collection);
 
-	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
-
-	const join = createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias);
+	const join = createJoin(currentCollection, nestedTarget.nesting, externalCollectionAlias);
 
 	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, idxGenerator);
 

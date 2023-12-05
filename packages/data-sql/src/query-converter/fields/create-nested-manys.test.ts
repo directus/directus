@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedSingleMany } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { afterAll, expect, test, vi } from 'vitest';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
@@ -21,8 +21,8 @@ test('getNestedMany with a single identifier', () => {
 	const randomPkValue = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedMany = {
-		type: 'nested-many',
+	const field: AbstractQueryFieldNodeNestedSingleMany = {
+		type: 'nested-single-many',
 		fields: [
 			{
 				type: 'primitive',
@@ -30,17 +30,15 @@ test('getNestedMany with a single identifier', () => {
 				alias: foreignIdFieldAlias,
 			},
 		],
-		meta: {
-			type: 'o2m',
-			join: {
-				local: {
-					fields: [localIdField],
-				},
-				foreign: {
-					store: foreignStore,
-					collection: foreignTable,
-					fields: [foreignIdField],
-				},
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [localIdField],
+			},
+			foreign: {
+				store: foreignStore,
+				collection: foreignTable,
+				fields: [foreignIdField],
 			},
 		},
 		alias: manyAlias,
@@ -115,8 +113,8 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	const randomPkValue2 = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedMany = {
-		type: 'nested-many',
+	const field: AbstractQueryFieldNodeNestedSingleMany = {
+		type: 'nested-single-many',
 		fields: [
 			{
 				type: 'primitive',
@@ -124,17 +122,15 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 				alias: desiredForeignFieldAlias,
 			},
 		],
-		meta: {
-			type: 'o2m',
-			join: {
-				local: {
-					fields: [localIdField1, localIdField2],
-				},
-				foreign: {
-					store: foreignStore,
-					collection: foreignTable,
-					fields: [foreignIdField1, foreignIdField2],
-				},
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [localIdField1, localIdField2],
+			},
+			foreign: {
+				store: foreignStore,
+				collection: foreignTable,
+				fields: [foreignIdField1, foreignIdField2],
 			},
 		},
 		modifiers: {},
@@ -224,8 +220,8 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 	const randomLimit = randomInteger(1, 100);
 	const manyAlias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedMany = {
-		type: 'nested-many',
+	const field: AbstractQueryFieldNodeNestedSingleMany = {
+		type: 'nested-single-many',
 		fields: [
 			{
 				type: 'primitive',
@@ -233,17 +229,15 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 				alias: foreignIdFieldAlias,
 			},
 		],
-		meta: {
-			type: 'o2m',
-			join: {
-				local: {
-					fields: [localIdField],
-				},
-				foreign: {
-					store: foreignStore,
-					collection: foreignTable,
-					fields: [foreignIdField],
-				},
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [localIdField],
+			},
+			foreign: {
+				store: foreignStore,
+				collection: foreignTable,
+				fields: [foreignIdField],
 			},
 		},
 		modifiers: {
