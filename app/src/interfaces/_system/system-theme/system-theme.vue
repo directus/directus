@@ -28,9 +28,7 @@ const systemTheme = computed(() => {
 		: serverStore.info.project!.default_theme_light;
 });
 
-const items = computed(() =>
-	themeStore.themes[props.appearance].map((theme) => ({ name: theme.name, label: theme.label })),
-);
+const items = computed(() => themeStore.themes[props.appearance].map((theme) => ({ id: theme.id, name: theme.name })));
 
 const valueWithDefault = computed(() => {
 	if (props.includeNull) {
@@ -56,16 +54,16 @@ const valueWithDefault = computed(() => {
 
 		<button
 			v-for="theme of items"
-			:key="theme.name"
-			:class="{ active: theme.name === valueWithDefault }"
+			:key="theme.id"
+			:class="{ active: theme.id === valueWithDefault }"
 			class="theme"
-			@click="$emit('input', theme.name)"
+			@click="$emit('input', theme.id)"
 		>
-			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.name" />
+			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.id" />
 
 			<div class="label">
-				<v-icon :name="theme.name === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
-				<v-text-overflow :text="translate(theme.label)" />
+				<v-icon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
+				<v-text-overflow :text="translate(theme.name)" />
 			</div>
 		</button>
 	</div>
