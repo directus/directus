@@ -1,5 +1,6 @@
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
+import type { MessagePort } from 'node:worker_threads';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
@@ -31,16 +32,22 @@ import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
+type ImportRuntime = 'node' | 'worker';
+type ImportOptions =  AbstractServiceOptions & { runtime?: ImportRuntime; port?: MessagePort; };
 
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
+	runtime: ImportRuntime;
+	port: MessagePort | null;
 
-	constructor(options: AbstractServiceOptions) {
+	constructor(options: ImportOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+		this.runtime = options.runtime ?? 'node';
+		this.port = options.port ?? null;
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
@@ -104,8 +111,15 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
-						for (const nestedActionEvent of nestedActionEvents) {
-							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+						if (this.runtime === 'worker' && !!this.port) {
+							// the core emitter does not work within a worker process
+							for (const nestedActionEvent of nestedActionEvents) {
+								this.port.postMessage(JSON.stringify(nestedActionEvent));
+							}
+						} else {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
 						}
 
 						return resolve();
@@ -172,8 +186,15 @@ export class ImportService {
 						if (!saveQueue.started) return resolve();
 
 						saveQueue.drain(() => {
-							for (const nestedActionEvent of nestedActionEvents) {
-								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							if (this.runtime === 'worker' && !!this.port) {
+								// the core emitter does not work within a worker process
+								for (const nestedActionEvent of nestedActionEvents) {
+									this.port.postMessage(JSON.stringify(nestedActionEvent));
+								}
+							} else {
+								for (const nestedActionEvent of nestedActionEvents) {
+									emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+								}
 							}
 
 							return resolve();

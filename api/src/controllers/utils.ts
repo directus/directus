@@ -14,6 +14,8 @@ import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { MessageChannel } from 'node:worker_threads'
+import emitter from '../emitter.js';
 
 const router = Router();
 
@@ -135,6 +137,7 @@ router.post(
 
 				const require = createRequire(import.meta.url);
 				const filename = require.resolve('../services/import-export/import-worker');
+				const { port1, port2 } = new MessageChannel();
 
 				const workerData: ImportWorkerData = {
 					collection: req.params['collection']!,
@@ -142,15 +145,27 @@ router.post(
 					filePath: tmpFile.path,
 					accountability: req.accountability,
 					schema: req.schema,
+					port: port1,
 				};
 
+				port2.on('message', (msgString: string) => {
+					try {
+						const message = JSON.parse(msgString);
+						emitter.emitAction(message.event, message.meta, message.context);
+					} catch {
+						// ignore invalid messages
+					}
+				});
+
 				try {
-					await workerPool.run(workerData, { filename });
+					await workerPool.run(workerData, { filename, transferList: [port1] });
 					res.status(200).end();
 				} catch (error) {
 					next(error);
 				} finally {
 					await tmpFile.cleanup();
+					port1.close();
+					port2.close();
 				}
 			});
 		});
