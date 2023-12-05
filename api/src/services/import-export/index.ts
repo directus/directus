@@ -201,7 +201,6 @@ export class ImportService {
 				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 			}
 		}
-
 	}
 }
 
