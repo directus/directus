@@ -1,5 +1,11 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
+import type {
+	AbstractSqlClauses,
+	AbstractSqlNestedMany,
+	AbstractSqlNestedOneFromAny,
+	AbstractSqlQuery,
+	ParameterTypes,
+} from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
@@ -40,6 +46,7 @@ export const convertFieldNodes = (
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
 	const nestedManys: AbstractSqlNestedMany[] = [];
+	const nestedOneFromAny: AbstractSqlNestedOneFromAny[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
@@ -53,7 +60,7 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'nested-one') {
+		if (abstractField.type === 'nested-single-one') {
 			/**
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
@@ -62,9 +69,9 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			if (abstractField.meta.type === 'm2o') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
+			if (abstractField.nesting?.type === 'relational-many') {
+				const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
+				const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
@@ -79,7 +86,11 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'nested-many') {
+		if (abstractField.type === 'nested-union-one') {
+			// @TODO convert node into a root query and a query in form of of a function which has the collection relation as parameters
+		}
+
+		if (abstractField.type === 'nested-single-many') {
 			/*
 			 * nested many nodes are handled by the driver.
 			 * As a default behavior, we do separate queries for each o part result row.
@@ -111,5 +122,10 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedManys };
+	return {
+		clauses: { select, joins },
+		parameters,
+		aliasMapping: aliasRelationalMapping,
+		nestedManys,
+	};
 };

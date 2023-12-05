@@ -1,6 +1,6 @@
 import type {
-	AbstractQueryFieldNodeNestedMany,
-	AbstractQueryFieldNodeRelationalOneToMany,
+	AbstractQueryFieldNodeNestedRelationalMany,
+	AbstractQueryFieldNodeNestedSingleMany,
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
@@ -17,26 +17,23 @@ import { convertFieldNodes } from './fields.js';
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
  * The generated function will be called later on, when the root query is executed and the result is available.
  *
- * @param fieldMeta - the relational meta data from the abstract query
- * @param nestedOutput - the result of the nested field conversion
- * @param idxGenerator - the generator used to increase the parameter indices
- * @param alias - the alias of the foreign collection
+ * @param field - the nested field data from the abstract query
  * @returns A function to create a query with and information about the relation
  */
-export function getNestedMany(field: AbstractQueryFieldNodeNestedMany): AbstractSqlNestedMany {
-	if (field.meta.type !== 'o2m') throw new Error('Nested o2a not yet implemented!');
+export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany): AbstractSqlNestedMany {
+	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
 	const index = parameterIndexGenerator();
 
-	const nestedFieldNodes = convertFieldNodes(field.meta.join.foreign.collection, field.fields, index);
-	const nestedModifiers = convertModifiers(field.modifiers, field.meta.join.foreign.collection, index);
+	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, index);
+	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
 
 	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
 	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
 
 	const clauses: AbstractSqlClauses = {
 		select: nestedFieldNodes.clauses.select,
-		from: field.meta.join.foreign.collection,
+		from: field.nesting.foreign.collection,
 		...nestedModifiers.clauses,
 		joins: joins,
 		where: nestedModifiers.clauses.where
@@ -44,9 +41,9 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedMany): Abstract
 					type: 'logical',
 					operator: 'and',
 					negate: false,
-					childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.meta, index)],
+					childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.nesting, index)],
 			  }
-			: getRelationConditions(field.meta, index),
+			: getRelationConditions(field.nesting, index),
 	};
 
 	return {
@@ -56,29 +53,29 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedMany): Abstract
 			aliasMapping: nestedFieldNodes.aliasMapping,
 			nestedManys: nestedFieldNodes.nestedManys,
 		}),
-		localJoinFields: field.meta.join.local.fields,
-		foreignJoinFields: field.meta.join.foreign.fields,
+		localJoinFields: field.nesting.local.fields,
+		foreignJoinFields: field.nesting.foreign.fields,
 		alias: field.alias,
 	};
 }
 
 function getRelationConditions(
-	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
+	fieldNesting: AbstractQueryFieldNodeNestedRelationalMany,
 	idxGenerator: Generator<number, number, number>,
 ): AbstractSqlQueryWhereNode {
-	const table = fieldMeta.join.foreign.collection;
+	const table = fieldNesting.foreign.collection;
 
-	if (fieldMeta.join.foreign.fields.length > 1) {
+	if (fieldNesting.foreign.fields.length > 1) {
 		return {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: fieldMeta.join.foreign.fields.map((field) =>
+			childNodes: fieldNesting.foreign.fields.map((field) =>
 				getRelationCondition(table, field, idxGenerator),
 			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
-		return getRelationCondition(table, fieldMeta.join.foreign.fields[0], idxGenerator);
+		return getRelationCondition(table, fieldNesting.foreign.fields[0], idxGenerator);
 	}
 }
 

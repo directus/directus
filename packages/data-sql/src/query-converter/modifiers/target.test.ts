@@ -90,17 +90,15 @@ test('convert nested target', () => {
 			type: 'primitive',
 			field: filterField,
 		},
-		meta: {
-			type: 'm2o',
-			join: {
-				local: {
-					fields: [leftIdentifierField],
-				},
-				foreign: {
-					store,
-					collection: foreignCollection,
-					fields: [rightIdentifierField],
-				},
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [leftIdentifierField],
+			},
+			foreign: {
+				store,
+				collection: foreignCollection,
+				fields: [rightIdentifierField],
 			},
 		},
 	};

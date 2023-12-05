@@ -147,7 +147,7 @@ test('primitive, fn, m2o', () => {
 			alias: randomPrimitiveFieldAlias1,
 		},
 		{
-			type: 'nested-one',
+			type: 'nested-single-one',
 			fields: [
 				{
 					type: 'primitive',
@@ -155,17 +155,16 @@ test('primitive, fn, m2o', () => {
 					alias: randomJoinNodeFieldAlias,
 				},
 			],
-			meta: {
-				type: 'm2o',
-				join: {
-					local: {
-						fields: [randomJoinCurrentField],
-					},
-					foreign: {
-						store: randomExternalStore,
-						collection: randomExternalCollection,
-						fields: [randomExternalField],
-					},
+			nesting: {
+				type: 'relational-many',
+
+				local: {
+					fields: [randomJoinCurrentField],
+				},
+				foreign: {
+					store: randomExternalStore,
+					collection: randomExternalCollection,
+					fields: [randomExternalField],
 				},
 			},
 			alias: randomNestedAlias,
@@ -264,7 +263,7 @@ test('primitive, o2m', () => {
 			alias: randomPrimitiveFieldAlias1,
 		},
 		{
-			type: 'nested-many',
+			type: 'nested-single-many',
 			fields: [
 				{
 					type: 'primitive',
@@ -273,17 +272,16 @@ test('primitive, o2m', () => {
 				},
 			],
 			alias: randomNestedAlias,
-			meta: {
-				type: 'o2m',
-				join: {
-					local: {
-						fields: [randomJoinCurrentField],
-					},
-					foreign: {
-						store: randomExternalStore,
-						collection: randomExternalCollection,
-						fields: [randomExternalField],
-					},
+			nesting: {
+				type: 'relational-many',
+
+				local: {
+					fields: [randomJoinCurrentField],
+				},
+				foreign: {
+					store: randomExternalStore,
+					collection: randomExternalCollection,
+					fields: [randomExternalField],
 				},
 			},
 			modifiers: {},
@@ -341,7 +339,7 @@ test('primitive and o2m field with nested modifiers', () => {
 			alias: randomPrimitiveFieldAlias1,
 		},
 		{
-			type: 'nested-many',
+			type: 'nested-single-many',
 			fields: [
 				{
 					type: 'primitive',
@@ -350,17 +348,15 @@ test('primitive and o2m field with nested modifiers', () => {
 				},
 			],
 			alias: randomNestedAlias,
-			meta: {
-				type: 'o2m',
-				join: {
-					local: {
-						fields: [randomJoinCurrentField],
-					},
-					foreign: {
-						store: randomExternalStore,
-						collection: randomExternalCollection,
-						fields: [randomExternalField],
-					},
+			nesting: {
+				type: 'relational-many',
+				local: {
+					fields: [randomJoinCurrentField],
+				},
+				foreign: {
+					store: randomExternalStore,
+					collection: randomExternalCollection,
+					fields: [randomExternalField],
 				},
 			},
 			modifiers: {
@@ -375,17 +371,16 @@ test('primitive and o2m field with nested modifiers', () => {
 								type: 'primitive',
 								field: nestedTargetField,
 							},
-							meta: {
-								type: 'm2o',
-								join: {
-									local: {
-										fields: [nestedJoinCurrentField],
-									},
-									foreign: {
-										store: nestedExternalStore,
-										collection: nestedExternalCollection,
-										fields: [nestedForeignIdFields],
-									},
+							nesting: {
+								type: 'relational-many',
+
+								local: {
+									fields: [nestedJoinCurrentField],
+								},
+								foreign: {
+									store: nestedExternalStore,
+									collection: nestedExternalCollection,
+									fields: [nestedForeignIdFields],
 								},
 							},
 						},
