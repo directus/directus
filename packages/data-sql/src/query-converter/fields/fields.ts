@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { createUniqueAlias } from '../../orm/create-unique-alias.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
 import { convertFn } from '../functions.js';
 import { createJoin } from './create-join.js';

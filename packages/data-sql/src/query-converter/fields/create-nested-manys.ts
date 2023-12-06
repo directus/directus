@@ -3,7 +3,7 @@ import type {
 	AbstractQueryFieldNodeNestedSingleMany,
 	AtLeastOneElement,
 } from '@directus/data';
-import { createUniqueAlias } from '../../orm/create-unique-alias.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import type {
 	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,

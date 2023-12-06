@@ -8,7 +8,7 @@ afterAll(() => {
 	vi.restoreAllMocks();
 });
 
-vi.mock('../../orm/create-unique-alias.js', () => ({
+vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
