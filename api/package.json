@@ -224,7 +224,7 @@
 		"nodemailer-sendgrid": "1.0.3",
 		"pg": "8.11.0",
 		"sqlite3": "5.1.6",
-		"tedious": "16.1.0"
+		"tedious": "16.6.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
