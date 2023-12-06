@@ -59,6 +59,7 @@ extension_display: Göster
 extension_layout: Yerleşim
 extension_module: Modül
 extension_panel: Panel
+extension_theme: Tema
 extension_hook: Kanca
 extension_bundle: Paket
 extension_interfaces: Arayüzler
