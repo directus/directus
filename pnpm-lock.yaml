@@ -226,7 +226,7 @@ importers:
         version: 4.5.2
       knex:
         specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
+        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
       ldapjs:
         specifier: 2.3.3
         version: 2.3.3
@@ -364,8 +364,8 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
       tedious:
-        specifier: 16.1.0
-        version: 16.1.0
+        specifier: 16.6.1
+        version: 16.6.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1236,7 +1236,7 @@ importers:
         version: 11.1.1
       knex:
         specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
+        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1471,7 +1471,7 @@ importers:
     dependencies:
       knex:
         specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
+        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1810,7 +1810,7 @@ importers:
         version: 7946.0.10
       knex:
         specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
+        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
       vue:
         specifier: 3.3.9
         version: 3.3.9(typescript@5.3.2)
@@ -3371,7 +3371,7 @@ packages:
       '@azure/core-auth': 1.5.0
       '@azure/core-rest-pipeline': 1.12.1
       '@azure/core-tracing': 1.0.1
-      '@azure/core-util': 1.5.0
+      '@azure/core-util': 1.6.1
       '@azure/logger': 1.0.4
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -3435,7 +3435,7 @@ packages:
       '@azure/abort-controller': 1.1.0
       '@azure/core-auth': 1.5.0
       '@azure/core-tracing': 1.0.1
-      '@azure/core-util': 1.5.0
+      '@azure/core-util': 1.6.1
       '@azure/logger': 1.0.4
       form-data: 4.0.0
       http-proxy-agent: 5.0.0
@@ -3467,9 +3467,17 @@ packages:
       '@azure/abort-controller': 1.1.0
       tslib: 2.6.2
 
-  /@azure/identity@2.1.0:
-    resolution: {integrity: sha512-BPDz1sK7Ul9t0l9YKLEa8PHqWU4iCfhGJ+ELJl6c8CP3TpJt2urNCbm0ZHsthmxRsYoMPbz2Dvzj30zXZVmAFw==}
-    engines: {node: '>=12.0.0'}
+  /@azure/core-util@1.6.1:
+    resolution: {integrity: sha512-h5taHeySlsV9qxuK64KZxy4iln1BtMYlNt5jbuEFN3UFSAd1EwKg/Gjl5a6tZ/W8t6li3xPnutOx7zbDyXnPmQ==}
+    engines: {node: '>=16.0.0'}
+    requiresBuild: true
+    dependencies:
+      '@azure/abort-controller': 1.1.0
+      tslib: 2.6.2
+
+  /@azure/identity@3.4.1:
+    resolution: {integrity: sha512-oQ/r5MBdfZTMIUcY5Ch8G7Vv9aIXDkEYyU4Dfqjim4MQN+LY2uiQ57P1JDopMLeHCsZxM4yy8lEdne3tM9Xhzg==}
+    engines: {node: '>=14.0.0'}
     requiresBuild: true
     dependencies:
       '@azure/abort-controller': 1.1.0
@@ -3477,17 +3485,15 @@ packages:
       '@azure/core-client': 1.7.3
       '@azure/core-rest-pipeline': 1.12.1
       '@azure/core-tracing': 1.0.1
-      '@azure/core-util': 1.5.0
+      '@azure/core-util': 1.6.1
       '@azure/logger': 1.0.4
-      '@azure/msal-browser': 2.38.2
-      '@azure/msal-common': 7.6.0
-      '@azure/msal-node': 1.18.3
+      '@azure/msal-browser': 3.6.0
+      '@azure/msal-node': 2.6.0
       events: 3.3.0
       jws: 4.0.0
       open: 8.4.2
       stoppable: 1.1.0
       tslib: 2.6.2
-      uuid: 8.3.2
     transitivePeerDependencies:
       - supports-color
 
@@ -3517,29 +3523,24 @@ packages:
     dependencies:
       tslib: 2.6.2
 
-  /@azure/msal-browser@2.38.2:
-    resolution: {integrity: sha512-71BeIn2we6LIgMplwCSaMq5zAwmalyJR3jFcVOZxNVfQ1saBRwOD+P77nLs5vrRCedVKTq8RMFhIOdpMLNno0A==}
+  /@azure/msal-browser@3.6.0:
+    resolution: {integrity: sha512-FrFBJXRJMyWXjAjg4cUNZwEKktzfzD/YD9+S1kj2ors67hKoveam4aL0bZuCZU/jTiHTn0xDQGQh2ksCMXTXtA==}
     engines: {node: '>=0.8.0'}
     requiresBuild: true
     dependencies:
-      '@azure/msal-common': 13.3.0
+      '@azure/msal-common': 14.5.0
 
-  /@azure/msal-common@13.3.0:
-    resolution: {integrity: sha512-/VFWTicjcJbrGp3yQP7A24xU95NiDMe23vxIU1U6qdRPFsprMDNUohMudclnd+WSHE4/McqkZs/nUU3sAKkVjg==}
+  /@azure/msal-common@14.5.0:
+    resolution: {integrity: sha512-Gx5rZbiZV/HiZ2nEKfjfAF/qDdZ4/QWxMvMo2jhIFVz528dVKtaZyFAOtsX2Ak8+TQvRsGCaEfuwJFuXB6tu1A==}
     engines: {node: '>=0.8.0'}
     requiresBuild: true
 
-  /@azure/msal-common@7.6.0:
-    resolution: {integrity: sha512-XqfbglUTVLdkHQ8F9UQJtKseRr3sSnr9ysboxtoswvaMVaEfvyLtMoHv9XdKUfOc0qKGzNgRFd9yRjIWVepl6Q==}
-    engines: {node: '>=0.8.0'}
-    requiresBuild: true
-
-  /@azure/msal-node@1.18.3:
-    resolution: {integrity: sha512-lI1OsxNbS/gxRD4548Wyj22Dk8kS7eGMwD9GlBZvQmFV8FJUXoXySL1BiNzDsHUE96/DS/DHmA+F73p1Dkcktg==}
-    engines: {node: 10 || 12 || 14 || 16 || 18}
+  /@azure/msal-node@2.6.0:
+    resolution: {integrity: sha512-RWAWCYYrSldIYC47oWtofIun41e6SB9TBYgGYsezq6ednagwo9ZRFyRsvl1NabmdTkdDDXRAABIdveeN2Gtd8w==}
+    engines: {node: 16|| 18 || 20}
     requiresBuild: true
     dependencies:
-      '@azure/msal-common': 13.3.0
+      '@azure/msal-common': 14.5.0
       jsonwebtoken: 9.0.1
       uuid: 8.3.2
 
@@ -8035,7 +8036,6 @@ packages:
     engines: {node: '>=6.5'}
     dependencies:
       event-target-shim: 5.0.1
-    dev: false
 
   /abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
@@ -8619,6 +8619,15 @@ packages:
       buffer: 6.0.3
       inherits: 2.0.4
       readable-stream: 3.6.2
+    dev: false
+
+  /bl@6.0.9:
+    resolution: {integrity: sha512-Vh+M9HMfeTST9rkkQ1utRnOeABNcBO3i0dJMFkenCv7JIp76XWx8uQOGpaXyXVyenrLDZsdAHXbf0Cz18Eb0fw==}
+    requiresBuild: true
+    dependencies:
+      buffer: 6.0.3
+      inherits: 2.0.4
+      readable-stream: 4.4.2
 
   /bluebird@3.7.2:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
@@ -10806,7 +10815,6 @@ packages:
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
-    dev: false
 
   /eventemitter2@6.4.9:
     resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
@@ -13089,11 +13097,11 @@ packages:
     peerDependencies:
       knex: ^2.0.0
     dependencies:
-      knex: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
+      knex: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
       lodash.clonedeep: 4.5.0
     dev: true
 
-  /knex@2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0):
+  /knex@2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1):
     resolution: {integrity: sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg==}
     engines: {node: '>=12'}
     hasBin: true
@@ -13137,7 +13145,7 @@ packages:
       resolve-from: 5.0.0
       sqlite3: 5.1.6
       tarn: 3.0.2
-      tedious: 16.1.0
+      tedious: 16.6.1
       tildify: 2.0.0
     transitivePeerDependencies:
       - supports-color
@@ -16390,7 +16398,6 @@ packages:
       events: 3.3.0
       process: 0.11.10
       string_decoder: 1.3.0
-    dev: false
 
   /readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
@@ -18147,15 +18154,15 @@ packages:
     resolution: {integrity: sha512-29aQwaHqm8RMX74u2o/h1KbMLP89FjNiMxD9wbF2BbWOnbM+q+d1sCEC+MqCc4QW3NJykn77OMpTFw/xTHIc0w==}
     dev: true
 
-  /tedious@16.1.0:
-    resolution: {integrity: sha512-5W+shTkUoAyrB/Bbx89k6Q8Cb400OHzS6XDXQdsTp/obe1cFyOhNc1KI4FI6TOzklDGJWyLnEEfUSBVMpugnjA==}
+  /tedious@16.6.1:
+    resolution: {integrity: sha512-KKSDB1OPrPk0WbMPug9YqRbPl44zMjdL2hFyzLEidr2IkItzpV0ZbzW8VA47QIS2oyWhCU7ifIEQY12n23IRDA==}
     engines: {node: '>=16'}
     requiresBuild: true
     dependencies:
-      '@azure/identity': 2.1.0
+      '@azure/identity': 3.4.1
       '@azure/keyvault-keys': 4.7.2
       '@js-joda/core': 5.6.1
-      bl: 5.1.0
+      bl: 6.0.9
       es-aggregate-error: 1.0.11
       iconv-lite: 0.6.3
       js-md4: 0.3.2
