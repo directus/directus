@@ -59,6 +59,7 @@ extension_display: 显示
 extension_layout: 布局
 extension_module: 模块
 extension_panel: 面板
+extension_theme: 主题
 extension_hook: 钩子
 extension_endpoint: 端点
 extension_operation: 操作
