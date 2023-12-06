@@ -554,7 +554,7 @@ export class GraphQLService {
 						if (self.scope === 'items') {
 							VersionTypes[relation.related_collection]?.addFields({
 								[relation.meta.one_field]: {
-									type: 'JSON',
+									type: GraphQLJSON,
 									resolve: (obj: Record<string, any>, _, __, info) => {
 										return obj[info?.path?.key ?? relation.meta!.one_field];
 									},
