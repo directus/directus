@@ -59,6 +59,7 @@ extension_display: Anzeige
 extension_layout: Ansicht
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Design
 extension_hook: Hook
 extension_endpoint: Endpunkt
 extension_operation: Operation
