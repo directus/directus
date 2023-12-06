@@ -159,9 +159,8 @@
 		"sharp": "0.32.6",
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
-		"strip-bom-stream": "5.0.0",
 		"tinypool": "0.8.1",
-		"tsx": "4.1.4",
+		"tsx": "4.6.1",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"wellknown": "0.5.0",
@@ -170,7 +169,6 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
@@ -216,7 +214,7 @@
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"vitest": "0.34.6"
 	},
 	"optionalDependencies": {

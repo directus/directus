@@ -403,7 +403,7 @@ SVGs?
 TablePlus
 tfa
 TFA
-Theming
+(T|t)heming
 TileJSON
 TinyMCE
 TLS
