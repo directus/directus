@@ -37,13 +37,12 @@ test('nested-many', async () => {
 
 	// foreign table specs
 	const foreignTable = randomIdentifier();
-	const foreignIdField = randomIdentifier();
 
 	// foreign fields
 	const foreignField = randomIdentifier();
 	const foreignFieldId = randomIdentifier();
 
-	const subQuery: SubQuery = (rootRow) => {
+	const subQuery: SubQuery = () => {
 		return {
 			rootQuery: {
 				clauses: {
@@ -56,28 +55,11 @@ test('nested-many', async () => {
 						},
 					],
 					from: foreignTable,
-					where: {
-						type: 'condition',
-						condition: {
-							type: 'condition-string',
-							operation: 'eq',
-							target: {
-								type: 'primitive',
-								table: foreignTable,
-								column: foreignIdField,
-							},
-							compareTo: {
-								type: 'value',
-								parameterIndex: 0,
-							},
-						},
-						negate: false,
-					},
 				},
-				parameters: [rootRow[localPkField]!],
+				parameters: [],
 			},
 			subQueries: [],
-			aliasMapping: [{ type: 'root', alias: localPkField, column: localPkField }],
+			aliasMapping: [{ type: 'root', alias: foreignField, column: foreignFieldId }],
 		};
 	};
 
@@ -88,16 +70,16 @@ test('nested-many', async () => {
 
 	const firstDatabaseResponse = [
 		{
-			[foreignField]: foreignFieldValue1,
+			[foreignFieldId]: foreignFieldValue1,
 		},
 		{
-			[foreignField]: foreignFieldValue2,
+			[foreignFieldId]: foreignFieldValue2,
 		},
 	];
 
 	const secondDatabaseResponse = [
 		{
-			[foreignField]: foreignFieldValue3,
+			[foreignFieldId]: foreignFieldValue3,
 		},
 	];
 
@@ -109,6 +91,7 @@ test('nested-many', async () => {
 	const aliasMapping: AliasMapping = [
 		{ type: 'root', alias: localPkField, column: localPkField },
 		{ type: 'root', alias: desiredLocalField, column: desiredLocalField },
+		{ type: 'sub', alias: foreignTable, index: 0 },
 	];
 
 	const resultingStream = getMappedQueriesStream(rootStream, [subQuery], aliasMapping, queryDataBaseMockFn);

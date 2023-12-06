@@ -440,7 +440,6 @@ test('getNestedMany with nested modifiers', () => {
 						},
 						nesting: {
 							type: 'relational-many',
-
 							local: {
 								fields: [nestedJoinCurrentField],
 							},
@@ -573,7 +572,7 @@ test('getNestedMany with nested modifiers', () => {
 		],
 	};
 
-	const rootResultRow = { [randomJoinCurrentField]: randomPkValue };
+	const rootResultRow = { [`${randomJoinCurrentField}_RANDOM`]: randomPkValue };
 
 	expect(result.subQuery(rootResultRow)).toStrictEqual(expectedGeneratedQuery);
 });
