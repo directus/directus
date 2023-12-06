@@ -59,6 +59,7 @@ extension_display: Zobrazenie
 extension_layout: Rozloženie
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Téma
 extension_hook: Hák
 extension_endpoint: Koncový bod
 extension_operation: Operácia
