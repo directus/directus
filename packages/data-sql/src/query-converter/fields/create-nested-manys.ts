@@ -17,7 +17,7 @@ import { parameterIndexGenerator } from '../param-index-generator.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
 
-interface NestedMayResult {
+export interface NestedManyResult {
 	subQuery: SubQuery;
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 }
@@ -29,7 +29,7 @@ interface NestedMayResult {
  * @param field - the nested field data from the abstract query
  * @returns A function to create a query with and information about the relation
  */
-export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedMayResult {
+export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
 	const index = parameterIndexGenerator();
