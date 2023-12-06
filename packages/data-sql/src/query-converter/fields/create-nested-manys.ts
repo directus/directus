@@ -18,7 +18,10 @@ import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
 
 export interface NestedManyResult {
+	/** Function to generate a sub query */
 	subQuery: SubQuery;
+
+	/** The selection of the primary key field */
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 }
 
@@ -27,7 +30,7 @@ export interface NestedManyResult {
  * The generated function will be called later on, when the root query is executed and the result is available.
  *
  * @param field - the nested field data from the abstract query
- * @returns A function to create a query with and information about the relation
+ * @returns A function to create a query with and the select part for the root query
  */
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');

@@ -228,7 +228,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	expect(result.subQuery(rootRow)).toStrictEqual(expectedGeneratedQuery);
 });
 
-test('getNestedMany with some modifiers', () => {
+test('getNestedMany with modifiers', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldAlias = randomIdentifier();
@@ -386,4 +386,194 @@ test('getNestedMany with some modifiers', () => {
 
 	expect(result).toStrictEqual(expected);
 	expect(result.subQuery(rootRow)).toStrictEqual(expectedGeneratedQuery);
+});
+
+test('getNestedMany with nested modifiers', () => {
+	const randomJoinCurrentField = randomIdentifier();
+	const randomExternalCollection = randomIdentifier();
+	const randomExternalStore = randomIdentifier();
+	const randomExternalField = randomIdentifier();
+	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
+	const nestedJoinCurrentField = randomIdentifier();
+	const nestedExternalStore = randomIdentifier();
+	const nestedExternalCollection = randomIdentifier();
+	const nestedForeignIdFields = randomIdentifier();
+	const randomLimit = randomInteger(1, 100);
+	const compareValue = randomIdentifier();
+	const nestedTargetField = randomIdentifier();
+	const collection = randomIdentifier();
+
+	const field: AbstractQueryFieldNodeNestedSingleMany = {
+		type: 'nested-single-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: randomJoinNodeField,
+				alias: randomJoinNodeFieldAlias,
+			},
+		],
+		alias: randomNestedAlias,
+		nesting: {
+			type: 'relational-many',
+			local: {
+				fields: [randomJoinCurrentField],
+			},
+			foreign: {
+				store: randomExternalStore,
+				collection: randomExternalCollection,
+				fields: [randomExternalField],
+			},
+		},
+		modifiers: {
+			filter: {
+				type: 'condition',
+				condition: {
+					type: 'condition-string',
+					operation: 'starts_with',
+					target: {
+						type: 'nested-one-target',
+						field: {
+							type: 'primitive',
+							field: nestedTargetField,
+						},
+						nesting: {
+							type: 'relational-many',
+
+							local: {
+								fields: [nestedJoinCurrentField],
+							},
+							foreign: {
+								store: nestedExternalStore,
+								collection: nestedExternalCollection,
+								fields: [nestedForeignIdFields],
+							},
+						},
+					},
+					compareTo: compareValue,
+				},
+			},
+			limit: {
+				type: 'limit',
+				value: randomLimit,
+			},
+		},
+	};
+
+	const result = getNestedMany(collection, field);
+
+	const expected: NestedManyResult = {
+		subQuery: expect.any(Function),
+		select: [
+			{
+				type: 'primitive',
+				table: collection,
+				column: randomJoinCurrentField,
+				as: `${randomJoinCurrentField}_RANDOM`,
+			},
+		],
+	};
+
+	expect(result).toStrictEqual(expected);
+	const randomPkValue = randomIdentifier();
+
+	const expectedGeneratedQuery: ConverterResult = {
+		rootQuery: {
+			clauses: {
+				select: [
+					{
+						type: 'primitive',
+						table: randomExternalCollection,
+						column: randomJoinNodeField,
+						as: `${randomJoinNodeField}_RANDOM`,
+					},
+				],
+				from: randomExternalCollection,
+				joins: [
+					{
+						type: 'join',
+						table: nestedExternalCollection,
+						as: `${nestedExternalCollection}_RANDOM`,
+						on: {
+							type: 'condition',
+							condition: {
+								type: 'condition-field',
+								compareTo: {
+									type: 'primitive',
+									column: nestedForeignIdFields,
+									table: `${nestedExternalCollection}_RANDOM`,
+								},
+								operation: 'eq',
+								target: {
+									type: 'primitive',
+									column: nestedJoinCurrentField,
+									table: randomExternalCollection,
+								},
+							},
+							negate: false,
+						},
+					},
+				],
+				where: {
+					type: 'logical',
+					operator: 'and',
+					negate: false,
+					childNodes: [
+						{
+							type: 'condition',
+							condition: {
+								type: 'condition-string',
+								operation: 'starts_with',
+								target: {
+									type: 'primitive',
+									table: `${nestedExternalCollection}_RANDOM`,
+									column: nestedTargetField,
+								},
+								compareTo: {
+									type: 'value',
+									parameterIndex: 0,
+								},
+							},
+							negate: false,
+						},
+						{
+							type: 'condition',
+							condition: {
+								type: 'condition-string',
+								operation: 'eq',
+								target: {
+									type: 'primitive',
+									table: randomExternalCollection,
+									column: randomExternalField,
+								},
+								compareTo: {
+									type: 'value',
+									parameterIndex: 2,
+								},
+							},
+							negate: false,
+						},
+					],
+				},
+				limit: {
+					type: 'value',
+					parameterIndex: 1,
+				},
+			},
+			parameters: [compareValue, randomLimit, randomPkValue],
+		},
+		subQueries: [],
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: randomJoinNodeFieldAlias,
+				column: `${randomJoinNodeField}_RANDOM`,
+			},
+		],
+	};
+
+	const rootResultRow = { [randomJoinCurrentField]: randomPkValue };
+
+	expect(result.subQuery(rootResultRow)).toStrictEqual(expectedGeneratedQuery);
 });
