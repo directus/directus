@@ -102,8 +102,8 @@ test('Convert a query with a foreign/right string filter', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map(),
-		nestedManys: [],
+		aliasMapping: [],
+		subQueries: [],
 	};
 
 	vi.mocked(convertFieldNodes).mockReturnValueOnce(fieldConversionResult);
@@ -222,8 +222,8 @@ test('Convert a query with a foreign/right string filter', () => {
 		parameters: [compareValue],
 	};
 
-	expect(res.clauses).toStrictEqual(expected.clauses);
-	expect(res.parameters).toStrictEqual(expected.parameters);
+	expect(res.rootQuery.clauses).toStrictEqual(expected.clauses);
+	expect(res.rootQuery.parameters).toStrictEqual(expected.parameters);
 });
 
 test('Convert a query with a nested field and filtering on that nested field.', () => {
@@ -339,8 +339,8 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 			joins: [joinNode],
 		},
 		parameters: [],
-		aliasMapping: new Map(),
-		nestedManys: [],
+		aliasMapping: [],
+		subQueries: [],
 	};
 
 	vi.mocked(convertFieldNodes).mockReturnValueOnce(fieldConversionResult);
@@ -458,5 +458,5 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 		parameters: [compareValue],
 	};
 
-	expect(res.clauses).toStrictEqual(expected.clauses);
+	expect(res.rootQuery.clauses).toStrictEqual(expected.clauses);
 });
