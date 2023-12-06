@@ -59,6 +59,7 @@ extension_display: Affichage
 extension_layout: Mise en page
 extension_module: Module
 extension_panel: Panneau
+extension_theme: Thème
 extension_hook: Crochet
 extension_endpoint: Point d'accès
 extension_operation: Opération
