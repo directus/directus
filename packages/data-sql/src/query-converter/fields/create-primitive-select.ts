@@ -1,4 +1,4 @@
-import type { AbstractSqlQuerySelectNode } from '../../types/index.js';
+import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/index.js';
 
 /**
  * @param abstractPrimitive
@@ -9,8 +9,8 @@ export const createPrimitiveSelect = (
 	collection: string,
 	field: string,
 	generatedAlias: string,
-): AbstractSqlQuerySelectNode => {
-	const primitive: AbstractSqlQuerySelectNode = {
+): AbstractSqlQuerySelectPrimitiveNode => {
+	const primitive: AbstractSqlQuerySelectPrimitiveNode = {
 		type: 'primitive',
 		table: collection,
 		column: field,

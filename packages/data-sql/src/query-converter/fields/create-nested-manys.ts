@@ -3,15 +3,14 @@ import type {
 	AbstractQueryFieldNodeNestedSingleMany,
 	AtLeastOneElement,
 } from '@directus/data';
-import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import type {
 	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,
-	AbstractSqlQueryFnNode,
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
 	SubQuery,
 } from '../../types/index.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
@@ -22,7 +21,7 @@ export interface NestedManyResult {
 	subQuery: SubQuery;
 
 	/** The selection of the primary key field */
-	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
+	select: AbstractSqlQuerySelectNode[];
 }
 
 /**
