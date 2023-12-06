@@ -59,6 +59,7 @@ extension_display: Pokaż
 extension_layout: Układ
 extension_module: Moduł
 extension_panel: Panel
+extension_theme: Motyw
 extension_hook: Hook
 extension_endpoint: Punkt końcowy
 extension_operation: Operacja
