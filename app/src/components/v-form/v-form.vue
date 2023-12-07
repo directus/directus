@@ -20,42 +20,43 @@ type FieldValues = {
 	[field: string]: any;
 };
 
-interface Props {
-	collection?: string;
-	fields?: Field[];
-	initialValues?: FieldValues | null;
-	modelValue?: FieldValues | null;
-	loading?: boolean;
-	batchMode?: boolean;
-	primaryKey?: string | number;
-	disabled?: boolean;
-	validationErrors?: ValidationError[];
-	autofocus?: boolean;
-	group?: string | null;
-	badge?: string;
-	showValidationErrors?: boolean;
-	showNoVisibleFields?: boolean;
-	/* Enable the raw editor toggler on fields */
-	rawEditorEnabled?: boolean;
-	disabledMenuOptions?: MenuOptions[];
-	direction?: string;
-	showDivider?: boolean;
-	inline?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	collection: undefined,
-	fields: undefined,
-	initialValues: null,
-	modelValue: null,
-	primaryKey: undefined,
-	validationErrors: () => [],
-	group: null,
-	badge: undefined,
-	showValidationErrors: true,
-	showNoVisibleFields: true,
-	direction: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		collection?: string;
+		fields?: Field[];
+		initialValues?: FieldValues | null;
+		modelValue?: FieldValues | null;
+		loading?: boolean;
+		batchMode?: boolean;
+		primaryKey?: string | number;
+		disabled?: boolean;
+		validationErrors?: ValidationError[];
+		autofocus?: boolean;
+		group?: string | null;
+		badge?: string;
+		showValidationErrors?: boolean;
+		showNoVisibleFields?: boolean;
+		/* Enable the raw editor toggler on fields */
+		rawEditorEnabled?: boolean;
+		disabledMenuOptions?: MenuOptions[];
+		direction?: string;
+		showDivider?: boolean;
+		inline?: boolean;
+	}>(),
+	{
+		collection: undefined,
+		fields: undefined,
+		initialValues: null,
+		modelValue: null,
+		primaryKey: undefined,
+		validationErrors: () => [],
+		group: null,
+		badge: undefined,
+		showValidationErrors: true,
+		showNoVisibleFields: true,
+		direction: undefined,
+	},
+);
 
 const { t } = useI18n();
 
@@ -377,7 +378,7 @@ function useRawEditor() {
 				<form-field
 					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-						(el) => {
+						(el: Element) => {
 							formFieldEls[fieldName] = el;
 						}
 					"

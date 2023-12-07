@@ -5,22 +5,33 @@ import type {
 } from '@directus/data';
 import type {
 	AbstractSqlClauses,
-	AbstractSqlNestedMany,
 	AbstractSqlQueryConditionNode,
+	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
+	SubQuery,
 } from '../../types/index.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
+import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
+
+export interface NestedManyResult {
+	/** Function to generate a sub query */
+	subQuery: SubQuery;
+
+	/** The selection of the primary key field */
+	select: AbstractSqlQuerySelectNode[];
+}
 
 /**
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
  * The generated function will be called later on, when the root query is executed and the result is available.
  *
  * @param field - the nested field data from the abstract query
- * @returns A function to create a query with and information about the relation
+ * @returns A function to create a query with and the select part for the root query
  */
-export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany): AbstractSqlNestedMany {
+export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
 	const index = parameterIndexGenerator();
@@ -46,16 +57,26 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany): Ab
 			: getRelationConditions(field.nesting, index),
 	};
 
+	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
+	const generatedAliasMap = Object.fromEntries(generatedAliases);
+
+	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
+
 	return {
-		queryGenerator: (identifierValues) => ({
-			clauses,
-			parameters: [...parameters, ...identifierValues],
+		subQuery: (rootRow) => ({
+			rootQuery: {
+				clauses,
+				parameters: [
+					...parameters,
+					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
+				],
+			},
+
+			subQueries: nestedFieldNodes.subQueries,
+
 			aliasMapping: nestedFieldNodes.aliasMapping,
-			nestedManys: nestedFieldNodes.nestedManys,
 		}),
-		localJoinFields: field.nesting.local.fields,
-		foreignJoinFields: field.nesting.foreign.fields,
-		alias: field.alias,
+		select,
 	};
 }
 
