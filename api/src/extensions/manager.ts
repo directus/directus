@@ -608,7 +608,7 @@ export class ExtensionManager {
 			const settings = this.extensionsSettings.find(({ name }) => name === extensionName);
 			if (!settings) return false;
 			return settings.enabled;
-		}
+		};
 
 		for (const bundle of bundles) {
 			try {

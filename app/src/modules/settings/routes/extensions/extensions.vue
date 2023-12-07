@@ -47,7 +47,7 @@ const refreshExtensions = async (extensionType?: (typeof EXTENSION_TYPES)[number
 
 const refreshPage = () => {
 	window.location.reload();
-}
+};
 
 fetchExtensions();
 </script>
@@ -72,7 +72,8 @@ fetchExtensions();
 
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
-				A page reload is required after enabling or disabling app extensions.&nbsp;<a href="#" @click="refreshPage">Reload now</a>
+				A page reload is required after enabling or disabling app extensions.&nbsp;
+				<a href="#" @click="refreshPage">Reload now</a>
 			</v-notice>
 		</div>
 

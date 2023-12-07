@@ -1,7 +1,13 @@
 import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import path from 'path';
-import type { AppExtension, BundleExtension, Extension, ExtensionSettings, HybridExtension } from '../../shared/types/index.js';
+import type {
+	AppExtension,
+	BundleExtension,
+	Extension,
+	ExtensionSettings,
+	HybridExtension,
+} from '../../shared/types/index.js';
 
 export function generateExtensionsEntrypoint(extensions: Extension[], settings: ExtensionSettings[]): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension => {
@@ -10,18 +16,20 @@ export function generateExtensionsEntrypoint(extensions: Extension[], settings: 
 		return enabled;
 	});
 
-	const bundleExtensions = extensions.filter(
-		(extension): extension is BundleExtension =>
-			extension.type === 'bundle' &&
-			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])),
-	).map(bundle => ({
-		...bundle,
-		entries: bundle.entries.filter(({ name }) => {
-			const entryName = `${bundle.name}/${name}`;
-			const { enabled } = settings.find(({ name }) => name === entryName) ?? { enabled: false };
-			return enabled;
-		})
-	}));
+	const bundleExtensions = extensions
+		.filter(
+			(extension): extension is BundleExtension =>
+				extension.type === 'bundle' &&
+				extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])),
+		)
+		.map((bundle) => ({
+			...bundle,
+			entries: bundle.entries.filter(({ name }) => {
+				const entryName = `${bundle.name}/${name}`;
+				const { enabled } = settings.find(({ name }) => name === entryName) ?? { enabled: false };
+				return enabled;
+			}),
+		}));
 
 	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions
