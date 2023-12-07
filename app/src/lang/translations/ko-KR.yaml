@@ -1835,6 +1835,8 @@ displays:
     icon: 아이콘
     border: 테두리
     border_label: 테두리 표시
+    mask: 마스크
+    mask_label: 진짜 값 숨기기
     text: 텍스트
     text_placeholder: 선택적 값 재정의...
   formatted-json-value:
