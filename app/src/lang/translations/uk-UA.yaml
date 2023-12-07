@@ -1814,6 +1814,8 @@ displays:
     icon: Іконка
     border: Межа
     border_label: Показати межу
+    mask: Масковано
+    mask_label: Приховати справжнє значення
     text: Текст
     text_placeholder: Необов'язкове перевизначення значення...
   formatted-json-value:
