@@ -85,6 +85,6 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 		collectionIdentifier: string;
 
 		/** The column name(s) of the foreign collection which store the primary key(s) */
-		fields: AtLeastOneElement<string>;
+		identifierFields: AtLeastOneElement<string>;
 	};
 }

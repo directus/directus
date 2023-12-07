@@ -4,7 +4,6 @@ import type {
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
-	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
@@ -28,8 +27,9 @@ export interface NestedManyResult {
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
  * The generated function will be called later on, when the root query is executed and the result is available.
  *
+ * @param collection - the current collection, will be an alias when called recursively
  * @param field - the nested field data from the abstract query
- * @returns A function to create a query with and the select part for the root query
+ * @returns A function which creates a sub query and the select part for the root query
  */
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
@@ -42,21 +42,6 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
 	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
 
-	const clauses: AbstractSqlClauses = {
-		select: nestedFieldNodes.clauses.select,
-		from: field.nesting.foreign.collection,
-		...nestedModifiers.clauses,
-		joins: joins,
-		where: nestedModifiers.clauses.where
-			? {
-					type: 'logical',
-					operator: 'and',
-					negate: false,
-					childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.nesting, index)],
-			  }
-			: getRelationConditions(field.nesting, index),
-	};
-
 	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
 
@@ -65,7 +50,20 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 	return {
 		subQuery: (rootRow) => ({
 			rootQuery: {
-				clauses,
+				clauses: {
+					select: nestedFieldNodes.clauses.select,
+					from: field.nesting.foreign.collection,
+					...nestedModifiers.clauses,
+					joins: joins,
+					where: nestedModifiers.clauses.where
+						? {
+								type: 'logical',
+								operator: 'and',
+								negate: false,
+								childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.nesting, index)],
+						  }
+						: getRelationConditions(field.nesting, index),
+				},
 				parameters: [
 					...parameters,
 					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
