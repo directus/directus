@@ -1565,6 +1565,8 @@ displays:
     suffix: لاحقة
     color: لون
     icon: أيقونة
+    mask: مقنع
+    mask_label: إخفاء القيمة الحقيقية
     text: نص
   icon:
     icon: أيقونة
