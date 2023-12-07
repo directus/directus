@@ -32,5 +32,8 @@ export default defineConfig({
 	viteNodeInlineDeps: [/@joeattardi\/emoji-button/],
 	vite: {
 		base: '/',
+		server: {
+			proxy: undefined,
+		},
 	},
 });
