@@ -66,6 +66,10 @@ export interface AbstractQueryFieldNodeNestedRelationalAny {
 	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
 }
 
+/**
+ * Used to specify the fields which should be returned for a specific collection.
+ * It also contains information about how the two collections are related.
+ */
 interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
@@ -80,7 +84,7 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 		/** The UUID of the foreign collection */
 		collectionIdentifier: string;
 
-		/** The column(s) of the foreign collection which store the primary key(s) */
+		/** The column name(s) of the foreign collection which store the primary key(s) */
 		fields: AtLeastOneElement<string>;
 	};
 }
