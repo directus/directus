@@ -139,7 +139,9 @@ export function getSlides() {
 						onboarding: JSON.stringify({
 							primary_skillset: userModel.value.primary_skillset ?? null,
 							wants_emails: userModel.value.wants_emails ?? false,
-							retry_transmission: true,
+							// Dont enable retrying yet, because we dont have consent yet and if the user
+							// Logs out and in, we would transmit data which is **bad**.
+							retry_transmission: false,
 						} satisfies UserOnboarding),
 					});
 
@@ -153,6 +155,16 @@ export function getSlides() {
 			primaryAction: {
 				label: t('onboarding.action.finish_share'),
 				action: async function () {
+					await api.patch(`/users/${currentUser.id}`, {
+						onboarding: JSON.stringify({
+							primary_skillset: userModel.value.primary_skillset ?? null,
+							wants_emails: userModel.value.wants_emails ?? false,
+							// Important(!) to only enable retrying if we have consent
+							retry_transmission: true,
+						} satisfies UserOnboarding),
+					});
+
+					await userStore.hydrate();
 					// Proceed immediately and swallow any errors for seamless user experience
 					api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
 					router.replace('/content');
@@ -161,15 +173,6 @@ export function getSlides() {
 			secondaryAction: {
 				label: t('onboarding.action.finish_decline'),
 				action: async function () {
-					await api.patch(`/users/${currentUser.id}`, {
-						onboarding: JSON.stringify({
-							primary_skillset: userModel.value.primary_skillset ?? null,
-							wants_emails: userModel.value.wants_emails ?? false,
-							retry_transmission: false,
-						} satisfies UserOnboarding),
-					});
-
-					await userStore.hydrate();
 					router.replace('/content');
 				},
 			},
