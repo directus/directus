@@ -389,6 +389,10 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
+					link: '/extensions/leveraging-ui-components',
+					text: 'Leveraging UI Components',
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
