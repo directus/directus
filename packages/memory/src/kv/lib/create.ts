@@ -11,5 +11,5 @@ export const createKv = (config: KvConfig) => {
 		return new KvRedis(config);
 	}
 
-	throw new Error(`Invalid configuration: Type does not exist.`);
+	throw new Error(`Invalid KV configuration: Type does not exist.`);
 };

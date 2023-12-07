@@ -11,5 +11,5 @@ export const createLimiter = (config: LimiterConfig) => {
 		return new LimiterRedis(config);
 	}
 
-	throw new Error(`Invalid configuration: Type does not exist.`);
+	throw new Error(`Invalid Limiter configuration: Type does not exist.`);
 };

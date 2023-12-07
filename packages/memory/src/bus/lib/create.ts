@@ -11,5 +11,5 @@ export const createBus = (config: BusConfig) => {
 		return new BusRedis(config);
 	}
 
-	throw new Error(`Invalid configuration: Type does not exist.`);
+	throw new Error(`Invalid Bus configuration: Type does not exist.`);
 };

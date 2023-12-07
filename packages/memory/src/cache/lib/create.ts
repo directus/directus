@@ -16,5 +16,5 @@ export const createCache = (config: CacheConfig) => {
 		return new CacheMulti(config);
 	}
 
-	throw new Error(`Invalid configuration: Type does not exist.`);
+	throw new Error(`Invalid Cache configuration: Type does not exist.`);
 };
