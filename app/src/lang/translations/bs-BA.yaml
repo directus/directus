@@ -1725,6 +1725,8 @@ displays:
     icon: Ikona
     border: Obrub
     border_label: Prikaži rubove
+    mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
     text: Tekst
     text_placeholder: Opcionalno nadjačavanje vrijednosti...
   formatted-json-value:
