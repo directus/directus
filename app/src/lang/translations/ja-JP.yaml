@@ -1391,6 +1391,7 @@ displays:
     icon: アイコン
     border: 区切り線
     border_label: 区切り線を表示
+    mask: マスク
     text: テキスト
   icon:
     icon: アイコン
