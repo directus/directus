@@ -54,10 +54,6 @@ export function useOnboarding() {
 			});
 
 			await userStore.hydrate();
-
-			// Proceed immediately and swallow any errors for seamless user experience
-			api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
-
 			router.replace('/content');
 		} catch (error: any) {
 			if (isArray(error?.response?.data.errors)) {
@@ -72,7 +68,7 @@ export function useOnboarding() {
 		}
 	}
 
-	async function nextSlide() {
+	async function nextSlide(action?: () => Promise<any>) {
 		// Prevent accidental double clicks, skipping over a slide
 		nextButtonDisabled.value = true;
 		setTimeout(() => (nextButtonDisabled.value = false), 500);
@@ -83,7 +79,7 @@ export function useOnboarding() {
 		isLoading.value = true;
 
 		try {
-			await currentSlide.value.next?.();
+			await action?.();
 			currentSlideIndex.value++;
 		} catch (error: any) {
 			if (isArray(error?.response?.data.errors)) {

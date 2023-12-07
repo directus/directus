@@ -12,6 +12,11 @@ import { projectFields } from './fields/project';
 import { themingProjectFields } from './fields/theming-project';
 import { userFields } from './fields/user';
 
+type OnboardingAction = {
+	label: string;
+	action?: () => Promise<any>;
+};
+
 type OnboardingSlide = {
 	title: string;
 	text: string;
@@ -20,6 +25,8 @@ type OnboardingSlide = {
 		fields: DeepPartial<Field>[];
 		initialValues: FieldValues;
 	};
+	primaryAction?: OnboardingAction;
+	secondaryAction?: OnboardingAction;
 	next?: () => Promise<any>;
 };
 
@@ -61,6 +68,9 @@ export function getSlides() {
 		welcome: {
 			title: t('onboarding.welcome.title'),
 			text: t('onboarding.welcome.text'),
+			primaryAction: {
+				label: t('onboarding.action.continue'),
+			},
 		},
 		...(requiresProjectOnboarding && {
 			project: {
@@ -71,19 +81,22 @@ export function getSlides() {
 					fields: translate(projectFields),
 					initialValues: projectModel.value,
 				},
-				next: async function () {
-					await settingsStore.updateSettings({
-						project_name: projectModel.value.project_name,
-						project_url: projectModel.value.project_url,
-						project_logo: projectModel.value.project_logo,
-						project_color: projectModel.value.project_color,
-						project_descriptor: projectModel.value.project_descriptor,
-						onboarding: JSON.stringify({
-							project_use_case: projectModel.value.project_use_case ?? null,
-						} satisfies SettingsOnboarding),
-					});
+				primaryAction: {
+					label: t('onboarding.action.save_and_continue'),
+					action: async function () {
+						await settingsStore.updateSettings({
+							project_name: projectModel.value.project_name,
+							project_url: projectModel.value.project_url,
+							project_logo: projectModel.value.project_logo,
+							project_color: projectModel.value.project_color,
+							project_descriptor: projectModel.value.project_descriptor,
+							onboarding: JSON.stringify({
+								project_use_case: projectModel.value.project_use_case ?? null,
+							} satisfies SettingsOnboarding),
+						});
 
-					await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+						await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+					},
 				},
 			},
 			themingProject: {
@@ -94,14 +107,17 @@ export function getSlides() {
 					fields: translate(themingProjectFields),
 					initialValues: themingProjectModel.value,
 				},
-				next: async function () {
-					await settingsStore.updateSettings({
-						default_appearance: themingProjectModel.value.default_appearance,
-						default_theme_light: themingProjectModel.value.default_theme_light,
-						default_theme_dark: themingProjectModel.value.default_theme_dark,
-					});
+				primaryAction: {
+					label: t('onboarding.action.save_and_continue'),
+					action: async function () {
+						await settingsStore.updateSettings({
+							default_appearance: themingProjectModel.value.default_appearance,
+							default_theme_light: themingProjectModel.value.default_theme_light,
+							default_theme_dark: themingProjectModel.value.default_theme_dark,
+						});
 
-					await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+						await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+					},
 				},
 			},
 		}),
@@ -113,24 +129,49 @@ export function getSlides() {
 				fields: translate(userFields),
 				initialValues: userModel.value,
 			},
-			next: async function () {
-				await api.patch(`/users/${currentUser.id}`, {
-					first_name: userModel.value.first_name,
-					last_name: userModel.value.last_name,
-					email: userModel.value.email,
-					onboarding: JSON.stringify({
-						primary_skillset: userModel.value.primary_skillset ?? null,
-						wants_emails: userModel.value.wants_emails ?? false,
-						retry_transmission: true,
-					} satisfies UserOnboarding),
-				});
+			primaryAction: {
+				label: t('onboarding.action.save_and_continue'),
+				action: async function () {
+					await api.patch(`/users/${currentUser.id}`, {
+						first_name: userModel.value.first_name,
+						last_name: userModel.value.last_name,
+						email: userModel.value.email,
+						onboarding: JSON.stringify({
+							primary_skillset: userModel.value.primary_skillset ?? null,
+							wants_emails: userModel.value.wants_emails ?? false,
+							retry_transmission: true,
+						} satisfies UserOnboarding),
+					});
 
-				await userStore.hydrate();
+					await userStore.hydrate();
+				},
+			},
+		},
+		consent: {
+			title: t('onboarding.consent.title'),
+			text: t('onboarding.consent.text'),
+			primaryAction: {
+				label: t('onboarding.action.finish_share'),
+				action: async function () {
+					// Proceed immediately and swallow any errors for seamless user experience
+					api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
+					router.replace('/content');
+				},
+			},
+			secondaryAction: {
+				label: t('onboarding.action.finish_decline'),
+				action: async function () {
+					await api.patch(`/users/${currentUser.id}`, {
+						onboarding: JSON.stringify({
+							primary_skillset: userModel.value.primary_skillset ?? null,
+							wants_emails: userModel.value.wants_emails ?? false,
+							retry_transmission: false,
+						} satisfies UserOnboarding),
+					});
 
-				// Proceed immediately and swallow any errors for seamless user experience
-				api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
-
-				router.replace('/content');
+					await userStore.hydrate();
+					router.replace('/content');
+				},
 			},
 		},
 

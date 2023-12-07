@@ -75,9 +75,21 @@ watchEffect(() => {
 				<!-- Left Actions -->
 				<div></div>
 				<!-- Right Actions -->
-				<div>
-					<v-button v-if="!isLoading && !isLastSlide" :disabled="nextButtonDisabled" @click="nextSlide">
-						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.save_and_continue') }}
+				<div class="actions-right">
+					<v-button
+						v-if="!isLoading && currentSlide.secondaryAction"
+						kind="link"
+						:disabled="nextButtonDisabled"
+						@click="nextSlide(currentSlide.secondaryAction.action)"
+					>
+						{{ currentSlide.secondaryAction.label }}
+					</v-button>
+					<v-button
+						v-if="!isLoading && !isLastSlide && currentSlide.primaryAction"
+						:disabled="nextButtonDisabled"
+						@click="nextSlide(currentSlide.primaryAction.action)"
+					>
+						{{ currentSlide.primaryAction.label }}
 					</v-button>
 				</div>
 			</div>
@@ -118,6 +130,14 @@ watchEffect(() => {
 .actions > div {
 	display: flex;
 	flex-direction: row;
+	gap: 16px;
+}
+
+.actions-right {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 	gap: 16px;
 }
 

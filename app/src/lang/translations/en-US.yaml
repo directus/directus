@@ -2340,7 +2340,10 @@ onboarding:
   action:
     skip: Skip
     first: Start Setup
+    continue: Continue
     save_and_continue: Save and Continue
+    finish_share: Share and Finish
+    finish_decline: Do Not Share and Finish
   welcome:
     title: Welcome to Directus!
     text: |
@@ -2356,9 +2359,9 @@ onboarding:
 
       Don't worry if you're not ready to customize yet — these can all be revisited later and easily removed or changed from inside the project settings.
     use_case: What are you planning to use Directus for?
-    personal: Personal project
+    personal: Personal
     work: Business
-    exploring: Just exploring
+    exploring: Exploring
   user:
     title: Let's set up your user
     text: |
@@ -2376,6 +2379,18 @@ onboarding:
     title: Let's set up your project theme
     text: |
       The Directus Theming Engine contains two customizable themes — Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
+  consent:
+    title: Just one last thing
+    text: |
+      We at Directus value our lovely users above all and would like to get to know you. Your answers will help us shape and improve Directus for a bright future!
+
+      By agreeing to this form you'll share the following information with us:
+
+      - Email (Only if you're interested in the monthly updates)
+      - Answer to "What is your primary skillset?"
+      - Answer to "What are you planning to use Directus for?"
+      - Project Name
+      - Project URL
   loading:
     title: Setting up your project...
     text: |
