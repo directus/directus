@@ -1978,6 +1978,8 @@ displays:
     icon: 图标
     border: 边框
     border_label: 显示边框
+    mask: Masked
+    mask_label: 隐藏真实值
     text: 文本
     text_placeholder: 可选值覆盖...
   formatted-json-value:
