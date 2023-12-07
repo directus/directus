@@ -1812,6 +1812,8 @@ displays:
     icon: ئایکۆن
     border: سنور
     border_label: سنور نیشانبدە
+    mask: دامامککراو
+    mask_label: بەها ڕاستەقینەکە بشارەوە
     text: نوسین
     text_placeholder: بەهای ئارەزوومەندانەی سەرپێچی...
   formatted-json-value:
