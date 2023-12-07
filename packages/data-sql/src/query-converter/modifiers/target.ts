@@ -1,15 +1,11 @@
 import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
-import { createUniqueAlias } from '../../orm/create-unique-alias.js';
-import type {
-	AbstractSqlQueryFnNode,
-	AbstractSqlQueryJoinNode,
-	AbstractSqlQuerySelectNode,
-} from '../../types/index.js';
+import type { AbstractSqlQueryJoinNode, AbstractSqlQuerySelectNode } from '../../types/index.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { createJoin } from '../fields/create-join.js';
 import { convertFn } from '../functions.js';
 
 export interface TargetConversionResult {
-	value: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	value: AbstractSqlQuerySelectNode;
 	joins: AbstractSqlQueryJoinNode[];
 }
 
@@ -53,11 +49,9 @@ export function convertNestedOneTarget(
 	nestedTarget: AbstractQueryTargetNestedOne,
 	idxGenerator: Generator<number, number, number>,
 ): TargetConversionResult {
-	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');
+	const externalCollectionAlias = createUniqueAlias(nestedTarget.nesting.foreign.collection);
 
-	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
-
-	const join = createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias);
+	const join = createJoin(currentCollection, nestedTarget.nesting, externalCollectionAlias);
 
 	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, idxGenerator);
 
