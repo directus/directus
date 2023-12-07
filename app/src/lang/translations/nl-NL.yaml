@@ -1650,6 +1650,8 @@ displays:
     icon: Icoon
     border: Rand
     border_label: Rand tonen
+    mask: Gemaskeerd
+    mask_label: Verberg de werkelijke waarde
     text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
