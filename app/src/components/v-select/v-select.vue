@@ -11,67 +11,68 @@ import { Option } from './types';
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;
 
-interface Props {
-	/** The items that should be selectable */
-	items: ItemsRaw;
-	/** Which key in items is used to display the text */
-	itemText?: string;
-	/** Which key in items is used to model the active state */
-	itemValue?: string;
-	/** Which key in items is used to show an icon */
-	itemIcon?: string | null;
-	/** Which font family to use for checkbox item label */
-	itemLabelFontFamily?: string;
-	/** Which key in items is used to model the disabled state */
-	itemDisabled?: string;
-	/** Which key in items is used to model the selectable state */
-	itemSelectable?: string;
-	/** Which key in items is used to render the children */
-	itemChildren?: string;
-	/** Which items should be shown as selected, depending on their value */
-	modelValue?: InputValue;
-	/** Allow to select multiple values */
-	multiple?: boolean;
-	/** Allow to select the parent of a group */
-	groupSelectable?: boolean;
-	/** Require a minimum selection of at least one element */
-	mandatory?: boolean;
-	/** Text that is displayed when no items are selected */
-	placeholder?: string | null;
-	/** Spreads the select element to it's maximal width */
-	fullWidth?: boolean;
-	/** Disables any interaction */
-	disabled?: boolean;
-	/** Allow to deselect all currently selected items */
-	showDeselect?: boolean;
-	/** Allow to enter custom values */
-	allowOther?: boolean;
-	/** Closes the dropdown after an items has been selected  */
-	closeOnContentClick?: boolean;
-	/** Renders the element inline, good for seamless selections */
-	inline?: boolean;
-	label?: boolean;
-	/** Limits the amount of items inside the preview */
-	multiplePreviewThreshold?: number;
-	/** The direction the menu should open */
-	placement?: Placement;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemText: 'text',
-	itemValue: 'value',
-	itemIcon: null,
-	itemDisabled: 'disabled',
-	itemSelectable: 'selectable',
-	itemChildren: 'children',
-	modelValue: null,
-	mandatory: true,
-	placeholder: null,
-	fullWidth: true,
-	closeOnContentClick: true,
-	multiplePreviewThreshold: 3,
-	placement: 'bottom',
-});
+const props = withDefaults(
+	defineProps<{
+		/** The items that should be selectable */
+		items: ItemsRaw;
+		/** Which key in items is used to display the text */
+		itemText?: string;
+		/** Which key in items is used to model the active state */
+		itemValue?: string;
+		/** Which key in items is used to show an icon */
+		itemIcon?: string | null;
+		/** Which font family to use for checkbox item label */
+		itemLabelFontFamily?: string;
+		/** Which key in items is used to model the disabled state */
+		itemDisabled?: string;
+		/** Which key in items is used to model the selectable state */
+		itemSelectable?: string;
+		/** Which key in items is used to render the children */
+		itemChildren?: string;
+		/** Which items should be shown as selected, depending on their value */
+		modelValue?: InputValue;
+		/** Allow to select multiple values */
+		multiple?: boolean;
+		/** Allow to select the parent of a group */
+		groupSelectable?: boolean;
+		/** Require a minimum selection of at least one element */
+		mandatory?: boolean;
+		/** Text that is displayed when no items are selected */
+		placeholder?: string | null;
+		/** Spreads the select element to it's maximal width */
+		fullWidth?: boolean;
+		/** Disables any interaction */
+		disabled?: boolean;
+		/** Allow to deselect all currently selected items */
+		showDeselect?: boolean;
+		/** Allow to enter custom values */
+		allowOther?: boolean;
+		/** Closes the dropdown after an items has been selected  */
+		closeOnContentClick?: boolean;
+		/** Renders the element inline, good for seamless selections */
+		inline?: boolean;
+		label?: boolean;
+		/** Limits the amount of items inside the preview */
+		multiplePreviewThreshold?: number;
+		/** The direction the menu should open */
+		placement?: Placement;
+	}>(),
+	{
+		itemText: 'text',
+		itemValue: 'value',
+		itemIcon: null,
+		itemDisabled: 'disabled',
+		itemSelectable: 'selectable',
+		itemChildren: 'children',
+		modelValue: null,
+		mandatory: true,
+		placeholder: null,
+		fullWidth: true,
+		closeOnContentClick: true,
+		multiplePreviewThreshold: 3,
+		placement: 'bottom',
+	},
+);
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
@@ -332,7 +333,7 @@ function useDisplayValue() {
 				<v-list-item
 					v-for="otherVal in otherValues"
 					:key="otherVal.key"
-					:active="(modelValue || []).includes(otherVal.value)"
+					:active="((modelValue as string | string[]) || []).includes(otherVal.value)"
 					@click.stop
 				>
 					<v-list-item-icon>

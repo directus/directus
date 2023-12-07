@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useFormFields } from '@/composables/use-form-fields';
 import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -116,8 +115,6 @@ const fieldsFiltered = computed(() => {
 		return !fieldsDenyList.includes(field.field);
 	});
 });
-
-const { formFields } = useFormFields(fieldsFiltered);
 
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
@@ -400,7 +397,7 @@ function revert(values: Record<string, any>) {
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
-				:fields="formFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="user"
 				:primary-key="primaryKey"
