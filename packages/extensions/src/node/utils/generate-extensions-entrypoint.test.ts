@@ -17,9 +17,7 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		const mockSettings: ExtensionSettings[] = [
-			{ name: 'mock-bundle0-extension', enabled: true }
-		];
+		const mockSettings: ExtensionSettings[] = [{ name: 'mock-bundle0-extension', enabled: true }];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
 			'"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"',
@@ -31,9 +29,7 @@ describe('generateExtensionsEntrypoint', () => {
 			{ path: './extensions/panel', name: 'mock-panel-extension', type: 'panel', entrypoint: 'index.js', local: true },
 		];
 
-		const mockSettings: ExtensionSettings[] = [
-			{ name: 'mock-panel-extension',	enabled: true }
-		];
+		const mockSettings: ExtensionSettings[] = [{ name: 'mock-panel-extension', enabled: true }];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
 			'"import panel0 from \'./extensions/panel/index.js\';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const operations = [];"',
@@ -51,9 +47,7 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		const mockSettings: ExtensionSettings[] = [
-			{ name: 'mock-operation-extension',	enabled: true }
-		];
+		const mockSettings: ExtensionSettings[] = [{ name: 'mock-operation-extension', enabled: true }];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
 			'"import operation0 from \'./extensions/operation/app.js\';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0];"',
