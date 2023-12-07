@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: pnpm
+    labels:
+      - Dependencies
+    directory: '/'
+    schedule:
+      interval: daily
+    target-branch: main
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: '@directus/*'
+      - update-types:
+          - version-update:semver-major
+    open-pull-requests-limit: 3
