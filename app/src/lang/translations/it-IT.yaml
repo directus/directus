@@ -1978,6 +1978,8 @@ displays:
     icon: Icona
     border: Bordo
     border_label: Mostra bordo
+    mask: Nascosto
+    mask_label: Nascondi il valore reale
     text: Text
     text_placeholder: Testo opzionale ridefinito...
   formatted-json-value:
