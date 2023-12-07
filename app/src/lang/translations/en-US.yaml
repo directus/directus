@@ -2008,6 +2008,8 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:
