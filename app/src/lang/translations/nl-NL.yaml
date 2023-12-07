@@ -107,6 +107,16 @@ rename_folder: Mapnaam wijzigen
 delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
+keep: Behouden
+version: Versie
+version_key: Versie sleutel
+version_name: Versienaam
+main_version: Hoofd
+switch_version: Versie wisselen
+switch_version_copy: Weet u zeker dat u wilt overschakelen naar de "{version}" versie? Niet-opgeslagen wijzigingen gaan verloren.
+create_version: Versie aanmaken
+rename_version: Versie hernoemen
+compare_version: Versies vergelijken
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
