@@ -55,27 +55,35 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 					from: field.nesting.foreign.collection,
 					...nestedModifiers.clauses,
 					joins: joins,
-					where: nestedModifiers.clauses.where
-						? {
-								type: 'logical',
-								operator: 'and',
-								negate: false,
-								childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.nesting, index)],
-						  }
-						: getRelationConditions(field.nesting, index),
+					where: getFilters(nestedModifiers.clauses.where, field.nesting, index),
 				},
 				parameters: [
 					...parameters,
 					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
 				],
 			},
-
 			subQueries: nestedFieldNodes.subQueries,
-
 			aliasMapping: nestedFieldNodes.aliasMapping,
 		}),
 		select,
 	};
+}
+
+function getFilters(
+	nestedWhere: AbstractSqlQueryWhereNode | undefined,
+	nesting: AbstractQueryFieldNodeNestedRelationalMany,
+	idxGenerator: Generator<number, number, number>,
+): AbstractSqlQueryWhereNode {
+	if (nestedWhere) {
+		return {
+			type: 'logical',
+			operator: 'and',
+			negate: false,
+			childNodes: [nestedWhere, getRelationConditions(nesting, idxGenerator)],
+		};
+	}
+
+	return getRelationConditions(nesting, idxGenerator);
 }
 
 function getRelationConditions(
