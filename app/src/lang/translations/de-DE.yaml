@@ -1977,6 +1977,8 @@ displays:
     icon: Symbol
     border: Umrandung
     border_label: Rahmen anzeigen
+    mask: Maskiert
+    mask_label: Tatsächlichen Wert ausblenden
     text: Text
     text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
