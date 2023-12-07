@@ -1946,6 +1946,8 @@ displays:
     icon: Icône
     border: Bordure
     border_label: Afficher une bordure
+    mask: Masqué
+    mask_label: Cacher la valeur réelle
     text: Texte
     text_placeholder: Valeur Optionnelle Surchargée...
   formatted-json-value:
