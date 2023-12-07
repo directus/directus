@@ -2,7 +2,7 @@
 import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import type { ApiOutput } from '@directus/extensions';
+import type { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { iconMap } from '../constants/icons';
@@ -27,7 +27,7 @@ const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
 const changingEnabledState = ref(false);
 
-const toggleEnabled = async () => {
+const toggleEnabled = async (extensionType?: (typeof EXTENSION_TYPES)[number]) => {
 	if (changingEnabledState.value === true) return;
 
 	changingEnabledState.value = true;
@@ -40,7 +40,7 @@ const toggleEnabled = async () => {
 		await api.patch(endpoint, { meta: { enabled: !props.extension.meta.enabled } });
 	} finally {
 		changingEnabledState.value = false;
-		emit('refresh');
+		emit('refresh', extensionType);
 	}
 };
 </script>
@@ -60,7 +60,7 @@ const toggleEnabled = async () => {
 				class="options"
 				:name="extension.name"
 				:enabled="extension.meta.enabled"
-				@toggle-enabled="toggleEnabled"
+				@toggle-enabled="toggleEnabled(extension.schema?.type)"
 			/>
 		</template>
 	</v-list-item>
@@ -71,7 +71,7 @@ const toggleEnabled = async () => {
 			:key="item.bundle + '__' + item.name"
 			:extension="item"
 			:children="[]"
-			@refresh="$emit('refresh')"
+			@refresh="$emit('refresh', item.schema?.type)"
 		/>
 	</v-list>
 </template>

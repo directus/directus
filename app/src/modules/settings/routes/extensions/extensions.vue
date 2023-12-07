@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
 import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -8,12 +8,14 @@ import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const { t } = useI18n();
 
 const error = ref();
 const loading = ref(false);
 const extensions = ref<ApiOutput[]>([]);
+const needsReload = ref<boolean>(false);
 
 const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
 const regular = computed(() => extensions.value.filter(({ bundle }) => !!bundle === false));
@@ -34,6 +36,18 @@ const fetchExtensions = async () => {
 		loading.value = false;
 	}
 };
+
+const refreshExtensions = async (extensionType?: (typeof EXTENSION_TYPES)[number]) => {
+	if (extensionType && (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(extensionType)) {
+		needsReload.value = true;
+	}
+
+	await fetchExtensions();
+};
+
+const refreshPage = () => {
+	window.location.reload();
+}
 
 fetchExtensions();
 </script>
@@ -56,6 +70,12 @@ fetchExtensions();
 			<extensions-info-sidebar-detail />
 		</template>
 
+		<div v-if="needsReload" class="page-container">
+			<v-notice type="warning">
+				A page reload is required after enabling or disabling app extensions.&nbsp;<a href="#" @click="refreshPage">Reload now</a>
+			</v-notice>
+		</div>
+
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
@@ -68,7 +88,7 @@ fetchExtensions();
 								:children="
 									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
 								"
-								@refresh="fetchExtensions"
+								@refresh="refreshExtensions"
 							/>
 						</template>
 					</v-list>
@@ -91,8 +111,8 @@ fetchExtensions();
 }
 
 .page-container {
-	padding-top: 0;
 	padding: var(--content-padding);
+	padding-top: 0;
 }
 
 .group-divider {

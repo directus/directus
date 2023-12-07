@@ -375,7 +375,7 @@ export class ExtensionManager {
 			replacement: path,
 		}));
 
-		const entrypoint = generateExtensionsEntrypoint(this.extensions);
+		const entrypoint = generateExtensionsEntrypoint(this.extensions, this.extensionsSettings);
 
 		try {
 			const bundle = await rollup({
