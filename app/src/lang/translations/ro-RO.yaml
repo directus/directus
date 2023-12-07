@@ -1717,6 +1717,8 @@ displays:
     icon: Pictogramă
     border: Chenar
     border_label: Arată chenarul
+    mask: Mascat
+    mask_label: Ascunde valoarea reală
     text: Text
     text_placeholder: Suprascrie valoarea opțională...
   formatted-json-value:
