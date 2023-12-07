@@ -1817,6 +1817,8 @@ displays:
     icon: Ikon
     border: Keret
     border_label: Keret mutatása
+    mask: Maszkolt
+    mask_label: Valós érték elrejtése
     text: Szöveg
     text_placeholder: Opcionális érték törlése...
   formatted-json-value:
