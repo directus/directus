@@ -11,7 +11,6 @@ const {
 	validationErrors,
 	currentSlide,
 	progressPercent,
-	isFirstSlide,
 	isLastSlide,
 	nextSlide,
 	skipOnboarding,
@@ -73,7 +72,7 @@ watchEffect(() => {
 			<!-- Actions -->
 			<div class="actions">
 				<!-- Left Actions -->
-				<div></div>
+				<div class="actions-left"></div>
 				<!-- Right Actions -->
 				<div class="actions-right">
 					<v-button
@@ -127,18 +126,34 @@ watchEffect(() => {
 	align-items: center;
 }
 
-.actions > div {
-	display: flex;
-	flex-direction: row;
-	gap: 16px;
-}
-
-.actions-right {
+.actions-right,
+.actions-left {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	gap: 16px;
+}
+
+@media only screen and (max-width: 600px) {
+	.actions {
+		flex-direction: column;
+		gap: 32px;
+	}
+
+	.actions > div.actions-left {
+		width: 100%;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+
+	.actions > div.actions-right {
+		width: 100%;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-end;
+	}
 }
 
 .onboarding-slides {
