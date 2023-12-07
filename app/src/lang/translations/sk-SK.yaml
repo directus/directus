@@ -1970,6 +1970,8 @@ displays:
     icon: Ikona
     border: Okraj
     border_label: Zobraziť okraj
+    mask: Maskované
+    mask_label: Skryť skutočné hodnoty
     text: Text
     text_placeholder: Voliteľné preťaženie hodnoty...
   formatted-json-value:
