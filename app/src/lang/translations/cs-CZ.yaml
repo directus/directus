@@ -1790,6 +1790,8 @@ displays:
     icon: Ikona
     border: Ohraničení
     border_label: Zobrazit ohraničení
+    mask: Maskovaná
+    mask_label: Skrýt skutečnou hodnotu
     text: Text
     text_placeholder: Volitelné přetížení hodnoty...
   formatted-json-value:
