@@ -1916,6 +1916,8 @@ displays:
     icon: Ícono
     border: Borde
     border_label: Mostrar borde
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
     text: Texto
     text_placeholder: Sobrescribir valor opcional...
   formatted-json-value:
