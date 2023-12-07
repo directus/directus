@@ -116,7 +116,7 @@
 		"graphql": "16.8.1",
 		"graphql-compose": "9.0.10",
 		"graphql-ws": "5.14.1",
-		"helmet": "7.0.0",
+		"helmet": "7.1.0",
 		"icc": "3.0.0",
 		"inquirer": "9.2.4",
 		"ioredis": "5.3.2",
