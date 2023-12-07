@@ -1,5 +1,3 @@
-import { NESTED_EXTENSION_TYPES } from '@directus/extensions';
-import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
@@ -15,11 +13,6 @@ import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
 export const syncExtensions = async (): Promise<void> => {
 	const extensionsPath = getExtensionsPath();
-
-	if (!env['EXTENSIONS_LOCATION']) {
-		// Safe to run with multiple instances since dirs are created with `recursive: true`
-		return ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
-	}
 
 	const messenger = getMessenger();
 
@@ -74,8 +67,6 @@ export const syncExtensions = async (): Promise<void> => {
 	}
 
 	await queue.onIdle();
-
-	await ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 
 	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });
