@@ -407,8 +407,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/express-serve-static-core':
         specifier: 4.17.35
         version: 4.17.35
@@ -1232,8 +1232,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       fs-extra:
         specifier: 11.1.1
         version: 11.1.1
@@ -1397,8 +1397,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 0.34.6
         version: 0.34.6(vitest@0.34.6)
@@ -6850,7 +6850,7 @@ packages:
   /@types/cookie-parser@1.4.3:
     resolution: {integrity: sha512-CqSKwFwefj4PzZ5n/iwad/bow2hTCh0FlNAeWLtQM3JA/NX/iYagIpWG2cf1bQKQ2c9gU2log5VUCrn7LDOs0w==}
     dependencies:
-      '@types/express': 4.17.17
+      '@types/express': 4.17.21
     dev: true
 
   /@types/cookie@0.4.1:
@@ -6927,8 +6927,8 @@ packages:
       '@types/range-parser': 1.2.6
       '@types/send': 0.17.3
 
-  /@types/express@4.17.17:
-    resolution: {integrity: sha512-Q4FmmuLGBG58btUnfS1c1r/NQdlp3DMfGDGig8WhfpA2YRUtEkxAjkZb0yvplJGYdF1fsQ81iMDcH24sSCNC/Q==}
+  /@types/express@4.17.21:
+    resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
     dependencies:
       '@types/body-parser': 1.19.4
       '@types/express-serve-static-core': 4.17.35
