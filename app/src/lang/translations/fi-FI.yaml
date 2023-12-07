@@ -1643,6 +1643,8 @@ displays:
     suffix: Jälkiliite
     color: Väri
     icon: Kuvake
+    mask: Maskeerattu
+    mask_label: Piilota todellinen arvo
     text: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
