@@ -1,0 +1,88 @@
+import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
+import { randomIdentifier } from '@directus/random';
+import { afterAll, expect, test, vi } from 'vitest';
+import { type NestedManyResult } from './create-nested-manys.js';
+import { getNestedUnionOne } from './create-nested-union-one.js';
+
+afterAll(() => {
+	vi.restoreAllMocks();
+});
+
+vi.mock('../../utils/create-unique-alias.js', () => ({
+	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
+}));
+
+test.todo('getNestedMany with a single identifier', () => {
+	const collection = randomIdentifier();
+
+	// first foreign collection
+	const foreignIdField = randomIdentifier();
+	const foreignIdFieldAlias = randomIdentifier();
+	const foreignTable = randomIdentifier();
+	const foreignStore = randomIdentifier();
+
+	// second foreign collection
+	const foreignIdField2 = randomIdentifier();
+	const foreignIdFieldAlias2 = randomIdentifier();
+	const foreignTable2 = randomIdentifier();
+	const foreignStore2 = randomIdentifier();
+
+	const manyAlias = randomIdentifier();
+
+	const field: AbstractQueryFieldNodeNestedUnionOne = {
+		type: 'nested-union-one',
+		alias: manyAlias,
+		nesting: {
+			type: 'relational-any',
+			field: 'the-json-column',
+			collections: [
+				{
+					fields: [
+						{
+							type: 'primitive',
+							field: foreignIdField,
+							alias: foreignIdFieldAlias,
+						},
+					],
+					relational: {
+						store: foreignStore,
+						collectionName: foreignTable,
+						collectionIdentifier: 'uuid',
+						identifierFields: [foreignIdField],
+					},
+				},
+				{
+					fields: [
+						{
+							type: 'primitive',
+							field: foreignIdField2,
+							alias: foreignIdFieldAlias2,
+						},
+					],
+					relational: {
+						store: foreignStore2,
+						collectionName: foreignTable2,
+						collectionIdentifier: 'uuid2',
+						identifierFields: [foreignIdField2],
+					},
+				},
+			],
+		},
+	};
+
+	const result = getNestedUnionOne(collection, field);
+
+	const expected: NestedManyResult = {
+		subQuery: expect.any(Function),
+		select: [
+			{
+				type: 'primitive',
+				table: collection,
+				column: 'the-json-column',
+				as: `${'the-json-column'}_RANDOM`,
+			},
+		],
+	};
+
+	expect(result).toStrictEqual(expected);
+});
