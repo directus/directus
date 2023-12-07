@@ -1971,6 +1971,8 @@ displays:
     icon: Ikona
     border: Krawędź
     border_label: Pokaż obramowanie
+    mask: Zamaskowany
+    mask_label: Ukryj rzeczywistą wartość
     text: Tekst
     text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:
