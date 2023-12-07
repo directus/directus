@@ -1863,6 +1863,8 @@ displays:
     icon: آیکن
     border: حاشیه
     border_label: نمایش حاشیه
+    mask: Masked
+    mask_label: Hide the real value
     text: متن
     text_placeholder: نادیده گرفتن مقدار اختیاری...
   formatted-json-value:
