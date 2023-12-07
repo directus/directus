@@ -1905,6 +1905,8 @@ displays:
     icon: Иконка
     border: Граница
     border_label: Показать границу
+    mask: С маской
+    mask_label: Скрыть настоящее значение
     text: Текст
     text_placeholder: Замещение необязательного значения...
   formatted-json-value:
