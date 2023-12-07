@@ -604,6 +604,12 @@ export class ExtensionManager {
 	private async registerBundles(): Promise<void> {
 		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
 
+		const extensionEnabled = (extensionName: string) => {
+			const settings = this.extensionsSettings.find(({ name }) => name === extensionName);
+			if (!settings) return false;
+			return settings.enabled;
+		}
+
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
@@ -621,18 +627,24 @@ export class ExtensionManager {
 				const unregisterFunctions: PromiseCallback[] = [];
 
 				for (const { config, name } of configs.hooks) {
+					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
+
 					const unregisters = this.registerHook(config, name);
 
 					unregisterFunctions.push(...unregisters);
 				}
 
 				for (const { config, name } of configs.endpoints) {
+					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
+
 					const unregister = this.registerEndpoint(config, name);
 
 					unregisterFunctions.push(unregister);
 				}
 
-				for (const { config } of configs.operations) {
+				for (const { config, name } of configs.operations) {
+					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
+
 					const unregister = this.registerOperation(config);
 
 					unregisterFunctions.push(unregister);
