@@ -17,26 +17,12 @@ export const projectFields: DeepPartial<Field>[] = [
 	},
 	{
 		collection: 'onboarding',
-		name: '$t:fields.directus_settings.project_url',
-		field: 'project_url',
+		name: '$t:fields.directus_settings.project_descriptor',
+		field: 'project_descriptor',
 		type: 'string',
-		schema: {
-			max_length: 255,
-		},
 		meta: {
 			interface: 'input',
-			options: { placeholder: '$t:fields.directus_settings.project_url', trim: true },
-			width: 'half',
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: '$t:fields.directus_settings.project_color',
-		field: 'project_color',
-		type: 'string',
-		meta: {
-			interface: 'select-color',
-			options: { placeholder: '$t:fields.directus_settings.project_color', trim: true },
+			options: { placeholder: '$t:field_options.directus_settings.project_name_placeholder', trim: true },
 			width: 'half',
 		},
 	},
@@ -54,13 +40,27 @@ export const projectFields: DeepPartial<Field>[] = [
 	},
 	{
 		collection: 'onboarding',
-		name: '$t:fields.directus_settings.project_descriptor',
-		field: 'project_descriptor',
+		name: '$t:fields.directus_settings.project_color',
+		field: 'project_color',
 		type: 'string',
 		meta: {
-			interface: 'input',
-			options: { placeholder: '$t:field_options.directus_settings.project_name_placeholder', trim: true },
+			interface: 'select-color',
+			options: { placeholder: '$t:fields.directus_settings.project_color', trim: true },
 			width: 'half',
+		},
+	},
+	{
+		collection: 'onboarding',
+		name: '$t:fields.directus_settings.project_url',
+		field: 'project_url',
+		type: 'string',
+		schema: {
+			max_length: 255,
+		},
+		meta: {
+			interface: 'input',
+			options: { placeholder: '$t:fields.directus_settings.project_url', trim: true },
+			width: 'full',
 		},
 	},
 	{
