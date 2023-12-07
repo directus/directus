@@ -10,6 +10,7 @@ updates:
     versioning-strategy: increase
     ignore:
       - dependency-name: '@directus/*'
-      - update-types:
+      - dependency-name: '*'
+        update-types:
           - version-update:semver-major
     open-pull-requests-limit: 3
