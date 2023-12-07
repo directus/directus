@@ -566,8 +566,8 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
       '@editorjs/image':
-        specifier: 2.8.1
-        version: 2.8.1
+        specifier: 2.9.0
+        version: 2.9.0
       '@editorjs/inline-code':
         specifier: 1.4.0
         version: 1.4.0
@@ -4013,8 +4013,8 @@ packages:
       '@codexteam/icons': 0.0.5
     dev: true
 
-  /@editorjs/image@2.8.1:
-    resolution: {integrity: sha512-4WscDAoi6OO0F6L7N1mkQymADwj8hHgH/ICk5wGRPdkesUZW1TgldX8XvSmy+f5VylsEi3F/gUggaZsrYxu2sA==}
+  /@editorjs/image@2.9.0:
+    resolution: {integrity: sha512-xItihKJFiWJ06SMtLWQZvzHv4LRPNAFZYaHAXesBFzXvWwUrtVaVMcNSf0eNnw3InrPO3Po1vZRRgpsT+Ya3Bg==}
     dependencies:
       '@codexteam/icons': 0.0.6
     dev: true
