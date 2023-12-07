@@ -14,7 +14,7 @@ test('createPrimitiveSelect', () => {
 		alias: randomIdentifier(),
 	};
 
-	const result = createPrimitiveSelect(collection, samplePrimitiveNode, fieldAlias);
+	const result = createPrimitiveSelect(collection, samplePrimitiveNode.field, fieldAlias);
 
 	expect(result).toStrictEqual({
 		type: 'primitive',

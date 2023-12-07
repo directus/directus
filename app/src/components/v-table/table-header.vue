@@ -9,33 +9,34 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 
-interface Props {
-	headers: Header[];
-	sort: Sort;
-	reordering: boolean;
-	allowHeaderReorder: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	someItemsSelected?: boolean;
-	allItemsSelected?: boolean;
-	fixed?: boolean;
-	mustSort?: boolean;
-	hasItemAppendSlot?: boolean;
-	manualSortKey?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	someItemsSelected: false,
-	allItemsSelected: false,
-	fixed: false,
-	mustSort: false,
-	hasItemAppendSlot: false,
-	manualSortKey: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: Header[];
+		sort: Sort;
+		reordering: boolean;
+		allowHeaderReorder: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		someItemsSelected?: boolean;
+		allItemsSelected?: boolean;
+		fixed?: boolean;
+		mustSort?: boolean;
+		hasItemAppendSlot?: boolean;
+		manualSortKey?: string;
+	}>(),
+	{
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		someItemsSelected: false,
+		allItemsSelected: false,
+		fixed: false,
+		mustSort: false,
+		hasItemAppendSlot: false,
+		manualSortKey: undefined,
+	},
+);
 
 const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
 const { t } = useI18n();

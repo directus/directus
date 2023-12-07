@@ -116,7 +116,7 @@
 		"graphql": "16.8.1",
 		"graphql-compose": "9.0.10",
 		"graphql-ws": "5.14.1",
-		"helmet": "7.0.0",
+		"helmet": "7.1.0",
 		"icc": "3.0.0",
 		"inquirer": "9.2.4",
 		"ioredis": "5.3.2",
@@ -182,7 +182,7 @@
 		"@types/destroy": "1.0.0",
 		"@types/encodeurl": "1.0.0",
 		"@types/exif-reader": "1.0.0",
-		"@types/express": "4.17.17",
+		"@types/express": "4.17.21",
 		"@types/express-serve-static-core": "4.17.35",
 		"@types/flat": "5.0.2",
 		"@types/fs-extra": "11.0.1",
@@ -224,7 +224,7 @@
 		"nodemailer-sendgrid": "1.0.3",
 		"pg": "8.11.0",
 		"sqlite3": "5.1.6",
-		"tedious": "16.1.0"
+		"tedious": "16.6.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"

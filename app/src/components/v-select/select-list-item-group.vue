@@ -3,21 +3,22 @@ import { computed } from 'vue';
 import { Option } from './types';
 import SelectListItem from './select-list-item.vue';
 
-interface Props {
-	item: Option;
-	itemLabelFontFamily?: string;
-	modelValue?: string | number | (string | number)[] | null;
-	multiple?: boolean;
-	allowOther?: boolean;
-	groupSelectable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: null,
-	multiple: true,
-	allowOther: true,
-	groupSelectable: false,
-});
+const props = withDefaults(
+	defineProps<{
+		item: Option;
+		itemLabelFontFamily?: string;
+		modelValue?: string | number | (string | number)[] | null;
+		multiple?: boolean;
+		allowOther?: boolean;
+		groupSelectable?: boolean;
+	}>(),
+	{
+		modelValue: null,
+		multiple: true,
+		allowOther: true,
+		groupSelectable: false,
+	},
+);
 
 const emit = defineEmits(['update:modelValue']);
 
