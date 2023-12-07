@@ -114,7 +114,7 @@ function getRelationConditions(
  * @param idxGenerator
  * @returns
  */
-function getRelationCondition(
+export function getRelationCondition(
 	table: string,
 	column: string,
 	idxGenerator: Generator<number, number, number>,
