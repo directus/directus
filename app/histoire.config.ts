@@ -30,4 +30,7 @@ export default defineConfig({
 	backgroundPresets: [],
 	viteIgnorePlugins: ['directus-extensions-serve', 'directus-extensions-build'],
 	viteNodeInlineDeps: [/@joeattardi\/emoji-button/],
+	vite: {
+		base: '/',
+	},
 });
