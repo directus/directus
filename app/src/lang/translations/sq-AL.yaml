@@ -1905,6 +1905,8 @@ displays:
     icon: Ikonë
     border: Kornizë
     border_label: Shfaq kufirin
+    mask: I maskuar
+    mask_label: Fshih vlerën e vërtetë
     text: Tekst
     text_placeholder: Kalim i vlerës opsionale...
   formatted-json-value:
