@@ -1653,6 +1653,8 @@ displays:
     suffix: Sufix
     color: Color
     icon: Icona
+    mask: Enmascarat
+    mask_label: Amaga el valor real
     text: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
