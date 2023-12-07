@@ -1803,6 +1803,8 @@ displays:
     icon: Ikon
     border: Kant
     border_label: Vis kant
+    mask: Maskeret
+    mask_label: Skjul den reelle værdi
     text: Tekst
     text_placeholder: Valgfri værdi tilsidesættelse...
   formatted-json-value:
