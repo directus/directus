@@ -154,8 +154,8 @@ function directusExtensions() {
 		const extensionSettings = extensions.flatMap((extension) =>
 			extension.type === 'bundle'
 				? extension.entries.map((entry) => ({ name: `${extension.name}/${entry.name}`, enabled: true }))
-				: { name: extension.name, enabled: true }
-		)
+				: { name: extension.name, enabled: true },
+		);
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions, extensionSettings);
 	}
