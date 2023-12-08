@@ -1,10 +1,10 @@
 import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
-import { beforeEach, expect, test, vi } from 'vitest';
 import { randomIdentifier } from '@directus/random';
-import { convertSort, type SortConversionResult } from './sort.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
-import { convertTarget, type TargetConversionResult } from './target.js';
+import { beforeEach, expect, test, vi } from 'vitest';
 import type { AbstractSqlQuerySelectPrimitiveNode } from '../../index.js';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { convertSort, type SortConversionResult } from './sort.js';
+import { convertTarget, type TargetConversionResult } from './target.js';
 
 vi.mock('./target.js', (importOriginal) => {
 	const original = importOriginal();
@@ -43,7 +43,8 @@ test('convert ascending sort with a single field', () => {
 
 	vi.mocked(convertTarget).mockReturnValueOnce(mock);
 
-	const res = convertSort(sample, localCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertSort(sample, localCollection, indexGen);
 
 	const expected: SortConversionResult = {
 		clauses: {
@@ -75,7 +76,8 @@ test('convert descending sort with a single field', () => {
 
 	vi.mocked(convertTarget).mockReturnValueOnce(mock);
 
-	const res = convertSort(sample, localCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertSort(sample, localCollection, indexGen);
 
 	const expected: SortConversionResult = {
 		clauses: {
@@ -125,7 +127,8 @@ test('convert ascending sort with multiple fields', () => {
 
 	vi.mocked(convertTarget).mockReturnValueOnce(mock2);
 
-	const res = convertSort(sample, localCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertSort(sample, localCollection, indexGen);
 
 	const expected: SortConversionResult = {
 		clauses: {
@@ -206,7 +209,9 @@ test('convert sort on nested item', () => {
 	};
 
 	vi.mocked(convertTarget).mockReturnValueOnce(mock);
-	const res = convertSort([nestedSortSample], localCollection, parameterIndexGenerator());
+
+	const indexGen = createIndexGenerators();
+	const res = convertSort([nestedSortSample], localCollection, indexGen);
 
 	const expected: SortConversionResult = {
 		clauses: {

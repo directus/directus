@@ -1,16 +1,16 @@
-import { beforeEach, expect, test, vi, afterEach, describe } from 'vitest';
-import { convertCondition } from './conditions.js';
-import { randomIdentifier } from '@directus/random';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import type { AbstractQueryConditionNode } from '@directus/data';
-import { convertStringNode } from './string.js';
+import { randomIdentifier } from '@directus/random';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createIndexGenerators, type IndexGenerators } from '../../../../utils/create-index-generators.js';
+import { convertCondition } from './conditions.js';
+import { convertGeoCondition } from './geo.js';
 import { convertNumberNode } from './number.js';
 import { convertSetCondition } from './set.js';
-import { convertGeoCondition } from './geo.js';
+import { convertStringNode } from './string.js';
 
 let sample: AbstractQueryConditionNode;
 let randomCollection: string;
-let generator: Generator<number, number, number>;
+let indexGen: IndexGenerators;
 
 afterEach(() => {
 	vi.restoreAllMocks();
@@ -26,7 +26,7 @@ beforeEach(() => {
 	};
 
 	randomCollection = randomIdentifier();
-	generator = parameterIndexGenerator();
+	indexGen = createIndexGenerators();
 });
 
 test('Convert string condition', () => {
@@ -34,7 +34,7 @@ test('Convert string condition', () => {
 		convertStringNode: vi.fn(),
 	}));
 
-	convertCondition(sample, randomCollection, generator, false);
+	convertCondition(sample, randomCollection, indexGen, false);
 	expect(convertStringNode).toHaveBeenCalledOnce();
 });
 
@@ -45,7 +45,7 @@ test('Convert number condition', () => {
 		convertNumberNode: vi.fn(),
 	}));
 
-	convertCondition(sample, randomCollection, generator, false);
+	convertCondition(sample, randomCollection, indexGen, false);
 	expect(convertNumberNode).toHaveBeenCalledOnce();
 });
 
@@ -56,7 +56,7 @@ test('Convert set condition', () => {
 		convertSetCondition: vi.fn(),
 	}));
 
-	convertCondition(sample, randomCollection, generator, false);
+	convertCondition(sample, randomCollection, indexGen, false);
 	expect(convertSetCondition).toHaveBeenCalledOnce();
 });
 
@@ -67,13 +67,13 @@ describe('Convert field condition', () => {
 
 	test('Convert geo points and lines condition', () => {
 		sample.condition.type = 'condition-geo-intersects';
-		convertCondition(sample, randomCollection, generator, false);
+		convertCondition(sample, randomCollection, indexGen, false);
 		expect(convertGeoCondition).toHaveBeenCalledOnce();
 	});
 
 	test('Convert geo points and lines condition', () => {
 		sample.condition.type = 'condition-geo-intersects-bbox';
-		convertCondition(sample, randomCollection, generator, false);
+		convertCondition(sample, randomCollection, indexGen, false);
 		expect(convertGeoCondition).toHaveBeenCalledOnce();
 	});
 });

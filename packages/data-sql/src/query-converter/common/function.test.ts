@@ -3,15 +3,15 @@ import { randomAlpha, randomIdentifier } from '@directus/random';
 import { beforeEach, describe, expect, test } from 'vitest';
 import type { AbstractSqlQueryFnNode } from '../../types/index.js';
 import { convertFn } from './function.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
+import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
 
 let randomCollection: string;
-let idGen: Generator<number, number, number>;
+let indexGen: IndexGenerators;
 let sampleField: string;
 
 beforeEach(() => {
 	randomCollection = randomIdentifier();
-	idGen = parameterIndexGenerator();
+	indexGen = createIndexGenerators();
 	sampleField = randomIdentifier();
 });
 
@@ -26,7 +26,7 @@ describe('Convert function', () => {
 			field: sampleField,
 		};
 
-		const res = convertFn(randomCollection, sampleAbstractFn, idGen);
+		const res = convertFn(randomCollection, sampleAbstractFn, indexGen);
 
 		const expectedSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
@@ -58,7 +58,7 @@ describe('Convert function', () => {
 			args: [randomArgument1, randomArgument2],
 		};
 
-		const res = convertFn(randomCollection, sampleFn, idGen);
+		const res = convertFn(randomCollection, sampleFn, indexGen);
 
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',

@@ -1,8 +1,8 @@
-import { expect, test, vi, afterAll, beforeEach } from 'vitest';
-import { convertFieldNodes, type FieldConversionResult } from './fields.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
+import { afterAll, beforeEach, expect, test, vi } from 'vitest';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 
 afterAll(() => {
 	vi.restoreAllMocks();
@@ -66,8 +66,8 @@ test('primitives only', () => {
 		subQueries: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes(randomCollection, fields, idGen);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(randomCollection, fields, indexGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -119,8 +119,8 @@ test('primitive, fn', () => {
 		subQueries: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes(randomCollection, fields, idGen);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(randomCollection, fields, indexGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -248,7 +248,8 @@ test('primitive, fn, m2o', () => {
 		subQueries: [],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(randomCollection, fields, indexGen);
 	expect(result).toMatchObject(expected);
 });
 
@@ -327,6 +328,7 @@ test('primitive, o2m', () => {
 		subQueries: [expect.any(Function)],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(randomCollection, fields, indexGen);
 	expect(result).toStrictEqual(expected);
 });

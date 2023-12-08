@@ -1,8 +1,9 @@
 import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
 import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
 import { createUniqueAlias } from '../../utils/create-unique-alias.js';
-import { createJoin } from '../fields/create-join.js';
 import { convertFn } from '../common/function.js';
+import { createJoin } from '../fields/create-join.js';
 
 export interface TargetConversionResult {
 	value: AbstractSqlQueryTargetNode;
@@ -12,7 +13,7 @@ export interface TargetConversionResult {
 export function convertTarget(
 	target: AbstractQueryTarget,
 	collection: string,
-	idxGenerator: Generator<number, number, number>,
+	indexGen: IndexGenerators,
 ): TargetConversionResult {
 	if (target.type === 'primitive') {
 		return {
@@ -24,14 +25,14 @@ export function convertTarget(
 			joins: [],
 		};
 	} else if (target.type === 'fn') {
-		const convertedFn = convertFn(collection, target, idxGenerator);
+		const convertedFn = convertFn(collection, target, indexGen);
 
 		return {
 			value: convertedFn.fn,
 			joins: [],
 		};
 	} else {
-		const { value, joins } = convertNestedOneTarget(collection, target, idxGenerator);
+		const { value, joins } = convertNestedOneTarget(collection, target, indexGen);
 
 		return {
 			value,
@@ -47,13 +48,13 @@ export function convertTarget(
 export function convertNestedOneTarget(
 	currentCollection: string,
 	nestedTarget: AbstractQueryTargetNestedOne,
-	idxGenerator: Generator<number, number, number>,
+	indexGen: IndexGenerators,
 ): TargetConversionResult {
 	const externalCollectionAlias = createUniqueAlias(nestedTarget.nesting.foreign.collection);
 
 	const join = createJoin(currentCollection, nestedTarget.nesting, externalCollectionAlias);
 
-	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, idxGenerator);
+	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, indexGen);
 
 	return {
 		value,

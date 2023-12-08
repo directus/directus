@@ -1,16 +1,17 @@
 import type { AbstractQueryFilterNode } from '@directus/data';
-import { randomIdentifier, randomInteger, randomAlpha } from '@directus/random';
-import { beforeEach, expect, test, describe } from 'vitest';
-import { parameterIndexGenerator } from '../../param-index-generator.js';
-import { convertFilter, type FilterResult } from './filter.js';
-import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from '../../../types/clauses/where/index.js';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { beforeEach, describe, expect, test } from 'vitest';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../../types/clauses/where/index.js';
+import { createIndexGenerators, type IndexGenerators } from '../../../utils/create-index-generators.js';
+import { convertFilter } from './filter.js';
+import type { FilterResult } from './utils.js';
 
 let randomCollection: string;
 let randomField1: string;
 let randomField2: string;
 let randomNumber1: number;
 let randomString1: string;
-let idxGen: Generator<number, number, number>;
+let indexGen: IndexGenerators;
 let randomCompareTo: number;
 
 beforeEach(() => {
@@ -20,7 +21,7 @@ beforeEach(() => {
 	randomField2 = randomIdentifier();
 	randomNumber1 = randomInteger(1, 100);
 	randomString1 = randomAlpha(5);
-	idxGen = parameterIndexGenerator();
+	indexGen = createIndexGenerators();
 });
 
 test('Convert single filter', () => {
@@ -63,7 +64,7 @@ test('Convert single filter', () => {
 		parameters: [randomCompareTo],
 	};
 
-	expect(convertFilter(sampleFilter, randomCollection, idxGen, true)).toStrictEqual(expectedResult);
+	expect(convertFilter(sampleFilter, randomCollection, indexGen, true)).toStrictEqual(expectedResult);
 });
 
 describe('convert multiple conditions', () => {
@@ -149,7 +150,7 @@ describe('convert multiple conditions', () => {
 			parameters: [randomNumber1, randomString1],
 		};
 
-		expect(convertFilter(sampleFilter, randomCollection, idxGen)).toStrictEqual(expectedResult);
+		expect(convertFilter(sampleFilter, randomCollection, indexGen)).toStrictEqual(expectedResult);
 	});
 
 	test('Convert logical node with nested conditions and with negation', () => {
@@ -235,7 +236,7 @@ describe('convert multiple conditions', () => {
 			],
 		};
 
-		const result = convertFilter(filter, randomCollection, idxGen);
+		const result = convertFilter(filter, randomCollection, indexGen);
 
 		const expectedWhere: AbstractSqlQueryLogicalNode = {
 			type: 'logical',

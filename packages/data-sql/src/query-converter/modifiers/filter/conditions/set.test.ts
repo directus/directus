@@ -2,12 +2,12 @@ import type { ConditionSetNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { convertSetCondition } from './set.js';
+import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
+import { convertSetCondition } from './set.js';
 
 test('convert set condition', () => {
-	const idGen = parameterIndexGenerator();
+	const indexGen = createIndexGenerators();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
 	const randomValues: number[] = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
@@ -48,5 +48,5 @@ test('convert set condition', () => {
 		parameters: randomValues,
 	};
 
-	expect(convertSetCondition(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertSetCondition(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
 });

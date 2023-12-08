@@ -1,13 +1,13 @@
 import type { ConditionStringNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { convertStringNode } from './string.js';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/index.js';
+import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
+import { convertStringNode } from './string.js';
 
 test('convert string condition', () => {
-	const idGen = parameterIndexGenerator();
+	const indexGen = createIndexGenerators();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
 	const randomCompareValue = randomIdentifier();
@@ -48,5 +48,5 @@ test('convert string condition', () => {
 		parameters: [randomCompareValue],
 	};
 
-	expect(convertStringNode(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertStringNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
 });

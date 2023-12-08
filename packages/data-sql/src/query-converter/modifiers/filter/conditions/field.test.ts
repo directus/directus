@@ -1,12 +1,12 @@
 import type { ConditionFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
+import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertFieldCondition } from './field.js';
 
 test('convert field condition', () => {
-	const idGen = parameterIndexGenerator();
+	const indexGen = createIndexGenerators();
 	const randomCollection2 = randomIdentifier();
 	const randomField1 = randomIdentifier();
 	const randomField2 = randomIdentifier();
@@ -49,5 +49,5 @@ test('convert field condition', () => {
 		parameters: [],
 	};
 
-	expect(convertFieldCondition(con, randomCollection2, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertFieldCondition(con, randomCollection2, indexGen, false)).toStrictEqual(expectedResult);
 });

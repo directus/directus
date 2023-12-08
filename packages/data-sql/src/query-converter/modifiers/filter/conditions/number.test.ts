@@ -1,18 +1,18 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { expect, test, beforeEach } from 'vitest';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { convertNumberNode } from './number.js';
+import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
+import { createIndexGenerators, type IndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
+import { convertNumberNode } from './number.js';
 
-let idGen: Generator<number, number, number>;
+let indexGen: IndexGenerators;
 let randomCollection: string;
 let randomField: string;
 let randomValue: number;
 
 beforeEach(() => {
-	idGen = parameterIndexGenerator();
+	indexGen = createIndexGenerators();
 	randomCollection = randomIdentifier();
 	randomField = randomIdentifier();
 	randomValue = randomInteger(1, 100);
@@ -55,7 +55,7 @@ test('convert number condition', () => {
 		parameters: [randomValue],
 	};
 
-	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertNumberNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
 });
 
 test('convert number condition with function', () => {
@@ -103,5 +103,5 @@ test('convert number condition with function', () => {
 		parameters: [randomValue],
 	};
 
-	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertNumberNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
 });

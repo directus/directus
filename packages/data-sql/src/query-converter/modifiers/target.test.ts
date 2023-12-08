@@ -1,8 +1,8 @@
-import { expect, test, vi } from 'vitest';
-import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './target.js';
 import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionStringNode } from '@directus/data';
-import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test, vi } from 'vitest';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './target.js';
 
 vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
@@ -32,8 +32,8 @@ test('convert primitive target', () => {
 		joins: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertTarget(stringCondition.target, collection, idGen);
+	const indexGen = createIndexGenerators();
+	const result = convertTarget(stringCondition.target, collection, indexGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -71,8 +71,8 @@ test('convert function target', () => {
 		joins: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertTarget(condition.target, collection, idGen);
+	const indexGen = createIndexGenerators();
+	const result = convertTarget(condition.target, collection, indexGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -103,8 +103,8 @@ test('convert nested target', () => {
 		},
 	};
 
-	const idGen = parameterIndexGenerator();
-	const res = convertNestedOneTarget(leftCollection, sample, idGen);
+	const indexGen = createIndexGenerators();
+	const res = convertNestedOneTarget(leftCollection, sample, indexGen);
 
 	const expected = {
 		value: {

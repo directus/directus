@@ -8,7 +8,7 @@ import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';
-import { parameterIndexGenerator } from './param-index-generator.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -19,15 +19,16 @@ import { parameterIndexGenerator } from './param-index-generator.js';
  * @returns the abstract sql query
  */
 export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
-	const idGen = parameterIndexGenerator();
 	const parameters: ParameterTypes[] = [];
 	const subQueries: SubQuery[] = [];
+
+	const indexGen = createIndexGenerators();
 
 	let clauses: AbstractSqlClauses;
 	let aliasMapping: AliasMapping;
 
 	try {
-		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
+		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, indexGen);
 		clauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
 		parameters.push(...convertedFieldNodes.parameters);
 		aliasMapping = convertedFieldNodes.aliasMapping;
@@ -37,7 +38,7 @@ export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	}
 
 	try {
-		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
+		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, indexGen);
 		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
 		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
 		parameters.push(...convertedModifiers.parameters);

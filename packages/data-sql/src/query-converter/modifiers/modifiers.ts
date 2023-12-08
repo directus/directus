@@ -1,5 +1,6 @@
 import type { AbstractQueryModifiers } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery } from '../../types/index.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
 import { convertFilter } from './filter/filter.js';
 import { convertSort } from './sort.js';
 
@@ -11,7 +12,7 @@ export type ModifierConversionResult = {
 export const convertModifiers = (
 	modifiers: AbstractQueryModifiers,
 	collection: string,
-	idxGenerator: Generator<number, number, number>,
+	indexGen: IndexGenerators,
 ): ModifierConversionResult => {
 	const result: ModifierConversionResult = {
 		clauses: {},
@@ -19,7 +20,7 @@ export const convertModifiers = (
 	};
 
 	if (modifiers.filter) {
-		const convertedFilter = convertFilter(modifiers.filter, collection, idxGenerator);
+		const convertedFilter = convertFilter(modifiers.filter, collection, indexGen);
 		result.clauses.where = convertedFilter.clauses.where;
 
 		if (convertedFilter.clauses.joins.length > 0) {
@@ -30,17 +31,17 @@ export const convertModifiers = (
 	}
 
 	if (modifiers.limit) {
-		result.clauses.limit = { type: 'value', parameterIndex: idxGenerator.next().value };
+		result.clauses.limit = { type: 'value', parameterIndex: indexGen.parameter.next().value };
 		result.parameters.push(modifiers.limit.value);
 	}
 
 	if (modifiers.offset) {
-		result.clauses.offset = { type: 'value', parameterIndex: idxGenerator.next().value };
+		result.clauses.offset = { type: 'value', parameterIndex: indexGen.parameter.next().value };
 		result.parameters.push(modifiers.offset.value);
 	}
 
 	if (modifiers.sort) {
-		const sortConversionResult = convertSort(modifiers.sort, collection, idxGenerator);
+		const sortConversionResult = convertSort(modifiers.sort, collection, indexGen);
 		result.clauses.order = sortConversionResult.clauses.order;
 
 		if (sortConversionResult.clauses.joins.length > 0) {

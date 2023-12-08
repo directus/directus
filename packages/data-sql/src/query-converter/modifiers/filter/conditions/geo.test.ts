@@ -3,12 +3,12 @@ import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { GeoJSONGeometry } from 'wellknown';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { convertGeoCondition } from './geo.js';
+import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
+import { convertGeoCondition } from './geo.js';
 
 test('convert geo condition', () => {
-	const idGen = parameterIndexGenerator();
+	const indexGen = createIndexGenerators();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
 
@@ -79,5 +79,5 @@ test('convert geo condition', () => {
 		parameters: [gisValue],
 	};
 
-	expect(convertGeoCondition(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
+	expect(convertGeoCondition(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
 });

@@ -1,5 +1,6 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
 import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { createJoin } from './create-join.js';
 import { getNestedMany } from './create-nested-manys.js';
@@ -25,14 +26,14 @@ export type FieldConversionResult = {
  *
  * @param collection - the current collection, will be an alias when called recursively
  * @param abstractFields - all nodes from the abstract query
- * @param idxGenerator - the generator used to increase the parameter indices
+ * @param indexGen - the generator used to increase the parameter indices
  * @param currentPath - the path which the recursion made for the ORM map
  * @returns Select, join and parameters
  */
 export const convertFieldNodes = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
-	idxGenerator: Generator<number, number, number>,
+	indexGen: IndexGenerators,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
@@ -67,7 +68,7 @@ export const convertFieldNodes = (
 				const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
 				const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
 
-				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator);
+				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, indexGen);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 
@@ -111,7 +112,7 @@ export const convertFieldNodes = (
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
 
 			// query conversion
-			const fn = convertFieldFn(collection, fnField, idxGenerator, generatedAlias);
+			const fn = convertFieldFn(collection, fnField, generatedAlias, indexGen);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 

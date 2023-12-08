@@ -1,12 +1,12 @@
-import { expect, test, vi } from 'vitest';
-import { convertModifiers, type ModifierConversionResult } from './modifiers.js';
 import type { AbstractQueryModifiers } from '@directus/data';
-import { convertFilter } from './filter/filter.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test, vi } from 'vitest';
 import type { AbstractSqlQueryJoinNode } from '../../index.js';
-import { convertSort, type SortConversionResult } from './sort.js';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { convertFilter } from './filter/filter.js';
 import type { FilterResult } from './filter/utils.js';
+import { convertModifiers, type ModifierConversionResult } from './modifiers.js';
+import { convertSort, type SortConversionResult } from './sort.js';
 
 vi.mock('./filter/filter.js', (importOriginal) => {
 	const mod = importOriginal();
@@ -58,7 +58,8 @@ test('Convert primitive filter', () => {
 	vi.mocked(convertFilter).mockReturnValueOnce(filterConversionMock);
 	const randomCollection = randomIdentifier();
 
-	const res = convertModifiers(sample, randomCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertModifiers(sample, randomCollection, indexGen);
 
 	const expected: ModifierConversionResult = {
 		clauses: {
@@ -112,7 +113,8 @@ test('Convert nested, primitive filter', () => {
 	vi.mocked(convertFilter).mockReturnValueOnce(filterConversionMock);
 	const randomCollection = randomIdentifier();
 
-	const res = convertModifiers(sample, randomCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertModifiers(sample, randomCollection, indexGen);
 
 	const expected: ModifierConversionResult = {
 		clauses: {
@@ -154,7 +156,8 @@ test('Convert nested sort', () => {
 	vi.mocked(convertSort).mockReturnValueOnce(sortConversionMock);
 	const randomCollection = randomIdentifier();
 
-	const res = convertModifiers(sampleModifiers, randomCollection, parameterIndexGenerator());
+	const indexGen = createIndexGenerators();
+	const res = convertModifiers(sampleModifiers, randomCollection, indexGen);
 
 	const expected: ModifierConversionResult = {
 		clauses: {
