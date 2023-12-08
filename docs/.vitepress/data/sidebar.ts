@@ -389,6 +389,10 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
+					link: '/extensions/sdk-composables',
+					text: 'SDK Composables',
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
