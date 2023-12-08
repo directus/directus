@@ -45,12 +45,13 @@ export function generateExtensionsEntrypoint(extensions: Extension[], settings: 
 			),
 	);
 
-	const bundleExtensionImports = bundleExtensions.map(
-		(extension, i) =>
-			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
-				.filter((type) => extension.entries.some((entry) => entry.type === type))
-				.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
-				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`,
+	const bundleExtensionImports = bundleExtensions.map((extension, i) =>
+		extension.entries.length > 0
+			? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+					.filter((type) => extension.entries.some((entry) => entry.type === type))
+					.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
+					.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
+			: '',
 	);
 
 	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map(
