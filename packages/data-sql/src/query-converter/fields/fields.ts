@@ -1,10 +1,10 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
-import { convertFn } from '../functions.js';
+import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { createJoin } from './create-join.js';
 import { getNestedMany } from './create-nested-manys.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
+import { convertFieldFn } from './function.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
@@ -111,7 +111,7 @@ export const convertFieldNodes = (
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
 
 			// query conversion
-			const fn = convertFn(collection, fnField, idxGenerator, generatedAlias);
+			const fn = convertFieldFn(collection, fnField, idxGenerator, generatedAlias);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 

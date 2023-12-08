@@ -1,11 +1,11 @@
 import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
-import type { AbstractSqlQueryJoinNode, AbstractSqlQuerySelectNode } from '../../types/index.js';
+import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
 import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { createJoin } from '../fields/create-join.js';
-import { convertFn } from '../functions.js';
+import { convertFn } from '../common/function.js';
 
 export interface TargetConversionResult {
-	value: AbstractSqlQuerySelectNode;
+	value: AbstractSqlQueryTargetNode;
 	joins: AbstractSqlQueryJoinNode[];
 }
 

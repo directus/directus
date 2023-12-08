@@ -1,9 +1,9 @@
 import type { AbstractQueryFunction } from '@directus/data';
 import { randomAlpha, randomIdentifier } from '@directus/random';
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { AbstractSqlQuerySelectFnNode } from '../types/index.js';
-import { convertFn } from './functions.js';
-import { parameterIndexGenerator } from './param-index-generator.js';
+import type { AbstractSqlQueryFnNode } from '../../types/index.js';
+import { convertFn } from './function.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
 
 let randomCollection: string;
 let idGen: Generator<number, number, number>;
@@ -28,7 +28,7 @@ describe('Convert function', () => {
 
 		const res = convertFn(randomCollection, sampleAbstractFn, idGen);
 
-		const expectedSqlFn: AbstractSqlQuerySelectFnNode = {
+		const expectedSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',
@@ -60,7 +60,7 @@ describe('Convert function', () => {
 
 		const res = convertFn(randomCollection, sampleFn, idGen);
 
-		const sampleSqlFn: AbstractSqlQuerySelectFnNode = {
+		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',

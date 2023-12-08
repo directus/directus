@@ -1,14 +1,8 @@
-import type { AbstractSqlQueryColumn } from './column.js';
+import type { AbstractSqlQueryPrimitiveNode } from '../common/primitive.js';
 
 /**
  * Used to select a specific column from a table.
  */
-export interface AbstractSqlQuerySelectPrimitiveNode extends AbstractSqlQueryColumn {
-	type: 'primitive';
-
-	/*
-	 * A random value used as an temporarily alias to query the databases.
-	 * If a function is applied, than the tmp alias will be set to that node.
-	 */
-	as?: string;
+export interface AbstractSqlQuerySelectPrimitiveNode extends AbstractSqlQueryPrimitiveNode {
+	as: string;
 }
