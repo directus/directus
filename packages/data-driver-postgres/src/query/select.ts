@@ -1,6 +1,6 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
-import { applyFunction } from '../utils/functions.js';
+import { applySelectFunction } from '../utils/functions.js';
 
 /**
  * Generates the `SELECT x, y` part of a SQL statement.
@@ -16,7 +16,7 @@ export const select = ({ select }: AbstractSqlClauses): string => {
 		}
 
 		if (selectNode.type === 'fn') {
-			return applyFunction(selectNode);
+			return applySelectFunction(selectNode);
 		}
 
 		throw Error(`Unknown node type`);

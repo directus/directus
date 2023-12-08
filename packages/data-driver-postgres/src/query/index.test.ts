@@ -9,20 +9,34 @@ let sample: {
 
 let firstSelectTable: string;
 let firstSelectColumn: string;
+let firstSelectAs: string;
 let secondSelectTable: string;
 let secondSelectColumn: string;
+let secondSelectAs: string;
 
 beforeEach(() => {
 	firstSelectTable = randomIdentifier();
 	firstSelectColumn = randomIdentifier();
+	firstSelectAs = randomIdentifier();
 	secondSelectTable = randomIdentifier();
 	secondSelectColumn = randomIdentifier();
+	secondSelectAs = randomIdentifier();
 
 	sample = {
 		clauses: {
 			select: [
-				{ type: 'primitive', column: firstSelectColumn, table: firstSelectTable },
-				{ type: 'primitive', column: secondSelectColumn, table: secondSelectTable },
+				{
+					type: 'primitive',
+					table: firstSelectTable,
+					column: firstSelectColumn,
+					as: firstSelectAs,
+				},
+				{
+					type: 'primitive',
+					table: secondSelectTable,
+					column: secondSelectColumn,
+					as: secondSelectAs,
+				},
 			],
 			from: randomIdentifier(),
 		},
@@ -31,7 +45,7 @@ beforeEach(() => {
 
 test('basic statement', () => {
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}";`,
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}" AS "${firstSelectAs}", "${secondSelectTable}"."${secondSelectColumn}" AS "${secondSelectAs}" FROM "${sample.clauses.from}";`,
 	);
 });
 
@@ -39,7 +53,7 @@ test('statement with a limit', () => {
 	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1;`,
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}" AS "${firstSelectAs}", "${secondSelectTable}"."${secondSelectColumn}" AS "${secondSelectAs}" FROM "${sample.clauses.from}" LIMIT $1;`,
 	);
 });
 
@@ -48,7 +62,7 @@ test('statement with limit and offset', () => {
 	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`,
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}" AS "${firstSelectAs}", "${secondSelectTable}"."${secondSelectColumn}" AS "${secondSelectAs}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`,
 	);
 });
 
@@ -69,7 +83,7 @@ test('statement with order', () => {
 	];
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`,
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}" AS "${firstSelectAs}", "${secondSelectTable}"."${secondSelectColumn}" AS "${secondSelectAs}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`,
 	);
 });
 
@@ -142,7 +156,7 @@ test('statement with all possible local modifiers', () => {
 	];
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}" AS "${firstSelectAs}", "${secondSelectTable}"."${secondSelectColumn}" AS "${secondSelectAs}" FROM "${
 			sample.clauses.from
 		}" WHERE "${firstConditionTable}"."${firstConditionColumn}" > $${
 			firstConditionParameterIndex + 1
@@ -158,7 +172,9 @@ test('statement with all filter on foreign field', () => {
 	const leftHandIdentifierField = randomIdentifier();
 	const joinAlias = randomIdentifier();
 	const firstField = randomIdentifier();
+	const firstFieldAs = randomIdentifier();
 	const secondField = randomIdentifier();
+	const secondFieldAs = randomIdentifier();
 	const rootCollection = randomIdentifier();
 	const parameterIndex = 0;
 
@@ -168,11 +184,13 @@ test('statement with all filter on foreign field', () => {
 				type: 'primitive',
 				table: rootCollection,
 				column: firstField,
+				as: firstFieldAs,
 			},
 			{
 				type: 'primitive',
 				table: rootCollection,
 				column: secondField,
+				as: secondFieldAs,
 			},
 		],
 		from: rootCollection,
@@ -221,7 +239,7 @@ test('statement with all filter on foreign field', () => {
 	};
 
 	expect(convertToActualStatement(clauses)).toEqual(
-		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
+		`SELECT "${rootCollection}"."${firstField}" AS "${firstFieldAs}", "${rootCollection}"."${secondField}" AS "${secondFieldAs}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
 			parameterIndex + 1
 		}||'%';`,
 	);

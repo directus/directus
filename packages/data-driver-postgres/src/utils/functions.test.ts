@@ -1,11 +1,11 @@
 import { expect, test, describe, beforeEach } from 'vitest';
-import { applyFunction } from './functions.js';
-import type { AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
+import { applyFunction, applySelectFunction } from './functions.js';
+import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
 let randomTable: string;
 let randomColumn: string;
-let sample: AbstractSqlQuerySelectFnNode;
+let sample: AbstractSqlQueryFnNode;
 
 beforeEach(() => {
 	randomTable = randomIdentifier();
@@ -52,5 +52,24 @@ test('Apply count', () => {
 
 	const res = applyFunction(sample);
 	const expected = `COUNT("${randomTable}"."*")`;
+	expect(res).toStrictEqual(expected);
+});
+
+test('Apply count with as', () => {
+	sample = {
+		type: 'fn',
+		fn: {
+			type: 'arrayFn',
+			fn: 'count',
+		},
+		table: randomTable,
+		column: '*',
+	};
+
+	const randomAs = randomIdentifier();
+	const sampleWithAs = { ...sample, as: randomAs };
+
+	const res = applySelectFunction(sampleWithAs);
+	const expected = `COUNT("${randomTable}"."*") AS "${randomAs}"`;
 	expect(res).toStrictEqual(expected);
 });

@@ -1,6 +1,7 @@
-import type { AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
+import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
 import type { ExtractFn } from '@directus/data';
+import { escapeIdentifier } from './escape-identifier.js';
 
 /**
  * Wraps a column with a function.
@@ -8,7 +9,7 @@ import type { ExtractFn } from '@directus/data';
  * @param fnNode - The function node which holds the function name and the column
  * @returns	Basically FN("table"."column")
  */
-export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
+export function applyFunction(fnNode: AbstractSqlQueryFnNode): string {
 	const wrappedColumn = wrapColumn(fnNode.table, fnNode.column);
 
 	if (fnNode.fn.type === 'arrayFn') {
@@ -17,6 +18,12 @@ export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
 	}
 
 	return applyDateTimeFn(fnNode, wrappedColumn);
+}
+
+export function applySelectFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
+	const fn = applyFunction(fnNode);
+
+	return `${fn} AS ${escapeIdentifier(fnNode.as)}`;
 }
 
 /**
@@ -30,7 +37,7 @@ export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
  * @param column - The column which will be used as the argument for the function
  * @returns - F.e. EXTRACT(YEAR FROM "table"."column")
  */
-export const applyDateTimeFn = (fnNode: AbstractSqlQuerySelectFnNode, col: string): string => {
+export const applyDateTimeFn = (fnNode: AbstractSqlQueryFnNode, col: string): string => {
 	switch (fnNode.fn.fn) {
 		case 'year':
 			return applyFn('YEAR', fnNode.fn);

@@ -9,11 +9,12 @@ beforeEach(() => {
 	randomTable = randomIdentifier();
 });
 
-test('With multiple provided fields and an alias', () => {
+test('With multiple provided fields', () => {
 	const randomTable2 = randomIdentifier();
 	const randomColumn1 = randomIdentifier();
+	const randomColumn1As = randomIdentifier();
 	const randomColumn2 = randomIdentifier();
-	const randomAlias = randomIdentifier();
+	const randomColumn2As = randomIdentifier();
 
 	const sample: AbstractSqlClauses = {
 		select: [
@@ -21,24 +22,26 @@ test('With multiple provided fields and an alias', () => {
 				type: 'primitive',
 				table: randomTable,
 				column: randomColumn1,
-				as: randomAlias,
+				as: randomColumn1As,
 			},
 			{
 				type: 'primitive',
 				table: randomTable2,
 				column: randomColumn2,
+				as: randomColumn2As,
 			},
 		],
 		from: randomTable,
 	};
 
 	const res = select(sample);
-	const expected = `SELECT "${randomTable}"."${randomColumn1}" AS "${randomAlias}", "${randomTable2}"."${randomColumn2}"`;
+	const expected = `SELECT "${randomTable}"."${randomColumn1}" AS "${randomColumn1As}", "${randomTable2}"."${randomColumn2}" AS "${randomColumn2As}"`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('With a count', () => {
 	const randomTable = randomIdentifier();
+	const randomAs = randomIdentifier();
 
 	const sample: AbstractSqlClauses = {
 		select: [
@@ -50,12 +53,13 @@ test('With a count', () => {
 				},
 				table: randomTable,
 				column: '*',
+				as: randomAs,
 			},
 		],
 		from: randomTable,
 	};
 
 	const res = select(sample);
-	const expected = `SELECT COUNT("${randomTable}"."*")`;
+	const expected = `SELECT COUNT("${randomTable}"."*") AS "${randomAs}"`;
 	expect(res).toStrictEqual(expected);
 });
