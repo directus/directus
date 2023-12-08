@@ -13,7 +13,7 @@ export interface Bus {
 	 * Subscribe to messages in the given channel
 	 *
 	 * @param channel Channel to subscribe to
-	 * @param payload Payload that was published to the given channel
+	 * @param callback Payload that was published to the given channel
 	 */
 	subscribe(channel: string, callback: MessageHandler): Promise<void>;
 
