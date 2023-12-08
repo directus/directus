@@ -1,3 +1,5 @@
+import { parseJSON } from '@directus/utils';
+
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
@@ -20,5 +22,5 @@ export const serialize = (val: unknown) => {
  */
 export const deserialize = <T = unknown>(val: Uint8Array) => {
 	const valueString = decoder.decode(val);
-	return <T>JSON.parse(valueString);
+	return <T>parseJSON(valueString);
 };
