@@ -117,9 +117,7 @@ describe('increment', () => {
 
 		kv.get = vi.fn().mockReturnValue(mockStoredValue);
 
-		expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot(
-			'[Error: The value for key "kv-key" is not a number.]',
-		);
+		expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot('[Error: The value for key "kv-key" is not a number.]');
 	});
 });
 
