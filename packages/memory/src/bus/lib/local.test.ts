@@ -32,6 +32,26 @@ describe('publish', () => {
 			expect(handler).toBeCalledWith(mockPayload);
 		}
 	});
+
+	test('Ignores errors thrown in the registered callbacks', async () => {
+		const mockChannel = 'mock-channel';
+		const mockPayload = { hello: 'world' };
+
+		const mockHandlers = [
+			vi.fn().mockImplementation(() => {
+				throw new Error('bad news');
+			}),
+			vi.fn(),
+		];
+
+		bus['handlers'][mockChannel] = new Set(mockHandlers);
+
+		await bus.publish(mockChannel, mockPayload);
+
+		for (const handler of mockHandlers) {
+			expect(handler).toBeCalledWith(mockPayload);
+		}
+	});
 });
 
 describe('subscribe', () => {

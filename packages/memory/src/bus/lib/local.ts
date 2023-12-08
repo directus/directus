@@ -9,7 +9,16 @@ export class BusLocal implements Bus {
 	}
 
 	async publish<T = unknown>(channel: string, payload: T) {
-		this.handlers[channel]?.forEach((callback) => callback(payload));
+		this.handlers[channel]?.forEach((callback) => {
+			try {
+				callback(payload);
+			} catch {
+				// Do nothing..
+				// This might feel a little odd, but it's consistent with the redis based
+				// pub/sub and event listeners in general. You don't expect the event to crash if the
+				// handler has an error.
+			}
+		});
 	}
 
 	async subscribe(channel: string, callback: MessageHandler) {
