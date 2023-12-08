@@ -7,6 +7,6 @@ export type A2ORelation = {
 	/** One or multiple foreign key relations */
 	foreignKey: AtLeastOneElement<string | number>;
 
-	/** The related table */
-	foreignTable: string;
+	/** The related collection */
+	foreignCollection: string;
 };
