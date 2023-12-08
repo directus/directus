@@ -2,7 +2,7 @@ import type { Bus, MessageHandler } from '../types/class.js';
 import type { BusConfigLocal } from '../types/config.js';
 
 export class BusLocal implements Bus {
-	private handlers: Record<string, Set<MessageHandler>>;
+	private handlers: Record<string, Set<MessageHandler<any>>>;
 
 	constructor(_config: Omit<BusConfigLocal, 'type'>) {
 		this.handlers = {};
@@ -21,7 +21,7 @@ export class BusLocal implements Bus {
 		});
 	}
 
-	async subscribe(channel: string, callback: MessageHandler) {
+	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
 		const set = this.handlers[channel] ?? new Set();
 
 		set.add(callback);

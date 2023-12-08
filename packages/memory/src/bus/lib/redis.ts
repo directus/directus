@@ -18,7 +18,7 @@ export class BusRedis implements Bus {
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
-	private handlers: Record<string, Set<MessageHandler>>;
+	private handlers: Record<string, Set<MessageHandler<any>>>;
 
 	constructor(config: Omit<BusConfigRedis, 'type'>) {
 		this.namespace = config.namespace;
@@ -40,7 +40,7 @@ export class BusRedis implements Bus {
 		await this.pub.publish(withNamespace(channel, this.namespace), uint8ArrayToBuffer(binaryArray));
 	}
 
-	async subscribe(channel: string, callback: MessageHandler) {
+	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
 		const namespaced = withNamespace(channel, this.namespace);
 
 		const existingSet = this.handlers[namespaced];
@@ -48,7 +48,7 @@ export class BusRedis implements Bus {
 		if (existingSet === undefined) {
 			await this.sub.subscribe(namespaced);
 
-			const set = new Set<MessageHandler>();
+			const set = new Set<MessageHandler<T>>();
 			set.add(callback);
 			this.handlers[namespaced] = set;
 		} else {

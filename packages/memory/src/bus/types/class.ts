@@ -1,4 +1,4 @@
-export type MessageHandler = <T = unknown>(payload: T) => void;
+export type MessageHandler<T = unknown> = (payload: T) => void;
 
 export interface Bus {
 	/**
@@ -15,7 +15,7 @@ export interface Bus {
 	 * @param channel Channel to subscribe to
 	 * @param callback Payload that was published to the given channel
 	 */
-	subscribe(channel: string, callback: MessageHandler): Promise<void>;
+	subscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void>;
 
 	/**
 	 * Unsubscribe from a channel
