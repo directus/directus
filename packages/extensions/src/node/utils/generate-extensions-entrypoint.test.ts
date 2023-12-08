@@ -24,6 +24,62 @@ describe('generateExtensionsEntrypoint', () => {
 		);
 	});
 
+	it('returns an empty extension entrypoint if there are no enabled extensions', () => {
+		const mockExtensions: Extension[] = [
+			{
+				path: './extensions/display',
+				name: 'mock-display-extension',
+				type: 'display',
+				entrypoint: 'index.js',
+				local: true,
+			},
+			{
+				path: './extensions/operation',
+				name: 'mock-operation-extension',
+				type: 'operation',
+				entrypoint: { app: 'app.js', api: 'api.js' },
+				local: true,
+			},
+			{
+				path: './extensions/bundle',
+				name: 'mock-bundle0-extension',
+				version: '1.0.0',
+				type: 'bundle',
+				entrypoint: { app: 'app.js', api: 'api.js' },
+				entries: [
+					{ type: 'layout', name: 'mock-bundle-layout' },
+					{ type: 'operation', name: 'mock-bundle-operation' },
+					{ type: 'hook', name: 'mock-bundle-hook' },
+				],
+				host: '^10.0.0',
+				local: false,
+			},
+			{
+				path: './extensions/bundle-no-app',
+				name: 'mock-bundle-no-app-extension',
+				version: '1.0.0',
+				type: 'bundle',
+				entrypoint: { app: 'app.js', api: 'api.js' },
+				entries: [{ type: 'endpoint', name: 'mock-bundle-no-app-endpoint' }],
+				host: '^10.0.0',
+				local: false,
+			},
+		];
+
+		const mockSettings: ExtensionSettings[] = [
+			{ name: 'mock-display-extension', enabled: false },
+			{ name: 'mock-operation-extension', enabled: false },
+			{ name: 'mock-bundle0-extension/mock-bundle-layout', enabled: false },
+			{ name: 'mock-bundle0-extension/mock-bundle-operation', enabled: false },
+			{ name: 'mock-bundle0-extension/mock-bundle-hook', enabled: false },
+			{ name: 'mock-bundle-no-app-extension/mock-bundle-no-app-endpoint', enabled: false },
+		];
+
+		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
+			'"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"',
+		);
+	});
+
 	it('returns an extension entrypoint exporting a single App extension', () => {
 		const mockExtensions: Extension[] = [
 			{ path: './extensions/panel', name: 'mock-panel-extension', type: 'panel', entrypoint: 'index.js', local: true },
