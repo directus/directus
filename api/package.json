@@ -142,7 +142,7 @@
 		"nodemailer": "6.9.2",
 		"object-hash": "3.0.0",
 		"openapi3-ts": "4.1.2",
-		"openid-client": "5.4.2",
+		"openid-client": "5.6.1",
 		"ora": "6.3.1",
 		"otplib": "12.0.1",
 		"p-queue": "7.4.1",
