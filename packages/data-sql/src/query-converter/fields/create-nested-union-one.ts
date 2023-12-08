@@ -5,7 +5,7 @@ import type {
 	AtLeastOneElement,
 } from '@directus/data';
 import { createUniqueAlias } from '../../utils/create-unique-alias.js';
-import { convertModifiers } from '../modifiers/modifiers.js';
+// import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
@@ -23,13 +23,6 @@ import type { AbstractSqlQueryWhereNode } from '../../index.js';
 export function getNestedUnionOne(collection: string, field: AbstractQueryFieldNodeNestedUnionOne): NestedManyResult {
 	const index = parameterIndexGenerator();
 
-	// @TODO make those calls dependant on the foreign collection in question
-	const nestedFieldNodes = convertFieldNodes(field.nesting.collection, field.fields, index);
-	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
-
-	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
-	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
-
 	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
 
@@ -37,20 +30,33 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 
 	return {
 		subQuery: (rootRow) => {
+			// get data from the relational column
 			const relationalColumnValue = rootRow[field.nesting.field] as A2ORelation;
+			const foreignTable = relationalColumnValue.foreignCollection;
+			const fk = relationalColumnValue.foreignKey;
+
+			const desiredRelationalInfo = field.nesting.collections.find((c) => c.relational.collectionName === foreignTable);
+			if (!desiredRelationalInfo?.fields) throw new Error('No relational data found for collection');
+
+			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, index);
+			// const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
+
+			const joins = [...nestedFieldNodes.clauses.joins]; //  ...(nestedModifiers.clauses.joins ?? [])
+			const parameters = [...nestedFieldNodes.parameters]; // ...nestedModifiers.parameters
 
 			return {
 				rootQuery: {
 					clauses: {
 						select: nestedFieldNodes.clauses.select,
-						from: relationalColumnValue.foreignTable,
-						...nestedModifiers.clauses,
+						from: relationalColumnValue.foreignCollection,
+						// ...nestedModifiers.clauses,
 						joins: joins,
 						where: getRelationConditions(relationalColumnValue, index, field.nesting),
 					},
 					parameters: [
 						...parameters,
-						...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
+						fk,
+						// ...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
 					],
 				},
 				subQueries: nestedFieldNodes.subQueries,
@@ -66,7 +72,7 @@ function getRelationConditions(
 	idxGenerator: Generator<number, number, number>,
 	relAny: AbstractQueryFieldNodeNestedRelationalAny,
 ): AbstractSqlQueryWhereNode {
-	const table = jsonColumn.foreignTable;
+	const table = jsonColumn.foreignCollection;
 
 	const foreignCollectionRelationalData = relAny.collections.find(
 		(collection) => collection.relational.collectionName === table,
