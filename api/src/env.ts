@@ -37,6 +37,9 @@ const allowedEnvironmentVars = [
 	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
 	'TEMP_PATH',
+	'ACTIVITY_RETENTION',
+	'NOTIFICATIONS_RETENTION',
+	'REVISIONS_RETENTION',
 	// server
 	'SERVER_.+',
 	// database
@@ -230,6 +233,10 @@ export const defaults: Record<string, any> = {
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	TEMP_PATH: './node_modules/.directus',
+
+	ACTIVITY_RETENTION: '180d',
+	NOTIFICATIONS_RETENTION: '90d',
+	REVISIONS_RETENTION: '90d',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
