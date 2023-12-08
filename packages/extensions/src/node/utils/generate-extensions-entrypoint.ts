@@ -9,7 +9,7 @@ import type {
 	HybridExtension,
 } from '../../shared/types/index.js';
 
-export function generateExtensionsEntrypoint(extensions: Extension[], settings: ExtensionSettings[]): string {
+export function generateExtensionsEntrypoint(extensions: Extension[], settings: ExtensionSettings[] = []): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension => {
 		if (!isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])) return false;
 		const { enabled } = settings.find(({ name }) => name === extension.name) ?? { enabled: false };
