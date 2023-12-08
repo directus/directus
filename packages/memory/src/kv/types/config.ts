@@ -1,5 +1,9 @@
 import type { Redis } from 'ioredis';
 
+export interface ExtendedRedis extends Redis {
+	setMax(key: string, value: number): Promise<number>;
+}
+
 export interface KvConfigAbstract {
 	/**
 	 * Where the data is stored
@@ -47,7 +51,7 @@ export interface KvConfigRedis extends KvConfigAbstract {
 	/**
 	 * Existing or new Redis connection to use with this memory class
 	 */
-	redis: Redis;
+	redis: Redis | ExtendedRedis;
 }
 
 export type KvConfig = KvConfigLocal | KvConfigRedis;

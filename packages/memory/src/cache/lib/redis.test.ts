@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { KvRedis, createKv } from '../../kv/index.js';
 import { CacheRedis } from './redis.js';
 
+vi.mock('ioredis');
 vi.mock('../../kv/index.js');
 vi.mock('../../utils/index.js');
 

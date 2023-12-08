@@ -1,4 +1,3 @@
-import type { Redis } from 'ioredis';
 import {
 	bufferToUint8Array,
 	compress,
@@ -9,7 +8,7 @@ import {
 	uint8ArrayToBuffer,
 	withNamespace,
 } from '../../utils/index.js';
-import type { KvConfigRedis } from '../index.js';
+import type { ExtendedRedis, KvConfigRedis } from '../index.js';
 import type { Kv } from '../types/class.js';
 
 export const SET_MAX_SCRIPT = `
@@ -30,21 +29,23 @@ export const SET_MAX_SCRIPT = `
 `;
 
 export class KvRedis implements Kv {
-	private redis: Redis;
+	private redis: ExtendedRedis;
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
 
 	constructor(config: Omit<KvConfigRedis, 'type'>) {
-		this.redis = config.redis;
+		if ('setMax' in config.redis === false) {
+			config.redis.defineCommand('setMax', {
+				numberOfKeys: 1,
+				lua: SET_MAX_SCRIPT,
+			});
+		}
+
+		this.redis = config.redis as ExtendedRedis;
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
-
-		this.redis.defineCommand('setMax', {
-			numberOfKeys: 1,
-			lua: SET_MAX_SCRIPT,
-		});
 	}
 
 	async get<T = unknown>(key: string) {
@@ -91,8 +92,7 @@ export class KvRedis implements Kv {
 	}
 
 	async setMax(key: string, value: number) {
-		const client = this.redis as Redis & { setMax(key: string, value: number): Promise<number> };
-		const wasSet = await client.setMax(withNamespace(key, this.namespace), value);
+		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
 	}
 }

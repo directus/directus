@@ -10,6 +10,7 @@ import {
 	uint8ArrayToBuffer,
 	withNamespace,
 } from '../../utils/index.js';
+import type { ExtendedRedis } from '../index.js';
 import { KvRedis, SET_MAX_SCRIPT } from './redis.js';
 
 vi.mock('ioredis');
@@ -76,11 +77,19 @@ describe('constructor', () => {
 		expect(kv['compressionMinSize']).toBe(1000);
 	});
 
-	test('Defines redis setMax command', () => {
+	test('Defines redis setMax command if it does not exist yet', () => {
 		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('setMax', {
 			numberOfKeys: 1,
 			lua: SET_MAX_SCRIPT,
 		});
+	});
+
+	test('Skips defining command if setMax already exists on redis', () => {
+		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn() } as unknown as ExtendedRedis;
+
+		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
+
+		expect(mockRedis.defineCommand).not.toHaveBeenCalled();
 	});
 });
 
