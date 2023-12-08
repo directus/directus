@@ -1,5 +1,5 @@
 ---
-description: Learn about the ItemsService in Directus and how to utilize them when building extensions.
+description: Learn about the extension SDK composables and how to utilize them when developing custom extensions.
 contributors: Esther Agbaje
 ---
 
@@ -7,8 +7,8 @@ contributors: Esther Agbaje
 
 The Extension Composables serve as a powerful toolkit to help developers create extensions in Directus.
 
-Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi` or
-`useStores`, to abstract away complexity when building extensions.
+Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi()` or
+`useStores()`, to abstract away complexity when building extensions.
 
 Some commonly used composables include:
 
