@@ -4,16 +4,16 @@ import type { Kv } from '../types/class.js';
 import type { KvConfigLocal } from '../types/config.js';
 
 export class KvLocal implements Kv {
-	private store: LRUCache<string, Uint8Array, unknown>;
+	private store: LRUCache<string, Uint8Array, unknown> | Map<string, Uint8Array>;
 
 	constructor(config: Omit<KvConfigLocal, 'type'>) {
-		const options = {} as LRUCache.Options<string, Uint8Array, unknown>;
-
 		if ('maxKeys' in config) {
-			options.max = config.maxKeys;
+			this.store = new LRUCache({
+				max: config.maxKeys,
+			});
+		} else {
+			this.store = new Map();
 		}
-
-		this.store = new LRUCache(options);
 	}
 
 	async get<T = unknown>(key: string) {

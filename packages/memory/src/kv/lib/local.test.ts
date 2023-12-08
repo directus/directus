@@ -29,6 +29,13 @@ describe('constructor', () => {
 			max: 2,
 		});
 	});
+
+	test('Defaults to JS map if LRU config is not set', () => {
+		vi.mocked(LRUCache).mockClear();
+		kv = new KvLocal({});
+		expect(LRUCache).not.toHaveBeenCalled();
+		expect(kv['store']).toBeInstanceOf(Map);
+	});
 });
 
 describe('get', () => {
