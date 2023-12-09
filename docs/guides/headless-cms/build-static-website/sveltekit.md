@@ -59,6 +59,21 @@ function getDirectusInstance(fetch) {
 }
 export default getDirectusInstance;
 ```
+
+In order to make this work we also need to create a `hooks.server.js` file with the following content in the root directory. It makes sure that the required headers for fetching javascript content are returned by the SvelteKit Server
+
+```js
+export async function handle({event, resolve}) {
+
+    return await resolve(event, {
+        filterSerializedResponseHeaders: (key, value) => {
+            return key.toLowerCase() === 'content-type'
+        }
+    });
+}
+```
+
+
 ::: tip
 
 Theoretically you could also make http requests to your directus server endpoint directly via SvelteKits `fetch` implementation. However the Directus SDK offers some nice [additional features](https://docs.directus.io/guides/sdk/getting-started.html).
