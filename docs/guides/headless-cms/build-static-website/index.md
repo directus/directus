@@ -17,3 +17,12 @@
   icon="/icons/nuxt.svg"
   add-margin
 />
+
+<Card
+  title="SvelteKit"
+  h="2"
+  text="Build a website with dynamic content, pages, and posts with SvelteKit."
+  url="/guides/headless-cms/build-static-website/sveltekit"
+  icon="/icons/svelte.svg"
+  add-margin
+/>
