@@ -1,3 +1,9 @@
+/**
+ * nested many nodes are handled by the driver.
+ * As a default behavior, we do separate queries for each o part result row.
+ * The driver itself can use different technique if another technique is more performant,
+ * like do a sub query in the statement or a join.
+ */
 import type {
 	AbstractQueryFieldNodeNestedRelationalMany,
 	AbstractQueryFieldNodeNestedSingleMany,
@@ -59,6 +65,7 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 				},
 				parameters: [
 					...parameters,
+					// the foreign keys form the root result row
 					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
 				],
 			},
