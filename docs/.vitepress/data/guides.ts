@@ -37,6 +37,12 @@ export const sections = {
 					{ display: 'Set Up Live Preview With Nuxt', path: '/guides/headless-cms/live-preview/nuxt-3' },
 				],
 			},
+			{
+				title: 'SvelteKit',
+				items: [
+					{ display: 'Build a Website With SvelteKit', path: '/guides/headless-cms/build-static-website/sveltekit' },
+				],
+			},
 		],
 	},
 	'use-cases': {
