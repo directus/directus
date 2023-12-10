@@ -24,8 +24,7 @@ You will need:
 ## Create Backend (Directus)
 
 Create a new Directus Cloud project - any tier and configuration is suitable for this tutorial. You can also choose to
-install Directus [locally](/self-hosted/quickstart.html) via `npm init directus-project backend` and then use
-`npx start directus` to fire up the local server.
+install Directus [locally](/self-hosted/quickstart).
 
 ## Create Frontend (SvelteKit)
 
@@ -39,14 +38,14 @@ npm install @directus/sdk
 ```
 
 Open `frontend` in your code editor and type `npm run dev` in your terminal to start the Vite development server and
-open `http://localhost:5173` in your browser.
+open http://localhost:5173 in your browser.
 
 ### Create a Wrapper for the SDK
 
 We now need to setup the Directus SDK and make it accessible globally. In order to make the best use of SvelteKit's
-Server Side Rendering we will need to use SvelteKit's
-[own fetch](https://kit.svelte.dev/docs/load#making-fetch-requests) implementation. Create a new file `directus.js`
-inside of the `src/libs` folder
+Server Side Rendering we will need to use SvelteKit's own
+[fetch implementation](https://kit.svelte.dev/docs/load#making-fetch-requests). Create a new file `directus.js` inside
+of the `src/libs` folder
 
 ```js
 import { createDirectus, rest } from '@directus/sdk';
@@ -81,11 +80,10 @@ export async function handle({ event, resolve }) {
 }
 ```
 
-::: tip
+::: tip Directus SDK
 
 Theoretically you could also make HTTP requests to your Directus server endpoint directly via SvelteKit's `fetch`
-implementation. However the Directus SDK offers some nice
-[additional features](https://docs.directus.io/guides/sdk/getting-started.html).
+implementation. However the Directus SDK offers some nice [additional features](/guides/sdk/getting-started).
 
 :::
 
@@ -155,7 +153,7 @@ only run on server side only so it is save to expose secrets in this file). The 
 Please refer to the [SvelteKit Documentation](https://kit.svelte.dev/docs/routing) for more information.
 
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will
-correlate with the URL for the page. For example `about` will later correlate to the page `localhost:5173/about`.
+correlate with the URL for the page. For example `about` will later correlate to the page `/about`.
 
 Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the
 Public role read access to the new collection. Create 3 items in the new collection -
@@ -183,11 +181,11 @@ export async function load({ fetch, params }) {
 }
 ```
 
-Go to `http://localhost:5173/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
+Go to http://localhost:5173/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
+single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
 `slug` Primary ID Field.
 
-_Note that non existing ids will result in a forbidden error, which we catch and then throw svelte's internal error
+_Note that non existing IDs will result in a forbidden error, which we catch and then throw svelte's internal error
 object to respond with a 404. Please also note that
 [`@html` should only be used for trusted content.](https://svelte.dev/docs/special-tags#html)_
 
@@ -197,7 +195,7 @@ Create a new collection called `authors` with a single text input field called `
 
 Then, create a new collection called `posts` - make the Primary ID Field a "Manually Entered String" called `slug`,
 which will correlate with the URL for the page. For example `hello-world` will later correlate to the page
-`localhost:5173/blog/hello-world`.
+`/blog/hello-world`.
 
 Create the following fields in your `posts` data model:
 
@@ -257,7 +255,7 @@ Likewise to before we create a template file `+page.svelte` to show our newly fe
 </ul>
 ```
 
-Visit `http://localhost:5173` and you should now see a blog post listing, with latest items first.
+Visit http://localhost:5173 and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/nuxt-blog-listing.webp)
 
@@ -266,9 +264,9 @@ Visit `http://localhost:5173` and you should now see a blog post listing, with l
 Each blog post links to a page that does not yet exist. In the `blog` directory, create a new directory called `[slug]`
 with the necessary files as usual:
 
-_.page.js_
+::: code-group
 
-```js
+```js [+page.js]
 /** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit';
 import getDirectusInstance from '$lib/directus';
@@ -287,9 +285,7 @@ export async function load({ fetch, params }) {
 }
 ```
 
-_.page.svelte_
-
-```svelte
+```svelte [+page.svelte]
 <script>
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -300,10 +296,7 @@ _.page.svelte_
 <div>{@html data.post.content}</div>
 ```
 
-\_If the image is not showing up for you, you might have forgotten to also give the directus_files collection read
-access as described above. This is due to that by default the file object only includes the image name, but not the
-metadata, which we need to get the actual binary file from the Directus endpoint. To fix this go to Roles & Permissions,
-give the Public role read access to the `directus_files` collection.
+:::
 
 Some key notes about this code snippet.
 
@@ -315,6 +308,15 @@ Some key notes about this code snippet.
 Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
 ![A blog post page shows an image, a title, and a number of paragraphs.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/nuxt-blog-single.webp)
+
+::: tip No Image?
+
+If the image is not showing up for you, you might have forgotten to also give the `directus_files` collection read
+access as described above. This is due to that by default the file object only includes the image name, but not the
+metadata, which we need to get the actual binary file from the Directus endpoint. To fix this go to Roles & Permissions,
+give the Public role read access to the `directus_files` collection.
+
+:::
 
 ## Add Navigation
 
