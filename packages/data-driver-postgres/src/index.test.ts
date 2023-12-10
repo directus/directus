@@ -7,18 +7,15 @@ import type { AbstractQuery } from '@directus/data';
 import { convertQuery, readToEnd, type ConverterResult } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 import { ReadableStream } from 'node:stream/web';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import DataDriverPostgres from './index.js';
 
-beforeEach(() => {
-	vi.mock('@directus/data-sql', async (importOriginal) => {
-		const mod = (await importOriginal()) as any;
-
-		return {
-			...mod,
-			convertQuery: vi.fn(),
-		};
-	});
+vi.mock('@directus/data-sql', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('@directus/data-sql')>();
+	return {
+		...mod,
+		convertQuery: vi.fn(),
+	};
 });
 
 afterEach(() => {

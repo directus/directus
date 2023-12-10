@@ -7,5 +7,5 @@ test('Constructs message from extensions', () => {
 
 	const message = messageConstructor({ mediaType, where });
 
-	expect(message).toMatchInlineSnapshot('"Unsupported media type \\"application/json\\" in Content-Type header."');
+	expect(message).toMatchInlineSnapshot(`"Unsupported media type "application/json" in Content-Type header."`);
 });
