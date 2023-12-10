@@ -4,8 +4,8 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { orderBy } from './orderBy.js';
 import { applyFunction } from '../utils/functions.js';
 
-vi.mock('../utils/functions.js', (importOriginal) => {
-	const mod = importOriginal();
+vi.mock('../utils/functions.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('../utils/functions.js')>();
 	return {
 		...mod,
 		applyFunction: vi.fn(),

@@ -38,11 +38,11 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",
-		"@vitest/coverage-v8": "0.34.6",
+		"@vitest/coverage-v8": "1.0.4",
 		"@vue/test-utils": "2.4.3",
 		"tsup": "8.0.1",
 		"typescript": "5.3.2",
-		"vitest": "0.34.6"
+		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
 		"vue": "3.3.9"

@@ -43,8 +43,10 @@ export async function setup() {
 									env: config.envs[vendor],
 								});
 
-								if (bootstrap.stderr.length > 0) {
-									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
+								if (bootstrap.status !== null) {
+									throw new Error(
+										`Directus-${vendor} bootstrap failed (${bootstrap.status}): \n ${bootstrap.stderr.toString()}`,
+									);
 								}
 
 								await database.migrate.latest();
@@ -74,12 +76,12 @@ export async function setup() {
 											await fs.writeFile(join(paths.cwd, `server-log-${vendor}.txt`), serverOutput);
 										}
 
-										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+										if (code !== null)
+											throw new Error(`Directus-${vendor} server failed (${code}): \n ${serverOutput}`);
 									});
 
 									// Give the server some time to start
 									await awaitDirectusConnection(Number(config.envs[vendor].PORT));
-									server.on('exit', () => undefined);
 
 									// Set up separate directus instance without system cache
 									const noCacheEnv = clone(config.envs[vendor]);
@@ -100,13 +102,12 @@ export async function setup() {
 										}
 
 										if (code !== null) {
-											throw new Error(`Directus-${vendor}-no-cache server failed: \n ${serverNoCacheOutput}`);
+											throw new Error(`Directus-${vendor}-no-cache server failed (${code}): \n ${serverNoCacheOutput}`);
 										}
 									});
 
 									// Give the server some time to start
 									await awaitDirectusConnection(Number(noCacheEnv['PORT']));
-									serverNoCache.on('exit', () => undefined);
 								}
 							},
 						};
