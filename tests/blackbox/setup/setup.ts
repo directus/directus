@@ -43,7 +43,7 @@ export async function setup() {
 									env: config.envs[vendor],
 								});
 
-								if (bootstrap.status !== null) {
+								if (bootstrap.status !== null && bootstrap.status !== 0) {
 									throw new Error(
 										`Directus-${vendor} bootstrap failed (${bootstrap.status}): \n ${bootstrap.stderr.toString()}`,
 									);
