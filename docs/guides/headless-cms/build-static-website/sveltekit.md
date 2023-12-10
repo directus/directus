@@ -9,9 +9,9 @@ author: Eike Thies
 > {{ $frontmatter.description }}
 
 [SvelteKit](https://kit.svelte.dev/) is a popular Companion JavaScript Framework to Svelte.js - focusing on creating
-performant Webapps easily and fast. In this tutorial, you will learn how to build a website using Directus as a CMS. You
-will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus
-items, and build a blog.
+performant web applications easily and fast. In this tutorial, you will learn how to build a website using Directus as a
+CMS. You will store, retrieve, and use global metadata such as the site title, create new pages dynamically based on
+Directus items, and build a blog.
 
 ## Before You Start
 
@@ -68,7 +68,7 @@ export default getDirectusInstance;
 ```
 
 In order to make this work we also need to create a `hooks.server.js` file with the following content in the root
-directory. It makes sure that the required headers for fetching javascript content are returned by the SvelteKit Server
+directory. It makes sure that the required headers for fetching JavaScript content are returned by the SvelteKit Server
 
 ```js
 export async function handle({event, resolve}) {
@@ -83,7 +83,7 @@ export async function handle({event, resolve}) {
 
 ::: tip
 
-Theoretically you could also make http requests to your directus server endpoint directly via SvelteKits `fetch`
+Theoretically you could also make HTTP requests to your directus server endpoint directly via SvelteKit's `fetch`
 implementation. However the Directus SDK offers some nice
 [additional features](https://docs.directus.io/guides/sdk/getting-started.html).
 
@@ -116,8 +116,8 @@ give Read access to the Global collection.
 
 ## Prepare SvelteKit to use Directus instance
 
-Create a new new file called `+page.js` in the root directory along the `.page.svelte` file. This file's load function
-will be responsible to fetch the data on the client and on the server during Server Side Rendering.
+Create a new file called `+page.js` in the root directory along the `.page.svelte` file. This file's load function will
+be responsible to fetch the data on the client and on the server during Server Side Rendering.
 
 ```js
 /** @type {import('./$types').PageLoad} */
@@ -153,7 +153,7 @@ Refresh your browser. You should see data from your Directus Global collection i
 Create a new directory called `[slug]`. SvelteKit uses a file based routing mechanism and parameters are always part of
 the folder name, whereas the files within the folder are always either +page.js, +page.js or +page.server.js (which is
 only run on server side only so it is save to expose secrets in this file). The same concept is true for layout files.
-Please refer to the [SvelteKit Documentation](https://kit.svelte.dev/docs/routing) for more infos.
+Please refer to the [SvelteKit Documentation](https://kit.svelte.dev/docs/routing) for more information.
 
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will
 correlate with the URL for the page. For example `about` will later correlate to the page `localhost:5173/about`.
@@ -163,8 +163,8 @@ Public role read access to the new collection. Create 3 items in the new collect
 [here's some sample data](https://github.com/directus/examples/blob/main/website-sveltekit/demo-data).
 
 Inside of `[slug]`, create a new file called `+page.js`. This is a dynamic route, so this time we will use the dynamic
-params object to fetch the correct data. To illustrate how SvelteKits data loading works you can open a different page
-url which will change the params object. Evidently this will lead to SvelteKit invalidate the `.page.js` data and
+`params` object to fetch the correct data. To illustrate how SvelteKit's data loading works you can open a different
+page url which will change the `params` object. Evidently this will lead to SvelteKit invalidate the `.page.js` data and
 refetch our page data.
 
 ```js
@@ -187,7 +187,7 @@ Go to `http://localhost:5173/about`, replacing `about` with any of your item slu
 the single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
 `slug` Primary ID Field.
 
-_Note that non existing ids will result in an forbidden error, which we catch and then throw svelte's internal error
+_Note that non existing ids will result in a forbidden error, which we catch and then throw svelte's internal error
 object to respond with a 404. Please also note that
 [`@html` should only be used for trusted content.](https://svelte.dev/docs/special-tags#html)_
 
@@ -265,7 +265,7 @@ Visit `http://localhost:5173` and you should now see a blog post listing, with l
 ### Create Blog Post Listing
 
 Each blog post links to a page that does not yet exist. In the `blog` directory, create a new directory called `[slug]`
-with the neccesary files as usual:
+with the necessary files as usual:
 
 _.page.js_
 

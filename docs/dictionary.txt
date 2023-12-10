@@ -347,11 +347,12 @@ pub/sub
 px
 px.
 reactively
-readonly
 readTime
+readonly
 rebase
 reconfigurations
 reconnection
+refetch
 reframe
 REKT
 relationally
@@ -397,6 +398,7 @@ substring
 SuperAdmins?
 superset
 Superset
+SvelteKit('s)?
 svg
 SVGs?
 TablePlus
