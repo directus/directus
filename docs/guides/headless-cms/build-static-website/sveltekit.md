@@ -49,21 +49,22 @@ Server Side Rendering we will need to use SvelteKit's
 inside of the `src/libs` folder
 
 ```js
-import { createDirectus, rest } from "@directus/sdk";
-import { readItems, readItem, updateItem, updateUser, createItem, deleteItem } from "@directus/sdk";
+import { createDirectus, rest } from '@directus/sdk';
+import { readItems, readItem, updateItem, updateUser, createItem, deleteItem } from '@directus/sdk';
 
 function getDirectusInstance(fetch) {
-  const directus = createDirectus(import.meta.env.VITE_APIURL, { globals: { fetch } }).with(rest());
+	const directus = createDirectus(import.meta.env.VITE_APIURL, { globals: { fetch } }).with(rest());
 
-  directus.updateUser = async (id, query) => directus.request(updateUser(id, query));
-  directus.updateItem = async (collection, id, query) => directus.request(updateItem(collection, id, query));
-  directus.readItems = async (collection, query) => directus.request(readItems(collection, query));
-  directus.readItem = async (collection, id, query) => directus.request(readItem(collection, id, query));
-  directus.createItem = async (collection, query) => directus.request(createItem(collection, query));
-  directus.deleteItem = async (collection, id) => directus.request(deleteItem(collection, id));
+	directus.updateUser = async (id, query) => directus.request(updateUser(id, query));
+	directus.updateItem = async (collection, id, query) => directus.request(updateItem(collection, id, query));
+	directus.readItems = async (collection, query) => directus.request(readItems(collection, query));
+	directus.readItem = async (collection, id, query) => directus.request(readItem(collection, id, query));
+	directus.createItem = async (collection, query) => directus.request(createItem(collection, query));
+	directus.deleteItem = async (collection, id) => directus.request(deleteItem(collection, id));
 
-  return directus;
+	return directus;
 }
+
 export default getDirectusInstance;
 ```
 
@@ -71,19 +72,18 @@ In order to make this work we also need to create a `hooks.server.js` file with 
 directory. It makes sure that the required headers for fetching JavaScript content are returned by the SvelteKit Server
 
 ```js
-export async function handle({event, resolve}) {
-
-    return await resolve(event, {
-        filterSerializedResponseHeaders: (key, value) => {
-            return key.toLowerCase() === 'content-type'
-        }
-    });
+export async function handle({ event, resolve }) {
+	return await resolve(event, {
+		filterSerializedResponseHeaders: (key, value) => {
+			return key.toLowerCase() === 'content-type';
+		},
+	});
 }
 ```
 
 ::: tip
 
-Theoretically you could also make HTTP requests to your directus server endpoint directly via SvelteKit's `fetch`
+Theoretically you could also make HTTP requests to your Directus server endpoint directly via SvelteKit's `fetch`
 implementation. However the Directus SDK offers some nice
 [additional features](https://docs.directus.io/guides/sdk/getting-started.html).
 
@@ -92,7 +92,7 @@ implementation. However the Directus SDK offers some nice
 Also create the environment variable inside a `.env` file in the root directory
 
 ```js
-VITE_APIURL= "https://directus.example.com"
+VITE_APIURL = 'https://directus.example.com';
 ```
 
 Ensure your API URL is correct when initializing the Directus JavaScript SDK.
@@ -122,10 +122,10 @@ be responsible to fetch the data on the client and on the server during Server S
 ```js
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
-export async function load({fetch}) {
+export async function load({ fetch }) {
 	const directus = getDirectusInstance(fetch);
-    return {
-		global: await directus.readItems('global')
+	return {
+		global: await directus.readItems('global'),
 	};
 }
 ```
@@ -140,7 +140,6 @@ how this works.
 	/** @type {import('./$types').PageData} */
 	export let data;
 </script>
-
 
 <h1>{data.global.title}</h1>
 <p>{data.global.description}</p>
@@ -171,11 +170,12 @@ refetch our page data.
 /** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit';
 import getDirectusInstance from '$lib/directus';
-export async function load({fetch,params}) {
+export async function load({ fetch, params }) {
 	const directus = getDirectusInstance(fetch);
+
 	try {
 		return {
-			page: await directus.readItem('pages', params.slug)
+			page: await directus.readItem('pages', params.slug),
 		};
 	} catch (err) {
 		throw error(404, 'Page not found');
@@ -219,13 +219,13 @@ Create a new Directory called `blog` and a new file called `+page.js` inside of 
 ```js
 /** @type {import('./$types').PageLoad} */
 import getDirectusInstance from '$lib/directus';
-export async function load({fetch}) {
+export async function load({ fetch }) {
 	const directus = getDirectusInstance(fetch);
 	return {
 		posts: await directus.readItems('posts', {
-			fields: ['slug', 'title', 'publish_date', { 'author': [ 'name' ] }],
-			sort: ['-publish_date']
-		})
+			fields: ['slug', 'title', 'publish_date', { author: ['name'] }],
+			sort: ['-publish_date'],
+		}),
 	};
 }
 ```
@@ -238,24 +238,23 @@ Likewise to before we create a template file `+page.svelte` to show our newly fe
 
 ```svelte
 <script>
-  /** @type {import('./$types').PageData} */
-  export let data;
+	/** @type {import('./$types').PageData} */
+	export let data;
 </script>
 
 <h1>Blog</h1>
 <ul>
-  {#each data.posts as post}
-    <li>
-      <h2>
-        <a href="/blog/{post.slug}">
-          {post.title}
-        </a>
-      </h2>
-      <span>{post.publish_date} &bull; {post.author.name}</span>
-    </li>
-  {/each}
+	{#each data.posts as post}
+		<li>
+			<h2>
+				<a href="/blog/{post.slug}">
+					{post.title}
+				</a>
+			</h2>
+			<span>{post.publish_date} &bull; {post.author.name}</span>
+		</li>
+	{/each}
 </ul>
-
 ```
 
 Visit `http://localhost:5173` and you should now see a blog post listing, with latest items first.
@@ -271,19 +270,20 @@ _.page.js_
 
 ```js
 /** @type {import('./$types').PageLoad} */
-import { error } from "@sveltejs/kit";
-import getDirectusInstance from "$lib/directus";
+import { error } from '@sveltejs/kit';
+import getDirectusInstance from '$lib/directus';
 export async function load({ fetch, params }) {
-  const directus = getDirectusInstance(fetch);
-  try {
-    return {
-      post: await directus.readItem("posts", params.slug, {
-        fields: ["*", { "*": ["*"] }],
-      }),
-    };
-  } catch (err) {
-    throw error(404, "Post not found");
-  }
+	const directus = getDirectusInstance(fetch);
+
+	try {
+		return {
+			post: await directus.readItem('posts', params.slug, {
+				fields: ['*', { '*': ['*'] }],
+			}),
+		};
+	} catch (err) {
+		throw error(404, 'Post not found');
+	}
 }
 ```
 
@@ -294,14 +294,15 @@ _.page.svelte_
 	/** @type {import('./$types').PageData} */
 	export let data;
 </script>
-<img src="{import.meta.env.VITE_APIURL}/assets/{data.post.image.filename_disk}?width=600" alt="">
+
+<img src="{import.meta.env.VITE_APIURL}/assets/{data.post.image.filename_disk}?width=600" alt="" />
 <h1>{data.post.title}</h1>
 <div>{@html data.post.content}</div>
 ```
 
 \_If the image is not showing up for you, you might have forgotten to also give the directus_files collection read
 access as described above. This is due to that by default the file object only includes the image name, but not the
-metadata, which we need to get the actual binary file from the directus endpoint. To fix this go to Roles & Permissions,
+metadata, which we need to get the actual binary file from the Directus endpoint. To fix this go to Roles & Permissions,
 give the Public role read access to the `directus_files` collection.
 
 Some key notes about this code snippet.
@@ -327,7 +328,7 @@ While not strictly Directus-related, there are now several pages that aren't lin
 <a href="/privacy">Privacy Policy</a>
 <a href="/blog">Blog</a>
 <div>
-    <slot></slot>
+	<slot />
 </div>
 ```
 
