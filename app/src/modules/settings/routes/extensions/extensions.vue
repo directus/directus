@@ -4,6 +4,7 @@ import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, EXTENSION_TYPES } from '@dire
 import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { currentPageLink } from './utils/current-page-link';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
@@ -45,10 +46,6 @@ const refreshExtensions = async (extensionType?: (typeof EXTENSION_TYPES)[number
 	await fetchExtensions();
 };
 
-const refreshPage = () => {
-	window.location.reload();
-};
-
 fetchExtensions();
 </script>
 
@@ -73,7 +70,7 @@ fetchExtensions();
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
 				A page reload is required after enabling or disabling app extensions.&nbsp;
-				<a href="#" @click="refreshPage">Reload now</a>
+				<a :href="currentPageLink()">Reload now</a>
 			</v-notice>
 		</div>
 
@@ -124,3 +121,4 @@ fetchExtensions();
 	margin-top: 24px;
 }
 </style>
+./utils/current-page-link
