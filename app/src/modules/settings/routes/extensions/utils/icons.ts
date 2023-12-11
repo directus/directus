@@ -1,6 +1,6 @@
-import { EXTENSION_TYPES } from '@directus/extensions';
+import { ExtensionType } from '@directus/extensions';
 
-export const iconMap: Record<(typeof EXTENSION_TYPES)[number], string> = {
+export const iconMap: Record<ExtensionType, string> = {
 	interface: 'design_services',
 	display: 'label',
 	layout: 'dataset',
@@ -10,4 +10,5 @@ export const iconMap: Record<(typeof EXTENSION_TYPES)[number], string> = {
 	endpoint: 'api',
 	operation: 'flowsheet',
 	bundle: 'hub',
+	theme: 'palette',
 };

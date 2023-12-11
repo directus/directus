@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
 import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -50,8 +50,12 @@ const fetchExtensions = async () => {
 	}
 };
 
-const refreshExtensions = async (extensionType?: (typeof EXTENSION_TYPES)[number]) => {
-	if (extensionType && (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(extensionType)) {
+const isBrowserExtension = (type: string) => {
+	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
+}
+
+const refreshExtensions = async (extensionType?: ExtensionType) => {
+	if (extensionType && isBrowserExtension(extensionType)) {
 		needsReload.value = true;
 	}
 
@@ -89,7 +93,7 @@ fetchExtensions();
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type as (typeof EXTENSION_TYPES)[number]" />
+					<extension-group-divider class="group-divider" :type="type as ExtensionType" />
 
 					<v-list>
 						<template v-for="extension in list" :key="extension.name">

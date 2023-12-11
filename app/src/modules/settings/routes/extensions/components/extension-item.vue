@@ -2,7 +2,7 @@
 import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import type { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
+import type { ApiOutput, ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { iconMap } from '../utils/icons';
@@ -29,7 +29,7 @@ const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
 const changingEnabledState = ref(false);
 
-const toggleEnabled = async (extensionType?: (typeof EXTENSION_TYPES)[number]) => {
+const toggleEnabled = async (extensionType?: ExtensionType) => {
 	if (changingEnabledState.value === true) return;
 
 	changingEnabledState.value = true;
@@ -48,7 +48,7 @@ const toggleEnabled = async (extensionType?: (typeof EXTENSION_TYPES)[number]) =
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled: !extension.meta.enabled }">
+	<v-list-item block :class="{ disabled: devMode ? false : !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
 		<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
