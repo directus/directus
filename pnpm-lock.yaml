@@ -1162,20 +1162,20 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/lodash-es':
-        specifier: 4.17.7
-        version: 4.17.7
+        specifier: 4.17.12
+        version: 4.17.12
       '@types/node':
-        specifier: 18.16.12
-        version: 18.16.12
+        specifier: 18.19.3
+        version: 18.19.3
       '@types/wellknown':
-        specifier: 0.5.4
-        version: 0.5.4
+        specifier: 0.5.8
+        version: 0.5.8
       '@vitest/coverage-v8':
         specifier: 1.0.4
         version: 1.0.4(vitest@1.0.4)
       dependency-cruiser:
-        specifier: 13.1.4
-        version: 13.1.4
+        specifier: 15.5.0
+        version: 15.5.0
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1184,7 +1184,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.16.12)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/errors:
     dependencies:
@@ -7080,7 +7080,7 @@ packages:
   /@types/lodash-es@4.17.12:
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
     dependencies:
-      '@types/lodash': 4.14.202
+      '@types/lodash': 4.14.194
     dev: true
 
   /@types/lodash-es@4.17.7:
@@ -7097,10 +7097,6 @@ packages:
 
   /@types/lodash@4.14.194:
     resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
-    dev: true
-
-  /@types/lodash@4.14.202:
-    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/mapbox-gl@2.7.17:
@@ -8155,25 +8151,10 @@ packages:
     resolution: {integrity: sha512-uuo6iJj4D4ygkdzd6jPtcxs8vZgDX9YFIkqczGImoypX2fQ4dVImmu3UzA4ynixCIMTrEOWW+95M2HuBaCEOVA==}
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.10.0):
-    resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
-    peerDependencies:
-      acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
-    dependencies:
-      acorn: 8.10.0
-    dev: true
-
   /acorn-jsx@5.3.2(acorn@8.11.2):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
-    dependencies:
-      acorn: 8.11.2
-    dev: true
-
-  /acorn-loose@8.3.0:
-    resolution: {integrity: sha512-75lAs9H19ldmW+fAbyqHdjgdCrz0pWGXKmnqFoh8PyVd1L2RIb4RzYrSjmopeqv3E1G3/Pimu6GgLlrGbrkF7w==}
-    engines: {node: '>=0.4.0'}
     dependencies:
       acorn: 8.11.2
     dev: true
@@ -8183,11 +8164,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dependencies:
       acorn: 8.11.2
-    dev: true
-
-  /acorn-walk@8.2.0:
-    resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
-    engines: {node: '>=0.4.0'}
     dev: true
 
   /acorn-walk@8.3.0:
@@ -9400,11 +9376,6 @@ packages:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
 
-  /commander@11.0.0:
-    resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
-    engines: {node: '>=16'}
-    dev: true
-
   /commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
@@ -10174,39 +10145,6 @@ packages:
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
-
-  /dependency-cruiser@13.1.4:
-    resolution: {integrity: sha512-cMrtPuPxp+uqQMt196IJ8lgKQglu+dbTsWgGHV+Y0AkWYJISjByluA1YcmPjglzXB9innj0s+oEcGE/N6Jm4aA==}
-    engines: {node: ^16.14||>=18}
-    hasBin: true
-    dependencies:
-      acorn: 8.10.0
-      acorn-jsx: 5.3.2(acorn@8.10.0)
-      acorn-jsx-walk: 2.0.0
-      acorn-loose: 8.3.0
-      acorn-walk: 8.2.0
-      ajv: 8.12.0
-      chalk: 5.3.0
-      commander: 11.0.0
-      enhanced-resolve: 5.15.0
-      figures: 5.0.0
-      glob: 10.3.3
-      ignore: 5.2.4
-      indent-string: 5.0.0
-      interpret: 3.1.1
-      is-installed-globally: 0.4.0
-      json5: 2.2.3
-      lodash: 4.17.21
-      prompts: 2.4.2
-      rechoir: 0.8.0
-      safe-regex: 2.1.1
-      semver: 7.5.4
-      semver-try-require: 6.2.3
-      teamcity-service-messages: 0.1.14
-      tsconfig-paths-webpack-plugin: 4.1.0
-      watskeburt: 0.12.1
-      wrap-ansi: 8.1.0
-    dev: true
 
   /dependency-cruiser@15.5.0:
     resolution: {integrity: sha512-f6pY7rh6IHl39pLHdA9CUg3LzbJRDPeZXGa1q0A4v7qTy3CDP8xOg0gsecFglurvsB6kuIYkUSW1PUtfyVkEOA==}
@@ -11233,6 +11171,7 @@ packages:
     dependencies:
       escape-string-regexp: 5.0.0
       is-unicode-supported: 1.3.0
+    dev: false
 
   /figures@6.0.1:
     resolution: {integrity: sha512-0oY/olScYD4IhQ8u//gCPA4F3mlTn2dacYmiDm/mbDQvpmLjV4uH+zhsQ5IyXRyvqkvtUkXkNdGvg5OFJTCsuQ==}
@@ -11759,18 +11698,6 @@ packages:
       path-scurry: 1.10.1
     dev: true
 
-  /glob@10.3.3:
-    resolution: {integrity: sha512-92vPiMb/iqpmEgsOoIDvTjc50wf9CCCvMzsi6W0JLPeUKE8TWP1a73PgqSrqy7iAZxaSD1YdzU7QZR5LF51MJw==}
-    engines: {node: '>=16 || 14 >=14.17'}
-    hasBin: true
-    dependencies:
-      foreground-child: 3.1.1
-      jackspeak: 2.3.6
-      minimatch: 9.0.1
-      minipass: 7.0.4
-      path-scurry: 1.10.1
-    dev: true
-
   /glob@7.1.6:
     resolution: {integrity: sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==}
     dependencies:
@@ -11808,13 +11735,6 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       ini: 4.1.1
-    dev: true
-
-  /global-dirs@3.0.1:
-    resolution: {integrity: sha512-NBcGGFbBA9s1VzD41QXDG+3++t9Mn5t1FpLdhESY6oKY4gYTFpX4wO3sqGUa0Srjtbfj3szX0RnemmrVRUdULA==}
-    engines: {node: '>=10'}
-    dependencies:
-      ini: 2.0.0
     dev: true
 
   /globals@13.24.0:
@@ -12401,11 +12321,6 @@ packages:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
     dev: true
 
-  /ignore@5.2.4:
-    resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
-    engines: {node: '>= 4'}
-    dev: true
-
   /ignore@5.3.0:
     resolution: {integrity: sha512-g7dmpshy+gD7mh88OC9NwSGTKoc3kyLAZQRU1mt53Aw/vnvfXnbC+F/7F7QoYVKbV+KNvJx8wArewKy1vXMtlg==}
     engines: {node: '>= 4'}
@@ -12464,11 +12379,6 @@ packages:
 
   /ini@1.3.8:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
-
-  /ini@2.0.0:
-    resolution: {integrity: sha512-7PnF4oN3CvZF23ADhA5wRaYEQpJ8qygSkbtTXWBeXWXmEVRXK+1ITciHWwHhsjv1TmW0MgacIv6hEi5pX5NQdA==}
-    engines: {node: '>=10'}
-    dev: true
 
   /ini@3.0.1:
     resolution: {integrity: sha512-it4HyVAUTKBc6m8e1iXWvXSTdndF7HbdN713+kvLrymxTaU4AUBWrJ4vEooP+V7fexnVD3LKcBshjGGPefSMUQ==}
@@ -12718,14 +12628,6 @@ packages:
       is-docker: 3.0.0
     dev: true
 
-  /is-installed-globally@0.4.0:
-    resolution: {integrity: sha512-iwGqO3J21aaSkC7jWnHP/difazwS7SFeIqxv6wEtLU8Y5KlzFTjyqcSIT0d8s4+dDhKytsk9PJZ2BkS5eZwQRQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      global-dirs: 3.0.1
-      is-path-inside: 3.0.3
-    dev: true
-
   /is-installed-globally@1.0.0:
     resolution: {integrity: sha512-K55T22lfpQ63N4KEN57jZUAaAYqYHEe8veb/TycJRk9DdSCLLcovXz/mL6mOnhQaZsQGwPhuFopdQIlqGSEjiQ==}
     engines: {node: '>=18'}
@@ -12878,6 +12780,7 @@ packages:
   /is-unicode-supported@1.3.0:
     resolution: {integrity: sha512-43r2mRvz+8JRIKnWJ+3j8JtjRKZ6GmjzfaE/qiBJnikNnYv/6bagRJ1kUhNk8R5EX/GkobD+r+sfxCPJsiKBLQ==}
     engines: {node: '>=12'}
+    dev: false
 
   /is-unicode-supported@2.0.0:
     resolution: {integrity: sha512-FRdAyx5lusK1iHG0TWpVtk9+1i+GjrzRffhDg4ovQ7mcidMQ6mj+MhKPmvh7Xwyv5gIS06ns49CA7Sqg7lC22Q==}
@@ -20243,12 +20146,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       xml-name-validator: 4.0.0
-    dev: true
-
-  /watskeburt@0.12.1:
-    resolution: {integrity: sha512-DHfW+OGKYFTei2jtylJg6ZLCO9P9BHMsf9v4Z4QBvocfdJ0gY+Re7K4rPmpkSpfNLdhzsvovPIQ4z836yViTNA==}
-    engines: {node: ^16.14||>=18}
-    hasBin: true
     dev: true
 
   /watskeburt@2.0.2:
