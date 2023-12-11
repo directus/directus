@@ -28,12 +28,12 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@supabase/storage-js": "2.5.1",
-		"undici": "5.22.1"
+		"@supabase/storage-js": "2.5.5",
+		"undici": "6.0.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
+		"@ngneat/falso": "7.1.1",
 		"@vitest/coverage-v8": "1.0.4",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
