@@ -968,7 +968,7 @@ importers:
         version: 3.6.4(rollup@3.29.4)(typescript@5.3.3)(vite@4.5.1)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/composables:
     dependencies:
@@ -1017,7 +1017,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/constants:
     devDependencies:
@@ -1215,7 +1215,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/extensions:
     dependencies:
@@ -1382,7 +1382,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/pressure:
     dependencies:
@@ -1410,7 +1410,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/random:
     devDependencies:
@@ -1508,8 +1508,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 18.16.12
-        version: 18.16.12
+        specifier: 18.19.3
+        version: 18.19.3
       '@vitest/coverage-v8':
         specifier: 1.0.4
         version: 1.0.4(vitest@1.0.4)
@@ -1521,7 +1521,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.16.12)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1552,7 +1552,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1586,7 +1586,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1617,7 +1617,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-local:
     dependencies:
@@ -1685,7 +1685,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1719,7 +1719,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/stores:
     dependencies:
@@ -1961,7 +1961,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   sdk:
     devDependencies:
@@ -1979,7 +1979,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   tests/blackbox:
     devDependencies:
@@ -2057,7 +2057,7 @@ importers:
         version: 4.2.2(typescript@5.3.3)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
       ws:
         specifier: 8.15.0
         version: 8.15.0
@@ -7428,7 +7428,7 @@ packages:
       std-env: 3.6.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.0.4(@types/node@18.19.3)
+      vitest: 1.0.4(@types/node@18.16.12)
     transitivePeerDependencies:
       - supports-color
     dev: true
