@@ -11,7 +11,7 @@ import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertFieldNodes } from './fields.js';
 import { getRelationCondition, type NestedManyResult } from './create-nested-manys.js';
 import type { AbstractSqlQueryConditionNode } from '../../types/clauses/where/condition.js';
-import type { AbstractSqlQueryWhereNode } from '../../index.js';
+import { createUniqueAlias, type AbstractSqlQueryWhereNode } from '../../index.js';
 
 /**
  * Converts a nested union one node from the abstract query into a function which creates the sub query for a2o.
@@ -22,24 +22,19 @@ import type { AbstractSqlQueryWhereNode } from '../../index.js';
  */
 export function getNestedUnionOne(collection: string, field: AbstractQueryFieldNodeNestedUnionOne): NestedManyResult {
 	const index = parameterIndexGenerator();
+	const generatedAlias = createUniqueAlias(field.nesting.field);
 
 	return {
 		subQuery: (rootRow) => {
 			// get data from the relational column
-			const anyColumnValue = rootRow[field.nesting.field] as A2ORelation;
+			const anyColumnValue = rootRow[generatedAlias] as A2ORelation;
 			const foreignTable = anyColumnValue.foreignCollection;
 			const fk = anyColumnValue.foreignKey;
 
 			// get the correct collection from the abstract query for this row
 			const desiredRelationalInfo = field.nesting.collections.find((c) => c.relational.collectionName === foreignTable);
-			if (!desiredRelationalInfo?.fields) throw new Error('No relational data found for collection');
+			if (!desiredRelationalInfo) throw new Error('Relational data is not sufficient in abstract query.');
 
-			// get the nested select - not needed in this case
-			// const generatedAliases = desiredRelationalInfo.fields.map((field) => [field, createUniqueAlias(field)] as const);
-			// const generatedAliasMap = Object.fromEntries(generatedAliases);
-			// const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
-
-			// Convert
 			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, index);
 			// const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
 
@@ -66,6 +61,7 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 				type: 'primitive',
 				table: collection,
 				column: field.nesting.field,
+				as: generatedAlias,
 			},
 		],
 	};
