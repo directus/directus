@@ -30,14 +30,14 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@histoire/plugin-vue": "0.16.1",
-		"@vitejs/plugin-vue": "4.2.3",
+		"@histoire/plugin-vue": "0.17.6",
+		"@vitejs/plugin-vue": "4.5.2",
 		"@vitest/coverage-v8": "1.0.4",
-		"histoire": "0.16.1",
-		"rollup-plugin-node-externals": "6.1.1",
+		"histoire": "0.17.6",
+		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.3.3",
-		"vite": "4.3.7",
-		"vite-plugin-dts": "2.3.0",
+		"vite": "4.5.1",
+		"vite-plugin-dts": "3.6.4",
 		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
