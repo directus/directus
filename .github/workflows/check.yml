@@ -50,7 +50,7 @@ jobs:
           build: false
 
       - name: Run Formatter
-        run: pnpm exec prettier --check ${{ steps.changed-files.outputs.all_changed_files }}
+        run: pnpm exec prettier --check --ignore-unknown ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests

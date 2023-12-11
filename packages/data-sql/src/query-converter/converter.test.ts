@@ -6,16 +6,16 @@ import { randomAlpha, randomIdentifier } from '@directus/random';
 import { convertFieldNodes, type FieldConversionResult } from './fields/fields.js';
 import { convertModifiers, type ModifierConversionResult } from './modifiers/modifiers.js';
 
-vi.mock('./fields/fields.js', (importOriginal) => {
-	const mod = importOriginal();
+vi.mock('./fields/fields.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('./fields/fields.js')>();
 	return {
 		...mod,
 		convertFieldNodes: vi.fn(),
 	};
 });
 
-vi.mock('./modifiers/modifiers.js', (importOriginal) => {
-	const mod = importOriginal();
+vi.mock('./modifiers/modifiers.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('./modifiers/modifiers.js')>();
 	return {
 		...mod,
 		convertModifiers: vi.fn(),
@@ -64,17 +64,15 @@ test('Convert a query with a foreign/right string filter', () => {
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
-							type: 'm2o',
-							join: {
-								local: {
-									fields: [leftHandIdentifierField],
-								},
-								foreign: {
-									store: rootStore,
-									fields: [rightHandIdentifierField],
-									collection: foreignCollection,
-								},
+						nesting: {
+							type: 'relational-many',
+							local: {
+								fields: [leftHandIdentifierField],
+							},
+							foreign: {
+								store: rootStore,
+								fields: [rightHandIdentifierField],
+								collection: foreignCollection,
 							},
 						},
 					},
@@ -104,8 +102,8 @@ test('Convert a query with a foreign/right string filter', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map(),
-		nestedManys: [],
+		aliasMapping: [],
+		subQueries: [],
 	};
 
 	vi.mocked(convertFieldNodes).mockReturnValueOnce(fieldConversionResult);
@@ -224,8 +222,8 @@ test('Convert a query with a foreign/right string filter', () => {
 		parameters: [compareValue],
 	};
 
-	expect(res.clauses).toStrictEqual(expected.clauses);
-	expect(res.parameters).toStrictEqual(expected.parameters);
+	expect(res.rootQuery.clauses).toStrictEqual(expected.clauses);
+	expect(res.rootQuery.parameters).toStrictEqual(expected.parameters);
 });
 
 test('Convert a query with a nested field and filtering on that nested field.', () => {
@@ -245,7 +243,7 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 				alias: randomIdentifier(),
 			},
 			{
-				type: 'nested-one',
+				type: 'nested-single-one',
 				fields: [
 					{
 						type: 'primitive',
@@ -254,17 +252,15 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 					},
 				],
 				alias: randomIdentifier(),
-				meta: {
-					type: 'm2o',
-					join: {
-						local: {
-							fields: [leftHandIdentifierField],
-						},
-						foreign: {
-							store: rootStore,
-							fields: [rightHandIdentifierField],
-							collection: foreignCollection,
-						},
+				nesting: {
+					type: 'relational-many',
+					local: {
+						fields: [leftHandIdentifierField],
+					},
+					foreign: {
+						store: rootStore,
+						fields: [rightHandIdentifierField],
+						collection: foreignCollection,
 					},
 				},
 			},
@@ -280,17 +276,15 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
-							type: 'm2o',
-							join: {
-								local: {
-									fields: [leftHandIdentifierField],
-								},
-								foreign: {
-									store: rootStore,
-									fields: [rightHandIdentifierField],
-									collection: foreignCollection,
-								},
+						nesting: {
+							type: 'relational-many',
+							local: {
+								fields: [leftHandIdentifierField],
+							},
+							foreign: {
+								store: rootStore,
+								fields: [rightHandIdentifierField],
+								collection: foreignCollection,
 							},
 						},
 					},
@@ -345,8 +339,8 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 			joins: [joinNode],
 		},
 		parameters: [],
-		aliasMapping: new Map(),
-		nestedManys: [],
+		aliasMapping: [],
+		subQueries: [],
 	};
 
 	vi.mocked(convertFieldNodes).mockReturnValueOnce(fieldConversionResult);
@@ -464,5 +458,5 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 		parameters: [compareValue],
 	};
 
-	expect(res.clauses).toStrictEqual(expected.clauses);
+	expect(res.rootQuery.clauses).toStrictEqual(expected.clauses);
 });

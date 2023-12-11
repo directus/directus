@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useLocalStorage, type RemovableRef } from '@vueuse/core';
-import { onMounted, ref, watch, nextTick } from 'vue';
+import { nextTick, onMounted, ref, watch, type Ref } from 'vue';
+import { useLocalStorage } from '../composables/useLocalStorage';
 
 const props = defineProps<{
 	choices: string[];
@@ -10,35 +10,33 @@ const props = defineProps<{
 }>();
 
 const selected = ref<string>();
-let localStorage: RemovableRef<string | undefined> | undefined;
+let storage: Ref<string | null> | undefined;
 
-// Get local storage on client side (preventing SSR <-> client mismatch & flash)
+// Get local storage on client side (preventing SSR <-> Client mismatch & initial flash)
 onMounted(() => {
+	const defaultValue = props.choices[0];
+
 	if (props.group) {
-		localStorage = useLocalStorage(`toggler-${props.group}`, undefined);
+		storage = useLocalStorage(`toggler-${props.group}`);
 
-		const initialValue = localStorage.value;
+		const initialValue = storage.value;
 
-		selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : props.choices[0];
+		selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : defaultValue;
 
-		watch(localStorage, (value) => {
-			if (value && !props.choices.includes(value)) return;
+		watch(storage, (value) => {
+			if (!value || !props.choices.includes(value)) return;
 
 			selected.value = value;
 		});
 	} else {
-		selected.value = props.choices[0];
+		selected.value = defaultValue;
 	}
 });
 
 const changeSelected = async (choice: string, el: HTMLElement) => {
 	const previousRelativeOffset = el.offsetTop - document.documentElement.scrollTop;
 
-	if (localStorage) {
-		localStorage.value = choice;
-	} else {
-		selected.value = choice;
-	}
+	(storage ?? selected).value = choice;
 
 	if (props.group) {
 		await nextTick();

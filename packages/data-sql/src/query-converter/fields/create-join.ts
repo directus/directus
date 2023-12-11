@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeRelationalManyToOne, AtLeastOneElement } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedRelationalMany, AtLeastOneElement } from '@directus/data';
 import type {
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
@@ -7,18 +7,18 @@ import type {
 
 export const createJoin = (
 	currentCollection: string,
-	relationalField: AbstractQueryFieldNodeRelationalManyToOne,
+	relationalField: AbstractQueryFieldNodeNestedRelationalMany,
 	externalCollectionAlias: string,
 ): AbstractSqlQueryJoinNode => {
 	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
 
-	if (relationalField.join.local.fields.length > 1) {
+	if (relationalField.local.fields.length > 1) {
 		on = {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: relationalField.join.local.fields.map((currentField, index) => {
-				const externalField = relationalField.join.foreign.fields[index];
+			childNodes: relationalField.local.fields.map((currentField, index) => {
+				const externalField = relationalField.foreign.fields[index];
 
 				if (!externalField) {
 					throw new Error(`Missing related foreign key join column for current context column "${currentField}"`);
@@ -30,15 +30,15 @@ export const createJoin = (
 	} else {
 		on = getJoinCondition(
 			currentCollection,
-			relationalField.join.local.fields[0],
+			relationalField.local.fields[0],
 			externalCollectionAlias,
-			relationalField.join.foreign.fields[0],
+			relationalField.foreign.fields[0],
 		);
 	}
 
 	const result: AbstractSqlQueryJoinNode = {
 		type: 'join',
-		table: relationalField.join.foreign.collection,
+		table: relationalField.foreign.collection,
 		as: externalCollectionAlias,
 		on,
 	};

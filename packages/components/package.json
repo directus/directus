@@ -26,26 +26,24 @@
 		"dev": "vite build --watch",
 		"story:build": "histoire build",
 		"story:dev": "histoire dev",
-		"story:preview": "histoire preview",
-		"test": "vitest --watch=false"
+		"story:preview": "histoire preview"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.16.1",
-		"@histoire/shared": "0.16.1",
 		"@vitejs/plugin-vue": "4.2.3",
-		"@vitest/coverage-v8": "0.34.6",
+		"@vitest/coverage-v8": "1.0.4",
 		"histoire": "0.16.1",
 		"rollup-plugin-node-externals": "6.1.1",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"vite": "4.3.7",
 		"vite-plugin-dts": "2.3.0",
-		"vitest": "0.34.6"
+		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
-		"pinia": "2.1.1",
-		"vue": "3.3.4",
+		"pinia": "2.1.7",
+		"vue": "3.3.9",
 		"vue-i18n": "9.2.2",
-		"vue-router": "4.2.0"
+		"vue-router": "4.2.5"
 	}
 }

@@ -15,35 +15,45 @@ All three of these services extend the [ItemsService](/docs/extensions/services/
 very similar way.
 
 ```js
-export default defineEndpoint(async (router, context) => {
+export default defineEndpoint((router, context) => {
   const { services, getSchema } = context;
   const { UsersService, RolesService, PermissionsService } = services;
-  const schema = await getSchema();
-  const usersService = new UsersService({ schema });
-  const rolesService = new RolesService({ schema });
-  const permissionsService = new PermissionsService({ schema });
 
   router.get('/', async (req, res) => {
+    const schema = await getSchema();
+    const usersService = new UsersService({ schema, accountability: req.accountability });
+    const rolesService = new RolesService({ schema, accountability: req.accountability });
+    const permissionsService = new PermissionsService({ schema, accountability: req.accountability });
+
     // Your route handler logic
   });
 });
 ```
 
-### Get a User
+## Get a User
 
 ```js
 router.get('/', async (req, res) => {
+  const usersService = new UsersService({
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await usersService.getUserByEmail('email');
 
-  res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Create a Role
+## Create a Role
 
 ```js
 router.post('/', async (req, res) => {
+  const rolesService = new RolesService({
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await rolesService.createOne({
     name: 'Interns',
     icon: 'verified_user',
@@ -52,15 +62,19 @@ router.post('/', async (req, res) => {
     app_access: true,
   });
 
-  res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Create a User and Assign a Role
+## Create a User and Assign a Role
 
 ```js
 router.post('/', async (req, res) => {
+  const rolesService = new RolesService({
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const roles = await rolesService.readByQuery({
     fields: ['*'],
   });
@@ -72,7 +86,6 @@ router.post('/', async (req, res) => {
     role: foundRole.id,
   });
 
-  res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
@@ -83,53 +96,70 @@ A role is required when creating a user.
 
 :::
 
-### Update a User
+## Update a User
 
 ```js
 router.patch('/', async (req, res) => {
+  const usersService = new UsersService({
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await usersService.updateOne('user_id', {
     title: 'CTO'
   });
-  res.locals['payload'] = { data: data || null };
+
   res.json(data);
 });
 ```
 
-### Delete a User
+## Delete a User
 
 ```js
 router.delete('/', async (req, res) => {
+  const usersService = new UsersService({
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await usersService.deleteOne('user_id');
 
-  res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Assign Permission to a Role
+## Assign Permission to a Role
 
 ```js
 router.post('/', async (req, res) => {
-	const roles = await rolesService.readByQuery({
-		fields: ['*'],
-	});
+  const schema = await getSchema();
+  const rolesService = new RolesService({ schema,	accountability: req.accountability });
+  const permissionsService = new PermissionsService({ schema, accountability: req.accountability });
 
-	const foundRole = roles.find((item) => item.name == 'role');
+  const roles = await rolesService.readByQuery({
+	  fields: ['*'],
+	  filter: {
+		  name: {
+			  _eq: 'role'
+		  }
+	  }
+  });
 
-	const data = await permissionsService.createOne({
-		collection: 'pages',
-		action: 'read',
-		role: 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7',
-		fields: ['id', 'title'],
-		role: foundRole.id,
-	});
+  const foundRole = roles[0];
 
-	res.locals['payload'] = { data: data || null };
-	res.json(data);
+  const data = await permissionsService.createOne({
+	  collection: 'pages',
+	  action: 'read',
+	  role: 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7',
+	  fields: ['id', 'title'],
+	  role: foundRole.id,
+  });
+
+  res.json(data);
 });
 ```
 
-::: tip Explore Services In-depth
+::: tip Explore Services In-Depth
 
 Refer to the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
 

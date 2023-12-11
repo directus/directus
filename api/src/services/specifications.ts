@@ -34,8 +34,7 @@ export class SpecificationService {
 		this.schema = schema;
 
 		this.oas = new OASSpecsService({ knex, schema, accountability });
-
-		this.graphql = new GraphQLSpecsService({ knex, schema });
+		this.graphql = new GraphQLSpecsService({ knex, schema, accountability });
 	}
 }
 

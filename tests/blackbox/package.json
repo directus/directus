@@ -29,11 +29,10 @@
 		"lodash-es": "4.17.21",
 		"seedrandom": "3.0.5",
 		"supertest": "6.3.3",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"uuid": "9.0.1",
 		"vite-tsconfig-paths": "4.2.1",
-		"vitest": "0.34.6",
-		"vitest-environment-blackbox": "workspace:*",
+		"vitest": "1.0.4",
 		"ws": "8.14.2"
 	}
 }

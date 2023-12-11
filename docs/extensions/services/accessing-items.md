@@ -9,13 +9,16 @@ The `ItemsService` provides access to perform operations on items in a collectio
 to operate.
 
 ```js
-export default defineEndpoint(async (router, context) => {
+export default defineEndpoint((router, context) => {
   const { services, getSchema } = context;
   const { ItemsService } = services;
-  const schema = await getSchema();
-  const itemsService = new ItemsService('collection_name', { schema });
 
   router.get('/', async (req, res) => {
+    const itemsService = new ItemsService('collection_name', {
+      schema: await getSchema(),
+      accountability: req.accountability
+    });
+
     // Your route handler logic
   });
 });
@@ -25,6 +28,11 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
+  const itemsService = new ItemsService('collection_name', {
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await itemsService.createOne({
     title: 'Hello world!',
     body: 'This is our first article',
@@ -38,6 +46,11 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
+  const itemsService = new ItemsService('collection_name', {
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await itemsService.readOne('item_id');
 
   res.json(data);
@@ -48,6 +61,11 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
+  const itemsService = new ItemsService('collection_name', {
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
+
   const data = await itemsService.updateOne('item_id', {
     title: "An updated title"
   });
@@ -60,13 +78,18 @@ router.patch('/', async (req, res) => {
 
 ```js
 router.delete('/', async (req, res) => {
-  await itemsService.deleteOne('item_id');
+  const itemsService = new ItemsService('collection_name', {
+    schema: await getSchema(),
+    accountability: req.accountability
+  });
 
-  res.json();
+  const data = await itemsService.deleteOne('item_id');
+
+	res.json(data);
 });
 ```
 
-::: tip Explore ItemsService In-depth
+::: tip Explore ItemsService In-Depth
 
 Refer to the full list of methods
 [in our codebase](https://github.com/directus/directus/blob/main/api/src/services/items.ts).

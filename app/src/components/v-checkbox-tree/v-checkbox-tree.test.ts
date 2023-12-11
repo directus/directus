@@ -9,7 +9,7 @@ import VList from '../v-list.vue';
 import VListGroup from '../v-list-group.vue';
 import VCheckbox from '../v-checkbox.vue';
 import { h } from 'vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { Router } from 'vue-router';
 import { generateRouter } from '@/__utils__/router';
 

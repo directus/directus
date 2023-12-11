@@ -86,7 +86,7 @@
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.0",
 		"@rollup/plugin-alias": "5.0.0",
-		"@rollup/plugin-node-resolve": "15.0.2",
+		"@rollup/plugin-node-resolve": "15.2.3",
 		"@rollup/plugin-virtual": "3.0.1",
 		"argon2": "0.31.1",
 		"async": "3.2.4",
@@ -116,7 +116,7 @@
 		"graphql": "16.8.1",
 		"graphql-compose": "9.0.10",
 		"graphql-ws": "5.14.1",
-		"helmet": "7.0.0",
+		"helmet": "7.1.0",
 		"icc": "3.0.0",
 		"inquirer": "9.2.4",
 		"ioredis": "5.3.2",
@@ -142,7 +142,7 @@
 		"nodemailer": "6.9.2",
 		"object-hash": "3.0.0",
 		"openapi3-ts": "4.1.2",
-		"openid-client": "5.4.2",
+		"openid-client": "5.6.1",
 		"ora": "6.3.1",
 		"otplib": "12.0.1",
 		"p-queue": "7.4.1",
@@ -159,9 +159,8 @@
 		"sharp": "0.32.6",
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
-		"strip-bom-stream": "5.0.0",
 		"tinypool": "0.8.1",
-		"tsx": "4.1.4",
+		"tsx": "4.6.1",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"wellknown": "0.5.0",
@@ -170,7 +169,6 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
@@ -181,10 +179,10 @@
 		"@types/cookie-parser": "1.4.3",
 		"@types/cors": "2.8.13",
 		"@types/deep-diff": "1.0.2",
-		"@types/destroy": "1.0.0",
+		"@types/destroy": "1.0.3",
 		"@types/encodeurl": "1.0.0",
 		"@types/exif-reader": "1.0.0",
-		"@types/express": "4.17.17",
+		"@types/express": "4.17.21",
 		"@types/express-serve-static-core": "4.17.35",
 		"@types/flat": "5.0.2",
 		"@types/fs-extra": "11.0.1",
@@ -211,13 +209,13 @@
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.4",
 		"@types/ws": "8.5.8",
-		"@vitest/coverage-v8": "0.34.6",
+		"@vitest/coverage-v8": "1.0.4",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
-		"typescript": "5.2.2",
-		"vitest": "0.34.6"
+		"typescript": "5.3.2",
+		"vitest": "1.0.4"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.5.8",
@@ -226,7 +224,7 @@
 		"nodemailer-sendgrid": "1.0.3",
 		"pg": "8.11.0",
 		"sqlite3": "5.1.6",
-		"tedious": "16.1.0"
+		"tedious": "16.6.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
