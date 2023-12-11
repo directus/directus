@@ -1,6 +1,7 @@
 import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { afterAll, expect, test, vi } from 'vitest';
+import type { ConverterResult } from '../../index.js';
 import { type NestedManyResult } from './create-nested-manys.js';
 import { getNestedUnionOne } from './create-nested-union-one.js';
 
@@ -12,8 +13,9 @@ vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
-test.todo('getNestedMany with a single identifier', () => {
+test('getNestedUnionOne with a single identifier', () => {
 	const collection = randomIdentifier();
+	const localIdField = randomIdentifier();
 
 	// first foreign collection
 	const foreignIdField = randomIdentifier();
@@ -27,6 +29,7 @@ test.todo('getNestedMany with a single identifier', () => {
 	const foreignTable2 = randomIdentifier();
 	const foreignStore2 = randomIdentifier();
 
+	const randomValue = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedUnionOne = {
@@ -84,5 +87,51 @@ test.todo('getNestedMany with a single identifier', () => {
 		],
 	};
 
+	const rootRow = {
+		[`${localIdField}_RANDOM`]: randomValue,
+		'the-json-column_RANDOM': {
+			foreignKey: [1],
+			foreignCollection: foreignTable2,
+		},
+	};
+
+	const expectedGeneratedQuery: ConverterResult = {
+		rootQuery: {
+			clauses: {
+				select: [
+					{
+						type: 'primitive',
+						table: foreignTable2,
+						column: foreignIdField2,
+						as: `${foreignIdField2}_RANDOM`,
+					},
+				],
+				from: foreignTable2,
+				joins: [],
+				where: {
+					type: 'condition',
+					condition: {
+						type: 'condition-string',
+						operation: 'eq',
+						target: {
+							type: 'primitive',
+							table: foreignTable2,
+							column: foreignIdField2,
+						},
+						compareTo: {
+							type: 'value',
+							parameterIndex: 0,
+						},
+					},
+					negate: false,
+				},
+			},
+			parameters: [1],
+		},
+		subQueries: [],
+		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
+	};
+
 	expect(result).toStrictEqual(expected);
+	expect(result.subQuery(rootRow)).toStrictEqual(expectedGeneratedQuery);
 });
