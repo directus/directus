@@ -48,9 +48,23 @@ export type SubQuery = (rootRow: Record<string, unknown>) => {
 };
 
 export type AliasMapping = (
-	| { type: 'nested'; alias: string; children: AliasMapping }
 	| { type: 'root'; alias: string; column: string }
-	| { type: 'sub'; alias: string; index: number }
+
+	/** The alias mapping for a sub result which was fetched using a JOIN */
+	| {
+			type: 'nested';
+			alias: string;
+			children: AliasMapping;
+	  }
+
+	/** The alias map for a sub result which was fetched using a separate sub query */
+	| {
+			type: 'sub';
+			alias: string;
+
+			/** The index of the actual result from the sub query result array */
+			index: number;
+	  }
 )[];
 
 export interface ConverterResult {
