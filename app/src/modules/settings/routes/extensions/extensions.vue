@@ -19,7 +19,7 @@ const extensions = ref<ApiOutput[]>([]);
 const needsReload = ref<boolean>(false);
 
 const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
-const regular = computed(() => extensions.value.filter(({ bundle }) => !!bundle === false));
+const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
 
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
@@ -69,8 +69,8 @@ fetchExtensions();
 
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
-				A page reload is required after enabling or disabling app extensions.&nbsp;
-				<a :href="currentPageLink()">Reload now</a>
+				{{ t('extension_reload_required') }}&nbsp;
+				<a :href="currentPageLink()">{{ t('reload_page') }}</a>
 			</v-notice>
 		</div>
 
