@@ -144,6 +144,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_LAST_NAME_KEY',
 	'AUTH_.+_ALLOW_PUBLIC_REGISTRATION',
 	'AUTH_.+_DEFAULT_ROLE_ID',
+	'AUTH_.+_ROLE_ID_CLAIM',
 	'AUTH_.+_ICON',
 	'AUTH_.+_LABEL',
 	'AUTH_.+_PARAMS',

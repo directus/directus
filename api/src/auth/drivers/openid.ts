@@ -167,7 +167,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
-		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail } = this.config;
+		const { provider, identifierKey, allowPublicRegistration, requireVerifiedEmail, roleIdClaim } = this.config;
 
 		const email = userInfo['email'] ? String(userInfo['email']) : undefined;
 		// Fallback to email if explicit identifier not found
@@ -184,7 +184,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			last_name: userInfo['family_name'],
 			email: email,
 			external_identifier: identifier,
-			role: this.config['defaultRoleId'],
+			role: userInfo[roleIdClaim] || this.config['defaultRoleId'],
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
