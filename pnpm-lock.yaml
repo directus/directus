@@ -1806,11 +1806,11 @@ importers:
         specifier: workspace:*
         version: link:../schema
       '@types/geojson':
-        specifier: 7946.0.10
-        version: 7946.0.10
+        specifier: 7946.0.13
+        version: 7946.0.13
       knex:
-        specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
+        specifier: 2.5.1
+        version: 2.5.1
       vue:
         specifier: 3.3.11
         version: 3.3.11(typescript@5.3.3)
@@ -7450,6 +7450,11 @@ packages:
 
   /@types/geojson@7946.0.10:
     resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
+    dev: true
+
+  /@types/geojson@7946.0.13:
+    resolution: {integrity: sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==}
+    dev: false
 
   /@types/glob-to-regexp@0.4.3:
     resolution: {integrity: sha512-/n3n1XCjkBcFA4gWflBOtMYBnDefmd8qCcUu9vBQWUmg1tKPU4jjn3cEHPAl0zVCQ8vVbuVUvcEF5uvU2+Iddw==}
