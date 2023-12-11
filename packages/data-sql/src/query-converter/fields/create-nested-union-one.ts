@@ -36,17 +36,15 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 
 			const indexGenerator = parameterIndexGenerator();
 			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, indexGenerator);
-			// const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
 
-			const joins = [...nestedFieldNodes.clauses.joins]; //  ...(nestedModifiers.clauses.joins ?? [])
-			const nestedParameters = [...nestedFieldNodes.parameters]; // ...nestedModifiers.parameters
+			const joins = [...nestedFieldNodes.clauses.joins];
+			const nestedParameters = [...nestedFieldNodes.parameters];
 
 			return {
 				rootQuery: {
 					clauses: {
 						select: nestedFieldNodes.clauses.select,
 						from: anyColumnValue.foreignCollection,
-						// ...nestedModifiers.clauses,
 						joins: joins,
 						where: getRelationConditions(anyColumnValue, indexGenerator, field.nesting),
 					},
