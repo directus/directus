@@ -58,7 +58,7 @@
 		"@editorjs/underline": "1.1.0",
 		"@fortawesome/fontawesome-svg-core": "6.5.1",
 		"@fortawesome/free-brands-svg-icons": "6.4.0",
-		"@fullcalendar/core": "6.1.7",
+		"@fullcalendar/core": "6.1.10",
 		"@fullcalendar/daygrid": "6.1.7",
 		"@fullcalendar/interaction": "6.1.7",
 		"@fullcalendar/list": "6.1.7",
