@@ -32,7 +32,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgis/postgis:13-alpine
+    image: postgis/postgis:13-3.4-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -40,7 +40,7 @@ services:
       - 6100:5432
 
   postgres10:
-    image: postgis/postgis:10-alpine
+    image: postgis/postgis:10-3.2-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
