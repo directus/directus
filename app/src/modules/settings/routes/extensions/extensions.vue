@@ -33,7 +33,7 @@ const leavePage = () => {
 	router.push(target);
 	// reload the page
 	router.go(0);
-}
+};
 
 const fetchExtensions = async () => {
 	loading.value = true;
@@ -52,7 +52,7 @@ const fetchExtensions = async () => {
 
 const isBrowserExtension = (type: string) => {
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
-}
+};
 
 const refreshExtensions = async (extensionType?: ExtensionType) => {
 	if (extensionType && isBrowserExtension(extensionType)) {
