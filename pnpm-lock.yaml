@@ -886,7 +886,7 @@ importers:
         version: 3.0.1(eslint@8.55.0)
       eslint-plugin-prettier:
         specifier: npm:@paescuj/eslint-plugin-prettier@5.0.1-1
-        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.0)
+        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
       eslint-plugin-react:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.55.0)
@@ -956,7 +956,7 @@ importers:
         version: 0.17.6(vite@4.5.1)
       rollup-plugin-node-externals:
         specifier: 6.1.2
-        version: 6.1.2(rollup@3.22.0)
+        version: 6.1.2(rollup@4.8.0)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -965,10 +965,10 @@ importers:
         version: 4.5.1(sass@1.62.1)
       vite-plugin-dts:
         specifier: 3.6.4
-        version: 3.6.4(rollup@3.22.0)(typescript@5.3.3)(vite@4.5.1)
+        version: 3.6.4(rollup@4.8.0)(typescript@5.3.3)(vite@4.5.1)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/composables:
     dependencies:
@@ -1017,7 +1017,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/constants:
     devDependencies:
@@ -1202,8 +1202,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/ms':
-        specifier: 0.7.31
-        version: 0.7.31
+        specifier: 0.7.34
+        version: 0.7.34
       '@vitest/coverage-v8':
         specifier: 1.0.4
         version: 1.0.4(vitest@1.0.4)
@@ -1215,7 +1215,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/extensions:
     dependencies:
@@ -1382,7 +1382,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/pressure:
     dependencies:
@@ -1410,7 +1410,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/random:
     devDependencies:
@@ -1552,7 +1552,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1586,7 +1586,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1617,7 +1617,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-local:
     dependencies:
@@ -1685,7 +1685,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1719,7 +1719,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   packages/stores:
     dependencies:
@@ -1787,7 +1787,7 @@ importers:
         version: 4.4.0(vite@4.4.11)(vue@3.3.11)
       rollup-plugin-node-externals:
         specifier: 6.1.2
-        version: 6.1.2(rollup@3.22.0)
+        version: 6.1.2(rollup@4.8.0)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1796,7 +1796,7 @@ importers:
         version: 4.4.11
       vite-plugin-dts:
         specifier: 3.6.0
-        version: 3.6.0(rollup@3.22.0)(typescript@5.3.3)(vite@4.4.11)
+        version: 3.6.0(rollup@4.8.0)(typescript@5.3.3)(vite@4.4.11)
 
   packages/tsconfig: {}
 
@@ -1961,7 +1961,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   sdk:
     devDependencies:
@@ -1979,7 +1979,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
 
   tests/blackbox:
     devDependencies:
@@ -2057,7 +2057,7 @@ importers:
         version: 4.2.2(typescript@5.3.3)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(happy-dom@12.10.3)(sass@1.62.1)
+        version: 1.0.4(@types/node@18.19.3)
       ws:
         specifier: 8.15.0
         version: 8.15.0
@@ -5629,7 +5629,7 @@ packages:
       '@otplib/plugin-thirty-two': 12.0.1
     dev: false
 
-  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.0):
+  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1):
     resolution: {integrity: sha512-gc+FaHyaGEnlcjN9n/bjXxa8CRxmkZRZTHkclaePXNgHSMIqgucFukE+4N1PYnSza2CnRijLjpRo8Z6UiGmNUA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -5645,7 +5645,7 @@ packages:
     dependencies:
       eslint: 8.55.0
       eslint-config-prettier: 9.1.0(eslint@8.55.0)
-      prettier: 3.1.0
+      prettier: 3.1.1
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.5
     dev: true
@@ -6515,7 +6515,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -6541,6 +6541,22 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 3.22.0
+    dev: false
+
+  /@rollup/pluginutils@5.0.5(rollup@4.8.0):
+    resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.3
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+      rollup: 4.8.0
+    dev: true
 
   /@rollup/rollup-android-arm-eabi@4.8.0:
     resolution: {integrity: sha512-zdTObFRoNENrdPpnTNnhOljYIcOX7aI7+7wyrSpPFFIOf/nRdedE6IYsjaBE7tjukphh1tMTojgJ7p3lKY8x6Q==}
@@ -6925,7 +6941,7 @@ packages:
   /@types/debug@4.1.10:
     resolution: {integrity: sha512-tOSCru6s732pofZ+sMv9o4o3Zc+Sa8l3bxd/tweTQudFn06vAzb13ZX46Zi6m6EJ+RUbRTHvgQJ1gBtSgkaUYA==}
     dependencies:
-      '@types/ms': 0.7.31
+      '@types/ms': 0.7.34
     dev: true
 
   /@types/deep-diff@1.0.2:
@@ -7156,6 +7172,10 @@ packages:
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
+    dev: true
+
+  /@types/ms@0.7.34:
+    resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
     dev: true
 
   /@types/nlcst@1.0.3:
@@ -7550,7 +7570,7 @@ packages:
   /@unhead/addons@1.1.30:
     resolution: {integrity: sha512-9Ule9CcL7RiqY8e6ZtJum/j2gi1UUngI3K8hFS2P1scx3Wz1rbCrI7bAhGdY03IARH/8vTaJJTIoWLBdl5GxEA==}
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
       magic-string: 0.30.5
@@ -7652,7 +7672,7 @@ packages:
       std-env: 3.6.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.0.4(@types/node@18.19.3)
+      vitest: 1.0.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8544,7 +8564,7 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@babel/parser': 7.23.3
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
@@ -16263,6 +16283,12 @@ packages:
     hasBin: true
     dev: true
 
+  /prettier@3.1.1:
+    resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -17030,13 +17056,13 @@ packages:
       - supports-color
     dev: false
 
-  /rollup-plugin-node-externals@6.1.2(rollup@3.22.0):
+  /rollup-plugin-node-externals@6.1.2(rollup@4.8.0):
     resolution: {integrity: sha512-2TWan0u0/zHcgPrKpIPgKSY8OMqwDAYD380I0hxx7iUQw8mrN34DWwG9sQUMEo5Yy4xd6/5QEAySYgiKN9fdBQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       rollup: ^3.0.0 || ^4.0.0
     dependencies:
-      rollup: 3.22.0
+      rollup: 4.8.0
     dev: true
 
   /rollup-plugin-styles@4.0.0(rollup@3.22.0):
@@ -19115,7 +19141,7 @@ packages:
       '@antfu/utils': 0.7.6
       '@babel/generator': 7.23.0
       '@babel/parser': 7.23.3
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
       unplugin: 1.5.0
@@ -19445,7 +19471,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.6.0(rollup@3.22.0)(typescript@5.3.3)(vite@4.4.11):
+  /vite-plugin-dts@3.6.0(rollup@4.8.0)(typescript@5.3.3)(vite@4.4.11):
     resolution: {integrity: sha512-doxhDRFJCZD2sGjIp4V800nm8Y19GvmwckjG5vYPuiqJ7OBjc9NlW1Vp9Gkyh2aXlUs1jTDRH/lxWfcsPLOQHg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -19456,7 +19482,7 @@ packages:
         optional: true
     dependencies:
       '@microsoft/api-extractor': 7.38.0
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       '@vue/language-core': 1.8.19(typescript@5.3.3)
       debug: 4.3.4
       kolorist: 1.8.0
@@ -19469,7 +19495,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-dts@3.6.4(rollup@3.22.0)(typescript@5.3.3)(vite@4.5.1):
+  /vite-plugin-dts@3.6.4(rollup@4.8.0)(typescript@5.3.3)(vite@4.5.1):
     resolution: {integrity: sha512-yOVhUI/kQhtS6lCXRYYLv2UUf9bftcwQK9ROxCX2ul17poLQs02ctWX7+vXB8GPRzH8VCK3jebEFtPqqijXx6w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -19480,7 +19506,7 @@ packages:
         optional: true
     dependencies:
       '@microsoft/api-extractor': 7.38.0
-      '@rollup/pluginutils': 5.0.5(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.5(rollup@4.8.0)
       '@vue/language-core': 1.8.25(typescript@5.3.3)
       debug: 4.3.4
       kolorist: 1.8.0
@@ -19808,6 +19834,62 @@ packages:
       - terser
       - typescript
       - universal-cookie
+    dev: true
+
+  /vitest@1.0.4:
+    resolution: {integrity: sha512-s1GQHp/UOeWEo4+aXDOeFBJwFzL6mjycbQwwKWX2QcYfh/7tIerS59hWQ20mxzupTJluA2SdwiBuWwQHH67ckg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@types/node': ^18.0.0 || >=20.0.0
+      '@vitest/browser': ^1.0.0
+      '@vitest/ui': ^1.0.0
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@types/node':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@vitest/expect': 1.0.4
+      '@vitest/runner': 1.0.4
+      '@vitest/snapshot': 1.0.4
+      '@vitest/spy': 1.0.4
+      '@vitest/utils': 1.0.4
+      acorn-walk: 8.3.1
+      cac: 6.7.14
+      chai: 4.3.10
+      debug: 4.3.4
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.5
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      std-env: 3.6.0
+      strip-literal: 1.3.0
+      tinybench: 2.5.1
+      tinypool: 0.8.1
+      vite: 5.0.7(@types/node@18.19.3)
+      vite-node: 1.0.4(@types/node@18.19.3)
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
     dev: true
 
   /vitest@1.0.4(@types/node@18.16.12):
