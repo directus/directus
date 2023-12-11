@@ -891,8 +891,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.55.0)
       marked:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 11.0.1
+        version: 11.0.1
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
@@ -14354,8 +14354,8 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /marked@10.0.0:
-    resolution: {integrity: sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==}
+  /marked@11.0.1:
+    resolution: {integrity: sha512-P4kDhFEMlvLePBPRwOcMOv6+lYUbhfbSxJFs3Jb4Qx7v6K7l+k8Dxh9CEGfRvK71tL+qIFz5y7Pe4uzt4+/A3A==}
     engines: {node: '>= 18'}
     hasBin: true
     dev: true
