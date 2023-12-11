@@ -35,7 +35,7 @@
 	},
 	"peerDependencies": {
 		"knex": "2.4.2",
-		"vue": "3.3.9"
+		"vue": "3.3.11"
 	},
 	"peerDependenciesMeta": {
 		"knex": {

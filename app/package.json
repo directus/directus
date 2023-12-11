@@ -136,10 +136,10 @@
 		"typescript": "5.3.3",
 		"vite": "4.3.7",
 		"vitest": "1.0.4",
-		"vue": "3.3.9",
+		"vue": "3.3.11",
 		"vue-i18n": "9.5.0",
 		"vue-router": "4.2.5",
-		"vue-tsc": "1.8.24",
+		"vue-tsc": "1.8.25",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
 	}
