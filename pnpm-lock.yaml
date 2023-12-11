@@ -398,8 +398,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       '@types/destroy':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.3
+        version: 1.0.3
       '@types/encodeurl':
         specifier: 1.0.0
         version: 1.0.0
@@ -6862,8 +6862,8 @@ packages:
     resolution: {integrity: sha512-WD2O611C7Oz7RSwKbSls8LaznKfWfXh39CHY9Amd8FhQz+NJRe20nUHhYpOopVq9M2oqDZd4L6AzqJIXQycxiA==}
     dev: true
 
-  /@types/destroy@1.0.0:
-    resolution: {integrity: sha512-nE3ePJLWPRu/qFHN8mj3fWnkr9K9ezwoiG4yOis2DuLeAawlnOOT/pM29JQkityrwfEvkblU5O9iS1bsiMqtDw==}
+  /@types/destroy@1.0.3:
+    resolution: {integrity: sha512-nRcH61sRUBct1KM6dV4kjNzgLBrM6eSafsBfoGo/tOeKkTPbYsqi5uJqh8Rq7M9+stYh0wW+Tg56XFcsCPrjhw==}
     dependencies:
       '@types/node': 18.16.12
     dev: true
