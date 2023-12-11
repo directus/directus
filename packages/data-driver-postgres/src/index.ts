@@ -53,10 +53,8 @@ export default class DataDriverPostgres implements DataDriver {
 			const poolClient = await pool.connect();
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
 			const stream = poolClient.query(queryStream);
-
 			stream.on('end', () => poolClient.release());
 			stream.on('error', () => poolClient.release());
-
 			return Readable.toWeb(stream);
 		} catch (error: any) {
 			throw new Error('Failed to query the database: ', error);
@@ -73,15 +71,12 @@ export default class DataDriverPostgres implements DataDriver {
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
-
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
-
 		return stream;
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		const converterResult = convertQuery(query);
-
 		const rootStream = await this.queryDatabase(converterResult.rootQuery);
 
 		return getMappedQueriesStream(rootStream, converterResult.subQueries, converterResult.aliasMapping, (query) =>
