@@ -1,4 +1,4 @@
-import { ExtensionType } from '@directus/extensions';
+import type { ExtensionType } from '@directus/extensions';
 
 export const iconMap: Record<ExtensionType, string> = {
 	interface: 'design_services',
@@ -6,9 +6,9 @@ export const iconMap: Record<ExtensionType, string> = {
 	layout: 'dataset',
 	module: 'web',
 	panel: 'analytics',
+	theme: 'palette',
 	hook: 'webhook',
 	endpoint: 'api',
 	operation: 'flowsheet',
 	bundle: 'hub',
-	theme: 'palette',
 };

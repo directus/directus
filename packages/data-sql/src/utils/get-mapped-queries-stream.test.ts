@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
-import { makeSubQueriesAndMergeWithRoot } from './nested-many.js';
-import type { AbstractSqlNestedMany } from '../index.js';
+import { getMappedQueriesStream } from './get-mapped-queries-stream.js';
+import type { AliasMapping, SubQuery } from '../index.js';
 import { ReadableStream } from 'node:stream/web';
 import { randomAlpha, randomIdentifier } from '@directus/random';
 import { readToEnd } from './stream-consumer.js';
@@ -14,7 +14,7 @@ function getStreamMock(data: Record<string, unknown>[]): ReadableStream<Record<s
 	});
 }
 
-test('nested-many logic', async () => {
+test('nested-many', async () => {
 	//@todo randomize the values
 	const localPkField = randomIdentifier();
 	const pkFieldValue1 = randomAlpha(50);
@@ -37,15 +37,14 @@ test('nested-many logic', async () => {
 
 	// foreign table specs
 	const foreignTable = randomIdentifier();
-	const foreignIdField = randomIdentifier();
 
 	// foreign fields
 	const foreignField = randomIdentifier();
 	const foreignFieldId = randomIdentifier();
 
-	const nestedManys: AbstractSqlNestedMany[] = [
-		{
-			queryGenerator: (internalRelationalFieldValues) => ({
+	const subQuery: SubQuery = () => {
+		return {
+			rootQuery: {
 				clauses: {
 					select: [
 						{
@@ -56,34 +55,13 @@ test('nested-many logic', async () => {
 						},
 					],
 					from: foreignTable,
-					where: {
-						type: 'condition',
-						condition: {
-							type: 'condition-string',
-							operation: 'eq',
-							target: {
-								type: 'primitive',
-								table: foreignTable,
-								column: localPkField,
-							},
-							compareTo: {
-								type: 'value',
-								parameterIndex: 0,
-							},
-						},
-						negate: false,
-					},
 				},
-				// @ts-ignore
-				parameters: [internalRelationalFieldValues],
-				aliasMapping: new Map([[foreignFieldId, [foreignField]]]),
-				nestedManys: [],
-			}),
-			localJoinFields: [localPkField],
-			foreignJoinFields: [foreignIdField],
-			alias: foreignTable,
-		},
-	];
+				parameters: [],
+			},
+			subQueries: [],
+			aliasMapping: [{ type: 'root', alias: foreignField, column: foreignFieldId }],
+		};
+	};
 
 	// database response mocks
 	const foreignFieldValue1 = randomIdentifier();
@@ -92,16 +70,16 @@ test('nested-many logic', async () => {
 
 	const firstDatabaseResponse = [
 		{
-			[foreignField]: foreignFieldValue1,
+			[foreignFieldId]: foreignFieldValue1,
 		},
 		{
-			[foreignField]: foreignFieldValue2,
+			[foreignFieldId]: foreignFieldValue2,
 		},
 	];
 
 	const secondDatabaseResponse = [
 		{
-			[foreignField]: foreignFieldValue3,
+			[foreignFieldId]: foreignFieldValue3,
 		},
 	];
 
@@ -110,7 +88,13 @@ test('nested-many logic', async () => {
 		.mockResolvedValueOnce(getStreamMock(firstDatabaseResponse))
 		.mockResolvedValueOnce(getStreamMock(secondDatabaseResponse));
 
-	const resultingStream = await makeSubQueriesAndMergeWithRoot(rootStream, nestedManys, queryDataBaseMockFn);
+	const aliasMapping: AliasMapping = [
+		{ type: 'root', alias: localPkField, column: localPkField },
+		{ type: 'root', alias: desiredLocalField, column: desiredLocalField },
+		{ type: 'sub', alias: foreignTable, index: 0 },
+	];
+
+	const resultingStream = getMappedQueriesStream(rootStream, [subQuery], aliasMapping, queryDataBaseMockFn);
 	const actualResult = await readToEnd(resultingStream);
 
 	const expectedResult = [

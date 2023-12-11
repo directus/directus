@@ -4,7 +4,7 @@ import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionString
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
-vi.mock('../../orm/create-unique-alias.js', () => ({
+vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 

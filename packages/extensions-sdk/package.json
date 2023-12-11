@@ -39,7 +39,7 @@
 		"@directus/utils": "workspace:*",
 		"@rollup/plugin-commonjs": "25.0.0",
 		"@rollup/plugin-json": "6.0.0",
-		"@rollup/plugin-node-resolve": "15.0.2",
+		"@rollup/plugin-node-resolve": "15.2.3",
 		"@rollup/plugin-replace": "5.0.2",
 		"@rollup/plugin-terser": "0.4.3",
 		"@rollup/plugin-virtual": "3.0.1",
@@ -61,9 +61,9 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
-		"@vitest/coverage-v8": "0.34.6",
+		"@vitest/coverage-v8": "1.0.4",
 		"typescript": "5.3.2",
-		"vitest": "0.34.6"
+		"vitest": "1.0.4"
 	},
 	"engines": {
 		"node": ">=12.20.0"

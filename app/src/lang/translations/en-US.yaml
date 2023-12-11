@@ -60,6 +60,7 @@ extension_display: Display
 extension_layout: Layout
 extension_module: Module
 extension_panel: Panel
+extension_theme: Theme
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
@@ -69,6 +70,7 @@ extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Modules
 extension_panels: Panels
+extension_themes: Themes
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
@@ -2012,6 +2014,8 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:

@@ -12,7 +12,6 @@
  *
  * @module
  */
-import type { AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses } from './clauses.js';
 import type { ParameterTypes } from './parameterized-statement.js';
 
@@ -29,8 +28,6 @@ import type { ParameterTypes } from './parameterized-statement.js';
  *     limit: 0, // this is the index of the parameter
  *  },
  * 	parameters: [25],
- * 	aliasMapping: ...,
- *  nestedMany: [],
  * };
  * ```
  */
@@ -40,38 +37,27 @@ export interface AbstractSqlQuery {
 
 	/* the parameters which will be passed separately to the database for security reasons  */
 	parameters: ParameterTypes[];
-
-	/* a map from the generated, random alias to the actual path */
-	aliasMapping: Map<string, string[]>;
-
-	/* how o2m relations are handled is driver specific and hence just forwarded */
-	nestedManys: AbstractSqlNestedMany[];
 }
 
-export interface AbstractSqlNestedMany {
-	/*
-	 * The nested many sub queries cannot be generated completely, since they rely on the result of the root query
-	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
-	 */
-	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>) => AbstractSqlQuery;
-	localJoinFields: AtLeastOneElement<string>;
-	foreignJoinFields: AtLeastOneElement<string>;
-	alias: string;
-}
+export type SubQuery = (rootRow: Record<string, unknown>) => {
+	rootQuery: AbstractSqlQuery;
 
-export interface AbstractSqlNestedOneFromAny {
-	queryGenerator: (relation: A2ORelation) => AbstractSqlQuery;
-	alias: string;
-}
+	subQueries: SubQuery[];
 
-/**
- * This is the relational information which is stored in the database.
- * The sub query will be generated based on this.
- */
-export type A2ORelation = {
-	/** One or multiple foreign key relations */
-	foreignKey: AtLeastOneElement<string | number>;
-
-	/** The related table */
-	table: string;
+	aliasMapping: AliasMapping;
 };
+
+export type AliasMapping = (
+	| { type: 'nested'; alias: string; children: AliasMapping }
+	| { type: 'root'; alias: string; column: string }
+	| { type: 'sub'; alias: string; index: number }
+)[];
+
+export interface ConverterResult {
+	rootQuery: AbstractSqlQuery;
+
+	subQueries: SubQuery[];
+
+	/* a mapping from the result structure to the root or sub query value */
+	aliasMapping: AliasMapping;
+}
