@@ -40,38 +40,39 @@ export interface NestedManyResult {
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
-	const indexGenerator = parameterIndexGenerator();
-
-	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
-	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
-
-	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
-	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
-
 	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
-
 	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
 
 	return {
-		subQuery: (rootRow) => ({
-			rootQuery: {
-				clauses: {
-					select: nestedFieldNodes.clauses.select,
-					from: field.nesting.foreign.collection,
-					...nestedModifiers.clauses,
-					joins: joins,
-					where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
+		subQuery: (rootRow) => {
+			const indexGenerator = parameterIndexGenerator();
+
+			const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
+			const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
+
+			const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
+			const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
+
+			return {
+				rootQuery: {
+					clauses: {
+						select: nestedFieldNodes.clauses.select,
+						from: field.nesting.foreign.collection,
+						...nestedModifiers.clauses,
+						joins: joins,
+						where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
+					},
+					parameters: [
+						...parameters,
+						// the foreign keys form the root result row
+						...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
+					],
 				},
-				parameters: [
-					...parameters,
-					// the foreign keys form the root result row
-					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
-				],
-			},
-			subQueries: nestedFieldNodes.subQueries,
-			aliasMapping: nestedFieldNodes.aliasMapping,
-		}),
+				subQueries: nestedFieldNodes.subQueries,
+				aliasMapping: nestedFieldNodes.aliasMapping,
+			};
+		},
 		select,
 	};
 }
