@@ -40,10 +40,10 @@ export interface NestedManyResult {
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
-	const index = parameterIndexGenerator();
+	const indexGenerator = parameterIndexGenerator();
 
-	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, index);
-	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
+	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
+	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
 
 	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
 	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
@@ -61,7 +61,7 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 					from: field.nesting.foreign.collection,
 					...nestedModifiers.clauses,
 					joins: joins,
-					where: getFilters(nestedModifiers.clauses.where, field.nesting, index),
+					where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
 				},
 				parameters: [
 					...parameters,

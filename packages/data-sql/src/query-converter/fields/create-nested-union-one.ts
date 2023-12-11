@@ -21,7 +21,6 @@ import { createUniqueAlias, type AbstractSqlQueryWhereNode } from '../../index.j
  * @returns A function to create a query with and the select part for the root query
  */
 export function getNestedUnionOne(collection: string, field: AbstractQueryFieldNodeNestedUnionOne): NestedManyResult {
-	const index = parameterIndexGenerator();
 	const generatedAlias = createUniqueAlias(field.nesting.field);
 
 	return {
@@ -35,11 +34,12 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 			const desiredRelationalInfo = field.nesting.collections.find((c) => c.relational.collectionName === foreignTable);
 			if (!desiredRelationalInfo) throw new Error('Relational data is not sufficient in abstract query.');
 
-			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, index);
-			// const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, index);
+			const indexGenerator = parameterIndexGenerator();
+			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, indexGenerator);
+			// const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
 
 			const joins = [...nestedFieldNodes.clauses.joins]; //  ...(nestedModifiers.clauses.joins ?? [])
-			const parameters = [...nestedFieldNodes.parameters]; // ...nestedModifiers.parameters
+			const nestedParameters = [...nestedFieldNodes.parameters]; // ...nestedModifiers.parameters
 
 			return {
 				rootQuery: {
@@ -48,9 +48,9 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 						from: anyColumnValue.foreignCollection,
 						// ...nestedModifiers.clauses,
 						joins: joins,
-						where: getRelationConditions(anyColumnValue, index, field.nesting),
+						where: getRelationConditions(anyColumnValue, indexGenerator, field.nesting),
 					},
-					parameters: [...parameters, ...fk],
+					parameters: [...nestedParameters, ...fk],
 				},
 				subQueries: nestedFieldNodes.subQueries,
 				aliasMapping: nestedFieldNodes.aliasMapping,
