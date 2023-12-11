@@ -4,7 +4,9 @@ import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, EXTENSION_TYPES } from '@dire
 import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { currentPageLink } from './utils/current-page-link';
+import { useReloadGuard } from './utils/use-reload-guard';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
@@ -12,16 +14,27 @@ import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-de
 import VNotice from '@/components/v-notice.vue';
 
 const { t } = useI18n();
+const router = useRouter();
 
 const error = ref();
 const loading = ref(false);
 const extensions = ref<ApiOutput[]>([]);
 const needsReload = ref<boolean>(false);
 
+const { confirmLeave, leaveTo } = useReloadGuard(needsReload);
+
 const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
 const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
 
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
+
+const leavePage = () => {
+	if (!leaveTo.value) return;
+	router.push(leaveTo.value);
+	confirmLeave.value = false;
+	// reload the page
+	router.go(0);
+}
 
 const fetchExtensions = async () => {
 	loading.value = true;
@@ -69,8 +82,8 @@ fetchExtensions();
 
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
-				{{ t('extension_reload_required') }}&nbsp;
-				<a :href="currentPageLink()">{{ t('reload_page') }}</a>
+				{{ t('extension_reload_required_copy') }}&nbsp;
+				<a :href="currentPageLink()">{{ t('extension_reload_now') }}</a>
 			</v-notice>
 		</div>
 
@@ -97,6 +110,17 @@ fetchExtensions();
 				{{ t('no_extensions_copy') }}
 			</v-info>
 		</div>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('extension_reload_required') }}</v-card-title>
+				<v-card-text>{{ t('extension_reload_required_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button @click="leavePage">{{ t('extension_reload_now') }}</v-button>
+					<v-button secondary @click="confirmLeave = false">{{ t('back') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
