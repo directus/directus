@@ -551,8 +551,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0
       '@editorjs/code':
-        specifier: 2.8.0
-        version: 2.8.0
+        specifier: 2.9.0
+        version: 2.9.0
       '@editorjs/delimiter':
         specifier: 1.3.0
         version: 1.3.0
@@ -3979,8 +3979,8 @@ packages:
       '@codexteam/icons': 0.3.0
     dev: true
 
-  /@editorjs/code@2.8.0:
-    resolution: {integrity: sha512-qlv1OqSEPKnLv/ZQgNFmVgqsMbGDkh/qgTEnbVWsS+yujo1nlwgVkqCB8tOkQGVsrpmAYLiWRlA413nKxxCN5w==}
+  /@editorjs/code@2.9.0:
+    resolution: {integrity: sha512-QNOWxF29j6mYl/gM5HJzeGOt3s4laoZCUbuRqj6RkIvLBWMU+ASwjckEiouA61hcYUOMfpw4vQjzhsfC7xm/vA==}
     dependencies:
       '@codexteam/icons': 0.0.5
     dev: true
