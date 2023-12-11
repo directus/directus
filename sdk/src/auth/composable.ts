@@ -22,7 +22,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		const authConfig = { ...defaultConfigValues, ...config };
 		let refreshPromise: Promise<AuthenticationData> | null = null;
-		let refreshTimeout: NodeJS.Timer | null = null;
+		let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
 		const storage = authConfig.storage ?? memoryStorage();
 
 		const resetStorage = () => {
