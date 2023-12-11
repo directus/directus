@@ -36,7 +36,7 @@
 		"@types/node": "18.16.12",
 		"@types/semver": "7.5.0",
 		"@vitest/coverage-v8": "1.0.4",
-		"typescript": "5.3.2",
+		"typescript": "5.3.3",
 		"vitest": "1.0.4"
 	}
 }
