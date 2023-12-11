@@ -39,7 +39,7 @@
 		"@types/lodash-es": "4.17.9",
 		"@vitejs/plugin-vue": "4.4.0",
 		"rollup-plugin-node-externals": "6.1.2",
-		"typescript": "5.3.2",
+		"typescript": "5.3.3",
 		"vite": "4.4.11",
 		"vite-plugin-dts": "3.6.0"
 	},
