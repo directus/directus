@@ -5,8 +5,10 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import type { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { iconMap } from '../constants/icons';
+import { iconMap } from '../utils/icons';
 import ExtensionItemOptions from './extension-item-options.vue';
+
+const devMode = process.env.NODE_ENV === 'development';
 
 const { t } = useI18n();
 
@@ -53,10 +55,11 @@ const toggleEnabled = async (extensionType?: (typeof EXTENSION_TYPES)[number]) =
 
 		<template v-if="extension.schema?.type !== 'bundle'">
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
-			<v-chip v-else class="state" :class="{ enabled: extension.meta.enabled }" small>
-				{{ extension.meta.enabled ? t('enabled') : t('disabled') }}
+			<v-chip v-else class="state" :class="{ enabled: devMode ? true : extension.meta.enabled }" small>
+				{{ devMode ? t('enabled_dev') : extension.meta.enabled ? t('enabled') : t('disabled') }}
 			</v-chip>
 			<extension-item-options
+				v-if="!devMode"
 				class="options"
 				:name="extension.name"
 				:enabled="extension.meta.enabled"
@@ -107,3 +110,4 @@ const toggleEnabled = async (extensionType?: (typeof EXTENSION_TYPES)[number]) =
 	}
 }
 </style>
+../utils/icons
