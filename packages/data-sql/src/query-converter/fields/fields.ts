@@ -71,9 +71,10 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			const res = getNestedUnionOne(collection, abstractField);
-			subQueries.push(res.subQuery);
-			select.push(...res.select);
+			const nestedUnionOneResult = getNestedUnionOne(collection, abstractField);
+			subQueries.push(nestedUnionOneResult.subQuery);
+			select.push(...nestedUnionOneResult.select);
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
 			continue;
 		}
 
@@ -81,7 +82,7 @@ export const convertFieldNodes = (
 			const nestedManyResult = getNestedMany(collection, abstractField);
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
-			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
 			continue;
 		}
 

@@ -38,7 +38,6 @@ export function getMappedQueriesStream(
 				);
 
 				const result = mapResult(aliasMapping, rootRow, subResult);
-
 				controller.enqueue(result);
 			}
 
