@@ -7,32 +7,31 @@ export function useReloadGuard(needsReload: Ref<boolean>) {
 	const confirmLeave = ref(false);
 	const leaveTo = ref<string | null>(null);
 
-	const beforeUnload = (event: BeforeUnloadEvent) => {
-		if (needsReload.value) {
-			event.preventDefault();
-			event.returnValue = '';
-			return '';
-		}
-	};
-
 	const reloadGuard: NavigationGuard = (to) => {
 		if (needsReload.value && !to.path.startsWith(path)) {
 			confirmLeave.value = true;
 			leaveTo.value = to.fullPath;
 			return false;
 		}
+
+		return true;
 	};
-
-	onBeforeMount(() => {
-		window.addEventListener('beforeunload', beforeUnload);
-	});
-
-	onBeforeUnmount(() => {
-		window.removeEventListener('beforeunload', beforeUnload);
-	});
 
 	onBeforeRouteUpdate(reloadGuard);
 	onBeforeRouteLeave(reloadGuard);
 
-	return { confirmLeave, leaveTo };
+	const beforeUnload = (event: BeforeUnloadEvent) => {
+		if (needsReload.value) {
+			event.preventDefault();
+			event.returnValue = '';
+		}
+	};
+
+	const addListener = () => window.addEventListener('beforeunload', beforeUnload);
+	const removeListener = () => window.removeEventListener('beforeunload', beforeUnload);
+
+	onBeforeMount(addListener);
+	onBeforeUnmount(removeListener);
+
+	return { confirmLeave, leaveTo, removeGuard: removeListener };
 }

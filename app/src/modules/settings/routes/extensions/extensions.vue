@@ -21,17 +21,16 @@ const loading = ref(false);
 const extensions = ref<ApiOutput[]>([]);
 const needsReload = ref<boolean>(false);
 
-const { confirmLeave, leaveTo } = useReloadGuard(needsReload);
-
 const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
 const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
-
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
+const { confirmLeave, leaveTo, removeGuard } = useReloadGuard(needsReload);
+
 const leavePage = () => {
-	if (!leaveTo.value) return;
-	router.push(leaveTo.value);
-	confirmLeave.value = false;
+	removeGuard();
+	const target = leaveTo.value ?? currentPageLink();
+	router.push(target);
 	// reload the page
 	router.go(0);
 }
@@ -83,7 +82,7 @@ fetchExtensions();
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
 				{{ t('extension_reload_required_copy') }}&nbsp;
-				<a :href="currentPageLink()">{{ t('extension_reload_now') }}</a>
+				<a :href="currentPageLink()" @click="removeGuard">{{ t('extension_reload_now') }}</a>
 			</v-notice>
 		</div>
 
