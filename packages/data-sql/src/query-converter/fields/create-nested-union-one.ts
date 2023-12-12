@@ -4,10 +4,7 @@ import type {
 	AbstractQueryFieldNodeNestedUnionOne,
 	AtLeastOneElement,
 } from '@directus/data';
-// import { createUniqueAlias } from '../../utils/create-unique-alias.js';
-// import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
-// import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
 import { getRelationCondition, type NestedManyResult } from './create-nested-manys.js';
 import type { AbstractSqlQueryConditionNode } from '../../types/clauses/where/condition.js';

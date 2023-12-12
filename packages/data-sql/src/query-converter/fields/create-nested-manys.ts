@@ -10,6 +10,7 @@ import type {
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
+	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
@@ -44,35 +45,36 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
 	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
 
+	const indexGenerator = parameterIndexGenerator();
+
+	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
+	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
+
+	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
+	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
+
+	const clauses: AbstractSqlClauses = {
+		select: nestedFieldNodes.clauses.select,
+		from: field.nesting.foreign.collection,
+		...nestedModifiers.clauses,
+		joins: joins,
+		where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
+	};
+
 	return {
-		subQuery: (rootRow) => {
-			const indexGenerator = parameterIndexGenerator();
+		subQuery: (rootRow) => ({
+			rootQuery: {
+				clauses,
+				parameters: [
+					...parameters,
+					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
+				],
+			},
 
-			const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
-			const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGenerator);
+			subQueries: nestedFieldNodes.subQueries,
 
-			const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
-			const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
-
-			return {
-				rootQuery: {
-					clauses: {
-						select: nestedFieldNodes.clauses.select,
-						from: field.nesting.foreign.collection,
-						...nestedModifiers.clauses,
-						joins: joins,
-						where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
-					},
-					parameters: [
-						...parameters,
-						// the foreign keys form the root result row
-						...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
-					],
-				},
-				subQueries: nestedFieldNodes.subQueries,
-				aliasMapping: nestedFieldNodes.aliasMapping,
-			};
-		},
+			aliasMapping: nestedFieldNodes.aliasMapping,
+		}),
 		select,
 	};
 }
