@@ -27,11 +27,11 @@ export class ActivityService extends ItemsService {
 	}
 
 	async truncate() {
-		if (!env['ACTIVITY_RETENTION'] || env['ACTIVITY_RETENTION'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['ACTIVITY_RETENTION']);
+		if (!env['RETENTION_ACTIVITY'] || env['RETENTION_ACTIVITY'] === 'infinite') return;
+		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_ACTIVITY']);
 
 		if (!oldestRetentionDate) {
-			logger.error('Invalid ACTIVITY_RETENTION configured');
+			logger.error('Invalid RETENTION_ACTIVITY configured');
 			return;
 		}
 

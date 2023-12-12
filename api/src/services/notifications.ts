@@ -21,11 +21,11 @@ export class NotificationsService extends ItemsService {
 	}
 
 	async truncate() {
-		if (!env['NOTIFICATIONS_RETENTION'] || env['NOTIFICATIONS_RETENTION'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['NOTIFICATIONS_RETENTION']);
+		if (!env['RETENTION_NOTIFICATIONS'] || env['RETENTION_NOTIFICATIONS'] === 'infinite') return;
+		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_NOTIFICATIONS']);
 
 		if (!oldestRetentionDate) {
-			logger.error('Invalid NOTIFICATIONS_RETENTION configured');
+			logger.error('Invalid RETENTION_NOTIFICATIONS configured');
 			return;
 		}
 

@@ -12,11 +12,11 @@ export class RevisionsService extends ItemsService {
 	}
 
 	async truncate() {
-		if (!env['REVISIONS_RETENTION'] || env['REVISIONS_RETENTION'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['REVISIONS_RETENTION']);
+		if (!env['RETENTION_REVISIONS'] || env['RETENTION_REVISIONS'] === 'infinite') return;
+		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_REVISIONS']);
 
 		if (!oldestRetentionDate) {
-			logger.error('Invalid REVISIONS_RETENTION configured');
+			logger.error('Invalid RETENTION_REVISIONS configured');
 			return;
 		}
 
