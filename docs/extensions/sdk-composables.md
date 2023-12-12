@@ -122,3 +122,7 @@ const { getItems, totalPages } = useItems();
 
 For a deep dive on how to implement the `useItems`, check out our
 [codebase](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39).
+
+While these core composables cover many common use cases, for a more complete reference of available composables within
+Directus, check out our
+[GitHub repository](https://github.com/directus/directus/blob/main/app/src/composables/use-system.ts).
