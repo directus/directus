@@ -26,16 +26,16 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@azure/storage-blob": "12.14.0",
+		"@azure/storage-blob": "12.17.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
+		"@ngneat/falso": "7.1.1",
 		"@vitest/coverage-v8": "1.0.4",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2",
+		"typescript": "5.3.3",
 		"vitest": "1.0.4"
 	}
 }

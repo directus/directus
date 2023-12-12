@@ -10,7 +10,7 @@ export type AuthenticationState = {
 };
 
 export type WebSocketClient = WebSocket &
-	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timer | null };
+	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timeout | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
 
 export type SubscriptionEvent = 'create' | 'update' | 'delete';
