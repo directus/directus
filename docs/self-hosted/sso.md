@@ -71,7 +71,7 @@ AUTH_GOOGLE_ICON="google"
 AUTH_GOOGLE_LABEL="Google"
 AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true" # This allows users to be automatically created on logins. Use "false" if you want to create users manually
 AUTH_GOOGLE_DEFAULT_ROLE_ID="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" # Replace this with the Directus Role ID you would want for new users. If this is not properly configured, new users will not have access to Directus
-AUTH_GOOGLE_ROLE_ID_CLAIM="directus_role_id" # Retreive the role ID from OIDC provider, fallback to default role id if not present
+AUTH_GOOGLE_ROLE_ID_CLAIM="directus_role_id" # Claim name to retreive the role ID from, fallback to default role id if not present
 ```
 
 8. Now you can see a nice functional `Login with Google` button on Directus login page.
