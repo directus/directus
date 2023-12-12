@@ -1,9 +1,11 @@
 import { Redis } from 'ioredis';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createBus, type BusLocal } from '../../index.js';
 import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';
 import { CacheRedis } from './redis.js';
 
+vi.mock('../../bus/index.js');
 vi.mock('../../utils/index.js');
 vi.mock('./local.js');
 vi.mock('./redis.js');
@@ -22,9 +24,13 @@ const mockRedisConfig = {
 
 const mockKey = 'mock-key';
 const mockValue = 15;
-const mockResult = 42;
 const mockLocalValue = 'mock-local-value';
 const mockRedisValue = 'mock-redis-value';
+
+const mockBus = {
+	subscribe: vi.fn(),
+	publish: vi.fn(),
+} as unknown as BusLocal;
 
 beforeEach(() => {
 	cache = new CacheMulti({
@@ -32,8 +38,13 @@ beforeEach(() => {
 		redis: mockRedisConfig,
 	});
 
+	vi.mocked(createBus).mockReturnValue(mockBus);
 	vi.mocked(cache['local'].get).mockResolvedValue(mockLocalValue);
 	vi.mocked(cache['redis'].get).mockResolvedValue(mockRedisValue);
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('constructor', () => {
@@ -44,6 +55,16 @@ describe('constructor', () => {
 		expect(CacheRedis).toBeCalledWith(mockRedisConfig);
 		expect(cache['redis']).toBeInstanceOf(CacheRedis);
 	});
+
+	test('Creates a redis bus', () => {
+		expect(createBus).toHaveBeenCalledWith({
+			type: 'redis',
+			redis: mockRedisConfig.redis,
+			namespace: mockRedisConfig.namespace,
+		});
+
+		// expect(cache['bus']).instanceOf();
+	})
 });
 
 describe('get', () => {
