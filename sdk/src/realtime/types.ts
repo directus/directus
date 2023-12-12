@@ -27,7 +27,7 @@ export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
 export interface WebSocketClient<Schema extends object> {
-	connect(): Promise<void>;
+	connect(): Promise<WebSocketInterface>;
 	disconnect(): void;
 	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
 	onWebSocket(event: 'error', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
