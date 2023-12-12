@@ -1220,6 +1220,7 @@ fields:
     last_page: Letzte Seite
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
+    appearance: Erscheinung
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
