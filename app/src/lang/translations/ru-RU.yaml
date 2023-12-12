@@ -1174,6 +1174,7 @@ fields:
     last_page: Последняя страница
     last_access: Последний доступ
     email_notifications: Уведомления по e-mail
+    appearance: Внешний вид
     theme_light_overrides: Настройка Светлой Темы
     theme_dark_overrides: Настройка Тёмной Темы
   directus_settings:
