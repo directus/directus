@@ -132,6 +132,9 @@ services:
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       # PUBLIC_URL: "https://directus.example.com"
+    # or, if you have youre environment variables defined in a `.venv` file:
+    env_file:
+      - .env
 ```
 
 ### Updating With Docker Compose
