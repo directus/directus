@@ -10,13 +10,12 @@ The Extension Composables serve as a powerful toolkit to help developers create 
 Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi()` or
 `useStores()`, to abstract away complexity when building extensions.
 
-Some commonly used composables include:
+## useApi()
 
-### useApi()
+The `useApi` composable allows extensions to make requests to endpoints within Directus. It acts as a wrapper around the
+axios library.
 
-The `useApi` composable allows extensions to make requests to endpoints within Directus.
-
-Here’s a sample code of how to use it:
+Here’s a sample code of how to implement `useApi`
 
 ```ts
 <script setup>
@@ -31,3 +30,95 @@ async function fetchData() {
 fetchData();
 </script>
 ```
+
+## useStores()
+
+`useStores` serves as the main entry point for accessing specific functionality when building extensions. Within
+`useStores` are sub-stores like the `usePermissionsStore`, `useCollectionsStore` and `useFieldsStore` among others.
+
+```ts
+<script setup>
+import { useStores } from '@directus/extensions-sdk';
+
+const { useFieldsStore, usePermissionsStore, useCollectionStore } = useStores();
+const fieldsStore = useFieldsStore();
+const permissionsStore = usePermissionsStore();
+const collectionStore = useCollectionStore();
+</script>
+```
+
+### useFieldsStore
+
+The `useFieldsStore` gives developers access to customizable field properties and functionality. It provides methods
+like `fields`, `updateField` , and `getPrimaryKeyFieldForCollection`.
+
+For a deep dive on how to implement the `useFieldsStore`, check out our
+[codebase](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts#L69).
+
+### usePermissionsStore
+
+The `usePermissionsStore` exposes permission-related functionalities. It retrieves the user's permissions from the
+Directus API and makes them easily accessible.
+
+Methods like `createAllowed`, `deleteAllowed` and `saveAllowed` among others are available within the
+`usePermissionStore`.
+
+For a deep dive on how to implement the `usePermissionStore`, check out our
+[codebase](https://www.notion.so/Extension-Composables-f2918516bd9a4c2180a1fc01e1a9f0f1?pvs=21).
+
+### useCollectionsStore
+
+`useCollectionsStore` provides access to collections within Directus. It allows you to retrieve, insert, update and
+delete collection data directly through the methods such as `getCollection`, `upsertCollection` and `deleteCollection`
+without having to manually make API requests.
+
+For a deep dive on how to implement the `useCollectionsStore`, check out our
+[codebase](https://github.com/directus/directus/blob/main/app/src/stores/collections.ts#L16).
+
+::: info Explore Sub-stores within `useStores`
+
+While `useFieldsStore`, `usePermissionsStore` and `useCollectionsStore` cover the common scenarios, the `useStore`
+composable contains additional sub-stores. Reference the full list in of sub-stores in our
+[codebase](https://github.com/directus/directus/blob/main/app/src/composables/use-system.ts).
+
+:::
+
+## useCollection()
+
+The `useCollection` composable provides access to metadata about collections. `useCollection` focuses only on exposing
+metadata, not full functionality. It exposes methods like `fields`, `primaryKeyField`, and `accountabilityScope.`
+
+For full capabilities like retrieving, updating and deleting collection data, use the `useCollectionStore` composable
+instead.
+
+Here’s a sample code of how to implement `useCollection`
+
+```ts
+<script setup>
+import { useCollection } from '@directus/extensions-sdk';
+
+const { primaryKeyField } = useCollection(props.collection);
+</script>
+```
+
+For a deep dive on how to implement the `useCollection`, check out our
+[codebase](https://github.com/directus/directus/blob/main/packages/composables/src/use-collection.ts).
+
+## useItems()
+
+The `useItems` composable handles retrieving and working on items in a collection. It handles fetching multiple items
+via methods like `getItems`, `getItemCount` and `getTotalCount`. It also exposes values for pagination data like
+`itemCount` and `totalPages`.
+
+Here’s a sample code of how to implement `useItems`
+
+```ts
+<script setup>
+import { useItems } from '@directus/extensions-sdk';
+
+const { getItems, totalPages } = useItems();
+</script>
+```
+
+For a deep dive on how to implement the `useItems`, check out our
+[codebase](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39).
