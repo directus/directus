@@ -51,7 +51,7 @@ test('getNestedUnionOne with a single identifier', () => {
 					relational: {
 						store: foreignStore,
 						collectionName: foreignTable,
-						collectionIdentifier: 'uuid',
+						collectionIdentifier: randomIdentifier(),
 						identifierFields: [foreignIdField],
 					},
 				},
@@ -66,7 +66,7 @@ test('getNestedUnionOne with a single identifier', () => {
 					relational: {
 						store: foreignStore2,
 						collectionName: foreignTable2,
-						collectionIdentifier: 'uuid2',
+						collectionIdentifier: randomIdentifier(),
 						identifierFields: [foreignIdField2],
 					},
 				},
