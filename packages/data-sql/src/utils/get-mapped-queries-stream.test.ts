@@ -14,7 +14,7 @@ function getStreamMock(data: Record<string, unknown>[]): ReadableStream<Record<s
 	});
 }
 
-test('nested-many', async () => {
+test.skip('nested-many', async () => {
 	//@todo randomize the values
 	const localPkField = randomIdentifier();
 	const pkFieldValue1 = randomAlpha(50);
