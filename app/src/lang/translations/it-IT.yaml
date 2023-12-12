@@ -69,6 +69,7 @@ extension_displays: Visualizzazioni
 extension_layouts: Layout
 extension_modules: Moduli
 extension_panels: Pannelli
+extension_themes: Temi
 extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
@@ -310,6 +311,9 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
+theme_directus_default: Predefinito
+theme_directus_minimal: Minimalista
+theme_directus_colormatch: Corrispondenza colore
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -1222,6 +1226,8 @@ fields:
     last_access: Ultimo Acesso
     email_notifications: Notifiche email
     appearance: Aspetto
+    theme_light: Tema chiaro
+    theme_dark: Tema scuro
     theme_light_overrides: Personalizzazione del tema chiaro
     theme_dark_overrides: Personalizzazione del tema scuro
   directus_settings:
@@ -1252,6 +1258,9 @@ fields:
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     theming: Impostazioni predefinite dei temi
+    default_appearance: Aspetto predefinito
+    default_theme_light: Tema chiaro predefinito
+    default_theme_dark: Tema scuro predefinito
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e archiviazione
