@@ -16,6 +16,7 @@ vi.mock('../../utils/create-unique-alias.js', () => ({
 test('getNestedUnionOne with a single identifier', () => {
 	const collection = randomIdentifier();
 	const localIdField = randomIdentifier();
+	const relationalColumn = randomIdentifier();
 
 	// first foreign collection
 	const foreignIdField = randomIdentifier();
@@ -37,7 +38,7 @@ test('getNestedUnionOne with a single identifier', () => {
 		alias: manyAlias,
 		nesting: {
 			type: 'relational-any',
-			field: 'the-json-column',
+			field: relationalColumn,
 			collections: [
 				{
 					fields: [
@@ -81,15 +82,15 @@ test('getNestedUnionOne with a single identifier', () => {
 			{
 				type: 'primitive',
 				table: collection,
-				column: 'the-json-column',
-				as: `${'the-json-column'}_RANDOM`,
+				column: relationalColumn,
+				as: `${relationalColumn}_RANDOM`,
 			},
 		],
 	};
 
 	const rootRow = {
 		[`${localIdField}_RANDOM`]: randomValue,
-		'the-json-column_RANDOM': {
+		[`${relationalColumn}_RANDOM`]: {
 			foreignKey: [1],
 			foreignCollection: foreignTable2,
 		},
