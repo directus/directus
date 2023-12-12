@@ -1206,6 +1206,7 @@ fields:
     last_page: Dernière page
     last_access: Dernier accès
     email_notifications: Notifications par e-mail
+    appearance: Personnalisation du Thème
     theme_light_overrides: Personnalisation du thème clair
     theme_dark_overrides: Personnalisation du thème sombre
   directus_settings:
