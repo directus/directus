@@ -69,7 +69,9 @@ extension_displays: Affichages
 extension_layouts: Mises en page
 extension_modules: Modules
 extension_panels: Panneaux
+extension_themes: Thèmes
 extension_endpoints: Points d'accès
+extension_operations: Opérations
 extension_bundles: Lots
 enable: Activer
 disable: Désactiver
@@ -137,6 +139,8 @@ promote_version_changes: Changements
 promote_version_preview: Prévisualiser
 outdated_notice: >-
   L'élément principal a été mis à jour depuis la création de cette version. Veuillez vérifier toutes les valeurs de champ ci-dessous et confirmer quelle version doit être utilisée lors de la sélection de cette version dans l'élément principal.
+promote_notice: >-
+  Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
 delete_version: Supprimer la version
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
@@ -999,6 +1003,7 @@ deselect: Désélectionner
 deselect_all: Tout désélectionner
 theme: Thème
 select_a_theme: Sélectionner un thème
+default_sync_with_project: Par défaut (Synchronisation avec le projet)
 appearance_auto: Automatique (Synchronisation avec le système)
 appearance_light: Clair
 appearance_dark: Sombre
@@ -1021,6 +1026,7 @@ settings_flows: Flux
 settings_presets: Favoris
 settings_translations: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
+configure_field_key_to_continue: Configurer la clé de champ pour continuer
 scope: Utilisateurs ou rôles
 actions: Actions
 select: Sélectionner...
@@ -1054,7 +1060,9 @@ page_help_files_collection: >-
   **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
   **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
+page_help_settings_project: "**Paramètres** — Les options de configuration globale de votre projet."
 page_help_settings_appearance: "**Apparence** — Les options d'apparence et de thème de votre projet."
+page_help_settings_extensions: '**Extensions** — Les extensions installées dans votre projet.'
 page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
@@ -1069,6 +1077,8 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
+page_help_settings_translations_collection: '**Parcourir les traductions personnalisées** — Liste toutes les traductions personnalisées du projet.'
+page_help_settings_translations_item: '**Détail des traductions personnalisées** — Un formulaire pour visualiser et gérer cet élément.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1085,6 +1095,7 @@ batch_delete_confirm: >-
 cancel: Annuler
 no_upscale: Ne pas agrandir les images
 no_extensions: Aucune extension
+no_extensions_copy: Aucune extension n'a encore été installée.
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1195,6 +1206,7 @@ fields:
     last_page: Dernière page
     last_access: Dernier accès
     email_notifications: Notifications par e-mail
+    appearance: Personnalisation du Thème
     theme_light_overrides: Personnalisation du thème clair
     theme_dark_overrides: Personnalisation du thème sombre
   directus_settings:
@@ -1415,6 +1427,7 @@ share: Partage
 share_item: Partager l'élément
 shared_with_you: Un élément a été partagé avec vous
 shared_enter_passcode: Saisir le mot de passe pour poursuivre...
+shared_leave_blank_for_passwordless_access: Laisser vide pour un accès sans mot de passe
 shared_leave_blank_for_unlimited: Laisser vide pour illimité
 shared_times_remaining: Ce lien ne peut être utilisé que {n} fois
 shared_last_remaining: Ce lien ne peut être utilisé qu'une seule fois
@@ -1720,6 +1733,7 @@ interfaces:
     notice: Remarque
     description: Afficher une courte remarque
     text: Entrez le contenu de la remarque ici...
+    no_text: Aucun texte configuré...
   list-o2m:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
@@ -2087,6 +2101,8 @@ panels:
     name: Indicateurs
     description: Afficher une seule valeur basée sur une requête
     field: Champ
+  metric_list:
+    name: Liste métrique
   time_series:
     name: Échelle de temps
     description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
@@ -2202,11 +2218,14 @@ operations:
   json-web-token:
     name: JSON Web Token (JWT)
     description: Signer et vérifier les tokens Web JSON
+    operation: Opération
     secret: Mot de passe
     secret_placeholder: Entrez un mot de passe...
     payload: Données utiles
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Paramètres
+    options_placeholder: 'Reportez-vous à https://www.npmjs.com/package/jsonwebtoken#usage pour les options disponibles'
     sign: JSON Web Token
     verify: Vérifier le jeton
     decode: Décoder le jeton
