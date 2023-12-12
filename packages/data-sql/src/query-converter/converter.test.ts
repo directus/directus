@@ -7,7 +7,7 @@ import { convertFieldNodes, type FieldConversionResult } from './fields/fields.j
 import { convertModifiers, type ModifierConversionResult } from './modifiers/modifiers.js';
 
 vi.mock('./fields/fields.js', async (importOriginal) => {
-	const mod = await importOriginal<typeof import('./fields/fields.js')>();
+	const mod = importOriginal<typeof import('./fields/fields.js')>();
 	return {
 		...mod,
 		convertFieldNodes: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('./fields/fields.js', async (importOriginal) => {
 });
 
 vi.mock('./modifiers/modifiers.js', async (importOriginal) => {
-	const mod = await importOriginal<typeof import('./modifiers/modifiers.js')>();
+	const mod = importOriginal<typeof import('./modifiers/modifiers.js')>();
 	return {
 		...mod,
 		convertModifiers: vi.fn(),
