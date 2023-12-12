@@ -1473,8 +1473,8 @@ importers:
   packages/schema:
     dependencies:
       knex:
-        specifier: 2.4.2
-        version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.6.1)
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
