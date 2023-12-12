@@ -140,7 +140,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
-		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
+		const { provider, emailKey, identifierKey, allowPublicRegistration, roleIdClaim } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] ? String(userInfo[emailKey ?? 'email']) : undefined;
 		// Fallback to email if explicit identifier not found
@@ -157,7 +157,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			last_name: userInfo[this.config['lastNameKey']],
 			email: email,
 			external_identifier: identifier,
-			role: this.config['defaultRoleId'],
+			role: userInfo[roleIdClaim] || this.config['defaultRoleId'],
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
