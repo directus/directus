@@ -36,6 +36,6 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"joi": "17.9.2"
+		"joi": "17.11.0"
 	}
 }

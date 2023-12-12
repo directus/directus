@@ -28,11 +28,11 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@google-cloud/storage": "6.10.1"
+		"@google-cloud/storage": "7.7.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
+		"@ngneat/falso": "7.1.1",
 		"@vitest/coverage-v8": "1.0.4",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
