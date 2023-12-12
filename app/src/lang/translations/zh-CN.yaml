@@ -1221,6 +1221,7 @@ fields:
     last_page: 尾页
     last_access: 上次访问
     email_notifications: 电子邮件通知
+    appearance: 外观
     theme_light_overrides: 亮色主题自定义
     theme_dark_overrides: 暗色主题自定义
   directus_settings:
