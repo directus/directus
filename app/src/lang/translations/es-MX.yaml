@@ -1199,6 +1199,7 @@ fields:
     last_page: Última página
     last_access: Último acceso
     email_notifications: Notificaciones por email
+    appearance: Apariencia
   directus_settings:
     jpg: JPEG
     png: PNG
