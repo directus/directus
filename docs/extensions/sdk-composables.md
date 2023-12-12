@@ -52,8 +52,8 @@ const collectionStore = useCollectionStore();
 The `useFieldsStore` gives developers access to customizable field properties and functionality. It provides methods
 like `fields`, `updateField` , and `getPrimaryKeyFieldForCollection`.
 
-For a deep dive on how to implement the `useFieldsStore`, check out our
-[codebase](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts#L69).
+For a deep dive on how to use the `useFieldsStore` composable,
+[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts#L69) in our codebase.
 
 ### usePermissionsStore
 
@@ -63,8 +63,9 @@ Directus API and makes them easily accessible.
 Methods like `createAllowed`, `deleteAllowed` and `saveAllowed` among others are available within the
 `usePermissionStore`.
 
-For a deep dive on how to implement the `usePermissionStore`, check out our
-[codebase](https://www.notion.so/Extension-Composables-f2918516bd9a4c2180a1fc01e1a9f0f1?pvs=21).
+For a deep dive on how to use the `usePermissionsStore` composable,
+[see the implementation](https://www.notion.so/Extension-Composables-f2918516bd9a4c2180a1fc01e1a9f0f1?pvs=21) in our
+codebase.
 
 ### useCollectionsStore
 
@@ -72,8 +73,9 @@ For a deep dive on how to implement the `usePermissionStore`, check out our
 delete collection data directly through the methods such as `getCollection`, `upsertCollection` and `deleteCollection`
 without having to manually make API requests.
 
-For a deep dive on how to implement the `useCollectionsStore`, check out our
-[codebase](https://github.com/directus/directus/blob/main/app/src/stores/collections.ts#L16).
+For a deep dive on how to use the `useCollectionsStore` composable,
+[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/collections.ts#L16) in our
+codebase.
 
 ::: info Explore Sub-stores within `useStores`
 
@@ -101,8 +103,9 @@ const { primaryKeyField } = useCollection(props.collection);
 </script>
 ```
 
-For a deep dive on how to implement the `useCollection`, check out our
-[codebase](https://github.com/directus/directus/blob/main/packages/composables/src/use-collection.ts).
+For a deep dive on how to use the `useCollection` composable,
+[see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-collection.ts) in
+our codebase.
 
 ## useItems()
 
@@ -120,9 +123,10 @@ const { getItems, totalPages } = useItems();
 </script>
 ```
 
-For a deep dive on how to implement the `useItems`, check out our
-[codebase](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39).
+For a deep dive on how to use the `useItems` composable,
+[see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39) in
+our codebase.
 
-While these core composables cover many common use cases, for a more complete reference of available composables within
-Directus, check out our
+While these core composables cover many common use cases, for a complete reference of all available Extension SDK
+composables within Directus, check out our
 [GitHub repository](https://github.com/directus/directus/blob/main/app/src/composables/use-system.ts).
