@@ -21,7 +21,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replaceDefault from '@rollup/plugin-replace';
 import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
-import vueDefault from '@vitejs/plugin-vue';
+import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
@@ -40,7 +40,6 @@ import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
-const vue = vueDefault as unknown as typeof vueDefault.default;
 const esbuild = esbuildDefault as unknown as typeof esbuildDefault.default;
 const styles = stylesDefault as unknown as typeof stylesDefault.default;
 const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
