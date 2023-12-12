@@ -567,17 +567,11 @@ test('nested o2m field', async () => {
 });
 
 test.skip('nested a2o field', async () => {
-	const rootCollection = randomIdentifier();
-	const dataStore = randomIdentifier();
-
 	const localDesiredField = randomIdentifier();
 	const localDesiredFieldId = randomIdentifier();
 	const localDesiredFieldAlias = randomIdentifier();
-	const localPkField = randomIdentifier();
 	const localPkFieldId = randomIdentifier();
-	const localPkFieldAlias = randomIdentifier();
-
-	const foreignTableAlias = randomIdentifier();
+	const foreignCollectionAlias = randomIdentifier();
 	const localRelationalField = randomIdentifier();
 
 	// first collection
@@ -596,8 +590,8 @@ test.skip('nested a2o field', async () => {
 	const foreignIdField2 = randomIdentifier();
 
 	const query: AbstractQuery = {
-		collection: rootCollection,
-		store: dataStore,
+		collection: randomIdentifier(),
+		store: randomIdentifier(),
 		fields: [
 			{
 				type: 'primitive',
@@ -606,7 +600,7 @@ test.skip('nested a2o field', async () => {
 			},
 			{
 				type: 'nested-union-one',
-				alias: foreignTableAlias,
+				alias: foreignCollectionAlias,
 				nesting: {
 					type: 'relational-any',
 					field: localRelationalField,
@@ -707,21 +701,15 @@ test.skip('nested a2o field', async () => {
 	const expectedResult = [
 		{
 			[localDesiredFieldAlias]: localDesiredFieldValue1,
-			[foreignTableAlias]: [
-				{
-					[foreignField1Alias]: foreignField1Value1,
-					[foreignField2Alias]: foreignField2Value1,
-				},
-			],
+			[foreignCollectionAlias]: {
+				[foreignField1Alias]: foreignField1Value1,
+			},
 		},
 		{
 			[localDesiredFieldAlias]: localDesiredFieldValue2,
-			[foreignTableAlias]: [
-				{
-					[foreignField1Alias]: foreignField1Value2,
-					[foreignField2Alias]: foreignField2Value2,
-				},
-			],
+			[foreignCollectionAlias]: {
+				[foreignField2Alias]: foreignField2Value2,
+			},
 		},
 	];
 
