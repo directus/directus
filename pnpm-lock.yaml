@@ -596,20 +596,20 @@ importers:
         specifier: 6.5.1
         version: 6.5.1
       '@fullcalendar/core':
-        specifier: 6.1.10
-        version: 6.1.10
+        specifier: 6.1.7
+        version: 6.1.7
       '@fullcalendar/daygrid':
-        specifier: 6.1.10
-        version: 6.1.10(@fullcalendar/core@6.1.10)
+        specifier: 6.1.7
+        version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/interaction':
-        specifier: 6.1.10
-        version: 6.1.10(@fullcalendar/core@6.1.10)
+        specifier: 6.1.7
+        version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/list':
-        specifier: 6.1.10
-        version: 6.1.10(@fullcalendar/core@6.1.10)
+        specifier: 6.1.7
+        version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/timegrid':
-        specifier: 6.1.10
-        version: 6.1.10(@fullcalendar/core@6.1.10)
+        specifier: 6.1.7
+        version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.6
         version: 0.17.6(histoire@0.17.6)(vite@4.5.1)(vue@3.3.11)
@@ -4390,43 +4390,51 @@ packages:
       '@fortawesome/fontawesome-common-types': 0.2.36
     dev: true
 
-  /@fullcalendar/core@6.1.10:
-    resolution: {integrity: sha512-oTXGJSAGpCf1oY+CKp5qYjMHkJCPBkJ3SHitl63n8Q6xKeiwQ4EF6Au451euUovREwJpLmD1AyZrCnWmtB9AVg==}
+  /@fullcalendar/core@6.1.7:
+    resolution: {integrity: sha512-Hc63ARSyABlNo10B3NkA0z8ndaDmq5MKpcBB2iQsGQyn8N8cyn/x6V284Je1EwDoKsBlbrZAj+j+efBO+QQf5g==}
     dependencies:
       preact: 10.12.1
     dev: true
 
-  /@fullcalendar/daygrid@6.1.10(@fullcalendar/core@6.1.10):
-    resolution: {integrity: sha512-Z4GRm1IyHKgxXFTWGcEI0nTsvYOIkpE0aMt3/o3ER2SZkF+hfwcDFhtj0c9+WhMjXFIWYeoTnA9rUOY7Zl/nxA==}
+  /@fullcalendar/daygrid@6.1.7(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-IB+QdRcs+TeTlsK8qJFtYZ/2GugmXEFC0C00/n1aLT7GLgFn3ueV1GN0EKvXv9HJ5ai8My65mYbSyQizY/Ishw==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.10
+      '@fullcalendar/core': ~6.1.7
     dependencies:
-      '@fullcalendar/core': 6.1.10
+      '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/interaction@6.1.10(@fullcalendar/core@6.1.10):
-    resolution: {integrity: sha512-aZRlwCpmDasq2RNeWV0ub20Uevare9Cb6iMlxCacx0fhOC14H28G9d1FsduJIecInL84SPGwt5ItqAYMsWv7zw==}
+  /@fullcalendar/daygrid@6.1.8(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-kCZxQFKb9Vqa3CZRX0v7rMSJ2mlTt4gDpyLfiNJKxUAq7W51uKurPaFZWicaXy1ESHVBxKNlbx5uNjBpyu50JQ==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.10
+      '@fullcalendar/core': ~6.1.8
     dependencies:
-      '@fullcalendar/core': 6.1.10
+      '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/list@6.1.10(@fullcalendar/core@6.1.10):
-    resolution: {integrity: sha512-WE4vuSUCzol4tJd0ZP0cNxeyRPaZcsVVYs2I3qdf3OZQkXwDCdSyWEz0Hluf+XZWcZXt21aEYKlxRjwUpQcf4Q==}
+  /@fullcalendar/interaction@6.1.7(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-C2KHSinc9cFUTcGYxRSIj7cBYNSroce+1d2Wa+HKVHguVv4kQuEvm/oPxJpTLXqFjNLfxyxVac7Zd4U0znjFtg==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.10
+      '@fullcalendar/core': ~6.1.7
     dependencies:
-      '@fullcalendar/core': 6.1.10
+      '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/timegrid@6.1.10(@fullcalendar/core@6.1.10):
-    resolution: {integrity: sha512-hFKyQXJaPbNyq1reZmvkCmM64O99krHoIcJAbDS+dntCm3FzZUcDtAcRKIbMiantHrezCG/1MEYk3m9e3aKvIQ==}
+  /@fullcalendar/list@6.1.7(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-Fl6jGKylhrk+g/RCISsv66vzpzjCFhd4r3nUDeHTAAE375OYGlVPKpH67YaKxpMrofj82JLIzS3JEzyQBZo0Cg==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.10
+      '@fullcalendar/core': ~6.1.7
     dependencies:
-      '@fullcalendar/core': 6.1.10
-      '@fullcalendar/daygrid': 6.1.10(@fullcalendar/core@6.1.10)
+      '@fullcalendar/core': 6.1.7
+    dev: true
+
+  /@fullcalendar/timegrid@6.1.7(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-kVgJVswu96LrCozr+GyYzF+LUZjURC4HyDg11tCfrj2wMTsrYKqUxilTGXuD3daD4T7qp3CLCg5GdD6lbYHI7A==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.7
+    dependencies:
+      '@fullcalendar/core': 6.1.7
+      '@fullcalendar/daygrid': 6.1.8(@fullcalendar/core@6.1.7)
     dev: true
 
   /@gar/promisify@1.1.3:
