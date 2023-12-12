@@ -64,6 +64,7 @@ export type AliasMapping = (
 
 			/** The index of the actual result from the sub query result array */
 			index: number;
+			isOne?: boolean;
 	  }
 )[];
 

@@ -41,10 +41,6 @@ export interface NestedManyResult {
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
-	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
-	const generatedAliasMap = Object.fromEntries(generatedAliases);
-	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
-
 	const indexGenerator = parameterIndexGenerator();
 
 	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGenerator);
@@ -61,6 +57,10 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 		where: getFilters(nestedModifiers.clauses.where, field.nesting, indexGenerator),
 	};
 
+	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
+	const generatedAliasMap = Object.fromEntries(generatedAliases);
+	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
+
 	return {
 		subQuery: (rootRow) => ({
 			rootQuery: {
@@ -70,9 +70,7 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
 				],
 			},
-
 			subQueries: nestedFieldNodes.subQueries,
-
 			aliasMapping: nestedFieldNodes.aliasMapping,
 		}),
 		select,

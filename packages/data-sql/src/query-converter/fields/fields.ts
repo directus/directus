@@ -74,7 +74,7 @@ export const convertFieldNodes = (
 			const nestedUnionOneResult = getNestedUnionOne(collection, abstractField);
 			subQueries.push(nestedUnionOneResult.subQuery);
 			select.push(...nestedUnionOneResult.select);
-			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1, isOne: true });
 			continue;
 		}
 
