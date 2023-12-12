@@ -6,7 +6,7 @@
  */
 import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
-import { convertFieldNodes } from './fields/index.js';
+import { convertFieldNodes } from './fields/fields.js';
 import { convertModifiers } from './modifiers/modifiers.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 
