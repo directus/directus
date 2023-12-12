@@ -138,6 +138,7 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
 CollectionsService
 CommonJS
@@ -424,6 +425,13 @@ unselectable
 upscaled
 upvotes
 userbase
+useApi
+useCollection
+useCollectionsStore
+useFieldsStore
+useItems
+usePermissionsStore
+useStores
 uuid
 UUID
 UUIDs
