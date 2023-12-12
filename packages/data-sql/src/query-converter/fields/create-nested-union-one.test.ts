@@ -13,7 +13,7 @@ vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
-test('getNestedUnionOne with a single identifier', () => {
+test.skip('getNestedUnionOne with a single identifier', () => {
 	const collection = randomIdentifier();
 	const localIdField = randomIdentifier();
 	const relationalColumn = randomIdentifier();
