@@ -8,16 +8,16 @@ import type { AbstractSqlQueryJoinNode } from '../../index.js';
 import { convertSort, type SortConversionResult } from './sort.js';
 import type { FilterResult } from './filter/utils.js';
 
-vi.mock('./filter/filter.js', (importOriginal) => {
-	const mod = importOriginal();
+vi.mock('./filter/filter.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('./filter/filter.js')>();
 	return {
 		...mod,
 		convertFilter: vi.fn(),
 	};
 });
 
-vi.mock('./sort.js', (importOriginal) => {
-	const mod = importOriginal();
+vi.mock('./sort.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('./sort.js')>();
 	return {
 		...mod,
 		convertSort: vi.fn(),
