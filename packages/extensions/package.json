@@ -35,27 +35,27 @@
 		"@directus/themes": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/express": "4.17.17",
-		"fs-extra": "11.1.1",
+		"@types/express": "4.17.21",
+		"fs-extra": "11.2.0",
 		"lodash-es": "4.17.21",
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/fs-extra": "11.0.1",
-		"@types/lodash-es": "4.17.9",
-		"@types/node": "18.16.12",
-		"@types/tmp": "0.2.3",
-		"@vitest/coverage-v8": "0.34.6",
+		"@types/fs-extra": "11.0.4",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "18.19.3",
+		"@types/tmp": "0.2.6",
+		"@vitest/coverage-v8": "1.0.4",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2",
-		"vitest": "0.34.6"
+		"typescript": "5.3.3",
+		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
-		"knex": "2.4.2",
-		"pino": "8.14.1",
-		"vue": "3.3.9",
+		"knex": "2.5.1",
+		"pino": "8.16.2",
+		"vue": "3.3.11",
 		"vue-router": "4.2.5"
 	},
 	"peerDependenciesMeta": {

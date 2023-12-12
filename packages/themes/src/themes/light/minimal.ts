@@ -1,7 +1,8 @@
 import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
-	name: 'Directus Minimal',
+	id: 'Directus Minimal',
+	name: '$t:theme_directus_minimal',
 	appearance: 'light',
 	rules: {
 		borderWidth: '1px',
