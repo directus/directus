@@ -13,7 +13,6 @@ import { generateUid } from './utils/generate-uid.js';
 import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
-import { sleep } from './index.js';
 import type { WebSocketInterface } from '../index.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
@@ -50,6 +49,11 @@ type ErrorState = {
 
 type ConnectionState = ClosedState | ConnectingState | OpenState | ErrorState;
 
+type ReconnectState = {
+	attempts: number;
+	active: false | Promise<WebSocketInterface | void>;
+}
+
 type LogLevels = 'log' | 'info' | 'warn' | 'error';
 
 /**
@@ -63,16 +67,20 @@ export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
-		let reconnectAttempts = 0;
 
 		let state: ConnectionState = {
 			code: 'closed',
 		};
 
+		const reconnectState: ReconnectState = {
+			attempts: 0,
+			active: false,
+		};
+
+		const subscriptions = new Set();
+
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
 		const debug = (level: LogLevels, ...data: any[]) => config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
-
-		let reconnecting = false;
 
 		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
@@ -99,29 +107,33 @@ export function realtime(config: WebSocketConfig = {}) {
 			return await withStrictAuth(newUrl, currentClient);
 		};
 
-		function reconnect(this: WebSocketClient<Schema>) {
-			// try to reconnect
-			if (config.reconnect && !reconnecting && reconnectAttempts < config.reconnect.retries) {
-				reconnecting = true;
+		const reconnect = (self: WebSocketClient<Schema>) => {
+			const reconnPromise = new Promise<WebSocketInterface>((resolve, reject) => {
+				if (!config.reconnect) return reject();
+				debug('info', `reconnect #${reconnectState.attempts} trying again in ${Math.max(100, config.reconnect.delay)}ms`);
+
+				if (reconnectState.active) return reconnectState.active;
+				if (reconnectState.attempts >= config.reconnect.retries) return reject();
 
 				setTimeout(
-					() => {
-						reconnectAttempts += 1;
+					() => self.connect().then(ws => {
+						subscriptions.forEach(sub => {
+							ws.send(JSON.stringify(sub));
+						});
 
-						this.connect()
-							.then(() => {
-								reconnectAttempts = 0;
-								reconnecting = false;
-							})
-							.catch(() => {
-								/* failed to connect */
-							});
-					},
-					Math.max(1, config.reconnect.delay),
+						return ws;
+					}).then(resolve).catch(reject),
+					Math.max(100, config.reconnect.delay),
 				);
-			} else {
-				reconnecting = false;
-			}
+			});
+
+			reconnectState.attempts += 1;
+
+			reconnectState.active = reconnPromise
+				.catch(() => {})
+				.finally(() => {
+					reconnectState.active = false;
+				});
 		}
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
@@ -231,21 +243,20 @@ export function realtime(config: WebSocketConfig = {}) {
 									confirm['status'] === 'ok'
 								)
 							) {
-								reject('Authentication failed while opening websocket connection')
+								return reject('Authentication failed while opening websocket connection')
 							} else {
 								debug('info', 'Authentication successful!');
 							}
 						}
 
-						resolved = true;
+						state = { code: 'open',	connection: ws };
+						reconnectState.attempts = 0;
+						reconnectState.active = false;
+
 						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-
-						state = {
-							code: 'open',
-							connection: ws,
-						}
-
 						handleMessages(ws, self);
+
+						resolved = true;
 						resolve(ws);
 					});
 
@@ -261,8 +272,8 @@ export function realtime(config: WebSocketConfig = {}) {
 						debug('info', `Connection closed.`);
 						eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 						uid = generateUid();
-						reconnect.call(this);
 						state = { code: 'closed' };
+						reconnect(this);
 						if (!resolved) reject(evt);
 					});
 				});
@@ -328,6 +339,9 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				if ('uid' in options === false) options.uid = uid.next().value;
 
+				subscriptions.add({ ...options, collection, type: 'subscribe' })
+				const unsub = () => subscriptions.delete({ ...options, collection, type: 'subscribe' });
+
 				this.sendMessage({ ...options, collection, type: 'subscribe' });
 				let subscribed = true;
 
@@ -362,8 +376,8 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 					}
 
-					if (config.reconnect && reconnecting) {
-						while (reconnecting) await sleep(10);
+					if (config.reconnect && reconnectState.active) {
+						await reconnectState.active;
 
 						if (state.code === 'open') {
 							// re-subscribe on the new connection
@@ -375,6 +389,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				const unsubscribe = () => {
+					unsub();
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};
