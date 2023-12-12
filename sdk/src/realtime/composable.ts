@@ -33,6 +33,8 @@ const WebSocketState = {
 	CLOSED: 3,
 } as const;
 
+type LogLevels = 'log' | 'info' | 'warn' | 'error';
+
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
  *
@@ -52,8 +54,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
 
-		// eslint-disable-next-line no-console
-		const debugLog = (...data: any[]) => config.debug && console.log(...data);
+		const debugLog = (level: LogLevels, ...data: any[]) => config.debug && client.globals.logger[level](...data);
 
 		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
@@ -135,7 +136,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						'error' in message
 					) {
 						if (message['error']['code'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
-							debugLog('Authentication token expired!');
+							debugLog('warn', 'Authentication token expired!');
 							const access_token = await currentClient.getToken();
 
 							if (!access_token) {
@@ -148,21 +149,21 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 
 						if (firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
-							console.warn('Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
+							debugLog('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
 							ws.close();
 							firstMessage = false;
 							continue;
 						}
 
 						if (message['error']['code'] === 'AUTH_TIMEOUT') {
-							debugLog('Authentication timed out!');
+							debugLog('warn', 'Authentication timed out!');
 							ws.close();
 							continue;
 						}
 
 						if (message['error']['code'] === 'AUTH_FAILED') {
 							if (firstMessage)
-							debugLog('Authentication failed!');
+							debugLog('warn', 'Authentication failed!');
 							continue;
 						}
 					}
@@ -186,14 +187,14 @@ export function realtime(config: WebSocketConfig = {}) {
 				const url = await getSocketUrl(self);
 
 				if (!connectPromise) {
-					debugLog(`Connecting to ${url}...`);
+					debugLog('info', `Connecting to ${url}...`);
 
 					connectPromise = new Promise<void>((resolve, reject) => {
 						let resolved = false;
 						const ws = new client.globals.WebSocket(url);
 
 						ws.addEventListener('open', async (evt: Event) => {
-							debugLog(`Connection open.`);
+							debugLog('info', `Connection open.`);
 
 							if (config.authMode === 'handshake' && hasAuth(self)) {
 								const access_token = (await self.getToken()) as string;
@@ -213,7 +214,7 @@ export function realtime(config: WebSocketConfig = {}) {
 									reject('Authentication failed while opening websocket connection')
 								} else {
 
-									debugLog('Authentication successful!');
+									debugLog('info', 'Authentication successful!');
 								}
 							}
 
@@ -226,7 +227,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						});
 
 						ws.addEventListener('error', (evt: Event) => {
-							debugLog(`Connection errored.`);
+							debugLog('warn', `Connection errored.`);
 							eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
 							ws.close();
 							isConnected = false;
@@ -234,7 +235,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						});
 
 						ws.addEventListener('close', (evt: CloseEvent) => {
-							debugLog(`Connection closed.`);
+							debugLog('info', `Connection closed.`);
 							eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 							resetConnection();
 							reconnect.call(this);
@@ -299,7 +300,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if (!socket || !isConnected ) {
-					debugLog('No connection available for subscribing!');
+					debugLog('info', 'No connection available for subscribing!');
 					await this.connect();
 					// throw new Error(
 					// 	'Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".',

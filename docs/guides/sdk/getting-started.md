@@ -253,6 +253,10 @@ often do not ship with an implementation of WebSockets.
 - [`ws`](https://www.npmjs.com/package/ws)
 - [`isomorphic-ws`](https://www.npmjs.com/package/isomorphic-ws)
 
+#### The `logger` API
+
+This API is optional and currently only used for debugging the `realtime()` features. This will default to the `Console` however in environments where this isnt shipped you can overwrite this with any logger.
+
 ### Polyfilling
 
 These can be overwritten in two ways:

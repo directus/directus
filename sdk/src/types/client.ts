@@ -16,6 +16,7 @@ export type ClientGlobals = {
 	fetch: FetchInterface;
 	WebSocket: WebSocketConstructor;
 	URL: UrlInterface;
+	logger: Console;
 };
 
 /**
