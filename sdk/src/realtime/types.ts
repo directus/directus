@@ -12,6 +12,7 @@ export interface WebSocketConfig {
 		  }
 		| false;
 	heartbeat?: boolean;
+	debug?: boolean;
 	url?: string;
 }
 

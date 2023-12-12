@@ -21,6 +21,7 @@ type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & Authenticat
 const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
 	heartbeat: true,
+	debug: false,
 	reconnect: {
 		delay: 1000, // 1 second
 		retries: 10,
@@ -47,8 +48,12 @@ export function realtime(config: WebSocketConfig = {}) {
 		let reconnectAttempts = 0;
 		let reconnecting = false;
 		let isConnected = false;
+		let connectPromise: Promise<void> | null = null;
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
+
+		// eslint-disable-next-line no-console
+		const debugLog = (...data: any[]) => config.debug && console.log(...data);
 
 		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
@@ -113,6 +118,8 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		const handleMessages = async (ws: WebSocketInterface, currentClient: AuthWSClient<Schema>) => {
+			let firstMessage = true;
+
 			while (ws.readyState !== WebSocketState.CLOSED) {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
@@ -127,27 +134,47 @@ export function realtime(config: WebSocketConfig = {}) {
 						message['status'] === 'error' &&
 						'error' in message
 					) {
-						if (message['error'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
+						if (message['error']['code'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
+							debugLog('Authentication token expired!');
 							const access_token = await currentClient.getToken();
 
-							if (access_token) {
-								ws.send(auth({ access_token }));
-								continue;
+							if (!access_token) {
+								throw Error('No token for re-authenticating the websocket')
 							}
+
+							ws.send(auth({ access_token }));
+							firstMessage = false;
+							continue;
 						}
 
-						if (message['error'] === 'AUTH_TIMEOUT') {
+						if (firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
+							console.warn('Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
 							ws.close();
+							firstMessage = false;
+							continue;
+						}
+
+						if (message['error']['code'] === 'AUTH_TIMEOUT') {
+							debugLog('Authentication timed out!');
+							ws.close();
+							continue;
+						}
+
+						if (message['error']['code'] === 'AUTH_FAILED') {
+							if (firstMessage)
+							debugLog('Authentication failed!');
 							continue;
 						}
 					}
 
 					if (config.heartbeat && message['type'] === 'ping') {
 						ws.send(pong());
+						firstMessage = false;
 						continue;
 					}
 				}
 
+				firstMessage = false;
 				eventHandlers['message'].forEach((handler) => handler.call(ws, message));
 			}
 		};
@@ -158,55 +185,68 @@ export function realtime(config: WebSocketConfig = {}) {
 				const self = this as AuthWSClient<Schema>;
 				const url = await getSocketUrl(self);
 
-				return new Promise<void>((resolve, reject) => {
-					let resolved = false;
-					const ws = new client.globals.WebSocket(url);
+				if (!connectPromise) {
+					debugLog(`Connecting to ${url}...`);
 
-					ws.addEventListener('open', async (evt: Event) => {
-						if (config.authMode === 'handshake' && hasAuth(self)) {
-							const access_token = (await self.getToken()) as string;
+					connectPromise = new Promise<void>((resolve, reject) => {
+						let resolved = false;
+						const ws = new client.globals.WebSocket(url);
 
-							ws.send(auth({ access_token }));
-							const confirm = await messageCallback(ws);
+						ws.addEventListener('open', async (evt: Event) => {
+							debugLog(`Connection open.`);
 
-							if (
-								!(
-									confirm &&
-									'type' in confirm &&
-									'status' in confirm &&
-									confirm['type'] === 'auth' &&
-									confirm['status'] === 'ok'
-								)
-							) {
-								throw new Error('Authentication failed while opening websocket connection');
+							if (config.authMode === 'handshake' && hasAuth(self)) {
+								const access_token = (await self.getToken()) as string;
+
+								ws.send(auth({ access_token }));
+								const confirm = await messageCallback(ws);
+
+								if (
+									!(
+										confirm &&
+										'type' in confirm &&
+										'status' in confirm &&
+										confirm['type'] === 'auth' &&
+										confirm['status'] === 'ok'
+									)
+								) {
+									reject('Authentication failed while opening websocket connection')
+								} else {
+
+									debugLog('Authentication successful!');
+								}
 							}
-						}
 
-						resolved = true;
-						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
+							resolved = true;
+							eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
 
-						handleMessages(ws, self);
-						isConnected = true;
-						resolve();
+							handleMessages(ws, self);
+							isConnected = true;
+							resolve();
+						});
+
+						ws.addEventListener('error', (evt: Event) => {
+							debugLog(`Connection errored.`);
+							eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
+							ws.close();
+							isConnected = false;
+							if (!resolved) reject(evt);
+						});
+
+						ws.addEventListener('close', (evt: CloseEvent) => {
+							debugLog(`Connection closed.`);
+							eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
+							resetConnection();
+							reconnect.call(this);
+							isConnected = false;
+							if (!resolved) reject(evt);
+						});
+
+						socket = ws;
 					});
+				}
 
-					ws.addEventListener('error', (evt: Event) => {
-						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
-						ws.close();
-						isConnected = false;
-						if (!resolved) reject(evt);
-					});
-
-					ws.addEventListener('close', (evt: CloseEvent) => {
-						eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
-						resetConnection();
-						reconnect.call(this);
-						isConnected = false;
-						if (!resolved) reject(evt);
-					});
-
-					socket = ws;
-				});
+				return connectPromise;
 			},
 			disconnect() {
 				if (socket && socket?.readyState === WebSocketState.OPEN) {
@@ -258,10 +298,12 @@ export function realtime(config: WebSocketConfig = {}) {
 				collection: Collection,
 				options = {} as Options,
 			) {
-				if (!socket || !isConnected) {
-					throw new Error(
-						'Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".',
-					);
+				if (!socket || !isConnected ) {
+					debugLog('No connection available for subscribing!');
+					await this.connect();
+					// throw new Error(
+					// 	'Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".',
+					// );
 				}
 
 				if ('uid' in options === false) options.uid = uid.next().value;
