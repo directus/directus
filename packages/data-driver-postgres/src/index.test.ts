@@ -3,7 +3,7 @@
  * Database responses are mocked and '@directus/data-sql' is partially mocked to know the generated aliases.
  */
 
-import type { AbstractQuery } from '@directus/data';
+import type { A2ORelation, AbstractQuery } from '@directus/data';
 import { convertQuery, readToEnd, type ConverterResult } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 import { ReadableStream } from 'node:stream/web';
@@ -558,6 +558,168 @@ test('nested o2m field', async () => {
 				{
 					[foreignField1Alias]: foreignField1Value3,
 					[foreignField2Alias]: foreignField2Value3,
+				},
+			],
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
+
+test.skip('nested a2o field', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+
+	const localDesiredField = randomIdentifier();
+	const localDesiredFieldId = randomIdentifier();
+	const localDesiredFieldAlias = randomIdentifier();
+	const localPkField = randomIdentifier();
+	const localPkFieldId = randomIdentifier();
+	const localPkFieldAlias = randomIdentifier();
+
+	const foreignTableAlias = randomIdentifier();
+	const localRelationalField = randomIdentifier();
+
+	// first collection
+	const foreignTable1 = randomIdentifier();
+	const foreignField1 = randomIdentifier();
+	const foreignField1Id = randomIdentifier();
+	const foreignField1Alias = randomIdentifier();
+	const foreignIdField11 = randomIdentifier();
+	const foreignIdField12 = randomIdentifier();
+
+	// second collection
+	const foreignTable2 = randomIdentifier();
+	const foreignField2 = randomIdentifier();
+	const foreignField2Id = randomIdentifier();
+	const foreignField2Alias = randomIdentifier();
+	const foreignIdField2 = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: localDesiredField,
+				alias: localDesiredFieldAlias,
+			},
+			{
+				type: 'nested-union-one',
+				alias: foreignTableAlias,
+				nesting: {
+					type: 'relational-any',
+					field: localRelationalField,
+					collections: [
+						{
+							fields: [
+								{
+									type: 'primitive',
+									field: foreignField1,
+									alias: foreignField1Alias,
+								},
+							],
+							relational: {
+								store: randomIdentifier(),
+								collectionName: foreignTable1,
+								collectionIdentifier: randomIdentifier(),
+								identifierFields: [foreignIdField11, foreignIdField12],
+							},
+						},
+						{
+							fields: [
+								{
+									type: 'primitive',
+									field: foreignField2,
+									alias: foreignField2Alias,
+								},
+							],
+							relational: {
+								store: randomIdentifier(),
+								collectionName: foreignTable2,
+								collectionIdentifier: randomIdentifier(),
+								identifierFields: [foreignIdField2],
+							},
+						},
+					],
+				},
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	// define database response mocks
+	const localDesiredFieldValue1 = randomIdentifier();
+	const localPkFieldValue1 = randomIdentifier();
+	const localRelationalFieldValue1: A2ORelation = { foreignKey: [1, 2], foreignCollection: foreignTable1 };
+
+	const localDesiredFieldValue2 = randomIdentifier();
+	const localPkFieldValue2 = randomIdentifier();
+	const localRelationalFieldValue2: A2ORelation = { foreignKey: [1], foreignCollection: foreignTable2 };
+
+	// @TODO change to deterministic generated aliases here instead of random values
+	const mockedRootData = [
+		{
+			[localDesiredFieldId]: localDesiredFieldValue1,
+			[localPkFieldId]: localPkFieldValue1,
+			[localRelationalField]: localRelationalFieldValue1,
+		},
+		{
+			[localDesiredFieldId]: localDesiredFieldValue2,
+			[localPkFieldId]: localPkFieldValue2,
+			[localRelationalField]: localRelationalFieldValue2,
+		},
+	];
+
+	const foreignField1Value1 = randomIdentifier();
+	const foreignField2Value1 = randomIdentifier();
+
+	const mockedDataFromNestedCollection1 = [
+		{
+			[foreignField1Id]: foreignField1Value1,
+			[foreignField2Id]: foreignField2Value1,
+		},
+	];
+
+	const foreignField1Value2 = randomIdentifier();
+	const foreignField2Value2 = randomIdentifier();
+
+	const mockedDataFromNestedCollection2 = [
+		{
+			[foreignField1Id]: foreignField1Value2,
+			[foreignField2Id]: foreignField2Value2,
+		},
+	];
+
+	vi.spyOn(driver, 'getDataFromSource')
+		.mockResolvedValueOnce(getMockedStream(mockedRootData))
+		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection1))
+		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[localDesiredFieldAlias]: localDesiredFieldValue1,
+			[foreignTableAlias]: [
+				{
+					[foreignField1Alias]: foreignField1Value1,
+					[foreignField2Alias]: foreignField2Value1,
+				},
+			],
+		},
+		{
+			[localDesiredFieldAlias]: localDesiredFieldValue2,
+			[foreignTableAlias]: [
+				{
+					[foreignField1Alias]: foreignField1Value2,
+					[foreignField2Alias]: foreignField2Value2,
 				},
 			],
 		},
