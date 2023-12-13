@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { iconMap } from '../utils/icons';
 import ExtensionItemOptions from './extension-item-options.vue';
 
-const devMode = process.env.NODE_ENV === 'development';
+const devMode = import.meta.env.DEV;
 
 const { t } = useI18n();
 
