@@ -75,7 +75,7 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
-extension_reload_required: Page reload required
+extension_reload_required: Page Reload Required
 extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
 extension_reload_now: Reload now
 enable: Enable
