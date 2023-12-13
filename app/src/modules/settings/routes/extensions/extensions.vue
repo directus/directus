@@ -5,7 +5,6 @@ import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { currentPageLink } from './utils/current-page-link';
 import { useReloadGuard } from './utils/use-reload-guard';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
@@ -26,6 +25,8 @@ const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle))
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
 const { confirmLeave, leaveTo, removeGuard } = useReloadGuard(needsReload);
+
+const currentPageLink = () => document.location.href;
 
 const leavePage = () => {
 	removeGuard();
