@@ -19,7 +19,7 @@ const router = useRouter();
 const error = ref();
 const loading = ref(false);
 const extensions = ref<ApiOutput[]>([]);
-const needsReload = ref<boolean>(false);
+const needsReload = ref(false);
 
 const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
 const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
