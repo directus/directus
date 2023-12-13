@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUpdated, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -35,15 +35,28 @@ onMounted(() => {
 	if (props.focus) inputEl.value?.focus();
 });
 
+const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
+const isInputValid = ref(true);
+const inputBorder = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
+
+function onEffect(value: typeof props.value) {
+	inputLength.value = value?.toString().length;
+	isInputValid.value = true;
+}
+
+/**
+ * Because theres currently (2023-12-13) no way to uniquely identify filters
+ * we run into rendering issues when dragging and reordering input-groups/input-components
+ * By listening for the DOM changes via `onUpdated` we can keep this component updated
+ * without having a `key` for each input-group in nodes
+ */
+onUpdated(() => onEffect(props.value));
+
 watch(
 	() => props.value,
-	(value) => {
-		inputLength.value = value?.toString().length;
-	},
+	(value) => onEffect(value),
 	{ immediate: true },
 );
-
-const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -71,9 +84,10 @@ const inputPattern = computed(() => {
 	}
 });
 
-function emitValue(value: string | null) {
+function emitValue(value: string | null): boolean {
 	if (value === '') {
-		return emit('input', null);
+		emit('input', null);
+		return true;
 	}
 
 	if (
@@ -81,17 +95,21 @@ function emitValue(value: string | null) {
 		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
 			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		return emit('input', value);
+		emit('input', value);
+		return true;
 	}
 
 	if (typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
-		return emit('input', value);
+		emit('input', value);
+		return true;
 	}
+
+	return false;
 }
 
 function onInput(value: string | null) {
 	inputLength.value = value?.length;
-	emitValue(value);
+	isInputValid.value = emitValue(value);
 }
 </script>
 
@@ -203,6 +221,7 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
+	box-shadow: 0 5px 0 -2px v-bind(inputBorder);
 	width: clamp(3ch, v-bind(inputWidth), 40ch);
 
 	&::placeholder {
