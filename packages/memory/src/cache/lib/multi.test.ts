@@ -33,12 +33,13 @@ const mockBus = {
 } as unknown as BusLocal;
 
 beforeEach(() => {
+	vi.mocked(createBus).mockReturnValue(mockBus);
+
 	cache = new CacheMulti({
 		local: mockLocalConfig,
 		redis: mockRedisConfig,
 	});
 
-	vi.mocked(createBus).mockReturnValue(mockBus);
 	vi.mocked(cache['local'].get).mockResolvedValue(mockLocalValue);
 	vi.mocked(cache['redis'].get).mockResolvedValue(mockRedisValue);
 });
