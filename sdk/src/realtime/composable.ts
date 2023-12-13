@@ -77,7 +77,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			active: false,
 		};
 
-		const subscriptions = new Set();
+		const subscriptions = new Set<Record<string, any>>();
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
 		const debug = (level: LogLevels, ...data: any[]) => config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
@@ -117,8 +117,10 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				setTimeout(
 					() => self.connect().then(ws => {
+						debug('info', 'reconnected successfully', subscriptions);
+
 						subscriptions.forEach(sub => {
-							ws.send(JSON.stringify(sub));
+							self.sendMessage(sub);
 						});
 
 						return ws;
@@ -332,15 +334,13 @@ export function realtime(config: WebSocketConfig = {}) {
 				collection: Collection,
 				options = {} as Options,
 			) {
+				if ('uid' in options === false) options.uid = uid.next().value;
+				subscriptions.add({ ...options, collection, type: 'subscribe' })
+
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
 					await this.connect();
 				}
-
-				if ('uid' in options === false) options.uid = uid.next().value;
-
-				subscriptions.add({ ...options, collection, type: 'subscribe' })
-				const unsub = () => subscriptions.delete({ ...options, collection, type: 'subscribe' });
 
 				this.sendMessage({ ...options, collection, type: 'subscribe' });
 				let subscribed = true;
@@ -389,7 +389,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				const unsubscribe = () => {
-					unsub();
+					subscriptions.delete({ ...options, collection, type: 'subscribe' });
 					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};
