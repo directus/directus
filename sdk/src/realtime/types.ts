@@ -3,6 +3,8 @@ import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../in
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
+export type LogLevels = 'log' | 'info' | 'warn' | 'error';
+
 export interface WebSocketConfig {
 	authMode?: WebSocketAuthModes;
 	reconnect?:
@@ -51,6 +53,17 @@ export interface WebSocketClient<Schema extends object> {
 		>;
 		unsubscribe(): void;
 	}>;
+}
+
+export type ConnectionState =
+	| { code: 'open'; connection: WebSocketInterface; }
+	| { code: 'connecting'; connection: Promise<WebSocketInterface>; }
+	| { code: 'error'; }
+	| { code: 'closed'; };
+
+export type ReconnectState = {
+	attempts: number;
+	active: false | Promise<WebSocketInterface | void>;
 }
 
 type Fallback<Selected, Options> = Selected extends Options ? Selected : Options;

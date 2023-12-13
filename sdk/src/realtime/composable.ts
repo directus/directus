@@ -1,5 +1,8 @@
 import type { DirectusClient } from '../types/client.js';
 import type {
+	ConnectionState,
+	LogLevels,
+	ReconnectState,
 	SubscribeOptions,
 	SubscriptionEvents,
 	SubscriptionOutput,
@@ -26,35 +29,6 @@ const defaultRealTimeConfig: WebSocketConfig = {
 		retries: 10,
 	},
 };
-
-const WebSocketState = {
-	OPEN: 1,
-	CLOSED: 3,
-} as const;
-
-type ClosedState = {
-	code: 'closed';
-};
-type ConnectingState = {
-	code: 'connecting';
-	connection: Promise<WebSocketInterface>;
-};
-type OpenState = {
-	code: 'open';
-	connection: WebSocketInterface;
-}
-type ErrorState = {
-	code: 'error';
-}
-
-type ConnectionState = ClosedState | ConnectingState | OpenState | ErrorState;
-
-type ReconnectState = {
-	attempts: number;
-	active: false | Promise<WebSocketInterface | void>;
-}
-
-type LogLevels = 'log' | 'info' | 'warn' | 'error';
 
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
@@ -146,7 +120,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		const handleMessages = async (ws: WebSocketInterface, currentClient: AuthWSClient<Schema>) => {
 			let firstMessage = true;
 
-			while (ws.readyState !== WebSocketState.CLOSED) {
+			while (state.code === 'open') {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
 				});
