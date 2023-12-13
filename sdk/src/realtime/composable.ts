@@ -91,6 +91,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				setTimeout(
 					() => self.connect().then(ws => {
+						// reconnect to existing subscriptions
 						subscriptions.forEach(sub => {
 							self.sendMessage(sub);
 						});
