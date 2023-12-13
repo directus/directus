@@ -25,11 +25,11 @@ test('Generates and returns hash if value does not exist yet', () => {
 	const mockHash = { update: vi.fn().mockReturnThis(), digest: vi.fn() } as unknown as Hash;
 	vi.mocked(createHash).mockReturnValue(mockHash);
 	vi.mocked(hostname).mockReturnValue('test-hostname');
-	vi.setSystemTime(new Date(2023, 0, 1));
+	vi.setSystemTime(new Date(2023, 0, 1, 0, 0, 0));
 
 	processId();
 
 	expect(createHash).toHaveBeenCalledWith('md5');
 	expect(hostname).toHaveBeenCalled();
-	expect(mockHash.update).toHaveBeenCalledWith(`test-hostname${process.pid}1672527600000`);
+	expect(mockHash.update).toHaveBeenCalledWith(`test-hostname${process.pid}1672549200000`);
 });
