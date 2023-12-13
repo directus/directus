@@ -110,4 +110,3 @@ const toggleEnabled = async (extensionType?: ExtensionType) => {
 	}
 }
 </style>
-../utils/icons
