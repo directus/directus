@@ -119,8 +119,8 @@ fetchExtensions();
 				<v-card-title>{{ t('extension_reload_required') }}</v-card-title>
 				<v-card-text>{{ t('extension_reload_required_copy') }}</v-card-text>
 				<v-card-actions>
-					<v-button @click="leavePage">{{ t('extension_reload_now') }}</v-button>
 					<v-button secondary @click="confirmLeave = false">{{ t('back') }}</v-button>
+					<v-button @click="leavePage">{{ t('extension_reload_now') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
