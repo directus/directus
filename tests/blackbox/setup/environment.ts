@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'node:fs/promises';
 import type { Environment } from 'vitest';
 import { USER } from '../common/variables';
-import { getReversedTestIndex } from '../setup/sequential-tests';
+import { getReversedTestIndex } from './sequential-tests';
 import { sleep } from '../utils/sleep';
 
 export default <Environment>{

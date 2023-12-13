@@ -318,6 +318,9 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -1242,6 +1245,9 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
   directus_settings:
@@ -1273,6 +1279,9 @@ fields:
     public_background: Public Background
     public_note: Public Note
     theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -2010,6 +2019,8 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:

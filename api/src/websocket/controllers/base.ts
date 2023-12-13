@@ -37,7 +37,7 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
-	private authInterval: NodeJS.Timer | null;
+	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
 		this.server = new WebSocketServer({ noServer: true });
