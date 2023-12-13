@@ -30,9 +30,9 @@ const currentPageLink = () => document.location.href;
 
 const leavePage = () => {
 	removeGuard();
-	const target = leaveTo.value ?? currentPageLink();
-	router.push(target);
-	// reload the page
+	// push target location into the route history
+	router.push(leaveTo.value ?? currentPageLink());
+	// hard-reload the page using the latest route
 	router.go(0);
 };
 
