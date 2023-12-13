@@ -108,7 +108,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		const reconnect = (self: WebSocketClient<Schema>) => {
-			const reconnPromise = new Promise<WebSocketInterface>((resolve, reject) => {
+			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
 				if (!config.reconnect) return reject();
 				debug('info', `reconnect #${reconnectState.attempts} `+(reconnectState.attempts >= config.reconnect.retries ? 'maximum retries reached' : `trying again in ${Math.max(100, config.reconnect.delay)}ms`));
 
@@ -129,7 +129,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 			reconnectState.attempts += 1;
 
-			reconnectState.active = reconnPromise
+			reconnectState.active = reconnectPromise
 				.catch(() => {})
 				.finally(() => {
 					reconnectState.active = false;
@@ -188,7 +188,6 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 
 						if (message['error']['code'] === 'AUTH_FAILED') {
-							if (firstMessage)
 							debug('warn', 'Authentication failed!');
 							continue;
 						}
@@ -208,7 +207,6 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		return {
 			async connect() {
-				// check current state
 				if (state.code === 'connecting') {
 					// wait for the current connection to open
 					return await state.connection;
@@ -230,7 +228,11 @@ export function realtime(config: WebSocketConfig = {}) {
 						debug('info', `Connection open.`);
 
 						if (config.authMode === 'handshake' && hasAuth(self)) {
-							const access_token = (await self.getToken()) as string;
+							const access_token = await self.getToken();
+
+							if (!access_token) {
+								throw Error('No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.')
+							}
 
 							ws.send(auth({ access_token }));
 							const confirm = await messageCallback(ws);
