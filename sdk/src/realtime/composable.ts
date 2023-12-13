@@ -110,15 +110,13 @@ export function realtime(config: WebSocketConfig = {}) {
 		const reconnect = (self: WebSocketClient<Schema>) => {
 			const reconnPromise = new Promise<WebSocketInterface>((resolve, reject) => {
 				if (!config.reconnect) return reject();
-				debug('info', `reconnect #${reconnectState.attempts} trying again in ${Math.max(100, config.reconnect.delay)}ms`);
+				debug('info', `reconnect #${reconnectState.attempts} `+(reconnectState.attempts >= config.reconnect.retries ? 'maximum retries reached' : `trying again in ${Math.max(100, config.reconnect.delay)}ms`));
 
 				if (reconnectState.active) return reconnectState.active;
 				if (reconnectState.attempts >= config.reconnect.retries) return reject();
 
 				setTimeout(
 					() => self.connect().then(ws => {
-						debug('info', 'reconnected successfully', subscriptions);
-
 						subscriptions.forEach(sub => {
 							self.sendMessage(sub);
 						});
@@ -177,8 +175,9 @@ export function realtime(config: WebSocketConfig = {}) {
 
 						if (firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
 							debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
-							ws.close();
+							config.reconnect = false;
 							firstMessage = false;
+							ws.close();
 							continue;
 						}
 
