@@ -336,8 +336,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       ws:
-        specifier: 8.15.0
-        version: 8.15.0
+        specifier: 8.15.1
+        version: 8.15.1
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -968,7 +968,7 @@ importers:
         version: 3.6.4(rollup@3.29.4)(typescript@5.3.3)(vite@4.5.1)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/composables:
     dependencies:
@@ -1017,7 +1017,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/constants:
     devDependencies:
@@ -1215,7 +1215,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/extensions:
     dependencies:
@@ -1382,7 +1382,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/pressure:
     dependencies:
@@ -1410,7 +1410,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/random:
     devDependencies:
@@ -1552,7 +1552,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1586,7 +1586,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1617,7 +1617,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-local:
     dependencies:
@@ -1682,7 +1682,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1716,7 +1716,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/stores:
     dependencies:
@@ -1958,7 +1958,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   sdk:
     devDependencies:
@@ -1976,7 +1976,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   tests/blackbox:
     devDependencies:
@@ -2054,10 +2054,10 @@ importers:
         version: 4.2.2(typescript@5.3.3)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4(@types/node@18.19.3)
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
       ws:
-        specifier: 8.15.0
-        version: 8.15.0
+        specifier: 8.15.1
+        version: 8.15.1
 
 packages:
 
@@ -12658,7 +12658,7 @@ packages:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.15.0
+      ws: 8.15.1
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -19741,8 +19741,8 @@ packages:
         optional: true
     dev: true
 
-  /ws@8.15.0:
-    resolution: {integrity: sha512-H/Z3H55mrcrgjFwI+5jKavgXvwQLtfPCUEp6pi35VhoB0pfcHnSoyuTzkBEZpzq49g1193CUEwIvmsjcotenYw==}
+  /ws@8.15.1:
+    resolution: {integrity: sha512-W5OZiCjXEmk0yZ66ZN82beM5Sz7l7coYxpRkzS+p9PP+ToQry8szKh+61eNktr7EA9DOwvFGhfC605jDHbP6QQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
