@@ -148,4 +148,3 @@ fetchExtensions();
 	margin-top: 24px;
 }
 </style>
-./utils/current-page-link
