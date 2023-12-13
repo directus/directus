@@ -3,20 +3,20 @@ import type { AbstractSqlQueryFnNode, ParameterTypes, ValuesNode } from '../../t
 import type { IndexGenerators } from '../../utils/create-index-generators.js';
 
 /**
- * @param collection
+ * @param tableIndex
  * @param abstractFunction - the function node to convert
  * @param indexGen - the generator to get the next index in the parameter list
  */
 export function convertFn(
-	collection: string,
+	tableIndex: number,
 	abstractFunction: AbstractQueryFunction,
 	indexGen: IndexGenerators,
 ): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
 	const fn: AbstractSqlQueryFnNode = {
 		type: 'fn',
 		fn: abstractFunction.fn,
-		table: collection,
-		column: abstractFunction.field,
+		tableIndex,
+		columnName: abstractFunction.field,
 	};
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {

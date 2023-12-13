@@ -4,8 +4,8 @@ import type { ValuesNode } from '../../parameterized-statement.js';
 export interface AbstractSqlQueryFnNode {
 	type: 'fn';
 
-	table: string;
-	column: string;
+	tableIndex: number;
+	columnName: string;
 
 	/**
 	 * A list of supported functions. Those are the same as the abstract query.

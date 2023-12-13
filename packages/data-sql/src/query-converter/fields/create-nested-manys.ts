@@ -1,8 +1,4 @@
-import type {
-	AbstractQueryFieldNodeNestedRelationalMany,
-	AbstractQueryFieldNodeNestedSingleMany,
-	AtLeastOneElement,
-} from '@directus/data';
+import type { AbstractQueryFieldNodeNestedSingleMany, AtLeastOneElement } from '@directus/data';
 import type {
 	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,
@@ -11,7 +7,6 @@ import type {
 	SubQuery,
 } from '../../types/index.js';
 import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
-import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';
@@ -29,22 +24,27 @@ export interface NestedManyResult {
  * The generated function will be called later on, when the root query is executed and the result is available.
  *
  * @param field - the nested field data from the abstract query
+ * @param tableIndex
  * @returns A function to create a query with and the select part for the root query
  */
-export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
+export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tableIndex: number): NestedManyResult {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
 	const indexGen = createIndexGenerators();
 
-	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, indexGen);
-	const nestedModifiers = convertModifiers(field.modifiers, field.nesting.foreign.collection, indexGen);
+	const tableIndexRelational = indexGen.table.next().value;
+
+	const from = { tableName: field.nesting.foreign.collection, tableIndex: tableIndexRelational };
+
+	const nestedFieldNodes = convertFieldNodes(field.fields, tableIndexRelational, indexGen);
+	const nestedModifiers = convertModifiers(field.modifiers, tableIndexRelational, indexGen);
 
 	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
 	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
 
 	const clauses: AbstractSqlClauses = {
 		select: nestedFieldNodes.clauses.select,
-		from: field.nesting.foreign.collection,
+		from,
 		...nestedModifiers.clauses,
 		joins: joins,
 		where: nestedModifiers.clauses.where
@@ -52,23 +52,26 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 					type: 'logical',
 					operator: 'and',
 					negate: false,
-					childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.nesting, indexGen)],
+					childNodes: [
+						nestedModifiers.clauses.where,
+						getRelationConditions(tableIndexRelational, field.nesting.foreign.fields, indexGen),
+					],
 			  }
-			: getRelationConditions(field.nesting, indexGen),
+			: getRelationConditions(tableIndexRelational, field.nesting.foreign.fields, indexGen),
 	};
 
-	const generatedAliases = field.nesting.local.fields.map((field) => [field, createUniqueAlias(field)] as const);
+	const generatedAliases = field.nesting.local.fields.map((field) => [field, indexGen.column.next().value] as const);
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
 
-	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
+	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(tableIndex, field, alias));
 
 	return {
-		subQuery: (rootRow) => ({
+		subQuery: (rootRow, columnIndexToName) => ({
 			rootQuery: {
 				clauses,
 				parameters: [
 					...parameters,
-					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
+					...field.nesting.local.fields.map((field) => rootRow[columnIndexToName(generatedAliasMap[field]!)] as string),
 				],
 			},
 
@@ -81,34 +84,37 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 }
 
 function getRelationConditions(
-	fieldNesting: AbstractQueryFieldNodeNestedRelationalMany,
+	tableIndex: number,
+	foreignFields: AtLeastOneElement<string>,
 	indexGen: IndexGenerators,
 ): AbstractSqlQueryWhereNode {
-	const table = fieldNesting.foreign.collection;
-
-	if (fieldNesting.foreign.fields.length > 1) {
+	if (foreignFields.length > 1) {
 		return {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: fieldNesting.foreign.fields.map((field) =>
-				getRelationCondition(table, field, indexGen),
+			childNodes: foreignFields.map((field) =>
+				getRelationCondition(tableIndex, field, indexGen),
 			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
-		return getRelationCondition(table, fieldNesting.foreign.fields[0], indexGen);
+		return getRelationCondition(tableIndex, foreignFields[0], indexGen);
 	}
 }
 
 /**
  * Create the condition to match the foreign key with the local key
  *
- * @param table
- * @param column
+ * @param tableIndex
+ * @param columnName
  * @param indexGen
  * @returns
  */
-function getRelationCondition(table: string, column: string, indexGen: IndexGenerators): AbstractSqlQueryConditionNode {
+function getRelationCondition(
+	tableIndex: number,
+	columnName: string,
+	indexGen: IndexGenerators,
+): AbstractSqlQueryConditionNode {
 	return {
 		type: 'condition',
 		condition: {
@@ -116,8 +122,8 @@ function getRelationCondition(table: string, column: string, indexGen: IndexGene
 			operation: 'eq',
 			target: {
 				type: 'primitive',
-				table,
-				column,
+				tableIndex,
+				columnName,
 			},
 			compareTo: {
 				type: 'value',

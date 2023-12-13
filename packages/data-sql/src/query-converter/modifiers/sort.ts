@@ -13,7 +13,7 @@ export type SortConversionResult = {
  */
 export const convertSort = (
 	abstractSorts: AtLeastOneElement<AbstractQueryNodeSort>,
-	collection: string,
+	tableIndex: number,
 	indexGen: IndexGenerators,
 ): SortConversionResult => {
 	const result: SortConversionResult = {
@@ -24,7 +24,7 @@ export const convertSort = (
 	};
 
 	abstractSorts.forEach((abstractSort) => {
-		const targetConversionResult = convertTarget(abstractSort.target, collection, indexGen);
+		const targetConversionResult = convertTarget(abstractSort.target, tableIndex, indexGen);
 
 		const orderBy: AbstractSqlQueryOrderNode = {
 			type: 'order',

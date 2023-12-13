@@ -11,7 +11,7 @@ export type ModifierConversionResult = {
 
 export const convertModifiers = (
 	modifiers: AbstractQueryModifiers,
-	collection: string,
+	tableIndex: number,
 	indexGen: IndexGenerators,
 ): ModifierConversionResult => {
 	const result: ModifierConversionResult = {
@@ -20,7 +20,7 @@ export const convertModifiers = (
 	};
 
 	if (modifiers.filter) {
-		const convertedFilter = convertFilter(modifiers.filter, collection, indexGen);
+		const convertedFilter = convertFilter(modifiers.filter, tableIndex, indexGen);
 		result.clauses.where = convertedFilter.clauses.where;
 
 		if (convertedFilter.clauses.joins.length > 0) {
@@ -41,7 +41,7 @@ export const convertModifiers = (
 	}
 
 	if (modifiers.sort) {
-		const sortConversionResult = convertSort(modifiers.sort, collection, indexGen);
+		const sortConversionResult = convertSort(modifiers.sort, tableIndex, indexGen);
 		result.clauses.order = sortConversionResult.clauses.order;
 
 		if (sortConversionResult.clauses.joins.length > 0) {

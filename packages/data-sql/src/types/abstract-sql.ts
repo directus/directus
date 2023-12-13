@@ -39,7 +39,10 @@ export interface AbstractSqlQuery {
 	parameters: ParameterTypes[];
 }
 
-export type SubQuery = (rootRow: Record<string, unknown>) => {
+export type SubQuery = (
+	rootRow: Record<string, unknown>,
+	columnIndexToName: (columnIndex: number) => string,
+) => {
 	rootQuery: AbstractSqlQuery;
 
 	subQueries: SubQuery[];
@@ -49,7 +52,7 @@ export type SubQuery = (rootRow: Record<string, unknown>) => {
 
 export type AliasMapping = (
 	| { type: 'nested'; alias: string; children: AliasMapping }
-	| { type: 'root'; alias: string; column: string }
+	| { type: 'root'; alias: string; columnIndex: number }
 	| { type: 'sub'; alias: string; index: number }
 )[];
 

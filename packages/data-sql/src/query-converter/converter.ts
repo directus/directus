@@ -24,12 +24,15 @@ export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 
 	const indexGen = createIndexGenerators();
 
+	const tableIndex = indexGen.table.next().value;
+
 	let clauses: AbstractSqlClauses;
 	let aliasMapping: AliasMapping;
 
 	try {
-		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, indexGen);
-		clauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
+		const from = { tableName: abstractQuery.collection, tableIndex };
+		const convertedFieldNodes = convertFieldNodes(abstractQuery.fields, tableIndex, indexGen);
+		clauses = { ...convertedFieldNodes.clauses, from };
 		parameters.push(...convertedFieldNodes.parameters);
 		aliasMapping = convertedFieldNodes.aliasMapping;
 		subQueries.push(...convertedFieldNodes.subQueries);
@@ -38,7 +41,7 @@ export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	}
 
 	try {
-		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, indexGen);
+		const convertedModifiers = convertModifiers(abstractQuery.modifiers, tableIndex, indexGen);
 		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
 		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
 		parameters.push(...convertedModifiers.parameters);

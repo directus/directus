@@ -5,12 +5,12 @@ import type { FilterResult } from '../utils.js';
 
 export function convertFieldCondition(
 	node: ConditionFieldNode,
-	collection: string,
+	tableIndex: number,
 	indexGen: IndexGenerators,
 	negate: boolean,
 ): FilterResult {
-	const { value: value1, joins: joins1 } = convertTarget(node.target, collection, indexGen);
-	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, collection, indexGen);
+	const { value: value1, joins: joins1 } = convertTarget(node.target, tableIndex, indexGen);
+	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, tableIndex, indexGen);
 
 	return {
 		clauses: {

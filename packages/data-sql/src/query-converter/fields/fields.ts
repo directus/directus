@@ -1,7 +1,6 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
 import type { IndexGenerators } from '../../utils/create-index-generators.js';
-import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import { createJoin } from './create-join.js';
 import { getNestedMany } from './create-nested-manys.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
@@ -24,15 +23,14 @@ export type FieldConversionResult = {
  * While iterating over the nodes, the mapping of the auto generated alias to the original (related) field is created and returned separately.
  * This map of aliases to the relational "path" will be used later on to convert the response to a nested object - the second part of the ORM.
  *
- * @param collection - the current collection, will be an alias when called recursively
  * @param abstractFields - all nodes from the abstract query
+ * @param tableIndex - the index to the table the field nodes belong to
  * @param indexGen - the generator used to increase the parameter indices
- * @param currentPath - the path which the recursion made for the ORM map
  * @returns Select, join and parameters
  */
 export const convertFieldNodes = (
-	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
+	tableIndex: number,
 	indexGen: IndexGenerators,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
@@ -43,13 +41,11 @@ export const convertFieldNodes = (
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
-			// ORM aliasing and mapping
-			const generatedAlias = createUniqueAlias(abstractField.field);
+			const columnIndex = indexGen.column.next().value;
 
-			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
+			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
 
-			// query conversion
-			const selectNode = createPrimitiveSelect(collection, abstractField.field, generatedAlias);
+			const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
 			select.push(selectNode);
 
 			continue;
@@ -65,10 +61,11 @@ export const convertFieldNodes = (
 			 */
 
 			if (abstractField.nesting.type === 'relational-many') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
+				const tableIndexRelational = indexGen.table.next().value;
 
-				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, indexGen);
+				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
+
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 
@@ -93,7 +90,7 @@ export const convertFieldNodes = (
 			 * like do a sub query in the statement or a join.
 			 */
 
-			const nestedManyResult = getNestedMany(collection, abstractField);
+			const nestedManyResult = getNestedMany(abstractField, tableIndex);
 
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
 
@@ -104,15 +101,11 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'fn') {
-			const fnField = abstractField;
+			const columnIndex = indexGen.column.next().value;
 
-			// ORM aliasing and mapping
-			const generatedAlias = createUniqueAlias(`${fnField.fn.fn}_${fnField.field}`);
+			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
 
-			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
-
-			// query conversion
-			const fn = convertFieldFn(collection, fnField, generatedAlias, indexGen);
+			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 

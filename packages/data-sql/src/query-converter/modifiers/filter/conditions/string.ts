@@ -5,11 +5,11 @@ import type { FilterResult } from '../utils.js';
 
 export function convertStringNode(
 	node: ConditionStringNode,
-	collection: string,
+	tableIndex: number,
 	indexGen: IndexGenerators,
 	negate: boolean,
 ): FilterResult {
-	const { value, joins } = convertTarget(node.target, collection, indexGen);
+	const { value, joins } = convertTarget(node.target, tableIndex, indexGen);
 
 	return {
 		clauses: {
