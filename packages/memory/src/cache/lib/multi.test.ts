@@ -64,7 +64,7 @@ describe('constructor', () => {
 		});
 
 		// expect(cache['bus']).instanceOf();
-	})
+	});
 });
 
 describe('get', () => {

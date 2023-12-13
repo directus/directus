@@ -31,5 +31,5 @@ test('Generates and returns hash if value does not exist yet', () => {
 
 	expect(createHash).toHaveBeenCalledWith('md5');
 	expect(hostname).toHaveBeenCalled();
-	expect(mockHash.update).toHaveBeenCalledWith(`test-hostname${process.pid}1672527600000`)
+	expect(mockHash.update).toHaveBeenCalledWith(`test-hostname${process.pid}1672527600000`);
 });
