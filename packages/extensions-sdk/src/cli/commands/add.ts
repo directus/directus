@@ -28,7 +28,10 @@ import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-export default async function add(): Promise<void> {
+type AddOptions = { install?: boolean };
+
+export default async function add(options: AddOptions): Promise<void> {
+	const install = options.install ?? true;
 	const extensionPath = process.cwd();
 	const packagePath = path.resolve('package.json');
 
@@ -138,9 +141,11 @@ export default async function add(): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		const packageManager = getPackageManager();
+		if (install) {
+			const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		}
 
 		spinner.succeed(chalk.bold('Done'));
 	} else {
@@ -278,9 +283,11 @@ export default async function add(): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		const packageManager = getPackageManager();
+		if (install) {
+			const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		}
 
 		spinner.succeed(chalk.bold('Done'));
 	}

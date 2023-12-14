@@ -14,10 +14,15 @@ program
 	.command('create')
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
+	.option('--no-install', 'disable install after updating package.json file')
 	.option('-l, --language <language>', 'specify the language to use')
 	.action(create);
 
-program.command('add').description('Add entries to an existing Directus extension').action(add);
+program
+	.command('add')
+	.description('Add entries to an existing Directus extension')
+	.option('--no-install', 'disable install after updating package.json file')
+	.action(add);
 
 program
 	.command('build')
