@@ -60,7 +60,12 @@ const toggleEnabled = async (extensionType?: ExtensionType) => {
 
 		<template v-if="extension.schema?.type !== 'bundle'">
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
-			<v-chip v-else-if="devMode && isAppExtension" v-tooltip.top="t('enabled_dev_tooltip')" class="state enabled" small>
+			<v-chip
+				v-else-if="devMode && isAppExtension"
+				v-tooltip.top="t('enabled_dev_tooltip')"
+				class="state enabled"
+				small
+			>
 				{{ t('enabled_dev') }}
 			</v-chip>
 			<v-chip v-else class="state" :class="{ enabled: extension.meta.enabled }" small>
