@@ -5,12 +5,12 @@ import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useReloadGuard } from './utils/use-reload-guard';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
 import VNotice from '@/components/v-notice.vue';
+import { useReloadGuard } from '@/composables/use-reload-guard';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -149,3 +149,4 @@ fetchExtensions();
 	margin-top: 24px;
 }
 </style>
+../../../../composables/use-reload-guard
