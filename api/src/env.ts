@@ -389,6 +389,8 @@ env = processValues(env);
 
 export default env;
 
+export const useEnv = () => env;
+
 /**
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
