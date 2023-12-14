@@ -2,4 +2,4 @@
 '@directus/extensions-sdk': patch
 ---
 
-added an option to the extensions-sdk cli to skip dep install
+Added a --no-install option to the extensions-sdk cli to skip dep install
