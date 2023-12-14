@@ -34,26 +34,26 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"date-fns": "2.30.0",
-		"fs-extra": "11.1.1",
-		"joi": "17.9.2",
+		"fs-extra": "11.2.0",
+		"joi": "17.11.0",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/fs-extra": "11.0.1",
-		"@types/lodash-es": "4.17.7",
-		"@types/node": "18.16.12",
-		"@types/tmp": "0.2.3",
+		"@types/fs-extra": "11.0.4",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "18.19.3",
+		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.0.4",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2",
+		"typescript": "5.3.3",
 		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
-		"vue": "3.3.9"
+		"vue": "3.3.11"
 	},
 	"peerDependenciesMeta": {
 		"vue": {

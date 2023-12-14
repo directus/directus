@@ -18,6 +18,74 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
 
+	it('properly shifts up implicit logical operator', () => {
+		const mockFilter = {
+			date_field: {
+				_and: [
+					{
+						_gte: '2023-10-01T00:00:00',
+					},
+					{
+						_lt: '2023-11-01T00:00:00',
+					},
+				],
+			},
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					date_field: {
+						_gte: '2023-10-01T00:00:00',
+					},
+				},
+				{
+					date_field: {
+						_lt: '2023-11-01T00:00:00',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('leaves explicit logical operator as is', () => {
+		const mockFilter = {
+			_and: [
+				{
+					date_field: {
+						_gte: '2023-10-01T00:00:00',
+					},
+				},
+				{
+					date_field: {
+						_lt: '2023-11-01T00:00:00',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					date_field: {
+						_gte: '2023-10-01T00:00:00',
+					},
+				},
+				{
+					date_field: {
+						_lt: '2023-11-01T00:00:00',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
 	it('returns the filter includes an _in it parses the filter with a deepMap', () => {
 		const mockFilter = {
 			_and: [

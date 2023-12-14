@@ -35,11 +35,11 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"knex": "2.4.2"
+		"knex": "2.5.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2"
+		"typescript": "5.3.3"
 	}
 }

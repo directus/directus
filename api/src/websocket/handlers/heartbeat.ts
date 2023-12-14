@@ -11,7 +11,7 @@ import { ServiceUnavailableError } from '@directus/errors';
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 
 export class HeartbeatHandler {
-	private pulse: NodeJS.Timer | undefined;
+	private pulse: NodeJS.Timeout | undefined;
 	private controller: WebSocketController;
 
 	constructor(controller?: WebSocketController) {
