@@ -516,6 +516,7 @@ function revert(values: Record<string, any>) {
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:update-allowed="updateAllowed"
 				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
