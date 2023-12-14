@@ -3,7 +3,7 @@ import { ExtensionType } from '@directus/extensions';
 import { pluralize } from '@directus/utils';
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
-import { iconMap } from '../utils/icons';
+import { iconMap } from '../constants/icons';
 
 const props = defineProps<{
 	type: ExtensionType;

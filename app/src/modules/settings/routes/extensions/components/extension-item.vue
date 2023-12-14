@@ -5,7 +5,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import type { ApiOutput, ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { iconMap } from '../utils/icons';
+import { iconMap } from '../constants/icons';
 import ExtensionItemOptions from './extension-item-options.vue';
 
 const devMode = import.meta.env.DEV;
