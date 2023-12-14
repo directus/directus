@@ -3,6 +3,7 @@ import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
 import { applyFilter, applySearch } from './apply-query.js';
+import { cloneDeep } from 'lodash-es';
 
 const FAKE_SCHEMA: SchemaOverview = {
 	collections: {
@@ -189,5 +190,58 @@ describe('applyFilter', () => {
 				});
 			}
 		}
+	});
+
+	describe('bigint should work', () => {
+		const BIGINT_FAKE_SCHEMA = cloneDeep(FAKE_SCHEMA);
+
+		BIGINT_FAKE_SCHEMA.collections['test']!.fields = {
+			...BIGINT_FAKE_SCHEMA.collections['test']!.fields,
+			bigInteger: {
+				field: 'bigInteger',
+				defaultValue: null,
+				nullable: false,
+				generated: false,
+				type: 'bigInteger',
+				dbType: null,
+				precision: null,
+				scale: null,
+				special: [],
+				note: null,
+				validation: null,
+				alias: false,
+			},
+		};
+
+		test(`big integer greater than javascript safe number is accepted in the query`, async () => {
+			class Client_SQLite3 extends MockClient {}
+
+			const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+
+			const queryBuilder = db.queryBuilder();
+
+			const collection = 'test';
+			const field = 'bigInteger';
+			const bigintId = BigInt(9007199254740991477n);
+
+			const rootFilter = {
+				[field]: {
+					_eq: bigintId.toString(),
+				},
+			};
+
+			const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {});
+
+			const tracker = createTracker(db);
+			tracker.on.select('*').response([]);
+
+			await query;
+
+			const resultingSelectQuery = tracker.history.select[0];
+			const expectedSql = `select * where "${collection}"."${field}" = ?`;
+
+			expect(resultingSelectQuery?.sql).toEqual(expectedSql);
+			expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId);
+		});
 	});
 });
