@@ -176,12 +176,11 @@ const {
 	revisionsAllowed,
 } = usePermissions(collection, item, isNew);
 
-const updateVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'update'));
-
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
-	if (updateVersionsAllowed.value && currentVersion.value !== null) return false;
+	const updateVersionsAllowed = hasPermission('directus_versions', 'update');
+	if (currentVersion.value !== null && updateVersionsAllowed) return false;
 	return true;
 });
 
