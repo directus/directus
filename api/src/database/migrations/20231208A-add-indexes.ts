@@ -11,7 +11,12 @@ export async function up(knex: Knex): Promise<void> {
 		return;
 	}
 
+	await knex.schema.alterTable('directus_activity', (table) => {
+		table.index(['timestamp']);
+	});
+
 	await knex.schema.alterTable('directus_revisions', (table) => {
+		table.index(['activity']);
 		table.index(['item']);
 	});
 }
@@ -24,7 +29,12 @@ export async function down(knex: Knex): Promise<void> {
 		return;
 	}
 
+	await knex.schema.alterTable('directus_activity', (table) => {
+		table.dropIndex(['timestamp']);
+	});
+
 	await knex.schema.alterTable('directus_revisions', (table) => {
+		table.dropIndex(['activity']);
 		table.dropIndex(['item']);
 	});
 }
