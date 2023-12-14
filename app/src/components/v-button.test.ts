@@ -5,7 +5,7 @@ import VButton from './v-button.vue';
 import { h } from 'vue';
 import { generateRouter } from '@/__utils__/router';
 import { Router } from 'vue-router';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { Focus } from '@/__utils__/focus';
 
 let router: Router;

@@ -45,7 +45,7 @@ watch(
 		}
 
 		if (start === 'first') {
-			selection.value = [groupFields.value[0].field];
+			selection.value = [groupFields.value[0]!.field];
 		}
 	},
 	{ immediate: true },

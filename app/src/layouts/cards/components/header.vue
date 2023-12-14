@@ -55,7 +55,7 @@ function toggleSize() {
 
 function toggleDescending() {
 	if (descending.value === true) {
-		sortSync.value = [sortSync.value[0].substring(1)];
+		sortSync.value = [sortSync.value[0]!.substring(1)];
 	} else {
 		sortSync.value = ['-' + sortSync.value];
 	}

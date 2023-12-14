@@ -27,11 +27,11 @@ const props = withDefaults(
 		enableSelect?: boolean;
 	}>(),
 	{
-		value: () => null,
+		value: null,
 		selectMode: 'auto',
 		disabled: false,
-		template: () => null,
-		filter: () => null,
+		template: null,
+		filter: null,
 		enableCreate: true,
 		enableSelect: true,
 	},
@@ -147,7 +147,7 @@ function onSelection(selection: (number | string)[] | null) {
 	if (selection!.length === 0) {
 		remove();
 	} else {
-		update(selection![0]);
+		update(selection![0] as string);
 	}
 
 	selectModalActive.value = false;

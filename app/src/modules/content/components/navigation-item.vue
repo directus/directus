@@ -93,7 +93,7 @@ function getChildBookmarks(collection: Collection) {
 				:search="search"
 				:name="collection.name"
 				:icon="collection.icon"
-				:color="collection.color"
+				:color="(collection.color as string)"
 			/>
 		</template>
 		<navigation-item

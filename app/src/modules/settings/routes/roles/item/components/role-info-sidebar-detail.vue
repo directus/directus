@@ -7,7 +7,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-	role: () => null,
+	role: null,
 });
 
 const { t } = useI18n();

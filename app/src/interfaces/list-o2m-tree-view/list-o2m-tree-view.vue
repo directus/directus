@@ -28,7 +28,7 @@ const props = withDefaults(
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		displayTemplate: undefined,
 	},
 );

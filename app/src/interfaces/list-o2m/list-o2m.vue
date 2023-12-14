@@ -45,11 +45,11 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
@@ -177,7 +177,7 @@ watch(
 					contentWidth[key] = 5;
 				}
 
-				if (String(item[key]).length > contentWidth[key]) {
+				if (String(item[key]).length > contentWidth[key]!) {
 					contentWidth[key] = String(item[key]).length;
 				}
 			});

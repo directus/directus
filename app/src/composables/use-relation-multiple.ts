@@ -135,7 +135,7 @@ export function useRelationMultiple(
 				if (relation.value?.type === 'm2m' || relation.value?.type === 'm2a') {
 					updatedItem[relation.value.junctionField.field] = {
 						...cloneDeep(item)[relation.value.junctionField.field],
-						...edits[relation.value.junctionField.field],
+						...edits![relation.value.junctionField.field],
 					};
 				}
 
@@ -165,16 +165,18 @@ export function useRelationMultiple(
 					case 'm2a': {
 						const itemCollection = item[relation.value.collectionField.field];
 						const editCollection = edit[relation.value.collectionField.field];
-						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection].field;
-						const editPkField = relation.value.relationPrimaryKeyFields[editCollection].field;
+						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection]?.field;
+						const editPkField = relation.value.relationPrimaryKeyFields[editCollection]?.field;
 
 						return (
 							itemCollection === editCollection &&
-							edit[relation.value.junctionField.field][editPkField] ===
-								item[relation.value.junctionField.field][itemPkField]
+							edit[relation.value.junctionField.field][editPkField!] ===
+								item[relation.value.junctionField.field][itemPkField!]
 						);
 					}
 				}
+
+				return;
 			});
 
 			if (!fetchedItem) return edit;
@@ -289,7 +291,7 @@ export function useRelationMultiple(
 							[info.reverseJunctionField.field]: itemId.value,
 							[info.collectionField.field]: collection,
 							[info.junctionField.field]: {
-								[info.relationPrimaryKeyFields[collection].field]: item,
+								[info.relationPrimaryKeyFields[collection]!.field]: item,
 							},
 						};
 					}
@@ -325,7 +327,7 @@ export function useRelationMultiple(
 
 				for (const collection of relation.value.allowedCollections) {
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
-					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
+					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField!.field}`);
 				}
 
 				break;
@@ -482,9 +484,11 @@ export function useRelationMultiple(
 
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
+					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection]!.field];
 				}
 			}
+
+			return;
 		}
 
 		function isItemSelected(item: DisplayItem) {
@@ -575,7 +579,7 @@ export function useRelationMultiple(
 				(acc, item) => {
 					const collection = item[collectionField];
 					if (!(collection in acc)) acc[collection] = [];
-					acc[collection].push(item);
+					acc[collection]?.push(item);
 
 					return acc;
 				},
@@ -584,7 +588,7 @@ export function useRelationMultiple(
 
 			const responses = await Promise.all(
 				Object.entries(selectGrouped).map(([collection, items]) => {
-					const pkField = relation.relationPrimaryKeyFields[collection].field;
+					const pkField = relation.relationPrimaryKeyFields[collection]!.field;
 
 					const fields = new Set(
 						previewQuery.value.fields.reduce<string[]>((acc, field) => {

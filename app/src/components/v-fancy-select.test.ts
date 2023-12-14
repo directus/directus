@@ -19,6 +19,8 @@ const items = [
 		text: 'Car',
 	},
 	{
+		icon: 'directions_car',
+		text: 'Car',
 		divider: true,
 	},
 	{
@@ -50,9 +52,9 @@ test('modelValue prop', async () => {
 		global,
 	});
 
-	expect(wrapper.element.children[0].children.length).toBe(4);
+	expect(wrapper.element.children[0]?.children.length).toBe(4);
 
 	await wrapper.setProps({ modelValue: 'car' });
 
-	expect(wrapper.element.children[0].children.length).toBe(1);
+	expect(wrapper.element.children[0]?.children.length).toBe(1);
 });

@@ -21,7 +21,7 @@ test('should render', () => {
 				name: 'Collection',
 			},
 			disabled: false,
-			currentValue: '["id","new_content"]',
+			currentValue: '["id","new_content"]' as undefined,
 		},
 		global,
 	});

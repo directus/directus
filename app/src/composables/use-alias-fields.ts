@@ -45,14 +45,14 @@ export function useAliasFields(
 
 		const fieldNameCount = _fields.reduce<Record<string, number>>((acc, field) => {
 			const fieldName = field.split('.')[0];
-			acc[fieldName] = (acc[fieldName] || 0) + 1;
+			acc[fieldName!] = (acc[fieldName!] || 0) + 1;
 			return acc;
 		}, {});
 
 		for (const field of _fields) {
 			const fieldName = field.split('.')[0];
 
-			if (fieldNameCount[fieldName] > 1 === false) {
+			if (fieldNameCount[fieldName!]! > 1 === false) {
 				aliasedFields[field] = {
 					key: field,
 					fieldName,

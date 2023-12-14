@@ -81,7 +81,7 @@ export async function hydrate(): Promise<void> {
 
 		await setLanguage(lang);
 
-		appStore.basemap = getBasemapSources()[0].name;
+		appStore.basemap = getBasemapSources()[0]!.name;
 	} catch (error: any) {
 		appStore.error = error;
 	} finally {

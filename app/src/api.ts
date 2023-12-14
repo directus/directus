@@ -2,7 +2,7 @@ import { logout, LogoutReason, refresh } from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { DefaultAddOptions, Options } from 'p-queue';
+import PQueue, { QueueAddOptions, Options } from 'p-queue';
 import { addQueryToPath } from './utils/add-query-to-path';
 
 const api = axios.create({
@@ -110,7 +110,7 @@ export function resumeQueue() {
 	queue.start();
 }
 
-export async function replaceQueue(options?: Options<any, DefaultAddOptions>) {
+export async function replaceQueue(options?: Options<any, QueueAddOptions>) {
 	await queue.onIdle();
 	queue = new PQueue(options);
 }

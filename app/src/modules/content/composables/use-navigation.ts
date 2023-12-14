@@ -4,7 +4,7 @@ import { Ref, ref, watch } from 'vue';
 let showHidden: Ref<boolean>;
 let activeGroups: Ref<string[]>;
 
-export function useNavigation(currentCollection: Ref<string | null>) {
+export function useNavigation(currentCollection: Ref<string | undefined>) {
 	const collectionsStore = useCollectionsStore();
 
 	if (!activeGroups) {
@@ -22,7 +22,7 @@ export function useNavigation(currentCollection: Ref<string | null>) {
 	watch(
 		currentCollection,
 		(collectionKey) => {
-			if (collectionKey === null) return;
+			if (collectionKey === undefined) return;
 
 			let collection = collectionsStore.getCollection(collectionKey);
 

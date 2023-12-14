@@ -34,8 +34,8 @@ export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 
 		return {
 			relation: relation,
-			relatedCollection: collectionsStore.getCollection(relation.related_collection as string),
-			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection as string),
+			relatedCollection: collectionsStore.getCollection(relation!.related_collection as string),
+			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation!.related_collection as string),
 			type: 'm2o',
 		} as RelationM2O;
 	});

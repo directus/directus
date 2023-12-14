@@ -241,8 +241,8 @@ interface EndEvent extends CustomEvent {
 function onSortChange(event: EndEvent) {
 	if (props.disabled) return;
 
-	const item = internalItems.value[event.oldIndex][props.itemKey];
-	const to = internalItems.value[event.newIndex][props.itemKey];
+	const item = internalItems.value[event.oldIndex]?.[props.itemKey];
+	const to = internalItems.value[event.newIndex]?.[props.itemKey];
 
 	emit('manual-sort', { item, to });
 }

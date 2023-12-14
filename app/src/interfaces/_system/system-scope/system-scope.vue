@@ -49,7 +49,7 @@ const options = computed(() => {
 
 		options = [
 			{
-				text: t(type) + ': ' + (itemName.value || id),
+				text: t(type!) + ': ' + (itemName.value || id),
 				value: props.value,
 			},
 			{ divider: true },

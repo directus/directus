@@ -67,7 +67,7 @@ watch(splitView, (splitViewEnabled) => {
 	const lang = languageOptions.value;
 
 	if (splitViewEnabled && secondLang.value === firstLang.value) {
-		secondLang.value = lang[0].value === firstLang.value ? lang[1].value : lang[0].value;
+		secondLang.value = lang[0]?.value === firstLang.value ? lang[1]?.value : lang[0]?.value;
 	}
 });
 

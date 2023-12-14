@@ -196,7 +196,7 @@ export function useFieldTree(
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
 
-			if (node && node.children?.length === 1 && node.children[0]._loading) {
+			if (node && node.children?.length === 1 && node.children[0]?._loading) {
 				node.children = getTree(node.relatedCollection, node);
 			}
 

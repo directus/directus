@@ -83,6 +83,8 @@ function toggleSelection() {
 	} else {
 		emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
 	}
+
+	return;
 }
 
 function handleClick() {

@@ -132,6 +132,8 @@ function matchString(left: string, right: string, operator: string) {
 		case 'ends_with':
 			return left.endsWith(right);
 	}
+
+	return;
 }
 
 function matchNumber(left: number, right: number, operator: string) {
@@ -149,6 +151,8 @@ function matchNumber(left: number, right: number, operator: string) {
 		case 'lte':
 			return left <= right;
 	}
+
+	return;
 }
 </script>
 

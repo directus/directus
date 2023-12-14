@@ -26,7 +26,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	modelValue: () => null,
+	modelValue: null,
 	disabled: false,
 	itemText: 'text',
 	itemValue: 'value',

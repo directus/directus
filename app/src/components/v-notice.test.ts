@@ -19,7 +19,7 @@ test('Mount component', () => {
 });
 
 test('type prop', async () => {
-	const types = ['info', 'success', 'warning', 'danger'];
+	const types = ['info', 'success', 'warning', 'danger'] as const;
 
 	for (const type of types) {
 		const wrapper = mount(VNotice, {
@@ -34,7 +34,7 @@ test('type prop', async () => {
 });
 
 test('icon prop', async () => {
-	const types = ['info', 'success', 'warning', 'danger'];
+	const types = ['info', 'success', 'warning', 'danger'] as const;
 	const icons = ['info', 'check_circle', 'warning', 'error'];
 
 	for (const [type, icon] of zip(types, icons)) {

@@ -63,7 +63,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			geometryFields,
 			(fields) => {
 				if (!geometryField.value && fields.length > 0) {
-					geometryField.value = fields[0].field;
+					geometryField.value = fields[0]?.field;
 				}
 			},
 			{ immediate: true },

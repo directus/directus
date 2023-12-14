@@ -33,7 +33,7 @@ test('modelValue prop', async () => {
 
 	await wrapper.find('input').setValue('my value1');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['my value1']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['my value1']);
 });
 
 test('modelValue trim', async () => {
@@ -47,7 +47,7 @@ test('modelValue trim', async () => {
 
 	await wrapper.find('input').trigger('blur');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['please trim that beard']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['please trim that beard']);
 });
 
 test('modelValue dbSafe', async () => {
@@ -61,7 +61,7 @@ test('modelValue dbSafe', async () => {
 
 	await wrapper.find('input').trigger('input');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['this_hould_be_D_save']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['this_hould_be_D_save']);
 });
 
 describe('processValue', () => {
@@ -160,7 +160,7 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual([null]);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([null]);
 	});
 
 	test('should emit number when type is number', async () => {
@@ -174,7 +174,7 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual([1]);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
 	});
 
 	test('should turn ending space into slug separator for slug input', async () => {
@@ -188,7 +188,7 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['test-']);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['test-']);
 	});
 
 	test('should turn space into underscores for dbSafe input', async () => {
@@ -202,7 +202,7 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['a_custom_field']);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['a_custom_field']);
 	});
 
 	test('should prevent pasting of non db safe characters for dbSafe input', async () => {
@@ -216,7 +216,7 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['test_field']);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['test_field']);
 	});
 
 	test('should normalize accented characters for dbSafe input', async () => {
@@ -230,6 +230,6 @@ describe('emitValue', () => {
 
 		await wrapper.find('input').trigger('input');
 
-		expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['a_test_field']);
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['a_test_field']);
 	});
 });

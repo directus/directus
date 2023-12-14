@@ -47,11 +47,11 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
@@ -215,7 +215,7 @@ watch(
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: contentWidth[key]! < 10 ? contentWidth[key]! * 16 + 10 : 160,
 					sortable: !['json'].includes(field.type),
 				};
 			})

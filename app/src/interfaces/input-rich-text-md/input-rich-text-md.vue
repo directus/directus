@@ -108,7 +108,7 @@ onMounted(async () => {
 		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
 
 		const observer = new MutationObserver(() => {
-			count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
+			count.value = previewBox?.textContent?.replace('\n', '')?.length ?? 0;
 		});
 
 		const config = { characterData: true, childList: true, subtree: true };

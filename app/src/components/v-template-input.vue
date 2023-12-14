@@ -95,7 +95,7 @@ function checkKeyDown(event: any) {
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
+			position(input.value!, matchedPositions[checkCaretPos - 1]! - 1);
 		}
 	} else if (event.code === 'ArrowRight' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
@@ -103,7 +103,7 @@ function checkKeyDown(event: any) {
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
+			position(input.value!, matchedPositions[checkCaretPos + 1]! + 1);
 		}
 	} else if (event.code === 'Backspace') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
@@ -133,7 +133,7 @@ function checkKeyDown(event: any) {
 			parseHTML(
 				(
 					input.value!.innerText.substring(0, caretPos) +
-					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1]!)
 				).replaceAll(String.fromCharCode(160), ' '),
 				true,
 			);
@@ -151,9 +151,9 @@ function checkKeyUp(event: any) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos);
 
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
-			position(input.value!, matchedPositions[checkCaretPos] + 1);
+			position(input.value!, matchedPositions[checkCaretPos]! + 1);
 		} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
-			position(input.value!, matchedPositions[checkCaretPos] - 1);
+			position(input.value!, matchedPositions[checkCaretPos]! - 1);
 		}
 	}
 }
