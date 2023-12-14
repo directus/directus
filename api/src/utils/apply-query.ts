@@ -644,8 +644,10 @@ export function applyFilter(
 				const functionName = column!.split('(')[0] as FieldFunction;
 				const type = getOutputTypeForFunction(functionName);
 
-				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+				if (['integer', 'float', 'decimal'].includes(type)) {
 					compareValue = Number(compareValue);
+				} else if (type === 'bigInteger') {
+					compareValue = BigInt(compareValue);
 				}
 			}
 
@@ -664,11 +666,19 @@ export function applyFilter(
 					}
 				}
 
-				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+				if (['integer', 'float', 'decimal'].includes(type)) {
 					if (Array.isArray(compareValue)) {
 						compareValue = compareValue.map((val) => Number(val));
 					} else {
 						compareValue = Number(compareValue);
+					}
+				}
+
+				if (type === 'bigInteger') {
+					if (Array.isArray(compareValue)) {
+						compareValue = compareValue.map((val) => BigInt(val));
+					} else {
+						compareValue = BigInt(compareValue);
 					}
 				}
 			}
