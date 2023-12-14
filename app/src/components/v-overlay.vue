@@ -28,19 +28,20 @@ function onClick(event: MouseEvent) {
 	</div>
 </template>
 
-<style>
-body {
-	--v-overlay-color: var(--overlay-color);
-	--v-overlay-z-index: 600;
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-overlay-z-index  [600]
+
+*/
+
 .v-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: var(--v-overlay-z-index);
+	z-index: var(--v-overlay-z-index, 600);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -62,7 +63,7 @@ body {
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-color: var(--v-overlay-color);
+		background-color: var(--overlay-color);
 		opacity: 0;
 		transition: opacity var(--slow) var(--transition);
 	}

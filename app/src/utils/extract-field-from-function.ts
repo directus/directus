@@ -18,7 +18,8 @@ export function extractFieldFromFunction(fieldKey: string): { fn: FieldFunction 
 
 	if (fieldKey.includes('(') && fieldKey.includes(')')) {
 		functionName = fieldKey.split('(')[0] as FieldFunction | undefined;
-		fieldKey = fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+		const match = fieldKey.match(REGEX_BETWEEN_PARENS);
+		if (match) fieldKey = match[1] as string;
 	}
 
 	return { fn: functionName ?? null, field: fieldKey };

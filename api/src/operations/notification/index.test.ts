@@ -44,10 +44,10 @@ test.each([
 ])('message $message should be sent as string $expected', async ({ message, expected }) => {
 	await config.handler(
 		{ recipient: testRecipient, message } as any,
-		{ accountability: testAccountability, getSchema } as any
+		{ accountability: testAccountability, getSchema } as any,
 	);
 
 	expect(vi.mocked(NotificationsService).prototype.createMany).toHaveBeenCalledWith(
-		expect.arrayContaining([expect.objectContaining({ message: expected })])
+		expect.arrayContaining([expect.objectContaining({ message: expected })]),
 	);
 });

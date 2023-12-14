@@ -619,9 +619,9 @@ Add the following CSS:
 }
 
 .sms-message {
-	padding: var(--input-padding);
-	border-radius: var(--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	padding: var(--theme--form--field--input--padding);
+	border-radius: var(--theme--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	margin: 1em 0;
 }
 
@@ -1114,9 +1114,9 @@ export default {
 }
 
 .sms-message {
-	padding: var(--input-padding);
-	border-radius: var(--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	padding: var(--theme--form--field--input--padding);
+	border-radius: var(--theme--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	margin: 1em 0;
 }
 

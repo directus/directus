@@ -1,4 +1,5 @@
 import type { MappedFieldNames } from './functions.js';
+import type { FieldOutputMap } from './output.js';
 import type { RelationalFields } from './schema.js';
 import type { MergeOptional, UnpackList } from './utils.js';
 
@@ -41,7 +42,10 @@ export type NestedRelationalFilter<Schema extends object, Item, Field extends ke
  *
  * TODO would love to filter this based on field type but thats not accurate enough in the schema atm
  */
-export type FilterOperators<T> = {
+export type FilterOperators<
+	FieldType,
+	T = FieldType extends keyof FieldOutputMap ? FieldOutputMap[FieldType] : FieldType,
+> = {
 	_eq?: T;
 	_neq?: T;
 	_gt?: T;

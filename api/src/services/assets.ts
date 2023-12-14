@@ -38,7 +38,7 @@ export class AssetsService {
 	async getAsset(
 		id: string,
 		transformation?: TransformationSet,
-		range?: Range
+		range?: Range,
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 

@@ -15,7 +15,7 @@ want.
 const client = createDirectus<Schema>('https://api.directus.io');
 ```
 
-This client is currently an empty wrapper without any functionality.Before you can do anything with it you'll need to
+This client is currently an empty wrapper without any functionality. Before you can do anything with it you'll need to
 add some features. The following composables are available/in progress:
 
 - `rest()` REST request functions
@@ -78,7 +78,7 @@ Subscribing to updates:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const { subscription, unsubscribe } = await client.subscribe('test', {
@@ -98,7 +98,7 @@ Receive/Send messages:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const stop = client.onWebSocket('message', (message) => {

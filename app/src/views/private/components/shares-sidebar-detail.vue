@@ -54,7 +54,7 @@ async function input(data: any) {
 		await refresh();
 
 		shareToEdit.value = null;
-	} catch (error: any) {
+	} catch (error) {
 		unexpectedError(error);
 	}
 }
@@ -115,8 +115,8 @@ async function remove() {
 		await api.delete(`/shares/${shareToDelete.value.id}`);
 		await refresh();
 		shareToDelete.value = null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deleting.value = false;
 	}
@@ -141,8 +141,8 @@ async function send() {
 		sendEmails.value = '';
 
 		shareToSend.value = null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		sending.value = false;
 	}
@@ -228,10 +228,6 @@ async function send() {
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.sidebar-detail {
-	--v-badge-background-color: var(--theme--primary);
-}
-
 .v-progress-linear {
 	margin: 24px 0;
 }
@@ -244,8 +240,8 @@ async function send() {
 	margin-bottom: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	background-color: var(--theme--background-normal);
+	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
@@ -257,7 +253,7 @@ async function send() {
 }
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

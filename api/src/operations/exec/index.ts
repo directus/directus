@@ -40,7 +40,7 @@ export default defineOperationApi<Options>({
 				trace: new ivm.Callback((...args: any[]) => logger.trace(unpackArgs(args)), { sync: true }),
 				debug: new ivm.Callback((...args: any[]) => logger.debug(unpackArgs(args)), { sync: true }),
 			},
-			{ copy: true }
+			{ copy: true },
 		);
 
 		// Run the operation once to define the module.exports function

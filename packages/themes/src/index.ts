@@ -1,4 +1,5 @@
-export { Definitions, ThemeSchema, TypeId, type Theme } from './schema.js';
-export { useThemeStore } from './store.js';
-export { default as ThemeProvider } from './theme-provider.vue';
-export { useTheme } from './use-theme.js';
+export * from './components/index.js';
+export * from './composables/index.js';
+export * from './schemas/index.js';
+export * from './stores/index.js';
+export * from './utils/index.js';

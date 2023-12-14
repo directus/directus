@@ -153,7 +153,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							field: fieldName,
 							type: 'alias',
 							collection: localCollectionCountries,
-						})
+						}),
 					);
 				});
 			});
@@ -188,7 +188,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								sort: updatedSort,
 							}),
 							collection: localCollectionCountries,
-						})
+						}),
 					);
 				});
 			});
@@ -231,7 +231,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								options: expect.objectContaining({ title: updatedTitle }),
 							}),
 							collection: localCollectionCountries,
-						})
+						}),
 					);
 				});
 			});

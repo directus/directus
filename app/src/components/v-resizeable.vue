@@ -27,7 +27,7 @@ const props = withDefaults(
 		minWidth: (props) => props.width,
 		maxWidth: Infinity,
 		defaultWidth: (props) => props.minWidth ?? props.width,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -78,7 +78,7 @@ watch(
 
 		target.style.width = `${finalWidth}px`;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(dragging, (dragging) => {
@@ -228,7 +228,7 @@ function onPointerUp() {
 				right: 1px;
 				bottom: 0;
 				left: 1px;
-				background-color: var(--background-normal-alt);
+				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}
 

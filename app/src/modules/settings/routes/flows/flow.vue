@@ -84,8 +84,8 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deleting.value = false;
 		router.push('/settings/flows');
@@ -103,7 +103,7 @@ const hoveredPanelID = ref<string | null>(null);
 
 const panels = computed(() => {
 	const savedPanels = (flow.value?.operations || []).filter(
-		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+		(panel) => panelsToBeDeleted.value.includes(panel.id) === false,
 	);
 
 	const raw = [
@@ -180,7 +180,7 @@ const parentPanels = computed(() => {
 	return Object.fromEntries(
 		Object.entries(parents).map(([key, value]) => {
 			return [key, { ...value, loner: !connectedToTrigger(key) }];
-		})
+		}),
 	);
 
 	function connectedToTrigger(id: string) {
@@ -301,7 +301,7 @@ async function saveChanges() {
 		stagedFlow.value = {};
 		editMode.value = false;
 	} catch (error) {
-		unexpectedError(error as Error);
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -412,8 +412,8 @@ async function movePanel() {
 		await flowsStore.hydrate();
 
 		movePanelID.value = undefined;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		movePanelLoading.value = false;
 	}
@@ -441,9 +441,9 @@ function arrowStop() {
 	}
 
 	// make sure only one arrow can be connected to an attachment
-	if (nearPanel && parentPanels.value[nearPanel]) {
-		const currentlyConnected = parentPanels.value[nearPanel];
+	const currentlyConnected = nearPanel && parentPanels.value[nearPanel];
 
+	if (currentlyConnected) {
 		if (currentlyConnected.id === '$trigger') {
 			flow.value = merge({}, flow.value, { operation: null });
 		} else {
@@ -471,11 +471,11 @@ function arrowStop() {
 }
 
 function isLoop(currentId: string, attachTo: string) {
-	let parent = currentId;
+	let parent: string | undefined = currentId;
 
 	while (parent !== undefined) {
 		if (parent === attachTo) return true;
-		parent = parentPanels.value[parent]?.id ?? undefined;
+		parent = parentPanels.value[parent]?.id;
 	}
 
 	return false;
@@ -485,7 +485,7 @@ function getNearAttachment(pos: Vector2) {
 	for (const panel of panels.value) {
 		const attachmentPos = new Vector2(
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
-			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
+			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y,
 		);
 
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;

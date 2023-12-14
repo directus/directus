@@ -18,7 +18,7 @@ export async function up(knex: Knex) {
 					default: column.default_value,
 					nullable: column.is_nullable,
 				});
-			})
+			}),
 		);
 	}
 
@@ -39,7 +39,7 @@ export async function down(knex: Knex) {
 					default: column.default_value,
 					nullable: column.is_nullable,
 				});
-			})
+			}),
 		);
 	}
 

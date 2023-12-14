@@ -1,5 +1,5 @@
 import { expect, test, vi, afterAll, beforeEach } from 'vitest';
-import { convertFieldNodes, type Result } from './fields.js';
+import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
@@ -8,17 +8,21 @@ afterAll(() => {
 	vi.restoreAllMocks();
 });
 
-vi.mock('../../orm/create-unique-alias.js', () => ({
+vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
 let randomPrimitiveField1: string;
 let randomPrimitiveField2: string;
+let randomPrimitiveFieldAlias1: string;
+let randomPrimitiveFieldAlias2: string;
 let randomCollection: string;
 
 beforeEach(() => {
 	randomPrimitiveField1 = randomIdentifier();
 	randomPrimitiveField2 = randomIdentifier();
+	randomPrimitiveFieldAlias1 = randomIdentifier();
+	randomPrimitiveFieldAlias2 = randomIdentifier();
 	randomCollection = randomIdentifier();
 });
 
@@ -27,14 +31,16 @@ test('primitives only', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'primitive',
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -53,25 +59,24 @@ test('primitives only', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
-		]),
-		nestedManys: [],
+		aliasMapping: [
+			{ type: 'root', alias: randomPrimitiveFieldAlias1, column: `${randomPrimitiveField1}_RANDOM` },
+			{ type: 'root', alias: randomPrimitiveFieldAlias2, column: `${randomPrimitiveField2}_RANDOM` },
+		],
+		subQueries: [],
 	};
 
 	const idGen = parameterIndexGenerator();
 	const result = convertFieldNodes(randomCollection, fields, idGen);
-	expect(result.clauses).toMatchObject(expected.clauses);
-	expect(result.parameters).toMatchObject(expected.parameters);
-	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
+	expect(result).toStrictEqual(expected);
 });
 
-test('primitive and function', () => {
+test('primitive, fn', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'fn',
@@ -80,10 +85,11 @@ test('primitive and function', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -106,18 +112,16 @@ test('primitive and function', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
-		]),
-		nestedManys: [],
+		aliasMapping: [
+			{ type: 'root', alias: randomPrimitiveFieldAlias1, column: `${randomPrimitiveField1}_RANDOM` },
+			{ type: 'root', alias: randomPrimitiveFieldAlias2, column: `month_${randomPrimitiveField2}_RANDOM` },
+		],
+		subQueries: [],
 	};
 
 	const idGen = parameterIndexGenerator();
 	const result = convertFieldNodes(randomCollection, fields, idGen);
-	expect(result.clauses).toMatchObject(expected.clauses);
-	expect(result.parameters).toMatchObject(expected.parameters);
-	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
+	expect(result).toStrictEqual(expected);
 });
 
 test('primitive, fn, m2o', () => {
@@ -126,34 +130,39 @@ test('primitive, fn, m2o', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
 	const randomPrimitiveFieldFn = randomIdentifier();
+	const randomPrimitiveFieldFnAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
-			type: 'nested-one',
+			type: 'nested-single-one',
 			fields: [
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
-			meta: {
-				type: 'm2o',
-				join: {
-					local: {
-						fields: [randomJoinCurrentField],
-					},
-					foreign: {
-						store: randomExternalStore,
-						collection: randomExternalCollection,
-						fields: [randomExternalField],
-					},
+			nesting: {
+				type: 'relational-many',
+
+				local: {
+					fields: [randomJoinCurrentField],
+				},
+				foreign: {
+					store: randomExternalStore,
+					collection: randomExternalCollection,
+					fields: [randomExternalField],
 				},
 			},
+			alias: randomNestedAlias,
 		},
 		{
 			type: 'fn',
@@ -162,12 +171,11 @@ test('primitive, fn, m2o', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveFieldFn,
+			alias: randomPrimitiveFieldFnAlias,
 		},
 	];
 
-	const idGen = parameterIndexGenerator();
-
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -220,18 +228,28 @@ test('primitive, fn, m2o', () => {
 			],
 		},
 		parameters: [],
-		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
-			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
-		]),
-		nestedManys: [],
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: randomPrimitiveFieldAlias1,
+				column: `${randomPrimitiveField1}_RANDOM`,
+			},
+			{
+				type: 'nested',
+				alias: randomNestedAlias,
+				children: [{ type: 'root', alias: randomJoinNodeFieldAlias, column: `${randomJoinNodeField}_RANDOM` }],
+			},
+			{
+				type: 'root',
+				alias: randomPrimitiveFieldFnAlias,
+				column: `month_${randomPrimitiveFieldFn}_RANDOM`,
+			},
+		],
+		subQueries: [],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, idGen);
-	expect(result.clauses).toMatchObject(expected.clauses);
-	expect(result.parameters).toMatchObject(expected.parameters);
-	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
+	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
+	expect(result).toMatchObject(expected);
 });
 
 test('primitive, o2m', () => {
@@ -240,37 +258,42 @@ test('primitive, o2m', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
-			type: 'nested-many',
+			type: 'nested-single-many',
 			fields: [
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
-			meta: {
-				type: 'o2m',
-				join: {
-					local: {
-						fields: [randomJoinCurrentField],
-					},
-					foreign: {
-						store: randomExternalStore,
-						collection: randomExternalCollection,
-						fields: [randomExternalField],
-					},
+			alias: randomNestedAlias,
+			nesting: {
+				type: 'relational-many',
+
+				local: {
+					fields: [randomJoinCurrentField],
+				},
+				foreign: {
+					store: randomExternalStore,
+					collection: randomExternalCollection,
+					fields: [randomExternalField],
 				},
 			},
+			modifiers: {},
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -279,19 +302,29 @@ test('primitive, o2m', () => {
 					column: randomPrimitiveField1,
 					as: `${randomPrimitiveField1}_RANDOM`,
 				},
+				{
+					type: 'primitive',
+					table: randomCollection,
+					column: randomJoinCurrentField,
+					as: `${randomJoinCurrentField}_RANDOM`,
+				},
 			],
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]]]),
-		nestedManys: [
+		aliasMapping: [
 			{
-				queryGenerator: expect.any(Function),
-				localJoinFields: [randomJoinCurrentField],
-				foreignJoinFields: [randomExternalField],
-				alias: randomExternalCollection,
+				type: 'root',
+				alias: randomPrimitiveFieldAlias1,
+				column: `${randomPrimitiveField1}_RANDOM`,
+			},
+			{
+				type: 'sub',
+				alias: randomNestedAlias,
+				index: 0,
 			},
 		],
+		subQueries: [expect.any(Function)],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());

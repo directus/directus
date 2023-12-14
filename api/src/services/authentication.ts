@@ -43,7 +43,7 @@ export class AuthenticationService {
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
-		otp?: string
+		otp?: string,
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
@@ -75,7 +75,7 @@ export class AuthenticationService {
 				'u.tfa_secret',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				'u.auth_data',
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
@@ -94,7 +94,7 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -110,7 +110,7 @@ export class AuthenticationService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		};
 
@@ -197,7 +197,7 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
@@ -368,7 +368,7 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
@@ -410,7 +410,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				'u.auth_data',
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -439,7 +439,7 @@ export class AuthenticationService {
 				'role',
 				'provider',
 				'external_identifier',
-				'auth_data'
+				'auth_data',
 			)
 			.from('directus_users')
 			.where('id', userID)

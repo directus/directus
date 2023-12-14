@@ -40,8 +40,7 @@ To expose an Node.js package available globally in your Nuxt project you must cr
 called `plugins` and a new file called `directus.js` inside of it.
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItem, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItem, readItems } from '@directus/sdk';
 
 const directus = createDirectus('https://directus.example.com').with(rest());
 

@@ -34,7 +34,7 @@ watch(
 		if (newText !== input.value.innerText) {
 			parseHTML(newText, true);
 		}
-	}
+	},
 );
 
 onMounted(() => {
@@ -72,7 +72,7 @@ function checkKeyDown(event: any) {
 						? '\n\n'
 						: '\n') +
 					input.value!.innerText.substring(caretPos),
-				true
+				true,
 			);
 
 			position(input.value!, caretPos + 1);
@@ -116,9 +116,9 @@ function checkKeyDown(event: any) {
 			parseHTML(
 				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
-					' '
+					' ',
 				),
-				true
+				true,
 			);
 
 			position(input.value!, newCaretPos);
@@ -135,7 +135,7 @@ function checkKeyDown(event: any) {
 					input.value!.innerText.substring(0, caretPos) +
 					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
 				).replaceAll(String.fromCharCode(160), ' '),
-				true
+				true,
 			);
 
 			position(input.value!, caretPos);
@@ -305,16 +305,16 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
 	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
@@ -330,11 +330,11 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 
 	:deep(.preview) {
@@ -346,7 +346,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		line-height: 1;
 		vertical-align: -2px;
 		background: var(--theme--primary-background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		user-select: text;
 
 		&::before {

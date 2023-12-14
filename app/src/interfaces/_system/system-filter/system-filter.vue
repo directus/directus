@@ -247,14 +247,15 @@ function addKeyAsNode() {
 	:deep(.group) {
 		margin-left: 18px;
 		padding-left: 10px;
-		border-left: var(--border-width) solid var(--border-subdued);
+		border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.v-list {
 		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
 			margin-left: 0px;
@@ -272,14 +273,14 @@ function addKeyAsNode() {
 		.v-list {
 			display: flex;
 			align-items: center;
-			height: var(--input-height);
+			height: var(--theme--form--field--input--height);
 			padding-top: 0;
 			padding-bottom: 0;
 		}
 
 		.no-rules {
 			color: var(--theme--form--field--input--foreground-subdued);
-			font-family: var(--theme--font-family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 
@@ -292,6 +293,7 @@ function addKeyAsNode() {
 			margin: 0;
 			padding: 0;
 			border: 0;
+			background: transparent;
 		}
 
 		&.empty .v-list {
@@ -310,13 +312,13 @@ function addKeyAsNode() {
 			height: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
-			background-color: var(--theme--background);
-			border: var(--border-width) solid var(--border-subdued);
+			background-color: var(--theme--form--field--input--background);
+			border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
 			&:hover,
 			&.active {
-				border-color: var(--border-normal);
+				border-color: var(--theme--form--field--input--border-color);
 			}
 			&.active {
 				.expand_more {

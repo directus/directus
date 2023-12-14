@@ -420,7 +420,7 @@ Lastly, replace the CSS at the bottom with this:
 .messages-table { padding: 12px; height: 100%; overflow: scroll; }
 .messages-table table { width: 100%; min-width: 600px; }
 .messages-table table tr td,
-.messages-table table tr th { vertical-align: top; border-top: var(--border-width) solid var(--border-subdued); padding: 10px; }
+.messages-table table tr th { vertical-align: top; border-top: var(--theme--border-width) solid var(--border-subdued); padding: 10px; }
 .ucwords { text-transform: capitalize; }
 .nowrap { white-space: nowrap; }
 .message { min-width: 260px; }
@@ -753,7 +753,7 @@ export default {
 .messages-table table tr td,
 .messages-table table tr th {
 	vertical-align: top;
-	border-top: var(--border-width) solid var(--border-subdued);
+	border-top: var(--theme--border-width) solid var(--border-subdued);
 	padding: 10px;
 }
 .ucwords {

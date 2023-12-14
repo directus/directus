@@ -1,5 +1,5 @@
 import type { ValuesNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQuerySelectNode } from '../../select.js';
 
 /*
  * Condition to filter rows where a column value is in a list of values.

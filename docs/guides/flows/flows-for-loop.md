@@ -52,7 +52,7 @@ Once your starting flow is configured as desired, follow these steps.
 
 Once your for-loop is configured, you can process the data several ways.
 
-First, you could simple let the "for-loop" flow process each element in the **Payload**.
+First, you could simply let the "for-loop" flow process each element in the **Payload**.
 
 Second, you could also configure a **Response Body** in the trigger of your "for-loop" flow. The **Response Body** gets
 appended under the [trigger flow](/app/flows/operations#trigger-flow) operation in the starting flow.

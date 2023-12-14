@@ -1,6 +1,5 @@
-import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
 import type { ValueNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQuerySelectNode } from '../../select.js';
 
 /**
  * Filter rows where a numeric column is equal, greater than, less than, etc. other given number.
@@ -9,7 +8,7 @@ export interface SqlConditionNumberNode {
 	type: 'condition-number';
 
 	/* The column in question. Optionally a function can be applied. */
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	target: AbstractSqlQuerySelectNode;
 
 	/* The operator valid for a comparison against numbers. */
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';

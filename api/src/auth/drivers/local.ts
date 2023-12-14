@@ -88,7 +88,7 @@ export function createLocalAuthRouter(provider: string): Router {
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
-				req.body?.otp
+				req.body?.otp,
 			);
 
 			const payload = {
@@ -107,7 +107,7 @@ export function createLocalAuthRouter(provider: string): Router {
 
 			return next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

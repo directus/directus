@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import UsersInvite from '@/views/private/components/users-invite.vue';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import UsersNavigation from '../components/navigation.vue';
-
 import api from '@/api';
+import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
@@ -13,11 +9,14 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import UsersInvite from '@/views/private/components/users-invite.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
-import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -68,11 +67,11 @@ const canInviteUsers = computed(() => {
 	if (isAdmin) return true;
 
 	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
 	);
 
 	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
 	);
 
 	return !!usersCreatePermission && !!rolesReadPermission;
@@ -118,9 +117,9 @@ function useBatch() {
 
 			selection.value = [];
 			confirmDelete.value = false;
-		} catch (err: any) {
-			error.value = err;
-			unexpectedError(err);
+		} catch (e) {
+			error.value = e;
+			unexpectedError(e);
 		} finally {
 			deleting.value = false;
 		}
@@ -166,7 +165,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === 'directus_users'
+			(permission) => permission.action === 'update' && permission.collection === 'directus_users',
 		);
 
 		return !!updatePermissions;
@@ -177,7 +176,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
+			(permission) => permission.action === 'delete' && permission.collection === 'directus_users',
 		);
 
 		return !!deletePermissions;
@@ -188,7 +187,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_users'
+			(permission) => permission.action === 'create' && permission.collection === 'directus_users',
 		);
 
 		return !!createPermissions;

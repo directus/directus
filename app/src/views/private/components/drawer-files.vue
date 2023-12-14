@@ -16,7 +16,7 @@ const props = withDefaults(
 	}>(),
 	{
 		collection: 'directus_files',
-	}
+	},
 );
 
 const { t } = useI18n();
@@ -36,7 +36,7 @@ watch(
 	() => {
 		folderFilter.value = getFolderFilter(currentFolder.value, currentSpecial.value, userStore?.currentUser?.id);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function onFolderChange(target: FolderTarget) {

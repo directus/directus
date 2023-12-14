@@ -60,6 +60,7 @@ extension_display: Display
 extension_layout: Layout
 extension_module: Module
 extension_panel: Panel
+extension_theme: Theme
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
@@ -69,6 +70,7 @@ extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Modules
 extension_panels: Panels
+extension_themes: Themes
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
@@ -316,6 +318,9 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -696,7 +701,6 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
-create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -822,7 +826,7 @@ layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
-optional_system_fields: Optional System Fields
+optional_system_fields: Optional Fields
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
@@ -1029,7 +1033,7 @@ deselect: Deselect
 deselect_all: Deselect All
 theme: Theme
 select_a_theme: Select a Theme
-appearance_global: Project Default
+default_sync_with_project: Default (Sync with Project)
 appearance_auto: Automatic (Sync with System)
 appearance_light: Light
 appearance_dark: Dark
@@ -1046,7 +1050,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Access Control
 settings_project: Settings
-settings_theming: Theming
+settings_appearance: Appearance
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bookmarks
@@ -1091,7 +1095,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
 page_help_settings_project: "**Settings** — Your project's global configuration options."
-page_help_settings_theming: "**Theming** — Your project's theming options."
+page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
@@ -1241,6 +1245,9 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
   directus_settings:
@@ -1272,6 +1279,9 @@ fields:
     public_background: Public Background
     public_note: Public Note
     theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -1571,7 +1581,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: {}
 report_error: Report Error
 start: Start
 table: Table
@@ -2010,6 +2019,8 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:

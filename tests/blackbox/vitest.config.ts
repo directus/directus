@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
 		globalSetup: './setup/setup.ts',
-		environment: 'blackbox',
+		environment: './setup/environment.ts',
 		sequence: {
 			sequencer: Sequencer,
 		},

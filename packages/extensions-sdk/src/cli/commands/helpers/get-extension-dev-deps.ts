@@ -7,7 +7,7 @@ import getSdkVersion from '../../utils/get-sdk-version.js';
 
 export default async function getExtensionDevDeps(
 	type: ExtensionType | ExtensionType[],
-	language: Language | Language[] = []
+	language: Language | Language[] = [],
 ): Promise<Record<string, string>> {
 	const types = Array.isArray(type) ? type : [type];
 	const languages = Array.isArray(language) ? language : [language];

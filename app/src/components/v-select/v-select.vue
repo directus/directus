@@ -11,67 +11,68 @@ import { Option } from './types';
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;
 
-interface Props {
-	/** The items that should be selectable */
-	items: ItemsRaw;
-	/** Which key in items is used to display the text */
-	itemText?: string;
-	/** Which key in items is used to model the active state */
-	itemValue?: string;
-	/** Which key in items is used to show an icon */
-	itemIcon?: string | null;
-	/** Which font family to use for checkbox item label */
-	itemLabelFontFamily?: string;
-	/** Which key in items is used to model the disabled state */
-	itemDisabled?: string;
-	/** Which key in items is used to model the selectable state */
-	itemSelectable?: string;
-	/** Which key in items is used to render the children */
-	itemChildren?: string;
-	/** Which items should be shown as selected, depending on their value */
-	modelValue?: InputValue;
-	/** Allow to select multiple values */
-	multiple?: boolean;
-	/** Allow to select the parent of a group */
-	groupSelectable?: boolean;
-	/** Require a minimum selection of at least one element */
-	mandatory?: boolean;
-	/** Text that is displayed when no items are selected */
-	placeholder?: string | null;
-	/** Spreads the select element to it's maximal width */
-	fullWidth?: boolean;
-	/** Disables any interaction */
-	disabled?: boolean;
-	/** Allow to deselect all currently selected items */
-	showDeselect?: boolean;
-	/** Allow to enter custom values */
-	allowOther?: boolean;
-	/** Closes the dropdown after an items has been selected  */
-	closeOnContentClick?: boolean;
-	/** Renders the element inline, good for seamless selections */
-	inline?: boolean;
-	label?: boolean;
-	/** Limits the amount of items inside the preview */
-	multiplePreviewThreshold?: number;
-	/** The direction the menu should open */
-	placement?: Placement;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemText: 'text',
-	itemValue: 'value',
-	itemIcon: null,
-	itemDisabled: 'disabled',
-	itemSelectable: 'selectable',
-	itemChildren: 'children',
-	modelValue: null,
-	mandatory: true,
-	placeholder: null,
-	fullWidth: true,
-	closeOnContentClick: true,
-	multiplePreviewThreshold: 3,
-	placement: 'bottom',
-});
+const props = withDefaults(
+	defineProps<{
+		/** The items that should be selectable */
+		items: ItemsRaw;
+		/** Which key in items is used to display the text */
+		itemText?: string;
+		/** Which key in items is used to model the active state */
+		itemValue?: string;
+		/** Which key in items is used to show an icon */
+		itemIcon?: string | null;
+		/** Which font family to use for checkbox item label */
+		itemLabelFontFamily?: string;
+		/** Which key in items is used to model the disabled state */
+		itemDisabled?: string;
+		/** Which key in items is used to model the selectable state */
+		itemSelectable?: string;
+		/** Which key in items is used to render the children */
+		itemChildren?: string;
+		/** Which items should be shown as selected, depending on their value */
+		modelValue?: InputValue;
+		/** Allow to select multiple values */
+		multiple?: boolean;
+		/** Allow to select the parent of a group */
+		groupSelectable?: boolean;
+		/** Require a minimum selection of at least one element */
+		mandatory?: boolean;
+		/** Text that is displayed when no items are selected */
+		placeholder?: string | null;
+		/** Spreads the select element to it's maximal width */
+		fullWidth?: boolean;
+		/** Disables any interaction */
+		disabled?: boolean;
+		/** Allow to deselect all currently selected items */
+		showDeselect?: boolean;
+		/** Allow to enter custom values */
+		allowOther?: boolean;
+		/** Closes the dropdown after an items has been selected  */
+		closeOnContentClick?: boolean;
+		/** Renders the element inline, good for seamless selections */
+		inline?: boolean;
+		label?: boolean;
+		/** Limits the amount of items inside the preview */
+		multiplePreviewThreshold?: number;
+		/** The direction the menu should open */
+		placement?: Placement;
+	}>(),
+	{
+		itemText: 'text',
+		itemValue: 'value',
+		itemIcon: null,
+		itemDisabled: 'disabled',
+		itemSelectable: 'selectable',
+		itemChildren: 'children',
+		modelValue: null,
+		mandatory: true,
+		placeholder: null,
+		fullWidth: true,
+		closeOnContentClick: true,
+		multiplePreviewThreshold: 3,
+		placement: 'bottom',
+	},
+);
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
@@ -82,13 +83,13 @@ const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
-	emit('update:modelValue', value)
+	emit('update:modelValue', value),
 );
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 	modelValue as Ref<string[]>,
 	internalItems,
-	(value) => emit('update:modelValue', value)
+	(value) => emit('update:modelValue', value),
 );
 
 const search = ref<string | null>(null);
@@ -97,7 +98,7 @@ watch(
 	search,
 	debounce((val: string | null) => {
 		internalSearch.value = val;
-	}, 250)
+	}, 250),
 );
 
 function useItems() {
@@ -127,7 +128,7 @@ function useItems() {
 				selectable: get(item, props.itemSelectable),
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 					  )
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
@@ -137,7 +138,7 @@ function useItems() {
 		const filterItem = (
 			text: string | undefined,
 			value?: string | number | null,
-			children?: Record<string, any>[] | null
+			children?: Record<string, any>[] | null,
 		): boolean => {
 			if (!internalSearch.value) return true;
 
@@ -146,14 +147,14 @@ function useItems() {
 			return children
 				? isMatchingCurrentItem(text, value, searchValue) ||
 						children.some((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 						)
 				: isMatchingCurrentItem(text, value, searchValue);
 
 			function isMatchingCurrentItem(
 				text: string | undefined,
 				value: string | number | null | undefined,
-				searchValue: string
+				searchValue: string,
 			): boolean {
 				return (
 					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
@@ -332,7 +333,7 @@ function useDisplayValue() {
 				<v-list-item
 					v-for="otherVal in otherValues"
 					:key="otherVal.key"
-					:active="(modelValue || []).includes(otherVal.value)"
+					:active="((modelValue as string | string[]) || []).includes(otherVal.value)"
 					@click.stop
 				>
 					<v-list-item-icon>
@@ -367,17 +368,21 @@ function useDisplayValue() {
 </template>
 
 <style scoped lang="scss">
-:global(body) {
-	--v-select-font-family: var(--theme--font-family-sans-serif);
-	--v-select-placeholder-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-select-font-family        [var(--theme--fonts--sans--font-family)]
+		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
+
+*/
 
 .list {
 	--v-list-min-width: 0;
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family);
+	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
 }
@@ -417,8 +422,8 @@ function useDisplayValue() {
 	padding: 4px 8px;
 	padding-right: 26px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
@@ -432,6 +437,6 @@ function useDisplayValue() {
 }
 
 .inline-display.placeholder {
-	color: var(--v-select-placeholder-color);
+	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
 }
 </style>

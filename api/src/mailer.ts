@@ -63,7 +63,7 @@ export default function getMailer(): Transporter {
 					domain: env['EMAIL_MAILGUN_DOMAIN'],
 				},
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
-			}) as any
+			}) as any,
 		);
 	} else if (transportName === 'sendgrid') {
 		const sg = require('nodemailer-sendgrid');
@@ -71,7 +71,7 @@ export default function getMailer(): Transporter {
 		transporter = nodemailer.createTransport(
 			sg({
 				apiKey: env['EMAIL_SENDGRID_API_KEY'],
-			}) as any
+			}) as any,
 		);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');

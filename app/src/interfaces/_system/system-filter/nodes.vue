@@ -87,7 +87,7 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	set(newVal) {
 		emit(
 			'update:filter',
-			newVal.map((val) => val.node)
+			newVal.map((val) => val.node),
 		);
 	},
 });
@@ -343,7 +343,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							<span class="text">
 								{{
 									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
-										'interfaces.filter.of_the_following'
+										'interfaces.filter.of_the_following',
 									)}`
 								}}
 							</span>
@@ -384,8 +384,8 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--border-subdued);
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
@@ -437,7 +437,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.raw-field-names {
 		.plain-name,
 		.name {
-			font-family: var(--theme--font-family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 
@@ -455,7 +455,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			z-index: -1;
 			width: calc(100% + 8px);
 			height: 100%;
-			background-color: var(--background-normal);
+			background-color: var(--theme--background-normal);
 			border-radius: 6px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -490,7 +490,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	&:hover {
-		border-color: var(--border-normal);
+		border-color: var(--theme--form--field--input--border-color);
 
 		.delete,
 		&:hover {
@@ -532,7 +532,7 @@ function isExistingField(node: Record<string, any>): boolean {
 .group :deep(.sortable-ghost) {
 	.node .header {
 		background-color: var(--theme--primary-background);
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		> * {
 			opacity: 0;

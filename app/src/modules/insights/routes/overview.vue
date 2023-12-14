@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useI18n } from 'vue-i18n';
@@ -22,7 +22,7 @@ const permissionsStore = usePermissionsStore();
 
 const confirmDelete = ref<string | null>(null);
 const deletingDashboard = ref(false);
-const editDashboard = ref<Dashboard | null>(null);
+const editDashboard = ref<Dashboard>();
 
 const selection = ref<string[]>([]);
 const search = ref<string | null>(null);
@@ -45,7 +45,7 @@ const batchDeleteAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_dashboards', 'delete');
 });
 
-const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
+const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 function refresh() {
 	insightsStore.hydrate();
@@ -175,8 +175,8 @@ async function deleteDashboard() {
 		await api.delete(`/dashboards/${confirmDelete.value}`);
 		await insightsStore.hydrate();
 		confirmDelete.value = null;
-	} catch (err) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deletingDashboard.value = false;
 	}
@@ -197,8 +197,8 @@ async function batchDelete() {
 
 		selection.value = [];
 		await refresh();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		confirmBatchDelete.value = false;
 		batchDeleting.value = false;
@@ -381,7 +381,7 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="dashboard" :title="t('no_dashboards')" center>
+		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
 			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
 
 			<template v-if="createAllowed && !search" #append>
@@ -413,7 +413,7 @@ async function batchDelete() {
 		<dashboard-dialog
 			:model-value="!!editDashboard"
 			:dashboard="editDashboard"
-			@update:model-value="editDashboard = null"
+			@update:model-value="editDashboard = undefined"
 		/>
 	</private-view>
 </template>
@@ -421,8 +421,8 @@ async function batchDelete() {
 <style scoped lang="scss">
 .v-input {
 	&.search {
-		height: var(--v-button-height);
-		--border-radius: calc(44px / 2);
+		--v-input-border-radius: calc(44px / 2);
+		height: 44px;
 		width: 200px;
 		margin-left: auto;
 

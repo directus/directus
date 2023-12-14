@@ -6,19 +6,21 @@ import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
+import type { Field } from '@directus/types';
 
-interface Props {
-	field: FormField;
-	showModal: boolean;
-	disabled: boolean;
-	currentValue: unknown;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showModal: false,
-	disabled: false,
-	currentValue: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		showModal: boolean;
+		disabled: boolean;
+		currentValue: unknown;
+	}>(),
+	{
+		showModal: false,
+		disabled: false,
+		currentValue: undefined,
+	},
+);
 
 const emit = defineEmits(['cancel', 'setRawValue']);
 
@@ -26,7 +28,7 @@ const { t } = useI18n();
 const internalValue = ref();
 
 const type = computed(() => {
-	return getJSType(props.field);
+	return getJSType(props.field as Field);
 });
 
 watch(
@@ -39,7 +41,7 @@ watch(
 
 			internalValue.value = getStringifiedValue(props.currentValue, type.value === 'object');
 		}
-	}
+	},
 );
 
 const setRawValue = () => {

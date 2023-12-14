@@ -41,6 +41,10 @@ export class ServerService {
 				'project_logo',
 				'project_color',
 				'default_appearance',
+				'default_theme_light',
+				'default_theme_dark',
+				'theme_light_overrides',
+				'theme_dark_overrides',
 				'default_language',
 				'public_foreground',
 				'public_background',
@@ -142,7 +146,7 @@ export class ServerService {
 					testRateLimiterGlobal(),
 					testStorage(),
 					testEmail(),
-				]))
+				])),
 			),
 		};
 
@@ -154,7 +158,7 @@ export class ServerService {
 			for (const healthCheck of healthData) {
 				if (healthCheck.status === 'warn' && data.status === 'ok') {
 					logger.warn(
-						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
+						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`,
 					);
 
 					data.status = 'warn';

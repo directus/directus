@@ -103,7 +103,7 @@ describe('/auth/login/saml', () => {
 							access_token: expect.any(String),
 							expires: expect.any(Number),
 							refresh_token: expect.any(String),
-						})
+						}),
 					);
 				});
 			});

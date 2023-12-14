@@ -150,7 +150,7 @@ export class PayloadService {
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
 	async processValues(
 		action: Action,
-		payload: Partial<Item> | Partial<Item>[]
+		payload: Partial<Item> | Partial<Item>[],
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
@@ -159,7 +159,7 @@ export class PayloadService {
 		const fieldsInPayload = Object.keys(processedPayload[0]!);
 
 		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields).filter(
-			([_name, field]) => field.special && field.special.length > 0
+			([_name, field]) => field.special && field.special.length > 0,
 		);
 
 		if (action === 'read') {
@@ -174,9 +174,9 @@ export class PayloadService {
 					specialFieldsInCollection.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[name] = newValue;
-					})
+					}),
 				);
-			})
+			}),
 		);
 
 		this.processGeometries(processedPayload, action);
@@ -220,7 +220,7 @@ export class PayloadService {
 		field: SchemaOverview['collections'][string]['fields'][string],
 		payload: Partial<Item>,
 		action: Action,
-		accountability: Accountability | null
+		accountability: Accountability | null,
 	): Promise<any> {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
@@ -277,7 +277,7 @@ export class PayloadService {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
-			['dateTime', 'date', 'timestamp'].includes(field.type)
+			['dateTime', 'date', 'timestamp'].includes(field.type),
 		);
 
 		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
@@ -383,7 +383,7 @@ export class PayloadService {
 	 */
 	async processA2O(
 		data: Partial<Item>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
@@ -477,7 +477,7 @@ export class PayloadService {
 	 */
 	async processM2O(
 		data: Partial<Item>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const payload = cloneDeep(data);
 
@@ -559,7 +559,7 @@ export class PayloadService {
 	async processO2M(
 		data: Partial<Item>,
 		parent: PrimaryKey,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const revisions: PrimaryKey[] = [];
 
@@ -653,7 +653,7 @@ export class PayloadService {
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
 						mutationTracker: opts?.mutationTracker,
-					}))
+					})),
 				);
 
 				const query: Query = {
@@ -692,7 +692,7 @@ export class PayloadService {
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
 							mutationTracker: opts?.mutationTracker,
-						}
+						},
 					);
 				}
 			}
@@ -760,7 +760,7 @@ export class PayloadService {
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
 								mutationTracker: opts?.mutationTracker,
-							}
+							},
 						);
 					}
 				}
@@ -800,7 +800,7 @@ export class PayloadService {
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
 								mutationTracker: opts?.mutationTracker,
-							}
+							},
 						);
 					}
 				}

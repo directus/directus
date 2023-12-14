@@ -25,14 +25,17 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
-	--v-divider-color: var(--border-normal);
-	--v-divider-label-color: var(--theme--foreground-accent);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-divider-color        [var(--theme--form--field--input--border-color)]
+		--v-divider-label-color  [var(--theme--foreground-accent)]
+		--v-divider-thickness    [var(--theme--border-width)]
+
+*/
+
 .v-divider {
 	flex-basis: 0px;
 	flex-grow: 1;
@@ -47,13 +50,13 @@ body {
 		max-width: 100%;
 		margin-top: 8px;
 		border: solid;
-		border-color: var(--v-divider-color);
-		border-width: var(--border-width) 0 0 0;
+		border-color: var(--v-divider-color, var(--theme--form--field--input--border-color));
+		border-width: var(--v-divider-thickness, var(--theme--border-width)) 0 0 0;
 	}
 
 	span.wrapper {
 		display: flex;
-		color: var(--v-divider-label-color);
+		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 
 		:slotted(.v-icon) {
 			margin-right: 4px;
@@ -63,15 +66,15 @@ body {
 
 	.type-text {
 		width: 100%;
-		color: var(--v-divider-label-color);
+		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
 	}
 
 	&.large .type-text {
-		font-weight: 700;
 		font-size: 24px;
-		font-family: var(--theme--font-family-display);
+		font-weight: var(--theme--fonts--display--font-weight);
+		font-family: var(--theme--fonts--display--font-family);
 	}
 
 	&.inlineTitle {
@@ -98,7 +101,7 @@ body {
 		hr {
 			width: 0px;
 			max-width: 0px;
-			border-width: 0 var(--border-width) 0 0;
+			border-width: 0 var(--theme--border-width) 0 0;
 		}
 
 		span.wrapper {

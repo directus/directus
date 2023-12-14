@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 interface Props {
 	/** Renders the components in each of it styles */
-	type?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	type?: 'info' | 'success' | 'warning' | 'danger';
 	/** Custom icon name, or false if you want to hide the icon completely */
 	icon?: string | boolean | null;
 	/** Render notice content centered */
@@ -12,7 +12,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	icon: null,
-	type: 'normal',
+	type: 'info',
 	center: false,
 });
 
@@ -43,12 +43,15 @@ const iconName = computed(() => {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-notice-color: var(--theme--foreground-subdued);
-	--v-notice-background-color: var(--background-subdued);
-	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-notice-color             [var(--theme--foreground)]
+		--v-notice-background-color  [var(--theme--background-normal)]
+		--v-notice-border-color      [var(--theme--primary)]
+		--v-notice-icon-color        [var(--theme--primary)]
+*/
 
 .v-notice {
 	position: relative;
@@ -56,12 +59,12 @@ const iconName = computed(() => {
 	align-items: center;
 	justify-content: flex-start;
 	width: auto;
-	min-height: var(--input-height);
+	min-height: var(--theme--form--field--input--height);
 	padding: 12px 16px;
-	color: var(--v-notice-color);
+	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;
-	background-color: var(--v-notice-background-color);
-	border-radius: var(--border-radius);
+	background-color: var(--v-notice-background-color, var(--theme--background-normal));
+	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
 
@@ -73,43 +76,36 @@ const iconName = computed(() => {
 	left: 0;
 	width: 4px;
 	height: 100%;
-	background-color: var(--v-notice-border-color);
+	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 
 .v-icon {
-	--v-icon-color: var(--v-notice-icon-color);
+	--v-icon-color: var(--v-notice-icon-color, var(--theme--primary));
 }
 
 .v-icon.left {
 	margin-right: 16px;
 }
 
-.info {
-	--v-notice-icon-color: var(--theme--primary);
-	--v-notice-border-color: var(--theme--primary);
-	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--background-normal);
-}
-
 .success {
 	--v-notice-icon-color: var(--theme--success);
 	--v-notice-border-color: var(--theme--success);
 	--v-notice-color: var(--theme--success);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .warning {
 	--v-notice-icon-color: var(--theme--warning);
 	--v-notice-border-color: var(--theme--warning);
 	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .danger {
 	--v-notice-icon-color: var(--theme--danger);
 	--v-notice-border-color: var(--theme--danger);
 	--v-notice-color: var(--theme--danger);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .center {

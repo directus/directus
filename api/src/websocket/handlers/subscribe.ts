@@ -152,7 +152,7 @@ export class SubscribeHandler {
 						'subscribe',
 						'INVALID_COLLECTION',
 						'The provided collection does not exists or is not accessible.',
-						message.uid
+						message.uid,
 					);
 				}
 

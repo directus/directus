@@ -46,7 +46,7 @@ const props = withDefaults(
 		sortField: null,
 		userField: null,
 		groupsSortField: null,
-	}
+	},
 );
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
@@ -219,14 +219,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			flex-direction: column;
 			width: 320px;
 			padding: 8px 0;
-			background-color: var(--background-normal);
-			border: var(--border-width) solid var(--border-normal);
-			border-radius: var(--border-radius);
+			background-color: var(--theme--background-normal);
+			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
 			&:active {
-				border-color: var(--border-normal-alt);
+				border-color: var(--theme--form--field--input--border-color-hover);
 				cursor: move;
 			}
 
@@ -260,8 +260,8 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					text-align: center;
 					font-size: 12px;
 					line-height: 20px;
-					background-color: var(--background-normal-alt);
-					border-radius: 12px; //var(--border-radius);
+					background-color: var(--theme--background-accent);
+					border-radius: 12px; //var(--theme--border-radius);
 				}
 
 				.actions {
@@ -288,8 +288,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					margin: 2px 16px 6px 16px;
 					padding: 12px 16px;
 					background-color: var(--theme--background);
-					border-radius: var(--border-radius);
-					box-shadow: 0px 2px 4px 0px rgba(var(--card-shadow-color), 0.1);
+					border-radius: var(--theme--border-radius);
 
 					&:hover .title {
 						// color: var(--theme--primary);
@@ -317,7 +316,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 				.image {
 					width: 100%;
 					margin-top: 10px;
-					border-radius: var(--border-radius);
+					border-radius: var(--theme--border-radius);
 					margin-top: 4px;
 					max-height: 300px;
 				}
@@ -329,7 +328,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					:deep(.v-chip) {
 						border: none;
-						background-color: var(--background-normal);
+						background-color: var(--theme--background-normal);
 						font-size: 12px;
 						font-weight: 600;
 						margin-top: 4px;
@@ -385,8 +384,8 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 	.add-group {
 		cursor: pointer;
 		padding: 8px 8px;
-		border: var(--border-width) dashed var(--border-subdued);
-		border-radius: var(--border-radius);
+		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
+		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);
 
 		.v-icon {

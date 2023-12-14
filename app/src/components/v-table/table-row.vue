@@ -1,29 +1,30 @@
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/extensions';
 import { computed } from 'vue';
-import { ShowSelect } from '@directus/types';
-import { Header, Item } from './types';
+import type { Header, Item } from './types';
 
-interface Props {
-	headers: Header[];
-	item: Item;
-	showSelect: ShowSelect;
-	showManualSort?: boolean;
-	isSelected?: boolean;
-	subdued?: boolean;
-	sortedManually?: boolean;
-	hasClickListener?: boolean;
-	height?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showManualSort: false,
-	isSelected: false,
-	subdued: false,
-	sortedManually: false,
-	hasClickListener: false,
-	height: 48,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: Header[];
+		item: Item;
+		showSelect: ShowSelect;
+		showManualSort?: boolean;
+		isSelected?: boolean;
+		subdued?: boolean;
+		sortedManually?: boolean;
+		hasClickListener?: boolean;
+		height?: number;
+	}>(),
+	{
+		showSelect: 'none',
+		showManualSort: false,
+		isSelected: false,
+		subdued: false,
+		sortedManually: false,
+		hasClickListener: false,
+		height: 48,
+	},
+);
 
 defineEmits(['click', 'item-selected']);
 
@@ -86,8 +87,8 @@ const cssHeight = computed(() => {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		background-color: var(--v-table-background-color);
-		border-bottom: var(--border-width) solid var(--border-subdued);
+		background-color: var(--v-table-background-color, transparent);
+		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
 			padding: 0 12px;
@@ -104,7 +105,7 @@ const cssHeight = computed(() => {
 	}
 
 	&.clickable:not(.subdued):hover .cell {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--background-subdued);
 		cursor: pointer;
 	}
 

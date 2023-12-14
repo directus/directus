@@ -37,7 +37,7 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
-	private authInterval: NodeJS.Timer | null;
+	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
 		this.server = new WebSocketServer({ noServer: true });
@@ -204,7 +204,7 @@ export default abstract class SocketController {
 					const error = new WebSocketError(
 						'server',
 						'REQUESTS_EXCEEDED',
-						`Too many messages, retry after ${timeout}ms.`
+						`Too many messages, retry after ${timeout}ms.`,
 					);
 
 					handleWebSocketError(client, error, 'server');

@@ -27,7 +27,7 @@ const props = withDefaults(
 		addLabel: () => i18n.global.t('create_new'),
 		headerPlaceholder: () => i18n.global.t('empty_item'),
 		placeholder: () => i18n.global.t('no_items'),
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -41,7 +41,7 @@ const drawerOpen = computed(() => active.value !== null);
 const { value } = toRefs(props);
 
 const templateWithDefaults = computed(() =>
-	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
+	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : '',
 );
 
 const showAddNew = computed(() => {
@@ -82,13 +82,14 @@ const defaults = computed(() => {
 	return values;
 });
 
-const fieldsWithNames = computed(() =>
-	props.fields?.map((field) => {
-		return {
-			...field,
-			name: formatTitle(field.name ?? field.field!),
-		};
-	})
+const fieldsWithNames = computed(
+	() =>
+		props.fields?.map((field) => {
+			return {
+				...field,
+				name: formatTitle(field.name ?? field.field!),
+			};
+		}),
 );
 
 const internalValue = computed({
@@ -176,7 +177,7 @@ function addNew() {
 		if (internalValue.value != null) {
 			// eslint-disable-next-line no-console
 			console.warn(
-				'The repeater interface expects an array as value, but the given value is no array. Overriding given value.'
+				'The repeater interface expects an array as value, but the given value is no array. Overriding given value.',
 			);
 		}
 

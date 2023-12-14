@@ -1,6 +1,6 @@
 .chart-container {
 	position: relative;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 
 	.axis,
 	.chart-label {
@@ -8,7 +8,7 @@
 		fill: var(--theme--foreground);
 
 		line {
-			stroke: var(--border-normal);
+			stroke: var(--theme--form--field--input--border-color);
 		}
 	}
 
@@ -65,7 +65,7 @@
 	position: absolute;
 	z-index: 99999;
 	padding: 10px;
-	color: var(--border-normal);
+	color: var(--theme--form--field--input--border-color);
 	font-size: 12px;
 	text-align: center;
 	background: rgba(0, 0, 0, 0.8);

@@ -158,7 +158,7 @@ function navigateToUser() {
 }
 
 .loading {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background-normal);
 
 	display: flex;
 	align-items: center;

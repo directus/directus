@@ -9,6 +9,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -41,6 +42,8 @@ const { t, te } = useI18n();
 const router = useRouter();
 
 const form = ref<HTMLElement>();
+
+const { hasPermission } = usePermissionsStore();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -84,7 +87,7 @@ const {
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const isSavable = computed(() => {
-	if (saveAllowed.value === false) return false;
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
 	if (hasEdits.value === true) return true;
 
 	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
@@ -147,7 +150,7 @@ useShortcut(
 			saveVersionAction('stay');
 		}
 	},
-	form
+	form,
 );
 
 useShortcut(
@@ -159,7 +162,7 @@ useShortcut(
 			saveVersionAction('quit');
 		}
 	},
-	form
+	form,
 );
 
 const {
@@ -172,6 +175,14 @@ const {
 	fields,
 	revisionsAllowed,
 } = usePermissions(collection, item, isNew);
+
+const isFormDisabled = computed(() => {
+	if (isNew.value) return false;
+	if (updateAllowed.value) return false;
+	const updateVersionsAllowed = hasPermission('directus_versions', 'update');
+	if (currentVersion.value !== null && updateVersionsAllowed) return false;
+	return true;
+});
 
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
@@ -236,7 +247,7 @@ watch(
 		popupWindow = window.open(
 			targetUrl,
 			'live-preview',
-			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes',
 		);
 
 		if (popupWindow) {
@@ -250,7 +261,7 @@ watch(
 			}, 1000);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function toggleSplitView() {
@@ -505,6 +516,7 @@ function revert(values: Record<string, any>) {
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:update-allowed="updateAllowed"
 				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
@@ -665,7 +677,7 @@ function revert(values: Record<string, any>) {
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
-			:disabled="isNew ? false : updateAllowed === false"
+			:disabled="isFormDisabled"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
@@ -735,7 +747,7 @@ function revert(values: Record<string, any>) {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-disabled: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
 }

@@ -25,7 +25,9 @@ const { t } = useI18n();
 	display: flex;
 	padding: 12px;
 	background-color: var(--theme--form--field--input--background);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-top-left-radius: var(--theme--border-radius);
+	border-top-right-radius: var(--theme--border-radius);
 
 	.name {
 		flex-grow: 1;

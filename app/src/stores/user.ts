@@ -28,7 +28,7 @@ export const useUserStore = defineStore({
 			return userName(this.currentUser);
 		},
 		isAdmin(): boolean {
-			return this.currentUser?.role.admin_access === true || false;
+			return this.currentUser?.role?.admin_access === true || false;
 		},
 	},
 	actions: {
@@ -36,25 +36,7 @@ export const useUserStore = defineStore({
 			this.loading = true;
 
 			try {
-				const fields = [
-					'id',
-					'language',
-					'first_name',
-					'last_name',
-					'email',
-					'last_page',
-					'appearance',
-					'theme_light',
-					'theme_dark',
-					'theme_light_overrides',
-					'theme_dark_overrides',
-					'tfa_secret',
-					'avatar.id',
-					'role.admin_access',
-					'role.app_access',
-					'role.id',
-					'role.enforce_tfa',
-				];
+				const fields = ['*', 'avatar.id', 'role.admin_access', 'role.app_access', 'role.id', 'role.enforce_tfa'];
 
 				const { data } = await api.get(`/users/me`, { params: { fields } });
 

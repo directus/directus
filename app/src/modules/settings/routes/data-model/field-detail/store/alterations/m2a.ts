@@ -110,7 +110,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(
 		updates,
 		'relations.m2o.meta.one_allowed_collections',
-		getCurrent('relations.m2o.meta.one_allowed_collections') ?? []
+		getCurrent('relations.m2o.meta.one_allowed_collections') ?? [],
 	);
 
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
@@ -119,14 +119,14 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 export function autoGenerateJunctionCollectionName(
 	updates: StateUpdates,
 	state: State,
-	{ getCurrent }: HelperFunctions
+	{ getCurrent }: HelperFunctions,
 ) {
 	if (getCurrent('autoGenerateJunctionRelation') === false) return;
 
 	set(
 		updates,
 		'relations.o2m.collection',
-		getAutomaticJunctionCollectionName(getCurrent('collection'), getCurrent('field.field'))
+		getAutomaticJunctionCollectionName(getCurrent('collection'), getCurrent('field.field')),
 	);
 }
 

@@ -6,7 +6,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { Ref, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -26,7 +26,7 @@ const avatarURL = computed<string | null>(() => {
 	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 });
 
-const avatarError: Ref<null | Event> = ref(null);
+const avatarError = ref<null | Event>(null);
 
 const userProfileLink = computed<string>(() => {
 	const id = (userStore.currentUser as User).id;
@@ -116,7 +116,7 @@ const userFullName = userStore.fullName ?? undefined;
 				top: -1px;
 				right: 8px;
 				left: 8px;
-				height: 2px;
+				height: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';
@@ -133,7 +133,7 @@ const userFullName = userStore.fullName ?? undefined;
 			}
 
 			.v-icon {
-				--v-icon-color: var(--white);
+				--v-icon-color: var(--theme--navigation--modules--button--foreground-hover);
 			}
 		}
 	}
@@ -152,6 +152,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 	.sign-out {
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
 		--v-button-background-color: var(--theme--navigation--modules--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
@@ -160,12 +161,6 @@ const userFullName = userStore.fullName ?? undefined;
 		left: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
-
-		&:hover {
-			.v-icon {
-				--v-icon-color: var(--theme--primary);
-			}
-		}
 	}
 
 	.sign-out-enter-active,

@@ -37,7 +37,7 @@ export default definePanel({
 					[options.dateField]: {
 						_lte: `$NOW`,
 					},
-				}
+				},
 			);
 		}
 

@@ -2,27 +2,17 @@
 @mixin light {
 	color-scheme: light;
 
-	--border-normal: #d3dae4;
-	--border-normal-alt: #a2b5cd;
-	--border-subdued: #f0f4f9;
-
 	--foreground-inverted: #fff;
 
-	--background-normal: #f0f4f9;
 	--background-normal-alt: #e4eaf1;
-	--background-subdued: #f7fafc;
 	--background-highlight: #f7f9fd;
 	--background-input: #ffffff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
 	--background-mark: var(--theme--primary-subdued);
 
-	--card-face-color: #fafcfd;
-	--card-shadow-color: 23, 41, 64;
-	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(38, 50, 56, 0.8);
 
-	--header-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 	--navigation-shadow: 4px 0 7px -4px rgb(0 0 0 / 0.2);
 	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
 

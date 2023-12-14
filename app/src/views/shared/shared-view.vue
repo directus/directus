@@ -63,15 +63,11 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	--border-radius: 6px;
-	--input-height: 60px;
-	--input-padding: 16px;
-
 	width: 100%;
 	height: 100%;
 	padding-bottom: 64px;
 	overflow: auto;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .inline-container {
@@ -82,7 +78,7 @@ header {
 	margin-bottom: 32px;
 	padding: 10px;
 	background-color: var(--theme--background);
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
@@ -122,7 +118,7 @@ header {
 	width: 60px;
 	height: 60px;
 	background-color: var(--project-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	img {
 		width: 40px;
@@ -135,7 +131,7 @@ header {
 .content {
 	padding: 32px;
 	background-color: var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
 
@@ -150,7 +146,7 @@ header {
 		max-width: 856px;
 		padding: 32px;
 		background-color: var(--theme--background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 
 		@media (min-width: 618px) {

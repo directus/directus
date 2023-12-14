@@ -4,7 +4,7 @@ readTime: 3 min read
 ---
 
 <script setup lang="ts">
-import { data as directus } from '../.vitepress/data/directus.data.js';
+import { data as packages } from '@/data/packages.data.js';
 </script>
 
 # Docker Guide
@@ -24,9 +24,9 @@ just getting started, check out our [Self-Hosting Quickstart](/self-hosted/quick
 
 To stick to a more specific version of Directus you can use one of the following tags:
 
-- Full version, e.g. `{{ directus.version.full }}`
-- Minor releases, e.g. `{{ directus.version.minor }}`
-- Major releases, e.g. `{{ directus.version.major }}`
+- Full version, e.g. `{{ packages.directus.version.full }}`
+- Minor releases, e.g. `{{ packages.directus.version.minor }}`
+- Major releases, e.g. `{{ packages.directus.version.major }}`
 
 It is recommended to explicitly specify a Directus version in your `docker-compose.yml` file. Include the version number
 in your `services.directus.image` value:
@@ -35,7 +35,7 @@ in your `services.directus.image` value:
 services:
   directus:
     image: directus/directus:latest // [!code --]
-    image: directus/directus:{{ directus.version.full }} // [!code ++]
+    image: directus/directus:{{ packages.directus.version.full }} // [!code ++]
 ```
 
 ## Configure Admin User
@@ -84,7 +84,7 @@ While the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show y
 project:
 
 ```yaml-vue
-version: '3'
+version: "3"
 services:
   database:
     image: postgis/postgis:13-master
@@ -93,15 +93,15 @@ services:
     volumes:
       - ./data/database:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: 'directus'
-      POSTGRES_PASSWORD: 'directus'
-      POSTGRES_DB: 'directus'
+      POSTGRES_USER: "directus"
+      POSTGRES_PASSWORD: "directus"
+      POSTGRES_DB: "directus"
 
   cache:
     image: redis:6
 
   directus:
-    image: directus/directus:{{ directus.version.full }}
+    image: directus/directus:{{ packages.directus.version.full }}
     ports:
       - 8055:8055
     volumes:
@@ -112,26 +112,30 @@ services:
       - cache
       - database
     environment:
-      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
-      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+      KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
+      SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
 
-      DB_CLIENT: 'pg'
-      DB_HOST: 'database'
-      DB_PORT: '5432'
-      DB_DATABASE: 'directus'
-      DB_USER: 'directus'
-      DB_PASSWORD: 'directus'
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
 
-      CACHE_ENABLED: 'true'
-      CACHE_STORE: 'redis'
-      REDIS: 'redis://cache:6379'
+      CACHE_ENABLED: "true"
+      CACHE_STORE: "redis"
+      REDIS: "redis://cache:6379"
 
-      ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'd1r3ctu5'
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
-      # PUBLIC_URL: 'https://directus.example.com'
+      # PUBLIC_URL: "https://directus.example.com"
+
+    # Environment variables can also be defined in a file (for example `.env`):
+    # env_file:
+    #	  - .env
 ```
 
 ### Updating With Docker Compose
@@ -140,8 +144,8 @@ If you are not using the `latest` tag for the Directus image you need to adjust 
 increment the tag version number, e.g.:
 
 ```diff-vue
--   image: directus/directus:{{ directus.version.major }}.0.0
-+   image: directus/directus:{{ directus.version.full }}
+-   image: directus/directus:{{ packages.directus.version.major }}.0.0
++   image: directus/directus:{{ packages.directus.version.full }}
 ```
 
 Then run the following from your docker-compose root:
