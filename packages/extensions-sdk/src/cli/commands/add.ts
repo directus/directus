@@ -133,6 +133,7 @@ export default async function add(): Promise<void> {
 			devDependencies: await getExtensionDevDeps(
 				newEntries.map((entry) => entry.type),
 				getLanguageFromEntries(newEntries),
+				{ base: extensionManifest.devDependencies },
 			),
 		};
 
@@ -273,6 +274,7 @@ export default async function add(): Promise<void> {
 			devDependencies: await getExtensionDevDeps(
 				entries.map((entry) => entry.type),
 				getLanguageFromEntries(entries),
+				{ base: extensionManifest.devDependencies },
 			),
 		};
 
