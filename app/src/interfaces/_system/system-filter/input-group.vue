@@ -110,7 +110,7 @@ function setValueAt(index: number, newVal: any) {
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="(value as string)"
+			:value="value as string"
 			@input="value = $event"
 		/>
 	</template>
@@ -136,7 +136,7 @@ function setValueAt(index: number, newVal: any) {
 			is="interface-input"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="(value as string)"
+			:value="value as string"
 			@input="value = $event"
 		/>
 	</template>
