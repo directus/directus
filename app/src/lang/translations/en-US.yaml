@@ -653,6 +653,7 @@ edit: Edit
 edit_item: Edit Item
 enabled: Enabled
 enabled_dev: Enabled (Dev)
+enabled_dev_tooltip: App extensions cannot be disabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
