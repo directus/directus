@@ -1,7 +1,7 @@
 import config, { getUrl, paths, type Env } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql } from '@common/transport';
-import type { WebSocketResponse, WebSocketSubscriptionOptions } from '@common/types';
+import type { WebSocketUID, WebSocketResponse } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
@@ -69,7 +69,7 @@ describe('WebSocket General Tests', () => {
 				'%s',
 				async (vendor) => {
 					// Setup
-					const uids = [undefined, 1, 'two'];
+					const uids = [undefined, 1, 'two'] as WebSocketUID[];
 					const env1 = envs[vendor][0];
 					const env2 = envs[vendor][1];
 
@@ -188,7 +188,7 @@ describe('WebSocket General Tests', () => {
 				'%s',
 				async (vendor) => {
 					// Setup
-					const uids = [undefined, 1, 'two'];
+					const uids = [undefined, 1, 'two'] as WebSocketUID[];
 					const env1 = envs[vendor][0];
 					const env2 = envs[vendor][1];
 
@@ -270,7 +270,7 @@ describe('WebSocket General Tests', () => {
 				'%s',
 				async (vendor) => {
 					// Setup
-					const eventUids = [undefined, 'create', 'update', 'delete'];
+					const eventUids = ['create', 'update', 'delete'] as const;
 					const env = envs[vendor][0];
 
 					const ws = createWebSocketConn(getUrl(vendor, env), {
@@ -293,7 +293,7 @@ describe('WebSocket General Tests', () => {
 						await ws.subscribe({
 							collection: localCollectionFirst,
 							uid,
-							event: uid as WebSocketSubscriptionOptions['event'],
+							event: uid,
 						});
 
 						const gqlQuery =
@@ -314,7 +314,7 @@ describe('WebSocket General Tests', () => {
 							collection: localCollectionFirst,
 							jsonQuery: gqlQuery,
 							uid,
-							event: uid as WebSocketSubscriptionOptions['event'],
+							event: uid,
 						});
 					}
 
