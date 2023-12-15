@@ -3,4 +3,4 @@
 'create-directus-extension': minor
 ---
 
-Added a `--no-install` option to the extensions CLI to skip dependency installation
+Added a `--no-install` option to the extensions CLI allowing to skip dependency installation
