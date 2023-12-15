@@ -143,6 +143,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				eventHandlers['message'].forEach((handler) => {
 					if (state.code === 'open') handler.call(state.connection, message)
 				});
+				state.firstMessage = false;
 			}
 		};
 
@@ -164,25 +165,21 @@ export function realtime(config: WebSocketConfig = {}) {
 					this.sendMessage()
 					state.connection.send(auth({ access_token }));
 					state.firstMessage = false;
-					continue;
 				}
 
 				if (state.firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
 					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
 					config.reconnect = false;
 					state.connection.close();
-					continue;
 				}
 
 				if (message['error']['code'] === 'AUTH_TIMEOUT') {
 					debug('warn', 'Authentication timed out!');
 					state.connection.close();
-					continue;
 				}
 
 				if (message['error']['code'] === 'AUTH_FAILED') {
 					debug('warn', 'Authentication failed!');
-					continue;
 				}
 			}
 		}
