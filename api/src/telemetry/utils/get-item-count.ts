@@ -5,9 +5,9 @@ import pLimit from 'p-limit';
  * Get an object of item counts for the given collections
  */
 export const getItemCount = async <T extends readonly string[]>(db: Knex, collections: T) => {
-	// Counts can be a little heavy if the table is very large, so we'll only ever execute 5 of these
+	// Counts can be a little heavy if the table is very large, so we'll only ever execute 3 of these
 	// queries simultaneously to not overload the database
-	const limit = pLimit(5);
+	const limit = pLimit(3);
 
 	const calls = collections.map((collection) =>
 		limit(async (collection) => {
