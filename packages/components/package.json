@@ -36,7 +36,7 @@
 		"histoire": "0.17.6",
 		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.3.3",
-		"vite": "4.5.1",
+		"vite": "5.0.10",
 		"vite-plugin-dts": "3.6.4",
 		"vitest": "1.0.4"
 	},
