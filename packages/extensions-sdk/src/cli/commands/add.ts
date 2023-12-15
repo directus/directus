@@ -146,7 +146,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		if (install) {
 			await execa(packageManager, ['install'], { cwd: extensionPath });
 		} else {
-			spinner.info(`Dependancy install skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
 		}
 
 		spinner.succeed(chalk.bold('Done'));
@@ -291,7 +291,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		if (install) {
 			await execa(packageManager, ['install'], { cwd: extensionPath });
 		} else {
-			spinner.info(`Dependancy install skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
 		}
 
 		spinner.succeed(chalk.bold('Done'));
