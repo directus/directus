@@ -90,7 +90,16 @@ const attrs = useAttrs();
 
 const input = ref<HTMLInputElement | null>(null);
 
-const inputValue = computed(() => props.modelValue?.toString());
+const inputValue = computed(() => {
+	const value = props.modelValue?.toString() ?? '';
+
+	// Default string in a primary key field
+	if (value.includes('nextval')) {
+		return '';
+	}
+
+	return value;
+});
 
 const listeners = computed(() => ({
 	input: emitValue,
@@ -115,11 +124,19 @@ const classes = computed(() => [
 ]);
 
 const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
+	return (
+		props.disabled === false &&
+		(props.max === undefined || parseInt(String(props.modelValue), 10) < props.max) &&
+		showStepUp.value
+	);
 });
 
 const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
+	return (
+		props.disabled === false &&
+		(props.min === undefined || parseInt(String(props.modelValue), 10) > props.min) &&
+		showStepDown.value
+	);
 });
 
 function processValue(event: KeyboardEvent) {
@@ -171,6 +188,30 @@ const MAX_BIG_INT = BigInt(9223372036854775807n);
 const MIN_BIG_INT = BigInt(-9223372036854775807n);
 const MAX_INT = Number.MAX_SAFE_INTEGER;
 const MIN_INT = Number.MIN_SAFE_INTEGER;
+
+const showStepUp = computed(() => {
+	if (props.type !== 'number') {
+		return false;
+	}
+
+	if (props.isBigInt) {
+		return BigInt(inputValue.value) < MAX_BIG_INT;
+	}
+
+	return Number(inputValue.value) < MAX_INT;
+});
+
+const showStepDown = computed(() => {
+	if (props.type !== 'number') {
+		return false;
+	}
+
+	if (props.isBigInt) {
+		return BigInt(inputValue.value) > MIN_BIG_INT;
+	}
+
+	return Number(inputValue.value) > MIN_INT;
+});
 
 function serializeNumber(value: string) {
 	if (props.isBigInt) {
@@ -234,16 +275,50 @@ function stepUp() {
 	if (!input.value) return;
 	if (isStepUpAllowed.value === false) return;
 
+	const value = input.value.value;
+
+	if (props.isBigInt) {
+		let bigIntValue = BigInt(value);
+
+		if (bigIntValue >= MAX_BIG_INT) {
+			return;
+		}
+
+		bigIntValue += 1n;
+		return emit('update:modelValue', bigIntValue.toString());
+	}
+
+	if (Number(value) >= MAX_INT) {
+		return;
+	}
+
 	input.value.stepUp();
 
 	if (input.value.value != null) {
-		return emit('update:modelValue', Number(input.value.value));
+		return emit('update:modelValue', input.value.valueAsNumber);
 	}
 }
 
 function stepDown() {
 	if (!input.value) return;
 	if (isStepDownAllowed.value === false) return;
+
+	const value = input.value.value;
+
+	if (props.isBigInt) {
+		let bigIntValue = BigInt(value);
+
+		if (bigIntValue <= MIN_BIG_INT) {
+			return;
+		}
+
+		bigIntValue -= 1n;
+		return emit('update:modelValue', bigIntValue.toString());
+	}
+
+	if (Number(value) <= MAX_INT) {
+		return;
+	}
 
 	input.value.stepDown();
 
