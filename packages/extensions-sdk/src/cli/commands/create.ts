@@ -222,7 +222,7 @@ To start developing, run:
 
 To build for production, run:
 	${chalk.blue(`${packageManager} run`)} build
-	`;
+`;
 
 	return message;
 }
