@@ -5,10 +5,10 @@
  * @module
  */
 import type { AbstractQuery } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../types/index.js';
-import { parameterIndexGenerator } from './param-index-generator.js';
+import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';
+import { parameterIndexGenerator } from './param-index-generator.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -18,20 +18,20 @@ import { convertModifiers } from './modifiers/modifiers.js';
  * @param abstractQuery the abstract query to convert
  * @returns the abstract sql query
  */
-export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
+export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	const idGen = parameterIndexGenerator();
 	const parameters: ParameterTypes[] = [];
+	const subQueries: SubQuery[] = [];
 
 	let clauses: AbstractSqlClauses;
-	let aliasMapping: AbstractSqlQuery['aliasMapping'];
-	let nestedManys: AbstractSqlQuery['nestedManys'];
+	let aliasMapping: AliasMapping;
 
 	try {
 		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
 		clauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
 		parameters.push(...convertedFieldNodes.parameters);
 		aliasMapping = convertedFieldNodes.aliasMapping;
-		nestedManys = convertedFieldNodes.nestedManys;
+		subQueries.push(...convertedFieldNodes.subQueries);
 	} catch (error: any) {
 		throw new Error(`Failed to convert query fields: ${error.message}`);
 	}
@@ -46,9 +46,11 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 	}
 
 	return {
-		clauses,
-		parameters,
+		rootQuery: {
+			clauses,
+			parameters,
+		},
+		subQueries,
 		aliasMapping,
-		nestedManys,
 	};
 };

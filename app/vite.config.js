@@ -54,18 +54,20 @@ export default defineConfig({
 		],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
-	server: {
-		port: 8080,
-		proxy: {
-			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				changeOrigin: true,
+	...(!process.env.HISTOIRE && {
+		server: {
+			port: 8080,
+			proxy: {
+				'^/(?!admin)': {
+					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
+					changeOrigin: true,
+				},
+			},
+			fs: {
+				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 			},
 		},
-		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
-		},
-	},
+	}),
 	test: {
 		environment: 'happy-dom',
 		setupFiles: ['src/__setup__/mock-globals.ts'],

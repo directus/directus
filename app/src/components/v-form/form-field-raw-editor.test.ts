@@ -16,7 +16,10 @@ test('should render', () => {
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
-			field: 'object',
+			field: {
+				field: 'collection',
+				name: 'Collection',
+			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
 		},
@@ -33,7 +36,10 @@ test('submitting', async () => {
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
-			field: 'string',
+			field: {
+				field: 'collection',
+				name: 'Collection',
+			},
 			disabled: false,
 			currentValue: 'things',
 		},
@@ -43,14 +49,17 @@ test('submitting', async () => {
 	const button = wrapper.findAll('v-button').at(1);
 	await button!.trigger('click');
 	await wrapper.vm.$nextTick();
-	expect(wrapper.emitted().setRawValue.length).toBe(1);
+	expect(wrapper.emitted().setRawValue?.length).toBe(1);
 });
 
 it('should cancel with keydown', async () => {
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
-			field: 'object',
+			field: {
+				field: 'collection',
+				name: 'Collection',
+			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
 		},
@@ -59,14 +68,17 @@ it('should cancel with keydown', async () => {
 
 	await wrapper.trigger('esc');
 	await wrapper.vm.$nextTick();
-	expect(wrapper.emitted().cancel.length).toBe(1);
+	expect(wrapper.emitted().cancel?.length).toBe(1);
 });
 
 it('should cancel with the cancel button', async () => {
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
-			field: 'object',
+			field: {
+				field: 'collection',
+				name: 'Collection',
+			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
 		},
@@ -76,5 +88,5 @@ it('should cancel with the cancel button', async () => {
 	const button = wrapper.findAll('v-button').at(0);
 	await button!.trigger('click');
 	await wrapper.vm.$nextTick();
-	expect(wrapper.emitted().cancel.length).toBe(1);
+	expect(wrapper.emitted().cancel?.length).toBe(1);
 });

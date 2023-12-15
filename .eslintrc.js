@@ -67,6 +67,8 @@ const vueRules = {
 	'vue/require-default-prop': 'off',
 	// Require shorthand form attribute when v-bind value is true
 	'vue/prefer-true-attribute-shorthand': 'error',
+	// Allow unused variables when they begin with an underscore
+	'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
 };
 
 const getExtends = (configs = []) => [

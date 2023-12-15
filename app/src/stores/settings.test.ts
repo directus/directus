@@ -4,7 +4,7 @@ import * as unexpectedErrorUtil from '@/utils/unexpected-error';
 import { Settings } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { useSettingsStore } from './settings';
 import { useUserStore } from './user';
 
@@ -79,7 +79,7 @@ vi.mock('@/api', () => {
 	};
 });
 
-let apiGetSpy: SpyInstance;
+let apiGetSpy: MockInstance;
 
 beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
@@ -135,9 +135,9 @@ describe('dehyrate action', () => {
 });
 
 describe('updateSettings action', async () => {
-	let ApiPatchSpy: SpyInstance;
-	let NotifySpy: SpyInstance;
-	let unexpectedErrorSpy: SpyInstance;
+	let ApiPatchSpy: MockInstance;
+	let NotifySpy: MockInstance;
+	let unexpectedErrorSpy: MockInstance;
 
 	beforeEach(() => {
 		ApiPatchSpy = vi.spyOn(api, 'patch');
