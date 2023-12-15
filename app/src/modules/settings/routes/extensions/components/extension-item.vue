@@ -8,22 +8,16 @@ import { useI18n } from 'vue-i18n';
 import { iconMap } from '../constants/icons';
 import ExtensionItemOptions from './extension-item-options.vue';
 
-const devMode = import.meta.env.DEV;
+const props = defineProps<{
+	extension: ApiOutput;
+	children: ApiOutput[];
+}>();
+
+const emit = defineEmits<{ refresh: [extensionType?: ExtensionType] }>();
 
 const { t } = useI18n();
 
-defineOptions({
-	name: 'ExtensionItem',
-});
-
-const emit = defineEmits(['refresh']);
-
-interface ExtensionItem {
-	extension: ApiOutput;
-	children: ApiOutput[];
-}
-
-const props = defineProps<ExtensionItem>();
+const devMode = import.meta.env.DEV;
 
 const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
@@ -55,18 +49,18 @@ const toggleEnabled = async (extensionType?: ExtensionType) => {
 <template>
 	<v-list-item block :class="{ disabled: devMode ? false : !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
-		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
-		<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
+		<v-list-item-content>
+			<span class="monospace">
+				{{ extension.name }}
+				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
+			</span>
+		</v-list-item-content>
 
-		<template v-if="extension.schema?.type !== 'bundle'">
-			<v-progress-circular v-if="changingEnabledState" indeterminate />
-			<v-chip
-				v-else-if="devMode && isAppExtension"
-				v-tooltip.top="t('enabled_dev_tooltip')"
-				class="state enabled"
-				small
-			>
-				{{ t('enabled_dev') }}
+		<v-progress-circular v-if="changingEnabledState" indeterminate />
+		<template v-else-if="extension.schema?.type !== 'bundle'">
+			<v-chip v-if="devMode && isAppExtension" v-tooltip.top="t('enabled_dev_tooltip')" class="state enabled" small>
+				{{ t('enabled') }}
+				<v-icon name="lock" right small />
 			</v-chip>
 			<v-chip v-else class="state" :class="{ enabled: extension.meta.enabled }" small>
 				{{ extension.meta.enabled ? t('enabled') : t('disabled') }}
@@ -94,7 +88,7 @@ const toggleEnabled = async (extensionType?: ExtensionType) => {
 
 <style lang="scss" scoped>
 .monospace {
-	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .nested {
