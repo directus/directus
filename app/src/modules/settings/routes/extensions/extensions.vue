@@ -4,7 +4,6 @@ import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@direct
 import { groupBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
@@ -13,7 +12,6 @@ import VNotice from '@/components/v-notice.vue';
 import { useReloadGuard } from '@/composables/use-reload-guard';
 
 const { t } = useI18n();
-const router = useRouter();
 
 const error = ref();
 const loading = ref(false);
@@ -24,16 +22,14 @@ const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle)
 const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
-const { confirmLeave, leaveTo, removeGuard } = useReloadGuard(needsReload);
+const { confirmLeave, leaveTo } = useReloadGuard(needsReload);
 
 const currentPageLink = () => document.location.href;
 
 const leavePage = () => {
-	removeGuard();
-	// push target location into the route history
-	router.push(leaveTo.value ?? currentPageLink());
-	// hard-reload the page using the latest route
-	router.go(0);
+	needsReload.value = false;
+	// navigate to new page using a full page reload
+	document.location.href = leaveTo.value ?? currentPageLink();
 };
 
 const fetchExtensions = async () => {
@@ -87,7 +83,7 @@ fetchExtensions();
 		<div v-if="needsReload" class="page-container">
 			<v-notice type="warning">
 				{{ t('extension_reload_required_copy') }}&nbsp;
-				<a :href="currentPageLink()" @click="removeGuard">{{ t('extension_reload_now') }}</a>
+				<a :href="currentPageLink()">{{ t('extension_reload_now') }}</a>
 			</v-notice>
 		</div>
 
@@ -149,4 +145,3 @@ fetchExtensions();
 	margin-top: 24px;
 }
 </style>
-../../../../composables/use-reload-guard
