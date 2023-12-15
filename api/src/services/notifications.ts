@@ -1,6 +1,4 @@
 import type { Notification } from '@directus/types';
-import { adjustDate } from '@directus/utils';
-import getDatabase from '../database/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
@@ -20,26 +18,7 @@ export class NotificationsService extends ItemsService {
 		this.mailService = new MailService({ schema: this.schema, accountability: this.accountability });
 	}
 
-	async truncate() {
-		if (!env['RETENTION_NOTIFICATIONS'] || env['RETENTION_NOTIFICATIONS'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_NOTIFICATIONS']);
-
-		if (!oldestRetentionDate) {
-			logger.error('Invalid RETENTION_NOTIFICATIONS configured');
-			return;
-		}
-
-		const database = this.knex || getDatabase();
-
-		await database('directus_notifications')
-			.where('timestamp', '<=', oldestRetentionDate)
-			.andWhere('status', '=', 'archived')
-			.del();
-	}
-
 	override async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.truncate();
-
 		const response = await super.createOne(data, opts);
 
 		await this.sendEmail(data);
@@ -48,8 +27,6 @@ export class NotificationsService extends ItemsService {
 	}
 
 	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.truncate();
-
 		const response = await super.createMany(data, opts);
 
 		for (const notification of data) {

@@ -62,6 +62,7 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import { getRetentionManager } from './retentions.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { collectTelemetry } from './utils/telemetry.js';
 import { Url } from './utils/url.js';
@@ -98,9 +99,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
+	const retentionManager = getRetentionManager();
 
 	await extensionManager.initialize();
 	await flowManager.initialize();
+	await retentionManager.initialize();
 
 	const app = express();
 

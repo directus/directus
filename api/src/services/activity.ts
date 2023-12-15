@@ -1,10 +1,8 @@
 import { Action } from '@directus/constants';
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { adjustDate } from '@directus/utils';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
-import getDatabase from '../database/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
@@ -26,27 +24,7 @@ export class ActivityService extends ItemsService {
 		this.usersService = new UsersService({ schema: this.schema });
 	}
 
-	async truncate() {
-		if (!env['RETENTION_ACTIVITY'] || env['RETENTION_ACTIVITY'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_ACTIVITY']);
-
-		if (!oldestRetentionDate) {
-			logger.error('Invalid RETENTION_ACTIVITY configured');
-			return;
-		}
-
-		const database = this.knex || getDatabase();
-
-		await database('directus_activity')
-			.where('timestamp', '<=', oldestRetentionDate)
-			.andWhere('action', '!=', Action.COMMENT)
-			.andWhere('action', '!=', Action.VERSION_SAVE)
-			.del();
-	}
-
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.truncate();
-
 		if (data['action'] === Action.COMMENT && typeof data['comment'] === 'string') {
 			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
@@ -135,11 +113,5 @@ ${comment}
 		}
 
 		return super.createOne(data, opts);
-	}
-
-	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.truncate();
-
-		return await super.createMany(data, opts);
 	}
 }

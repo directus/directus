@@ -1,36 +1,10 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { adjustDate } from '@directus/utils';
-import getDatabase from '../database/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
-	}
-
-	async truncate() {
-		if (!env['RETENTION_REVISIONS'] || env['RETENTION_REVISIONS'] === 'infinite') return;
-		const oldestRetentionDate = adjustDate(new Date(), '-' + env['RETENTION_REVISIONS']);
-
-		if (!oldestRetentionDate) {
-			logger.error('Invalid RETENTION_REVISIONS configured');
-			return;
-		}
-
-		const database = this.knex || getDatabase();
-
-		const oldestActivity = await database
-			.select('id')
-			.from('directus_activity')
-			.where('timestamp', '<=', oldestRetentionDate)
-			.first();
-
-		if (!oldestActivity) return;
-
-		await database('directus_revisions').where('activity', '<=', oldestActivity.id).del();
 	}
 
 	async revert(pk: PrimaryKey): Promise<void> {
@@ -66,14 +40,10 @@ export class RevisionsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.truncate();
-
 		return super.createOne(data, this.setDefaultOptions(opts));
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.truncate();
-
 		return super.createMany(data, this.setDefaultOptions(opts));
 	}
 
