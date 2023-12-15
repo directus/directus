@@ -1,7 +1,6 @@
 import type { DirectusClient } from '../types/client.js';
 import type {
 	ConnectionState,
-	LogLevels,
 	ReconnectState,
 	SubscribeOptions,
 	SubscriptionEvents,
@@ -16,7 +15,7 @@ import { generateUid } from './utils/generate-uid.js';
 import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
-import type { WebSocketInterface } from '../index.js';
+import type { ConsoleInterface, WebSocketInterface } from '../index.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -54,7 +53,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		const subscriptions = new Set<Record<string, any>>();
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
-		const debug = (level: LogLevels, ...data: any[]) => config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
+		const debug = (level: keyof ConsoleInterface, ...data: any[]) => config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
 
 		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {

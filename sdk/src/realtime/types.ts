@@ -3,8 +3,6 @@ import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../in
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
-export type LogLevels = 'log' | 'info' | 'warn' | 'error';
-
 export interface WebSocketConfig {
 	authMode?: WebSocketAuthModes;
 	reconnect?:
