@@ -246,9 +246,9 @@ prefixing the value with `{type}:`. The following types are available:
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
 | `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
-| `ACTIVITY_RETENTION`       | How long to save activity logs for. Set to `infinite` to keep records forever                                               | `180d`                       |
-| `NOTIFICATIONS_RETENTION`  | How long to save archived notifications for. Set to `infinite` to keep records forever                                      | `90d`                        |
-| `REVISIONS_RETENTION`      | How long to save revisions history for. Set to `infinite` to keep records forever                                           | `90d`                        |
+| `RETENTION_ACTIVITY`       | How long to save activity logs for. Set to `infinite` to keep records forever                                               | `180d`                       |
+| `RETENTION_NOTIFICATIONS`  | How long to save archived notifications for. Set to `infinite` to keep records forever                                      | `90d`                        |
+| `RETENTION_REVISIONS`      | How long to save revisions history for. Set to `infinite` to keep records forever                                           | `90d`                        |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
