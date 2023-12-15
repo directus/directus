@@ -60,7 +60,7 @@ const inputType = computed(() => {
 	return 'text';
 });
 
-const isBigInt = computed(() => props.type === 'bigInteger')
+const isBigInt = computed(() => props.type === 'bigInteger');
 </script>
 
 <template>

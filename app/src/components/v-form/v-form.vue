@@ -15,6 +15,7 @@ import type { FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import ValidationErrors from './validation-errors.vue';
+import { useFieldDetailStore } from '@/modules/settings/routes/data-model/field-detail/store';
 
 type FieldValues = {
 	[field: string]: any;
@@ -161,8 +162,21 @@ function useForm() {
 		return fields;
 	});
 
+	const fieldDetailStore = useFieldDetailStore();
+
 	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
-		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
+		const fieldsObject = Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
+
+		// Set the fields of Maximum and Minimum values on the interface of a table field
+		// to accept bigInteger values if the field itself is a bigInteger
+		if (fieldsObject['min'] && fieldsObject['max']) {
+			if (fieldDetailStore.field.type && fieldDetailStore.field.type == 'bigInteger') {
+				fieldsObject['min'].type = 'bigInteger';
+				fieldsObject['max'].type = 'bigInteger';
+			}
+		}
+
+		return fieldsObject;
 	});
 
 	const fieldNames = computed(() => {
