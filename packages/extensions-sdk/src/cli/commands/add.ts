@@ -130,11 +130,13 @@ export default async function add(): Promise<void> {
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				newEntries.map((entry) => entry.type),
-				getLanguageFromEntries(newEntries),
-				{ base: extensionManifest.devDependencies },
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					newEntries.map((entry) => entry.type),
+					getLanguageFromEntries(newEntries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
@@ -271,11 +273,13 @@ export default async function add(): Promise<void> {
 			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
 			keywords: ['directus', 'directus-extension', `directus-custom-bundle`],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				entries.map((entry) => entry.type),
-				getLanguageFromEntries(entries),
-				{ base: extensionManifest.devDependencies },
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					entries.map((entry) => entry.type),
+					getLanguageFromEntries(entries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
