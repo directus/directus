@@ -3,7 +3,7 @@ description: Build your first custom module extension
 contributors: Tim Butterfield
 ---
 
-# Create a Custom Portal Module
+# Create a Custom Landing Page Module
 
 Modules are an empty canvas in Directus with an empty navigation panel on the left, page header at the top and the
 sidebar on the right. This guide will help you set up a multi-page module with navigation in the navigation bar and link
@@ -14,7 +14,7 @@ breadcrumbs.
 ## Install Dependencies
 
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
-code for your interface.
+code for your module.
 
 ```shell
 npx create-directus-extension@latest
@@ -25,7 +25,7 @@ A list of options will appear (choose module), and type a name for your extensio
 
 Now that the boilerplate has been created, open the directory in your code editor.
 
-## Build the Index
+## Define the Config
 
 Open the extension directory that was created in the previous steps then open the directory called `src`. This is where
 the source code is located - `index.js` and `module.vue`. Any new files that are required must go in this directory.
@@ -64,7 +64,7 @@ export default {
 };
 ```
 
-The `routes` give you the ability to use different vue files to render the page and receive props from the URI path. The
+The `routes` give you the ability to use different Vue components to render the page and receive props from the URI path. The
 path will match anything after `/admin/landing-page/*`. For this reason, the default route will be our home page.
 
 Create a second route with the path as `:page` to catch anything like `/admin/landing-page/some-page` and use the same
@@ -275,7 +275,7 @@ function fetch_all_pages(){
 };
 ```
 
-Here is an example of the above code as an API using a table in Directus that I have called `pages`:
+Here is an example of the above code as an API using a collection in Directus called `pages`:
 
 ```js
 function fetch_all_pages(){
@@ -651,7 +651,8 @@ as possible so your module appears part of Directus.
 
 Now the page will look like this:
 
-<!-- IMG -->
+![A custom module has three items in the navigation - Home, Hello World, and Contact Us. The homepage displays an image, three navigation tiles, and some copy.](https://marketing.directus.app/assets/e1d33578-4ebc-4294-9b7c-2cc9ee3a1bfb.png)
+
 
 Our files are now complete. Build the module with the latest changes:
 
@@ -679,12 +680,7 @@ code has no negative effect.
 
 ## Use the Module
 
-To use your new module in Directus, you need to enable it in the Project Settings:
-
-1. Open the settings module
-2. In the menu, click **Project Settings**.
-3. Scroll down to the **Modules** heading and tick the box on your module.
-4. Click the tick to save the changes.
+To use your new module in Directus, you need to enable it in the [Project Settings](/user-guide/settings/project-settings#modules).
 
 ## Summary
 

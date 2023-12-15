@@ -6,7 +6,7 @@ contributors: Tim Butterfield
 # Use Native Layout Features In Your Modules
 
 This guide follows on [Create a Custom Portal Module](/guides/extensions/modules-build-portal), where you created a
-landing page module. You will learn how to add native sidebar dropdowns elements, action buttons and search, a split
+landing page module. You will learn how to add native sidebar dropdown element, action buttons and search, a split
 view window, and layout options using the built-in functions of Directus. These help provide a more coherent experience
 from other Directus modules and collections.
 
@@ -19,7 +19,7 @@ template tag. For example:
 
 ```html
 <template #slot_name>
-	// HTML to insert into the slot
+	// Content to insert into the slot
 </template>
 ```
 
@@ -97,7 +97,7 @@ bookmarks. In this example, the slot is used for a clickable icon button.
 
 :::info Adding Logic
 
-Any button click actions will need to be included in the `setup` and returned to the template.
+Any functions for button click actions will need to be included in the `setup` and returned to the template.
 
 :::
 
@@ -189,7 +189,7 @@ section outputs some custom text.
 
 :::info Close Attribute
 
-The close attribute on the first sidebar-detail component. This changes the chevron icon to a close button and when
+The close attribute on the first sidebar-detail component changes the chevron icon to a close button and when
 clicked, the sidebar collapses. This is highly recommended for usability.
 
 :::
@@ -331,7 +331,7 @@ when the permission constant is `false`:
 :::info Other Slots
 
 The `navigation`, `actions`, and `sidebar` slots have not been rendered because it’s using a separate `private-view`.
-Consider using the `permissions` variable to also prevent the functions from running as well. This will improve the
+Consider using the `permissions` variable to also prevent the related functions from running as well. This will improve the
 performance of your application.
 
 :::
