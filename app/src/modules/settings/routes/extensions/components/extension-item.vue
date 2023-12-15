@@ -2,11 +2,13 @@
 import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import type { ApiOutput } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { iconMap } from '../constants/icons';
 import ExtensionItemOptions from './extension-item-options.vue';
+
+const devMode = import.meta.env.DEV;
 
 const { t } = useI18n();
 
@@ -27,7 +29,12 @@ const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
 const changingEnabledState = ref(false);
 
-const toggleEnabled = async () => {
+const isAppExtension = computed(() => {
+	if (!props.extension.schema?.type) return false;
+	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(props.extension.schema.type);
+});
+
+const toggleEnabled = async (extensionType?: ExtensionType) => {
 	if (changingEnabledState.value === true) return;
 
 	changingEnabledState.value = true;
@@ -40,27 +47,36 @@ const toggleEnabled = async () => {
 		await api.patch(endpoint, { meta: { enabled: !props.extension.meta.enabled } });
 	} finally {
 		changingEnabledState.value = false;
-		emit('refresh');
+		emit('refresh', extensionType);
 	}
 };
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled: !extension.meta.enabled }">
+	<v-list-item block :class="{ disabled: devMode ? false : !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
 		<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
 
 		<template v-if="extension.schema?.type !== 'bundle'">
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
+			<v-chip
+				v-else-if="devMode && isAppExtension"
+				v-tooltip.top="t('enabled_dev_tooltip')"
+				class="state enabled"
+				small
+			>
+				{{ t('enabled_dev') }}
+			</v-chip>
 			<v-chip v-else class="state" :class="{ enabled: extension.meta.enabled }" small>
 				{{ extension.meta.enabled ? t('enabled') : t('disabled') }}
 			</v-chip>
 			<extension-item-options
+				v-if="!devMode || !isAppExtension"
 				class="options"
 				:name="extension.name"
 				:enabled="extension.meta.enabled"
-				@toggle-enabled="toggleEnabled"
+				@toggle-enabled="toggleEnabled(extension.schema?.type)"
 			/>
 		</template>
 	</v-list-item>
@@ -71,7 +87,7 @@ const toggleEnabled = async () => {
 			:key="item.bundle + '__' + item.name"
 			:extension="item"
 			:children="[]"
-			@refresh="$emit('refresh')"
+			@refresh="$emit('refresh', item.schema?.type)"
 		/>
 	</v-list>
 </template>
