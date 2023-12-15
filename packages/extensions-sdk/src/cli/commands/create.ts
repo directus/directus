@@ -110,7 +110,7 @@ async function createPackageExtension({
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath, packageManager));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager, install));
 }
 
 async function createLocalExtension({
@@ -172,7 +172,7 @@ async function createLocalExtension({
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath, packageManager));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager, install));
 }
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
@@ -199,15 +199,30 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 	return packageManifest;
 }
 
-function getDoneMessage(type: ExtensionType, targetDir: string, targetPath: string, packageManager: string) {
-	return `
+function getDoneMessage(
+	type: ExtensionType,
+	targetDir: string,
+	targetPath: string,
+	packageManager: string,
+	install: boolean,
+) {
+	let message = `
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
-	${chalk.blue('cd')} ${targetDir}
+	${chalk.blue('cd')} ${targetDir}`;
+
+	if (!install) {
+		message += `
+	${chalk.blue(`${packageManager}`)} install`;
+	}
+
+	message += `
 	${chalk.blue(`${packageManager} run`)} dev
 
-and then to build for production, run:
+To build for production, run:
 	${chalk.blue(`${packageManager} run`)} build
-`;
+	`;
+
+	return message;
 }

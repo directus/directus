@@ -141,13 +141,16 @@ export default async function add(options: AddOptions): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		if (install) {
-			const packageManager = getPackageManager();
+		const packageManager = getPackageManager();
 
+		if (install) {
 			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependancy install skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
 		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	} else {
 		const { proceed } = await inquirer.prompt<{ proceed: boolean }>([
 			{
@@ -283,13 +286,16 @@ export default async function add(options: AddOptions): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		if (install) {
-			const packageManager = getPackageManager();
+		const packageManager = getPackageManager();
 
+		if (install) {
 			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependancy install skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
 		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	}
 }
 
