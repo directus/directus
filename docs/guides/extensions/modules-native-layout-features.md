@@ -205,11 +205,11 @@ attributes to the parent `private-view` and create a toggle button. The actions 
 <private-view :splitView="livePreviewMode" :split-view-min-width="310" :title="page_title">
 	<template #actions>
 		<v-button
-			v-tooltip.bottom="livePreviewMode === null ? 'Enable Split View' : 'Disable Split View'"
+			v-tooltip.bottom="!livePreviewMode ? 'Enable Split View' : 'Disable Split View'"
 			rounded
 			icon
 			class="action-preview"
-			:secondary="livePreviewMode === null"
+			:secondary="!livePreviewMode"
 			@click="toggleSplitView"
 		>
 			<v-icon name="visibility" outline />
@@ -240,18 +240,14 @@ attributes to the parent `private-view` and create a toggle button. The actions 
 </private-view>
 ```
 
-In this example, `livePreviewMode` is toggled between `null` and `"split"` which can be achieved using the following
+In this example, `livePreviewMode` is toggled between `true` and `false` which can be achieved using the following
 code inside your `setup`:
 
 ```js
-const livePreviewMode = ref(null);
+const livePreviewMode = ref(false);
 
 function toggleSplitView() {
-	if (livePreviewMode.value === null) {
-		livePreviewMode.value = 'split';
-	} else {
-		livePreviewMode.value = null;
-	}
+	livePreviewMode.value = !livePreviewMode.value;
 }
 
 return { ..., toggleSplitView, livePreviewMode };
