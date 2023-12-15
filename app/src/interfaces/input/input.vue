@@ -59,6 +59,8 @@ const inputType = computed(() => {
 	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
 	return 'text';
 });
+
+const isBigInt = computed(() => props.type === 'bigInteger')
 </script>
 
 <template>
@@ -79,6 +81,7 @@ const inputType = computed(() => {
 		:step="step"
 		:dir="direction"
 		:autocomplete="masked ? 'new-password' : 'off'"
+		:is-big-int="isBigInt"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>

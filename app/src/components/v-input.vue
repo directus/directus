@@ -55,6 +55,8 @@ interface Props {
 	autocomplete?: string;
 	/** Makes the input smaller */
 	small?: boolean;
+	/** Makes the input accept bigInteger values */
+	isBigInt?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -79,6 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
+	isBigInt: false,
 });
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
@@ -86,6 +89,8 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
 const attrs = useAttrs();
 
 const input = ref<HTMLInputElement | null>(null);
+
+const inputValue = computed(() => props.modelValue?.toString());
 
 const listeners = computed(() => ({
 	input: emitValue,
@@ -162,6 +167,31 @@ function trimIfEnabled() {
 	}
 }
 
+const MAX_BIG_INT = BigInt(9223372036854775807n);
+const MIN_BIG_INT = BigInt(-9223372036854775807n);
+const MAX_INT = Number.MAX_SAFE_INTEGER;
+const MIN_INT = Number.MIN_SAFE_INTEGER;
+
+function serializeNumber(value: string) {
+	if (props.isBigInt) {
+		const bigIntValue = BigInt(value);
+
+		if (bigIntValue > MAX_BIG_INT || bigIntValue < MIN_BIG_INT) {
+			return null;
+		}
+
+		return bigIntValue.toString();
+	}
+
+	const parsedValue = Number(value);
+
+	if (parsedValue > MAX_INT || parsedValue < MIN_INT) {
+		return null;
+	}
+
+	return parsedValue;
+}
+
 function emitValue(event: InputEvent) {
 	let value = (event.target as HTMLInputElement).value;
 
@@ -171,11 +201,15 @@ function emitValue(event: InputEvent) {
 	}
 
 	if (props.type === 'number') {
-		const parsedNumber = Number(value);
+		const parsedNumber = serializeNumber(value);
 
 		// Ignore if numeric value remains unchanged
-		if (props.modelValue !== parsedNumber) {
+		if (parsedNumber != null && props.modelValue !== parsedNumber) {
 			emit('update:modelValue', parsedNumber);
+		}
+
+		if (parsedNumber == null && input.value) {
+			input.value.value = inputValue.value ?? '';
 		}
 	} else {
 		if (props.slug === true) {
@@ -244,7 +278,7 @@ function stepDown() {
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					:value="inputValue"
 					v-on="listeners"
 				/>
 			</slot>
