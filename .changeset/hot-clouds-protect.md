@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed boolean attributes for draggable component
+Fixed drag and drop issues with sortable components in Safari
