@@ -54,7 +54,7 @@ export interface WebSocketClient<Schema extends object> {
 }
 
 export type ConnectionState =
-	| { code: 'open'; connection: WebSocketInterface; }
+	| { code: 'open'; connection: WebSocketInterface; firstMessage: boolean }
 	| { code: 'connecting'; connection: Promise<WebSocketInterface>; }
 	| { code: 'error'; }
 	| { code: 'closed'; };

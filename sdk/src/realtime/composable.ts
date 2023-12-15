@@ -117,67 +117,75 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
-		const handleMessages = async (ws: WebSocketInterface, currentClient: AuthWSClient<Schema>) => {
-			let firstMessage = true;
-
+		const handleMessages = async (currentClient: AuthWSClient<Schema>) => {
 			while (state.code === 'open') {
-				const message = await messageCallback(ws).catch(() => {
+				const message = await messageCallback(state.connection).catch(() => {
 					/* ignore invalid messages */
 				});
 
 				if (!message) continue;
 
 				if ('type' in message) {
-					if (
-						message['type'] === 'auth' &&
-						'status' in message &&
-						message['status'] === 'error' &&
-						'error' in message
-					) {
-						if (message['error']['code'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
-							debug('warn', 'Authentication token expired!');
-							const access_token = await currentClient.getToken();
+					const foundError = handleAuthErrors(message, currentClient);
 
-							if (!access_token) {
-								throw Error('No token for re-authenticating the websocket')
-							}
-
-							ws.send(auth({ access_token }));
-							firstMessage = false;
-							continue;
-						}
-
-						if (firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
-							debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
-							config.reconnect = false;
-							firstMessage = false;
-							ws.close();
-							continue;
-						}
-
-						if (message['error']['code'] === 'AUTH_TIMEOUT') {
-							debug('warn', 'Authentication timed out!');
-							ws.close();
-							continue;
-						}
-
-						if (message['error']['code'] === 'AUTH_FAILED') {
-							debug('warn', 'Authentication failed!');
-							continue;
-						}
+					if (foundError) {
+						state.firstMessage = false;
+						continue;
 					}
 
 					if (config.heartbeat && message['type'] === 'ping') {
-						ws.send(pong());
-						firstMessage = false;
+						state.connection.send(pong());
+						state.firstMessage = false;
 						continue;
 					}
 				}
 
-				firstMessage = false;
-				eventHandlers['message'].forEach((handler) => handler.call(ws, message));
+				eventHandlers['message'].forEach((handler) => {
+					if (state.code === 'open') handler.call(state.connection, message)
+				});
 			}
 		};
+
+		const handleAuthErrors = (message: Record<string, any> | MessageEvent<string>, currentClient: AuthWSClient<Schema>) => {
+			if (
+				message['type'] === 'auth' &&
+				'status' in message &&
+				message['status'] === 'error' &&
+				'error' in message
+			) {
+				if (message['error']['code'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
+					debug('warn', 'Authentication token expired!');
+					const access_token = await currentClient.getToken();
+
+					if (!access_token) {
+						throw Error('No token for re-authenticating the websocket')
+					}
+
+					this.sendMessage()
+					state.connection.send(auth({ access_token }));
+					state.firstMessage = false;
+					continue;
+				}
+
+				if (state.firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
+					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
+					config.reconnect = false;
+					state.connection.close();
+					continue;
+				}
+
+				if (message['error']['code'] === 'AUTH_TIMEOUT') {
+					debug('warn', 'Authentication timed out!');
+					state.connection.close();
+					continue;
+				}
+
+				if (message['error']['code'] === 'AUTH_FAILED') {
+					debug('warn', 'Authentication failed!');
+					continue;
+				}
+			}
+		}
 
 		return {
 			async connect() {
@@ -226,12 +234,12 @@ export function realtime(config: WebSocketConfig = {}) {
 							}
 						}
 
-						state = { code: 'open',	connection: ws };
+						state = { code: 'open',	connection: ws, firstMessage: true };
 						reconnectState.attempts = 0;
 						reconnectState.active = false;
 
 						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-						handleMessages(ws, self);
+						handleMessages(self);
 
 						resolved = true;
 						resolve(ws);
