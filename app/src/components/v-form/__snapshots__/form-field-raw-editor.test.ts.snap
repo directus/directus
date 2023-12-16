@@ -5,7 +5,7 @@ exports[`should render 1`] = `
   <v-card data-v-33a4ea83="">
     <v-card-title data-v-33a4ea83="">edit_raw_value</v-card-title>
     <v-card-text data-v-33a4ea83="">
-      <interface-system-raw-editor data-v-33a4ea83="" type="undefined" disabled="false" language="plaintext" placeholder="enter_raw_value"></interface-system-raw-editor>
+      <interface-system-raw-editor data-v-33a4ea83="" type="undefined" disabled="false" language="plaintext" placeholder="enter_raw_value" is-big-integer="false"></interface-system-raw-editor>
     </v-card-text>
     <v-card-actions data-v-33a4ea83="">
       <v-button data-v-33a4ea83="" secondary="">cancel</v-button>
