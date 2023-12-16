@@ -22,6 +22,13 @@ export type File = {
 	location: string | null;
 	tags: string | null;
 	metadata: Record<string, any> | null;
+	focal_point: FocalPoint | null;
+};
+
+export type FocalPoint = {
+	x: number;
+	y: number;
+	[key: string]: any;
 };
 
 export type BusboyFileStream = {

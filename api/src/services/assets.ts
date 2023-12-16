@@ -1,3 +1,9 @@
+import {
+	ForbiddenError,
+	IllegalAssetTransformationError,
+	RangeNotSatisfiableError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import type { Range, Stat } from '@directus/storage';
 import type { Accountability, File } from '@directus/types';
 import type { Knex } from 'knex';
@@ -11,27 +17,24 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import {
-	ForbiddenError,
-	IllegalAssetTransformationError,
-	RangeNotSatisfiableError,
-	ServiceUnavailableError,
-} from '@directus/errors';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { FilesService } from './files.js';
 
 export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
+	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
+		this.filesService = new FilesService(options);
 		this.authorizationService = new AuthorizationService(options);
 	}
 
@@ -62,7 +65,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
 
 		if (!file) throw new ForbiddenError();
 

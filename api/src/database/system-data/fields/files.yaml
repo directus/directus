@@ -142,3 +142,8 @@ fields:
   - field: duration
     width: half
     readonly: true
+
+  - field: focal_point
+    readonly: true
+    special:
+      - cast-json
