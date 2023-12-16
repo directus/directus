@@ -1,3 +1,259 @@
+<script setup lang="ts">
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { usePermissions } from '@/composables/use-permissions';
+import { useShortcut } from '@/composables/use-shortcut';
+import { setLanguage } from '@/lang/set-language';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
+import { userName } from '@/utils/user-name';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { useCollection } from '@directus/composables';
+import type { Field, User } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import UsersNavigation from '../components/navigation.vue';
+import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
+
+const props = defineProps<{
+	primaryKey: string;
+	role?: string;
+}>();
+
+const { t, locale } = useI18n();
+
+const router = useRouter();
+
+const form = ref<HTMLElement>();
+const fieldsStore = useFieldsStore();
+const collectionsStore = useCollectionsStore();
+const userStore = useUserStore();
+const serverStore = useServerStore();
+
+const { primaryKey } = toRefs(props);
+const { breadcrumb } = useBreadcrumb();
+
+const { info: collectionInfo } = useCollection('directus_users');
+
+const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	saving,
+	loading,
+	save,
+	remove,
+	deleting,
+	saveAsCopy,
+	archive,
+	archiving,
+	isArchived,
+	validationErrors,
+	refresh,
+} = useItem<User>(
+	ref('directus_users'),
+	primaryKey,
+	props.primaryKey !== '+'
+		? {
+				fields: ['*', 'role.*'],
+		  }
+		: undefined,
+);
+
+const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
+
+if (props.role) {
+	edits.value = {
+		role: props.role,
+		...edits.value,
+	};
+}
+
+const isSavable = computed(() => saveAllowed.value && hasEdits.value);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+const confirmDelete = ref(false);
+const confirmArchive = ref(false);
+
+const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
+
+const avatarError = ref(null);
+
+const title = computed(() => {
+	if (loading.value === true) return t('loading');
+
+	if (isNew.value === false && item.value) {
+		const user = item.value as any;
+		return userName(user);
+	}
+
+	return t('adding_user');
+});
+
+const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
+	usePermissions(ref('directus_users'), item, isNew);
+
+// These fields will be shown in the sidebar instead
+const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
+
+const fieldsFiltered = computed(() => {
+	return fields.value.filter((field: Field) => {
+		// These fields should only be editable when creating new users or by administrators
+		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
+			field.meta.readonly = true;
+		}
+
+		return !fieldsDenyList.includes(field.field);
+	});
+});
+
+const archiveTooltip = computed(() => {
+	if (archiveAllowed.value === false) return t('not_allowed');
+	if (isArchived.value === true) return t('unarchive');
+	return t('archive');
+});
+
+useShortcut('meta+s', saveAndStay, form);
+useShortcut('meta+shift+s', saveAndAddNew, form);
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push('/users');
+}
+
+function useBreadcrumb() {
+	const breadcrumb = computed(() => [
+		{
+			name: t('user_directory'),
+			to: `/users`,
+		},
+	]);
+
+	return { breadcrumb };
+}
+
+async function saveAndQuit() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push(`/users`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAndStay() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+
+		if (props.primaryKey === '+') {
+			const newPrimaryKey = savedItem.id;
+			router.replace(`/users/${newPrimaryKey}`);
+		} else {
+			revisionsDrawerDetail.value?.refresh?.();
+			refresh();
+		}
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAndAddNew() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push(`/users/+`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAsCopyAndNavigate() {
+	try {
+		const newPrimaryKey = await saveAsCopy();
+		if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function deleteAndQuit() {
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(`/users`);
+	} catch {
+		// `remove` will show the unexpected error dialog
+	}
+}
+
+async function setLang(user: Record<string, any>) {
+	if (userStore.currentUser!.id !== item.value?.id) return;
+
+	const newLang = user?.language ?? serverStore.info?.project?.default_language;
+
+	if (newLang && newLang !== locale.value) {
+		await setLanguage(newLang);
+
+		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
+	}
+}
+
+async function refreshCurrentUser() {
+	if (userStore.currentUser!.id === item.value?.id) {
+		await userStore.hydrate();
+	}
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
+
+async function toggleArchive() {
+	await archive();
+
+	if (isArchived.value === true) {
+		router.push('/users');
+	} else {
+		confirmArchive.value = false;
+	}
+}
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
+</script>
+
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
@@ -141,7 +397,7 @@
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
-				:fields="formFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="user"
 				:primary-key="primaryKey"
@@ -176,273 +432,14 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useFormFields } from '@/composables/use-form-fields';
-import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
-import { setLanguage } from '@/lang/set-language';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
-import { userName } from '@/utils/user-name';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/composables';
-import type { Field, User } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import UsersNavigation from '../components/navigation.vue';
-import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-
-const props = defineProps<{
-	primaryKey: string;
-	role?: string;
-}>();
-
-const { t, locale } = useI18n();
-
-const router = useRouter();
-
-const form = ref<HTMLElement>();
-const fieldsStore = useFieldsStore();
-const collectionsStore = useCollectionsStore();
-const userStore = useUserStore();
-const serverStore = useServerStore();
-
-const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
-const { info: collectionInfo } = useCollection('directus_users');
-
-const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
-
-const {
-	isNew,
-	edits,
-	hasEdits,
-	item,
-	saving,
-	loading,
-	save,
-	remove,
-	deleting,
-	saveAsCopy,
-	archive,
-	archiving,
-	isArchived,
-	validationErrors,
-	refresh,
-} = useItem<User>(
-	ref('directus_users'),
-	primaryKey,
-	props.primaryKey !== '+'
-		? {
-				fields: ['*', 'role.*'],
-		  }
-		: undefined
-);
-
-const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
-
-if (props.role) {
-	edits.value = {
-		role: props.role,
-		...edits.value,
-	};
-}
-
-const isSavable = computed(() => saveAllowed.value && hasEdits.value);
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const confirmDelete = ref(false);
-const confirmArchive = ref(false);
-
-const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
-
-const avatarError = ref(null);
-
-const title = computed(() => {
-	if (loading.value === true) return t('loading');
-
-	if (isNew.value === false && item.value) {
-		const user = item.value as any;
-		return userName(user);
-	}
-
-	return t('adding_user');
-});
-
-const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-	usePermissions(ref('directus_users'), item, isNew);
-
-// These fields will be shown in the sidebar instead
-const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
-
-const fieldsFiltered = computed(() => {
-	return fields.value.filter((field: Field) => {
-		// These fields should only be editable when creating new users or by administrators
-		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
-			field.meta.readonly = true;
-		}
-
-		return !fieldsDenyList.includes(field.field);
-	});
-});
-
-const { formFields } = useFormFields(fieldsFiltered);
-
-const archiveTooltip = computed(() => {
-	if (archiveAllowed.value === false) return t('not_allowed');
-	if (isArchived.value === true) return t('unarchive');
-	return t('archive');
-});
-
-useShortcut('meta+s', saveAndStay, form);
-useShortcut('meta+shift+s', saveAndAddNew, form);
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push('/users');
-}
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: t('user_directory'),
-			to: `/users`,
-		},
-	]);
-
-	return { breadcrumb };
-}
-
-async function saveAndQuit() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-		router.push(`/users`);
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function saveAndStay() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-
-		if (props.primaryKey === '+') {
-			const newPrimaryKey = savedItem.id;
-			router.replace(`/users/${newPrimaryKey}`);
-		} else {
-			revisionsDrawerDetail.value?.refresh?.();
-			refresh();
-		}
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function saveAndAddNew() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-		router.push(`/users/+`);
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function saveAsCopyAndNavigate() {
-	try {
-		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function deleteAndQuit() {
-	try {
-		await remove();
-		edits.value = {};
-		router.replace(`/users`);
-	} catch {
-		// `remove` will show the unexpected error dialog
-	}
-}
-
-async function setLang(user: Record<string, any>) {
-	if (userStore.currentUser!.id !== item.value?.id) return;
-
-	const newLang = user?.language ?? serverStore.info?.project?.default_language;
-
-	if (newLang && newLang !== locale.value) {
-		await setLanguage(newLang);
-
-		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
-	}
-}
-
-async function refreshCurrentUser() {
-	if (userStore.currentUser!.id === item.value?.id) {
-		await userStore.hydrate();
-	}
-}
-
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	edits.value = {};
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
-
-function discardAndStay() {
-	edits.value = {};
-	confirmLeave.value = false;
-}
-
-async function toggleArchive() {
-	await archive();
-
-	if (isArchived.value === true) {
-		router.push('/users');
-	} else {
-		confirmArchive.value = false;
-	}
-}
-
-function revert(values: Record<string, any>) {
-	edits.value = {
-		...edits.value,
-		...values,
-	};
-}
-</script>
-
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background-normal);
 }
 
 .user-item {
@@ -451,19 +448,19 @@ function revert(values: Record<string, any>) {
 }
 
 .user-box {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background-normal);
 
 	display: flex;
 	align-items: center;
-	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
+	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	height: 112px;
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 	padding: 20px;
-	background-color: var(--background-normal);
-	border-radius: calc(var(--border-radius) + 4px);
+	background-color: var(--theme--background-normal);
+	border-radius: calc(var(--theme--border-radius) + 4px);
 
 	.avatar {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: flex;
 		flex-shrink: 0;
@@ -473,10 +470,9 @@ function revert(values: Record<string, any>) {
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
-		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;
@@ -509,25 +505,25 @@ function revert(values: Record<string, any>) {
 		}
 
 		.v-chip {
-			--v-chip-color: var(--foreground-subdued);
-			--v-chip-background-color: var(--background-subdued);
-			--v-chip-color-hover: var(--foreground-subdued);
-			--v-chip-background-color-hover: var(--background-subdued);
+			--v-chip-color: var(--theme--foreground-subdued);
+			--v-chip-background-color: var(--theme--background-subdued);
+			--v-chip-color-hover: var(--theme--foreground-subdued);
+			--v-chip-background-color-hover: var(--theme--background-subdued);
 
 			margin-top: 4px;
 
 			&.active {
-				--v-chip-color: var(--primary);
-				--v-chip-background-color: var(--primary-25);
-				--v-chip-color-hover: var(--primary);
-				--v-chip-background-color-hover: var(--primary-25);
+				--v-chip-color: var(--theme--primary);
+				--v-chip-background-color: var(--theme--primary-subdued);
+				--v-chip-color-hover: var(--theme--primary);
+				--v-chip-background-color-hover: var(--theme--primary-subdued);
 			}
 		}
 
 		.title,
 		.email,
 		.location {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.name {

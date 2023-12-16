@@ -51,6 +51,13 @@ and: Và
 or: Hoặc
 init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
+extension_interface: Giao diện
+extension_display: Hiển thị
+extension_layout: Bố cục
+extension_panel: Bảng
+extension_hook: Móc
+extension_modules: Mô đun
+extension_hooks: Móc
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -184,7 +191,6 @@ language_placeholder: Chọn một ngôn ngữ...
 aggregate_function: Hàm tập hợp
 global: Toàn cục
 admins_have_all_permissions: Các quản trị viên có toàn quyền
-camera: Camera
 show_zero: Hiển số không
 create_in_advanced_field_creation_mode: Tạo trường trong chế độ nâng cao
 continue_in_advanced_field_creation_mode: Tiếp tục tạo trường trong chế độ nâng cao
@@ -206,7 +212,6 @@ hidden_on_detail: Không hiển thị trong trang chi tiết
 disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
 alias: Bí danh
-bigInteger: Big Integer
 boolean: Boolean
 date: Ngày tháng
 date_range: Khoảng thời gian
@@ -226,8 +231,6 @@ uuid: UUID
 hash: Hash
 geometry.Point: Point
 geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
@@ -350,6 +353,7 @@ move: Di Chuyển
 system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface_label: Giao diện
+display_label: Hiển thị
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
@@ -362,6 +366,7 @@ functions:
   hour: Giờ
   minute: Phút
   second: Giây
+date-fns_date_short: 'MMM d, ''bạn'''
 minutes: Phút
 hours: Giờ
 month: Tháng
@@ -390,7 +395,6 @@ dimensions: Kích thước
 size: Kích thước
 created: Đã tạo
 modified: Đã sửa đổi
-checksum: Giá trị checksum
 owner: Sở hữu bởi
 edited_by: Chỉnh sửa bởi
 folder: Thư mục
@@ -777,9 +781,10 @@ editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
-settings_permissions: Vai trò & Quyền hạn
-settings_project: Cài Đặt Chung
+settings_project: Cài đặt
 settings_webhooks: Webhooks
+settings_presets: Đánh dấu
+settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
 scope: Phạm vi
 select: Chọn...
@@ -858,10 +863,6 @@ fields:
     tags: Tags
     user_preferences: Tuỳ chọn người dùng
     language: Ngôn ngữ
-    theme: Theme
-    theme_auto: Tự động (Dựa vào hệ thống)
-    theme_light: Chế độ Sáng
-    theme_dark: Chế độ Tối
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
     status_draft: Bản nháp
@@ -952,10 +953,13 @@ live_preview:
 expired: Đã hết hạn
 share: Chia sẻ
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
+referential_action_field_label_m2o: Khi xóa {collection}...
+referential_action_field_label_o2m: Khi bỏ chọn {collection}...
 referential_action_set_null: Vô hiệu hóa trường {field}
 continue_label: Tiếp tục
 continue_as: >-
   Đang đăng nhập {name}. Nhấn tiếp tục để đăng nhập.
+editing_role: '{role} Vai trò'
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
@@ -969,6 +973,7 @@ file: Tệp
 file_library: Thư viện tệp
 forgot_password: Quên mật khẩu
 hidden: Ẩn
+hidden_in_group: Ẩn trong {group}
 icon: Biểu tượng
 info: Thông tin
 colors:
@@ -1021,6 +1026,8 @@ interfaces:
     no_rules: Không có quy tắc nào được thiết lập
   presentation-links:
     primary: Khóa chính
+  select-multiple-checkbox:
+    show_more: 'Hiển thị thêm {count}'
   input-code:
     code: Mã nguồn
   system-collection:
@@ -1053,6 +1060,8 @@ interfaces:
     icon: Biểu tượng
   system-interface:
     interface: Giao diện
+  system-display:
+    display: Hiển thị
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
   select-dropdown-m2o:
@@ -1063,10 +1072,11 @@ interfaces:
   map:
     map: Bản đồ
     zoom: Thu phóng
+    unexpected_geometry: Đã mong đợi {expected}, đã nhận được {got}.
+    click_to_select: Bấm để chọn {geometry}
   list-o2m:
     one-to-many: Quan hệ một - nhiều
   system-folder:
-    folder: Thư mục
     description: Chọn một thư mục
   list:
     sort: Sắp xếp
@@ -1194,3 +1204,9 @@ operations:
     header_placeholder: Đang xác thực...
   trigger:
     data: Dữ liệu
+standard: Tiêu chuẩn
+compact: Thu gọn
+fonts:
+  bold: In đậm
+  black: Đen
+  italic: Nghiêng

@@ -1,9 +1,3 @@
-<template>
-	<v-item-group v-model="openDetail" class="sidebar-detail-group" scope="sidebar-detail" :mandatory="mandatory">
-		<slot />
-	</v-item-group>
-</template>
-
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue';
 
@@ -29,9 +23,15 @@ watch(
 			// Still allow the user to manually close it afterwards
 			mandatory.value = false;
 		}
-	}
+	},
 );
 </script>
+
+<template>
+	<v-item-group v-model="openDetail" class="sidebar-detail-group" scope="sidebar-detail" :mandatory="mandatory">
+		<slot />
+	</v-item-group>
+</template>
 
 <style lang="scss" scoped>
 .sidebar-detail-group {

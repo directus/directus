@@ -3,7 +3,7 @@ import type { FieldFunction, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';
-import { InvalidQueryError } from '../errors/index.js';
+import { InvalidQueryError } from '@directus/errors';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type GetColumnOptions = {
@@ -29,7 +29,7 @@ export function getColumn(
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
-	options?: GetColumnOptions
+	options?: GetColumnOptions,
 ): Knex.Raw {
 	const fn = getFunctions(knex, schema);
 

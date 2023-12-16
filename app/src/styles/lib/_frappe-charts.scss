@@ -1,14 +1,14 @@
 .chart-container {
 	position: relative;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 
 	.axis,
 	.chart-label {
 		font-size: 10px;
-		fill: var(--foreground-normal);
+		fill: var(--theme--foreground);
 
 		line {
-			stroke: var(--border-normal);
+			stroke: var(--theme--form--field--input--border-color);
 		}
 	}
 
@@ -57,7 +57,7 @@
 
 	.legend-dataset-text {
 		font-weight: 600;
-		fill: var(--foreground-normal);
+		fill: var(--theme--foreground);
 	}
 }
 
@@ -65,7 +65,7 @@
 	position: absolute;
 	z-index: 99999;
 	padding: 10px;
-	color: var(--border-normal);
+	color: var(--theme--form--field--input--border-color);
 	font-size: 12px;
 	text-align: center;
 	background: rgba(0, 0, 0, 0.8);

@@ -1,3 +1,49 @@
+<script setup lang="ts">
+import { useTFASetup } from '@/composables/use-tfa-setup';
+import { router } from '@/router';
+import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@directus/stores';
+import { User } from '@directus/types';
+import { nextTick, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+const appStore = useAppStore();
+const userStore = useUserStore();
+
+const inputOTP = ref<any>(null);
+
+onMounted(() => {
+	if (appStore.authenticated === false) {
+		router.push('/login');
+	}
+});
+
+const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
+	useTFASetup(false);
+
+watch(
+	() => tfaGenerated.value,
+	async (generated) => {
+		if (generated) {
+			await nextTick();
+			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+		}
+	},
+);
+
+async function enable() {
+	await enableTFA();
+
+	if (error.value === null) {
+		const redirectQuery = router.currentRoute.value.query.redirect as string;
+		router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
+	} else {
+		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+	}
+}
+</script>
+
 <template>
 	<public-view>
 		<div class="header">
@@ -40,52 +86,6 @@
 	</public-view>
 </template>
 
-<script setup lang="ts">
-import { useTFASetup } from '@/composables/use-tfa-setup';
-import { router } from '@/router';
-import { useUserStore } from '@/stores/user';
-import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
-import { nextTick, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-const appStore = useAppStore();
-const userStore = useUserStore();
-
-const inputOTP = ref<any>(null);
-
-onMounted(() => {
-	if (appStore.authenticated === false) {
-		router.push('/login');
-	}
-});
-
-const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
-	useTFASetup(false);
-
-watch(
-	() => tfaGenerated.value,
-	async (generated) => {
-		if (generated) {
-			await nextTick();
-			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
-		}
-	}
-);
-
-async function enable() {
-	await enableTFA();
-
-	if (error.value === null) {
-		const redirectQuery = router.currentRoute.value.query.redirect as string;
-		router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
-	} else {
-		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 h1 {
 	margin-bottom: 20px;
@@ -110,8 +110,8 @@ h1 {
 .secret {
 	display: block;
 	margin: 0 auto 16px;
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	color: var(--theme--foreground-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
 }

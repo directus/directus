@@ -13,8 +13,7 @@ export type Accountability = {
 	permissions?: Permission[];
 	share?: string;
 	share_scope?: ShareScope;
-
-	ip?: string;
+	ip?: string | null;
 	userAgent?: string;
 	origin?: string;
 };

@@ -4,7 +4,7 @@ import type { RestCommand } from '../../types.js';
 
 export type CreateRelationOutput<
 	Schema extends object,
-	Item extends object = DirectusRelation<Schema>
+	Item extends object = DirectusRelation<Schema>,
 > = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
@@ -17,7 +17,7 @@ export type CreateRelationOutput<
  */
 export const createRelation =
 	<Schema extends object>(
-		item: NestedPartial<DirectusRelation<Schema>>
+		item: NestedPartial<DirectusRelation<Schema>>,
 	): RestCommand<CreateRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations`,

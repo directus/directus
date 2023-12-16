@@ -1,50 +1,14 @@
-<!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
-<template>
-	<component :is="sectionTag" class="VPSidebarItem" :class="classes">
-		<div
-			v-if="item.text"
-			class="item"
-			v-bind="itemAttrs"
-			v-on="item.items ? { click: onItemInteraction, keydown: onItemInteraction } : {}"
-		>
-			<div class="indicator" />
-
-			<VPLink v-if="item.link" :tag="linkTag" class="link" :href="item.link">
-				<component :is="textTag" class="text" v-html="item.text" />
-			</VPLink>
-			<component :is="textTag" v-else class="text" v-html="item.text" />
-
-			<div
-				v-if="item.collapsed != null"
-				class="caret"
-				role="button"
-				aria-label="toggle section"
-				tabindex="0"
-				@click="onCaretClick"
-				@keydown.enter="onCaretClick"
-			>
-				<VPIconChevronRight class="caret-icon" />
-			</div>
-		</div>
-
-		<div v-if="item.items && item.items.length" class="items">
-			<template v-if="depth < 5">
-				<VPSidebarItem v-for="(i, index) in subItems" :key="i.text ?? index" :item="i" :depth="depth + 1" />
-			</template>
-		</div>
-	</component>
-</template>
+// Extended version of
+https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/components/VPSidebarItem.vue
 
 <script setup lang="ts">
-// Extended version of https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/components/VPSidebarItem.vue
-
 import { useData } from 'vitepress';
 // @ts-ignore
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue';
 // @ts-ignore
 import VPIconChevronRight from 'vitepress/dist/client/theme-default/components/icons/VPIconChevronRight.vue';
 // @ts-ignore
-import { useSidebarControl } from 'vitepress/dist/client/theme-default/composables/sidebar.js';
+import { useSidebarControl } from 'vitepress/dist/client/theme-default/composables/sidebar';
 import type { DefaultTheme } from 'vitepress/theme';
 import { computed, type HTMLAttributes } from 'vue';
 
@@ -58,7 +22,7 @@ const props = defineProps<{
 const { page } = useData();
 
 const activeMatch = computed(() =>
-	props.item.activeMatch ? RegExp(props.item.activeMatch).test(`^/${page.value.relativePath}$`) : false
+	props.item.activeMatch ? RegExp(props.item.activeMatch).test(`^/${page.value.relativePath}$`) : false,
 );
 
 const subItems =
@@ -67,7 +31,7 @@ const subItems =
 		: props.item.items;
 
 const { collapsed, collapsible, isLink, isActiveLink, hasActiveLink, hasChildren, toggle } = useSidebarControl(
-	computed(() => props.item)
+	computed(() => props.item),
 );
 
 const sectionTag = computed(() => (hasChildren.value ? 'section' : `div`));
@@ -108,6 +72,44 @@ function onCaretClick() {
 	props.item.link && toggle();
 }
 </script>
+
+<template>
+	<component :is="sectionTag" class="VPSidebarItem" :class="classes">
+		<div
+			v-if="item.text"
+			class="item"
+			v-bind="itemAttrs"
+			v-on="item.items ? { click: onItemInteraction, keydown: onItemInteraction } : {}"
+		>
+			<div class="indicator" />
+
+			<VPLink v-if="item.link" :tag="linkTag" class="link" :href="item.link">
+				<!-- eslint-disable-next-line vue/no-v-text-v-html-on-component vue/no-v-html -->
+				<component :is="textTag" class="text" v-html="item.text" />
+			</VPLink>
+			<!-- eslint-disable-next-line vue/no-v-text-v-html-on-component vue/no-v-html -->
+			<component :is="textTag" v-else class="text" v-html="item.text" />
+
+			<div
+				v-if="item.collapsed != null"
+				class="caret"
+				role="button"
+				aria-label="toggle section"
+				tabindex="0"
+				@click="onCaretClick"
+				@keydown.enter="onCaretClick"
+			>
+				<VPIconChevronRight class="caret-icon" />
+			</div>
+		</div>
+
+		<div v-if="item.items && item.items.length" class="items">
+			<template v-if="depth < 5">
+				<VPSidebarItem v-for="(i, index) in subItems" :key="i.text ?? index" :item="i" :depth="depth + 1" />
+			</template>
+		</div>
+	</component>
+</template>
 
 <style scoped>
 .VPSidebarItem.level-0 {

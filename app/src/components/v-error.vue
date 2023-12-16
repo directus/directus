@@ -1,18 +1,3 @@
-<template>
-	<div class="v-error selectable">
-		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
-			v-if="isCopySupported"
-			v-tooltip="t('copy_details')"
-			small
-			class="copy-error"
-			:name="copied ? 'check' : 'content_copy'"
-			clickable
-			@click="copyError"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
@@ -49,7 +34,7 @@ async function copyError() {
 	const error = props.error?.response?.data || props.error;
 
 	const isCopied = await copyToClipboard(
-		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
+		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2),
 	);
 
 	if (!isCopied) return;
@@ -57,15 +42,30 @@ async function copyError() {
 }
 </script>
 
+<template>
+	<div class="v-error selectable">
+		<output>[{{ code }}] {{ message }}</output>
+		<v-icon
+			v-if="isCopySupported"
+			v-tooltip="t('copy_details')"
+			small
+			class="copy-error"
+			:name="copied ? 'check' : 'content_copy'"
+			clickable
+			@click="copyError"
+		/>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-error {
 	max-height: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
-	color: var(--danger);
-	font-family: var(--family-monospace);
+	color: var(--theme--danger);
+	font-family: var(--theme--fonts--monospace--font-family);
 	background-color: var(--danger-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.copy-error {
 		margin-left: 12px;

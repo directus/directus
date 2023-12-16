@@ -1,6 +1,24 @@
+<script setup lang="ts">
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+const notificationsStore = useNotificationsStore();
+const { isAdmin } = useUserStore();
+
+const notifications = computed(() => notificationsStore.dialogs);
+
+function done(id: string) {
+	notificationsStore.remove(id);
+}
+</script>
+
 <template>
 	<div class="notification-dialogs">
-		<v-dialog v-for="notification in notifications" :key="notification.id" :model-value="true" persist>
+		<v-dialog v-for="notification in notifications" :key="notification.id" model-value persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text || notification.error">
@@ -20,24 +38,6 @@
 		</v-dialog>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useNotificationsStore } from '@/stores/notifications';
-import { useUserStore } from '@/stores/user';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
-const notificationsStore = useNotificationsStore();
-const { isAdmin } = useUserStore();
-
-const notifications = computed(() => notificationsStore.dialogs);
-
-function done(id: string) {
-	notificationsStore.remove(id);
-}
-</script>
 
 <style lang="scss" scoped>
 .notification-dialogs {

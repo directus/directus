@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateFileOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusFile<Schema>
+	Item extends object = DirectusFile<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,7 +21,7 @@ export const updateFiles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
 		item: Partial<DirectusFile<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
@@ -45,11 +45,21 @@ export const updateFiles =
 export const updateFile =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
-		item: Partial<DirectusFile<Schema>>,
-		query?: TQuery
+		item: Partial<DirectusFile<Schema>> | FormData,
+		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
+
+		if (item instanceof FormData) {
+			return {
+				path: `/files/${key}`,
+				params: query ?? {},
+				body: item,
+				method: 'PATCH',
+				headers: { 'Content-Type': 'multipart/form-data' },
+			};
+		}
 
 		return {
 			path: `/files/${key}`,

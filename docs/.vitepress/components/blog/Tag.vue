@@ -1,9 +1,3 @@
-<template>
-	<component :is="tagType" class="badge" v-bind="tagProps">
-		<slot />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -14,12 +8,18 @@ const props = withDefaults(
 	}>(),
 	{
 		as: 'div',
-	}
+	},
 );
 
 const tagType = computed(() => (props.href ? 'a' : 'div'));
 const tagProps = computed(() => (props.href ? { href: props.href } : {}));
 </script>
+
+<template>
+	<component :is="tagType" class="badge" v-bind="tagProps">
+		<slot />
+	</component>
+</template>
 
 <style scoped>
 .badge {

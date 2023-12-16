@@ -1,10 +1,18 @@
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { MockedFunction, SpyInstance } from 'vitest';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '../errors/index.js';
+import knex, { type Knex } from 'knex';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import {
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+	type MockInstance,
+	type MockedFunction,
+} from 'vitest';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -65,6 +73,9 @@ describe('Integration Tests', () => {
 
 		// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_notifications').response({});
+
+		// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
+		tracker.on.update('directus_versions').response({});
 	});
 
 	afterEach(() => {
@@ -74,12 +85,12 @@ describe('Integration Tests', () => {
 	describe('Services / Users', () => {
 		let service: UsersService;
 		let mailService: MailService;
-		let superCreateManySpy: SpyInstance;
-		let superUpdateManySpy: SpyInstance;
-		let checkUniqueEmailsSpy: SpyInstance;
-		let checkPasswordPolicySpy: SpyInstance;
-		let checkRemainingAdminExistenceSpy: SpyInstance;
-		let checkRemainingActiveAdminSpy: SpyInstance;
+		let superCreateManySpy: MockInstance;
+		let superUpdateManySpy: MockInstance;
+		let checkUniqueEmailsSpy: MockInstance;
+		let checkPasswordPolicySpy: MockInstance;
+		let checkRemainingAdminExistenceSpy: MockInstance;
+		let checkRemainingActiveAdminSpy: MockInstance;
 
 		beforeEach(() => {
 			service = new UsersService({
@@ -260,11 +271,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -292,7 +303,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
@@ -377,11 +388,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -409,7 +420,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
@@ -514,11 +525,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -550,7 +561,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
@@ -709,7 +720,7 @@ describe('Integration Tests', () => {
 				await expect(promise).resolves.not.toThrow();
 
 				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([1]);
-				expect(superUpdateManySpy.mock.lastCall![1]).toContain({ role: 'invite-role' });
+				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
 			});
 		});
 	});

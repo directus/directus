@@ -1,3 +1,74 @@
+<script setup lang="ts">
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../../components/navigation.vue';
+import FieldsManagement from './components/fields-management.vue';
+import formatTitle from '@directus/format-title';
+
+const props = defineProps<{
+	collection: string;
+	// Field detail modal only
+	field?: string;
+	type?: string;
+}>();
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const { collection } = toRefs(props);
+const { info: collectionInfo } = useCollection(collection);
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+
+const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
+
+const hasEdits = computed<boolean>(() => {
+	if (!edits.value.meta) return false;
+	return Object.keys(edits.value.meta).length > 0;
+});
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) saveAndStay();
+});
+
+const confirmDelete = ref(false);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function deleteAndQuit() {
+	await remove();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	edits.value = {};
+	router.replace(`/settings/data-model`);
+}
+
+async function saveAndStay() {
+	await save();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+}
+
+async function saveAndQuit() {
+	await save();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	router.push(`/settings/data-model`);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+</script>
+
 <template>
 	<private-view :title="collectionInfo && formatTitle(collectionInfo.collection)">
 		<template #headline>
@@ -98,84 +169,13 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useCollection } from '@directus/composables';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import FieldsManagement from './components/fields-management.vue';
-import formatTitle from '@directus/format-title';
-
-const props = defineProps<{
-	collection: string;
-	// Field detail modal only
-	field?: string;
-	type?: string;
-}>();
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const { collection } = toRefs(props);
-const { info: collectionInfo } = useCollection(collection);
-const collectionsStore = useCollectionsStore();
-const fieldsStore = useFieldsStore();
-
-const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
-
-const hasEdits = computed<boolean>(() => {
-	if (!edits.value.meta) return false;
-	return Object.keys(edits.value.meta).length > 0;
-});
-
-useShortcut('meta+s', () => {
-	if (hasEdits.value) saveAndStay();
-});
-
-const confirmDelete = ref(false);
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-async function deleteAndQuit() {
-	await remove();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	edits.value = {};
-	router.replace(`/settings/data-model`);
-}
-
-async function saveAndStay() {
-	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-}
-
-async function saveAndQuit() {
-	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	router.push(`/settings/data-model`);
-}
-
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	edits.value = {};
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
-</script>
-
 <style lang="scss" scoped>
 .title {
 	margin-bottom: 12px;
 
 	.instant-save {
 		margin-left: 4px;
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 }
 
@@ -191,14 +191,14 @@ function discardAndLeave() {
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 </style>

@@ -1,0 +1,10 @@
+table: directus_extensions
+
+fields:
+  - collection: directus_extensions
+    field: name
+
+  - collection: directus_extensions
+    field: enabled
+    special:
+      - cast-boolean

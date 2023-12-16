@@ -1,34 +1,3 @@
-<template>
-	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
-		<template #activator><slot /></template>
-
-		<div v-if="loading" class="loading">
-			<v-skeleton-loader class="avatar" />
-			<div>
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-			</div>
-		</div>
-
-		<div v-else-if="error" class="error">
-			{{ error }}
-		</div>
-
-		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
-			<v-avatar x-large class="avatar">
-				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon v-else name="person" />
-			</v-avatar>
-			<div class="data">
-				<div class="name type-title">{{ userName(data) }}</div>
-				<div class="status-role" :class="data!.status">{{ t(data.status) }} {{ data.role.name }}</div>
-				<div class="email">{{ data.email }}</div>
-			</div>
-		</div>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { userName } from '@/utils/user-name';
@@ -97,6 +66,40 @@ function navigateToUser() {
 }
 </script>
 
+<template>
+	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
+		<template #activator><slot /></template>
+
+		<div v-if="loading" class="loading">
+			<v-skeleton-loader class="avatar" />
+			<div>
+				<v-skeleton-loader type="text" />
+				<v-skeleton-loader type="text" />
+				<v-skeleton-loader type="text" />
+			</div>
+		</div>
+
+		<div v-else-if="error" class="error">
+			{{ error }}
+		</div>
+
+		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
+			<v-avatar x-large class="avatar">
+				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
+				<v-icon v-else name="person" />
+			</v-avatar>
+			<div class="data">
+				<div class="name type-title">{{ userName(data) }}</div>
+				<v-chip class="status" :class="data.status" small>
+					{{ t(`fields.directus_users.status_${data.status}`) }}
+				</v-chip>
+				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
+				<div class="email">{{ data.email }}</div>
+			</div>
+		</div>
+	</v-menu>
+</template>
+
 <style lang="scss" scoped>
 .hover-trigger {
 	width: max-content;
@@ -112,26 +115,37 @@ function navigateToUser() {
 		margin-right: 16px;
 	}
 
-	.status-role {
-		&.invited {
-			color: var(--primary);
-		}
+	.status {
+		margin-right: 4px;
 
 		&.active {
-			color: var(--success);
+			--v-chip-color: var(--theme--success);
+			--v-chip-background-color: var(--success-25);
+		}
+
+		&.draft {
+			--v-chip-color: var(--pink);
+			--v-chip-background-color: var(--pink-25);
+		}
+
+		&.invited {
+			--v-chip-color: var(--theme--primary);
+			--v-chip-background-color: var(--theme--primary-subdued);
 		}
 
 		&.suspended {
-			color: var(--warning);
+			--v-chip-color: var(--theme--warning);
+			--v-chip-background-color: var(--warning-25);
 		}
 
-		&.deleted {
-			color: var(--danger);
+		&.archived {
+			--v-chip-color: var(--theme--danger);
+			--v-chip-background-color: var(--danger-25);
 		}
 	}
 
 	.email {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 
@@ -139,12 +153,12 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--foreground-subdued);
+		border-bottom: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 
 .loading {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background-normal);
 
 	display: flex;
 	align-items: center;

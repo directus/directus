@@ -1,25 +1,3 @@
-<template>
-	<div
-		v-if="!disabled"
-		ref="wrapper"
-		class="resize-wrapper"
-		:class="{ transition: !dragging && !options?.disableTransition }"
-	>
-		<slot />
-
-		<div
-			v-if="targetIsVisible"
-			class="grab-bar"
-			:class="{ active, 'always-show': options?.alwaysShowHandle }"
-			@pointerenter="active = true"
-			@pointerleave="active = false"
-			@pointerdown.self="onPointerDown"
-			@dblclick="resetWidth"
-		/>
-	</div>
-	<slot v-else />
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useElementVisibility, useEventListener } from '@vueuse/core';
@@ -49,7 +27,7 @@ const props = withDefaults(
 		minWidth: (props) => props.width,
 		maxWidth: Infinity,
 		defaultWidth: (props) => props.minWidth ?? props.width,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -100,7 +78,7 @@ watch(
 
 		target.style.width = `${finalWidth}px`;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(dragging, (dragging) => {
@@ -180,6 +158,28 @@ function onPointerUp() {
 }
 </script>
 
+<template>
+	<div
+		v-if="!disabled"
+		ref="wrapper"
+		class="resize-wrapper"
+		:class="{ transition: !dragging && !options?.disableTransition }"
+	>
+		<slot />
+
+		<div
+			v-if="targetIsVisible"
+			class="grab-bar"
+			:class="{ active, 'always-show': options?.alwaysShowHandle }"
+			@pointerenter="active = true"
+			@pointerleave="active = false"
+			@pointerdown.self="onPointerDown"
+			@dblclick="resetWidth"
+		/>
+	</div>
+	<slot v-else />
+</template>
+
 <style lang="scss" scoped>
 .resize-wrapper {
 	position: relative;
@@ -198,7 +198,7 @@ function onPointerUp() {
 		bottom: 0;
 		width: 4px;
 		z-index: 10;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
 		transform: translate(50%, 0);
@@ -228,16 +228,16 @@ function onPointerUp() {
 				right: 1px;
 				bottom: 0;
 				left: 1px;
-				background-color: var(--background-normal-alt);
+				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}
 
 			&:hover,
 			&:active {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 
 				&::before {
-					background-color: var(--primary);
+					background-color: var(--theme--primary);
 				}
 			}
 		}

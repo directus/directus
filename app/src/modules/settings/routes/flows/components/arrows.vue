@@ -1,19 +1,3 @@
-<template>
-	<div class="arrow-container">
-		<svg :width="size.width" :height="size.height" class="arrows">
-			<transition-group name="fade">
-				<path
-					v-for="arrow in arrows"
-					:key="arrow.id"
-					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
-					:d="arrow.d"
-					stroke-linecap="round"
-				/>
-			</transition-group>
-		</svg>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
@@ -35,7 +19,7 @@ const props = withDefaults(
 		editMode: false,
 		hoveredPanel: undefined,
 		subdued: false,
-	}
+	},
 );
 
 const startOffset = 2;
@@ -158,8 +142,8 @@ const arrows = computed(() => {
 					{ x: x + startOffset, y },
 					{ x: centerX, y },
 					{ x: centerX, y: toY },
-					{ x: toX - endOffset, y: toY }
-				)
+					{ x: toX - endOffset, y: toY },
+				),
 			);
 		}
 
@@ -172,8 +156,8 @@ const arrows = computed(() => {
 				{ x: x + offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: toY },
-				{ x: toX - endOffset, y: toY }
-			)
+				{ x: toX - endOffset, y: toY },
+			),
 		);
 	}
 
@@ -249,7 +233,7 @@ const arrows = computed(() => {
 					point.x >= (panel.x - 2) * 20 &&
 					point.x <= (panel.x - 1 + PANEL_WIDTH) * 20 &&
 					point.y >= (panel.y - 1) * 20 &&
-					point.y <= (panel.y - 1 + PANEL_HEIGHT) * 20
+					point.y <= (panel.y - 1 + PANEL_HEIGHT) * 20,
 			) !== -1
 		);
 	}
@@ -262,6 +246,22 @@ const arrows = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div class="arrow-container">
+		<svg :width="size.width" :height="size.height" class="arrows">
+			<transition-group name="fade">
+				<path
+					v-for="arrow in arrows"
+					:key="arrow.id"
+					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
+					:d="arrow.d"
+					stroke-linecap="round"
+				/>
+			</transition-group>
+		</svg>
+	</div>
+</template>
 
 <style scoped lang="scss">
 .arrow-container {
@@ -276,17 +276,17 @@ const arrows = computed(() => {
 
 		path {
 			fill: transparent;
-			stroke: var(--primary);
+			stroke: var(--theme--primary);
 			stroke-width: 2px;
 			transition: stroke var(--fast) var(--transition);
 			transform: translateX(0);
 
 			&.reject {
-				stroke: var(--secondary);
+				stroke: var(--theme--secondary);
 			}
 
 			&.subdued {
-				stroke: var(--foreground-subdued);
+				stroke: var(--theme--foreground-subdued);
 			}
 
 			&.fade-enter-active,

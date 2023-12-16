@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
+import SidebarButton from './sidebar-button.vue';
+import NotificationItem from './notification-item.vue';
+import { useNotificationsStore } from '@/stores/notifications';
+
+defineProps<{
+	sidebarOpen?: boolean;
+	modelValue?: boolean;
+}>();
+
+defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const { t } = useI18n();
+
+const notificationsStore = useNotificationsStore();
+const { lastFour } = storeToRefs(notificationsStore);
+</script>
+
 <template>
 	<div class="notifications-preview">
 		<transition-expand tag="div">
@@ -25,28 +47,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import SidebarButton from './sidebar-button.vue';
-import NotificationItem from './notification-item.vue';
-import { useNotificationsStore } from '@/stores/notifications';
-
-defineProps<{
-	sidebarOpen?: boolean;
-	modelValue?: boolean;
-}>();
-
-defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
-
-const { t } = useI18n();
-
-const notificationsStore = useNotificationsStore();
-const { lastFour } = storeToRefs(notificationsStore);
-</script>
-
 <style lang="scss" scoped>
 .notifications-preview {
 	position: relative;
@@ -54,12 +54,12 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 .link {
 	display: block;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	text-decoration: none;
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 
 	&.has-items {
@@ -73,7 +73,9 @@ const { lastFour } = storeToRefs(notificationsStore);
 }
 
 .sidebar-button {
-	background-color: var(--background-normal-alt);
+	color: var(--theme--sidebar--section--toggle--foreground);
+	background-color: var(--theme--sidebar--section--toggle--background);
+	--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 }
 
 .inline {
@@ -81,7 +83,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 	right: 0;
 	bottom: 100%;
 	width: 100%;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {

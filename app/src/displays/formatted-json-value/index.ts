@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import DisplayJsonValue from './formatted-json-value.vue';
 import { render } from 'micromustache';
 import { toArray } from '@directus/utils';

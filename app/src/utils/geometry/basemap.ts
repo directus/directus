@@ -1,5 +1,5 @@
 import { Style, RasterSource } from 'maplibre-gl';
-import { getTheme } from '@/utils/get-theme';
+import { getAppearance } from '@/utils/get-appearance';
 import { useSettingsStore } from '@/stores/settings';
 
 export type BasemapSource = {
@@ -58,7 +58,10 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 
 function expandUrl(url: string): string[] {
 	const urls = [];
-	let match = /\{([a-z])-([a-z])\}/.exec(url);
+
+	type UrlMatch = [string, string, string] | null;
+
+	let match = /\{([a-z])-([a-z])\}/.exec(url) as UrlMatch;
 
 	if (match) {
 		// char range
@@ -73,7 +76,7 @@ function expandUrl(url: string): string[] {
 		return urls;
 	}
 
-	match = /\{(\d+)-(\d+)\}/.exec(url);
+	match = /\{(\d+)-(\d+)\}/.exec(url) as UrlMatch;
 
 	if (match) {
 		// number range
@@ -86,7 +89,7 @@ function expandUrl(url: string): string[] {
 		return urls;
 	}
 
-	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
+	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url) as UrlMatch;
 
 	if (match) {
 		// csv
@@ -110,7 +113,7 @@ function getDefaultMapboxBasemap(): BasemapSource {
 		url: 'mapbox://styles/directus/cktaiz31c509n18nrxj63zdy6',
 	};
 
-	if (getTheme() === 'dark') {
+	if (getAppearance() === 'dark') {
 		defaultMapboxBasemap.url = 'mapbox://styles/directus/cl0bombrr001115taz5ilsynw';
 	}
 

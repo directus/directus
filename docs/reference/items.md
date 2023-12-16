@@ -39,7 +39,7 @@ List all items that exist in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/:collection`
@@ -92,7 +92,7 @@ be an empty array.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/articles`
@@ -140,7 +140,7 @@ Get an item that exists in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/:collection/:id`
@@ -154,6 +154,9 @@ Get an item that exists in Directus.
 type Query {
 	<collection>_by_id(id: ID!): <collection>
 }
+type Query {
+	<collection>_by_version(id: ID!, version String!): <collection_version>
+}
 ```
 
 </template>
@@ -164,7 +167,7 @@ import { createDirectus, rest, readItem } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readItem(collection_name, item_id));
+const result = await client.request(readItem(collection_name, item_id, query_object));
 ```
 
 </template>
@@ -174,13 +177,16 @@ const result = await client.request(readItem(collection_name, item_id));
 
 Supports all [global query parameters](/reference/query).
 
+Additionally, supports a `version` parameter to retrieve an item's state from a specific
+[Content Version](/reference/system/versions). The value corresponds to the `key` of the Content Version.
+
 ### Response
 
 Returns an [item object](#the-item-object) if a valid primary key was provided.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/articles/15`
@@ -191,8 +197,12 @@ Returns an [item object](#the-item-object) if a valid primary key was provided.
 `POST /graphql`
 
 ```graphql
-type Query {
-	<collection>_by_id(id: ID!): <collection>
+query {
+	articles_by_id(id: 15) {
+		id
+		title
+		body
+	}
 }
 ```
 
@@ -204,7 +214,46 @@ import { createDirectus, rest, readItem } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readItem('articles', '1'));
+const result = await client.request(readItem('articles', '15'));
+```
+
+</template>
+</SnippetToggler>
+
+For a specific Content Version:
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+```http
+GET /items/articles/15
+	?version=draft
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+query {
+	articles_by_version(id: 15, version: "draft") {
+		id
+		title
+		body
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readItem } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readItem('articles', '1', { version: 'draft' }));
 ```
 
 </template>
@@ -212,11 +261,11 @@ const result = await client.request(readItem('articles', '1'));
 
 ## Get Singleton
 
-List the singleton item in Directus.
+List a singleton item in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/:collection`
@@ -228,7 +277,7 @@ List the singleton item in Directus.
 
 ```graphql
 type Query {
-	<collection>: [<collection>]
+	<collection>_by_version(version: String): <collection>
 }
 ```
 
@@ -257,6 +306,9 @@ response consists of a plain [item object](#the-item-object) (the singleton) ins
 
 Supports all [global query parameters](/reference/query).
 
+Additionally, supports a `version` parameter to retrieve a singleton's state from a specific
+[Content Version](/reference/system/versions). The value corresponds to the `key` of the Content Version.
+
 #### Request Body
 
 `collection_name` the name of the collection is required.
@@ -267,7 +319,7 @@ Returns an [item object](#the-item-object) if a valid collection name was provid
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /items/about`
@@ -300,13 +352,51 @@ const result = await client.request(readSingleton('about'));
 </template>
 </SnippetToggler>
 
+For a specific Content Version:
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+```http
+GET /items/about
+	?version=draft
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+query {
+	about_by_version(version: "draft") {
+		id
+		content
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readSingleton } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSingleton('about', { version: 'draft' }));
+```
+
+</template>
+</SnippetToggler>
+
 ## Create an Item
 
 Create a new item in the given collection.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /items/:collection`
@@ -359,7 +449,7 @@ Returns the [item objects](#the-item-object) of the item that were created.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /items/articles`
@@ -410,7 +500,7 @@ Create new items in the given collection.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /items/:collection`
@@ -456,7 +546,7 @@ Returns the [item objects](#the-item-object) of the item that were created.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /items/articles`
@@ -524,7 +614,7 @@ Update an existing item.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/:collection/:id`
@@ -570,7 +660,7 @@ Returns the [item object](#the-item-object) of the item that was updated.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/articles/15`
@@ -619,7 +709,7 @@ Update a singleton item.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/:collection`
@@ -673,7 +763,7 @@ Returns an [item object](#the-item-object) if a valid primary key was provided.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/about`
@@ -721,7 +811,7 @@ Update multiple items at the same time.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/:collection`
@@ -767,7 +857,7 @@ Returns the [item objects](#the-item-object) for the updated items.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /items/articles`
@@ -819,7 +909,7 @@ Delete an existing item.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /items/:collection/:id`
@@ -855,7 +945,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /items/articles/15`
@@ -891,7 +981,7 @@ const result = await client.request(deleteItem('articles', '5'));
 
 Delete multiple existing items.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /items/:collection`
@@ -941,7 +1031,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /items/articles`

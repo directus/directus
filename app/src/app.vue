@@ -1,52 +1,30 @@
-<template>
-	<div id="directus" :style="brandStyle">
-		<transition name="fade">
-			<div v-if="hydrating" class="hydrating">
-				<v-progress-circular indeterminate />
-			</div>
-		</transition>
-
-		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-			</template>
-		</v-info>
-
-		<router-view v-else-if="!hydrating" />
-
-		<teleport to="#custom-css">{{ customCSS }}</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
-import { setFavicon } from '@/utils/set-favicon';
+import { generateFavicon } from '@/utils/generate-favicon';
 import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
+import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 
 const { t } = useI18n();
 
 const appStore = useAppStore();
-const userStore = useUserStore();
 const serverStore = useServerStore();
+
+const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
 const { hydrating } = toRefs(appStore);
 
-const brandStyle = computed(() => {
-	return {
-		'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
-	} as StyleValue;
+const brandStyleCss = computed(() => {
+	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--theme--primary)'} }`;
 });
 
 useHead({
+	style: [{ textContent: brandStyleCss }],
 	titleTemplate: computed((title?: string) => {
 		const projectName = serverStore.info?.project?.project_name ?? 'Directus';
 		return !title ? projectName : `${title} · ${projectName}`;
@@ -65,40 +43,29 @@ useHead({
 			},
 		];
 	}),
+	link: computed(() => {
+		let href: string;
+
+		if (serverStore.info?.project?.public_favicon) {
+			href = `/assets/${serverStore.info.project.public_favicon}`;
+		} else if (serverStore.info?.project?.project_color) {
+			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
+		} else {
+			href = '/favicon.ico';
+		}
+
+		return [
+			{
+				rel: 'icon',
+				href,
+			},
+		];
+	}),
+	bodyAttrs: computed(() => ({ class: [darkMode.value ? 'dark' : 'light'] })),
 });
 
 onMounted(() => startIdleTracking());
 onUnmounted(() => stopIdleTracking());
-
-watch(
-	[() => serverStore.info?.project?.project_color ?? null, () => serverStore.info?.project?.project_logo ?? null],
-	() => {
-		const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-		setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
-	},
-	{ immediate: true }
-);
-
-watch(
-	() => (userStore.currentUser as User)?.theme,
-	(theme) => {
-		document.body.classList.remove('dark');
-		document.body.classList.remove('light');
-		document.body.classList.remove('auto');
-
-		if (theme) {
-			document.body.classList.add(theme);
-
-			document
-				.querySelector('head meta[name="theme-color"]')
-				?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
-		} else {
-			// Default to auto mode
-			document.body.classList.add('auto');
-		}
-	},
-	{ immediate: true }
-);
 
 const customCSS = computed(() => {
 	return serverStore.info?.project?.custom_css || '';
@@ -108,6 +75,36 @@ const error = computed(() => appStore.error);
 
 useSystem();
 </script>
+
+<template>
+	<ThemeProvider
+		:dark-mode="darkMode"
+		:theme-light="themeLight"
+		:theme-dark="themeDark"
+		:theme-light-overrides="themeLightOverrides"
+		:theme-dark-overrides="themeDarkOverrides"
+	/>
+
+	<div id="directus">
+		<transition name="fade">
+			<div v-if="hydrating" class="hydrating">
+				<v-progress-circular indeterminate />
+			</div>
+		</transition>
+
+		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
+
+			<template #append>
+				<v-error :error="error" />
+			</template>
+		</v-info>
+
+		<router-view v-else-if="!hydrating" />
+	</div>
+
+	<teleport to="#custom-css">{{ customCSS }}</teleport>
+</template>
 
 <style lang="scss" scoped>
 :global(#app) {

@@ -1,3 +1,97 @@
+<script setup lang="ts">
+import { computed, inject, ref } from 'vue';
+import { useElementSize } from '@directus/composables';
+import { AppTile } from './v-workspace-tile.vue';
+import { cssVar } from '@directus/utils/browser';
+
+interface Props {
+	/** What tiles to render inside the workspace */
+	tiles: AppTile[];
+	/** Enables the edit mode */
+	editMode?: boolean;
+	/** Sets zoom and position so that all components are perfectly shown */
+	zoomToFit?: boolean;
+	/** Makes the panel resizable */
+	resizable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	editMode: false,
+	zoomToFit: false,
+	resizable: true,
+});
+
+defineEmits<{
+	update: [value: { edits: Event; id: AppTile['id'] }];
+	move: [value: AppTile['id']];
+	delete: [value: AppTile['id']];
+	duplicate: [value: AppTile];
+	edit: [value: AppTile];
+	preview: [value: AppTile];
+}>();
+
+const mainElement = inject('main-element', ref<Element>());
+const mainElementSize = useElementSize(mainElement);
+
+const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
+
+const workspaceSize = computed(() => {
+	const furthestTileX = props.tiles.reduce(
+		(aggr, tile) => {
+			if (tile.x + tile.width > aggr.x + aggr.width) {
+				aggr.x = tile.x;
+				aggr.width = tile.width;
+			}
+
+			return aggr;
+		},
+		{ x: 0, width: 0 },
+	);
+
+	const furthestTileY = props.tiles.reduce(
+		(aggr, tile) => {
+			if (tile.y + tile.height > aggr.y + aggr.height) {
+				aggr.y = tile.y;
+				aggr.height = tile.height;
+			}
+
+			return aggr;
+		},
+		{ y: 0, height: 0 },
+	);
+
+	if (props.editMode === true) {
+		return {
+			width: (furthestTileX.x + furthestTileX.width + 25) * 20,
+			height: (furthestTileY.y + furthestTileY.height + 25) * 20,
+		};
+	}
+
+	return {
+		width: (furthestTileX.x + furthestTileX.width - 1) * 20,
+		height: (furthestTileY.y + furthestTileY.height - 1) * 20,
+	};
+});
+
+const zoomScale = computed(() => {
+	if (props.zoomToFit === false) return 1;
+
+	const { width, height } = mainElementSize;
+
+	const scaleWidth: number = (width.value - paddingSize.value * 2) / workspaceSize.value.width;
+	const scaleHeight: number = (height.value - 114 - paddingSize.value * 2) / workspaceSize.value.height;
+
+	return Math.min(scaleWidth, scaleHeight);
+});
+
+const workspaceBoxSize = computed(() => {
+	return {
+		width: workspaceSize.value.width * zoomScale.value + paddingSize.value * 2,
+		height: workspaceSize.value.height * zoomScale.value + paddingSize.value * 2,
+	};
+});
+</script>
+
 <template>
 	<div
 		class="v-workspace"
@@ -38,93 +132,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { computed, inject, ref } from 'vue';
-import { useElementSize } from '@directus/composables';
-import { AppTile } from './v-workspace-tile.vue';
-import { cssVar } from '@directus/utils/browser';
-
-interface Props {
-	/** What tiles to render inside the workspace */
-	tiles: AppTile[];
-	/** Enables the edit mode */
-	editMode?: boolean;
-	/** Sets zoom and position so that all components are perfectly shown */
-	zoomToFit?: boolean;
-	/** Makes the panel resizable */
-	resizable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	editMode: false,
-	zoomToFit: false,
-	resizable: true,
-});
-
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
-
-const mainElement = inject('main-element', ref<Element>());
-const mainElementSize = useElementSize(mainElement);
-
-const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
-
-const workspaceSize = computed(() => {
-	const furthestTileX = props.tiles.reduce(
-		(aggr, tile) => {
-			if (tile.x + tile.width > aggr.x + aggr.width) {
-				aggr.x = tile.x;
-				aggr.width = tile.width;
-			}
-
-			return aggr;
-		},
-		{ x: 0, width: 0 }
-	);
-
-	const furthestTileY = props.tiles.reduce(
-		(aggr, tile) => {
-			if (tile.y + tile.height > aggr.y + aggr.height) {
-				aggr.y = tile.y;
-				aggr.height = tile.height;
-			}
-
-			return aggr;
-		},
-		{ y: 0, height: 0 }
-	);
-
-	if (props.editMode === true) {
-		return {
-			width: (furthestTileX.x + furthestTileX.width + 25) * 20,
-			height: (furthestTileY.y + furthestTileY.height + 25) * 20,
-		};
-	}
-
-	return {
-		width: (furthestTileX.x + furthestTileX.width - 1) * 20,
-		height: (furthestTileY.y + furthestTileY.height - 1) * 20,
-	};
-});
-
-const zoomScale = computed(() => {
-	if (props.zoomToFit === false) return 1;
-
-	const { width, height } = mainElementSize;
-
-	const scaleWidth: number = (width.value - paddingSize.value * 2) / workspaceSize.value.width;
-	const scaleHeight: number = (height.value - 114 - paddingSize.value * 2) / workspaceSize.value.height;
-
-	return Math.min(scaleWidth, scaleHeight);
-});
-
-const workspaceBoxSize = computed(() => {
-	return {
-		width: workspaceSize.value.width * zoomScale.value + paddingSize.value * 2,
-		height: workspaceSize.value.height * zoomScale.value + paddingSize.value * 2,
-	};
-});
-</script>
-
 <style scoped>
 .v-workspace {
 	position: relative;
@@ -157,7 +164,7 @@ const workspaceBoxSize = computed(() => {
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
+	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;

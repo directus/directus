@@ -1,9 +1,18 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { MockedFunction, SpyInstance } from 'vitest';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { InvalidPayloadError } from '../errors/index.js';
+import {
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+	type MockedFunction,
+	type MockInstance,
+} from 'vitest';
 import { FilesService, ItemsService } from './index.js';
 
 describe('Integration Tests', () => {
@@ -23,7 +32,7 @@ describe('Integration Tests', () => {
 	describe('Services / Files', () => {
 		describe('createOne', () => {
 			let service: FilesService;
-			let superCreateOne: SpyInstance;
+			let superCreateOne: MockInstance;
 
 			beforeEach(() => {
 				service = new FilesService({

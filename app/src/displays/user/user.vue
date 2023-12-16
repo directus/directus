@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { userName } from '@/utils/user-name';
+import { User } from '@directus/types';
+import { computed } from 'vue';
+
+const props = withDefaults(
+	defineProps<{
+		value: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'> | null;
+		display?: 'avatar' | 'name' | 'both';
+		circle?: boolean;
+	}>(),
+	{
+		display: 'both',
+	},
+);
+
+const src = computed(() => {
+	if (props.value === null) return null;
+
+	if (props.value.avatar?.id) {
+		return `/assets/${props.value.avatar.id}?key=system-small-cover`;
+	}
+
+	return null;
+});
+</script>
+
 <template>
 	<user-popover v-if="value" :user="value.id">
 		<div class="user" :class="display">
@@ -19,33 +46,6 @@
 		</div>
 	</user-popover>
 </template>
-
-<script setup lang="ts">
-import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
-import { computed } from 'vue';
-
-const props = withDefaults(
-	defineProps<{
-		value: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'> | null;
-		display?: 'avatar' | 'name' | 'both';
-		circle?: boolean;
-	}>(),
-	{
-		display: 'both',
-	}
-);
-
-const src = computed(() => {
-	if (props.value === null) return null;
-
-	if (props.value.avatar?.id) {
-		return `/assets/${props.value.avatar.id}?key=system-small-cover`;
-	}
-
-	return null;
-});
-</script>
 
 <style lang="scss" scoped>
 .user {

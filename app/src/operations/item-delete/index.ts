@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 import { toArray } from '@directus/utils';
 
 export default defineOperationApp({
@@ -101,7 +101,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 					template: JSON.stringify(
 						{
@@ -112,7 +112,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 				},
 			},

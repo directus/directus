@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { getJSType } from '@/utils/get-js-type';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
+import { isValidJSON, parseJSON } from '@directus/utils';
+import { isNil } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { FormField } from './types';
+import type { Field } from '@directus/types';
+
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		showModal: boolean;
+		disabled: boolean;
+		currentValue: unknown;
+	}>(),
+	{
+		showModal: false,
+		disabled: false,
+		currentValue: undefined,
+	},
+);
+
+const emit = defineEmits(['cancel', 'setRawValue']);
+
+const { t } = useI18n();
+const internalValue = ref();
+
+const type = computed(() => {
+	return getJSType(props.field as Field);
+});
+
+watch(
+	() => props.showModal,
+	(isActive) => {
+		if (isActive) {
+			if (isNil(props.currentValue)) {
+				return;
+			}
+
+			internalValue.value = getStringifiedValue(props.currentValue, type.value === 'object');
+		}
+	},
+);
+
+const setRawValue = () => {
+	switch (type.value) {
+		case 'string':
+			emit('setRawValue', internalValue.value);
+			break;
+		case 'number':
+			emit('setRawValue', Number(internalValue.value));
+			break;
+		case 'boolean':
+			emit('setRawValue', internalValue.value === 'true');
+			break;
+		case 'object':
+			emit('setRawValue', isValidJSON(internalValue.value) ? parseJSON(internalValue.value) : internalValue.value);
+			break;
+		default:
+			emit('setRawValue', internalValue.value);
+			break;
+	}
+};
+</script>
+
 <template>
 	<v-dialog :model-value="showModal" persistent @esc="$emit('cancel')">
 		<v-card>
@@ -30,71 +97,6 @@
 		</v-card>
 	</v-dialog>
 </template>
-
-<script setup lang="ts">
-import { getJSType } from '@/utils/get-js-type';
-import { getStringifiedValue } from '@/utils/get-stringified-value';
-import { isValidJSON, parseJSON } from '@directus/utils';
-import { isNil } from 'lodash';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
-
-interface Props {
-	field: FormField;
-	showModal: boolean;
-	disabled: boolean;
-	currentValue: unknown;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showModal: false,
-	disabled: false,
-	currentValue: undefined,
-});
-
-const emit = defineEmits(['cancel', 'setRawValue']);
-
-const { t } = useI18n();
-const internalValue = ref();
-
-const type = computed(() => {
-	return getJSType(props.field);
-});
-
-watch(
-	() => props.showModal,
-	(isActive) => {
-		if (isActive) {
-			if (isNil(props.currentValue)) {
-				return;
-			}
-
-			internalValue.value = getStringifiedValue(props.currentValue, type.value === 'object');
-		}
-	}
-);
-
-const setRawValue = () => {
-	switch (type.value) {
-		case 'string':
-			emit('setRawValue', internalValue.value);
-			break;
-		case 'number':
-			emit('setRawValue', Number(internalValue.value));
-			break;
-		case 'boolean':
-			emit('setRawValue', internalValue.value === 'true');
-			break;
-		case 'object':
-			emit('setRawValue', isValidJSON(internalValue.value) ? parseJSON(internalValue.value) : internalValue.value);
-			break;
-		default:
-			emit('setRawValue', internalValue.value);
-			break;
-	}
-};
-</script>
 
 <style lang="scss" scoped>
 .v-card-text {

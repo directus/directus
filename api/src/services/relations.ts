@@ -10,7 +10,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemRelationRows } from '../database/system-data/relations/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -114,7 +114,7 @@ export class RelationsService {
 		});
 
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
-			(foreignKey) => foreignKey.column === field
+			(foreignKey) => foreignKey.column === field,
 		);
 
 		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
@@ -166,7 +166,7 @@ export class RelationsService {
 
 		const existingRelation = this.schema.relations.find(
 			(existingRelation) =>
-				existingRelation.collection === relation.collection && existingRelation.field === relation.field
+				existingRelation.collection === relation.collection && existingRelation.field === relation.field,
 		);
 
 		if (existingRelation) {
@@ -198,7 +198,7 @@ export class RelationsService {
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`
+								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
 							);
 
 						if (relation.schema?.on_delete) {
@@ -249,7 +249,7 @@ export class RelationsService {
 		collection: string,
 		field: string,
 		relation: Partial<Relation>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -264,7 +264,7 @@ export class RelationsService {
 		}
 
 		const existingRelation = this.schema.relations.find(
-			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
+			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field,
 		);
 
 		if (!existingRelation) {
@@ -300,7 +300,7 @@ export class RelationsService {
 							.references(
 								`${existingRelation.related_collection!}.${
 									this.schema.collections[existingRelation.related_collection!]!.primary
-								}`
+								}`,
 							);
 
 						if (relation.schema?.on_delete) {
@@ -334,7 +334,7 @@ export class RelationsService {
 							{
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							}
+							},
 						);
 					}
 				}
@@ -376,7 +376,7 @@ export class RelationsService {
 		}
 
 		const existingRelation = this.schema.relations.find(
-			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
+			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field,
 		);
 
 		if (!existingRelation) {

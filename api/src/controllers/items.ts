@@ -1,6 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -55,7 +55,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
@@ -113,7 +113,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -160,7 +160,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -193,7 +193,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -219,7 +219,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -236,7 +236,7 @@ router.delete(
 		await service.deleteOne(req.params['pk']!);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

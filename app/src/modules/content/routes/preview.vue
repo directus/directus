@@ -1,7 +1,3 @@
-<template>
-	<LivePreview v-if="previewURL" :url="previewURL" in-popup @new-window="closePopup" />
-</template>
-
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import LivePreview from '../components/live-preview.vue';
@@ -34,3 +30,7 @@ function closePopup() {
 	window.close();
 }
 </script>
+
+<template>
+	<LivePreview v-if="previewURL" :url="previewURL" in-popup @new-window="closePopup" />
+</template>

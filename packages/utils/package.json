@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "10.0.10",
+	"version": "11.0.2",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,18 +14,9 @@
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
-		".": {
-			"types": "./dist/shared/index.d.ts",
-			"import": "./dist/shared/index.js"
-		},
-		"./node": {
-			"types": "./dist/node/index.d.ts",
-			"import": "./dist/node/index.js"
-		},
-		"./browser": {
-			"types": "./dist/browser/index.d.ts",
-			"import": "./dist/browser/index.js"
-		},
+		".": "./dist/shared/index.js",
+		"./node": "./dist/node/index.js",
+		"./browser": "./dist/browser/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/shared/index.js",
@@ -33,31 +24,40 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project browser/tsconfig.prod.json && tsc --project node/tsconfig.prod.json && tsc --project shared/tsconfig.prod.json",
-		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
+		"build": "pnpm run '/^build:.*/'",
+		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
+		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
+		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"date-fns": "2.30.0",
-		"fs-extra": "11.1.1",
-		"joi": "17.9.2",
+		"fs-extra": "11.2.0",
+		"joi": "17.11.0",
 		"lodash-es": "4.17.21",
-		"micromustache": "8.0.3",
-		"tmp": "0.2.1",
-		"vue": "3.3.4"
+		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
-		"@directus/errors": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/fs-extra": "11.0.1",
-		"@types/lodash-es": "4.17.7",
-		"@types/node": "18.16.12",
-		"@types/tmp": "0.2.3",
-		"@vitest/coverage-c8": "0.31.1",
-		"concurrently": "8.0.1",
-		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"@types/fs-extra": "11.0.4",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "18.19.3",
+		"@types/tmp": "0.2.6",
+		"@vitest/coverage-v8": "1.0.4",
+		"tmp": "0.2.1",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.0.4"
+	},
+	"peerDependencies": {
+		"vue": "3.3.11"
+	},
+	"peerDependenciesMeta": {
+		"vue": {
+			"optional": true
+		}
 	}
 }

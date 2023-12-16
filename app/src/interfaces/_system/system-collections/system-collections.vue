@@ -1,16 +1,3 @@
-<template>
-	<v-notice v-if="items.length === 0">
-		{{ t('no_collections') }}
-	</v-notice>
-	<interface-select-multiple-checkbox
-		v-else
-		:choices="items"
-		:value="value"
-		:disabled="disabled"
-		@input="$emit('input', $event)"
-	/>
-</template>
-
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
@@ -23,7 +10,7 @@ const props = withDefaults(
 		includeSystem?: boolean;
 		includeSingleton?: boolean;
 	}>(),
-	{ includeSingleton: true }
+	{ includeSingleton: true },
 );
 
 defineEmits<{
@@ -55,3 +42,16 @@ const items = computed(() => {
 	}));
 });
 </script>
+
+<template>
+	<v-notice v-if="items.length === 0">
+		{{ t('no_collections') }}
+	</v-notice>
+	<interface-select-multiple-checkbox
+		v-else
+		:choices="items"
+		:value="value"
+		:disabled="disabled"
+		@input="$emit('input', $event)"
+	/>
+</template>

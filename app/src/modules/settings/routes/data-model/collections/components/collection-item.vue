@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { useLocalStorage } from '@/composables/use-local-storage';
+import { Collection } from '@/types/collections';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import CollectionOptions from './collection-options.vue';
+import { CollectionTree } from '../collections.vue';
+
+const props = defineProps<{
+	collection: Collection;
+	collections: Collection[];
+	visibilityTree: CollectionTree;
+	disableDrag?: boolean;
+}>();
+
+const emit = defineEmits(['setNestedSort', 'editCollection']);
+
+const { t } = useI18n();
+const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true);
+
+const toggleCollapse = () => {
+	isCollectionExpanded.value = !isCollectionExpanded.value;
+};
+
+const nestedCollections = computed(() =>
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
+);
+
+function onGroupSortChange(collections: Collection[]) {
+	const updates = collections.map((collection) => ({
+		collection: collection.collection,
+		meta: {
+			group: props.collection.collection,
+		},
+	}));
+
+	emit('setNestedSort', updates);
+}
+</script>
+
 <template>
 	<div v-show="visibilityTree.visible" class="collection-item">
 		<v-list-item
@@ -13,7 +54,9 @@
 			</v-list-item-icon>
 			<div class="collection-item-detail">
 				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color ?? 'var(--primary)'"
+					:color="
+						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : collection.color ?? 'var(--theme--primary)'
+					"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
@@ -43,13 +86,13 @@
 		<transition-expand class="collection-items">
 			<draggable
 				v-if="isCollectionExpanded"
-				:force-fallback="true"
 				:model-value="nestedCollections"
 				:group="{ name: 'collections' }"
 				:swap-threshold="0.3"
 				class="drag-container"
 				item-key="collection"
 				handle=".drag-handle"
+				v-bind="{ 'force-fallback': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #item="{ element }">
@@ -65,47 +108,6 @@
 		</transition-expand>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useLocalStorage } from '@/composables/use-local-storage';
-import { Collection } from '@/types/collections';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
-import CollectionOptions from './collection-options.vue';
-import { CollectionTree } from '../collections.vue';
-
-const props = defineProps<{
-	collection: Collection;
-	collections: Collection[];
-	visibilityTree: CollectionTree;
-	disableDrag?: boolean;
-}>();
-
-const emit = defineEmits(['setNestedSort', 'editCollection']);
-
-const { t } = useI18n();
-const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true);
-
-const toggleCollapse = () => {
-	isCollectionExpanded.value = !isCollectionExpanded.value;
-};
-
-const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
-);
-
-function onGroupSortChange(collections: Collection[]) {
-	const updates = collections.map((collection) => ({
-		collection: collection.collection,
-		meta: {
-			group: props.collection.collection,
-		},
-	}));
-
-	emit('setNestedSort', updates);
-}
-</script>
 
 <style scoped>
 .drag-container {
@@ -123,7 +125,7 @@ function onGroupSortChange(collections: Collection[]) {
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	pointer-events: none;
 }
 
@@ -132,13 +134,13 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .collection-note {
 	margin-left: 16px;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	opacity: 0;

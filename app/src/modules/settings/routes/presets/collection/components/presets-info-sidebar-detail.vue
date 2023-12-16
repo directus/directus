@@ -1,22 +1,3 @@
-<template>
-	<sidebar-detail icon="info" :title="t('information')" close>
-		<dl>
-			<div>
-				<dt>{{ t('bookmarks') }}</dt>
-				<dd>{{ bookmarksCount }}</dd>
-			</div>
-			<div>
-				<dt>{{ t('presets') }}</dt>
-				<dd>{{ presetsCount }}</dd>
-			</div>
-		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -45,13 +26,32 @@ async function fetchCounts() {
 
 		bookmarksCount.value = response.data.meta.filter_count as number;
 		presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
 }
 </script>
+
+<template>
+	<sidebar-detail icon="info" :title="t('information')" close>
+		<dl>
+			<div>
+				<dt>{{ t('bookmarks') }}</dt>
+				<dd>{{ bookmarksCount }}</dd>
+			</div>
+			<div>
+				<dt>{{ t('presets') }}</dt>
+				<dd>{{ presetsCount }}</dd>
+			</div>
+		</dl>
+
+		<v-divider />
+
+		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 .v-divider {

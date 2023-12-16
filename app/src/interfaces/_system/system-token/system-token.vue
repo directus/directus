@@ -1,3 +1,69 @@
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		disabled?: boolean;
+	}>(),
+	{
+		value: null,
+	},
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const placeholder = computed(() => {
+	if (props.disabled && !props.value) return null;
+	return props.value ? t('interfaces.system-token.value_securely_saved') : t('interfaces.system-token.placeholder');
+});
+
+const localValue = ref<string | null>(null);
+const loading = ref(false);
+const isNewTokenGenerated = ref(false);
+const regexp = new RegExp('^[*]+$');
+
+watch(
+	() => props.value,
+	(newValue) => {
+		if (!newValue) {
+			localValue.value = null;
+			return;
+		}
+
+		if (newValue && regexp.test(newValue)) {
+			localValue.value = null;
+			isNewTokenGenerated.value = false;
+		}
+	},
+	{ immediate: true },
+);
+
+async function generateToken() {
+	loading.value = true;
+
+	try {
+		const response = await api.get('/utils/random/string');
+		emitValue(response.data.data);
+		isNewTokenGenerated.value = true;
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		loading.value = false;
+	}
+}
+
+function emitValue(newValue: string | null) {
+	emit('input', newValue);
+	localValue.value = newValue;
+}
+</script>
+
 <template>
 	<div class="system-token">
 		<v-input
@@ -30,82 +96,19 @@
 			</template>
 		</v-input>
 
-		<v-notice v-if="isNewTokenGenerated && value" type="info">
+		<v-notice v-if="isNewTokenGenerated && value">
 			{{ t('interfaces.system-token.generate_success_copy') }}
 		</v-notice>
 	</div>
 </template>
 
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-
-interface Props {
-	value?: string | null;
-	disabled?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false });
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const placeholder = computed(() => {
-	if (props.disabled && !props.value) return null;
-	return props.value ? t('interfaces.system-token.value_securely_saved') : t('interfaces.system-token.placeholder');
-});
-
-const localValue = ref<string | null>(null);
-const loading = ref(false);
-const isNewTokenGenerated = ref(false);
-const regexp = new RegExp('^[*]+$');
-
-watch(
-	() => props.value,
-	(newValue) => {
-		if (!newValue) {
-			localValue.value = null;
-			return;
-		}
-
-		if (newValue && regexp.test(newValue)) {
-			localValue.value = null;
-			isNewTokenGenerated.value = false;
-		}
-	},
-	{ immediate: true }
-);
-
-async function generateToken() {
-	loading.value = true;
-
-	try {
-		const response = await api.get('/utils/random/string');
-		emitValue(response.data.data);
-		isNewTokenGenerated.value = true;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
-
-function emitValue(newValue: string | null) {
-	emit('input', newValue);
-	localValue.value = newValue;
-}
-</script>
-
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .saved {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 }
 
 .v-notice {
@@ -117,10 +120,10 @@ function emitValue(newValue: string | null) {
 }
 
 .clear-icon {
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color-hover: var(--theme--danger);
 }
 
 .default-icon {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 </style>

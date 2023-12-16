@@ -1,19 +1,3 @@
-<template>
-	<v-input
-		:placeholder="internalPlaceholder"
-		:disabled="disabled"
-		:type="masked ? 'password' : 'text'"
-		:autocomplete="masked ? 'new-password' : 'off'"
-		:model-value="localValue"
-		:class="{ hashed: isHashed && !localValue }"
-		@update:model-value="emitValue"
-	>
-		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
-		</template>
-	</v-input>
-</template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 
@@ -49,7 +33,7 @@ watch(
 	() => {
 		isHashed.value = !!(props.value && props.value.length > 0);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function emitValue(newValue: string) {
@@ -58,25 +42,41 @@ function emitValue(newValue: string) {
 }
 </script>
 
+<template>
+	<v-input
+		:placeholder="internalPlaceholder"
+		:disabled="disabled"
+		:type="masked ? 'password' : 'text'"
+		:autocomplete="masked ? 'new-password' : 'off'"
+		:model-value="localValue"
+		:class="{ hashed: isHashed && !localValue }"
+		@update:model-value="emitValue"
+	>
+		<template #append>
+			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+		</template>
+	</v-input>
+</template>
+
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
-	--v-icon-color: var(--warning);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+	--v-icon-color: var(--theme--warning);
 
 	&.hashed {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 
 .lock {
-	--v-icon-color: var(--warning);
+	--v-icon-color: var(--theme--warning);
 }
 
 .hashed {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 }
 
 .hashed .lock {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 </style>

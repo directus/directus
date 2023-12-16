@@ -1,3 +1,95 @@
+<script setup lang="ts">
+import { ref, computed, toRefs, watch } from 'vue';
+import { LocalType } from '@directus/types';
+import { useFieldDetailStore } from './store/';
+import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
+import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
+import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
+import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
+import { useRouter } from 'vue-router';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useI18n } from 'vue-i18n';
+import formatTitle from '@directus/format-title';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { storeToRefs } from 'pinia';
+import { unexpectedError } from '@/utils/unexpected-error';
+
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		field: string;
+		type: LocalType | null;
+	}>(),
+	{
+		type: null,
+	},
+);
+
+const { collection, field, type } = toRefs(props);
+
+const search = ref<string | null>(null);
+
+const isOpen = useDialogRoute();
+
+const fieldDetail = useFieldDetailStore();
+
+const { editing } = storeToRefs(fieldDetail);
+
+watch(
+	field,
+	() => {
+		fieldDetail.startEditing(collection.value, field.value, type.value ?? undefined);
+	},
+	{ immediate: true },
+);
+
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const router = useRouter();
+const { t } = useI18n();
+
+const collectionInfo = computed(() => {
+	return collectionsStore.getCollection(collection.value);
+});
+
+const simple = ref(props.type === null);
+
+const title = computed(() => {
+	const existingField = fieldsStore.getField(props.collection, props.field);
+	const fieldName = formatTitle(existingField?.field || fieldDetail.field.field || '');
+
+	if (props.field === '+' && fieldName === '') {
+		return t('creating_new_field', { collection: collectionInfo.value?.collection });
+	} else {
+		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.collection });
+	}
+});
+
+const currentTab = ref(['schema']);
+
+const showAdvanced = computed(() => {
+	return editing.value !== '+' || !simple.value;
+});
+
+async function cancel() {
+	await router.push(`/settings/data-model/${props.collection}`);
+	fieldDetail.$reset();
+}
+
+async function save() {
+	try {
+		await fieldDetail.save();
+	} catch (error) {
+		unexpectedError(error);
+		return;
+	}
+
+	router.push(`/settings/data-model/${props.collection}`);
+	fieldDetail.$reset();
+}
+</script>
+
 <template>
 	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
 		<field-detail-simple
@@ -38,105 +130,13 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, toRefs, watch } from 'vue';
-import { LocalType } from '@directus/types';
-import { useFieldDetailStore } from './store/';
-import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
-import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
-import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
-import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
-import { useRouter } from 'vue-router';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useI18n } from 'vue-i18n';
-import formatTitle from '@directus/format-title';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { storeToRefs } from 'pinia';
-import { unexpectedError } from '@/utils/unexpected-error';
-
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		field: string;
-		type: LocalType | null;
-	}>(),
-	{
-		type: null,
-	}
-);
-
-const { collection, field, type } = toRefs(props);
-
-const search = ref<string | null>(null);
-
-const isOpen = useDialogRoute();
-
-const fieldDetail = useFieldDetailStore();
-
-const { editing } = storeToRefs(fieldDetail);
-
-watch(
-	field,
-	() => {
-		fieldDetail.startEditing(collection.value, field.value, type.value ?? undefined);
-	},
-	{ immediate: true }
-);
-
-const collectionsStore = useCollectionsStore();
-const fieldsStore = useFieldsStore();
-const router = useRouter();
-const { t } = useI18n();
-
-const collectionInfo = computed(() => {
-	return collectionsStore.getCollection(collection.value);
-});
-
-const simple = ref(props.type === null);
-
-const title = computed(() => {
-	const existingField = fieldsStore.getField(props.collection, props.field);
-	const fieldName = formatTitle(existingField?.field || fieldDetail.field.field || '');
-
-	if (props.field === '+' && fieldName === '') {
-		return t('creating_new_field', { collection: collectionInfo.value?.collection });
-	} else {
-		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.collection });
-	}
-});
-
-const currentTab = ref(['schema']);
-
-const showAdvanced = computed(() => {
-	return editing.value !== '+' || !simple.value;
-});
-
-async function cancel() {
-	await router.push(`/settings/data-model/${props.collection}`);
-	fieldDetail.$reset();
-}
-
-async function save() {
-	try {
-		await fieldDetail.save();
-	} catch (err: any) {
-		unexpectedError(err);
-		return;
-	}
-
-	router.push(`/settings/data-model/${props.collection}`);
-	fieldDetail.$reset();
-}
-</script>
-
 <style lang="scss" scoped>
 :deep(.required-mark) {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {
-	--border-radius: calc(44px / 2);
+	--v-input-border-radius: calc(44px / 2);
 	width: 200px;
 	margin-left: auto;
 

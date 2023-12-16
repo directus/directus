@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "10.2.0",
+	"version": "10.2.4",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -34,7 +34,6 @@
 	},
 	"devDependencies": {
 		"npm-watch": "0.11.0",
-		"openapi-types": "12.1.0",
 		"swagger-cli": "4.0.4",
 		"swagger-ui-watcher": "2.1.13"
 	},

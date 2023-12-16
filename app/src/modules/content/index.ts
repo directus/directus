@@ -4,7 +4,7 @@ import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import RouterPass from '@/utils/router-passthrough';
 import { Collection } from '@directus/types';
-import { defineModule } from '@directus/utils';
+import { defineModule } from '@directus/extensions';
 import { isNil, orderBy } from 'lodash';
 import { ref } from 'vue';
 import { LocationQuery, NavigationGuard } from 'vue-router';
@@ -71,7 +71,7 @@ export default defineModule({
 					collectionsStore.visibleCollections.filter((collection) => {
 						return isNil(collection?.meta?.group);
 					}),
-					['meta.sort', 'collection']
+					['meta.sort', 'collection'],
 				);
 
 				const { data } = useLocalStorage('last-accessed-collection');
@@ -105,7 +105,7 @@ export default defineModule({
 							collectionsStore.visibleCollections.filter((childCollection) => {
 								return collection.collection === childCollection.meta?.group;
 							}),
-							['meta.sort', 'collection']
+							['meta.sort', 'collection'],
 						);
 
 						const first = findFirst(children);

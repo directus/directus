@@ -16,8 +16,8 @@ readTime: 3 min read
 [Directus Cloud](https://directus.cloud) is a hosting platform for
 [Directus Projects](/user-guide/cloud/glossary#projects) which handles data storage, hosting, updates and scalability so
 you can focus on building your digital apps and experiences. There are two
-[tiers of Cloud Projects](/user-guide/cloud/glossary#projects): Standard and Enterprise. Both tiers come with all the
-great features of Directus Core.
+[tiers of Cloud Projects](/user-guide/cloud/glossary#projects): Professional and Enterprise. Both tiers come with all
+the great features of Directus Core.
 
 The Cloud Dashboard is constructed to manage three key components: [Accounts](/user-guide/cloud/glossary#accounts),
 [Teams](/user-guide/cloud/glossary#teams) and [Projects](/user-guide/cloud/glossary#projects). First, create an Account.

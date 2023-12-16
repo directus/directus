@@ -92,9 +92,16 @@ under [Settings > Data Model > Directus Users](/app/data-model), but the followi
 ![User Preferences](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-preferences-20220222A.webp)
 
 - **Language** — The preferred App language/locale.
-- **Theme** — Light or Dark mode (or based on system preferences).
 - **Multi-Factor Authentication** — Configuration for MFA.
 - **Email Notifications** — Receive emails for notifications.
+
+### Theme
+
+<!-- ![Theme]() -->
+
+- **Appearance** — Light or Dark theme (or based on system preference).
+- **Light Theme Customization** — Customization for `light` theme in use.
+- **Dark Theme Customization** — Customization for `dark` theme in use.
 
 ### Admin Options
 

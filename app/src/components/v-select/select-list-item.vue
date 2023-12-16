@@ -1,3 +1,38 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { Option } from './types';
+
+const props = withDefaults(
+	defineProps<{
+		item: Option;
+		itemLabelFontFamily: string;
+		modelValue?: string | number | (string | number)[] | null;
+		multiple?: boolean;
+		allowOther?: boolean;
+	}>(),
+	{
+		itemLabelFontFamily: 'var(--v-select-font-family)',
+		modelValue: null,
+		multiple: true,
+		allowOther: false,
+	},
+);
+
+defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
+});
+</script>
+
 <template>
 	<v-divider v-if="item.divider === true" />
 
@@ -27,40 +62,6 @@
 		</v-list-item-content>
 	</v-list-item>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { Option } from './types';
-
-interface Props {
-	item: Option;
-	itemLabelFontFamily: string;
-	modelValue?: string | number | (string | number)[] | null;
-	multiple?: boolean;
-	allowOther?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemLabelFontFamily: 'var(--v-select-font-family)',
-	modelValue: null,
-	multiple: true,
-	allowOther: false,
-});
-
-defineEmits(['update:modelValue']);
-
-const isActive = computed(() => {
-	if (props.multiple) {
-		if (!Array.isArray(props.modelValue) || !props.item.value) {
-			return false;
-		}
-
-		return props.modelValue.includes(props.item.value);
-	} else {
-		return props.modelValue === props.item.value;
-	}
-});
-</script>
 
 <style scoped>
 .checkbox :deep(.type-text) {

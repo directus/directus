@@ -1,7 +1,7 @@
 import InsightsOverview from './routes/overview.vue';
 import InsightsDashboard from './routes/dashboard.vue';
 import InsightsPanelConfiguration from './routes/panel-configuration.vue';
-import { defineModule } from '@directus/utils';
+import { defineModule } from '@directus/extensions';
 import { useInsightsStore } from '@/stores/insights';
 
 export default defineModule({
@@ -42,7 +42,7 @@ export default defineModule({
 		if (admin) return true;
 
 		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_dashboards' && permission.action === 'read'
+			(permission) => permission.collection === 'directus_dashboards' && permission.action === 'read',
 		);
 
 		return !!permission;

@@ -1,5 +1,5 @@
 import { useFieldsStore } from '@/stores/fields';
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import PreviewSVG from './preview.svg?raw';
 import InterfaceTranslations from './translations.vue';
 

@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { isNil, orderBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useNavigation } from '../composables/use-navigation';
+import NavigationItem from './navigation-item.vue';
+
+const props = defineProps<{
+	currentCollection?: string;
+}>();
+
+const { t } = useI18n();
+const { currentCollection } = toRefs(props);
+const { activeGroups, showHidden } = useNavigation(currentCollection);
+
+const search = ref('');
+
+const collectionsStore = useCollectionsStore();
+
+const rootItems = computed(() => {
+	const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
+	return orderBy(
+		shownCollections.filter((collection) => {
+			return isNil(collection?.meta?.group);
+		}),
+		['meta.sort', 'collection'],
+	);
+});
+
+const dense = computed(() => collectionsStore.visibleCollections.length > 5);
+const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
+
+const hasHiddenCollections = computed(
+	() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length,
+);
+</script>
+
 <template>
 	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
@@ -36,44 +74,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
-import { isNil, orderBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useNavigation } from '../composables/use-navigation';
-import NavigationItem from './navigation-item.vue';
-
-const props = defineProps<{
-	currentCollection?: string;
-}>();
-
-const { t } = useI18n();
-const { currentCollection } = toRefs(props);
-const { activeGroups, showHidden } = useNavigation(currentCollection);
-
-const search = ref('');
-
-const collectionsStore = useCollectionsStore();
-
-const rootItems = computed(() => {
-	const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
-	return orderBy(
-		shownCollections.filter((collection) => {
-			return isNil(collection?.meta?.group);
-		}),
-		['meta.sort', 'collection']
-	);
-});
-
-const dense = computed(() => collectionsStore.visibleCollections.length > 5);
-const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
-
-const hasHiddenCollections = computed(
-	() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length
-);
-</script>
-
 <style lang="scss" scoped>
 .group-name {
 	padding-left: 8px;
@@ -82,9 +82,9 @@ const hasHiddenCollections = computed(
 
 .empty {
 	.v-button {
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--primary);
+		--v-button-color: var(--theme--foreground-subdued);
+		--v-button-background-color: var(--theme--foreground-subdued);
+		--v-button-background-color-hover: var(--theme--primary);
 	}
 }
 
@@ -115,7 +115,7 @@ const hasHiddenCollections = computed(
 }
 
 .hidden-collection {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .search-input {
@@ -126,6 +126,6 @@ const hasHiddenCollections = computed(
 	z-index: 2;
 	padding: 12px;
 	padding-bottom: 0;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 }
 </style>

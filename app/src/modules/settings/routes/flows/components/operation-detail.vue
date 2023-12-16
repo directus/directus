@@ -1,3 +1,133 @@
+<script setup lang="ts">
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
+import { translate } from '@/utils/translate-object-values';
+import { FlowRaw } from '@directus/types';
+import slugify from '@sindresorhus/slugify';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
+import { customAlphabet } from 'nanoid/non-secure';
+
+const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
+
+const props = withDefaults(
+	defineProps<{
+		primaryKey: string;
+		operationId: string;
+		operation?: Record<string, any>;
+		existingOperationKeys?: string[];
+		flow: FlowRaw;
+	}>(),
+	{
+		operation: undefined,
+		existingOperationKeys: undefined,
+	},
+);
+
+const emit = defineEmits(['save', 'cancel']);
+
+const isOpen = useDialogRoute();
+const { t } = useI18n();
+
+const options = ref<Record<string, any>>(props.operation?.options ?? {});
+const operationType = ref<string | null>(props.operation?.type ?? null);
+const operationKey = ref<string | null>(props.operation?.key ?? null);
+const operationName = ref<string | null>(props.operation?.name ?? null);
+
+const saving = ref(false);
+
+const isOperationKeyUnique = computed(
+	() =>
+		saving.value ||
+		operationKey.value === null ||
+		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value)),
+);
+
+const saveDisabled = computed(() => {
+	return !operationType.value || !isOperationKeyUnique.value;
+});
+
+watch(
+	() => props.operation,
+	(operation) => {
+		if (!operation) return;
+
+		options.value = operation.options;
+		operationType.value = operation.type;
+		operationKey.value = operation.key;
+		operationName.value = operation.name;
+	},
+	{ immediate: true, deep: true },
+);
+
+watch(operationType, () => {
+	options.value = {};
+});
+
+watch(
+	operationName,
+	(newName, oldName) => {
+		if (
+			newName === null ||
+			operationKey.value ===
+				slugify(oldName ?? '', {
+					separator: '_',
+				})
+		) {
+			operationKey.value = slugify(newName ?? '', {
+				separator: '_',
+			});
+		}
+	},
+	{ immediate: true },
+);
+
+const selectedOperation = useExtension('operation', operationType);
+
+const generatedName = computed(() => (selectedOperation.value ? selectedOperation.value?.name : t('operation_name')));
+
+const generatedKey = computed(() =>
+	selectedOperation.value
+		? slugify(selectedOperation.value?.id + '_' + generateSuffix(), { separator: '_' })
+		: t('operation_key'),
+);
+
+const { operations } = useExtensions();
+
+const displayOperations = computed(() => {
+	return operations.value.map((operation) => ({
+		value: operation.id,
+		icon: operation.icon,
+		text: operation.name,
+		description: operation.description,
+	}));
+});
+
+const operationOptions = computed(() => {
+	if (typeof selectedOperation.value?.options === 'function') {
+		return translate(selectedOperation.value.options(options.value));
+	} else if (typeof selectedOperation.value?.options === 'object') {
+		return selectedOperation.value.options;
+	}
+
+	return undefined;
+});
+
+function saveOperation() {
+	saving.value = true;
+
+	emit('save', {
+		flow: props.primaryKey,
+		name: operationName.value || generatedName.value,
+		key: operationKey.value || generatedKey.value,
+		type: operationType.value,
+		options: options.value,
+	});
+}
+</script>
+
 <template>
 	<v-drawer
 		:model-value="isOpen"
@@ -65,136 +195,6 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { translate } from '@/utils/translate-object-values';
-import { FlowRaw } from '@directus/types';
-import slugify from '@sindresorhus/slugify';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useExtensions } from '@/extensions';
-import { useExtension } from '@/composables/use-extension';
-import { customAlphabet } from 'nanoid/non-secure';
-
-const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
-
-const props = withDefaults(
-	defineProps<{
-		primaryKey: string;
-		operationId: string;
-		operation?: Record<string, any>;
-		existingOperationKeys?: string[];
-		flow: FlowRaw;
-	}>(),
-	{
-		operation: undefined,
-		existingOperationKeys: undefined,
-	}
-);
-
-const emit = defineEmits(['save', 'cancel']);
-
-const isOpen = useDialogRoute();
-const { t } = useI18n();
-
-const options = ref<Record<string, any>>(props.operation?.options ?? {});
-const operationType = ref<string | null>(props.operation?.type ?? null);
-const operationKey = ref<string | null>(props.operation?.key ?? null);
-const operationName = ref<string | null>(props.operation?.name ?? null);
-
-const saving = ref(false);
-
-const isOperationKeyUnique = computed(
-	() =>
-		saving.value ||
-		operationKey.value === null ||
-		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value))
-);
-
-const saveDisabled = computed(() => {
-	return !operationType.value || !isOperationKeyUnique.value;
-});
-
-watch(
-	() => props.operation,
-	(operation) => {
-		if (!operation) return;
-
-		options.value = operation.options;
-		operationType.value = operation.type;
-		operationKey.value = operation.key;
-		operationName.value = operation.name;
-	},
-	{ immediate: true, deep: true }
-);
-
-watch(operationType, () => {
-	options.value = {};
-});
-
-watch(
-	operationName,
-	(newName, oldName) => {
-		if (
-			newName === null ||
-			operationKey.value ===
-				slugify(oldName ?? '', {
-					separator: '_',
-				})
-		) {
-			operationKey.value = slugify(newName ?? '', {
-				separator: '_',
-			});
-		}
-	},
-	{ immediate: true }
-);
-
-const selectedOperation = useExtension('operation', operationType);
-
-const generatedName = computed(() => (selectedOperation.value ? selectedOperation.value?.name : t('operation_name')));
-
-const generatedKey = computed(() =>
-	selectedOperation.value
-		? slugify(selectedOperation.value?.id + '_' + generateSuffix(), { separator: '_' })
-		: t('operation_key')
-);
-
-const { operations } = useExtensions();
-
-const displayOperations = computed(() => {
-	return operations.value.map((operation) => ({
-		value: operation.id,
-		icon: operation.icon,
-		text: operation.name,
-		description: operation.description,
-	}));
-});
-
-const operationOptions = computed(() => {
-	if (typeof selectedOperation.value?.options === 'function') {
-		return translate(selectedOperation.value.options(options.value));
-	} else if (typeof selectedOperation.value?.options === 'object') {
-		return selectedOperation.value.options;
-	}
-
-	return undefined;
-});
-
-function saveOperation() {
-	saving.value = true;
-
-	emit('save', {
-		flow: props.primaryKey,
-		name: operationName.value || generatedName.value,
-		key: operationKey.value || generatedKey.value,
-		type: operationType.value,
-		options: options.value,
-	});
-}
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -235,7 +235,7 @@ function saveOperation() {
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
 	margin-top: -12px;
 	margin-left: -4px;
@@ -244,7 +244,7 @@ function saveOperation() {
 .error {
 	display: block;
 	margin-top: 4px;
-	color: var(--danger);
+	color: var(--theme--danger);
 	font-style: italic;
 }
 </style>

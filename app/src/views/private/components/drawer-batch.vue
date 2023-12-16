@@ -1,28 +1,3 @@
-<template>
-	<v-drawer
-		v-model="internalActive"
-		:title="t('editing_in_batch', { count: primaryKeys.length })"
-		persistent
-		@cancel="cancel"
-	>
-		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="drawer-batch-content">
-			<v-form
-				v-model="internalEdits"
-				:collection="collection"
-				batch-mode
-				primary-key="+"
-				:validation-errors="validationErrors"
-			/>
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
@@ -109,15 +84,15 @@ function useActions() {
 
 			internalActive.value = false;
 			internalEdits.value = {};
-		} catch (err: any) {
-			validationErrors.value = err.response.data.errors
+		} catch (error: any) {
+			validationErrors.value = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = err.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+			const otherErrors = error.response.data.errors.filter(
+				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
 			);
 
 			if (otherErrors.length > 0) {
@@ -134,6 +109,31 @@ function useActions() {
 	}
 }
 </script>
+
+<template>
+	<v-drawer
+		v-model="internalActive"
+		:title="t('editing_in_batch', { count: primaryKeys.length })"
+		persistent
+		@cancel="cancel"
+	>
+		<template #actions>
+			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="drawer-batch-content">
+			<v-form
+				v-model="internalEdits"
+				:collection="collection"
+				batch-mode
+				primary-key="+"
+				:validation-errors="validationErrors"
+			/>
+		</div>
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 .v-divider {

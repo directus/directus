@@ -1,43 +1,3 @@
-<template>
-	<div class="content">
-		<div v-for="group of groups" :key="group.key" class="group">
-			<h2>{{ group.name }}</h2>
-
-			<div class="grid">
-				<button
-					v-for="inter of group.interfaces"
-					:key="inter.id"
-					class="interface"
-					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
-					@click="toggleInterface(inter.id)"
-				>
-					<div class="preview">
-						<template v-if="inter.preview">
-							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
-							<img v-else :src="inter.preview" alt="" />
-						</template>
-
-						<span v-else class="fallback">
-							<v-icon large :name="inter.icon" />
-						</span>
-					</div>
-					<v-text-overflow :text="inter.name" class="name" />
-				</button>
-
-				<transition-expand>
-					<field-configuration
-						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
-						:row="configRow"
-						@save="$emit('save')"
-						@toggle-advanced="$emit('toggleAdvanced')"
-					/>
-				</transition-expand>
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/types';
@@ -54,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		search: null,
-	}
+	},
 );
 
 defineEmits<{
@@ -74,7 +34,7 @@ const { interfaces } = useExtensions();
 const interfacesSorted = computed(() => {
 	return orderBy(
 		interfaces.value.filter((inter) => !inter.system),
-		['order']
+		['order'],
 	);
 });
 
@@ -121,7 +81,7 @@ const groups = computed(() => {
 		if (!search.value) return filteredInterfaces;
 		const searchValue = search.value!.toLowerCase();
 		return filteredInterfaces.filter(
-			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue)
+			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue),
 		);
 	}
 });
@@ -172,6 +132,46 @@ function toggleInterface(id: string) {
 }
 </script>
 
+<template>
+	<div class="content">
+		<div v-for="group of groups" :key="group.key" class="group">
+			<h2>{{ group.name }}</h2>
+
+			<div class="grid">
+				<button
+					v-for="inter of group.interfaces"
+					:key="inter.id"
+					class="interface"
+					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
+					@click="toggleInterface(inter.id)"
+				>
+					<div class="preview">
+						<template v-if="inter.preview">
+							<!-- eslint-disable-next-line vue/no-v-html -->
+							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
+							<img v-else :src="inter.preview" alt="" />
+						</template>
+
+						<span v-else class="fallback">
+							<v-icon large :name="inter.icon" />
+						</span>
+					</div>
+					<v-text-overflow :text="inter.name" class="name" />
+				</button>
+
+				<transition-expand>
+					<field-configuration
+						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
+						:row="configRow"
+						@save="$emit('save')"
+						@toggle-advanced="$emit('toggleAdvanced')"
+					/>
+				</transition-expand>
+			</div>
+		</div>
+	</div>
+</template>
+
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
@@ -183,7 +183,7 @@ function toggleInterface(id: string) {
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -225,8 +225,8 @@ function toggleInterface(id: string) {
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -247,39 +247,39 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
-	border: 2px solid var(--primary);
-	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--primary);
+	border-radius: var(--theme--border-radius);
+	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--theme--foreground-subdued);
+	--primary-50: var(--theme--foreground-subdued);
 
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 </style>

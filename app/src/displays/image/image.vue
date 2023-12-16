@@ -1,16 +1,3 @@
-<template>
-	<v-icon v-if="imageError" name="image" />
-	<v-image
-		v-else-if="src"
-		:src="src"
-		role="presentation"
-		:alt="value && value.title"
-		:class="{ circle }"
-		@error="imageError = true"
-	/>
-	<value-null v-else />
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
@@ -33,13 +20,26 @@ const src = computed(() => {
 });
 </script>
 
+<template>
+	<v-icon v-if="imageError" name="image" />
+	<v-image
+		v-else-if="src"
+		:src="src"
+		role="presentation"
+		:alt="value && value.title"
+		:class="{ circle }"
+		@error="imageError = true"
+	/>
+	<value-null v-else />
+</template>
+
 <style lang="scss" scoped>
 img {
 	display: inline-block;
 	width: auto;
 	height: 100%;
 	vertical-align: -30%;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	&.circle {
 		border-radius: 100%;

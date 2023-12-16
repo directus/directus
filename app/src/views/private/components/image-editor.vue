@@ -1,128 +1,3 @@
-<template>
-	<v-drawer
-		v-model="internalActive"
-		class="modal"
-		:title="t('editing_image')"
-		persistent
-		@cancel="internalActive = false"
-	>
-		<template #activator="activatorBinding">
-			<slot name="activator" v-bind="activatorBinding" />
-		</template>
-
-		<template #subtitle>
-			<span class="warning">{{ t('changes_are_permanent') }}</span>
-		</template>
-
-		<div v-if="loading" class="loader">
-			<v-progress-circular indeterminate />
-		</div>
-
-		<v-notice v-else-if="error" type="error">error</v-notice>
-
-		<div v-if="imageData && !loading && !error" class="editor-container">
-			<div class="editor">
-				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
-			</div>
-
-			<div class="toolbar">
-				<div
-					v-tooltip.top.inverted="t('drag_mode')"
-					class="drag-mode toolbar-button"
-					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
-				>
-					<v-icon name="pan_tool" :class="{ active: dragMode === 'move' }" />
-					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
-				</div>
-
-				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
-
-				<v-icon
-					v-tooltip.top.inverted="t('flip_horizontal')"
-					name="flip_horizontal"
-					clickable
-					@click="flip('horizontal')"
-				/>
-
-				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
-
-				<v-menu placement="top" show-arrow>
-					<template #activator="{ toggle }">
-						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
-					</template>
-
-					<v-list>
-						<template v-if="customAspectRatios">
-							<v-list-item
-								v-for="customAspectRatio in customAspectRatios"
-								:key="customAspectRatio.text"
-								clickable
-								:active="aspectRatio === customAspectRatio.value"
-								@click="aspectRatio = customAspectRatio.value"
-							>
-								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-								<v-list-item-content>{{ customAspectRatio.text }}</v-list-item-content>
-							</v-list-item>
-							<v-divider />
-						</template>
-						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
-							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
-							<v-list-item-content>16:9</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
-							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
-							<v-list-item-content>3:2</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
-							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
-							<v-list-item-content>5:4</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
-							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
-							<v-list-item-content>7:5</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
-							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ t('square') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
-							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ t('free') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item
-							v-if="imageData"
-							clickable
-							:active="aspectRatio === imageData.width / imageData.height"
-							@click="setAspectRatio"
-						>
-							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ t('original') }}</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-
-				<div class="spacer" />
-
-				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
-
-				<div v-if="imageData" class="dimensions">
-					{{ dimensionsString }}
-				</div>
-
-				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
-					{{ t('cancel_crop') }}
-				</button>
-			</div>
-		</div>
-
-		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useSettingsStore } from '@/stores/settings';
@@ -276,26 +151,29 @@ function useImage() {
 			?.getCroppedCanvas({
 				imageSmoothingQuality: 'high',
 			})
-			.toBlob(async (blob) => {
-				if (blob === null) {
-					saving.value = false;
-					return;
-				}
+			.toBlob(
+				async (blob) => {
+					if (blob === null) {
+						saving.value = false;
+						return;
+					}
 
-				const formData = new FormData();
-				formData.append('file', blob, imageData.value?.filename_download);
+					const formData = new FormData();
+					formData.append('file', blob, imageData.value?.filename_download);
 
-				try {
-					await api.patch(`/files/${props.id}`, formData);
-					emit('refresh');
-					internalActive.value = false;
-					randomId.value = nanoid();
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					saving.value = false;
-				}
-			}, imageData.value?.type);
+					try {
+						await api.patch(`/files/${props.id}`, formData);
+						emit('refresh');
+						internalActive.value = false;
+						randomId.value = nanoid();
+					} catch (error) {
+						unexpectedError(error);
+					} finally {
+						saving.value = false;
+					}
+				},
+				imageData.value?.type,
+			);
 	}
 
 	async function onImageLoad() {
@@ -475,6 +353,131 @@ function setAspectRatio() {
 }
 </script>
 
+<template>
+	<v-drawer
+		v-model="internalActive"
+		class="modal"
+		:title="t('editing_image')"
+		persistent
+		@cancel="internalActive = false"
+	>
+		<template #activator="activatorBinding">
+			<slot name="activator" v-bind="activatorBinding" />
+		</template>
+
+		<template #subtitle>
+			<span class="warning">{{ t('changes_are_permanent') }}</span>
+		</template>
+
+		<div v-if="loading" class="loader">
+			<v-progress-circular indeterminate />
+		</div>
+
+		<v-notice v-else-if="error" type="error">error</v-notice>
+
+		<div v-if="imageData && !loading && !error" class="editor-container">
+			<div class="editor">
+				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
+			</div>
+
+			<div class="toolbar">
+				<div
+					v-tooltip.top.inverted="t('drag_mode')"
+					class="drag-mode toolbar-button"
+					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
+				>
+					<v-icon name="pan_tool" :class="{ active: dragMode === 'move' }" />
+					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
+				</div>
+
+				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
+
+				<v-icon
+					v-tooltip.top.inverted="t('flip_horizontal')"
+					name="flip_horizontal"
+					clickable
+					@click="flip('horizontal')"
+				/>
+
+				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
+
+				<v-menu placement="top" show-arrow>
+					<template #activator="{ toggle }">
+						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
+					</template>
+
+					<v-list>
+						<template v-if="customAspectRatios">
+							<v-list-item
+								v-for="customAspectRatio in customAspectRatios"
+								:key="customAspectRatio.text"
+								clickable
+								:active="aspectRatio === customAspectRatio.value"
+								@click="aspectRatio = customAspectRatio.value"
+							>
+								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+								<v-list-item-content>{{ customAspectRatio.text }}</v-list-item-content>
+							</v-list-item>
+							<v-divider />
+						</template>
+						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
+							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
+							<v-list-item-content>16:9</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
+							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
+							<v-list-item-content>3:2</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
+							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
+							<v-list-item-content>5:4</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
+							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
+							<v-list-item-content>7:5</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
+							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
+							<v-list-item-content>{{ t('square') }}</v-list-item-content>
+						</v-list-item>
+						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
+							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
+							<v-list-item-content>{{ t('free') }}</v-list-item-content>
+						</v-list-item>
+						<v-list-item
+							v-if="imageData"
+							clickable
+							:active="aspectRatio === imageData.width / imageData.height"
+							@click="setAspectRatio"
+						>
+							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
+							<v-list-item-content>{{ t('original') }}</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+
+				<div class="spacer" />
+
+				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
+
+				<div v-if="imageData" class="dimensions">
+					{{ dimensionsString }}
+				</div>
+
+				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
+					{{ t('cancel_crop') }}
+				</button>
+			</div>
+		</div>
+
+		<template #actions>
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+	</v-drawer>
+</template>
+
 <style lang="scss" scoped>
 .modal {
 	--v-drawer-content-padding-small: 0px;
@@ -485,7 +488,7 @@ function setAspectRatio() {
 	width: 100%;
 	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;
@@ -528,18 +531,18 @@ function setAspectRatio() {
 
 .dimensions {
 	margin-right: 12px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .toolbar-button {
 	padding: 8px;
 	background-color: rgb(255 255 255 / 0.2);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: background-color var(--fast) var(--transition);
 

@@ -1,5 +1,5 @@
 import formatTitle from '@directus/format-title';
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
 import DisplayFormattedValue from './formatted-value.vue';
@@ -158,6 +158,21 @@ export default defineDisplay({
 					interface: 'boolean',
 					options: {
 						label: '$t:displays.formatted-value.border_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
+				field: 'masked',
+				name: '$t:displays.formatted-value.mask',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.mask_label',
 					},
 				},
 				schema: {

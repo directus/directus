@@ -1,15 +1,17 @@
-import { getUrl } from '@common/config';
-import request from 'supertest';
+import { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
+import { sleep } from '@utils/sleep';
 import { createReadStream } from 'fs';
-import path from 'path';
-import * as common from '@common/index';
+import { join } from 'path';
+import request, { type Response } from 'supertest';
+import { describe, expect, it } from 'vitest';
 
-const assetsDirectory = [__dirname, '..', '..', 'assets'];
+const assetsDirectory = [paths.cwd, 'assets'];
 const storages = ['local', 'minio'];
 
-const imageFileAvif = path.join(...assetsDirectory, 'directus.avif');
-const imageFilePng = path.join(...assetsDirectory, 'directus.png');
+const imageFileAvif = join(...assetsDirectory, 'directus.avif');
+const imageFilePng = join(...assetsDirectory, 'directus.png');
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -20,14 +22,14 @@ describe('/assets', () => {
 						// Setup
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
 							.attach('file', createReadStream(imageFileAvif));
 
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						// Assert
 						expect(response.statusCode).toBe(200);
@@ -43,24 +45,39 @@ describe('/assets', () => {
 				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/png' }, // Expect to return png as original image is png
 			])('with "$requestHeaderAccept" Accept request header', ({ requestHeaderAccept, responseHeaderContentType }) => {
 				describe.each(storages)('Storage: %s', (storage) => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const insertResponse = await request(getUrl(vendor))
-							.post('/files')
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePng));
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const insertResponse = await request(getUrl(vendor))
+								.post('/files')
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+								.field('storage', storage)
+								.attach('file', createReadStream(imageFilePng));
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-							.set('Accept', requestHeaderAccept);
+							// Action
+							let retrieveResponse: Response | undefined;
 
-						// Assert
-						expect(response.statusCode).toBe(200);
-						expect(response.headers['content-type']).toBe(responseHeaderContentType);
-					});
+							// Retry if server is too busy
+							while (!retrieveResponse) {
+								const response = await request(getUrl(vendor))
+									.get(`/assets/${insertResponse.body.data.id}?format=auto`)
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+									.set('Accept', requestHeaderAccept);
+
+								if (response.statusCode !== 503) {
+									retrieveResponse = response;
+								} else {
+									await sleep(2_000);
+								}
+							}
+
+							// Assert
+							expect(retrieveResponse.statusCode).toBe(200);
+							expect(retrieveResponse.headers['content-type']).toBe(responseHeaderContentType);
+						},
+						30_000,
+					);
 				});
 			});
 		});

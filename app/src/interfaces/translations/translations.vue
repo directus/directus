@@ -1,72 +1,3 @@
-<template>
-	<div class="translations" :class="{ split: splitViewEnabled }">
-		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
-				<template #append>
-					<v-icon
-						v-if="splitViewAvailable && !splitViewEnabled"
-						v-tooltip="t('interfaces.translations.toggle_split_view')"
-						name="flip"
-						clickable
-						@click.stop="splitView = true"
-					/>
-				</template>
-			</language-select>
-			<v-form
-				v-if="languageOptions.find((lang) => lang.value === firstLang)"
-				:key="languageOptions.find((lang) => lang.value === firstLang)?.value"
-				:primary-key="
-					relationInfo?.junctionPrimaryKeyField.field
-						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
-						: null
-				"
-				:disabled="disabled || !firstChangesAllowed"
-				:loading="loading"
-				:fields="firstFields"
-				:model-value="firstItem"
-				:initial-values="firstItemInitial"
-				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
-				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
-				:autofocus="autofocus"
-				inline
-				@update:model-value="updateValue($event, firstLang)"
-			/>
-			<v-divider />
-		</div>
-		<div v-if="splitViewEnabled" class="secondary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-model="secondLang" :items="languageOptions" secondary>
-				<template #append>
-					<v-icon
-						v-tooltip="t('interfaces.translations.toggle_split_view')"
-						name="close"
-						clickable
-						@click.stop="splitView = !splitView"
-					/>
-				</template>
-			</language-select>
-			<v-form
-				v-if="languageOptions.find((lang) => lang.value === secondLang)"
-				:key="languageOptions.find((lang) => lang.value === secondLang)?.value"
-				:primary-key="
-					relationInfo?.junctionPrimaryKeyField.field
-						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
-						: null
-				"
-				:disabled="disabled || !secondChangesAllowed"
-				:loading="loading"
-				:initial-values="secondItemInitial"
-				:fields="secondFields"
-				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
-				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
-				:model-value="secondItem"
-				inline
-				@update:model-value="updateValue($event, secondLang)"
-			/>
-			<v-divider />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -100,14 +31,14 @@ const props = withDefaults(
 		disabled?: boolean;
 	}>(),
 	{
-		languageField: () => null,
-		languageDirectionField: () => 'direction',
+		languageField: null,
+		languageDirectionField: 'direction',
 		value: () => [],
 		autofocus: false,
 		disabled: false,
-		defaultLanguage: () => null,
+		defaultLanguage: null,
 		userLanguage: false,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -157,7 +88,7 @@ const { create, update, displayItems, loading, fetchedItems, getItemEdits } = us
 	value,
 	query,
 	relationInfo,
-	primaryKey
+	primaryKey,
 );
 
 const firstItem = computed(() => {
@@ -244,7 +175,7 @@ function useLanguages() {
 		if (!langField) return [];
 
 		const writableFields = fields.value.filter(
-			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false,
 		);
 
 		const totalFields = writableFields.length;
@@ -300,7 +231,7 @@ function useLanguages() {
 						fields: Array.from(fields),
 						sort: props.languageField ?? pkField,
 					},
-				}
+				},
 			);
 
 			if (!firstLang.value) {
@@ -312,8 +243,8 @@ function useLanguages() {
 			if (!secondLang.value) {
 				secondLang.value = languages.value[1]?.[pkField];
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -326,11 +257,11 @@ const createAllowed = computed(() => junctionPerms.value.create);
 const updateAllowed = computed(() => junctionPerms.value.update);
 
 const firstItemNew = computed(
-	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const secondItemNew = computed(
-	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const firstChangesAllowed = computed(() => {
@@ -355,7 +286,7 @@ const firstFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		firstItemNew.value ? 'create' : 'update'
+		firstItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;
@@ -382,7 +313,7 @@ const secondFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		secondItemNew.value ? 'create' : 'update'
+		secondItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;
@@ -404,6 +335,75 @@ const secondFields = computed(() => {
 });
 </script>
 
+<template>
+	<div class="translations" :class="{ split: splitViewEnabled }">
+		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
+			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
+				<template #append>
+					<v-icon
+						v-if="splitViewAvailable && !splitViewEnabled"
+						v-tooltip="t('interfaces.translations.toggle_split_view')"
+						name="flip"
+						clickable
+						@click.stop="splitView = true"
+					/>
+				</template>
+			</language-select>
+			<v-form
+				v-if="languageOptions.find((lang) => lang.value === firstLang)"
+				:key="languageOptions.find((lang) => lang.value === firstLang)?.value"
+				:primary-key="
+					relationInfo?.junctionPrimaryKeyField.field
+						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
+						: null
+				"
+				:disabled="disabled || !firstChangesAllowed"
+				:loading="loading"
+				:fields="firstFields"
+				:model-value="firstItem"
+				:initial-values="firstItemInitial"
+				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
+				:autofocus="autofocus"
+				inline
+				@update:model-value="updateValue($event, firstLang)"
+			/>
+			<v-divider />
+		</div>
+		<div v-if="splitViewEnabled" class="secondary" :class="splitViewEnabled ? 'half' : 'full'">
+			<language-select v-model="secondLang" :items="languageOptions" secondary>
+				<template #append>
+					<v-icon
+						v-tooltip="t('interfaces.translations.toggle_split_view')"
+						name="close"
+						clickable
+						@click.stop="splitView = !splitView"
+					/>
+				</template>
+			</language-select>
+			<v-form
+				v-if="languageOptions.find((lang) => lang.value === secondLang)"
+				:key="languageOptions.find((lang) => lang.value === secondLang)?.value"
+				:primary-key="
+					relationInfo?.junctionPrimaryKeyField.field
+						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
+						: null
+				"
+				:disabled="disabled || !secondChangesAllowed"
+				:loading="loading"
+				:initial-values="secondItemInitial"
+				:fields="secondFields"
+				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
+				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
+				:model-value="secondItem"
+				inline
+				@update:model-value="updateValue($event, secondLang)"
+			/>
+			<v-divider />
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -411,23 +411,23 @@ const secondFields = computed(() => {
 	@include form-grid;
 
 	.v-form {
-		--form-vertical-gap: 32px;
-		--v-chip-color: var(--primary);
-		--v-chip-background-color: var(--primary-alt);
+		--theme--form--row-gap: 32px;
+		--v-chip-color: var(--theme--primary);
+		--v-chip-background-color: var(--theme--primary-background);
 
 		margin-top: 32px;
 	}
 
 	.primary {
 		.v-divider {
-			--v-divider-color: var(--primary-50);
+			--v-divider-color: var(--theme--primary-subdued);
 		}
 	}
 
 	.secondary {
 		.v-form {
-			--primary: var(--secondary);
-			--v-chip-color: var(--secondary);
+			--primary: var(--theme--secondary);
+			--v-chip-color: var(--theme--secondary);
 			--v-chip-background-color: var(--secondary-alt);
 		}
 
@@ -439,7 +439,7 @@ const secondFields = computed(() => {
 	.primary,
 	.secondary {
 		.v-divider {
-			margin-top: var(--form-vertical-gap);
+			margin-top: var(--theme--form--row-gap);
 		}
 	}
 }

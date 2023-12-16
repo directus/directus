@@ -1,13 +1,3 @@
-<template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
-		<div ref="codemirrorEl"></div>
-
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
@@ -44,7 +34,7 @@ const props = withDefaults(
 	{
 		lineNumber: true,
 		language: 'plaintext',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -110,7 +100,7 @@ watch(
 	() => props.language,
 	() => {
 		setLanguage();
-	}
+	},
 );
 
 watch(stringValue, () => {
@@ -245,7 +235,7 @@ const cmOptions = computed<Record<string, any>>(() => {
 			mode: props.language,
 			placeholder: props.placeholder,
 		},
-		props.altOptions ? props.altOptions : {}
+		props.altOptions ? props.altOptions : {},
 	);
 });
 
@@ -255,7 +245,7 @@ watch(
 		codemirror?.setOption('readOnly', readOnly.value);
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -267,18 +257,18 @@ watch(
 		for (const key in altOptions) {
 			codemirror?.setOption(key as any, altOptions[key]);
 		}
-	}
+	},
 );
 
 watch(
 	() => props.lineNumber,
 	(lineNumber) => {
 		codemirror?.setOption('lineNumbers', lineNumber);
-	}
+	},
 );
 
 function fillTemplate() {
-	if (props.type === 'json') {
+	if (props.type === 'json' && props.template) {
 		try {
 			emit('input', JSON.parse(props.template));
 		} finally {
@@ -289,6 +279,16 @@ function fillTemplate() {
 	}
 }
 </script>
+
+<template>
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+		<div ref="codemirrorEl"></div>
+
+		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+			<v-icon name="playlist_add" />
+		</v-button>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .input-code {
@@ -310,13 +310,13 @@ function fillTemplate() {
 	top: 10px;
 	right: 10px;
 	z-index: 4;
-	color: var(--primary);
+	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
 	user-select: none;
 
 	&:hover {
-		color: var(--primary-125);
+		color: var(--theme--primary-accent);
 		transition: none;
 	}
 }

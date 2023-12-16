@@ -1,14 +1,15 @@
 import config, { getUrl, paths } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { validateDateDifference } from '@utils/validate-date-difference';
 import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const collectionName = 'schema_timezone_tests';
 
@@ -25,8 +26,8 @@ type SchemaTimezoneTypesResponse = SchemaTimezoneTypesObject & {
 };
 
 describe('schema', () => {
-	const databases = new Map<string, Knex>();
-	const tzDirectus = {} as { [vendor: string]: ChildProcess };
+	const databases = new Map<Vendor, Knex>();
+	const tzDirectus = {} as Record<Vendor, ChildProcess>;
 	const currentTzOffset = new Date().getTimezoneOffset();
 	const isWindows = ['win32', 'win64'].includes(process.platform);
 	const newTzOffset = currentTzOffset !== 180 ? 180 : 360;
@@ -64,7 +65,7 @@ describe('schema', () => {
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
 				timestamp: `2022-01-15T${hour}:33:33+02:00`,
-			}
+			},
 		);
 	}
 
@@ -75,8 +76,8 @@ describe('schema', () => {
 			const newServerPort = Number(config.envs[vendor]!.PORT) + 100;
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-			config.envs[vendor]!.TZ = newTz;
-			config.envs[vendor]!.PORT = String(newServerPort);
+			config.envs[vendor]['TZ'] = newTz;
+			config.envs[vendor].PORT = String(newServerPort);
 
 			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: config.envs[vendor] });
 			tzDirectus[vendor] = server;
@@ -85,7 +86,7 @@ describe('schema', () => {
 			server.stdout.on('data', (data) => (serverOutput += data.toString()));
 
 			server.on('exit', (code) => {
-				if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+				if (code !== null) throw new Error(`Directus-${vendor} server failed (${code}): \n ${serverOutput}`);
 			});
 
 			promises.push(awaitDirectusConnection(newServerPort));
@@ -93,14 +94,14 @@ describe('schema', () => {
 
 		// Give the server some time to start
 		await Promise.all(promises);
-	}, 180000);
+	}, 180_000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
-			tzDirectus[vendor]!.kill();
+			tzDirectus[vendor].kill();
 
-			config.envs[vendor]!.PORT = String(Number(config.envs[vendor]!.PORT) - 100);
-			delete config.envs[vendor]!.TZ;
+			config.envs[vendor].PORT = String(Number(config.envs[vendor]!.PORT) - 100);
+			delete config.envs[vendor]['TZ'];
 
 			await connection.destroy();
 		}
@@ -113,7 +114,7 @@ describe('schema', () => {
 
 				const response = await request(getUrl(vendor))
 					.get(`/items/${collectionName}?fields=*`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -125,11 +126,11 @@ describe('schema', () => {
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
 						const newDateString = new Date(
-							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000
+							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000,
 						).toISOString();
 
 						const newDateTimeString = new Date(
-							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000,
 						).toISOString();
 
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
@@ -137,13 +138,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 						);
 
 						continue;
@@ -152,13 +153,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 						);
 
 						continue;
@@ -169,13 +170,13 @@ describe('schema', () => {
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
-						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 					);
 
 					const dateCreated = new Date(responseObj.date_created);
 
 					expect(dateCreated.toISOString()).toBe(
-						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 					);
 				}
 			});
@@ -198,7 +199,7 @@ describe('schema', () => {
 					await request(getUrl(vendor))
 						.post(`/items/${collectionName}`)
 						.send(dates)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -206,7 +207,7 @@ describe('schema', () => {
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -220,7 +221,7 @@ describe('schema', () => {
 							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
-								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 							);
 
 							const dateCreated = new Date(responseObj.date_created);
@@ -229,8 +230,8 @@ describe('schema', () => {
 								validateDateDifference(
 									insertionStartTimestamp,
 									dateCreated,
-									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
-								).toISOString()
+									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime(),
+								).toISOString(),
 							);
 
 							expect(responseObj.date_updated).toBeNull();
@@ -242,7 +243,7 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
@@ -251,14 +252,14 @@ describe('schema', () => {
 							validateDateDifference(
 								insertionStartTimestamp,
 								dateCreated,
-								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
-							).toISOString()
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000,
+							).toISOString(),
 						);
 
 						expect(responseObj.date_updated).toBeNull();
 					}
 				},
-				10000
+				10_000,
 			);
 		});
 
@@ -272,7 +273,7 @@ describe('schema', () => {
 
 				const existingDataResponse = await request(getUrl(vendor))
 					.get(`/items/${collectionName}?fields=*&limit=1&offset=${sampleDates.length}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -281,7 +282,7 @@ describe('schema', () => {
 				await request(getUrl(vendor))
 					.patch(`/items/${collectionName}/${existingDataResponse.body.data[0].id}`)
 					.send(payload)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -289,7 +290,7 @@ describe('schema', () => {
 
 				const response = await request(getUrl(vendor))
 					.get(`/items/${collectionName}/${existingDataResponse.body.data[0].id}?fields=*`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -306,8 +307,8 @@ describe('schema', () => {
 					validateDateDifference(
 						updateStartTimestamp,
 						dateUpdated,
-						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000
-					).toISOString()
+						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000,
+					).toISOString(),
 				);
 			});
 		});

@@ -1,161 +1,3 @@
-<template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false">
-		<template #activator="{ activate }">
-			<v-input
-				v-model="hex"
-				:disabled="disabled"
-				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
-				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
-				class="color-input"
-				:maxlength="opacity ? 9 : 7"
-				@focus="activate"
-			>
-				<template #prepend>
-					<v-input
-						ref="htmlColorInput"
-						:model-value="hex ? hex.slice(0, 7) : null"
-						type="color"
-						class="html-color-select"
-						@update:model-value="setSwatchValue($event)"
-					/>
-					<v-button
-						class="swatch"
-						:icon="true"
-						:style="{
-							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
-						}"
-						@click="activateColorPicker"
-					>
-						<v-icon v-if="!isValidColor" name="colorize" />
-					</v-button>
-				</template>
-				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
-				</template>
-			</v-input>
-		</template>
-
-		<div
-			class="color-data-inputs"
-			:style="{
-				'grid-template-columns': opacity
-					? width.startsWith('half')
-						? 'repeat(4, 1fr)'
-						: 'repeat(6, 1fr)'
-					: width.startsWith('half')
-					? 'repeat(3, 1fr)'
-					: 'repeat(5, 1fr)',
-			}"
-			:class="{ stacked: width.startsWith('half') }"
-		>
-			<div
-				class="color-data-input color-type"
-				:style="{
-					'grid-column': opacity
-						? width.startsWith('half')
-							? '1 / span 4'
-							: '1 / span 2'
-						: width.startsWith('half')
-						? '1 / span 3'
-						: '1 / span 2',
-				}"
-			>
-				<v-select v-model="colorType" :items="colorTypes" />
-			</div>
-			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
-				<v-input
-					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
-					:key="i"
-					:hidden="i === 3"
-					type="number"
-					:model-value="val"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="255"
-					:step="1"
-					maxlength="3"
-					@update:model-value="setValue('rgb', i, $event)"
-				/>
-				<v-input
-					v-if="opacity"
-					type="number"
-					:model-value="alpha"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="100"
-					:step="1"
-					maxlength="3"
-					@update:model-value="setValue('alpha', 0, $event)"
-				/>
-			</template>
-			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
-				<v-input
-					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
-					:key="i"
-					type="number"
-					:model-value="val"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="i === 0 ? 360 : 100"
-					:step="1"
-					maxlength="3"
-					@update:model-value="setValue('hsl', i, $event)"
-				/>
-				<v-input
-					v-if="opacity"
-					type="number"
-					:model-value="alpha"
-					class="color-data-input"
-					pattern="\d*"
-					:min="0"
-					:max="100"
-					:step="1"
-					maxlength="3"
-					@update:model-value="setValue('alpha', 0, $event)"
-				/>
-			</template>
-		</div>
-		<div v-if="opacity" class="color-data-alphas">
-			<div class="color-data-alpha">
-				<v-slider
-					:model-value="alpha"
-					:min="0"
-					:max="100"
-					:step="1"
-					:style="{
-						'--v-slider-color': 'none',
-						'--background-page': 'none',
-						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--foreground-normal)',
-						'--v-slider-track-background-image':
-							'linear-gradient(to right, transparent,' +
-							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
-							'), url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==\')',
-					}"
-					@update:model-value="setValue('alpha', 0, $event)"
-				/>
-			</div>
-		</div>
-		<div v-if="presets" class="presets">
-			<v-button
-				v-for="preset in presets"
-				:key="preset.color"
-				v-tooltip="preset.name"
-				class="preset"
-				rounded
-				icon
-				:class="{ 'low-contrast': getPresetContrast(preset.color) }"
-				:style="{ '--v-button-background-color': preset.color }"
-				@click="() => (hex = preset.color)"
-			/>
-		</div>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
@@ -238,16 +80,20 @@ const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutV
 const lowContrast = computed(() => {
 	if (color.value === null) return true;
 
-	const pageColorString = cssVar('--background-page');
-	const pageColor = Color(pageColorString);
+	const pageColorString = cssVar('--theme--form--field--input--background');
 
-	return color.value.contrast(pageColor) < 1.1;
+	try {
+		const pageColor = Color(pageColorString);
+		return color.value.contrast(pageColor) < 1.1;
+	} catch {
+		return true;
+	}
 });
 
 const getPresetContrast = (hex: string) => {
 	if (hex.startsWith('--')) hex = cssVar(hex);
 	const color = Color(hex);
-	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
+	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
 const { hsl, rgb, hex, alpha, color } = useColor();
@@ -299,7 +145,7 @@ function useColor() {
 		() => {
 			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const rgb = computed<number[]>({
@@ -379,6 +225,167 @@ function useColor() {
 }
 </script>
 
+<template>
+	<v-menu attached :disabled="disabled" :close-on-content-click="false">
+		<template #activator="{ activate }">
+			<v-input
+				v-model="hex"
+				:disabled="disabled"
+				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
+				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
+				class="color-input"
+				:maxlength="opacity ? 9 : 7"
+				@focus="activate"
+			>
+				<template #prepend>
+					<v-input
+						ref="htmlColorInput"
+						:model-value="hex ? hex.slice(0, 7) : null"
+						type="color"
+						class="html-color-select"
+						@update:model-value="setSwatchValue($event)"
+					/>
+					<v-button
+						class="swatch"
+						icon
+						:style="{
+							'--v-button-background-color': isValidColor ? hex : 'transparent',
+							border:
+								lowContrast === false
+									? 'none'
+									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
+						}"
+						@click="activateColorPicker"
+					>
+						<v-icon v-if="!isValidColor" name="colorize" />
+					</v-button>
+				</template>
+				<template #append>
+					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
+				</template>
+			</v-input>
+		</template>
+
+		<div
+			class="color-data-inputs"
+			:style="{
+				'grid-template-columns': opacity
+					? width.startsWith('half')
+						? 'repeat(4, 1fr)'
+						: 'repeat(6, 1fr)'
+					: width.startsWith('half')
+					  ? 'repeat(3, 1fr)'
+					  : 'repeat(5, 1fr)',
+			}"
+			:class="{ stacked: width.startsWith('half') }"
+		>
+			<div
+				class="color-data-input color-type"
+				:style="{
+					'grid-column': opacity
+						? width.startsWith('half')
+							? '1 / span 4'
+							: '1 / span 2'
+						: width.startsWith('half')
+						  ? '1 / span 3'
+						  : '1 / span 2',
+				}"
+			>
+				<v-select v-model="colorType" :items="colorTypes" />
+			</div>
+			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
+				<v-input
+					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
+					:key="i"
+					:hidden="i === 3"
+					type="number"
+					:model-value="val"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="255"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('rgb', i, $event)"
+				/>
+				<v-input
+					v-if="opacity"
+					type="number"
+					:model-value="alpha"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</template>
+			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
+				<v-input
+					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
+					:key="i"
+					type="number"
+					:model-value="val"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="i === 0 ? 360 : 100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('hsl', i, $event)"
+				/>
+				<v-input
+					v-if="opacity"
+					type="number"
+					:model-value="alpha"
+					class="color-data-input"
+					pattern="\d*"
+					:min="0"
+					:max="100"
+					:step="1"
+					maxlength="3"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</template>
+		</div>
+		<div v-if="opacity" class="color-data-alphas">
+			<div class="color-data-alpha">
+				<v-slider
+					:model-value="alpha"
+					:min="0"
+					:max="100"
+					:step="1"
+					:style="{
+						'--v-slider-color': 'none',
+						'--theme--background': 'none',
+						'--v-slider-fill-color': 'none',
+						'--v-slider-thumb-color': 'var(--theme--form--field--input--foreground)',
+						'--v-slider-track-background-image':
+							'linear-gradient(to right, transparent,' +
+							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
+							'), url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==\')',
+					}"
+					@update:model-value="setValue('alpha', 0, $event)"
+				/>
+			</div>
+		</div>
+		<div v-if="presets" class="presets">
+			<v-button
+				v-for="preset in presets"
+				:key="preset.color"
+				v-tooltip="preset.name"
+				class="preset"
+				rounded
+				icon
+				:class="{ 'low-contrast': getPresetContrast(preset.color) }"
+				:style="{ '--v-button-background-color': preset.color }"
+				@click="() => (hex = preset.color)"
+			/>
+		</div>
+	</v-menu>
+</template>
+
 <style scoped lang="scss">
 .swatch {
 	--v-button-padding: 6px;
@@ -388,10 +395,10 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--input-height) - 20px);
-	max-height: calc(var(--input-height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 20px);
+	max-height: calc(var(--theme--form--field--input--height) - 20px);
 	overflow: hidden;
-	border-radius: calc(var(--border-radius) + 2px);
+	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -413,7 +420,7 @@ function useColor() {
 	&.low-contrast {
 		--v-button-height: 18px;
 		--v-button-width: 18px;
-		border: 1px solid var(--border-normal-alt);
+		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }
 
@@ -441,7 +448,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--border-radius: 0px;
+	--v-input-border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -453,40 +460,40 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--input-padding: 12px 8px;
+	--theme--form--field--input--padding: 12px 8px;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--border-radius: 4px 0px 0px 4px;
+	--v-input-border-radius: var(--theme--border-radius) 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--border-radius: 0px 4px 4px 0px;
+	--v-input-border-radius: 0px var(--theme--border-radius) var(--theme--border-radius) 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--border-width));
+	margin-top: calc(-2 * var(--theme--border-width));
 	margin-left: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--border-radius: 4px 4px 0px 0px;
+	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--border-radius: 0px 0px 0px 4px;
+	--v-input-border-radius: 0px 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--border-radius: 0px 0px 4px 0px;
+	--v-input-border-radius: 0px 0px var(--theme--border-radius) 0px;
 }
 
 .color-data-alphas {

@@ -1,13 +1,13 @@
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidCredentialsError } from '../errors/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability?: Accountability
+	accountability?: Accountability,
 ): Promise<Accountability> {
 	if (!accountability) {
 		accountability = {

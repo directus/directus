@@ -1,19 +1,19 @@
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		as?: string;
+	}>(),
+	{
+		as: 'p',
+	},
+);
+</script>
+
 <template>
 	<component :is="as" class="badge">
 		<slot />
 	</component>
 </template>
-
-<script setup lang="ts">
-withDefaults(
-	defineProps<{
-		as: string;
-	}>(),
-	{
-		as: 'p',
-	}
-);
-</script>
 
 <style scoped>
 .badge {

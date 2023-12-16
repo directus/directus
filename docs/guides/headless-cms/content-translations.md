@@ -42,7 +42,7 @@ Create a new collection for all the different languages your application will su
    ```
 
    a. When creating the collection, set the primary key to `code` and use the `Manually entered string` type. There's no
-   need to add Optional System Fields.
+   need to add Optional Fields.
 
    ![The Creating New Collection form overlay is shown. The active tab is Collection Setup. Name, Singleton, Primary Key Field, and Type fields are shown and editable by the user.](https://marketing.directus.app/assets/e4fe9a63-9cfd-48d9-a1a9-7aedff6279a9.png?key=doc)
 
@@ -161,8 +161,7 @@ relational data . It's incredible powerful.
 **Sample Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 // Initialize the SDK.
 const directus = createDirectus('https://directus.example.com').with(rest());

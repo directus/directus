@@ -1,21 +1,3 @@
-<template>
-	<div class="form-grid">
-		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
-			<v-select
-				v-model="geometryType"
-				:placeholder="t('any')"
-				:show-deselect="true"
-				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
-			/>
-		</div>
-		<div class="field">
-			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
-			<div ref="mapContainer" class="map"></div>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
@@ -74,6 +56,7 @@ const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	if (!source) return;
 	return getStyleFromBasemapSource(source);
 });
 
@@ -100,6 +83,24 @@ onUnmounted(() => {
 });
 </script>
 
+<template>
+	<div class="form-grid">
+		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
+			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
+			<v-select
+				v-model="geometryType"
+				:placeholder="t('any')"
+				show-deselect
+				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
+			/>
+		</div>
+		<div class="field">
+			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
+			<div ref="mapContainer" class="map"></div>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -110,7 +111,7 @@ onUnmounted(() => {
 .map {
 	height: 400px;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 </style>

@@ -4,7 +4,6 @@
 	"extends": "../base/tsconfig.json",
 	"compilerOptions": {
 		"module": "CommonJS",
-		"target": "ES2022",
-		"moduleResolution": "NodeNext"
+		"target": "ES2022"
 	}
 }

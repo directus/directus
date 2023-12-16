@@ -1,26 +1,38 @@
 import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
+import { getGroups } from '@/utils/get-groups';
 import PanelLineChart from './panel-line-chart.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'line-chart',
 	name: '$t:panels.linechart.name',
 	description: '$t:panels.linechart.description',
 	icon: 'show_chart',
+	preview: PreviewSVG,
 	component: PanelLineChart,
 	query: (options) => {
-		if (!options['xAxis'] || !options['collection']) return;
+		if (!options['yAxis'] || !options['xAxis'] || !options['collection']) return;
 
 		const query: Record<string, any> = {
 			fields: [options['yAxis'], options['xAxis']],
 			filter: options['filter'] ?? {},
 			limit: -1,
+			aggregate: {
+				[options?.aggregation]: [options?.yAxis],
+			},
+			group: [],
 		};
 
-		if (options['group']) {
-			query['group'] = [options['group']];
-			query['aggregate'] = options['function'] ? { [options['function']]: [options['xAxis']] } : {};
+		if (options['datePrecision']) {
+			query['group'].push(...getGroups(options['datePrecision'], options['xAxis']));
+		} else {
+			query['group'].push(options['xAxis']);
+		}
+
+		if (options['grouping']) {
+			query['group'].push(options['grouping']);
 		}
 
 		return {
@@ -30,10 +42,6 @@ export default definePanel({
 	},
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
-
-		const isNumberRequired = computed(
-			() => !options?.['function'] || !['count', 'last', 'first'].includes(options['function'])
-		);
 
 		const yAxisChoices = computed<{ value: string; text: string; disabled?: boolean }[]>(() => {
 			if (!options?.['collection']) return [];
@@ -45,9 +53,6 @@ export default definePanel({
 				return {
 					value: field.field,
 					text: field.name,
-					disabled:
-						options['group'] ||
-						(isNumberRequired.value && !['integer', 'bigInteger', 'float', 'decimal'].includes(field.type)),
 				};
 			});
 		});
@@ -57,6 +62,7 @@ export default definePanel({
 				field: 'collection',
 				type: 'string',
 				name: '$t:collection',
+				required: true,
 				meta: {
 					interface: 'system-collection',
 					options: {
@@ -69,6 +75,7 @@ export default definePanel({
 				field: 'xAxis',
 				name: '$t:x_axis',
 				type: 'string',
+				required: true,
 				meta: {
 					interface: 'system-field',
 					width: 'half',
@@ -76,95 +83,80 @@ export default definePanel({
 						collectionField: 'collection',
 						allowPrimaryKey: true,
 						placeholder: '$t:primary_key',
-						typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 					},
 				},
 			},
 			{
 				field: 'yAxis',
 				name: '$t:y_axis',
-				type: 'integer',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					readonly: !!options?.['group'],
-					options: {
-						allowNone: true,
-						placeholder: options?.['group'] ? '$t:panels.linechart.disabled_grouping' : '$t:primary_key',
-						choices: yAxisChoices.value,
-					},
-				},
-			},
-			{
-				field: 'group',
-				name: '$t:group_aggregation',
 				type: 'string',
+				required: true,
 				meta: {
 					interface: 'system-field',
 					width: 'half',
 					options: {
 						collectionField: 'collection',
-						allowPrimaryKey: true,
-						allowNone: true,
-						placeholder: '$t:primary_key',
+						typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 					},
 				},
 			},
 			{
-				field: 'function',
+				field: 'aggregation',
 				type: 'string',
-				name: '$t:function',
-				required: !!options?.['group'],
+				name: '$t:aggregation',
+				required: true,
 				meta: {
 					width: 'half',
 					interface: 'select-dropdown',
-					readonly: !options?.['group'],
 					options: {
-						required: !!options?.['group'],
-						allowNone: true,
-						placeholder: !options?.['group'] ? '$t:panels.linechart.disabled_no_grouping' : '$t:count',
 						choices: [
 							{
 								text: '$t:count',
 								value: 'count',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:count_distinct',
 								value: 'countDistinct',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:avg',
 								value: 'avg',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:avg_distinct',
 								value: 'avgDistinct',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:sum',
 								value: 'sum',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:sum_distinct',
 								value: 'sumDistinct',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:min',
 								value: 'min',
-								disabled: !options?.['group'],
 							},
 							{
 								text: '$t:max',
 								value: 'max',
-								disabled: !options?.['group'],
 							},
 						],
+					},
+				},
+			},
+			{
+				field: 'grouping',
+				type: 'string',
+				name: '$t:series_grouping',
+				required: true,
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: yAxisChoices,
+						allowNone: true,
 					},
 				},
 			},
@@ -199,7 +191,7 @@ export default definePanel({
 				name: '$t:color',
 				type: 'integer',
 				schema: {
-					default_value: 'var(--primary)',
+					default_value: 'var(--theme--primary)',
 				},
 				meta: {
 					interface: 'select-color',
@@ -208,47 +200,27 @@ export default definePanel({
 				},
 			},
 			{
-				field: 'showAxisLabels',
-				type: 'string',
-				name: '$t:show_axis_labels',
+				field: 'min',
+				type: 'integer',
+				name: '$t:min_value',
 				meta: {
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{
-								value: 'both',
-								text: '$t:both',
-							},
-							{
-								value: 'yOnly',
-								text: '$t:show_y_only',
-							},
-							{
-								value: 'xOnly',
-								text: '$t:show_x_only',
-							},
-							{
-								value: 'none',
-								text: '$t:none',
-							},
-						],
-					},
+					interface: 'input',
 					width: 'half',
-				},
-				schema: {
-					default_value: 'both',
+					options: {
+						placeholder: '$t:automatic',
+					},
 				},
 			},
 			{
-				field: 'showMarker',
-				name: '$t:panels.linechart.show_marker',
-				type: 'boolean',
-				schema: {
-					default_value: true,
-				},
+				field: 'max',
+				type: 'integer',
+				name: '$t:max_value',
 				meta: {
-					interface: 'boolean',
+					interface: 'input',
 					width: 'half',
+					options: {
+						placeholder: '$t:automatic',
+					},
 				},
 			},
 			{
@@ -279,8 +251,92 @@ export default definePanel({
 					default_value: 'smooth',
 				},
 			},
+			{
+				field: 'fillType',
+				type: 'string',
+				name: '$t:panels.time_series.fill_type',
+				meta: {
+					interface: 'select-dropdown',
+					width: 'half',
+					options: {
+						choices: [
+							{
+								text: 'Gradient',
+								value: 'gradient',
+							},
+							{
+								text: 'Solid',
+								value: 'solid',
+							},
+							{
+								text: 'Disabled',
+								value: 'disabled',
+							},
+						],
+					},
+				},
+				schema: {
+					default_value: 'gradient',
+				},
+			},
+			{
+				field: 'showAxisLabels',
+				type: 'string',
+				name: '$t:show_axis_labels',
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								value: 'both',
+								text: '$t:both',
+							},
+							{
+								value: 'yAxis',
+								text: '$t:show_y_only',
+							},
+							{
+								value: 'xAxis',
+								text: '$t:show_x_only',
+							},
+							{
+								value: 'none',
+								text: '$t:none',
+							},
+						],
+					},
+					width: 'half',
+				},
+				schema: {
+					default_value: 'both',
+				},
+			},
+			{
+				field: 'showMarker',
+				name: '$t:panels.linechart.show_marker',
+				type: 'boolean',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
+				field: 'showLegend',
+				type: 'boolean',
+				name: '$t:panels.linechart.show_legend',
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+				schema: {
+					default_value: false,
+				},
+			},
 		];
 	},
-	minWidth: 12,
-	minHeight: 10,
+	minWidth: 6,
+	minHeight: 6,
 });

@@ -1,34 +1,3 @@
-<template>
-	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')">
-		<v-card>
-			<v-card-title>
-				{{ t('create_role') }}
-			</v-card-title>
-			<v-card-text>
-				<div class="form-grid">
-					<div class="field full">
-						<v-input v-model="roleName" autofocus :placeholder="t('role_name') + '...'" @keyup.enter="save" />
-					</div>
-
-					<div class="field half">
-						<p class="type-label">{{ t('fields.directus_roles.app_access') }}</p>
-						<v-checkbox v-model="appAccess" block :label="t('enabled')" />
-					</div>
-
-					<div class="field half">
-						<p class="type-label">{{ t('fields.directus_roles.admin_access') }}</p>
-						<v-checkbox v-model="adminAccess" block :label="t('enabled')" />
-					</div>
-				</div>
-			</v-card-text>
-			<v-card-actions>
-				<v-button to="/settings/roles" secondary>{{ t('cancel') }}</v-button>
-				<v-button :disabled="roleName === null" :loading="saving" @click="save">{{ t('save') }}</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
@@ -71,13 +40,13 @@ function useSave() {
 					appRecommendedPermissions.map((permission) => ({
 						...permission,
 						role: roleResponse.data.data.id,
-					}))
+					})),
 				);
 			}
 
 			router.push(`/settings/roles/${roleResponse.data.data.id}`);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			saving.value = false;
 		}
@@ -85,10 +54,41 @@ function useSave() {
 }
 </script>
 
+<template>
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')">
+		<v-card>
+			<v-card-title>
+				{{ t('create_role') }}
+			</v-card-title>
+			<v-card-text>
+				<div class="form-grid">
+					<div class="field full">
+						<v-input v-model="roleName" autofocus :placeholder="t('role_name') + '...'" @keyup.enter="save" />
+					</div>
+
+					<div class="field half">
+						<p class="type-label">{{ t('fields.directus_roles.app_access') }}</p>
+						<v-checkbox v-model="appAccess" block :label="t('enabled')" />
+					</div>
+
+					<div class="field half">
+						<p class="type-label">{{ t('fields.directus_roles.admin_access') }}</p>
+						<v-checkbox v-model="adminAccess" block :label="t('enabled')" />
+					</div>
+				</div>
+			</v-card-text>
+			<v-card-actions>
+				<v-button to="/settings/roles" secondary>{{ t('cancel') }}</v-button>
+				<v-button :disabled="roleName === null" :loading="saving" @click="save">{{ t('save') }}</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+</template>
+
 <style lang="scss" scoped>
 .form-grid {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;

@@ -20,6 +20,13 @@ export interface Query<Schema extends object, Item> {
 }
 
 /**
+ * All query options with an additional version query option for readItem and readSingleton
+ */
+export interface QueryItem<Schema extends object, Item> extends Query<Schema, Item> {
+	readonly version?: string | undefined;
+}
+
+/**
  * Returns Item types that are available in the root Schema
  */
 export type ExtractItem<Schema extends object, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;
@@ -57,7 +64,7 @@ export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends i
 	  }[keyof FlatItem]
 	: never;
 
-export type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 
 /**
  * Alias object

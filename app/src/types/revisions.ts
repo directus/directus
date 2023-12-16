@@ -19,11 +19,15 @@ export type Revision = {
 					last_name: string;
 			  };
 	};
+};
+
+export type RevisionWithTime = Revision & {
 	timestampFormatted: string;
+	timeRelative: string;
 };
 
 export type RevisionsByDate = {
 	date: Date;
 	dateFormatted: string;
-	revisions: Revision[];
+	revisions: RevisionWithTime[];
 };

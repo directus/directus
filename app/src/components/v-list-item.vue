@@ -1,25 +1,3 @@
-<template>
-	<component
-		:is="component"
-		class="v-list-item"
-		:class="{
-			active: isActiveRoute,
-			dense,
-			link: isLink,
-			disabled,
-			dashed,
-			block,
-			nav,
-			clickable,
-		}"
-		:download="download"
-		v-bind="additionalProps"
-		@click="onClick"
-	>
-		<slot />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
 import { computed } from 'vue';
@@ -132,29 +110,48 @@ function onClick(event: PointerEvent) {
 }
 </script>
 
-<style>
-body {
-	--v-list-item-padding-nav: 0 var(--input-padding);
-	--v-list-item-padding: 0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px));
-	--v-list-item-margin-nav: 2px 0;
-	--v-list-item-margin: 2px 0;
-	--v-list-item-min-width: none;
-	--v-list-item-max-width: none;
-	--v-list-item-min-height-nav: 36px;
-	--v-list-item-min-height: 32px;
-	--v-list-item-max-height: auto;
-	--v-list-item-border-radius: var(--border-radius);
-	--v-list-item-border-color: var(--border-subdued);
-	--v-list-item-border-color-hover: var(--border-normal-alt);
-	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
-	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
-	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
-}
-</style>
+<template>
+	<component
+		:is="component"
+		class="v-list-item"
+		:class="{
+			active: isActiveRoute,
+			dense,
+			link: isLink,
+			disabled,
+			dashed,
+			block,
+			nav,
+			clickable,
+		}"
+		:download="download"
+		v-bind="additionalProps"
+		@click="onClick"
+	>
+		<slot />
+	</component>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-list-item-padding                  [0 8px 0 calc(8px + var(--v-list-item-indent, 0px))]
+		--v-list-item-margin                   [2px 0]
+		--v-list-item-min-height               [32px]
+		--v-list-item-border-radius            [var(--theme--border-radius)]
+		--v-list-item-border-color             [var(--theme--border-color-subdued)]
+		--v-list-item-border-color-hover       [var(--theme--form--field--input--border-color-hover)]
+		--v-list-item-color                    [var(--v-list-color, var(--theme--foreground))]
+		--v-list-item-color-hover              [var(--v-list-color-hover, var(--theme--foreground))]
+		--v-list-item-color-active             [var(--v-list-color-active, var(--theme--foreground))]
+		--v-list-item-background-color         [var(--v-list-background-color, var(--theme--background-normal))]
+		--v-list-item-background-color-hover   [var(--v-list-background-color-hover, var(--theme--background-normal))]
+		--v-list-item-background-color-active  [var(--v-list-background-color-active, var(--theme--background-normal))]
+
+*/
+
 .v-list-item {
 	$this: &;
 
@@ -164,16 +161,17 @@ body {
 	flex-grow: 1;
 	flex-shrink: 1;
 	align-items: center;
-	min-width: var(--v-list-item-min-width);
-	max-width: var(--v-list-item-max-width);
-	min-height: var(--v-list-item-min-height);
-	max-height: var(--v-list-item-max-height);
-	margin: var(--v-list-item-margin);
-	padding: var(--v-list-item-padding);
+	min-width: none;
+	max-width: none;
+	min-height: var(--v-list-item-min-height, 32px);
+	max-height: auto;
+	margin: var(--v-list-item-margin, 2px 0);
+	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
-	color: var(--v-list-item-color);
+	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-decoration: none;
-	border-radius: var(--v-list-item-border-radius);
+	border-radius: var(--v-list-item-border-radius, var(--theme--border-radius));
+	background-color: var(--v-list-item-background-color, var(--v-list-background-color, transparent));
 
 	&.dashed {
 		&::after {
@@ -183,7 +181,7 @@ body {
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px dashed var(--border-normal);
+			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
 		}
@@ -196,54 +194,82 @@ body {
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
-			color: var(--v-list-item-color-hover);
-			background-color: var(--v-list-item-background-color-hover);
+			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
+			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
+			background-color: var(
+				--v-list-item-background-color-hover,
+				var(--v-list-background-color-hover, var(--theme--background-normal))
+			);
+
+			&.active {
+				color: var(
+					--v-list-item-color-active-hover,
+					var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)))
+				);
+				background-color: var(
+					--v-list-item-background-color-active-hover,
+					var(
+						--v-list-item-background-color-hover,
+						var(--v-list-background-color-hover, var(--theme--background-normal))
+					)
+				);
+			}
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
-			color: var(--v-list-item-color-active);
-			background-color: var(--v-list-item-background-color-active);
+			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
+			color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
+			background-color: var(
+				--v-list-item-background-color-active,
+				var(--v-list-background-color-active, var(--theme--background-normal))
+			);
 		}
 	}
 
 	&:not(.dense).active {
-		color: var(--v-list-item-color-active);
-		background-color: var(--v-list-item-background-color-active);
+		--v-list-item-icon-color: var(--v-list-item-icon-color-active);
+		color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
+		background-color: var(
+			--v-list-item-background-color-active,
+			var(--v-list-background-color-active, var(--theme--background-normal))
+		);
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-subdued) !important;
+		--v-list-item-color: var(--theme--foreground-subdued) !important;
 
 		cursor: not-allowed;
 	}
 
 	&.dense {
 		:deep(.v-text-overflow) {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&:hover,
 		&.active {
 			:deep(.v-text-overflow) {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 		}
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--background-page);
-		--v-list-item-background-color-hover: var(--card-face-color);
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
+
+		--v-list-item-padding: var(--theme--form--field--input--padding);
 
 		position: relative;
 		display: flex;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		margin: 0;
-		padding: 8px var(--input-padding);
-		background-color: var(--v-list-item-background-color);
-		border: var(--border-width) solid var(--v-list-item-border-color);
-		border-radius: var(--border-radius);
+		background-color: var(
+			--v-list-item-background-color,
+			var(--v-list-background-color, var(--theme--form--field--input--background))
+		);
+		border: var(--theme--border-width) solid
+			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
+		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		:slotted(.drag-handle) {
@@ -263,12 +289,16 @@ body {
 		}
 
 		&.clickable:hover {
-			background-color: var(--v-list-item-background-color-hover);
-			border: var(--border-width) solid var(--v-list-item-border-color-hover);
+			background-color: var(
+				--v-list-item-background-color-hover,
+				var(--v-list-background-color-hover, var(--theme--form--field--input--background))
+			);
+			border: var(--theme--border-width) solid
+				var(--v-list-item-border-color-hover, var(--theme--form--field--input--border-color-hover));
 		}
 
 		&.sortable-chosen {
-			border: var(--border-width) solid var(--primary) !important;
+			border: var(--theme--border-width) solid var(--theme--primary) !important;
 		}
 
 		&.sortable-ghost {
@@ -292,11 +322,11 @@ body {
 	@at-root {
 		.v-list.nav {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: var(--v-list-item-min-height-nav);
+				--v-list-item-min-height: 36px;
 				--v-list-item-border-radius: 4px;
 
-				margin: var(--v-list-item-margin-nav);
-				padding: var(--v-list-item-padding-nav);
+				margin: 2px 0;
+				padding: 0 8px;
 
 				&:first-child {
 					margin-top: 0;

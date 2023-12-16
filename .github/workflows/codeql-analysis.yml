@@ -3,7 +3,7 @@ name: CodeQL Analysis
 on:
   workflow_call:
   schedule:
-    - cron: '42 23 * * 5'
+    - cron: '0 0 * * *'
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
@@ -23,7 +23,7 @@ jobs:
           - javascript
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare

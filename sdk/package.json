@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "12.0.0",
+	"version": "13.0.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -48,11 +48,10 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/node-fetch": "2.6.4",
-		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "7.1.0",
-		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"@types/node-fetch": "2.6.9",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.0.4"
 	},
 	"engines": {
 		"node": ">=18.0.0"

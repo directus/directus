@@ -1,3 +1,85 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { storeToRefs } from 'pinia';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import { useFieldsStore } from '@/stores/fields';
+
+const { t } = useI18n();
+
+const fieldDetailStore = useFieldDetailStore();
+const fieldsStore = useFieldsStore();
+
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+
+const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+
+const isExisting = computed(() => editing.value !== '+');
+
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id',
+);
+
+const currentField = computed(() => field.value.field);
+
+const hasCorresponding = computed({
+	get() {
+		return !!correspondingField.value;
+	},
+	set(enabled: boolean) {
+		if (enabled) {
+			correspondingField.value = {
+				field: collection.value,
+				collection: relatedCollection.value,
+				type: 'alias',
+				meta: {
+					special: ['o2m'],
+					interface: 'list-o2m',
+				},
+			};
+		} else {
+			correspondingField.value = null;
+		}
+	},
+});
+
+const correspondingLabel = computed(() => {
+	if (relatedCollection.value) {
+		return t('add_o2m_to_collection', { collection: relatedCollection.value });
+	}
+
+	return t('add_field_related');
+});
+
+const onDeleteOptions = computed(() =>
+	[
+		{
+			text: t('referential_action_set_null', { field: currentField.value }),
+			value: 'SET NULL',
+		},
+		{
+			text: t('referential_action_set_default', { field: currentField.value }),
+			value: 'SET DEFAULT',
+		},
+		{
+			text: t('referential_action_cascade', {
+				collection: collection.value,
+				field: currentField.value,
+			}),
+			value: 'CASCADE',
+		},
+		{
+			text: t('referential_action_no_action', { field: currentField.value }),
+			value: 'NO ACTION',
+		},
+	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false)),
+);
+</script>
+
 <template>
 	<div>
 		<div class="grid">
@@ -70,94 +152,12 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import { useFieldsStore } from '@/stores/fields';
-
-const { t } = useI18n();
-
-const fieldDetailStore = useFieldDetailStore();
-const fieldsStore = useFieldsStore();
-
-const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
-const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
-const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-
-const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
-
-const isExisting = computed(() => editing.value !== '+');
-
-const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-);
-
-const currentField = computed(() => field.value.field);
-
-const hasCorresponding = computed({
-	get() {
-		return !!correspondingField.value;
-	},
-	set(enabled: boolean) {
-		if (enabled) {
-			correspondingField.value = {
-				field: collection.value,
-				collection: relatedCollection.value,
-				type: 'alias',
-				meta: {
-					special: ['o2m'],
-					interface: 'list-o2m',
-				},
-			};
-		} else {
-			correspondingField.value = null;
-		}
-	},
-});
-
-const correspondingLabel = computed(() => {
-	if (relatedCollection.value) {
-		return t('add_o2m_to_collection', { collection: relatedCollection.value });
-	}
-
-	return t('add_field_related');
-});
-
-const onDeleteOptions = computed(() =>
-	[
-		{
-			text: t('referential_action_set_null', { field: currentField.value }),
-			value: 'SET NULL',
-		},
-		{
-			text: t('referential_action_set_default', { field: currentField.value }),
-			value: 'SET DEFAULT',
-		},
-		{
-			text: t('referential_action_cascade', {
-				collection: collection.value,
-				field: currentField.value,
-			}),
-			value: 'CASCADE',
-		},
-		{
-			text: t('referential_action_no_action', { field: currentField.value }),
-			value: 'NO ACTION',
-		},
-	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false))
-);
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	position: relative;
 	display: grid;
@@ -166,11 +166,11 @@ const onDeleteOptions = computed(() =>
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;
@@ -180,7 +180,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-divider {
@@ -204,13 +204,13 @@ const onDeleteOptions = computed(() =>
 	}
 
 	.field-name {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 
 .relational-triggers {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

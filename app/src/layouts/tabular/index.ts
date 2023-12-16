@@ -9,8 +9,8 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -22,7 +22,7 @@ import { LayoutOptions, LayoutQuery } from './types';
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
 	name: '$t:layouts.tabular.tabular',
-	icon: 'reorder',
+	icon: 'table_rows',
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,
@@ -156,7 +156,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
-			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
+
+			const defaultSort = computed(() => {
+				const field = sortField.value ?? primaryKeyField.value?.field;
+				return field ? [field] : [];
+			});
+
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
 
 			const fieldsDefaultValue = computed(() => {
@@ -205,7 +210,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				() => layoutOptions.value,
 				() => {
 					localWidths.value = {};
-				}
+				},
 			);
 
 			const saveWidthsToLayoutOptions = debounce(() => {
@@ -230,7 +235,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						const description: string | null = null;
+						let description: string | null = null;
+
+						const fieldParts = field.key.split('.');
+
+						if (fieldParts.length > 1) {
+							const fieldNames = fieldParts.map((fieldKey, index) => {
+								const pathPrefix = fieldParts.slice(0, index);
+								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+								return field?.name ?? fieldKey;
+							});
+
+							description = fieldNames.join(' -> ');
+						}
 
 						return {
 							text: field.name,

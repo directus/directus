@@ -92,7 +92,7 @@ export async function up(knex: Knex): Promise<void> {
 					fk.table === update.table &&
 					fk.column === constraint.column &&
 					fk.foreign_key_table === constraint.references.split('.')[0] &&
-					fk.foreign_key_column === constraint.references.split('.')[1]
+					fk.foreign_key_column === constraint.references.split('.')[1],
 			);
 
 			try {
@@ -116,7 +116,7 @@ export async function up(knex: Knex): Promise<void> {
 					});
 				} catch (err: any) {
 					logger.warn(
-						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
+						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`,
 					);
 
 					logger.warn(err);
@@ -159,7 +159,7 @@ export async function down(knex: Knex): Promise<void> {
 					});
 				} catch (err: any) {
 					logger.warn(
-						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
+						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`,
 					);
 
 					logger.warn(err);

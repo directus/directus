@@ -1,3 +1,133 @@
+<script setup lang="ts">
+import { Header as TableHeader } from '@/components/v-table/types';
+import { fetchAll } from '@/utils/fetch-all';
+import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Role } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+
+type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
+
+type RoleResponse = Pick<Role, RoleBaseFields | 'admin_access'> & {
+	users: [{ count: { id: number } }];
+};
+
+type RoleItem = Pick<Role, RoleBaseFields> &
+	Partial<Pick<Role, 'admin_access'>> & {
+		public?: boolean;
+		count?: number;
+	};
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const roles = ref<RoleItem[]>([]);
+const loading = ref(false);
+
+const lastAdminRoleId = computed(() => {
+	const adminRoles = roles.value.filter((role) => role.admin_access === true);
+	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
+});
+
+const tableHeaders = ref<TableHeader[]>([
+	{
+		text: '',
+		value: 'icon',
+		sortable: false,
+		width: 42,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		sortable: false,
+		width: 200,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('users'),
+		value: 'count',
+		sortable: false,
+		width: 140,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('description'),
+		value: 'description',
+		sortable: false,
+		width: 470,
+		align: 'left',
+		description: null,
+	},
+]);
+
+fetchRoles();
+
+const addNewLink = computed(() => {
+	return `/settings/roles/+`;
+});
+
+async function fetchRoles() {
+	loading.value = true;
+
+	try {
+		const response = await fetchAll<RoleResponse>(`/roles`, {
+			params: {
+				limit: -1,
+				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
+				deep: {
+					users: {
+						_aggregate: { count: 'id' },
+						_groupBy: ['role'],
+						_sort: 'role',
+						_limit: -1,
+					},
+				},
+				sort: 'name',
+			},
+		});
+
+		roles.value = [
+			{
+				public: true,
+				name: t('public_label'),
+				icon: 'public',
+				description: t('public_description'),
+				id: 'public',
+			},
+			...response.map((role) => {
+				return {
+					...translate(role),
+					count: role.users[0]?.count.id || 0,
+				};
+			}),
+		];
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		loading.value = false;
+	}
+}
+
+function navigateToRole({ item }: { item: Role }) {
+	if (item.id !== 'public' && lastAdminRoleId.value) {
+		router.push({
+			name: 'settings-roles-item',
+			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+		});
+	} else {
+		router.push(`/settings/roles/${item.id}`);
+	}
+}
+</script>
+
 <template>
 	<private-view :title="t('settings_permissions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
@@ -55,134 +185,12 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { Header as TableHeader } from '@/components/v-table/types';
-import { fetchAll } from '@/utils/fetch-all';
-import { translate } from '@/utils/translate-object-values';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { Role } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-
-type RoleItem = Partial<Role> & {
-	count?: number;
-};
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const roles = ref<RoleItem[]>([]);
-const loading = ref(false);
-
-const lastAdminRoleId = computed(() => {
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? adminRoles[0].id : null;
-});
-
-const tableHeaders = ref<TableHeader[]>([
-	{
-		text: '',
-		value: 'icon',
-		sortable: false,
-		width: 42,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('name'),
-		value: 'name',
-		sortable: false,
-		width: 200,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('users'),
-		value: 'count',
-		sortable: false,
-		width: 140,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('description'),
-		value: 'description',
-		sortable: false,
-		width: 470,
-		align: 'left',
-		description: null,
-	},
-]);
-
-fetchRoles();
-
-const addNewLink = computed(() => {
-	return `/settings/roles/+`;
-});
-
-async function fetchRoles() {
-	loading.value = true;
-
-	try {
-		const response = await fetchAll<any[]>(`/roles`, {
-			params: {
-				limit: -1,
-				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
-				deep: {
-					users: {
-						_aggregate: { count: 'id' },
-						_groupBy: ['role'],
-						_sort: 'role',
-						_limit: -1,
-					},
-				},
-				sort: 'name',
-			},
-		});
-
-		roles.value = [
-			{
-				public: true,
-				name: t('public_label'),
-				icon: 'public',
-				description: t('public_description'),
-				id: 'public',
-			},
-			...response.map((role: any) => {
-				return {
-					...translate(role),
-					count: role.users[0]?.count.id || 0,
-				};
-			}),
-		];
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
-
-function navigateToRole({ item }: { item: Role }) {
-	if (item.id !== 'public' && lastAdminRoleId.value) {
-		router.push({
-			name: 'settings-roles-item',
-			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
-		});
-	} else {
-		router.push(`/settings/roles/${item.id}`);
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .roles {
@@ -192,18 +200,18 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .system {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .public {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 </style>

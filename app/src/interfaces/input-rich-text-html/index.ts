@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -297,7 +297,7 @@ export default defineInterface({
 								},
 							],
 							null,
-							4
+							4,
 						),
 					},
 				},

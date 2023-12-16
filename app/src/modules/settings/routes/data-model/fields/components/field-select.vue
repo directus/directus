@@ -1,3 +1,166 @@
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+import { getSpecialForType } from '@/utils/get-special-for-type';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import type { Field, Width } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import Draggable from 'vuedraggable';
+import FieldSelectMenu from './field-select-menu.vue';
+
+const props = withDefaults(
+	defineProps<{
+		field: Field;
+		disabled?: boolean;
+		fields?: Field[];
+	}>(),
+	{
+		fields: () => [],
+	},
+);
+
+const emit = defineEmits(['setNestedSort']);
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const fieldsStore = useFieldsStore();
+
+const { deleteActive, deleting, deleteField } = useDeleteField();
+const { duplicateActive, duplicateName, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
+
+const inter = useExtension(
+	'interface',
+	computed(() => props.field.meta?.interface ?? null),
+);
+
+const interfaceName = computed(() => inter.value?.name ?? null);
+
+const hidden = computed(() => props.field.meta?.hidden === true);
+
+const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
+
+const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
+
+const relatedCollectionInfo = computed(() => getRelatedCollection(props.field.collection, props.field.field));
+
+const showRelatedCollectionLink = computed(
+	() =>
+		unref(relatedCollectionInfo) !== null &&
+		props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
+		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string),
+);
+
+function setWidth(width: Width) {
+	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
+}
+
+function toggleVisibility() {
+	fieldsStore.updateField(props.field.collection, props.field.field, {
+		meta: { hidden: !props.field.meta?.hidden },
+	});
+}
+
+function useDeleteField() {
+	const deleteActive = ref(false);
+	const deleting = ref(false);
+
+	return {
+		deleteActive,
+		deleting,
+		deleteField,
+	};
+
+	async function deleteField() {
+		await fieldsStore.deleteField(props.field.collection, props.field.field);
+		deleting.value = false;
+		deleteActive.value = false;
+	}
+}
+
+function useDuplicate() {
+	const duplicateActive = ref(false);
+	const duplicateName = ref(props.field.field + '_copy');
+	const duplicating = ref(false);
+
+	const duplicateTo = ref(props.field.collection);
+
+	return {
+		duplicateActive,
+		duplicateName,
+		duplicateTo,
+		saveDuplicate,
+		duplicating,
+	};
+
+	async function saveDuplicate() {
+		const newField: Record<string, any> = {
+			...cloneDeep(props.field),
+			field: duplicateName.value,
+			collection: duplicateTo.value,
+		};
+
+		if (newField.meta) {
+			delete newField.meta.id;
+			delete newField.meta.sort;
+			delete newField.meta.group;
+		}
+
+		if (newField.schema) {
+			delete newField.schema.comment;
+		}
+
+		delete newField.name;
+
+		duplicating.value = true;
+
+		try {
+			await fieldsStore.createField(duplicateTo.value, newField);
+
+			notify({
+				title: t('field_create_success', { field: newField.field }),
+			});
+
+			duplicateActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			duplicating.value = false;
+		}
+	}
+}
+
+async function openFieldDetail() {
+	if (!props.field.meta) {
+		const special = getSpecialForType(props.field.type);
+		await fieldsStore.updateField(props.field.collection, props.field.field, { meta: { special } });
+	}
+
+	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+}
+
+async function onGroupSortChange(fields: Field[]) {
+	const updates = fields.map((field, index) => ({
+		field: field.field,
+		meta: {
+			sort: index + 1,
+			group: props.field.meta!.field,
+		},
+	}));
+
+	emit('setNestedSort', updates);
+}
+</script>
+
 <template>
 	<div class="field-select" :class="field.meta?.width || 'full'">
 		<v-input v-if="disabled" disabled class="field">
@@ -23,20 +186,21 @@
 				v-if="localType === 'group'"
 				class="field-grid group full nested"
 				:model-value="nestedFields"
-				:force-fallback="true"
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
-				:fallback-on-body="true"
-				:invert-swap="true"
+				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
 					<div class="header full">
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-						<span class="name">{{ field.field }}</span>
+						<span class="name">
+							{{ field.field }}
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
+						</span>
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
@@ -151,175 +315,12 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, unref } from 'vue';
-import { useFieldsStore } from '@/stores/fields';
-import { useRouter } from 'vue-router';
-import { cloneDeep } from 'lodash';
-import { getLocalTypeForField } from '@/utils/get-local-type';
-import { getSpecialForType } from '@/utils/get-special-for-type';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/types';
-import FieldSelectMenu from './field-select-menu.vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
-import formatTitle from '@directus/format-title';
-import { useExtension } from '@/composables/use-extension';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-
-const props = withDefaults(
-	defineProps<{
-		field: Field;
-		disabled?: boolean;
-		fields?: Field[];
-	}>(),
-	{
-		fields: () => [],
-	}
-);
-
-const emit = defineEmits(['setNestedSort']);
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const fieldsStore = useFieldsStore();
-
-const { deleteActive, deleting, deleteField } = useDeleteField();
-const { duplicateActive, duplicateName, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
-
-const inter = useExtension(
-	'interface',
-	computed(() => props.field.meta?.interface ?? null)
-);
-
-const interfaceName = computed(() => inter.value?.name ?? null);
-
-const hidden = computed(() => props.field.meta?.hidden === true);
-
-const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
-
-const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
-
-const relatedCollectionInfo = computed(() => getRelatedCollection(props.field.collection, props.field.field));
-
-const showRelatedCollectionLink = computed(
-	() =>
-		unref(relatedCollectionInfo) !== null &&
-		props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
-		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
-);
-
-function setWidth(width: string) {
-	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
-}
-
-function toggleVisibility() {
-	fieldsStore.updateField(props.field.collection, props.field.field, {
-		meta: { hidden: !props.field.meta?.hidden },
-	});
-}
-
-function useDeleteField() {
-	const deleteActive = ref(false);
-	const deleting = ref(false);
-
-	return {
-		deleteActive,
-		deleting,
-		deleteField,
-	};
-
-	async function deleteField() {
-		await fieldsStore.deleteField(props.field.collection, props.field.field);
-		deleting.value = false;
-		deleteActive.value = false;
-	}
-}
-
-function useDuplicate() {
-	const duplicateActive = ref(false);
-	const duplicateName = ref(props.field.field + '_copy');
-	const duplicating = ref(false);
-
-	const duplicateTo = ref(props.field.collection);
-
-	return {
-		duplicateActive,
-		duplicateName,
-		duplicateTo,
-		saveDuplicate,
-		duplicating,
-	};
-
-	async function saveDuplicate() {
-		const newField: Record<string, any> = {
-			...cloneDeep(props.field),
-			field: duplicateName.value,
-			collection: duplicateTo.value,
-		};
-
-		if (newField.meta) {
-			delete newField.meta.id;
-			delete newField.meta.sort;
-			delete newField.meta.group;
-		}
-
-		if (newField.schema) {
-			delete newField.schema.comment;
-		}
-
-		delete newField.name;
-
-		duplicating.value = true;
-
-		try {
-			await fieldsStore.createField(duplicateTo.value, newField);
-
-			notify({
-				title: t('field_create_success', { field: newField.field }),
-			});
-
-			duplicateActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			duplicating.value = false;
-		}
-	}
-}
-
-async function openFieldDetail() {
-	if (!props.field.meta) {
-		const special = getSpecialForType(props.field.type);
-		await fieldsStore.updateField(props.field.collection, props.field.field, { meta: { special } });
-	}
-
-	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
-}
-
-async function onGroupSortChange(fields: Field[]) {
-	const updates = fields.map((field, index) => ({
-		field: field.field,
-		meta: {
-			sort: index + 1,
-			group: props.field.meta!.field,
-		},
-	}));
-
-	emit('setNestedSort', updates);
-}
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .field-select {
-	--input-height: 48px;
-	--input-padding: 8px;
+	--input-height: 40px;
+	--theme--form--field--input--padding: 8px;
 }
 
 .full,
@@ -327,33 +328,29 @@ async function onGroupSortChange(fields: Field[]) {
 	grid-column: 1 / span 2;
 }
 
-.v-input.hidden {
-	--background-page: var(--background-subdued);
-}
-
 .v-input.monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-select.monospace {
-	--v-select-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--foreground);
 
 	&.hidden-icon {
-		--v-icon-color-hover: var(--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground-subdued);
 	}
 
 	&.unmanaged {
-		--v-icon-color: var(--warning);
-		--v-icon-color-hover: var(--warning);
+		--v-icon-color: var(--theme--warning);
+		--v-icon-color-hover: var(--theme--warning);
 	}
 
 	&.link-icon:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 
@@ -373,11 +370,11 @@ async function onGroupSortChange(fields: Field[]) {
 
 .group {
 	position: relative;
-	min-height: var(--input-height);
-	padding: var(--input-padding);
+	min-height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	> * {
 		position: relative;
@@ -391,7 +388,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 4px;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		border-radius: 2px;
 		content: '';
 	}
@@ -403,7 +400,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 100%;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		opacity: 0.1;
 		content: '';
 	}
@@ -417,11 +414,11 @@ async function onGroupSortChange(fields: Field[]) {
 		width: 100%;
 		margin-bottom: 8px;
 		padding-top: 8px;
-		color: var(--primary);
-		font-family: var(--family-monospace);
+		color: var(--theme--primary);
+		font-family: var(--theme--fonts--monospace--font-family);
 
 		.drag-handle {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 
 			margin-right: 8px;
 		}
@@ -444,19 +441,18 @@ async function onGroupSortChange(fields: Field[]) {
 
 	&.nested {
 		.field :deep(.input) {
-			border: var(--border-width) solid var(--primary-25);
+			border: var(--theme--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {
-		background-color: var(--card-face-color);
-		border: var(--border-width) solid var(--border-normal-alt);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color-hover);
 	}
 
 	.label {
@@ -474,13 +470,13 @@ async function onGroupSortChange(fields: Field[]) {
 
 			.name {
 				margin-right: 8px;
-				font-family: var(--family-monospace);
+				font-family: var(--theme--fonts--monospace--font-family);
 			}
 
 			.interface {
 				display: none;
-				color: var(--foreground-subdued);
-				font-family: var(--family-monospace);
+				color: var(--theme--foreground-subdued);
+				font-family: var(--theme--fonts--monospace--font-family);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 
@@ -511,18 +507,18 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .form-grid {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 }
 
 .required {
 	position: relative;
 	left: -8px;
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .sortable-ghost {
-	border-radius: var(--border-radius);
-	outline: 2px dashed var(--primary);
+	border-radius: var(--theme--border-radius);
+	outline: 2px dashed var(--theme--primary);
 
 	> * {
 		opacity: 0;

@@ -8,7 +8,6 @@ import {
 	S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
@@ -25,6 +24,7 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -372,7 +372,7 @@ describe('#read', () => {
 		vi.mocked(isReadableStream).mockReturnValue(false);
 
 		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
-			new Error(`No stream returned for file "${sample.path.input}"`)
+			new Error(`No stream returned for file "${sample.path.input}"`),
 		);
 	});
 

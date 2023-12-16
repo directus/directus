@@ -1,29 +1,3 @@
-<template>
-	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
-		<accordion-section
-			v-for="accordionField in groupFields"
-			:key="accordionField.field"
-			:field="accordionField"
-			:fields="fields"
-			:values="groupValues"
-			:initial-values="initialValues"
-			:disabled="disabled"
-			:batch-mode="batchMode"
-			:batch-active-fields="batchActiveFields"
-			:primary-key="primaryKey"
-			:loading="loading"
-			:validation-errors="validationErrors"
-			:badge="badge"
-			:raw-editor-enabled="rawEditorEnabled"
-			:group="field.meta!.field"
-			:multiple="accordionMode === false"
-			:direction="direction"
-			@apply="$emit('apply', $event)"
-			@toggle-all="toggleAll"
-		/>
-	</v-item-group>
-</template>
-
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
@@ -53,7 +27,7 @@ const props = withDefaults(
 		validationErrors: () => [],
 		accordionMode: true,
 		start: 'closed',
-	}
+	},
 );
 
 defineEmits<{
@@ -74,7 +48,7 @@ watch(
 			selection.value = [groupFields.value[0].field];
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -84,11 +58,11 @@ watch(
 		if (isEqual(newVal, oldVal)) return;
 
 		const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
-			groupFields.value.find((rootField) => rootField.field === validationError.field)
+			groupFields.value.find((rootField) => rootField.field === validationError.field),
 		);
 
 		if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
-	}
+	},
 );
 
 function toggleAll() {
@@ -113,7 +87,7 @@ function useComputedGroup() {
 			if (!isEqual(groupFields.value, newVal)) {
 				groupFields.value = newVal;
 			}
-		}
+		},
 	);
 
 	watch(
@@ -122,7 +96,7 @@ function useComputedGroup() {
 			if (!isEqual(groupValues.value, newVal)) {
 				groupValues.value = newVal;
 			}
-		}
+		},
 	);
 
 	return { groupFields, groupValues };
@@ -132,3 +106,29 @@ function useComputedGroup() {
 	}
 }
 </script>
+
+<template>
+	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
+		<accordion-section
+			v-for="accordionField in groupFields"
+			:key="accordionField.field"
+			:field="accordionField"
+			:fields="fields"
+			:values="groupValues"
+			:initial-values="initialValues"
+			:disabled="disabled"
+			:batch-mode="batchMode"
+			:batch-active-fields="batchActiveFields"
+			:primary-key="primaryKey"
+			:loading="loading"
+			:validation-errors="validationErrors"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
+			:group="field.meta!.field"
+			:multiple="accordionMode === false"
+			:direction="direction"
+			@apply="$emit('apply', $event)"
+			@toggle-all="toggleAll"
+		/>
+	</v-item-group>
+</template>

@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useDisplayItems from './use-display-items';
+
+interface Props {
+	value: (string | number)[];
+	collection: string;
+	template: string;
+	filter: Record<string, any>;
+	limit: number;
+}
+const props = withDefaults(defineProps<Props>(), { limit: 5 });
+const emit = defineEmits(['input', 'select']);
+
+const { t } = useI18n();
+const { collection, template, value } = toRefs(props);
+
+const { displayItems, displayTemplate, loading, primaryKey } = useDisplayItems(collection, template, value);
+const totalItemCount = computed(() => displayItems.value?.length || 0);
+
+function deleteItem(elem: Record<string, any>) {
+	emit(
+		'input',
+		displayItems.value
+			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
+			.map((item) => item[primaryKey.value]),
+	);
+}
+</script>
+
 <template>
 	<div class="one-to-many">
 		<template v-if="loading">
@@ -26,37 +57,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import useDisplayItems from './use-display-items';
-
-interface Props {
-	value: (string | number)[];
-	collection: string;
-	template: string;
-	filter: Record<string, any>;
-	limit: number;
-}
-const props = withDefaults(defineProps<Props>(), { limit: 5 });
-const emit = defineEmits(['input', 'select']);
-
-const { t } = useI18n();
-const { collection, template, value } = toRefs(props);
-
-const { displayItems, displayTemplate, loading, primaryKey } = useDisplayItems(collection, template, value);
-const totalItemCount = computed(() => displayItems.value?.length || 0);
-
-function deleteItem(elem: Record<string, any>) {
-	emit(
-		'input',
-		displayItems.value
-			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
-			.map((item) => item[primaryKey.value])
-	);
-}
-</script>
 
 <style lang="scss" scoped>
 .one-to-many {
@@ -89,25 +89,25 @@ function deleteItem(elem: Record<string, any>) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		padding: 0 4px;
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 </style>

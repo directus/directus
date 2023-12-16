@@ -4,7 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { refreshAccountability } from '../../websocket/authenticate.js';
-import { getSinglePayload } from '../../websocket/utils/items.js';
+import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
@@ -49,7 +49,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getSinglePayload(subscription, accountability, schema, eventData);
+					const result = await getPayload(subscription, accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -67,7 +67,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getSinglePayload(subscription, accountability, schema, eventData);
+						const result = await getPayload(subscription, accountability, schema, eventData);
 
 						yield {
 							[event]: {
@@ -120,11 +120,14 @@ function parseFields(service: GraphQLService, request: GraphQLResolveInfo) {
 
 function parseArguments(request: GraphQLResolveInfo) {
 	const args = request.fieldNodes[0]?.arguments ?? [];
-	return args.reduce((result, current) => {
-		if ('value' in current.value && typeof current.value.value === 'string') {
-			result[current.name.value] = current.value.value;
-		}
+	return args.reduce(
+		(result, current) => {
+			if ('value' in current.value && typeof current.value.value === 'string') {
+				result[current.name.value] = current.value.value;
+			}
 
-		return result;
-	}, {} as Record<string, string>);
+			return result;
+		},
+		{} as Record<string, string>,
+	);
 }

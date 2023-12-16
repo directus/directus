@@ -1,11 +1,11 @@
-import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, QueryItem, SingletonCollections } from '../../../types/index.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadSingletonOutput<
 	Schema extends object,
 	Collection extends SingletonCollections<Schema>,
-	TQuery extends Query<Schema, Schema[Collection]>
+	TQuery extends Query<Schema, Schema[Collection]>,
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
 /**
@@ -22,10 +22,10 @@ export const readSingleton =
 	<
 		Schema extends object,
 		Collection extends SingletonCollections<Schema>,
-		const TQuery extends Query<Schema, Schema[Collection]>
+		const TQuery extends QueryItem<Schema, Schema[Collection]>,
 	>(
 		collection: Collection,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');

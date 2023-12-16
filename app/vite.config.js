@@ -3,22 +3,22 @@ import {
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/constants';
+} from '@directus/extensions';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
-} from '@directus/utils/node';
+} from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
-import UnheadVite from '@unhead/addons/vite';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -54,21 +54,31 @@ export default defineConfig({
 		],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
-	server: {
-		port: 8080,
-		proxy: {
-			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				changeOrigin: true,
+	...(!process.env.HISTOIRE && {
+		server: {
+			port: 8080,
+			proxy: {
+				'^/(?!admin)': {
+					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
+					changeOrigin: true,
+				},
+			},
+			fs: {
+				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 			},
 		},
-		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
-		},
-	},
+	}),
 	test: {
 		environment: 'happy-dom',
 		setupFiles: ['src/__setup__/mock-globals.ts'],
+		// See https://github.com/vitest-dev/vitest/issues/4074#issuecomment-1787934252
+		deps: {
+			optimizer: {
+				web: {
+					enabled: false,
+				},
+			},
+		},
 	},
 });
 
@@ -142,6 +152,13 @@ function directusExtensions() {
 
 		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
 
-		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
+		// default to enabled for app extension in developer mode
+		const extensionSettings = extensions.flatMap((extension) =>
+			extension.type === 'bundle'
+				? extension.entries.map((entry) => ({ name: `${extension.name}/${entry.name}`, enabled: true }))
+				: { name: extension.name, enabled: true },
+		);
+
+		extensionsEntrypoint = generateExtensionsEntrypoint(extensions, extensionSettings);
 	}
 }

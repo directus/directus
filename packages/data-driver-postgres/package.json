@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data-driver-postgres",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"description": "Data storage abstraction layer for Postgres",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -23,22 +23,26 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest --watch=false",
+		"depcruise": "depcruise src --include-only '^src' -x test.ts --output-type dot | dot -T svg > dependency-graph.svg"
 	},
 	"devDependencies": {
 		"@directus/data": "workspace:*",
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.16.12",
-		"@types/pg": "8.6.6",
-		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "6.7.0",
-		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"@types/node": "18.19.3",
+		"@types/pg": "8.10.9",
+		"@types/wellknown": "0.5.8",
+		"@vitest/coverage-v8": "1.0.4",
+		"dependency-cruiser": "15.5.0",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.0.4"
 	},
 	"dependencies": {
 		"@directus/data-sql": "workspace:*",
-		"pg": "8.10.0",
-		"pg-query-stream": "^4.5.0"
+		"pg": "8.11.3",
+		"pg-query-stream": "4.5.3",
+		"wellknown": "0.5.0"
 	}
 }

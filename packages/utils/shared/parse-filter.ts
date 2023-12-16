@@ -5,6 +5,7 @@ import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isDynamicVariable } from './is-dynamic-variable.js';
+import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
 import { toArray } from './to-array.js';
 
@@ -17,7 +18,7 @@ type ParseFilterContext = {
 export function parseFilter(
 	filter: Filter | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext = {}
+	context: ParseFilterContext = {},
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
 
@@ -40,6 +41,8 @@ function shiftLogicalOperatorsUp(filter: any): any {
 			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
 		}
 
+		return filter;
+	} else if (key.startsWith('_')) {
 		return filter;
 	} else {
 		const childKey = Object.keys(filter[key])[0];
@@ -64,7 +67,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 function parseFilterRecursive(
 	filter: Filter | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext = {}
+	context: ParseFilterContext = {},
 ): Filter | null {
 	if (filter === null || filter === undefined) {
 		return null;
@@ -88,7 +91,7 @@ function parseFilterRecursive(
 export function parsePreset(
 	preset: Record<string, any> | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext
+	context: ParseFilterContext,
 ) {
 	if (!preset) return preset;
 	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));
@@ -97,12 +100,16 @@ export function parsePreset(
 function parseFilterEntry(
 	[key, value]: [string, any],
 	accountability: Accountability | null,
-	context: ParseFilterContext
+	context: ParseFilterContext,
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
-		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
+		// When array indices are above 20 (default value),
+		// the query parser (qs) parses them as a key-value pair object instead of an array,
+		// so we will need to convert them back to an array
+		const val = isObject(value) ? Object.values(value) : value;
+		return { [key]: toArray(val).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
 	} else if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(String(key))) {
 		// Geometry filters always expect to operate against a GeoJSON object. Parse the
 		// value to JSON in case a stringified JSON blob is passed

@@ -1,24 +1,26 @@
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import { requestGraphQL } from '@common/index';
-import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
-import { findIndex } from 'lodash';
+import { requestGraphQL } from '@common/transport';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '@query/filter';
+import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
 import { v4 as uuid } from 'uuid';
+import { beforeAll, describe, expect, it, test } from 'vitest';
 import {
-	Food,
-	Ingredient,
-	Supplier,
 	collectionFoods,
 	collectionIngredients,
 	collectionSuppliers,
 	getTestsSchema,
 	seedDBValues,
+	type Food,
+	type Ingredient,
+	type Supplier,
 } from './m2m.seed';
 
-function createFood(pkType: common.PrimaryKeyType) {
+function createFood(pkType: PrimaryKeyType) {
 	const item: Food = {
 		name: 'food-' + uuid(),
 		ingredients: [],
@@ -31,7 +33,7 @@ function createFood(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-function createIngredient(pkType: common.PrimaryKeyType) {
+function createIngredient(pkType: PrimaryKeyType) {
 	const item: Ingredient = {
 		name: 'ingredient-' + uuid(),
 	};
@@ -43,7 +45,7 @@ function createIngredient(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-function createSupplier(pkType: common.PrimaryKeyType) {
+function createSupplier(pkType: PrimaryKeyType) {
 	const item: Supplier = {
 		name: 'supplier-' + uuid(),
 	};
@@ -55,7 +57,7 @@ function createSupplier(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-const cachedSchema = common.PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
+const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);
 	return acc;
 }, {} as CachedTestsSchema);
@@ -73,7 +75,7 @@ describe('Seed Database Values', () => {
 	});
 });
 
-describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
+describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionFoods = `${collectionFoods}_${pkType}`;
 	const localCollectionIngredients = `${collectionIngredients}_${pkType}`;
 	const localCollectionSuppliers = `${collectionSuppliers}_${pkType}`;
@@ -100,9 +102,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionIngredients}/${insertedIngredient.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionIngredients]: {
 								__args: {
@@ -158,7 +160,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
@@ -184,16 +186,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.query({
 								filter: { id: { _eq: insertedIngredient.id } },
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
 							.query({
 								filter: { name: { _eq: insertedIngredient.name } },
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -208,7 +210,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -280,7 +282,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
@@ -289,9 +291,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									foods: { [`${localCollectionFoods}_id`]: { name: { _eq: food.name } } },
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -308,7 +310,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -386,7 +388,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									_and: [{ name: { _starts_with: 'ingredient-m2m-top-fn-' } }, { 'count(foods)': { _eq: 1 } }],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
@@ -395,9 +397,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									_and: [{ name: { _starts_with: 'ingredient-m2m-top-fn-' } }, { 'count(foods)': { _eq: 2 } }],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -416,7 +418,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -517,7 +519,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
@@ -537,9 +539,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -565,7 +567,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionIngredients]: {
 									__args: {
@@ -646,7 +648,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: 'name',
 									filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -654,9 +656,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: '-name',
 									filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -668,7 +670,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -691,7 +693,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -712,7 +714,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'name',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -722,9 +724,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'name',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -738,7 +740,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -761,13 +763,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -775,19 +777,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -829,7 +831,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `foods.${localCollectionFoods}_id.name`,
 									filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -837,9 +839,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `-foods.${localCollectionFoods}_id.name`,
 									filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -851,7 +853,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -907,7 +909,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -928,7 +930,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `foods.${localCollectionFoods}_id.name`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -938,9 +940,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `foods.${localCollectionFoods}_id.name`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -958,7 +960,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -995,7 +997,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1016,7 +1018,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1036,31 +1038,31 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1102,7 +1104,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: 'year(test_datetime)',
 									filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -1110,9 +1112,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: '-year(test_datetime)',
 									filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1124,7 +1126,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1147,7 +1149,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -1168,7 +1170,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'year(test_datetime)',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -1178,9 +1180,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'year(test_datetime)',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1196,7 +1198,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1221,13 +1223,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -1235,19 +1237,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1290,7 +1292,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `foods.${localCollectionFoods}_id.year(test_datetime)`,
 									filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -1298,9 +1300,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `-foods.${localCollectionFoods}_id.year(test_datetime)`,
 									filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1312,7 +1314,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1368,7 +1370,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -1389,7 +1391,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `foods.${localCollectionFoods}_id.year(test_datetime)`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionIngredients}`)
@@ -1399,9 +1401,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `foods.${localCollectionFoods}_id.year(test_datetime)`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1421,7 +1423,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionIngredients]: {
 										__args: {
@@ -1460,7 +1462,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1481,7 +1483,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1))
+											parseInt(
+												item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
+											),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1501,35 +1505,35 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
-										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1)
+										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
 									);
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
-										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1)
+										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
 									);
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1540,33 +1544,33 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				{
 					method: 'get',
 					path: `/items/${localCollectionFoods}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionFoods,
 				cachedSchema[pkType][localCollectionFoods],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
 					path: `/items/${localCollectionIngredients}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionIngredients,
 				cachedSchema[pkType][localCollectionIngredients],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
 					path: `/items/${localCollectionSuppliers}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionSuppliers,
 				cachedSchema[pkType][localCollectionSuppliers],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 		});
 
@@ -1594,9 +1598,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							fields: '*.*.*.*.*',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -1637,7 +1641,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -1661,7 +1665,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -1689,9 +1693,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							fields: '*.*.*.*.*.*',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -1765,7 +1769,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -1785,7 +1789,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -1831,7 +1835,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
@@ -1876,9 +1880,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -1926,7 +1930,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -1950,7 +1954,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -1994,9 +1998,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -2063,9 +2067,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							fields: '*.*.*.*.*',
 							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.id`,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -2109,7 +2113,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -2133,7 +2137,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -2162,9 +2166,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							fields: '*.*.*.*.*',
 							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.ingredients.id`,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionFoods]: {
 								__args: {
@@ -2229,7 +2233,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -2249,7 +2253,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -2282,7 +2286,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
@@ -2305,7 +2309,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							// Setup
-							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+							const countNested = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 2 - 1;
 							const food: any = createFood(pkType);
 							const food2: any = createFood(pkType);
 
@@ -2327,11 +2331,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionFoods}`)
 								.send(food)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionFoods}_item`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2352,7 +2356,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].ingredients.length).toEqual(countNested);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2367,7 +2371,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							// Setup
-							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+							const countNested = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 2;
 							const food: any = createFood(pkType);
 							const food2: any = createFood(pkType);
 
@@ -2390,11 +2394,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.post(`/items/${localCollectionFoods}`)
 								.send(food)
 								.query({ fields: '*,ingredients.test_items_m2m_ingredients_integer_id.*' })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionFoods}_item`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2413,17 +2417,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2434,7 +2438,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 							const countNested = 4;
 							const foods: any[] = [];
 							const foods2: any[] = [];
@@ -2461,11 +2465,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionFoods}`)
 								.send(foods)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionFoods}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2482,7 +2486,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2497,7 +2501,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 							const countNested = 5;
 							const foods: any[] = [];
 							const foods2: any[] = [];
@@ -2524,11 +2528,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionFoods}`)
 								.send(foods)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionFoods}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2544,17 +2548,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2565,7 +2569,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 							const countCreate = 2;
 							const countUpdate = 3;
 							const countDelete = 2;
@@ -2645,11 +2649,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionFoods}`)
 								.send(foods)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionFoods}_batch`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2667,7 +2671,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2682,7 +2686,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 							const countCreate = 2;
 							const countUpdate = 3;
 							const countDelete = 3;
@@ -2762,11 +2766,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionFoods}`)
 								.send(foods)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionFoods}_batch`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2782,17 +2786,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2864,7 +2868,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 							meta: '*',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
@@ -2878,13 +2882,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Auto Increment Tests', () => {
-			if (pkType !== 'integer') return;
+		test('Auto Increment Tests', (ctx) => {
+			if (pkType !== 'integer') ctx.skip();
 
 			describe('updates the auto increment value correctly', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
-
+				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
 					// Setup
 					const name = 'test-auto-increment-m2m';
 					const largeIdFood = 108888;
@@ -2984,30 +2986,30 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								`ingredients.${localCollectionIngredients}_id.suppliers.${localCollectionSuppliers}_id.id`,
 							],
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
 					expect(response.body.data.length).toBe(2);
 
 					expect(response.body.data.map((food: any) => food.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdFood + index)
+						Array.from({ length: 2 }, (_, index) => largeIdFood + index),
 					);
 
 					expect(
 						response.body.data.flatMap((food: any) =>
-							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id)
-						)
+							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id),
+						),
 					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdIngredient + index));
 
 					expect(
 						response.body.data.flatMap((food: any) =>
 							food.ingredients.flatMap((ingredient: any) =>
 								ingredient[`${localCollectionIngredients}_id`].suppliers.map(
-									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id
-								)
-							)
-						)
+									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id,
+								),
+							),
+						),
 					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdSupplier + index));
 				});
 			});

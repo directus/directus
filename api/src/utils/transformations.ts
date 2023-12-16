@@ -1,4 +1,5 @@
-import type { File, Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
+import type { File } from '@directus/types';
+import type { Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
 
 export function resolvePreset({ transformationParams, acceptFormat }: TransformationSet, file: File): Transformation[] {
 	const transforms = transformationParams.transforms ? [...transformationParams.transforms] : [];
@@ -33,7 +34,7 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 function getFormat(
 	file: File,
 	format: TransformationSet['transformationParams']['format'],
-	acceptFormat: TransformationSet['acceptFormat']
+	acceptFormat: TransformationSet['acceptFormat'],
 ): TransformationFormat {
 	const fileType = file.type?.split('/')[1] as TransformationFormat | undefined;
 

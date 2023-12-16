@@ -1,3 +1,88 @@
+<script setup lang="ts">
+import api from '@/api';
+import { APIError } from '@/types/error';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Role } from '@directus/types';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	modelValue: boolean;
+	role?: string;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const { t } = useI18n();
+
+const emails = ref<string>('');
+const roles = ref<Record<string, any>[]>([]);
+const roleSelected = ref<string | undefined>(props.role);
+const loading = ref(false);
+
+const uniqueValidationErrors = ref([]);
+
+watch(
+	() => props.modelValue,
+	() => {
+		loadRoles();
+	},
+);
+
+async function inviteUsers() {
+	loading.value = true;
+
+	try {
+		const emailsParsed = emails.value
+			.split(/,|\n/)
+			.filter((e) => e)
+			.map((email) => email.trim());
+
+		await api.post('/users/invite', {
+			email: emailsParsed,
+			role: roleSelected.value,
+		});
+
+		emails.value = '';
+		emit('update:modelValue', false);
+	} catch (error: any) {
+		uniqueValidationErrors.value = error?.response?.data?.errors?.filter((e: APIError) => {
+			return e.extensions?.code === 'RECORD_NOT_UNIQUE';
+		});
+
+		const otherErrors = error?.response?.data?.errors?.filter(
+			(e: APIError) => e?.extensions?.code !== 'RECORD_NOT_UNIQUE',
+		);
+
+		if (otherErrors.length > 0) {
+			otherErrors.forEach((e: APIError) => unexpectedError(e));
+		}
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function loadRoles() {
+	const response = await api.get<{ data: Pick<Role, 'id' | 'name'>[] }>('/roles', {
+		params: {
+			sort: 'name',
+			fields: ['id', 'name'],
+		},
+	});
+
+	roles.value = response.data.data.map((role) => ({
+		text: role.name,
+		value: role.id,
+	}));
+
+	if (roles.value.length > 0 && !roleSelected.value) {
+		roleSelected.value = roles.value[0]?.value;
+	}
+}
+</script>
+
 <template>
 	<v-dialog
 		:model-value="modelValue"
@@ -40,95 +125,11 @@
 	</v-dialog>
 </template>
 
-<script setup lang="ts">
-import api from '@/api';
-import { APIError } from '@/types/error';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	modelValue: boolean;
-	role?: string;
-}>();
-
-const emit = defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
-
-const { t } = useI18n();
-
-const emails = ref<string>('');
-const roles = ref<Record<string, any>[]>([]);
-const roleSelected = ref<string | undefined>(props.role);
-const loading = ref(false);
-
-const uniqueValidationErrors = ref([]);
-
-watch(
-	() => props.modelValue,
-	() => {
-		loadRoles();
-	}
-);
-
-async function inviteUsers() {
-	loading.value = true;
-
-	try {
-		const emailsParsed = emails.value
-			.split(/,|\n/)
-			.filter((e) => e)
-			.map((email) => email.trim());
-
-		await api.post('/users/invite', {
-			email: emailsParsed,
-			role: roleSelected.value,
-		});
-
-		emails.value = '';
-		emit('update:modelValue', false);
-	} catch (err: any) {
-		uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
-			return error.extensions?.code === 'RECORD_NOT_UNIQUE';
-		});
-
-		const otherErrors = err?.response?.data?.errors?.filter(
-			(err: APIError) => err?.extensions?.code !== 'RECORD_NOT_UNIQUE'
-		);
-
-		if (otherErrors.length > 0) {
-			otherErrors.forEach((err: APIError) => unexpectedError(err));
-		}
-	} finally {
-		loading.value = false;
-	}
-}
-
-async function loadRoles() {
-	const response = await api.get('/roles', {
-		params: {
-			sort: 'name',
-			fields: ['id', 'name'],
-		},
-	});
-
-	roles.value = response.data.data.map((role: Record<string, any>) => ({
-		text: role.name,
-		value: role.id,
-	}));
-
-	if (roles.value.length > 0 && !roleSelected.value) {
-		roleSelected.value = roles.value[0].value;
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

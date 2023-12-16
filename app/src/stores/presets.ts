@@ -68,7 +68,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout_options: {
 			tabular: {
 				widths: {
-					action: 100,
+					action: 120,
 					collection: 210,
 					timestamp: 240,
 					user: 240,
@@ -131,7 +131,7 @@ export const usePresetsStore = defineStore({
 					(preset) => preset.user === null && preset.role === null,
 					(preset) => preset.user === null && preset.role !== null,
 					'bookmark',
-				]
+				],
 			);
 		},
 	},

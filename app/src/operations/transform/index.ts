@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 
 export default defineOperationApp({
 	id: 'transform',
@@ -27,7 +27,7 @@ export default defineOperationApp({
 							data: '{{ $last }}',
 						},
 						null,
-						2
+						2,
 					),
 					template: JSON.stringify(
 						{
@@ -35,7 +35,7 @@ export default defineOperationApp({
 							data: '{{ $last }}',
 						},
 						null,
-						2
+						2,
 					),
 				},
 			},

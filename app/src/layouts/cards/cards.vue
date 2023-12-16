@@ -1,3 +1,89 @@
+<script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
+import { Collection } from '@/types/collections';
+import { useElementSize, useSync } from '@directus/composables';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field, Filter, Item } from '@directus/types';
+import { Ref, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Card from './components/card.vue';
+import CardsHeader from './components/header.vue';
+
+defineOptions({ inheritAttrs: false });
+
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		items: Item[];
+		selection: (number | string)[];
+		selectMode: boolean;
+		readonly: boolean;
+		limit: number;
+		size: number;
+		icon: string;
+		imageFit: string;
+		isSingleRow: boolean;
+		width: number;
+		totalPages: number;
+		page: number;
+		toPage: (newPage: number) => void;
+		getLinkForItem: (item: Record<string, any>) => string | undefined;
+		fieldsInCollection: Field[];
+		selectAll: () => void;
+		resetPresetAndRefresh: () => Promise<void>;
+		sort: string[];
+		loading: boolean;
+		showSelect?: ShowSelect;
+		error?: any;
+		itemCount?: number;
+		primaryKeyField?: Field;
+		imageSource?: string;
+		title?: string;
+		subtitle?: string;
+		info?: Collection;
+		filter?: Filter;
+		search?: string;
+	}>(),
+	{
+		showSelect: 'multiple',
+	},
+);
+
+const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
+
+const { t } = useI18n();
+
+const selectionWritable = useSync(props, 'selection', emit);
+const limitWritable = useSync(props, 'limit', emit);
+const sizeWritable = useSync(props, 'size', emit);
+const sortWritable = useSync(props, 'sort', emit);
+
+const mainElement = inject<Ref<Element | undefined>>('main-element');
+
+const layoutElement = ref<HTMLElement>();
+
+const { width: innerWidth } = useElementSize(layoutElement);
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit,
+);
+
+if (limitWritable.value !== selectedSize) {
+	limitWritable.value = selectedSize;
+}
+
+watch(
+	() => props.page,
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' }),
+);
+
+watch(innerWidth, (value) => {
+	emit('update:width', value);
+});
+</script>
+
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
 		<template v-if="loading || itemCount! > 0">
@@ -69,93 +155,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { usePageSize } from '@/composables/use-page-size';
-import { Collection } from '@/types/collections';
-import { useElementSize, useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { Ref, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Card from './components/card.vue';
-import CardsHeader from './components/header.vue';
-
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		items: Item[];
-		selection: (number | string)[];
-		selectMode: boolean;
-		readonly: boolean;
-		limit: number;
-		size: number;
-		icon: string;
-		imageFit: string;
-		isSingleRow: boolean;
-		width: number;
-		totalPages: number;
-		page: number;
-		toPage: (newPage: number) => void;
-		getLinkForItem: (item: Record<string, any>) => string | undefined;
-		fieldsInCollection: Field[];
-		selectAll: () => void;
-		resetPresetAndRefresh: () => Promise<void>;
-		sort: string[];
-		loading: boolean;
-		showSelect?: ShowSelect;
-		error?: any;
-		itemCount?: number;
-		primaryKeyField?: Field;
-		imageSource?: string;
-		title?: string;
-		subtitle?: string;
-		info?: Collection;
-		filter?: Filter;
-		search?: string;
-	}>(),
-	{
-		showSelect: 'multiple',
-	}
-);
-
-const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
-
-const selectionWritable = useSync(props, 'selection', emit);
-const limitWritable = useSync(props, 'limit', emit);
-const sizeWritable = useSync(props, 'size', emit);
-const sortWritable = useSync(props, 'sort', emit);
-
-const mainElement = inject<Ref<Element | undefined>>('main-element');
-
-const layoutElement = ref<HTMLElement>();
-
-const { width } = useElementSize(layoutElement);
-
-const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
-	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
-	props.limit
-);
-
-limitWritable.value = selectedSize;
-
-watch(
-	() => props.page,
-	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
-);
-
-watch(width, () => {
-	emit('update:width', width.value);
-});
-</script>
-
 <style lang="scss" scoped>
 .layout-cards {
 	padding: var(--content-padding);
@@ -187,7 +186,7 @@ watch(width, () => {
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		span {
 			width: auto;
@@ -195,7 +194,7 @@ watch(width, () => {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

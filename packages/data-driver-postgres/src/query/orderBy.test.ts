@@ -1,72 +1,103 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { orderBy } from './orderBy.js';
+import { applyFunction } from '../utils/functions.js';
 
-let sample: {
-	statement: AbstractSqlQuery;
-};
+vi.mock('../utils/functions.js', async (importOriginal) => {
+	const mod = await importOriginal<typeof import('../utils/functions.js')>();
+	return {
+		...mod,
+		applyFunction: vi.fn(),
+	};
+});
+
+let sample: AbstractSqlClauses;
+
+const randomTable = randomIdentifier();
 
 beforeEach(() => {
 	sample = {
-		statement: {
-			select: [
-				{
-					type: 'primitive',
-					column: randomIdentifier(),
-					table: randomIdentifier(),
-					as: randomIdentifier(),
-				},
-				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
-			],
-			from: randomIdentifier(),
-			parameters: [],
-		},
+		select: [],
+		from: randomTable,
 	};
 });
 
 test('Empty parametrized statement when order is not defined', () => {
-	expect(orderBy(sample.statement)).toStrictEqual(null);
+	expect(orderBy(sample)).toStrictEqual(null);
 });
 
 test('Returns order part for one primitive field', () => {
-	sample.statement.order = [
+	const field = randomIdentifier();
+
+	sample.order = [
 		{
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				column: field,
+				table: randomTable,
 			},
+			type: 'order',
 			direction: 'ASC',
 		},
 	];
 
-	const expected = `ORDER BY "${(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC`;
+	const expected = `ORDER BY "${randomTable}"."${field}" ASC`;
 
-	expect(orderBy(sample.statement)).toStrictEqual(expected);
+	expect(orderBy(sample)).toStrictEqual(expected);
 });
 
 test('Returns order part for multiple primitive fields', () => {
-	sample.statement.order = [
+	const field1 = randomIdentifier();
+	const field2 = randomIdentifier();
+
+	sample.order = [
 		{
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				column: field1,
+				table: randomTable,
 			},
+			type: 'order',
 			direction: 'ASC',
 		},
 		{
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				column: field2,
+				table: randomTable,
 			},
+			type: 'order',
 			direction: 'DESC',
 		},
 	];
 
-	const expected = `ORDER BY "${(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC, "${
-		(sample.statement.order[1]!.orderBy as AbstractQueryFieldNodePrimitive).field
-	}" DESC`;
+	const expected = `ORDER BY "${randomTable}"."${field1}" ASC, "${randomTable}"."${field2}" DESC`;
 
-	expect(orderBy(sample.statement)).toStrictEqual(expected);
+	expect(orderBy(sample)).toStrictEqual(expected);
+});
+
+test('Returns order part when a function was applied', () => {
+	const field1 = randomIdentifier();
+
+	sample.order = [
+		{
+			orderBy: {
+				type: 'fn',
+				column: field1,
+				table: randomTable,
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
+				},
+			},
+			type: 'order',
+			direction: 'ASC',
+		},
+	];
+
+	const fnMock = `COUNT("${randomTable}"."${field1}")`;
+	vi.mocked(applyFunction).mockReturnValueOnce(fnMock);
+	const expected = `ORDER BY ${fnMock} ASC`;
+	expect(orderBy(sample)).toStrictEqual(expected);
 });

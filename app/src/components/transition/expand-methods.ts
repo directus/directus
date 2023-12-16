@@ -25,7 +25,7 @@ export default function (
 			| 'afterLeave'
 			| 'leaveCancelled',
 		...args: any[]
-	) => void
+	) => void,
 ): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalize(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
