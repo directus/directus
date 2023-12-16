@@ -953,7 +953,7 @@ importers:
         version: 1.0.4(vitest@1.0.4)
       histoire:
         specifier: 0.17.6
-        version: 0.17.6(vite@5.0.10)
+        version: 0.17.6(sass@1.69.5)(vite@5.0.10)
       rollup-plugin-node-externals:
         specifier: 6.1.2
         version: 6.1.2(rollup@3.29.4)
@@ -962,13 +962,13 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.0.10
-        version: 5.0.10(@types/node@18.19.3)
+        version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
         specifier: 3.6.4
         version: 3.6.4(rollup@3.29.4)(typescript@5.3.3)(vite@5.0.10)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/composables:
     dependencies:
@@ -1017,7 +1017,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/constants:
     devDependencies:
@@ -1215,7 +1215,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/extensions:
     dependencies:
@@ -1382,7 +1382,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/memory:
     dependencies:
@@ -1447,7 +1447,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/random:
     devDependencies:
@@ -1589,7 +1589,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1623,7 +1623,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1654,7 +1654,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-local:
     dependencies:
@@ -1719,7 +1719,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1753,7 +1753,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   packages/stores:
     dependencies:
@@ -1827,7 +1827,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.0.10
-        version: 5.0.10(@types/node@18.19.3)
+        version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
         specifier: 3.6.4
         version: 3.6.4(rollup@3.29.4)(typescript@5.3.3)(vite@5.0.10)
@@ -1995,7 +1995,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   sdk:
     devDependencies:
@@ -2013,7 +2013,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   tests/blackbox:
     devDependencies:
@@ -2053,6 +2053,9 @@ importers:
       axios:
         specifier: 1.6.2
         version: 1.6.2
+      get-port:
+        specifier: 7.0.0
+        version: 7.0.0
       globby:
         specifier: 14.0.0
         version: 14.0.0
@@ -2091,7 +2094,7 @@ importers:
         version: 4.2.2(typescript@5.3.3)
       vitest:
         specifier: 1.0.4
-        version: 1.0.4
+        version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
       ws:
         specifier: 8.15.1
         version: 8.15.1
@@ -11248,6 +11251,11 @@ packages:
     resolution: {integrity: sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==}
     engines: {node: '>=8.0.0'}
 
+  /get-port@7.0.0:
+    resolution: {integrity: sha512-mDHFgApoQd+azgMdwylJrv2DX47ywGq1i5VFJE7fZ0dttNq3iQMfsU4IvEgBHojA3KqEudyu7Vq+oN8kNaNkWw==}
+    engines: {node: '>=16'}
+    dev: true
+
   /get-source@2.0.12:
     resolution: {integrity: sha512-X5+4+iD+HoSeEED+uwrQ07BOQr0kEDFMVqqpBuI+RaZBpBpHCuXxo70bjar6f0b0u/DQJsJ7ssurpP0V60Az+w==}
     dependencies:
@@ -11690,58 +11698,6 @@ packages:
       sirv: 2.0.3
       vite: 5.0.10(sass@1.69.5)
       vite-node: 0.34.7(sass@1.69.5)
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - canvas
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - utf-8-validate
-    dev: true
-
-  /histoire@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-L9xLR0BFk+KIcpfDOPw5i0o4eq1ANj+f0i3xWS6F5yToV0jSu9Dh8eaagSrR1QbUpLoc7Kjhjq408Ecoop3JcA==}
-    hasBin: true
-    peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0
-    dependencies:
-      '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.6(vite@5.0.10)
-      '@histoire/controls': 0.17.6(vite@5.0.10)
-      '@histoire/shared': 0.17.6(vite@5.0.10)
-      '@histoire/vendors': 0.17.6
-      '@types/flexsearch': 0.7.6
-      '@types/markdown-it': 12.2.3
-      birpc: 0.1.1
-      change-case: 4.1.2
-      chokidar: 3.5.3
-      connect: 3.7.0
-      defu: 6.1.3
-      diacritics: 1.3.0
-      flexsearch: 0.7.21
-      fs-extra: 10.1.0
-      globby: 13.2.2
-      gray-matter: 4.0.3
-      jiti: 1.21.0
-      jsdom: 20.0.3
-      markdown-it: 12.3.2
-      markdown-it-anchor: 8.6.7(@types/markdown-it@12.2.3)(markdown-it@12.3.2)
-      markdown-it-attrs: 4.1.6(markdown-it@12.3.2)
-      markdown-it-emoji: 2.0.2
-      micromatch: 4.0.5
-      mrmime: 1.0.1
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      sade: 1.8.1
-      shiki-es: 0.2.0
-      sirv: 2.0.3
-      vite: 5.0.10(@types/node@18.19.3)
-      vite-node: 0.34.7
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -18800,28 +18756,6 @@ packages:
       - terser
     dev: true
 
-  /vite-node@0.34.7:
-    resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
-    engines: {node: '>=v14.18.0'}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4
-      mlly: 1.4.2
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      vite: 5.0.10(@types/node@18.19.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
   /vite-node@0.34.7(sass@1.69.5):
     resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
     engines: {node: '>=v14.18.0'}
@@ -18833,27 +18767,6 @@ packages:
       pathe: 1.1.1
       picocolors: 1.0.0
       vite: 5.0.10(sass@1.69.5)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
-  /vite-node@1.0.4:
-    resolution: {integrity: sha512-9xQQtHdsz5Qn8hqbV7UKqkm8YkJhzT/zr41Dmt5N7AlD8hJXw/Z7y0QiD5I8lnTthV9Rvcvi0QW7PI0Fq83ZPg==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      vite: 5.0.10(@types/node@18.19.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -18923,7 +18836,7 @@ packages:
       debug: 4.3.4
       kolorist: 1.8.0
       typescript: 5.3.3
-      vite: 5.0.10(@types/node@18.19.3)
+      vite: 5.0.10(sass@1.69.5)
       vue-tsc: 1.8.25(typescript@5.3.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -19162,62 +19075,6 @@ packages:
       tinypool: 0.7.0
       vite: 5.0.10(@types/node@18.19.3)
       vite-node: 0.34.6(@types/node@18.19.3)
-      why-is-node-running: 2.2.2
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
-  /vitest@1.0.4:
-    resolution: {integrity: sha512-s1GQHp/UOeWEo4+aXDOeFBJwFzL6mjycbQwwKWX2QcYfh/7tIerS59hWQ20mxzupTJluA2SdwiBuWwQHH67ckg==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@edge-runtime/vm': '*'
-      '@types/node': ^18.0.0 || >=20.0.0
-      '@vitest/browser': ^1.0.0
-      '@vitest/ui': ^1.0.0
-      happy-dom: '*'
-      jsdom: '*'
-    peerDependenciesMeta:
-      '@edge-runtime/vm':
-        optional: true
-      '@types/node':
-        optional: true
-      '@vitest/browser':
-        optional: true
-      '@vitest/ui':
-        optional: true
-      happy-dom:
-        optional: true
-      jsdom:
-        optional: true
-    dependencies:
-      '@vitest/expect': 1.0.4
-      '@vitest/runner': 1.0.4
-      '@vitest/snapshot': 1.0.4
-      '@vitest/spy': 1.0.4
-      '@vitest/utils': 1.0.4
-      acorn-walk: 8.3.1
-      cac: 6.7.14
-      chai: 4.3.10
-      debug: 4.3.4
-      execa: 8.0.1
-      local-pkg: 0.5.0
-      magic-string: 0.30.5
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      std-env: 3.6.0
-      strip-literal: 1.3.0
-      tinybench: 2.5.1
-      tinypool: 0.8.1
-      vite: 5.0.10(@types/node@18.19.3)
-      vite-node: 1.0.4
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
