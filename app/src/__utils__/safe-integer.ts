@@ -26,12 +26,12 @@ export class SafeInteger {
 		return this._value <= this.MIN_VALUE;
 	}
 
-	get isValid() {
-		return !this.isMaximum && !this.isMinimum;
+	get isInvalid() {
+		return this._value > this.MAX_VALUE || this._value < this.MIN_VALUE;
 	}
 
-	get isInvalid() {
-		return !this.isValid;
+	get isValid() {
+		return !this.isInvalid;
 	}
 
 	get value() {
