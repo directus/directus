@@ -7,6 +7,7 @@ import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { SafeInteger } from '@/__utils__/safe-integer';
 
 const props = withDefaults(
 	defineProps<{
@@ -16,6 +17,7 @@ const props = withDefaults(
 		type?: string;
 		language?: string;
 		placeholder?: string;
+		isBigInteger?: boolean;
 	}>(),
 	{
 		value: undefined,
@@ -24,6 +26,7 @@ const props = withDefaults(
 		type: undefined,
 		placeholder: undefined,
 		language: 'mustache',
+		isBigInteger: false,
 	},
 );
 
@@ -36,6 +39,7 @@ const { width } = useWindowSize();
 const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
 let previousContent: string | null = null;
+const inputRef = ref<HTMLDivElement | null>(null);
 
 const isMultiLine = computed(() => ['text', 'json'].includes(props.type!));
 
@@ -96,6 +100,16 @@ onMounted(async () => {
 
 			if (content === '') {
 				emit('input', null);
+			} else if (props.type === 'number') {
+				const safeInt = new SafeInteger(content, props.isBigInteger);
+
+				if (safeInt.isInvalid) {
+					inputRef.value?.focus();
+					codemirror?.setValue(content.substring(0, content.length - 1));
+					return;
+				}
+
+				emit('input', content);
 			} else {
 				emit('input', unref(isObjectLike) && isValidJSON(content) ? parseJSON(content) : content);
 			}
@@ -135,6 +149,8 @@ watch(
 </script>
 
 <template>
+	<!-- This input is exists just to unfocus the codemirror component -->
+	<input ref="inputRef" type="radio" :style="{ all: 'unset' }" />
 	<div class="system-raw-editor" :class="{ disabled, 'multi-line': isMultiLine }">
 		<div ref="codemirrorEl"></div>
 	</div>

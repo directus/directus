@@ -45,6 +45,10 @@ watch(
 );
 
 const setRawValue = () => {
+	if (props.field.type === 'bigInteger') {
+		return emit('setRawValue', internalValue.value);
+	}
+
 	switch (type.value) {
 		case 'string':
 			emit('setRawValue', internalValue.value);
@@ -87,6 +91,7 @@ const setRawValue = () => {
 					:disabled="disabled"
 					language="plaintext"
 					:placeholder="t('enter_raw_value')"
+					:is-big-integer="props.field.type === 'bigInteger'"
 					@input="internalValue = $event"
 				/>
 			</v-card-text>
