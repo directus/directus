@@ -2016,10 +2016,6 @@ importers:
         version: 1.0.4(happy-dom@12.10.3)(sass@1.69.5)
 
   tests/blackbox:
-    dependencies:
-      get-port:
-        specifier: 7.0.0
-        version: 7.0.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -2057,6 +2053,9 @@ importers:
       axios:
         specifier: 1.6.2
         version: 1.6.2
+      get-port:
+        specifier: 7.0.0
+        version: 7.0.0
       globby:
         specifier: 14.0.0
         version: 14.0.0
@@ -11255,7 +11254,7 @@ packages:
   /get-port@7.0.0:
     resolution: {integrity: sha512-mDHFgApoQd+azgMdwylJrv2DX47ywGq1i5VFJE7fZ0dttNq3iQMfsU4IvEgBHojA3KqEudyu7Vq+oN8kNaNkWw==}
     engines: {node: '>=16'}
-    dev: false
+    dev: true
 
   /get-source@2.0.12:
     resolution: {integrity: sha512-X5+4+iD+HoSeEED+uwrQ07BOQr0kEDFMVqqpBuI+RaZBpBpHCuXxo70bjar6f0b0u/DQJsJ7ssurpP0V60Az+w==}
