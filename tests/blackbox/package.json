@@ -34,5 +34,8 @@
 		"vite-tsconfig-paths": "4.2.2",
 		"vitest": "1.0.4",
 		"ws": "8.15.1"
+	},
+	"dependencies": {
+		"get-port": "7.0.0"
 	}
 }
