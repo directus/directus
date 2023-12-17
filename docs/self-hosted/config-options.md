@@ -220,7 +220,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
 | `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
 | `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
 | `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                                        |
 
 ---
