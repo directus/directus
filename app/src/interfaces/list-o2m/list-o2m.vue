@@ -588,6 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
+				background: var(--theme--background);
 				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
@@ -616,6 +617,11 @@ function getLinkForItem(item: DisplayItem) {
 			color: var(--danger-75);
 		}
 	}
+}
+
+
+.one-to-many .bordered tr.table-row .append {
+    background: var(--theme--background);
 }
 
 .v-skeleton-loader,
