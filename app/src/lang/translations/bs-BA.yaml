@@ -26,6 +26,7 @@ method: Metoda
 published: Objavljeno
 draft: Skica
 archived: Arhivirano
+extensions: Ekstenzije
 modules: Moduli
 module_bar: Bočni meni
 logs: Logovi
@@ -53,9 +54,21 @@ modifier: Modifikator
 extension_interface: Interfejs
 extension_display: Prikaz
 extension_layout: Raspored
+extension_module: Modul
+extension_panel: Ploča
+extension_theme: Tema
 extension_hook: Kuka
+extension_endpoint: Krajnja tačka
+extension_operation: Operacija
+extension_interfaces: Interfejs
+extension_layouts: Raspored
 extension_modules: Moduli
+extension_panels: Ploča
+extension_themes: Teme
+extension_operations: Operacije
+extension_reload_required: Stranica se mora ponovo učitati
 enable: Omogući
+disable: Onemogući
 custom: Prilagođeno
 hook: Kuka
 fill_width: Širina ispune
@@ -452,6 +465,7 @@ comments: Komentari
 no_comments: Još nema komentara
 select_item: Odaberi stavku
 no_items: Nema stavki
+search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
