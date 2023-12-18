@@ -86,7 +86,7 @@ describe('schema', () => {
 			server.stdout.on('data', (data) => (serverOutput += data.toString()));
 
 			server.on('exit', (code) => {
-				if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
+				if (code !== null) throw new Error(`Directus-${vendor} server failed (${code}): \n ${serverOutput}`);
 			});
 
 			promises.push(awaitDirectusConnection(newServerPort));

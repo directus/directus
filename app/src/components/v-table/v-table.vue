@@ -18,49 +18,50 @@ const HeaderDefaults: Header = {
 	description: null,
 };
 
-interface Props {
-	headers: HeaderRaw[];
-	items: Item[];
-	itemKey?: string;
-	sort?: Sort | null;
-	mustSort?: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	manualSortKey?: string;
-	allowHeaderReorder?: boolean;
-	modelValue?: any[];
-	fixedHeader?: boolean;
-	loading?: boolean;
-	loadingText?: string;
-	noItemsText?: string;
-	rowHeight?: number;
-	selectionUseKeys?: boolean;
-	inline?: boolean;
-	disabled?: boolean;
-	clickable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemKey: 'id',
-	sort: undefined,
-	mustSort: false,
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	manualSortKey: undefined,
-	allowHeaderReorder: false,
-	modelValue: () => [],
-	fixedHeader: false,
-	loading: false,
-	loadingText: i18n.global.t('loading'),
-	noItemsText: i18n.global.t('no_items'),
-	rowHeight: 48,
-	selectionUseKeys: false,
-	inline: false,
-	disabled: false,
-	clickable: true,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: HeaderRaw[];
+		items: Item[];
+		itemKey?: string;
+		sort?: Sort | null;
+		mustSort?: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		manualSortKey?: string;
+		allowHeaderReorder?: boolean;
+		modelValue?: any[];
+		fixedHeader?: boolean;
+		loading?: boolean;
+		loadingText?: string;
+		noItemsText?: string;
+		rowHeight?: number;
+		selectionUseKeys?: boolean;
+		inline?: boolean;
+		disabled?: boolean;
+		clickable?: boolean;
+	}>(),
+	{
+		itemKey: 'id',
+		sort: undefined,
+		mustSort: false,
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		manualSortKey: undefined,
+		allowHeaderReorder: false,
+		modelValue: () => [],
+		fixedHeader: false,
+		loading: false,
+		loadingText: i18n.global.t('loading'),
+		noItemsText: i18n.global.t('no_items'),
+		rowHeight: 48,
+		selectionUseKeys: false,
+		inline: false,
+		disabled: false,
+		clickable: true,
+	},
+);
 
 const emit = defineEmits([
 	'click:row',
@@ -301,12 +302,12 @@ function updateSort(newSort: Sort) {
 			<draggable
 				v-else
 				v-model="internalItems"
-				force-fallback
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				v-bind="{ 'force-fallback': true }"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">

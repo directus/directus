@@ -2,20 +2,21 @@
 import { computed } from 'vue';
 import { Option } from './types';
 
-interface Props {
-	item: Option;
-	itemLabelFontFamily: string;
-	modelValue?: string | number | (string | number)[] | null;
-	multiple?: boolean;
-	allowOther?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemLabelFontFamily: 'var(--v-select-font-family)',
-	modelValue: null,
-	multiple: true,
-	allowOther: false,
-});
+const props = withDefaults(
+	defineProps<{
+		item: Option;
+		itemLabelFontFamily: string;
+		modelValue?: string | number | (string | number)[] | null;
+		multiple?: boolean;
+		allowOther?: boolean;
+	}>(),
+	{
+		itemLabelFontFamily: 'var(--v-select-font-family)',
+		modelValue: null,
+		multiple: true,
+		allowOther: false,
+	},
+);
 
 defineEmits(['update:modelValue']);
 

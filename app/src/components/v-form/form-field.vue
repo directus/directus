@@ -12,32 +12,33 @@ import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
 import type { FormField } from './types';
 
-interface Props {
-	field: FormField;
-	batchMode?: boolean;
-	batchActive?: boolean;
-	disabled?: boolean;
-	modelValue?: any;
-	initialValue?: any;
-	primaryKey?: string | number;
-	loading?: boolean;
-	validationError?: ValidationError;
-	autofocus?: boolean;
-	badge?: string;
-	rawEditorEnabled?: boolean;
-	rawEditorActive?: boolean;
-	disabledMenuOptions?: MenuOptions[];
-	direction?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: undefined,
-	initialValue: undefined,
-	primaryKey: undefined,
-	validationError: undefined,
-	badge: undefined,
-	direction: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		batchMode?: boolean;
+		batchActive?: boolean;
+		disabled?: boolean;
+		modelValue?: any;
+		initialValue?: any;
+		primaryKey?: string | number;
+		loading?: boolean;
+		validationError?: ValidationError;
+		autofocus?: boolean;
+		badge?: string;
+		rawEditorEnabled?: boolean;
+		rawEditorActive?: boolean;
+		disabledMenuOptions?: MenuOptions[];
+		direction?: string;
+	}>(),
+	{
+		modelValue: undefined,
+		initialValue: undefined,
+		primaryKey: undefined,
+		validationError: undefined,
+		badge: undefined,
+		direction: undefined,
+	},
+);
 
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
