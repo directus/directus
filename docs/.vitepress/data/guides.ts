@@ -85,7 +85,7 @@ export const sections = {
 				items: [
 					{
 						display: 'SEO Tips & Tricks',
-						path: 'https://docs.directus.io/blog/directus-seo-tips-tricks',
+						path: '/blog/directus-seo-tips-tricks',
 					},
 				],
 			},
