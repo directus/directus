@@ -1,5 +1,5 @@
 ---
-description: Learn how to use the Directus UI components in your extension projects.
+description: Learn how to use the Directus UI components in your app extensions.
 contributors: Esther Agbaje
 ---
 
