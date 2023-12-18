@@ -138,18 +138,10 @@ function getExtractionRegion(
 	const newXCenter = focalPoint.x / factor;
 	const newYCenter = focalPoint.y / factor;
 
-	const region: Region = {
-		left: 0,
-		top: 0,
+	return {
+		left: clamp(Math.round(newXCenter - target.w / 2), 0, intermediate.w - target.w),
+		top: clamp(Math.round(newYCenter - target.h / 2), 0, intermediate.h - target.h),
 		width: target.w,
 		height: target.h,
 	};
-
-	if (intermediate.h < intermediate.w) {
-		region.left = clamp(Math.round(newXCenter - target.w / 2), 0, intermediate.w - target.w);
-	} else {
-		region.top = clamp(Math.round(newYCenter - target.h / 2), 0, intermediate.h - target.h);
-	}
-
-	return region;
 }
