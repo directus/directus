@@ -390,7 +390,7 @@ function sidebarDeveloperReference() {
 				},
 				{
 					link: '/extensions/leveraging-ui-components',
-					text: 'Leveraging UI Components',
+					text: 'Using Directus UI Components',
 				},
 				{
 					text: 'Internal Packages',
