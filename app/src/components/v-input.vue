@@ -9,7 +9,6 @@ import { SafeInteger } from '@/__utils__/safe-integer';
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
-import { reactive } from 'vue';
 import { computed, ref, useAttrs } from 'vue';
 
 interface Props {

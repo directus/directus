@@ -21,7 +21,7 @@ test('Returns object for relational fields', () => {
 });
 
 test('Returns number for numeric fields', () => {
-	const numericTypes = ['bigInteger', 'integer', 'float', 'decimal'];
+	const numericTypes = ['integer', 'float', 'decimal'];
 
 	for (const fieldType of numericTypes) {
 		expect(
@@ -32,6 +32,21 @@ test('Returns number for numeric fields', () => {
 				type: fieldType,
 			} as Field),
 		).toBe('number');
+	}
+});
+
+test('Returns bigInteger for bigInteger fields', () => {
+	const numericTypes = ['bigInteger'];
+
+	for (const fieldType of numericTypes) {
+		expect(
+			getJSType({
+				name: 'test',
+				collection: 'test',
+				field: 'test',
+				type: fieldType,
+			} as Field),
+		).toBe('bigInteger');
 	}
 });
 
