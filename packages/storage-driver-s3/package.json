@@ -26,19 +26,18 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@aws-sdk/abort-controller": "3.329.0",
-		"@aws-sdk/client-s3": "3.332.0",
-		"@aws-sdk/lib-storage": "3.332.0",
-		"@aws-sdk/node-http-handler": "3.344.0",
+		"@aws-sdk/client-s3": "3.470.0",
+		"@aws-sdk/lib-storage": "3.470.0",
 		"@directus/storage": "workspace:*",
-		"@directus/utils": "workspace:*"
+		"@directus/utils": "workspace:*",
+		"@smithy/node-http-handler": "2.2.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-v8": "0.34.6",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2",
-		"vitest": "0.34.6"
+		"@ngneat/falso": "7.1.1",
+		"@vitest/coverage-v8": "1.0.4",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.0.4"
 	}
 }

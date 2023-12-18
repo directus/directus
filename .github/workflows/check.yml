@@ -42,7 +42,7 @@ jobs:
         uses: tj-actions/changed-files@v40
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -50,14 +50,14 @@ jobs:
           build: false
 
       - name: Run Formatter
-        run: pnpm exec prettier --check ${{ steps.changed-files.outputs.all_changed_files }}
+        run: pnpm exec prettier --check --ignore-unknown ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
           # option, which in turn means we need to fetch the full git history so git is able to diff

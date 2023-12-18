@@ -13,6 +13,62 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.8.3
+
+### Updated GraphQL content version usage
+
+Content versioning was originally implemented as a GraphQL parameter however the output format for relational fields is
+different for stored versions resulting in a GraphQL error as this is unsupported.
+
+```graphql [Before]
+// version by id
+query {
+	<collection>_by_id(id: 15, version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+// version singleton or listing versions
+query {
+	<collection>(version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+```
+
+```graphql [After]
+// version by id
+query {
+	<collection>_by_version(id: 15, version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+// version singleton
+query {
+	<collection>_by_version(version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+// listing versions (/graphql/system)
+query {
+	versions(filter: { collection: { _eq: "posts" } }) {
+        item
+        key
+    }
+}
+```
+
 ## Version 10.6.2
 
 ### Swapped Parameters and Auth Mode for Refresh Method in the SDK

@@ -27,8 +27,7 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.31.17",
-		"@unhead/vue": "1.1.30",
+		"@sinclair/typebox": "0.31.28",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21"
@@ -36,15 +35,16 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/lodash-es": "4.17.9",
-		"@vitejs/plugin-vue": "4.4.0",
+		"@types/lodash-es": "4.17.12",
+		"@vitejs/plugin-vue": "4.5.2",
 		"rollup-plugin-node-externals": "6.1.2",
-		"typescript": "5.2.2",
-		"vite": "4.4.11",
-		"vite-plugin-dts": "3.6.0"
+		"typescript": "5.3.3",
+		"vite": "5.0.10",
+		"vite-plugin-dts": "3.6.4"
 	},
 	"peerDependencies": {
+		"@unhead/vue": "1.8.9",
 		"pinia": "2.1.7",
-		"vue": "3.3.4"
+		"vue": "3.3.11"
 	}
 }
