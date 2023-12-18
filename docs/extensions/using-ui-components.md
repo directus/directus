@@ -5,9 +5,9 @@ contributors: Esther Agbaje
 
 # Using Directus UI Components
 
-Directus provides a set of reusable UI components that can be used in when building extensions. These components are
-used by Directus itself, and are designed to provide a consistent user experience across different parts of the Directus
-Data Studio.
+Directus provides a set of reusable UI components that can be used when building extensions. These components are used
+by Directus itself, and are designed to provide a consistent user experience across different parts of the Directus Data
+Studio.
 
 ## Components Playground
 
@@ -41,7 +41,7 @@ For example, to adjust the text color of a button on hover:
 
 ::: tip Explore Component CSS Variables
 
-Refer to the full list of component based CSS variables in our codebase
+Refer to the full list of component based CSS variables
 [in our codebase](https://github.com/directus/directus/tree/main/app/src/components).
 
 :::
