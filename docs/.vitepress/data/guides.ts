@@ -216,8 +216,8 @@ export const sections = {
 				title: 'Modules',
 				items: [
 					{
-						display: 'Create a Custom Portal Module',
-						path: '/guides/extensions/modules-build-portal',
+						display: 'Create a Custom Landing page Module',
+						path: '/guides/extensions/modules-build-landing-page',
 					},
 					{
 						display: 'Use Native Layout Features In Your Modules',
