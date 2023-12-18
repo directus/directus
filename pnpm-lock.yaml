@@ -357,6 +357,9 @@ importers:
       nodemailer-sendgrid:
         specifier: 1.0.3
         version: 1.0.3
+      oracledb:
+        specifier: 6.2.0
+        version: 6.2.0
       pg:
         specifier: 8.11.3
         version: 8.11.3
@@ -14601,6 +14604,13 @@ packages:
       string-width: 6.1.0
       strip-ansi: 7.1.0
     dev: false
+
+  /oracledb@6.2.0:
+    resolution: {integrity: sha512-NP6Q3pukVhmowFszQhDfqaiC4RngcuSQ9Vj79quRw9f9s+R1Awo+I1Oexj+qYGFONRJz+Nl7TpkTUiXICbblGg==}
+    engines: {node: '>=14.6'}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}

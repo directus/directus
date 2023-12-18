@@ -588,6 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
+				background: var(--theme--background);
 				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
@@ -645,6 +646,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {
