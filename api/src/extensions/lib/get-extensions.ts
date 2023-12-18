@@ -8,7 +8,15 @@ export const getExtensions = async () => {
 
 	const loadedNames = localExtensions.map(({ name }) => name);
 
-	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
+	const filterDuplicates = ({ name }: Extension) => {
+		const isUnique = loadedNames.includes(name) === false;
+
+		if (isUnique) {
+			loadedNames.push(name);
+		}
+
+		return isUnique;
+	};
 
 	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
 		filterDuplicates(extension),

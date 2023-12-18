@@ -42,6 +42,8 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 		const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];
 
 		if (extensionOptions.type === 'bundle') {
+			const loadedEntryNames: string[] = [];
+
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
@@ -51,7 +53,17 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 					app: extensionOptions.path.app,
 					api: extensionOptions.path.api,
 				},
-				entries: extensionOptions.entries.map((entry) => pick(entry, 'name', 'type')),
+				entries: extensionOptions.entries
+					.filter((entry) => {
+						const isUnique = loadedEntryNames.includes(entry.name) === false;
+
+						if (isUnique) {
+							loadedEntryNames.push(entry.name);
+						}
+
+						return isUnique;
+					})
+					.map((entry) => pick(entry, 'name', 'type')),
 				host: extensionOptions.host,
 				local,
 			});
