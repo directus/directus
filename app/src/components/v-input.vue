@@ -56,8 +56,6 @@ interface Props {
 	autocomplete?: string;
 	/** Makes the input smaller */
 	small?: boolean;
-	/** Makes the input accept bigInteger values */
-	isBigInt?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -82,7 +80,6 @@ const props = withDefaults(defineProps<Props>(), {
 	trim: false,
 	autocomplete: 'off',
 	small: false,
-	isBigInt: false,
 });
 
 const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
@@ -102,10 +99,12 @@ const inputValue = computed(() => {
 	return value;
 });
 
-const useSafeInteger = () => {
-	const safeInput = reactive(new SafeInteger(inputValue.value, props.isBigInt));
+const isNumeric = computed(() => ['number', 'bigInteger'].includes(props.type));
 
-	if (props.type !== 'number') {
+const useSafeInteger = () => {
+	const safeInput = reactive(new SafeInteger(inputValue.value, props.type === 'bigInteger'));
+
+	if (!isNumeric.value) {
 		return safeInput;
 	}
 
@@ -213,7 +212,7 @@ function emitValue(event: InputEvent) {
 		return;
 	}
 
-	if (props.type === 'number') {
+	if (isNumeric.value) {
 		const isValid = safeInput.setValueIfValid(value);
 
 		// Ignore if numeric value remains unchanged

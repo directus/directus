@@ -56,11 +56,10 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (['integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (props.type! === 'bigInteger') return 'bigInteger';
 	return 'text';
 });
-
-const isBigInt = computed(() => props.type === 'bigInteger');
 </script>
 
 <template>
@@ -81,7 +80,6 @@ const isBigInt = computed(() => props.type === 'bigInteger');
 		:step="step"
 		:dir="direction"
 		:autocomplete="masked ? 'new-password' : 'off'"
-		:is-big-int="isBigInt"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
