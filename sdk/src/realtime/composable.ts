@@ -54,7 +54,9 @@ export function realtime(config: WebSocketConfig = {}) {
 		const subscriptions = new Set<Record<string, any>>();
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
-		const debug = (level: keyof ConsoleInterface, ...data: any[]) => config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
+
+		const debug = (level: keyof ConsoleInterface, ...data: any[]) =>
+			config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
 
 		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
@@ -84,20 +86,32 @@ export function realtime(config: WebSocketConfig = {}) {
 		const reconnect = (self: WebSocketClient<Schema>) => {
 			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
 				if (!config.reconnect) return reject();
-				debug('info', `reconnect #${reconnectState.attempts} `+(reconnectState.attempts >= config.reconnect.retries ? 'maximum retries reached' : `trying again in ${Math.max(100, config.reconnect.delay)}ms`));
+
+				debug(
+					'info',
+					`reconnect #${reconnectState.attempts} ` +
+						(reconnectState.attempts >= config.reconnect.retries
+							? 'maximum retries reached'
+							: `trying again in ${Math.max(100, config.reconnect.delay)}ms`),
+				);
 
 				if (reconnectState.active) return reconnectState.active;
 				if (reconnectState.attempts >= config.reconnect.retries) return reject();
 
 				setTimeout(
-					() => self.connect().then(ws => {
-						// reconnect to existing subscriptions
-						subscriptions.forEach(sub => {
-							self.sendMessage(sub);
-						});
+					() =>
+						self
+							.connect()
+							.then((ws) => {
+								// reconnect to existing subscriptions
+								subscriptions.forEach((sub) => {
+									self.sendMessage(sub);
+								});
 
-						return ws;
-					}).then(resolve).catch(reject),
+								return ws;
+							})
+							.then(resolve)
+							.catch(reject),
 					Math.max(100, config.reconnect.delay),
 				);
 			});
@@ -109,7 +123,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				.finally(() => {
 					reconnectState.active = false;
 				});
-		}
+		};
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
 			open: new Set<WebSocketEventHandler>([]),
@@ -119,13 +133,15 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		function isAuthError(message: Record<string, any> | MessageEvent<string>): message is WebSocketAuthError {
-			return 'type' in message &&
+			return (
+				'type' in message &&
 				'status' in message &&
 				'error' in message &&
 				'code' in message['error'] &&
 				'message' in message['error'] &&
 				message['type'] === 'auth' &&
-				message['status'] === 'error';
+				message['status'] === 'error'
+			);
 		}
 
 		async function handleAuthError(message: WebSocketAuthError, currentClient: AuthWSClient<Schema>) {
@@ -138,7 +154,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					const access_token = await currentClient.getToken();
 
 					if (!access_token) {
-						throw Error('No token for re-authenticating the websocket')
+						throw Error('No token for re-authenticating the websocket');
 					}
 
 					state.connection.send(auth({ access_token }));
@@ -190,7 +206,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				eventHandlers['message'].forEach((handler) => {
-					if (state.code === 'open') handler.call(state.connection, message)
+					if (state.code === 'open') handler.call(state.connection, message);
 				});
 
 				state.firstMessage = false;
@@ -223,7 +239,9 @@ export function realtime(config: WebSocketConfig = {}) {
 							const access_token = await self.getToken();
 
 							if (!access_token) {
-								throw Error('No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.')
+								throw Error(
+									'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
+								);
 							}
 
 							ws.send(auth({ access_token }));
@@ -238,13 +256,13 @@ export function realtime(config: WebSocketConfig = {}) {
 									confirm['status'] === 'ok'
 								)
 							) {
-								return reject('Authentication failed while opening websocket connection')
+								return reject('Authentication failed while opening websocket connection');
 							} else {
 								debug('info', 'Authentication successful!');
 							}
 						}
 
-						state = { code: 'open',	connection: ws, firstMessage: true };
+						state = { code: 'open', connection: ws, firstMessage: true };
 						reconnectState.attempts = 0;
 						reconnectState.active = false;
 
@@ -276,7 +294,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				state = {
 					code: 'connecting',
 					connection: connectPromise,
-				}
+				};
 
 				return connectPromise;
 			},
@@ -328,7 +346,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if ('uid' in options === false) options.uid = uid.next().value;
-				subscriptions.add({ ...options, collection, type: 'subscribe' })
+				subscriptions.add({ ...options, collection, type: 'subscribe' });
 
 				if (state.code !== 'open') {
 					debug('info', 'No connection available for subscribing!');
