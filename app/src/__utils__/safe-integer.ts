@@ -1,5 +1,9 @@
 type numeric = number | bigint;
 
+// Limit of big int that can be stored in SQL databases of all flavors
+const MAX_BIG_INT = BigInt(9223372036854775807n)
+const MIN_BIG_INT = BigInt(-9223372036854775807n)
+
 export class SafeInteger {
 	private _value: numeric;
 	private MAX_VALUE: numeric;
@@ -8,8 +12,8 @@ export class SafeInteger {
 	constructor(value: number | bigint | string, isBigInt = false) {
 		if (isBigInt) {
 			this._value = BigInt(value);
-			this.MAX_VALUE = BigInt(9223372036854775807n);
-			this.MIN_VALUE = BigInt(-9223372036854775807n);
+			this.MAX_VALUE = MAX_BIG_INT;
+			this.MIN_VALUE = MIN_BIG_INT;
 			return;
 		}
 
