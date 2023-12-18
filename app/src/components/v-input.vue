@@ -102,15 +102,25 @@ const inputValue = computed(() => {
 	return value;
 });
 
-const safeInput = reactive(new SafeInteger(inputValue.value, props.isBigInt));
+const useSafeInteger = () => {
+	const safeInput = reactive(new SafeInteger(inputValue.value, props.isBigInt));
 
-watch(inputValue, (value) => {
-	if (safeInput.toString() === value) {
-		return;
+	if (props.type !== 'number') {
+		return safeInput;
 	}
 
-	safeInput.setValueIfValid(value);
-});
+	watch(inputValue, (value) => {
+		if (safeInput.toString() === value) {
+			return;
+		}
+
+		safeInput.setValueIfValid(value);
+	});
+
+	return safeInput;
+};
+
+const safeInput = useSafeInteger();
 
 const listeners = computed(() => ({
 	input: emitValue,
