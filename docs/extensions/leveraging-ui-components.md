@@ -3,7 +3,7 @@ description: Learn how to use the Directus UI components in your app extensions.
 contributors: Esther Agbaje
 ---
 
-# Leveraging Directus UI Components
+# Using Directus UI Components
 
 Directus provides a set of reusable UI components that can be used in when building extensions. These components are
 designed to provide a consistent user experience across different projects and extensions.
