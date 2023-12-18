@@ -389,7 +389,7 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
-					link: '/extensions/leveraging-ui-components',
+					link: '/extensions/using-ui-components',
 					text: 'Using Directus UI Components',
 				},
 				{
