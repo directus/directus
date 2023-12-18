@@ -21,9 +21,9 @@ see all available components and experiment with variations before implementing 
 Directus UI components are globally registered, making them accessible throughout your extension project without the
 need for explicit imports. Here’s an example:
 
-```tsx
+```vue
 <VButton>
-  My Button
+	My Button
 </VButton>
 ```
 
@@ -33,16 +33,20 @@ Each component exports CSS custom properties (variables) that can be targeted fo
 
 For example, to adjust the text color of a button on hover:
 
-```tsx
-// give the button a class
-<VButton class="my-button">
-  My Button
-</VButton>
+```vue
+<template>
+	<!-- give the button a class -->
+	<VButton class="my-button">
+		My Button
+	</VButton>
+</template>
 
-// customize the style
+<style>
+/* customize the style */
 .my-button {
-  --v-button-color-hover: black;
+	--v-button-color-hover: black;
 }
+</style>
 ```
 
 ::: tip Explore Component CSS Variables
