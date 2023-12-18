@@ -225,7 +225,6 @@ GUIs?
 hardcoded
 headshot
 Heya
-Histoire
 Hoppscotch
 HTTPS?
 IAM
