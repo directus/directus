@@ -619,11 +619,6 @@ function getLinkForItem(item: DisplayItem) {
 	}
 }
 
-
-.one-to-many .bordered tr.table-row .append {
-    background: var(--theme--background);
-}
-
 .v-skeleton-loader,
 .v-notice {
 	margin-top: 8px;
@@ -651,6 +646,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {
