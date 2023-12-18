@@ -16,6 +16,12 @@ export const sections = {
 					{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
 				],
 			},
+			{
+				title: 'From the Blog',
+				items: [
+					{ display: 'Advanced Filtering', path: '/blog/advanced-filtering-dates-aggregation-and-grouping-and-combining-filters' },
+				],
+			},
 		],
 	},
 	frameworks: {
@@ -35,6 +41,12 @@ export const sections = {
 				items: [
 					{ display: 'Build a Website With Nuxt', path: '/guides/headless-cms/build-static-website/nuxt-3' },
 					{ display: 'Set Up Live Preview With Nuxt', path: '/guides/headless-cms/live-preview/nuxt-3' },
+				],
+			},
+			{
+				title: 'From the Blog',
+				items: [
+					{ display: 'Build a Website With SvelteKit', path: '/blog/getting-started-directus-sveltekit' },
 				],
 			},
 		],
@@ -67,6 +79,15 @@ export const sections = {
 					},
 				],
 			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'SEO Tips & Tricks',
+						path: 'https://docs.directus.io/blog/directus-seo-tips-tricks',
+					},
+				]
+			}
 		],
 	},
 	'real-time': {
@@ -212,6 +233,15 @@ export const sections = {
 					},
 				],
 			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'Using Hooks To Monitor & Error Track With Sentry',
+						path: '/blog/hooks-monitoring-error-tracking-sentry',
+					}
+				]
+			}
 		],
 	},
 	administration: {
@@ -231,6 +261,15 @@ export const sections = {
 					},
 				],
 			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'Configuring Okta SSO',
+						path: '/blog/configuring-okta-sso'
+					}
+				]
+			}
 		],
 	},
 };
