@@ -256,7 +256,7 @@ often do not ship with an implementation of WebSockets.
 #### The `logger` API
 
 This API is optional and currently only used for debugging the `realtime()` features. This will default to the `Console`
-however in environments where this isnt shipped you can overwrite this with any logger.
+however in environments where this isn't shipped you can overwrite this with any logger.
 
 ### Polyfilling
 
