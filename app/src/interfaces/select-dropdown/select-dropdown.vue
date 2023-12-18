@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n';
 type Option = {
 	text: string;
 	value: string | number | boolean;
+	icon?: string;
+	iconColor?: string;
 	children?: Option[];
 };
 
@@ -38,6 +40,8 @@ const { t } = useI18n();
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
+		item-icon="icon"
+		item-icon-color="iconColor"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"

@@ -1706,6 +1706,7 @@ interfaces:
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
     preview_threshold: Preview Threshold
+    icon_color: Icon Color
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
