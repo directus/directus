@@ -5,15 +5,16 @@ contributors: Esther Agbaje
 
 # Using Directus UI Components
 
-Directus provides a set of reusable UI components that can be used in when building extensions. These components are used by Directus itself, and are
-designed to provide a consistent user experience across different parts of the Directus Data Studio.
+Directus provides a set of reusable UI components that can be used in when building extensions. These components are
+used by Directus itself, and are designed to provide a consistent user experience across different parts of the Directus
+Data Studio.
 
 ## Components Playground
 
 Explore the available components in our [Directus Components Playground](https://components.directus.io/). Here, you can
 see all available components and experiment with variations before implementing them in your extensions.
 
-![Directus UI Components](https://marketing.directus.app/assets/46d72f1a-5d9f-49f8-a09a-b2ffc5200812.gif)
+![Exploring the Button Component and its variations on the Directus UI Components Playground](https://marketing.directus.app/assets/46d72f1a-5d9f-49f8-a09a-b2ffc5200812.gif)
 
 ## Extension Usage
 
@@ -47,7 +48,8 @@ Refer to the full list of component based CSS variables in our codebase
 
 ## Creating a Custom UI Component
 
-The Directus UI components are designed with flexibility and customization in mind. However, you may need to create your own components using shared styling. Directus exposes several CSS variables for both light and dark themes.
+The Directus UI components are designed with flexibility and customization in mind. However, you may need to create your
+own components using shared styling. Directus exposes several CSS variables for both light and dark themes.
 
 Examples of CSS variables include `--border-normal`, `--foreground-normal` `-purple`, `--module-background`, and
 `--overlay-color`.
