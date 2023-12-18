@@ -5,8 +5,8 @@ contributors: Esther Agbaje
 
 # Using Directus UI Components
 
-Directus provides a set of reusable UI components that can be used in when building extensions. These components are
-designed to provide a consistent user experience across different projects and extensions.
+Directus provides a set of reusable UI components that can be used in when building extensions. These components are used by Directus itself, and are
+designed to provide a consistent user experience across different parts of the Directus Data Studio.
 
 ## Components Playground
 
