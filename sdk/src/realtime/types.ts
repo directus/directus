@@ -89,3 +89,12 @@ export type SubscriptionPayload<Item> = {
 	update: Item[];
 	delete: string[] | number[];
 };
+
+export type WebSocketAuthError = {
+	type: 'auth';
+	status: 'error';
+	error: {
+		code: string;
+		message: string;
+	};
+};

@@ -5,6 +5,7 @@ import type {
 	SubscribeOptions,
 	SubscriptionEvents,
 	SubscriptionOutput,
+	WebSocketAuthError,
 	WebSocketClient,
 	WebSocketConfig,
 	WebSocketEventHandler,
@@ -117,6 +118,57 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
+		function isAuthError(message: Record<string, any> | MessageEvent<string>): message is WebSocketAuthError {
+			return 'type' in message &&
+				'status' in message &&
+				'error' in message &&
+				'code' in message['error'] &&
+				'message' in message['error'] &&
+				message['type'] === 'auth' &&
+				message['status'] === 'error';
+		}
+
+		async function handleAuthError(message: WebSocketAuthError, currentClient: AuthWSClient<Schema>) {
+			if (state.code !== 'open') return;
+
+			if (message.error.code === 'TOKEN_EXPIRED') {
+				debug('warn', 'Authentication token expired!');
+
+				if (hasAuth(currentClient)) {
+					const access_token = await currentClient.getToken();
+
+					if (!access_token) {
+						throw Error('No token for re-authenticating the websocket')
+					}
+
+					state.connection.send(auth({ access_token }));
+				}
+			}
+
+			if (message.error.code === 'AUTH_TIMEOUT') {
+				if (state.firstMessage && config.authMode === 'public') {
+					// detected likely misconfigured authMode
+					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
+					config.reconnect = false;
+				} else {
+					debug('warn', 'Authentication timed out!');
+				}
+
+				return state.connection.close();
+			}
+
+			if (message.error.code === 'AUTH_FAILED') {
+				if (state.firstMessage && config.authMode === 'public') {
+					// detected likely misconfigured authMode
+					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
+					config.reconnect = false;
+					return state.connection.close();
+				}
+
+				debug('warn', 'Authentication failed!');
+			}
+		}
+
 		const handleMessages = async (currentClient: AuthWSClient<Schema>) => {
 			while (state.code === 'open') {
 				const message = await messageCallback(state.connection).catch(() => {
@@ -125,64 +177,25 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				if (!message) continue;
 
-				if ('type' in message) {
-					const foundError = handleAuthErrors(message, currentClient);
+				if (isAuthError(message)) {
+					await handleAuthError(message, currentClient);
+					state.firstMessage = false;
+					continue;
+				}
 
-					if (foundError) {
-						state.firstMessage = false;
-						continue;
-					}
-
-					if (config.heartbeat && message['type'] === 'ping') {
-						state.connection.send(pong());
-						state.firstMessage = false;
-						continue;
-					}
+				if (config.heartbeat && message['type'] === 'ping') {
+					state.connection.send(pong());
+					state.firstMessage = false;
+					continue;
 				}
 
 				eventHandlers['message'].forEach((handler) => {
 					if (state.code === 'open') handler.call(state.connection, message)
 				});
+
 				state.firstMessage = false;
 			}
 		};
-
-		const handleAuthErrors = (message: Record<string, any> | MessageEvent<string>, currentClient: AuthWSClient<Schema>) => {
-			if (
-				message['type'] === 'auth' &&
-				'status' in message &&
-				message['status'] === 'error' &&
-				'error' in message
-			) {
-				if (message['error']['code'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
-					debug('warn', 'Authentication token expired!');
-					const access_token = await currentClient.getToken();
-
-					if (!access_token) {
-						throw Error('No token for re-authenticating the websocket')
-					}
-
-					this.sendMessage()
-					state.connection.send(auth({ access_token }));
-					state.firstMessage = false;
-				}
-
-				if (state.firstMessage && config.authMode === 'public' && ['AUTH_TIMEOUT', 'AUTH_FAILED'].includes(message['error']['code'])) {
-					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
-					config.reconnect = false;
-					state.connection.close();
-				}
-
-				if (message['error']['code'] === 'AUTH_TIMEOUT') {
-					debug('warn', 'Authentication timed out!');
-					state.connection.close();
-				}
-
-				if (message['error']['code'] === 'AUTH_FAILED') {
-					debug('warn', 'Authentication failed!');
-				}
-			}
-		}
 
 		return {
 			async connect() {
