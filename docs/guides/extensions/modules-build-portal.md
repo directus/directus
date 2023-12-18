@@ -64,8 +64,9 @@ export default {
 };
 ```
 
-The `routes` give you the ability to use different Vue components to render the page and receive props from the URI path. The
-path will match anything after `/admin/landing-page/*`. For this reason, the default route will be our home page.
+The `routes` give you the ability to use different Vue components to render the page and receive props from the URI
+path. The path will match anything after `/admin/landing-page/*`. For this reason, the default route will be our home
+page.
 
 Create a second route with the path as `:page` to catch anything like `/admin/landing-page/some-page` and use the same
 component. The value `some-page` will be available in `props.page` in this example.
@@ -653,7 +654,6 @@ Now the page will look like this:
 
 ![A custom module has three items in the navigation - Home, Hello World, and Contact Us. The homepage displays an image, three navigation tiles, and some copy.](https://marketing.directus.app/assets/e1d33578-4ebc-4294-9b7c-2cc9ee3a1bfb.png)
 
-
 Our files are now complete. Build the module with the latest changes:
 
 ```
@@ -680,7 +680,8 @@ code has no negative effect.
 
 ## Use the Module
 
-To use your new module in Directus, you need to enable it in the [Project Settings](/user-guide/settings/project-settings#modules).
+To use your new module in Directus, you need to enable it in the
+[Project Settings](/user-guide/settings/project-settings#modules).
 
 ## Summary
 

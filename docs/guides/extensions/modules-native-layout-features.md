@@ -6,9 +6,9 @@ contributors: Tim Butterfield
 # Use Native Layout Features In Your Modules
 
 This guide follows on [Create a Custom Portal Module](/guides/extensions/modules-build-portal), where you created a
-landing page module. You will learn how to add native sidebar dropdown element, action buttons and search, a split
-view window, and layout options using the built-in functions of Directus. These help provide a more coherent experience
-from other Directus modules and collections.
+landing page module. You will learn how to add native sidebar dropdown element, action buttons and search, a split view
+window, and layout options using the built-in functions of Directus. These help provide a more coherent experience from
+other Directus modules and collections.
 
 ![A module showing title icon and append, action prepend, search box, and several UI buttons in the header](https://marketing.directus.app/assets/7ef23d67-366a-42a6-9fb4-15740e31458a.png)
 
@@ -189,8 +189,8 @@ section outputs some custom text.
 
 :::info Close Attribute
 
-The close attribute on the first sidebar-detail component changes the chevron icon to a close button and when
-clicked, the sidebar collapses. This is highly recommended for usability.
+The close attribute on the first sidebar-detail component changes the chevron icon to a close button and when clicked,
+the sidebar collapses. This is highly recommended for usability.
 
 :::
 
@@ -240,8 +240,8 @@ attributes to the parent `private-view` and create a toggle button. The actions 
 </private-view>
 ```
 
-In this example, `livePreviewMode` is toggled between `true` and `false` which can be achieved using the following
-code inside your `setup`:
+In this example, `livePreviewMode` is toggled between `true` and `false` which can be achieved using the following code
+inside your `setup`:
 
 ```js
 const livePreviewMode = ref(false);
@@ -327,8 +327,8 @@ when the permission constant is `false`:
 :::info Other Slots
 
 The `navigation`, `actions`, and `sidebar` slots have not been rendered because it’s using a separate `private-view`.
-Consider using the `permissions` variable to also prevent the related functions from running as well. This will improve the
-performance of your application.
+Consider using the `permissions` variable to also prevent the related functions from running as well. This will improve
+the performance of your application.
 
 :::
 
