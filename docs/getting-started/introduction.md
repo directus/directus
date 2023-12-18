@@ -86,7 +86,7 @@ database clients (like _phpMyAdmin_) work. However, Database Introspection has m
 - Direct database access and the full power of raw, complex SQL queries.
 - Significant performance improvements through optimizations and indexing.
 
-In contrast, other platforms typically use a predefined or proprietary _one-size-fits-all_ data model to store content .
+In contrast, other platforms typically use a predefined or proprietary _one-size-fits-all_ data model to store content.
 That is not the case with Directus. Directus gives you direct access to your pure and unaltered data. That means you
 have the option to bypass the Directus middleware (API, SDK, App) and connect to your data with proper SQL queries. This
 effectively removes all bottlenecks, latency overhead, and proprietary access limitations.

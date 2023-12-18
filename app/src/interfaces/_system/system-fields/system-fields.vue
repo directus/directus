@@ -96,7 +96,7 @@ const removeField = (field: string) => {
 			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
 		</v-list>
 		<v-list v-else>
-			<draggable v-model="fields" force-fallback item-key="key" handle=".drag-handle">
+			<draggable v-model="fields" item-key="key" handle=".drag-handle" v-bind="{ 'force-fallback': true }">
 				<template #item="{ element: field }">
 					<v-list-item block>
 						<v-icon name="drag_handle" class="drag-handle" left />
