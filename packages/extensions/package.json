@@ -53,7 +53,7 @@
 		"vitest": "1.0.4"
 	},
 	"peerDependencies": {
-		"knex": "2.5.1",
+		"knex": "3.1.0",
 		"pino": "8.16.2",
 		"vue": "3.3.11",
 		"vue-router": "4.2.5"

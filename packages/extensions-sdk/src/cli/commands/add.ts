@@ -28,7 +28,10 @@ import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-export default async function add(): Promise<void> {
+type AddOptions = { install?: boolean };
+
+export default async function add(options: AddOptions): Promise<void> {
+	const install = options.install ?? true;
 	const extensionPath = process.cwd();
 	const packagePath = path.resolve('package.json');
 
@@ -143,9 +146,14 @@ export default async function add(): Promise<void> {
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	} else {
 		const { proceed } = await inquirer.prompt<{ proceed: boolean }>([
 			{
@@ -286,9 +294,14 @@ export default async function add(): Promise<void> {
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	}
 }
 
