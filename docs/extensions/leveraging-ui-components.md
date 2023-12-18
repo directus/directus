@@ -18,13 +18,7 @@ see all available components and experiment with variations before implementing 
 ## Extension Usage
 
 Directus UI components are globally registered, making them accessible throughout your extension project without the
-need for explicit imports. Here’s a basic example:
-
-```tsx
-<VButton>
-  My Button
-</VButton>
-```
+need for explicit imports. Here’s an example:
 
 ## Customizing Styles
 
