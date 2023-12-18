@@ -12,7 +12,7 @@ export type UpdateItemOutput<
  * Update multiple items at the same time.
  *
  * @param collection The collection of the items
- * @param keysOrQuery The primary key of the items
+ * @param keysOrQuery The primary keys or a query
  * @param item The item data to update
  * @param query Optional return data query
  *
