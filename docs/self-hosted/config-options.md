@@ -306,11 +306,9 @@ extend the `DB_*` environment variables with any config you need to pass to the 
 
 This includes:
 
-- `DB_POOL__` prefixed options which are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
-  [Knex](https://knexjs.org/guide/#pool).
+- `DB_POOL__` prefixed options which are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage).
 
-- `DB_SSL__` prefixed options which are passed to the respective database driver through
-  [Knex](https://knexjs.org/guide/#configuration-options).
+- `DB_SSL__` prefixed options which are passed to the respective database driver.
 
   - For example `DB_SSL__CA` which can be used to specify a custom CA certificate for SSL connections. This is
     **required** if the database server CA is not part of [Node.js' trust store](https://nodejs.org/api/tls.html).
