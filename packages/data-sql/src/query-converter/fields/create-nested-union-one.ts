@@ -8,48 +8,26 @@ import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertFieldNodes } from './fields.js';
 import { getRelationCondition, type NestedManyResult } from './create-nested-manys.js';
 import type { AbstractSqlQueryConditionNode } from '../../types/clauses/where/condition.js';
-import { createUniqueAlias, type AbstractSqlQueryWhereNode } from '../../index.js';
+import { createUniqueAlias, type AbstractSqlQueryWhereNode, type SubQuery } from '../../index.js';
 
 /**
  * Converts a nested union one node from the abstract query into a function which creates the sub query for a2o.
  *
  * @param collection - the current collection, will be an alias when called recursively
  * @param field - the nested field data from the abstract query
- * @returns A function to create a query with and the select part for the root query
+ * @returns The result includes a function which creates a query as well as an abstract select to ensure the any column is queried in the root request.
  */
 export function getNestedUnionOne(collection: string, field: AbstractQueryFieldNodeNestedUnionOne): NestedManyResult {
 	const generatedAlias = createUniqueAlias(field.nesting.field);
+	const lookUp = createSubQueryLookUp(field);
 
 	return {
 		subQuery: (rootRow) => {
-			// get data from the relational column
-			const anyColumnValue = rootRow[generatedAlias] as A2ORelation;
-			const foreignTable = anyColumnValue.foreignCollection;
-			const fk = anyColumnValue.foreignKey;
-
-			// get the correct collection from the abstract query for this row
-			const desiredRelationalInfo = field.nesting.collections.find((c) => c.relational.collectionName === foreignTable);
-			if (!desiredRelationalInfo) throw new Error('Relational data is not sufficient in abstract query.');
-
-			const indexGenerator = parameterIndexGenerator();
-			const nestedFieldNodes = convertFieldNodes(foreignTable, desiredRelationalInfo?.fields, indexGenerator);
-
-			const joins = [...nestedFieldNodes.clauses.joins];
-			const nestedParameters = [...nestedFieldNodes.parameters];
-
-			return {
-				rootQuery: {
-					clauses: {
-						select: nestedFieldNodes.clauses.select,
-						from: anyColumnValue.foreignCollection,
-						joins: joins,
-						where: getRelationConditions(anyColumnValue, indexGenerator, field.nesting),
-					},
-					parameters: [...nestedParameters, ...fk],
-				},
-				subQueries: nestedFieldNodes.subQueries,
-				aliasMapping: nestedFieldNodes.aliasMapping,
-			};
+			const anyColumnValue = rootRow[generatedAlias] as A2ORelation | undefined;
+			if (!anyColumnValue) throw new Error('No value found for any column.');
+			const subQueryGenerator = lookUp.get(anyColumnValue.foreignCollection);
+			if (!subQueryGenerator) throw new Error('No sub query generator found.');
+			return subQueryGenerator(anyColumnValue)(rootRow);
 		},
 		select: [
 			{
@@ -62,29 +40,76 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 	};
 }
 
+function createSubQueryLookUp(
+	field: AbstractQueryFieldNodeNestedUnionOne,
+): Map<string, (rel: A2ORelation) => SubQuery> {
+	const subQueryLoopUp = new Map<string, (rel: A2ORelation) => SubQuery>();
+
+	field.nesting.collections.forEach((collection) => {
+		function preparedSubQuery(rel: A2ORelation): SubQuery {
+			const indexGenerator = parameterIndexGenerator();
+
+			const nestedFieldNodes = convertFieldNodes(
+				collection.relational.collectionName,
+				collection.fields,
+				indexGenerator,
+			);
+
+			const joins = [...nestedFieldNodes.clauses.joins];
+			const nestedParameters = [...nestedFieldNodes.parameters];
+
+			const fKs = collection.relational.identifierFields.map((idField) => {
+				const correspondingObj = rel.foreignKey.find((fk) => fk.column === idField);
+				if (!correspondingObj) throw new Error('No corresponding foreign key found.');
+				return correspondingObj.value;
+			});
+
+			return function () {
+				return {
+					rootQuery: {
+						clauses: {
+							select: nestedFieldNodes.clauses.select,
+							from: collection.relational.collectionName,
+							joins: joins,
+							where: getRelationConditions(rel, indexGenerator, field.nesting),
+						},
+						parameters: [...nestedParameters, ...fKs],
+					},
+					subQueries: nestedFieldNodes.subQueries,
+					aliasMapping: nestedFieldNodes.aliasMapping,
+				};
+			};
+		}
+
+		subQueryLoopUp.set(collection.relational.collectionName, preparedSubQuery);
+	});
+
+	return subQueryLoopUp;
+}
+
 function getRelationConditions(
 	jsonColumn: A2ORelation,
 	idxGenerator: Generator<number, number, number>,
 	relAny: AbstractQueryFieldNodeNestedRelationalAny,
 ): AbstractSqlQueryWhereNode {
-	const table = jsonColumn.foreignCollection;
+	const tableFromJsonColumn = jsonColumn.foreignCollection;
 
-	const foreignCollectionRelationalData = relAny.collections.find(
-		(collection) => collection.relational.collectionName === table,
+	const nestedCollection = relAny.collections.find(
+		(collection) => collection.relational.collectionName === tableFromJsonColumn,
 	);
 
-	if (!foreignCollectionRelationalData) throw new Error('No relational data found for collection');
+	if (!nestedCollection) throw new Error('No relational data found for the collection stated in the json column');
 
 	if (jsonColumn.foreignKey.length > 1) {
 		return {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: foreignCollectionRelationalData.relational.identifierFields.map((fkValue) =>
-				getRelationCondition(table, fkValue, idxGenerator),
+			childNodes: nestedCollection.relational.identifierFields.map((idField) =>
+				getRelationCondition(tableFromJsonColumn, idField, idxGenerator),
 			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
-		return getRelationCondition(table, foreignCollectionRelationalData.relational.identifierFields[0], idxGenerator);
+		return getRelationCondition(tableFromJsonColumn, nestedCollection.relational.identifierFields[0], idxGenerator);
 	}
 }
