@@ -17,7 +17,7 @@ export type UpdateItemOutput<
  * @param query Optional return data query
  *
  * @returns Returns the item objects for the updated items.
- * @throws Will throw if keysorQuery is empty
+ * @throws Will throw if keysOrQuery is empty
  * @throws Will throw if collection is empty
  * @throws Will throw if collection is a core collection
  */
