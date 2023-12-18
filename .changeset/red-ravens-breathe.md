@@ -4,4 +4,4 @@
 '@directus/api': patch
 ---
 
-Fixed unique name check for extension locations, bundle extensions, and adding an extension to a bundle via the cli
+Fixed the unique name check for extension locations and extensions within bundles
