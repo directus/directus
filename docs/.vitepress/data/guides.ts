@@ -216,7 +216,7 @@ export const sections = {
 				title: 'Modules',
 				items: [
 					{
-						display: 'Create a Custom Landing page Module',
+						display: 'Create a Custom Landing Page Module',
 						path: '/guides/extensions/modules-build-landing-page',
 					},
 					{

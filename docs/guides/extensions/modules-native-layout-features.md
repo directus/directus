@@ -17,7 +17,7 @@ other Directus modules and collections.
 The private view in Directus has a number of slots available which are empty by default but you can add content using a
 template tag. For example:
 
-```html
+```vue
 <template #slot_name>
 	// Content to insert into the slot
 </template>
@@ -201,7 +201,7 @@ relies on the value "split" to be dynamically added to the `private-view`'s `v-m
 action button as shown below but can be triggered any way you choose. To use this feature, you need to add some
 attributes to the parent `private-view` and create a toggle button. The actions slot is a convenient place:
 
-```vue
+```html
 <private-view :splitView="livePreviewMode" :split-view-min-width="310" :title="page_title">
 	<template #actions>
 		<v-button

@@ -127,7 +127,7 @@ Directus has a header element at the top of the module that uses the title attri
 title. This will need to be converted to a variable so it changes when the page changes. It also has a breadcrumb which
 will help with page navigation. Create a variable inside the setup called `page_title` and breadcrumb using `ref`.
 
-````js
+```js
 setup(props) {
 	const api = useApi();
 	const page_title = ref('');
@@ -140,9 +140,10 @@ setup(props) {
 
 	// Existing code here
 },
-	```
+```
 
-Add `page_title` and `breadcrumb` to the returned objects and create the `render_page` function to update the `page_title` and `breadcrumb`:
+Add `page_title` and `breadcrumb` to the returned objects and create the `render_page` function to update the
+`page_title` and `breadcrumb`:
 
 ```js
 return { page_title, breadcrumb, };
@@ -180,7 +181,7 @@ function render_page(page){
 
 	console.log(`Title: ${page_title.value}`);
 };
-````
+```
 
 Ideally this would be an API query instead of the switch case. The `page` variable contains the current URI, use this to
 fetch the page details through the API and return the page title. If no result is found in the API, respond with a 404
@@ -204,7 +205,7 @@ To tie all this together, update the `private-view` `title` attribute to the `pa
 `breadcrumb` using the `#headline` template slot and add the `router-view` element at the bottom. Note that the router
 view is linked to the `page` property from the URI.
 
-```vue
+```html
 <private-view :title="page_title">
 	<template v-if="breadcrumb" #headline>
 		<v-breadcrumb :items="breadcrumb" />
@@ -388,7 +389,7 @@ create a page banner, clickable cards and some paragraphs.
 
 In the template, create the HTML structure after the navigation and some new variables that will contain the content.
 
-```vue
+```html
 <div class="lp-container">
 	<div class="lp-banner" v-if="page_banner">
 		<img :src="page_banner" alt=""/>
@@ -578,7 +579,7 @@ Add some SCSS at the bottom of the `module.vue` file. When dealing with multiple
 instead prefix each class with a unique reference to prevent changing other components in Directus. In this example, use
 the following SCSS:
 
-```html
+```vue
 <style lang="scss">
 .lp-container {
 	padding: var(--content-padding);
@@ -586,17 +587,14 @@ the following SCSS:
 	width: 100%;
 	max-width: 1024px;
 
-
 	&> div {
 		margin-bottom: var(--content-padding);
 	}
 }
 
-
 .lp-banner {
 	border-radius: var(--border-radius);
 	overflow: hidden;
-
 
 	img {
 		display: block;
@@ -604,13 +602,11 @@ the following SCSS:
 	}
 }
 
-
 .lp-cards {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	column-gap: var(--input-padding);
 	row-gap: var(--input-padding);
-
 
 	.lp-card {
 		display: flex;
@@ -622,19 +618,16 @@ the following SCSS:
 		padding: var(--input-padding);
 		color: white;
 
-
 		.v-icon {
 			width: 100%;
 			height: 50px;
 			margin-bottom: 6px;
-
 
 			i {
 				font-size: 50px;
 				color: white;
 			}
 		}
-
 
 		.lp-card-title {
 			display: block;
@@ -656,7 +649,7 @@ Now the page will look like this:
 
 Our files are now complete. Build the module with the latest changes:
 
-```
+```shell
 npm run build
 ```
 
@@ -690,9 +683,9 @@ use of the `vue-router` and utilize the left navigation panel. You can also use 
 images from within Directus to surface on the page. From here you can create content rich modules driven by the features
 of the Directus platform.
 
-`index.js`
+::: code-group
 
-```js
+```js [index.js]
 import ModuleComponent from './module.vue';
 
 export default {
@@ -716,9 +709,7 @@ export default {
 };
 ```
 
-`module.vue`
-
-```vue
+```vue [module.vue]
 <template>
 	<private-view :title="page_title">
 		<template v-if="breadcrumb" #headline>
@@ -927,9 +918,7 @@ export default {
 </style>
 ```
 
-`use-directus-token.js`
-
-```js
+```js [use-directus-token.js]
 export default function useDirectusToken(directusApi) {
 	return {
 		addQueryToPath,
@@ -964,3 +953,5 @@ export default function useDirectusToken(directusApi) {
 	}
 }
 ```
+
+:::
