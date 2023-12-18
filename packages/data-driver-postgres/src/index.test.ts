@@ -563,7 +563,8 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test.skip('nested a2o field', async () => {
+// on hold until a deterministic alias generation is implemented
+test.todo('nested a2o field', async () => {
 	const localDesiredField = randomIdentifier();
 	const localDesiredFieldId = randomIdentifier();
 	const localDesiredFieldAlias = randomIdentifier();

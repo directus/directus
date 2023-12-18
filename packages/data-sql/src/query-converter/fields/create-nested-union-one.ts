@@ -40,6 +40,13 @@ export function getNestedUnionOne(collection: string, field: AbstractQueryFieldN
 	};
 }
 
+/**
+ * Creates all possible sub queries and stores them in a map.
+ * This way we don't have to to create the sub queries individually per row.
+ *
+ * @param field the abstract query field node
+ * @returns A map which has all possible sub queries stored.
+ */
 function createSubQueryLookUp(
 	field: AbstractQueryFieldNodeNestedUnionOne,
 ): Map<string, (rel: A2ORelation) => SubQuery> {
