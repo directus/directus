@@ -17,7 +17,6 @@ const props = withDefaults(
 		type?: string;
 		language?: string;
 		placeholder?: string;
-		isBigInteger?: boolean;
 	}>(),
 	{
 		value: undefined,
@@ -26,7 +25,6 @@ const props = withDefaults(
 		type: undefined,
 		placeholder: undefined,
 		language: 'mustache',
-		isBigInteger: false,
 	},
 );
 
@@ -100,8 +98,8 @@ onMounted(async () => {
 
 			if (content === '') {
 				emit('input', null);
-			} else if (props.type === 'number') {
-				const safeInt = new SafeInteger(content, props.isBigInteger);
+			} else if (props.type && ['number', 'bigInteger'].includes(props.type)) {
+				const safeInt = new SafeInteger(content, props.type === 'bigInteger');
 
 				if (safeInt.isInvalid) {
 					inputRef.value?.focus();

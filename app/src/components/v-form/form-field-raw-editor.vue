@@ -91,7 +91,6 @@ const setRawValue = () => {
 					:disabled="disabled"
 					language="plaintext"
 					:placeholder="t('enter_raw_value')"
-					:is-big-integer="props.field.type === 'bigInteger'"
 					@input="internalValue = $event"
 				/>
 			</v-card-text>
