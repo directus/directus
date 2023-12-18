@@ -21,6 +21,12 @@ see all available components and experiment with variations before implementing 
 Directus UI components are globally registered, making them accessible throughout your extension project without the
 need for explicit imports. Here’s an example:
 
+```tsx
+<VButton>
+  My Button
+</VButton>
+```
+
 ## Customizing Styles
 
 Each component exports CSS custom properties (variables) that can be targeted for style overrides.
