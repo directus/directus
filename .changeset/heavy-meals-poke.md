@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-changed keys to keysOrQuery to accept both keys and query in updateItems
+Changed `keys` argument in `updateItems` method to `keysOrQuery` to accept both formats
