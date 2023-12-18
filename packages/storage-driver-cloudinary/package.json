@@ -28,15 +28,15 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"p-queue": "7.3.4",
-		"undici": "5.22.1"
+		"p-queue": "8.0.0",
+		"undici": "6.0.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
+		"@ngneat/falso": "7.1.1",
 		"@vitest/coverage-v8": "1.0.4",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2",
+		"typescript": "5.3.3",
 		"vitest": "1.0.4"
 	}
 }
