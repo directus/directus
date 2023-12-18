@@ -44,7 +44,7 @@ For example, to adjust the text color of a button on hover:
 }
 ```
 
-::: tip Explore CSS Variables
+::: tip Explore Component CSS Variables
 
 Refer to the full list of component based CSS variables in our codebase
 [in our codebase](https://github.com/directus/directus/tree/main/app/src/components).
