@@ -31,15 +31,15 @@ jobs:
       fail-fast: false
       matrix:
         vendor:
-          #- sqlite3
-          #- postgres
-          #- postgres10
-          #- mysql
-          #- mysql5
-          #- maria
-          #- mssql
+          - sqlite3
+          - postgres
+          - postgres10
+          - mysql
+          - mysql5
+          - maria
+          - mssql
           - oracle
-          #- cockroachdb
+          - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
