@@ -53,13 +53,9 @@ Refer to the full list of component based CSS variables in our codebase
 
 ## Creating a Custom UI Component
 
-The Directus UI components are designed with flexibility and customization in mind, enabling you to build your custom UI
-components.
+The Directus UI components are designed with flexibility and customization in mind. However, you may need to create your own components using shared styling. Directus exposes several CSS variables for both light and dark themes.
 
-We exposes a couple of CSS variables for both light and dark themes. These variables are useful when building a custom
-component and want it to look native to Directus.
-
-Here are some examples of CSS variables: `--border-normal`, `--foreground-normal` `-purple`, `--module-background`, and
+Examples of CSS variables include `--border-normal`, `--foreground-normal` `-purple`, `--module-background`, and
 `--overlay-color`.
 
 ::: tip Explore Light and Dark Theme CSS Variables
