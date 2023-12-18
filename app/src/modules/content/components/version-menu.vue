@@ -11,6 +11,7 @@ import VersionPromoteDrawer from './version-promote-drawer.vue';
 interface Props {
 	collection: string;
 	primaryKey: string | number;
+	updateAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersion | null;
 	versions: ContentVersion[] | null;
@@ -259,7 +260,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
+					<v-list-item v-if="updateAllowed" clickable @click="isVersionPromoteDrawerOpen = true">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -278,6 +279,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			v-if="currentVersion !== null"
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
+			:delete-versions-allowed="deleteVersionsAllowed"
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>

@@ -215,13 +215,13 @@ Directus will attempt to [automatically type cast environment variables](#type-c
 clues. If you have a specific need for a given type, you can tell Directus what type to use for the given value by
 prefixing the value with `{type}:`. The following types are available:
 
-| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
-| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
-| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
-| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                                        |
+| Syntax Prefix | Example                                                                                                         | Output                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                                                  | `"value"`                                                                                            |
+| `number`      | `number:3306`                                                                                                   | `3306`                                                                                               |
+| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                  |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
+| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
 ---
 

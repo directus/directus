@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { EXTENSION_TYPES } from '@directus/extensions';
+import { ExtensionType } from '@directus/extensions';
 import { pluralize } from '@directus/utils';
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { iconMap } from '../constants/icons';
 
 const props = defineProps<{
-	type: (typeof EXTENSION_TYPES)[number];
+	type: ExtensionType;
 }>();
 
 const { t } = useI18n();
