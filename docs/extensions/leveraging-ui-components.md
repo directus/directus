@@ -10,8 +10,8 @@ designed to provide a consistent user experience across different parts of the D
 
 ## Components Playground
 
-Explore the available components on the [Histoire Components Playground](https://components.directus.io/). Here, you can
-interact with different components and experiment with variations before implementing them in your project.
+Explore the available components in our [Directus Components Playground](https://components.directus.io/). Here, you can
+see all available components and experiment with variations before implementing them in your extensions.
 
 ![Directus UI Components](https://marketing.directus.app/assets/46d72f1a-5d9f-49f8-a09a-b2ffc5200812.gif)
 
