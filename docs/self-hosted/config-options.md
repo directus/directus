@@ -293,7 +293,6 @@ into unexpected behaviors.
 | `DB_PASSWORD`              | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
 | `DB_FILENAME`              | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
 | `DB_CONNECTION_STRING`     | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
-| `DB_POOL__*`               | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
 | `DB_EXCLUDE_TABLES`        | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
 | `DB_CHARSET`               | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
 | `DB_VERSION`               | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
@@ -301,16 +300,21 @@ into unexpected behaviors.
 
 ::: tip Additional Database Variables
 
-All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
-Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
-database instance.
+All `DB_*` environment variables are passed to the `connection` configuration of a
+[`Knex` instance](https://knexjs.org/guide/#configuration-options). This means, based on your project's needs, you can
+extend the `DB_*` environment variables with any config you need to pass to the database instance.
 
-:::
+This includes:
 
-::: tip Pooling
+- `DB_POOL__` prefixed options which are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage).
 
-All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
-[Knex](http://knexjs.org#Installation-pooling)
+- `DB_SSL__` prefixed options which are passed to the respective database driver.
+
+  - For example `DB_SSL__CA` which can be used to specify a custom CA certificate for SSL connections. This is
+    **required** if the database server CA is not part of [Node.js' trust store](https://nodejs.org/api/tls.html).
+
+    Note: `DB_SSL__CA_FILE` may be preferred to load the CA directly from a file, see
+    [Environment Variable Files](#environment-variable-files) for more information.
 
 :::
 
