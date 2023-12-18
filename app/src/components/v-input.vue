@@ -9,6 +9,7 @@ import { SafeInteger } from '@/__utils__/safe-integer';
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
+import { reactive } from 'vue';
 import { computed, ref, useAttrs } from 'vue';
 
 interface Props {
@@ -102,6 +103,8 @@ const inputValue = computed(() => {
 	return value;
 });
 
+const safeInput = computed(() => new SafeInteger(inputValue.value, props.isBigInt));
+
 const listeners = computed(() => ({
 	input: emitValue,
 	keydown: processValue,
@@ -128,7 +131,7 @@ const isStepUpAllowed = computed(() => {
 	return (
 		props.disabled === false &&
 		(props.max === undefined || parseInt(String(props.modelValue), 10) < props.max) &&
-		new SafeInteger(inputValue.value, props.isBigInt).isMaximum === false
+		safeInput.value.isMaximum === false
 	);
 });
 
@@ -136,7 +139,7 @@ const isStepDownAllowed = computed(() => {
 	return (
 		props.disabled === false &&
 		(props.min === undefined || parseInt(String(props.modelValue), 10) > props.min) &&
-		new SafeInteger(inputValue.value, props.isBigInt).isMinimum === false
+		safeInput.value.isMinimum === false
 	);
 });
 
@@ -237,7 +240,7 @@ function stepUp() {
 	if (!input.value) return;
 	if (isStepUpAllowed.value === false) return;
 
-	const safeInt = new SafeInteger(input.value.value, props.isBigInt);
+	const safeInt = safeInput.value;
 	safeInt.increment();
 	emit('update:modelValue', safeInt.value);
 }
@@ -246,7 +249,7 @@ function stepDown() {
 	if (!input.value) return;
 	if (isStepDownAllowed.value === false) return;
 
-	const safeInt = new SafeInteger(input.value.value, props.isBigInt);
+	const safeInt = safeInput.value;
 	safeInt.decrement();
 	emit('update:modelValue', safeInt.value);
 }
