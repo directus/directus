@@ -15,7 +15,7 @@ see all available components and experiment with variations before implementing 
 
 ![Directus UI Components](https://marketing.directus.app/assets/46d72f1a-5d9f-49f8-a09a-b2ffc5200812.gif)
 
-## Usage within Extensions
+## Extension Usage
 
 Directus UI components are globally registered, making them accessible throughout your extension project without the
 need for explicit imports. Here’s a basic example:
