@@ -38,12 +38,27 @@ export class SafeInteger {
 		return !this.isInvalid;
 	}
 
+	private get isBigInt() {
+		return typeof this._value === 'bigint';
+	}
+
 	get value() {
-		return typeof this._value === 'bigint' ? this._value.toString() : this._value;
+		return this.isBigInt ? this._value.toString() : this._value;
 	}
 
 	toString() {
 		return this._value.toString();
+	}
+
+	setValueIfValid(value: string) {
+		const newValue = this.isBigInt ? BigInt(value) : Number(value);
+
+		if (newValue > this.MAX_VALUE || newValue < this.MIN_VALUE) {
+			return false;
+		}
+
+		this._value = newValue;
+		return true;
 	}
 
 	add(value: number) {

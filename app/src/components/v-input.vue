@@ -9,7 +9,7 @@ import { SafeInteger } from '@/__utils__/safe-integer';
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref, reactive, useAttrs, watch } from 'vue';
 
 interface Props {
 	/** Autofocusses the input on render */
@@ -102,7 +102,15 @@ const inputValue = computed(() => {
 	return value;
 });
 
-const safeInput = computed(() => new SafeInteger(inputValue.value, props.isBigInt));
+const safeInput = reactive(new SafeInteger(inputValue.value, props.isBigInt));
+
+watch(inputValue, (value) => {
+	if (safeInput.toString() === value) {
+		return;
+	}
+
+	safeInput.setValueIfValid(value);
+});
 
 const listeners = computed(() => ({
 	input: emitValue,
@@ -130,7 +138,7 @@ const isStepUpAllowed = computed(() => {
 	return (
 		props.disabled === false &&
 		(props.max === undefined || parseInt(String(props.modelValue), 10) < props.max) &&
-		safeInput.value.isMaximum === false
+		safeInput.isMaximum === false
 	);
 });
 
@@ -138,7 +146,7 @@ const isStepDownAllowed = computed(() => {
 	return (
 		props.disabled === false &&
 		(props.min === undefined || parseInt(String(props.modelValue), 10) > props.min) &&
-		safeInput.value.isMinimum === false
+		safeInput.isMinimum === false
 	);
 });
 
@@ -187,16 +195,6 @@ function trimIfEnabled() {
 	}
 }
 
-function serializeNumber(value: string) {
-	const safeInt = new SafeInteger(value, props.isBigInt);
-
-	if (safeInt.isInvalid) {
-		return null;
-	}
-
-	return safeInt.value;
-}
-
 function emitValue(event: InputEvent) {
 	let value = (event.target as HTMLInputElement).value;
 
@@ -206,15 +204,15 @@ function emitValue(event: InputEvent) {
 	}
 
 	if (props.type === 'number') {
-		const parsedNumber = serializeNumber(value);
+		const isValid = safeInput.setValueIfValid(value);
 
 		// Ignore if numeric value remains unchanged
-		if (parsedNumber != null && props.modelValue !== parsedNumber) {
-			emit('update:modelValue', parsedNumber);
+		if (props.modelValue !== safeInput.value) {
+			emit('update:modelValue', safeInput.value);
 		}
 
-		if (parsedNumber == null && input.value) {
-			input.value.value = inputValue.value ?? '';
+		if (input.value && !isValid) {
+			input.value.value = safeInput.toString();
 		}
 	} else {
 		if (props.slug === true) {
@@ -239,18 +237,16 @@ function stepUp() {
 	if (!input.value) return;
 	if (isStepUpAllowed.value === false) return;
 
-	const safeInt = safeInput.value;
-	safeInt.increment();
-	emit('update:modelValue', safeInt.value);
+	safeInput.increment();
+	emit('update:modelValue', safeInput.value);
 }
 
 function stepDown() {
 	if (!input.value) return;
 	if (isStepDownAllowed.value === false) return;
 
-	const safeInt = safeInput.value;
-	safeInt.decrement();
-	emit('update:modelValue', safeInt.value);
+	safeInput.decrement();
+	emit('update:modelValue', safeInput.value);
 }
 </script>
 
