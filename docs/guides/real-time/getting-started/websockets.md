@@ -186,17 +186,17 @@ You may have noticed that, periodically, you will receive a message with a type 
 In order to prevent the connection from *closing*, you have to reply with a `pong` event.
 
 ```js
-connection.addEventListener( 'message', (message) => {
-    const data = JSON.parse(message.data);
+connection.addEventListener('message', (message) => {
+	const data = JSON.parse(message.data);
 
-    if( data.type === 'ping' ) {
-        this.connection.send(
-            JSON.stringify({
-                type: 'pong'
-            })
-        )
-    }
-} )
+	if (data.type === 'ping') {
+		this.connection.send(
+			JSON.stringify({
+				type: 'pong',
+			}),
+		);
+	}
+});
 ```
 
 On Directus Cloud, this feature is enabled. If you are self-hosting, you can alter this behavior with the
