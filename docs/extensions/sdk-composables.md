@@ -186,7 +186,7 @@ primaryKeyField.value;
 
 ::: tip `useCollection` vs `useCollectionStore`
 
-For full capabilities like retrieving, updating and deleting collection data, use the `useCollectionStore` composable
+For full capabilities like retrieving, updating and deleting collection items, use the `useCollectionStore` composable
 instead.
 
 :::
