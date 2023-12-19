@@ -419,11 +419,21 @@ function setAspectRatio() {
 			</div>
 
 			<div class="toolbar">
-				<div v-tooltip.top.inverted="t('drag_mode')" class="drag-mode toolbar-button">
-					<v-icon name="pan_tool" :class="{ active: localDragMode === 'move' }" @click="dragMode = 'move'" />
-					<v-icon name="crop" :class="{ active: localDragMode === 'crop' }" @click="dragMode = 'crop'" />
+				<div class="drag-mode toolbar-button">
 					<v-icon
-						v-tooltip.top.inverted="t('focal_point')"
+						v-tooltip.top.inverted="t('move_tool')"
+						name="pan_tool"
+						:class="{ active: localDragMode === 'move' }"
+						@click="dragMode = 'move'"
+					/>
+					<v-icon
+						v-tooltip.top.inverted="t('crop_tool')"
+						name="crop"
+						:class="{ active: localDragMode === 'crop' }"
+						@click="dragMode = 'crop'"
+					/>
+					<v-icon
+						v-tooltip.top.inverted="t('focal_point_tool')"
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
 						@click="dragMode = 'focal_point'"

@@ -502,6 +502,9 @@ months:
   november: November
   december: December
 drag_mode: Drag Mode
+move_tool: Move Tool
+crop_tool: Crop Tool
+focal_point_tool: Focal Point Tool
 cancel_crop: Cancel Crop
 cancel_selection: Cancel Selection
 original: Original
