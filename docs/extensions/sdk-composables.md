@@ -1,5 +1,5 @@
 ---
-description: Learn about the extension SDK composables and how to utilize them when developing custom extensions.
+description: Learn about the extension SDK composables and how to utilize them when developing app extensions.
 contributors: Esther Agbaje
 ---
 
@@ -12,13 +12,10 @@ Rather than needing to rewrite logic from scratch, extension developers can leve
 
 ## `useApi()`
 
-The `useApi` composable allows extensions to make requests to endpoints within Directus. It acts as a wrapper around the
-axios library, providing some extra functionalities. For instance, `useApi` automatically authenticates requests made
-from your app extensions with the current user. It also provides concurrency control when making multiple requests.
+The `useApi` composable is a wrapper around the `axios` library that adds the `Authorization` header and provides
+concurrency control when making multiple requests.
 
-Use the `useApi` composable when you need to make authorized API requests from your app extension.
-
-Here’s a sample code of how to implement `useApi`
+Use the `useApi` composable when you need to make authorized API requests from your App extension.
 
 ```html
 <script setup>
@@ -27,8 +24,8 @@ import { useApi } from '@directus/extensions-sdk';
 const api = useApi();
 
 async function fetchData() {
-      const response = await api.get(ENDPOINT_URL);
-      data.value = response.data;
+    const response = await api.get('ENDPOINT_URL');
+    data.value = response.data;
 };
 fetchData();
 </script>
@@ -36,17 +33,16 @@ fetchData();
 
 ## `useStores()`
 
-`useStores` serves as the primary way for App extensions to interact with data and features available within a Directus
-instance. It acts as the main entry point when working with collections, fields, permissions, and more. Within
-`useStores` are stores like the `usePermissionsStore`, `useCollectionsStore` and `useFieldsStore` among others.
+`useStores` serves as the primary way for App extensions to interact with data and features within a Directus instance.
 
-Here’s a sample code of how to implement `useStores`
+Within `useStores` are stores like the `usePermissionsStore`, `useCollectionsStore` and `useFieldsStore` among others.
 
 ```html
 <script setup>
 import { useStores } from '@directus/extensions-sdk';
 
 const { useFieldsStore, usePermissionsStore, useCollectionStore } = useStores();
+
 const fieldsStore = useFieldsStore();
 const permissionsStore = usePermissionsStore();
 const collectionStore = useCollectionStore();
@@ -55,10 +51,9 @@ const collectionStore = useCollectionStore();
 
 ### `useFieldsStore()`
 
-The `useFieldsStore` is a store designed to provide access to collection and fields when working with App extensions. It
-provides methods like `createField`,`updateField` and `deleteField`.
+The `useFieldsStore` is used to access and modify collections and fields.
 
-This store is useful when you need to:
+Use this store when you need to:
 
 - retrieve information about a collection's field
 - perform mutations on a collection's field such as create, update, upsert, or delete
@@ -92,17 +87,7 @@ For a deep dive on how to use the `useFieldsStore` composable,
 
 ### `usePermissionsStore()`
 
-The `usePermissionsStore` provides permission-related functionalities when working with Directus data within an App
-extension.
-
-Methods like `createAllowed`, `deleteAllowed` and `saveAllowed` among others are available within the
-`usePermissionStore`.
-
-The `usePermissionsStore` is useful when you need to:
-
-- determine what data a user is allowed to view or edit
-- handle permission-restricted operations
-- integrate single sign-on and token based permissions
+The `usePermissionsStore` is used to check for access control before performing operations within your App extension.
 
 ```html
 <script setup>
@@ -111,8 +96,11 @@ import { useStores } from '@directus/extensions-sdk';
 const { usePermissionsStore } = useStores();
 const permissionsStore = usePermissionsStore();
 
-// check a user permission
-const hasPermission = permissionsStore('collection_name', 'create');
+// check if user can create a collection
+const canCreate = permissionsStore.hasPermission('collection_name', 'create');
+
+// check if user can read a collection
+const canRead = permissionsStore.hasPermission('collection_name', 'read');
 </script>
 ```
 
@@ -122,15 +110,13 @@ codebase.
 
 ### `useCollectionsStore()`
 
-`useCollectionsStore` provides access to collections within Directus. It allows you to retrieve, insert, update and
-delete collection data directly through the methods such as `getCollection`, `upsertCollection` and `deleteCollection`
-directly from your App extension.
+`useCollectionsStore` provides access to collections directly from your App extension.
 
-The `useCollectionsStore` is useful when you need to:
+Use this store when you need to:
 
 - perform CRUD operations on a collection such as create, update, upsert, or delete
 - retrieve translations for a collection (useful for internationalization)
-- retrieve all collections within a Directus instance
+- retrieve all collections or visible collections within a Directus instance
 
 ```html
 <script setup>
@@ -139,8 +125,20 @@ import { useStores } from '@directus/extensions-sdk';
 const { useCollectionsStore } = useStores();
 const collectionsStore = useCollectionsStore();
 
+// get all collections
+collectionsStore.collections.value;
+
+// get all visible collections
+collectionsStore.visibleCollections.value;
+
 // get a collection
-const myCollections = getCollection('collection_name');
+collectionStore.getCollection("collection_key");
+
+// delete a collection
+await collectionStore.deleteCollection("collection_key");
+
+// upsert (create or update) a collection
+await collectionStore.upsertCollection("collection_key", {...});
 </script>
 ```
 
@@ -158,26 +156,40 @@ composable contains additional sub-stores. Reference the full list in of sub-sto
 
 ## `useCollection()`
 
-The `useCollection` composable provides access to metadata about collections. `useCollection` focuses only on exposing
-metadata, not full functionality. It exposes methods like `fields`, `primaryKeyField`, and `accountabilityScope.`
+The `useCollection` composable provides access to metadata about collections (such as name, fields, type, icon).
 
-For full capabilities like retrieving, updating and deleting collection data, use the `useCollectionStore` composable
-instead.
+Use `useCollection` composable when you need to retrieve:
 
-The `useCollection` is useful when you need to:
+- metadata about a collection (such as name, type, icon)
+- fields within a collection and their default values
+- the primary key and user created field
+- accountability scope
 
-- determine a collection's primary key field
-- fetch a collection's metadata like `accountabilityScope`
-
-Here’s a sample code of how to implement `useCollection`
-
-```ts
+```html
 <script setup>
 import { useCollection } from '@directus/extensions-sdk';
+const { info, fields, defaults, primaryKeyField } = useCollection('collection_name');
 
-const { primaryKeyField } = useCollection('collection_name');
+info.value;
+// => [{ name: 'collection_name', icon: 'box', type: 'table', ... }]
+
+fields.value;
+// => [{ name: 'title', type: 'string', ... }]
+
+defaults.value;
+// => { title: 'default_value' }
+
+primaryKeyField.value;
+// => { name: 'id', type: 'uuid', ... }
 </script>
 ```
+
+::: tip `useCollection` vs `useCollectionStore`
+
+For full capabilities like retrieving, updating and deleting collection data, use the `useCollectionStore` composable
+instead.
+
+:::
 
 For a deep dive on how to use the `useCollection` composable,
 [see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-collection.ts) in
@@ -185,17 +197,55 @@ our codebase.
 
 ## `useItems()`
 
-The `useItems` composable handles retrieving and working on items in a collection. It handles fetching multiple items
-via methods like `getItems`, `getItemCount` and `getTotalCount`. It also exposes values for pagination data like
-`itemCount` and `totalPages`.
+The `useItems` composable is used to retrieve items in a collection and provides pagination features.
 
-Here’s a sample code of how to implement `useItems`
+### Fetching items in a collection
 
-```ts
+```html
 <script setup>
 import { useItems } from '@directus/extensions-sdk';
 
-const { getItems, totalPages } = useItems();
+const collectionRef = ref('collection_key')
+
+const { getItems, items } = useItems(collectionRef);
+
+await getItems(); // fetch the items
+
+const data = items.value; // read the items
+</script>
+```
+
+### Fetching the item and page count
+
+```html
+<script setup>
+import { useItems } from '@directus/extensions-sdk';
+
+const collectionRef = ref('collection_key')
+
+const { getItemCount, itemCount, totalPages } = useItems(collectionRef);
+
+await getItemCount(); // fetch the item count
+
+const data = itemCount.value; // read the item count
+
+const pages = totalPages.value; // read the total pages
+</script>
+```
+
+### Fetching the total count
+
+```html
+<script setup>
+import { useItems } from '@directus/extensions-sdk';
+
+const collectionRef = ref('collection_key')
+
+const { getTotalCount, totalCount } = useItems(collectionRef);
+
+await getTotalCount(); // fetch the total item count
+
+const data = totalCount.value; // read the total item count
 </script>
 ```
 
@@ -203,6 +253,10 @@ For a deep dive on how to use the `useItems()` composable,
 [see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39) in
 our codebase.
 
+::: tip Explore all Composables
+
 While these core composables cover many common use cases, for a complete reference of all available Extension SDK
 composables within Directus, check out our
 [GitHub repository](https://github.com/directus/directus/blob/main/app/src/composables/use-system.ts).
+
+:::
