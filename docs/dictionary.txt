@@ -426,13 +426,6 @@ unstyled
 upscaled
 upvotes
 userbase
-useApi
-useCollection
-useCollectionsStore
-useFieldsStore
-useItems
-usePermissionsStore
-useStores
 uuid
 UUID
 UUIDs
