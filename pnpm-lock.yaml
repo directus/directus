@@ -300,8 +300,8 @@ importers:
         specifier: 6.11.2
         version: 6.11.2
       rate-limiter-flexible:
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 4.0.0
+        version: 4.0.0
       rollup:
         specifier: 3.29.4
         version: 3.29.4
@@ -1402,8 +1402,8 @@ importers:
         specifier: 10.1.0
         version: 10.1.0
       rate-limiter-flexible:
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 4.0.0
+        version: 4.0.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -16435,8 +16435,8 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 
-  /rate-limiter-flexible@2.4.2:
-    resolution: {integrity: sha512-rMATGGOdO1suFyf/mI5LYhts71g1sbdhmd6YvdiXO2gJnd42Tt6QS4JUKJKSWVVkMtBacm6l40FR7Trjo6Iruw==}
+  /rate-limiter-flexible@4.0.0:
+    resolution: {integrity: sha512-SkA18LEPqJJKHixi6E7tzBKTXbj9gu5wPyfTykPVRZR5JGSw0dMCjtZsjlfuabVY940pu28Wu87NZN4FhztnyQ==}
     dev: false
 
   /raw-body@2.5.1:
