@@ -32,13 +32,13 @@
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.17.6",
 		"@vitejs/plugin-vue": "4.5.2",
-		"@vitest/coverage-v8": "1.0.4",
+		"@vitest/coverage-v8": "1.1.0",
 		"histoire": "0.17.6",
 		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.3.3",
 		"vite": "5.0.10",
 		"vite-plugin-dts": "3.6.4",
-		"vitest": "1.0.4"
+		"vitest": "1.1.0"
 	},
 	"peerDependencies": {
 		"pinia": "2.1.7",
