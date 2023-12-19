@@ -114,7 +114,7 @@ But when it’s time to go to production and add all your different users, we re
    ![A sample user's detail page is shown. The Two-Factor Authentication form field is highlighted. ](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-user.webp)
 
 2. **Enable the Strong option for Auth Password Policy under
-   [Project Settings > Security](/user-guide/cloud/project-settings#security).**
+   [Project Settings > Security](/user-guide/settings/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
 
