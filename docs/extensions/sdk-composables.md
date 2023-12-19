@@ -31,7 +31,7 @@ fetchData();
 </script>
 ```
 
-## useStores()
+## `useStores()`
 
 `useStores` serves as the main entry point for accessing specific functionality when building extensions. Within
 `useStores` are sub-stores like the `usePermissionsStore`, `useCollectionsStore` and `useFieldsStore` among others.
@@ -47,7 +47,7 @@ const collectionStore = useCollectionStore();
 </script>
 ```
 
-### useFieldsStore
+### `useFieldsStore()`
 
 The `useFieldsStore` gives developers access to customizable field properties and functionality. It provides methods
 like `fields`, `updateField` , and `getPrimaryKeyFieldForCollection`.
@@ -55,7 +55,7 @@ like `fields`, `updateField` , and `getPrimaryKeyFieldForCollection`.
 For a deep dive on how to use the `useFieldsStore` composable,
 [see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts#L69) in our codebase.
 
-### usePermissionsStore
+### `usePermissionsStore()`
 
 The `usePermissionsStore` exposes permission-related functionalities. It retrieves the user's permissions from the
 Directus API and makes them easily accessible.
@@ -67,7 +67,7 @@ For a deep dive on how to use the `usePermissionsStore` composable,
 [see the implementation](https://www.notion.so/Extension-Composables-f2918516bd9a4c2180a1fc01e1a9f0f1?pvs=21) in our
 codebase.
 
-### useCollectionsStore
+### `useCollectionsStore()`
 
 `useCollectionsStore` provides access to collections within Directus. It allows you to retrieve, insert, update and
 delete collection data directly through the methods such as `getCollection`, `upsertCollection` and `deleteCollection`
@@ -85,7 +85,7 @@ composable contains additional sub-stores. Reference the full list in of sub-sto
 
 :::
 
-## useCollection()
+## `useCollection()`
 
 The `useCollection` composable provides access to metadata about collections. `useCollection` focuses only on exposing
 metadata, not full functionality. It exposes methods like `fields`, `primaryKeyField`, and `accountabilityScope.`
@@ -107,7 +107,7 @@ For a deep dive on how to use the `useCollection` composable,
 [see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-collection.ts) in
 our codebase.
 
-## useItems()
+## `useItems()`
 
 The `useItems` composable handles retrieving and working on items in a collection. It handles fetching multiple items
 via methods like `getItems`, `getItemCount` and `getTotalCount`. It also exposes values for pagination data like
@@ -123,7 +123,7 @@ const { getItems, totalPages } = useItems();
 </script>
 ```
 
-For a deep dive on how to use the `useItems` composable,
+For a deep dive on how to use the `useItems()` composable,
 [see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39) in
 our codebase.
 
