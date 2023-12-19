@@ -164,6 +164,11 @@ metadata, not full functionality. It exposes methods like `fields`, `primaryKeyF
 For full capabilities like retrieving, updating and deleting collection data, use the `useCollectionStore` composable
 instead.
 
+The `useCollection` is useful when you need to:
+
+- determine a collection's primary key field
+- fetch a collection's metadata like `accountabilityScope`
+
 Here’s a sample code of how to implement `useCollection`
 
 ```ts
