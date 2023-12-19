@@ -10,7 +10,7 @@ There are several composables available as part of the Directus Extensions SDK t
 Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi()` or
 `useStores()`, to handle common complexities when building extensions.
 
-## useApi()
+## `useApi()`
 
 The `useApi` composable allows extensions to make requests to endpoints within Directus. It acts as a wrapper around the
 axios library.
