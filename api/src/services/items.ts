@@ -91,6 +91,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async updateCountEstimation() {
+		if (this.eventScope !== 'items') {
+			return;
+		}
+
 		const availableFieldsCount = await this.knex(this.collection).count({ count: '*' });
 
 		await this.knex('directus_collections')
