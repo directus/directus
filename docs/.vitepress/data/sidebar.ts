@@ -390,7 +390,7 @@ function sidebarDeveloperReference() {
 				},
 				{
 					link: '/extensions/sdk-composables',
-					text: 'SDK Composables',
+					text: 'App Extension Composables',
 				},
 				{
 					text: 'Internal Packages',
