@@ -6,7 +6,7 @@ type Option = {
 	text: string;
 	value: string | number | boolean;
 	icon?: string;
-	iconColor?: string;
+	color?: string;
 	children?: Option[];
 };
 
@@ -41,7 +41,7 @@ const { t } = useI18n();
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		item-icon="icon"
-		item-icon-color="iconColor"
+		item-color="color"
 		:placeholder="placeholder"
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"

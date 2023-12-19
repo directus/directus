@@ -60,8 +60,8 @@ export default defineInterface({
 							},
 						},
 						{
-							field: 'iconColor',
-							name: '$t:interfaces.select-dropdown.icon_color',
+							field: 'color',
+							name: '$t:color',
 							type: 'string',
 							meta: {
 								interface: 'select-color',

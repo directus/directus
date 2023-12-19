@@ -22,7 +22,7 @@ const props = withDefaults(
 		/** Which key in items is used to show an icon */
 		itemIcon?: string | null;
 		/** Which key in items is used to show an icon color */
-		itemIconColor?: string | null;
+		itemColor?: string | null;
 		/** Which font family to use for checkbox item label */
 		itemLabelFontFamily?: string;
 		/** Which key in items is used to model the disabled state */
@@ -126,7 +126,7 @@ function useItems() {
 				text,
 				value,
 				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
-				iconColor: props.itemIconColor ? get(item, props.itemIconColor) : undefined,
+				color: props.itemColor ? get(item, props.itemColor) : undefined,
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
 				children: children
@@ -212,7 +212,7 @@ function useDisplayValue() {
 		}
 
 		const item = getItemForValue(props.modelValue);
-		return { text: item?.text || props.modelValue, icon: item?.icon, iconColor: item?.iconColor };
+		return { text: item?.text || props.modelValue, icon: item?.icon, color: item?.color };
 	});
 
 	return { displayValue };
@@ -269,7 +269,7 @@ function useDisplayValue() {
 				>
 					<template v-if="$slots.prepend || displayValue.icon" #prepend>
 						<slot name="prepend">
-							<v-icon v-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.iconColor" />
+							<v-icon v-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
 						</slot>
 					</template>
 					<template #append>

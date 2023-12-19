@@ -1,7 +1,7 @@
 export type Option = {
 	value: string | number | null;
 	icon?: string;
-	iconColor?: string;
+	color?: string;
 	text?: string;
 	disabled?: boolean;
 	children?: Option[];
