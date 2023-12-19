@@ -72,6 +72,8 @@ extension_hooks: Cârlige
 extension_endpoints: Puncte finale
 extension_operations: Operațiuni
 extension_bundles: Pachete
+extension_reload_required_copy: Este necesară o reîncărcare a paginii pentru a vedea modificările după activarea sau dezactivarea extensiilor aplicației.
+extension_reload_now: Reîncarcă acum
 enable: Activare
 disable: Dezactivează
 custom: Personalizat
@@ -167,6 +169,7 @@ archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Următoarele permisiuni minime sunt aplicate automat când "Acces aplicație" este activată. Puteți acorda permisiuni suplimentare dacă este necesar, dar nu puteți reduce permisiunile sub acest nivel.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -190,7 +193,12 @@ validationError:
   nnull: Valoarea nu poate fi nulă
   required: Valoarea este obligatorie
   unique: Valoarea trebuie să fie unică
+  email: Valoarea trebuie să fie o adresă de e-mail validă
   regex: Valoarea nu are formatul corect
+  starts_with: Valoarea trebuie să înceapă cu {substring}
+  istarts_with: Valoarea trebuie să înceapă cu {substring}
+  nstarts_with: Valoarea nu poate începe cu {substring}
+  nistarts_with: Valoarea nu poate începe cu {substring}
 all_access: Acces complet
 no_access: Fără acces
 use_custom: Acces personalizat
