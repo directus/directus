@@ -3,4 +3,4 @@
 '@directus/sdk': major
 ---
 
-Fixed directus_extensions endpoint not categorized as a system collection
+Renamed the type `ExtensionItem` to `DirectusExtension` and allow extending the type with custom fields
