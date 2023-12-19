@@ -8,7 +8,7 @@ contributors: Esther Agbaje
 There are several composables available as part of the Directus Extensions SDK that make working with Directus easier.
 
 Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi()` or
-`useStores()`, to abstract away complexity when building extensions.
+`useStores()`, to handle common complexities when building extensions.
 
 ## useApi()
 
