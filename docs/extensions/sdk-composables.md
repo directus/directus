@@ -5,7 +5,7 @@ contributors: Esther Agbaje
 
 # App Extension Composables
 
-The Extension Composables serve as a powerful toolkit to help developers create extensions in Directus.
+There are several composables available as part of the Directus Extensions SDK that make working with Directus easier.
 
 Rather than needing to rewrite logic from scratch, extension developers can leverage primitives like `useApi()` or
 `useStores()`, to abstract away complexity when building extensions.
