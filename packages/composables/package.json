@@ -45,6 +45,6 @@
 		"vitest": "1.1.0"
 	},
 	"peerDependencies": {
-		"vue": "3.3.11"
+		"vue": "3.3.13"
 	}
 }
