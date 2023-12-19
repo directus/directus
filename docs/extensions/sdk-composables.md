@@ -24,7 +24,7 @@ import { useApi } from '@directus/extensions-sdk';
 const api = useApi();
 
 async function fetchData() {
-      const response = await api.get(ENDPOINT-URL);
+      const response = await api.get(ENDPOINT_URL);
       data.value = response.data;
     }
 fetchData();
