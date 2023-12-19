@@ -45,8 +45,9 @@ const isActive = computed(() => {
 		:value="item.value"
 		@click="multiple ? null : $emit('update:modelValue', item.value)"
 	>
-		<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
-			<v-icon :name="item.icon" :color="item.color" />
+		<v-list-item-icon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
+			<v-icon v-if="item.icon" :name="item.icon" :color="item.color" />
+			<display-color v-else class="item-dot" :value="item.color" />
 		</v-list-item-icon>
 		<v-list-item-content>
 			<span v-if="multiple === false || item.selectable === false" class="item-text">{{ item.text }}</span>
@@ -66,5 +67,9 @@ const isActive = computed(() => {
 <style scoped>
 .checkbox :deep(.type-text) {
 	font-family: v-bind('$props.itemLabelFontFamily');
+}
+.item-dot {
+	padding-left: 6px;
+	padding-right: 6px;
 }
 </style>

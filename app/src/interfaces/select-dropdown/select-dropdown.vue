@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { i18n } from '@/lang';
 import { useI18n } from 'vue-i18n';
+import { isEmpty } from 'lodash';
 
 type Option = {
 	text: string;
@@ -10,7 +12,7 @@ type Option = {
 	children?: Option[];
 };
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
 		disabled?: boolean;
@@ -28,16 +30,36 @@ withDefaults(
 defineEmits(['input']);
 
 const { t } = useI18n();
+
+const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
+
+const items = computed(() => {
+	if (!applyGlobalIcon.value || !props.icon) {
+		return props.choices;
+	}
+
+	return props.choices?.map((choice) => {
+		if (choice.icon) {
+			return choice;
+		}
+
+		if (!choice.icon && !choice.color) {
+			choice.icon = props.icon;
+		}
+
+		return choice;
+	});
+});
 </script>
 
 <template>
-	<v-notice v-if="!choices" type="warning">
+	<v-notice v-if="!items" type="warning">
 		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<v-select
 		v-else
 		:model-value="value"
-		:items="choices"
+		:items="items"
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		item-icon="icon"
@@ -46,7 +68,7 @@ const { t } = useI18n();
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"
 	>
-		<template v-if="icon" #prepend>
+		<template v-if="icon && isEmpty(value)" #prepend>
 			<v-icon :name="icon" />
 		</template>
 	</v-select>

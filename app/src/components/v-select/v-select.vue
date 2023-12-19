@@ -267,10 +267,10 @@ function useDisplayValue() {
 					:active="active"
 					@click="toggle"
 				>
-					<template v-if="$slots.prepend || displayValue.icon" #prepend>
-						<slot name="prepend">
-							<v-icon v-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
-						</slot>
+					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
+						<slot v-if="$slots.prepend" name="prepend" />
+						<v-icon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+						<display-color v-else-if="displayValue.color" class="item-dot" :value="displayValue.color" />
 					</template>
 					<template #append>
 						<v-icon name="expand_more" :class="{ active }" />
@@ -448,5 +448,10 @@ function useDisplayValue() {
 
 .inline-display.placeholder {
 	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
+}
+
+.item-dot {
+	padding-left: 6px;
+	padding-right: 6px;
 }
 </style>
