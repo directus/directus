@@ -13,7 +13,7 @@ Rather than needing to rewrite logic from scratch, extension developers can leve
 ## `useApi()`
 
 The `useApi` composable allows extensions to make requests to endpoints within Directus. It acts as a wrapper around the
-axios library.
+axios library. It automatically authenticates requests made from your app extensions with the current user.
 
 Here’s a sample code of how to implement `useApi`
 
