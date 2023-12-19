@@ -223,7 +223,7 @@ function getSystemFields() {
 							text: '$t:draft',
 							value: 'draft',
 							foreground: '#18222F',
-							background: '#D3DAE4',
+							background: 'var(--theme--background-subdued)',
 						},
 						{
 							text: '$t:archived',
