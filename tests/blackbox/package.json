@@ -20,6 +20,7 @@
 		"argon2": "0.31.2",
 		"autocannon": "7.14.0",
 		"axios": "1.6.2",
+		"get-port": "7.0.0",
 		"globby": "14.0.0",
 		"graphql-ws": "5.14.2",
 		"js-yaml": "4.1.0",
@@ -33,6 +34,6 @@
 		"uuid": "9.0.1",
 		"vite-tsconfig-paths": "4.2.2",
 		"vitest": "1.0.4",
-		"ws": "8.15.0"
+		"ws": "8.15.1"
 	}
 }

@@ -392,6 +392,10 @@ function sidebarDeveloperReference() {
 					link: '/extensions/sdk-composables',
 					text: 'App Extension Composables',
 				},
+        {
+					link: '/extensions/using-ui-components',
+					text: 'UI Components',
+				},
 				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',

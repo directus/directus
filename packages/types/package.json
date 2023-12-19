@@ -34,7 +34,7 @@
 		"typescript": "5.3.3"
 	},
 	"peerDependencies": {
-		"knex": "2.5.1",
+		"knex": "3.1.0",
 		"vue": "3.3.11"
 	},
 	"peerDependenciesMeta": {
