@@ -389,8 +389,8 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
-					link: '/extensions/sdk-composables',
-					text: 'App Extension Composables',
+					link: '/extensions/app-composables',
+					text: 'App Composables',
 				},
 				{
 					link: '/extensions/using-ui-components',
