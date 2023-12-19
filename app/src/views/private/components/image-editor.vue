@@ -148,7 +148,25 @@ function useImage() {
 	function save() {
 		saving.value = true;
 
-		if (localDragMode.value === 'crop') {
+		if (localDragMode.value === 'focal_point') {
+			const data = cropperInstance.value?.getData();
+			const focalPointX = (data?.x ?? 0) + (data?.width ?? 0) / 2;
+			const focalPointY = (data?.y ?? 0) + (data?.height ?? 0) / 2;
+
+			api
+				.patch(`/files/${props.id}`, {
+					focal_point: { x: focalPointX, y: focalPointY },
+				} satisfies Partial<File>)
+				.then(
+					() => {
+						emit('refresh');
+						internalActive.value = false;
+						localDragMode.value = 'move';
+					},
+					(err) => unexpectedError(err),
+				)
+				.finally(() => (saving.value = false));
+		} else {
 			cropperInstance.value
 				?.getCroppedCanvas({
 					imageSmoothingQuality: 'high',
@@ -176,24 +194,6 @@ function useImage() {
 					},
 					imageData.value?.type,
 				);
-		} else if (localDragMode.value === 'focal_point') {
-			const data = cropperInstance.value?.getData();
-			const focalPointX = (data?.x ?? 0) + (data?.width ?? 0) / 2;
-			const focalPointY = (data?.y ?? 0) + (data?.height ?? 0) / 2;
-
-			api
-				.patch(`/files/${props.id}`, {
-					focal_point: { x: focalPointX, y: focalPointY },
-				} satisfies Partial<File>)
-				.then(
-					() => {
-						emit('refresh');
-						internalActive.value = false;
-						localDragMode.value = 'move';
-					},
-					(err) => unexpectedError(err),
-				)
-				.finally(() => (saving.value = false));
 		}
 	}
 
