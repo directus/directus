@@ -37,6 +37,8 @@ router.post(
 			savedKeys.push(key);
 		}
 
+		await service.updateCountEstimation();
+
 		try {
 			if (Array.isArray(req.body)) {
 				const result = await service.readMany(savedKeys, req.sanitizedQuery);
@@ -216,6 +218,8 @@ router.delete(
 			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
 			await service.deleteByQuery(sanitizedQuery);
 		}
+
+		await service.updateCountEstimation();
 
 		return next();
 	}),

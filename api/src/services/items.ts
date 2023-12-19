@@ -90,6 +90,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 	}
 
+	async updateCountEstimation() {
+		const availableFieldsCount = await this.knex(this.collection).count({ count: '*' });
+
+		await this.knex('directus_collections')
+			.where('collection', '=', this.collection)
+			.update({
+				count_estimate: Number(availableFieldsCount[0]?.count ?? 0),
+			});
+	}
+
 	/**
 	 * Create a single new item.
 	 */
