@@ -5,10 +5,10 @@ contributors: Tim Butterfield
 
 # Use Native Layout Features In Your Modules
 
-This guide follows on [Create a Custom Portal Module](/guides/extensions/modules-build-portal), where you created a
-landing page module. You will learn how to add native sidebar dropdown element, action buttons and search, a split view
-window, and layout options using the built-in functions of Directus. These help provide a more coherent experience from
-other Directus modules and collections.
+This guide follows on [Create a Custom Portal Module](/guides/extensions/modules-build-landing-page), where you created
+a landing page module. You will learn how to add native sidebar dropdown element, action buttons and search, a split
+view window, and layout options using the built-in functions of Directus. These help provide a more coherent experience
+from other Directus modules and collections.
 
 ![A module showing title icon and append, action prepend, search box, and several UI buttons in the header](https://marketing.directus.app/assets/7ef23d67-366a-42a6-9fb4-15740e31458a.png)
 
