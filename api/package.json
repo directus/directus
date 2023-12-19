@@ -147,7 +147,7 @@
 		"otplib": "12.0.1",
 		"p-queue": "7.4.1",
 		"papaparse": "5.4.1",
-		"pino": "8.16.2",
+		"pino": "8.17.1",
 		"pino-http": "8.5.1",
 		"pino-http-print": "3.1.0",
 		"pino-pretty": "10.3.0",

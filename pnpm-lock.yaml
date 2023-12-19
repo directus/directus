@@ -285,8 +285,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       pino:
-        specifier: 8.16.2
-        version: 8.16.2
+        specifier: 8.17.1
+        version: 8.17.1
       pino-http:
         specifier: 8.5.1
         version: 8.5.1
@@ -1247,8 +1247,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       pino:
-        specifier: 8.16.2
-        version: 8.16.2
+        specifier: 8.17.1
+        version: 8.17.1
       vue:
         specifier: 3.3.13
         version: 3.3.13(typescript@5.3.3)
@@ -15628,7 +15628,7 @@ packages:
     resolution: {integrity: sha512-T/3d9YHKBYpv/QHjNy73P5BNYYkRrC2/D6CxKMecG4fKFLN+B2iC6LsKYzGRTRV+Ld3fjxFC1ca4TUGbPdzk+Q==}
     dependencies:
       get-caller-file: 2.0.5
-      pino: 8.16.2
+      pino: 8.17.1
       pino-std-serializers: 6.2.2
       process-warning: 2.3.2
     dev: false
@@ -15676,8 +15676,8 @@ packages:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
     dev: false
 
-  /pino@8.16.2:
-    resolution: {integrity: sha512-2advCDGVEvkKu9TTVSa/kWW7Z3htI/sBKEZpqiHk6ive0i/7f5b1rsU8jn0aimxqfnSz5bj/nOYkwhBUn5xxvg==}
+  /pino@8.17.1:
+    resolution: {integrity: sha512-YoN7/NJgnsJ+fkADZqjhRt96iepWBndQHeClmSBH0sQWCb8zGD74t00SK4eOtKFi/f8TUmQnfmgglEhd2kI1RQ==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
