@@ -5,7 +5,7 @@ description: Project tutorials, tips & tricks, and best practices from the Direc
 ---
 
 <script setup>
-import BlogHero from '.@/components/blog/BlogHero.vue';
+import BlogHero from '@/components/blog/BlogHero.vue';
 import BlogIndex from '@/components/blog/BlogIndex.vue';
 </script>
 
