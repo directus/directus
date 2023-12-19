@@ -1,15 +1,17 @@
 import type { MergeCoreCollection } from '../index.js';
 
-export type DirectusExtension<Schema extends object> = MergeCoreCollection<
-	Schema,
-	'directus_extensions',
-	{
-		name: string;
-		bundle: string | null;
-		schema: { type: ExtensionTypes; local: boolean } | null;
-		meta: { enabled: boolean };
-	}
->;
+export type DirectusExtension<Schema extends object> = {
+	name: string;
+	bundle: string | null;
+	schema: ExtensionSchema | null;
+	meta: MergeCoreCollection<Schema, 'directus_extensions', { enabled: boolean }>;
+};
+
+export type ExtensionSchema = {
+	type: ExtensionTypes;
+	local: boolean;
+	version?: string;
+};
 
 export type ExtensionTypes =
 	| 'interface'
