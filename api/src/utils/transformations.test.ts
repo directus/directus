@@ -1,7 +1,7 @@
-import { expect, test, describe } from 'vitest';
-import { maybeExtractFormat, resolvePreset } from './transformations.js';
-import type { File } from '../types/files.js';
+import type { File } from '@directus/types';
+import { describe, expect, test } from 'vitest';
 import type { Transformation, TransformationParams } from '../types/assets.js';
+import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile: File = {
 	id: '43a15f67-84a7-4e07-880d-e46a9f33c542',
@@ -12,17 +12,20 @@ const inputFile: File = {
 	type: null,
 	folder: null,
 	uploaded_by: null,
-	uploaded_on: new Date(),
+	uploaded_on: '2023-12-19T16:12:53.149Z',
 	charset: null,
 	filesize: 123,
-	width: null,
-	height: null,
+	width: 1920,
+	height: 1080,
 	duration: null,
 	embed: null,
 	description: null,
 	location: null,
 	tags: null,
 	metadata: null,
+	modified_by: null,
+	modified_on: '',
+	focal_point: null,
 };
 
 describe('resolvePreset', () => {
@@ -98,16 +101,33 @@ describe('resolvePreset', () => {
 
 		const output = resolvePreset({ transformationParams }, inputFile);
 
+		/*
+		 * The following is relevant for a centered focal point
+		 * The initial aspect ratio is 16:9 so we have to resize the image to an intermediate size
+		 * that fully covers our desired 1:1 aspect ratio and then crop out the final dimensions
+		 * This results in: 1080/64 == 16.875   -->   1920/16.875 == 113.77 (round up) == 114 width
+		 * Next we need the inner padding to get the centered crop: (114 - 64) / 2 == 25
+		 * That results in the following
+		 * <──────────114───────────>
+		 * <──25──><───64───><──25──>
+		 * ┌──────┬──────────┬──────┐
+		 * │      │          │      │
+		 * │      │ extract  │      │
+		 * │      │ centered │      │
+		 * │      │          │      │
+		 * └──────┴──────────┴──────┘
+		 */
 		expect(output).toStrictEqual([
 			[
 				'resize',
 				{
-					width: 64,
+					width: 114,
 					height: 64,
 					fit: 'cover',
 					withoutEnlargement: undefined,
 				},
 			],
+			['extract', { left: 25, top: 0, width: 64, height: 64 }],
 		]);
 	});
 
