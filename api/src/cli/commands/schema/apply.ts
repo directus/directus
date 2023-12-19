@@ -57,7 +57,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			let message = '';
 
 			if (snapshotDiff.collections.length > 0) {
-				message += chalk.black.underline.bold('Collections:');
+				message += chalk.underline.bold('Collections:');
 
 				for (const { collection, diff } of snapshotDiff.collections) {
 					if (diff[0]?.kind === DiffKind.EDIT) {
@@ -80,7 +80,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			}
 
 			if (snapshotDiff.fields.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Fields:');
+				message += '\n\n' + chalk.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
 					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
@@ -108,7 +108,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			}
 
 			if (snapshotDiff.relations.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Relations:');
+				message += '\n\n' + chalk.underline.bold('Relations:');
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
 					if (diff[0]?.kind === DiffKind.EDIT) {
@@ -137,7 +137,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				}
 			}
 
-			message = 'The following changes will be applied:\n\n' + chalk.black(message);
+			message = 'The following changes will be applied:\n\n' + chalk.gray(message);
 
 			if (dryRun) {
 				logger.info(message);
