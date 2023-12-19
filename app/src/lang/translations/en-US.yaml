@@ -503,6 +503,7 @@ months:
   december: December
 drag_mode: Drag Mode
 cancel_crop: Cancel Crop
+cancel_selection: Cancel Selection
 original: Original
 url: URL
 import_label: Import

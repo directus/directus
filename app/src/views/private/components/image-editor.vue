@@ -3,7 +3,7 @@ import api, { addTokenToURL } from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { File } from '@directus/types';
+import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
@@ -16,6 +16,7 @@ type Image = {
 	filename_download: string;
 	width: number;
 	height: number;
+	focal_point: File['focal_point'];
 };
 
 const props = defineProps<{
@@ -133,7 +134,7 @@ function useImage() {
 
 			const response = await api.get(`/files/${props.id}`, {
 				params: {
-					fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
+					fields: ['type', 'filesize', 'filename_download', 'width', 'height', 'focal_point'],
 				},
 			});
 
@@ -271,10 +272,20 @@ function useCropper() {
 				cropperInstance.value?.clear();
 				localCropping.value = false;
 			} else if (newMode === 'focal_point') {
-				const boxSize = 48;
 				const canvasData = cropperInstance.value?.getCanvasData();
-				const centeredX = (canvasData?.naturalWidth ?? 0) / 2 - boxSize / 2;
-				const centeredY = (canvasData?.naturalHeight ?? 0) / 2 - boxSize / 2;
+				// Size the box as percentage so that it stays visible for both small and large images
+				const boxSize = Math.max(16, (canvasData?.naturalWidth ?? 0) * 0.1);
+				let centeredX = 0;
+				let centeredY = 0;
+
+				if (imageData.value?.focal_point) {
+					centeredX = imageData.value.focal_point.x - boxSize / 2;
+					centeredY = imageData.value.focal_point.y - boxSize / 2;
+				} else {
+					centeredX = (canvasData?.naturalWidth ?? 0) / 2 - boxSize / 2;
+					centeredY = (canvasData?.naturalHeight ?? 0) / 2 - boxSize / 2;
+				}
+
 				aspectRatio.value = 1;
 				cropperInstance.value?.setData({ x: centeredX, y: centeredY, width: boxSize, height: boxSize });
 			}
@@ -494,7 +505,7 @@ function setAspectRatio() {
 				</div>
 
 				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
-					{{ t('cancel_crop') }}
+					{{ localDragMode === 'focal_point' ? t('cancel_selection') : t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
