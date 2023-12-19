@@ -3,7 +3,7 @@ description: Learn about the extension SDK composables and how to utilize them w
 contributors: Esther Agbaje
 ---
 
-# Extension SDK Composables
+# App Extension Composables
 
 The Extension Composables serve as a powerful toolkit to help developers create extensions in Directus.
 
