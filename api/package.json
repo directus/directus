@@ -156,7 +156,7 @@
 		"rollup": "3.29.4",
 		"samlify": "2.8.10",
 		"sanitize-html": "2.11.0",
-		"sharp": "0.33.0",
+		"sharp": "0.33.1",
 		"snappy": "7.2.2",
 		"stream-json": "1.8.0",
 		"tinypool": "0.8.1",
