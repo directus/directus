@@ -2,7 +2,6 @@ import { getDatabase } from '../../database/index.js';
 import { useEnv } from '../../env.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getItemCount } from '../utils/get-item-count.js';
-import { getStorage } from '../utils/get-storage.js';
 import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
 
@@ -16,17 +15,16 @@ const basicCountCollections = [
 ] as const;
 
 /**
- * Create a telemetry report about the usage of the current installation
+ * Create a telemetry report about the anonymous usage of the current installation
  */
 export const getReport = async (): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const env = useEnv();
 
-	const [basicCounts, userCounts, userItemCount, storage] = await Promise.all([
+	const [basicCounts, userCounts, userItemCount] = await Promise.all([
 		getItemCount(db, basicCountCollections),
 		getUserCount(db),
 		getUserItemCount(db),
-		getStorage(db),
 	]);
 
 	return {
@@ -47,7 +45,5 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 		collections: userItemCount.collections,
 		items: userItemCount.items,
-
-		storage: storage,
 	};
 };

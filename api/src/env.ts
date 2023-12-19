@@ -204,6 +204,9 @@ const allowedEnvironmentVars = [
 	'ADMIN_PASSWORD',
 	// telemetry
 	'TELEMETRY',
+	'TELEMETRY_INGRESS',
+	'TELEMETRY_AUTHORIZATION',
+
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
@@ -295,6 +298,8 @@ export const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+	TELEMETRY_INGRESS: 'https://telemetry.directus.io/v1',
+	TELEMETRY_AUTHORIZATION: undefined,
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,

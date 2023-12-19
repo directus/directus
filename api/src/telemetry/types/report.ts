@@ -68,9 +68,4 @@ export interface TelemetryReport {
 	 * Number of shares in the system
 	 */
 	shares: number;
-
-	/**
-	 * Total volume of files managed in Directus in bytes
-	 */
-	storage: string;
 }
