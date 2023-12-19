@@ -390,7 +390,7 @@ function sidebarDeveloperReference() {
 				},
 				{
 					link: '/extensions/using-ui-components',
-					text: 'Using Directus UI Components',
+					text: 'UI Components',
 				},
 				{
 					text: 'Internal Packages',
