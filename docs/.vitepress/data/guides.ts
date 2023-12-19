@@ -235,6 +235,19 @@ export const sections = {
 				],
 			},
 			{
+				title: 'Modules',
+				items: [
+					{
+						display: 'Create a Custom Landing Page Module',
+						path: '/guides/extensions/modules-build-landing-page',
+					},
+					{
+						display: 'Use Native Layout Features In Your Modules',
+						path: '/guides/extensions/modules-native-layout-features',
+					},
+				],
+			},
+			{
 				title: 'From the Blog',
 				items: [
 					{
