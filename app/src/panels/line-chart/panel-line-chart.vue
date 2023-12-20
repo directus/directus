@@ -205,12 +205,19 @@ function setUpChart() {
 		},
 		grid: {
 			borderColor: 'var(--theme--border-color-subdued)',
-			padding: {
-				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
-				bottom: isSparkline ? 5 : 0,
-				left: isSparkline ? 0 : 12,
-				right: isSparkline ? 0 : 12,
-			},
+			padding: isSparkline
+				? {
+						top: props.showHeader ? 0 : 5,
+						bottom: 5,
+						left: 0,
+						right: 0,
+				  }
+				: {
+						top: props.showHeader ? -20 : -2,
+						bottom: 0,
+						left: 12,
+						right: 12,
+				  },
 		},
 		markers: {
 			colors: colors,

@@ -40,6 +40,8 @@ const basicRules = {
 	'no-nested-ternary': 'error',
 	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
+	// Disallow expressions where the operation doesn't affect the value
+	'no-constant-binary-expression': 'error',
 };
 
 const tsRules = {
