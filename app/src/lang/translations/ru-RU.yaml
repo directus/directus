@@ -642,7 +642,6 @@ errors:
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   INVALID_FOREIGN_KEY: Недействительный внешний ключ
   UNKNOWN: Неожиданная ошибка
-  GRAPHQL_VALIDATION_EXCEPTION: Ошибка проверки GraphQL
   SERVICE_UNAVAILABLE: Сервис недоступен
   UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
   UNEXPECTED_RESPONSE: Неожиданный ответ
