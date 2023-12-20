@@ -675,7 +675,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
   UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
