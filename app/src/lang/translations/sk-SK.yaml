@@ -683,7 +683,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
   INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
   UNKNOWN: Neočakávaná chyba
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba je nedostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
   UNEXPECTED_RESPONSE: Neočakávaná odpoveď
