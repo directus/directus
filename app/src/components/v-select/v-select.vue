@@ -451,7 +451,7 @@ function useDisplayValue() {
 }
 
 .color-dot {
-	padding-left: 6px;
-	padding-right: 6px;
+	margin-left: 6px;
+	margin-right: 6px;
 }
 </style>

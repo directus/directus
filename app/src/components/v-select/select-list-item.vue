@@ -69,7 +69,7 @@ const isActive = computed(() => {
 	font-family: v-bind('$props.itemLabelFontFamily');
 }
 .color-dot {
-	padding-left: 6px;
-	padding-right: 6px;
+	margin-left: 6px;
+	margin-right: 6px;
 }
 </style>
