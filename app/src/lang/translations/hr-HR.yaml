@@ -641,7 +641,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL iznimka provjere valjanosti
   SERVICE_UNAVAILABLE: Usluga nije dostupna
   UNSUPPORTED_MEDIA_TYPE: Nepodržan tip datoteke
   UNEXPECTED_RESPONSE: Neočekivani odgovor
