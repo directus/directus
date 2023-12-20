@@ -24,7 +24,7 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
 
-	result.forEach((record) => {
+	for (const record of result) {
 		const adminAccess = toBoolean(record.admin_access);
 		const appAccess = toBoolean(record.app_access);
 		const count = Number(record.count);
@@ -36,7 +36,7 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 		} else {
 			counts.api = count;
 		}
-	});
+	}
 
 	return counts;
 };
