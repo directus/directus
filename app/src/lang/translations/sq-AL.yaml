@@ -632,7 +632,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
   INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
   UNKNOWN: Gabim i papritur
-  GRAPHQL_VALIDATION_EXCEPTION: Përjashtim Validimi GraphQL
   SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
   UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
   UNEXPECTED_RESPONSE: Përgjigje e papritur
