@@ -27,6 +27,7 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
+extensions: Extensions
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -35,7 +36,7 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
-collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
+collection_names_are_case_sensitive: Los nombres de las Colecciones distinguen entre mayúsculas y minúsculas
 condition_rules: Reglas de Condición
 input: Input
 maps: Mapas
@@ -56,8 +57,12 @@ modifier: Modificador
 extension_interface: Interfaz
 extension_display: Exhibir
 extension_layout: Diseño
-extension_panel: Panel
+extension_module: Módulo
+extension_panel: Tablero
+extension_theme: Tema
 extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operación
 extension_modules: Módulos
 extension_bundles: Bundles
 enable: Habilitado
@@ -610,7 +615,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
   SERVICE_UNAVAILABLE: Servicio no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
   UNEXPECTED_RESPONSE: Respuesta inesperada
