@@ -69,6 +69,10 @@ query {
 }
 ```
 
+### Renamed type `ExtensionItem` in the SDK
+
+The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline with other system collections.
+
 ## Version 10.6.2
 
 ### Swapped Parameters and Auth Mode for Refresh Method in the SDK
