@@ -113,7 +113,7 @@ const useSafeInteger = () => {
 			return;
 		}
 
-		safeInput.setValueIfValid(value);
+		safeInput.setValue(value);
 	});
 
 	return safeInput;
@@ -213,7 +213,7 @@ function emitValue(event: InputEvent) {
 	}
 
 	if (isNumeric.value) {
-		const isValid = safeInput.setValueIfValid(value);
+		const isValid = safeInput.setValue(value);
 
 		// Ignore if numeric value remains unchanged
 		if (props.modelValue !== safeInput.value) {

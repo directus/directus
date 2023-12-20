@@ -8,12 +8,14 @@ export class SafeInteger {
 	private _value: numeric;
 	private MAX_VALUE: numeric;
 	private MIN_VALUE: numeric;
+	private isBigInt = false;
 
 	constructor(value: number | bigint | string, isBigInt = false) {
 		if (isBigInt) {
 			this._value = BigInt(value);
 			this.MAX_VALUE = MAX_BIG_INT;
 			this.MIN_VALUE = MIN_BIG_INT;
+			this.isBigInt = true;
 			return;
 		}
 
@@ -38,10 +40,6 @@ export class SafeInteger {
 		return !this.isInvalid;
 	}
 
-	private get isBigInt() {
-		return typeof this._value === 'bigint';
-	}
-
 	get value() {
 		return this.isBigInt ? this._value.toString() : this._value;
 	}
@@ -50,7 +48,7 @@ export class SafeInteger {
 		return this._value.toString();
 	}
 
-	setValueIfValid(value: string) {
+	setValue(value: string) {
 		const newValue = this.isBigInt ? BigInt(value) : Number(value);
 
 		if (newValue > this.MAX_VALUE || newValue < this.MIN_VALUE) {

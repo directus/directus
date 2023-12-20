@@ -37,7 +37,6 @@ const { width } = useWindowSize();
 const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
 let previousContent: string | null = null;
-const inputRef = ref<HTMLDivElement | null>(null);
 
 const isMultiLine = computed(() => ['text', 'json'].includes(props.type!));
 
@@ -102,7 +101,7 @@ onMounted(async () => {
 				const safeInt = new SafeInteger(content, props.type === 'bigInteger');
 
 				if (safeInt.isInvalid) {
-					inputRef.value?.focus();
+					codemirror?.getInputField().blur();
 					codemirror?.setValue(content.substring(0, content.length - 1));
 					return;
 				}
@@ -147,8 +146,6 @@ watch(
 </script>
 
 <template>
-	<!-- This input is exists just to unfocus the codemirror component -->
-	<input ref="inputRef" type="radio" :style="{ all: 'unset' }" />
 	<div class="system-raw-editor" :class="{ disabled, 'multi-line': isMultiLine }">
 		<div ref="codemirrorEl"></div>
 	</div>

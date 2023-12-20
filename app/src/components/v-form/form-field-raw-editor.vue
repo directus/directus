@@ -45,11 +45,8 @@ watch(
 );
 
 const setRawValue = () => {
-	if (props.field.type === 'bigInteger') {
-		return emit('setRawValue', internalValue.value);
-	}
-
 	switch (type.value) {
+		case 'bigInteger':
 		case 'string':
 			emit('setRawValue', internalValue.value);
 			break;
