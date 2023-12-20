@@ -602,7 +602,6 @@ errors:
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
   INVALID_FOREIGN_KEY: 잘못된 외래 키
   UNKNOWN: 예기치 않은 오류
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 유효성 검사 예외
   SERVICE_UNAVAILABLE: 서비스 불가
   UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
   UNEXPECTED_RESPONSE: 예상치 못한 응답
