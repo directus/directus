@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Added no-constant-binary-expression ESLint rule
+Fixed small logical issues detected by newely introduced `no-constant-binary-expression` ESLint rule
