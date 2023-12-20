@@ -608,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora de alcance
   INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Exceção de Validação GraphQL
   SERVICE_UNAVAILABLE: Serviço indisponível
   UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
   UNEXPECTED_RESPONSE: Resposta inesperada
