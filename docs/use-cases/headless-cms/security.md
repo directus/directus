@@ -8,7 +8,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-[Headless CMS](/use-cases/headless-cms/introduction) when coupled with statically-generated sites are architecture
+A [Headless CMS](https://directus.io/solutions/headless-cms), when coupled with statically-generated sites, are architecture
 choices that are generally more secure than Traditional CMS because your content is separated from the presentation
 layer. Given that users don't directly interact with a server to construct a page, there is a reduced ability for
 malicious actors to attack the website. However, it is still very important that you follow good security protocols to

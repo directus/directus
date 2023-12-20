@@ -9,7 +9,7 @@ author: Kevin Lewis
 > {{ $frontmatter.description }}
 
 [Next.js](https://nextjs.org/) is a popular JavaScript framework based on React.js. In this tutorial, you will learn how
-to build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title,
+to build a website using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms). You will store, retrieve, and use global metadata such as the site title,
 create new pages dynamically based on Directus items, and build a blog.
 
 ## Before You Start
