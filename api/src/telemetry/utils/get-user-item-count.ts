@@ -8,6 +8,11 @@ export interface UserItemCount {
 }
 
 /**
+ * Sum all passed values together. Meant to be used with .reduce()
+ */
+export const sum = (acc: number, val: number) => (acc += val);
+
+/**
  * Count all the items in the non-system tables
  */
 export const getUserItemCount = async (db: Knex): Promise<UserItemCount> => {
@@ -19,8 +24,8 @@ export const getUserItemCount = async (db: Knex): Promise<UserItemCount> => {
 
 	const counts = await getItemCount(db, userCollections);
 
-	const items = Object.values(counts).reduce((acc, val) => (acc += val), 0);
 	const collections = userCollections.length;
+	const items = Object.values(counts).reduce(sum, 0);
 
 	return { collections, items };
 };
