@@ -223,9 +223,9 @@ function getSystemFields() {
 						{
 							text: '$t:draft',
 							value: 'draft',
-							color: 'var(--theme--background-subdued)',
+							color: 'var(--theme--foreground)',
 							foreground: '#18222F',
-							background: 'var(--theme--background-subdued)',
+							background: 'var(--theme--foreground)',
 						},
 						{
 							text: '$t:archived',
