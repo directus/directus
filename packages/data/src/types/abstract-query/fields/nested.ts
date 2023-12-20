@@ -5,6 +5,10 @@ import type {
 import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
 
+/**
+ * A related, foreign field for m2o.
+ * The foreign collection is static.
+ */
 export interface AbstractQueryFieldNodeNestedSingleOne {
 	type: 'nested-single-one';
 
@@ -16,6 +20,10 @@ export interface AbstractQueryFieldNodeNestedSingleOne {
 	nesting: AbstractQueryFieldNodeNestedRelationalMany;
 }
 
+/**
+ * A related, foreign field for a2o.
+ * The foreign collection is dynamic.
+ */
 export interface AbstractQueryFieldNodeNestedUnionOne {
 	type: 'nested-union-one';
 
@@ -24,6 +32,10 @@ export interface AbstractQueryFieldNodeNestedUnionOne {
 	nesting: AbstractQueryFieldNodeNestedRelationalAny;
 }
 
+/**
+ * A related, foreign field for o2m.
+ * The foreign collection is static.
+ */
 export interface AbstractQueryFieldNodeNestedSingleMany {
 	type: 'nested-single-many';
 
@@ -38,6 +50,10 @@ export interface AbstractQueryFieldNodeNestedSingleMany {
 	nesting: AbstractQueryFieldNodeNestedRelationalMany;
 }
 
+/**
+ * A related, foreign field for o2a.
+ * The foreign collection is dynamic.
+ */
 export interface AbstractQueryFieldNodeNestedUnionMany {
 	type: 'nested-union-many';
 
