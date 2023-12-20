@@ -650,7 +650,6 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Doğrulama İstisnası
   SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
   UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
   UNEXPECTED_RESPONSE: Beklenmeyen yanıt
