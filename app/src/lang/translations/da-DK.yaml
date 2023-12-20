@@ -599,7 +599,6 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
   UNKNOWN: Uventet Fejl
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-valideringsundtagelse
   SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
   UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
   UNEXPECTED_RESPONSE: Uventet serversvar
