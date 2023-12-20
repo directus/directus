@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { useEnv } from '../../env.js';
 import type { TelemetryReport } from '../types/report.js';
 
