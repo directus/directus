@@ -16,9 +16,13 @@ export const sendReport = async (report: TelemetryReport) => {
 		headers['Authorization'] = env['TELEMETRY_AUTHORIZATION'];
 	}
 
-	await fetch(url, {
+	const res = await fetch(url, {
 		method: 'POST',
 		body: JSON.stringify(report),
 		headers,
 	});
+
+	if (!res.ok) {
+		throw new Error(`[${res.status}] ${await res.text()}`);
+	}
 };

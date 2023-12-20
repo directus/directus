@@ -6,7 +6,7 @@ import { sendReport } from './send-report.js';
 vi.mock('../../env.js');
 
 beforeEach(() => {
-	vi.spyOn(global, 'fetch');
+	global.fetch = vi.fn().mockResolvedValue({ ok: true, text: vi.fn() });
 });
 
 afterEach(() => {
@@ -57,4 +57,23 @@ test('Sets optional authorization header based on configured auth var', async ()
 			Authorization: 'test-auth',
 		},
 	});
+});
+
+test('Throws error if post was not successful', async () => {
+	vi.mocked(global.fetch).mockResolvedValue({
+		ok: false,
+		text: vi.fn().mockResolvedValue('test-error'),
+		status: 503
+	} as unknown as Response);
+
+	const mockIngress = 'https://example.com';
+
+	vi.mocked(useEnv).mockReturnValue({
+		TELEMETRY_INGRESS: mockIngress,
+		TELEMETRY_AUTHORIZATION: 'test-auth',
+	});
+
+	const mockReport = {} as unknown as TelemetryReport;
+
+	expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
 });
