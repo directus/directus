@@ -67,6 +67,7 @@ import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
+import { initTelemetry } from './telemetry/index.js';
 
 const require = createRequire(import.meta.url);
 
@@ -306,6 +307,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register all webhooks
 	await initWebhooks();
+
+	initTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 
