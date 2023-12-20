@@ -6,7 +6,9 @@ import { track } from './track.js';
 /**
  * Exported to be able to test the anonymous callback function
  */
-export const jobCallback = () => track();
+export const jobCallback = () => {
+	track();
+};
 
 /**
  * Initialize the telemetry tracking. Will generate a report on start, and set a schedule to report
