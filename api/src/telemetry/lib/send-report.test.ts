@@ -43,7 +43,7 @@ test('Sets optional authorization header based on configured auth var', async ()
 		TELEMETRY_AUTHORIZATION: 'test-auth',
 	});
 
-	const url = new URL('/metrics', mockIngress);
+	const url = new URL('/v1/metrics', mockIngress);
 
 	const mockReport = {} as unknown as TelemetryReport;
 	const reportStringified = JSON.stringify(mockReport);

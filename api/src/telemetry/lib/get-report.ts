@@ -29,7 +29,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 	return {
 		url: env['PUBLIC_URL'],
-		version: '' /** @TODO */,
+		version: 'x' /** @TODO */,
 		database: env['DB_CLIENT'],
 
 		dashboards: basicCounts.directus_dashboards,
