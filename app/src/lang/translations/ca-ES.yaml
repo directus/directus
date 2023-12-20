@@ -588,7 +588,6 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   INVALID_FOREIGN_KEY: Clau forana invàlida
   UNKNOWN: Error inesperat
-  GRAPHQL_VALIDATION_EXCEPTION: Excepció de validació de GraphQL
   SERVICE_UNAVAILABLE: Servei no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
   UNEXPECTED_RESPONSE: Resposta inesperada
