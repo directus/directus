@@ -83,7 +83,7 @@ const updatedField = await fieldStore.updateField(
 ```
 
 For a deep dive on how to use the `useFieldsStore` composable,
-[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts#L69) in our codebase.
+[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/fields.ts) in our codebase.
 
 ### `usePermissionsStore()`
 
@@ -105,8 +105,7 @@ const canRead = permissionsStore.hasPermission('collection_name', 'read');
 ```
 
 For a deep dive on how to use the `usePermissionsStore` composable,
-[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/permissions.ts#L9) in our
-codebase.
+[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/permissions.ts) in our codebase.
 
 ### `useCollectionsStore()`
 
@@ -143,8 +142,7 @@ await collectionStore.upsertCollection("collection_key", {...});
 ```
 
 For a deep dive on how to use the `useCollectionsStore` composable,
-[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/collections.ts#L16) in our
-codebase.
+[see the implementation](https://github.com/directus/directus/blob/main/app/src/stores/collections.ts) in our codebase.
 
 ::: info Explore all Stores within `useStores`
 
@@ -250,8 +248,8 @@ const data = totalCount.value; // read the total item count
 ```
 
 For a deep dive on how to use the `useItems()` composable,
-[see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts#L39) in
-our codebase.
+[see the implementation](https://github.com/directus/directus/blob/main/packages/composables/src/use-items.ts) in our
+codebase.
 
 ::: tip Explore all Composables
 
