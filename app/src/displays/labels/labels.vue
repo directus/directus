@@ -86,8 +86,8 @@ const items = computed(() => {
 				disabled
 				label
 			>
-				<v-icon v-if="item.icon" class="label-icon" :name="item.icon" :color="item.color" />
-				<display-color v-else-if="item.color" class="label-dot" :value="item.color" />
+				<v-icon v-if="item.icon" :name="item.icon" :color="item.color" left small />
+				<display-color v-else-if="item.color" :value="item.color" />
 				{{ item.text }}
 			</v-chip>
 		</template>
@@ -106,12 +106,12 @@ const items = computed(() => {
 	margin-left: 4px;
 }
 
-.label-icon {
-	--v-icon-size: 18px;
-	margin-right: 4px;
+.v-icon {
+	flex-shrink: 0;
+	vertical-align: -3px;
 }
 
-.label-dot {
+.color-dot {
 	margin-right: 8px;
 }
 </style>
