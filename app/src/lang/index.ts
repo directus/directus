@@ -31,7 +31,7 @@ export function translateAPIError(error: RequestError | string): string {
 	}
 
 	if (!error) return defaultMsg;
-	if (!code === undefined) return defaultMsg;
+	if (!code) return defaultMsg;
 	const key = `errors.${code}`;
 
 	const exists = i18n.global.te(key);
