@@ -34,6 +34,7 @@
 		"nanoid": "5.0.4"
 	},
 	"devDependencies": {
+		"@directus/sdk": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
