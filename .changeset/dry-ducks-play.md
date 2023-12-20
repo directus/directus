@@ -11,4 +11,4 @@
 "@directus/utils": patch
 ---
 
-Update Vue to 3.3.9
+Updated Vue to 3.3.9
