@@ -608,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: Nilai di luar rentang
   INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
-  GRAPHQL_VALIDATION_EXCEPTION: Pengecualian Validasi GraphQL
   SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
   UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
   UNEXPECTED_RESPONSE: Respon tidak terduga
