@@ -6,6 +6,8 @@ import { computed } from 'vue';
 type Choice = {
 	value: string | number;
 	text: string;
+	icon?: string;
+	color?: string;
 	foreground: string | null;
 	background: string | null;
 };
@@ -51,6 +53,8 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: itemStringValue,
+				icon: undefined,
+				color: undefined,
 				foreground: 'var(--theme--foreground)',
 				background: 'var(--theme--background-normal)',
 			};
@@ -58,6 +62,8 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: choice.text || itemStringValue,
+				icon: choice.icon,
+				color: choice.color,
 				foreground: choice.foreground || 'var(--theme--foreground)',
 				background: choice.background || 'var(--theme--background-normal)',
 			};
@@ -80,6 +86,8 @@ const items = computed(() => {
 				disabled
 				label
 			>
+				<v-icon v-if="item.icon" class="label-icon" :name="item.icon" :color="item.color" />
+				<display-color v-else-if="item.color" class="label-dot" :value="item.color" />
 				{{ item.text }}
 			</v-chip>
 		</template>
@@ -96,5 +104,14 @@ const items = computed(() => {
 
 .v-chip + .v-chip {
 	margin-left: 4px;
+}
+
+.label-icon {
+	--v-icon-size: 18px;
+	margin-right: 4px;
+}
+
+.label-dot {
+	margin-right: 8px;
 }
 </style>
