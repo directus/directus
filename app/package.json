@@ -62,7 +62,7 @@
 		"@fullcalendar/daygrid": "6.1.7",
 		"@fullcalendar/interaction": "6.1.7",
 		"@fullcalendar/list": "6.1.7",
-		"@fullcalendar/timegrid": "6.1.7",
+		"@fullcalendar/timegrid": "6.1.10",
 		"@histoire/plugin-vue": "0.17.6",
 		"@joeattardi/emoji-button": "4.6.4",
 		"@mapbox/mapbox-gl-draw": "1.4.3",
