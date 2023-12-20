@@ -50,7 +50,13 @@ const isActive = computed(() => {
 			<display-color v-else :value="item.color" />
 		</v-list-item-icon>
 		<v-list-item-content>
-			<span v-if="multiple === false || item.selectable === false" class="item-text">{{ item.text }}</span>
+			<span
+				v-if="multiple === false || item.selectable === false"
+				class="item-text"
+				:class="{ 'item-text-margin': multiple === false && allowOther === false && item.icon === null }"
+			>
+				{{ item.text }}
+			</span>
 			<v-checkbox
 				v-else
 				class="checkbox"
@@ -68,6 +74,11 @@ const isActive = computed(() => {
 .checkbox :deep(.type-text) {
 	font-family: v-bind('$props.itemLabelFontFamily');
 }
+
+.item-text-margin {
+	margin-left: 32px;
+}
+
 .color-dot {
 	margin-left: 6px;
 	margin-right: 6px;

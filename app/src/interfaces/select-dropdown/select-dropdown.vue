@@ -7,8 +7,8 @@ import { isEmpty } from 'lodash';
 type Option = {
 	text: string;
 	value: string | number | boolean;
-	icon?: string;
-	color?: string;
+	icon?: string | null;
+	color?: string | null;
 	children?: Option[];
 };
 
@@ -34,7 +34,7 @@ const { t } = useI18n();
 const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
 
 const items = computed(() => {
-	if (!applyGlobalIcon.value || !props.icon) {
+	if (!applyGlobalIcon.value) {
 		return props.choices;
 	}
 
@@ -44,7 +44,7 @@ const items = computed(() => {
 		}
 
 		if (!choice.icon && !choice.color) {
-			choice.icon = props.icon;
+			choice.icon = props.icon ?? null;
 		}
 
 		return choice;
@@ -68,7 +68,7 @@ const items = computed(() => {
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"
 	>
-		<template v-if="icon && isEmpty(value)" #prepend>
+		<template v-if="(icon && !applyGlobalIcon) || (icon && applyGlobalIcon && isEmpty(value))" #prepend>
 			<v-icon :name="icon" />
 		</template>
 	</v-select>
