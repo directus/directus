@@ -3,7 +3,7 @@ description: Become a Directus Guest Author and get paid to write about your fav
 ---
 
 <script setup>
-import Badge from '../.vitepress/components/Badge.vue'
+import Badge from '@/components/Badge.vue';
 </script>
 
 <Badge><a href="/blog/">Developer Blog</a></Badge>

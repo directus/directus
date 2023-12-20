@@ -12,11 +12,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getSharedDepsMapping = async (deps: string[]): Promise<Record<string, string>> => {
 	const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
-
 	const depsMapping: Record<string, string> = {};
 
 	for (const dep of deps) {
-		const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
+		const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[a-zA-Z0-9_-]{8}\\.entry\\.js`);
 		const depName = appDir.find((file) => depRegex.test(file));
 
 		if (depName) {

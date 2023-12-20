@@ -39,12 +39,12 @@
 		"@vitejs/plugin-vue": "4.5.2",
 		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.3.3",
-		"vite": "4.5.1",
+		"vite": "5.0.10",
 		"vite-plugin-dts": "3.6.4"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "1.8.9",
 		"pinia": "2.1.7",
-		"vue": "3.3.11"
+		"vue": "3.3.13"
 	}
 }
