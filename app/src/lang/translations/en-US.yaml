@@ -75,6 +75,9 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+extension_reload_required: Page Reload Required
+extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
+extension_reload_now: Reload now
 enable: Enable
 disable: Disable
 custom: Custom
@@ -652,6 +655,8 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
+enabled_dev: Enabled (Dev)
+enabled_dev_tooltip: App extensions cannot be disabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -688,7 +693,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  GRAPHQL_VALIDATION: GraphQL Validation
   SERVICE_UNAVAILABLE: Service Unavailable
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
   UNEXPECTED_RESPONSE: Unexpected response

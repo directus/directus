@@ -143,5 +143,5 @@ Learn how to build panels with our official guides:
 <GuidesListExtensions type="Panels" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

@@ -12,8 +12,9 @@ author: Bryant Gillespie
 
 ## Explanation
 
-When using Directus as a Headless CMS, it is common to pair it with a front-end framework / static site generator like
-[Next.js](https://nextjs.org/), [Nuxt.js](https://nuxt.com), [SvelteKit](https://kit.svelte.dev/), or other options.
+When using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms), it is common to pair it with a
+front-end framework / static site generator like [Next.js](https://nextjs.org/), [Nuxt.js](https://nuxt.com),
+[SvelteKit](https://kit.svelte.dev/), or other options.
 
 [Vercel](https://www.vercel.com/) and other similar platforms make it easy to host and deploy your site using static
 site generation (SSG) to render your site’s pages during build time, instead of waiting until a certain page is

@@ -32,7 +32,7 @@ export const useTranslationsStore = defineStore('translations', () => {
 
 			lang.value = newLang;
 		} catch (error) {
-			unexpectedError(error);
+			// No public permissions for translations
 		} finally {
 			loading.value = false;
 		}

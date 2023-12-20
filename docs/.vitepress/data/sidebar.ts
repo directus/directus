@@ -389,6 +389,10 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
+					link: '/extensions/using-ui-components',
+					text: 'UI Components',
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},

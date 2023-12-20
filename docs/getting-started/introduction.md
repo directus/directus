@@ -60,12 +60,12 @@ _and much more._
 
 ### What Do Teams Use Directus For?
 
-- [Headless CMS](https://directus.io/headless-cms)
-- [Learning Management System](https://directus.io/headless-cms)
-- [Product Inventory Management](https://directus.io/studio)
-- [No-Code Data Platform](https://directus.io/studio)
-- [Backend-as-a-Service](https://directus.io/engine)
-- [Full API-Based Data Architecture](https://directus.io/engine)
+- [Headless CMS](https://directus.io/solutions/headless-cms)
+- [Learning Management System](https://directus.io/solutions/headless-cms)
+- [Product Inventory Management](https://directus.io/solutions/product-information-management)
+- [No-Code Data Platform](https://directus.io/toolkit/explore)
+- [Backend-as-a-Service](https://directus.io/solutions/backend-as-a-service)
+- [Full API-Based Data Architecture](https://directus.io/toolkit/connect)
 
 ::: tip Ready to dive in?
 
