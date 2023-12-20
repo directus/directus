@@ -610,7 +610,6 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
   UNKNOWN: خطای غیر منتظره
-  GRAPHQL_VALIDATION_EXCEPTION: استثناء اعتبار سنجی GraphQL
   SERVICE_UNAVAILABLE: سرویس در دسترس نیست
   UNSUPPORTED_MEDIA_TYPE: رسانه پشتیبانی نشده
   UNEXPECTED_RESPONSE: پاسخ غیر منتظره
