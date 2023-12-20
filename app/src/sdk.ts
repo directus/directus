@@ -5,8 +5,8 @@ import api from './api';
 
 type SdkClient = DirectusClient<any> & RestClient<any>;
 
-const sdk: SdkClient = createDirectus(getPublicURL())
-	.with(rest({
+const sdk: SdkClient = createDirectus(getPublicURL()).with(
+	rest({
 		onRequest: (req) => {
 			if (!Array.isArray(req.headers) && req.headers instanceof Headers === false) {
 				if (!req.headers) req.headers = {};
@@ -19,7 +19,8 @@ const sdk: SdkClient = createDirectus(getPublicURL())
 			}
 
 			return req;
-		}
-	}));
+		},
+	}),
+);
 
 export default sdk;
