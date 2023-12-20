@@ -2,5 +2,4 @@
 '@directus/api': patch
 ---
 
-fixed issue #19386 by making the cli's 
-`schema apply command output more visible
+Ensured the CLI's `schema apply` command output is better visible across different terminals / color schemes
