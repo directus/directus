@@ -602,7 +602,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
   INVALID_FOREIGN_KEY: Neplatný cizí klíč
   UNKNOWN: Neočekávaná chyba
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba není dostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ média
   UNEXPECTED_RESPONSE: Neočekávaná odpověď
