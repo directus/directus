@@ -9,8 +9,9 @@ author: Kevin Lewis
 > {{ $frontmatter.description }}
 
 [Next.js](https://nextjs.org/) is a popular JavaScript framework based on React.js. In this tutorial, you will learn how
-to build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title,
-create new pages dynamically based on Directus items, and build a blog.
+to build a website using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms). You will store,
+retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and
+build a blog.
 
 ## Before You Start
 
@@ -103,9 +104,9 @@ export default async function HomePage() {
 }
 ```
 
-Type `npm run dev` in your terminal to start the Next development server and open `http://localhost:3000` in your
-browser. You should see data from your Directus Global collection in your page. Some additional files will be created by
-Next that it expects, but do not yet exist - these can be safely ignored for now.
+Type `npm run dev` in your terminal to start the Next development server and open http://localhost:3000 in your browser.
+You should see data from your Directus Global collection in your page. Some additional files will be created by Next
+that it expects, but do not yet exist - these can be safely ignored for now.
 
 ## Creating Pages With Directus
 
@@ -144,8 +145,8 @@ export default async function DynamicPage({ params }) {
 }
 ```
 
-Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
+Go to http://localhost:3000/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
+single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
 Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
@@ -225,7 +226,7 @@ Update the returned HTML:
 </div>;
 ```
 
-Visit `http://localhost:3000` and you should now see a blog post listing, with latest items first.
+Visit http://localhost:3000 and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/next-blog-listing.webp)
 

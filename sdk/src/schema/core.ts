@@ -1,6 +1,7 @@
 import type { DirectusActivity } from './activity.js';
 import type { DirectusCollection } from './collection.js';
 import type { DirectusDashboard } from './dashboard.js';
+import type { DirectusExtension } from './extension.js';
 import type { DirectusField } from './field.js';
 import type { DirectusFile } from './file.js';
 import type { DirectusFlow } from './flow.js';
@@ -22,6 +23,7 @@ export interface CoreSchema<Schema extends object = object> {
 	directus_activity: DirectusActivity<Schema>[];
 	directus_collections: DirectusCollection<Schema>[];
 	directus_dashboards: DirectusDashboard<Schema>[];
+	directus_extensions: DirectusExtension<Schema>[];
 	directus_fields: DirectusField<Schema>[];
 	directus_files: DirectusFile<Schema>[];
 	directus_flows: DirectusFlow<Schema>[];

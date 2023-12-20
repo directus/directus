@@ -65,16 +65,29 @@ export default async function build(options: BuildOptions): Promise<void> {
 		const packagePath = path.resolve('package.json');
 
 		if (!(await fse.pathExists(packagePath))) {
-			log(`Current directory is not a valid package.`, 'error');
+			log(`Current directory is not a valid Directus extension:`, 'error');
+			log(`Missing "package.json" file.`, 'error');
+			process.exit(1);
+		}
+
+		let extensionManifestFile: string;
+
+		try {
+			extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		} catch {
+			log(`Failed to read "package.json" file from current directory.`, 'error');
 			process.exit(1);
 		}
 
 		let extensionManifest: TExtensionManifest;
 
 		try {
-			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
-		} catch (err) {
-			log(`Current directory is not a valid Directus extension.`, 'error');
+			extensionManifest = JSON.parse(extensionManifestFile);
+			ExtensionManifest.parse(extensionManifest);
+		} catch {
+			log(`Current directory is not a valid Directus extension:`, 'error');
+			log(`Invalid "package.json" file.`, 'error');
+
 			process.exit(1);
 		}
 
