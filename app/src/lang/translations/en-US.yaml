@@ -693,7 +693,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  GRAPHQL_VALIDATION: GraphQL Validation
   SERVICE_UNAVAILABLE: Service Unavailable
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
   UNEXPECTED_RESPONSE: Unexpected response
