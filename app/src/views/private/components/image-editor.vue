@@ -406,7 +406,11 @@ function setAspectRatio() {
 
 		<v-notice v-else-if="error" type="error">error</v-notice>
 
-		<div v-if="imageData && !loading && !error" class="editor-container">
+		<div
+			v-if="imageData && !loading && !error"
+			class="editor-container"
+			:class="[localDragMode === 'focal_point' ? 'focal-point' : '']"
+		>
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
@@ -522,6 +526,22 @@ function setAspectRatio() {
 </template>
 
 <style lang="scss" scoped>
+.focal-point:deep(.editor) {
+	.cropper-point.point-nw,
+	.cropper-point.point-ne,
+	.cropper-point.point-se,
+	.cropper-point.point-sw,
+	.cropper-dashed,
+	.cropper-line {
+		display: none;
+	}
+
+	.cropper-face,
+	.cropper-view-box {
+		border-radius: 100%;
+	}
+}
+
 .modal {
 	--v-drawer-content-padding-small: 0px;
 	--v-drawer-content-padding: 0px;
