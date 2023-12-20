@@ -279,126 +279,144 @@ function sidebarDeveloperReference() {
 			collapsed: true,
 			items: [
 				{
-					link: '/extensions/introduction',
-					text: 'Introduction',
-				},
-				{
-					link: '/extensions/installing-extensions',
-					text: 'Installing Extensions',
-				},
-				{
-					link: '/extensions/creating-extensions',
-					text: 'Creating Extensions',
+					text: 'Fundamentals',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/installing-extensions',
+							text: 'Installing Extensions',
+						},
+						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
+					],
 				},
 				{
 					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{
-							link: '/extensions/displays',
-							text: 'Displays',
+							text: 'Extension Types',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/displays',
+									text: 'Displays',
+								},
+								{
+									link: '/extensions/email-templates',
+									text: 'Email Templates',
+								},
+								{
+									link: '/extensions/endpoints',
+									text: 'Endpoints',
+								},
+								{
+									link: '/extensions/hooks',
+									text: 'Hooks',
+								},
+								{
+									link: '/extensions/interfaces',
+									text: 'Interfaces',
+								},
+								{
+									link: '/extensions/layouts',
+									text: 'Layouts',
+								},
+								{
+									link: '/extensions/migrations',
+									text: 'Migrations',
+								},
+								{
+									link: '/extensions/modules',
+									text: 'Modules',
+								},
+								{
+									link: '/extensions/operations',
+									text: 'Operations',
+								},
+								{
+									link: '/extensions/panels',
+									text: 'Panels',
+								},
+								{
+									link: '/extensions/themes',
+									text: 'Themes',
+								},
+								{
+									link: '/extensions/bundles',
+									text: 'Bundles',
+								},
+							],
 						},
 						{
-							link: '/extensions/email-templates',
-							text: 'Email Templates',
+							text: 'Secure Extensions',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/sandbox/introduction',
+									text: 'Introduction',
+								},
+								{
+									link: '/extensions/sandbox/register',
+									text: 'Registering Extensions',
+								},
+								{
+									link: '/extensions/sandbox/sandbox-sdk',
+									text: 'Sandbox SDK',
+								},
+							],
 						},
 						{
-							link: '/extensions/endpoints',
-							text: 'Endpoints',
-						},
-						{
-							link: '/extensions/hooks',
-							text: 'Hooks',
-						},
-						{
-							link: '/extensions/interfaces',
-							text: 'Interfaces',
-						},
-						{
-							link: '/extensions/layouts',
-							text: 'Layouts',
-						},
-						{
-							link: '/extensions/migrations',
-							text: 'Migrations',
-						},
-						{
-							link: '/extensions/modules',
-							text: 'Modules',
-						},
-						{
-							link: '/extensions/operations',
-							text: 'Operations',
-						},
-						{
-							link: '/extensions/panels',
-							text: 'Panels',
-						},
-						{
-							link: '/extensions/themes',
-							text: 'Themes',
-						},
-						{
-							link: '/extensions/bundles',
-							text: 'Bundles',
+							text: 'Extension Services',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/services/introduction',
+									text: 'Introduction',
+								},
+								{
+									link: '/extensions/services/accessing-items',
+									text: 'Accessing Items',
+								},
+								{
+									link: '/extensions/services/configuring-collections',
+									text: 'Configuring Collections, Fields, and Relations',
+								},
+								{
+									link: '/extensions/services/accessing-files',
+									text: 'Accessing Files',
+								},
+								{
+									link: '/extensions/services/working-with-users',
+									text: 'Working with Users',
+								},
+							],
 						},
 					],
 				},
 				{
-					text: 'Secure Extensions',
+					text: 'Resources',
 					collapsed: true,
 					items: [
 						{
-							link: '/extensions/sandbox/introduction',
-							text: 'Introduction',
+							link: '/extensions/using-ui-components',
+							text: 'Components',
 						},
 						{
-							link: '/extensions/sandbox/register',
-							text: 'Registering Extensions',
+							link: '/extensions/app-composables',
+							text: 'Composables',
 						},
 						{
-							link: '/extensions/sandbox/sandbox-sdk',
-							text: 'Sandbox SDK',
+							link: '/contributing/codebase-overview.html#packages-packages',
+							text: 'Packages',
 						},
 					],
-				},
-				{
-					text: 'Extension Services',
-					collapsed: true,
-					items: [
-						{
-							link: '/extensions/services/introduction',
-							text: 'Introduction',
-						},
-						{
-							link: '/extensions/services/accessing-items',
-							text: 'Accessing Items',
-						},
-						{
-							link: '/extensions/services/configuring-collections',
-							text: 'Configuring Collections, Fields, and Relations',
-						},
-						{
-							link: '/extensions/services/accessing-files',
-							text: 'Accessing Files',
-						},
-						{
-							link: '/extensions/services/working-with-users',
-							text: 'Working with Users',
-						},
-					],
-				},
-				{
-					link: '/extensions/app-composables',
-					text: 'App Composables',
-				},
-				{
-					link: '/extensions/using-ui-components',
-					text: 'UI Components',
-				},
-				{
-					text: 'Internal Packages',
-					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
 		},
