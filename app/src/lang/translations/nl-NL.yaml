@@ -656,7 +656,6 @@ errors:
   VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
   INVALID_FOREIGN_KEY: Ongeldige Foreign Key
   UNKNOWN: Onverwachte fout
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL validatie fout
   SERVICE_UNAVAILABLE: Dienst onbeschikbaar
   UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
   UNEXPECTED_RESPONSE: Onverwachte resultaat
