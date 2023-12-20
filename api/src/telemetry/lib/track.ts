@@ -10,6 +10,7 @@ import { sendReport } from './send-report.js';
  *
  * @param opts Options for the tracking
  * @param opts.wait Whether or not to wait a random amount of time between 0 and 30 minutes
+ * @returns whether or not the tracking was successful
  */
 export const track = async (opts = { wait: true }) => {
 	const env = useEnv();
@@ -22,9 +23,12 @@ export const track = async (opts = { wait: true }) => {
 	try {
 		const report = await getReport();
 		await sendReport(report);
+		return true;
 	} catch (err) {
 		if (env['NODE_ENV'] === 'development') {
 			logger.error(err);
 		}
+
+		return false;
 	}
 };

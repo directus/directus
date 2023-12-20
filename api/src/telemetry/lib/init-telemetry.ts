@@ -3,6 +3,9 @@ import { useEnv } from '../../env.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { track } from './track.js';
 
+/**
+ * Exported to be able to test the anonymous callback function
+ */
 export const jobCallback = () => track();
 
 /**
