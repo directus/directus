@@ -57,11 +57,11 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			let message = '';
 
 			if (snapshotDiff.collections.length > 0) {
-				message += chalk.black.underline.bold('Collections:');
+				message += chalk.underline.bold('Collections:');
 
 				for (const { collection, diff } of snapshotDiff.collections) {
 					if (diff[0]?.kind === DiffKind.EDIT) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}`;
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
@@ -74,17 +74,17 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}`;
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}`;
 					}
 				}
 			}
 
 			if (snapshotDiff.fields.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Fields:');
+				message += '\n\n' + chalk.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
 					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
 							const path = change.path!.slice(1).join('.');
@@ -102,17 +102,17 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}.${field}`;
 					}
 				}
 			}
 
 			if (snapshotDiff.relations.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Relations:');
+				message += '\n\n' + chalk.underline.bold('Relations:');
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
 					if (diff[0]?.kind === DiffKind.EDIT) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
@@ -125,7 +125,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						message += `\n  - ${chalk.magenta('Update')} ${collection}.${field}`;
 					} else {
 						continue;
 					}
@@ -137,7 +137,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				}
 			}
 
-			message = 'The following changes will be applied:\n\n' + chalk.black(message);
+			message = 'The following changes will be applied:\n\n' + message;
 
 			if (dryRun) {
 				logger.info(message);

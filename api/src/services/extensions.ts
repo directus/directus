@@ -64,7 +64,7 @@ export class ExtensionsService {
 
 		const key = this.getKey(bundle, name);
 
-		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === bundle ?? name);
+		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === (bundle ?? name));
 		const meta = await this.extensionsItemService.readOne(key);
 
 		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
