@@ -21,7 +21,7 @@ test('Posts stringified report to configured ingress URL', async () => {
 		TELEMETRY_INGRESS: mockIngress,
 	});
 
-	const url = new URL('/metrics', mockIngress);
+	const url = new URL('/v1/metrics', mockIngress);
 
 	const mockReport = {} as unknown as TelemetryReport;
 	const reportStringified = JSON.stringify(mockReport);
@@ -31,7 +31,9 @@ test('Posts stringified report to configured ingress URL', async () => {
 	expect(global.fetch).toHaveBeenCalledWith(url, {
 		method: 'POST',
 		body: reportStringified,
-		headers: {},
+		headers: {
+			'Content-Type': 'application/json',
+		},
 	});
 });
 
@@ -55,6 +57,7 @@ test('Sets optional authorization header based on configured auth var', async ()
 		body: reportStringified,
 		headers: {
 			Authorization: 'test-auth',
+			'Content-Type': 'application/json',
 		},
 	});
 });
@@ -63,7 +66,7 @@ test('Throws error if post was not successful', async () => {
 	vi.mocked(global.fetch).mockResolvedValue({
 		ok: false,
 		text: vi.fn().mockResolvedValue('test-error'),
-		status: 503
+		status: 503,
 	} as unknown as Response);
 
 	const mockIngress = 'https://example.com';
