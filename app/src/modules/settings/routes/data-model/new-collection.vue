@@ -216,18 +216,21 @@ function getSystemFields() {
 						{
 							text: '$t:published',
 							value: 'published',
+							color: 'var(--theme--primary)',
 							foreground: '#FFFFFF',
 							background: 'var(--theme--primary)',
 						},
 						{
 							text: '$t:draft',
 							value: 'draft',
+							color: 'var(--theme--background-subdued)',
 							foreground: '#18222F',
 							background: 'var(--theme--background-subdued)',
 						},
 						{
 							text: '$t:archived',
 							value: 'archived',
+							color: 'var(--theme--warning)',
 							foreground: '#FFFFFF',
 							background: 'var(--theme--warning)',
 						},
