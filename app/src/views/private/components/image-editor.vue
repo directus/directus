@@ -149,53 +149,46 @@ function useImage() {
 	function save() {
 		saving.value = true;
 
+		const formData = new FormData();
+
 		if (localDragMode.value === 'focal_point') {
 			const data = cropperInstance.value?.getData();
-			const focalPointX = (data?.x ?? 0) + (data?.width ?? 0) / 2;
-			const focalPointY = (data?.y ?? 0) + (data?.height ?? 0) / 2;
+			const x = (data?.x ?? 0) + (data?.width ?? 0) / 2;
+			const y = (data?.y ?? 0) + (data?.height ?? 0) / 2;
+			// Note: Required to include other fields before the `file` key
+			formData.append('focal_point', JSON.stringify({ x, y } satisfies File['focal_point']));
+			// Reset the cropping area so we dont actually crop the image, but
+			// still honor other changes like flips & rotations in one go when saving
+			cropperInstance.value?.clear();
+		}
 
-			api
-				.patch(`/files/${props.id}`, {
-					focal_point: { x: focalPointX, y: focalPointY },
-				} satisfies Partial<File>)
-				.then(
-					() => {
+		cropperInstance.value
+			?.getCroppedCanvas({
+				imageSmoothingQuality: 'high',
+			})
+			.toBlob(
+				async (blob) => {
+					if (blob === null) {
+						saving.value = false;
+						return;
+					}
+
+					formData.append('file', blob, imageData.value?.filename_download);
+
+					try {
+						await api.patch(`/files/${props.id}`, formData);
 						emit('refresh');
 						internalActive.value = false;
 						localDragMode.value = 'move';
-					},
-					(err) => unexpectedError(err),
-				)
-				.finally(() => (saving.value = false));
-		} else {
-			cropperInstance.value
-				?.getCroppedCanvas({
-					imageSmoothingQuality: 'high',
-				})
-				.toBlob(
-					async (blob) => {
-						if (blob === null) {
-							saving.value = false;
-							return;
-						}
-
-						const formData = new FormData();
-						formData.append('file', blob, imageData.value?.filename_download);
-
-						try {
-							await api.patch(`/files/${props.id}`, formData);
-							emit('refresh');
-							internalActive.value = false;
-							randomId.value = nanoid();
-						} catch (error) {
-							unexpectedError(error);
-						} finally {
-							saving.value = false;
-						}
-					},
-					imageData.value?.type,
-				);
-		}
+						randomId.value = nanoid();
+					} catch (error) {
+						unexpectedError(error);
+					} finally {
+						saving.value = false;
+					}
+				},
+				imageData.value?.type,
+			);
 	}
 
 	async function onImageLoad() {
