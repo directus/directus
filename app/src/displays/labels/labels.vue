@@ -53,8 +53,6 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: itemStringValue,
-				icon: undefined,
-				color: undefined,
 				foreground: 'var(--theme--foreground)',
 				background: 'var(--theme--background-normal)',
 			};

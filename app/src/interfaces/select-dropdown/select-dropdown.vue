@@ -50,6 +50,22 @@ const items = computed(() => {
 		return choice;
 	});
 });
+
+const showGlobalIcon = computed(() => {
+	if (!props.icon) {
+		return false;
+	}
+
+	if (!applyGlobalIcon.value) {
+		return true;
+	}
+
+	if (isEmpty(props.value)) {
+		return true;
+	}
+
+	return false;
+});
 </script>
 
 <template>
@@ -68,7 +84,7 @@ const items = computed(() => {
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"
 	>
-		<template v-if="(icon && !applyGlobalIcon) || (icon && applyGlobalIcon && isEmpty(value))" #prepend>
+		<template v-if="showGlobalIcon" #prepend>
 			<v-icon :name="icon" />
 		</template>
 	</v-select>
