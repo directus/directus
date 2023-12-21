@@ -1,10 +1,7 @@
-import { test, expect, describe, vi } from 'vitest';
-
+import { describe, expect, test, vi } from 'vitest';
 import { getVersionedHash } from './get-versioned-hash.js';
 
-vi.mock('./package.js', () => ({
-	version: '10.10.10',
-}));
+vi.mock('directus/version', () => ({ version: '10.10.10' }));
 
 describe('getVersionedHash', () => {
 	test.each([

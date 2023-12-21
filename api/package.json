@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "14.1.2",
+	"version": "15.0.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -104,6 +104,7 @@
 		"date-fns": "3.0.1",
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
+		"directus": "workspace:*",
 		"dotenv": "16.3.1",
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",
@@ -145,6 +146,7 @@
 		"openid-client": "5.6.1",
 		"ora": "7.0.1",
 		"otplib": "12.0.1",
+		"p-limit": "5.0.0",
 		"p-queue": "8.0.1",
 		"papaparse": "5.4.1",
 		"pino": "8.17.1",

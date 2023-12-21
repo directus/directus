@@ -59,6 +59,7 @@ extension_display: Pokaż
 extension_layout: Układ
 extension_module: Moduł
 extension_panel: Panel
+extension_theme: Motyw
 extension_hook: Hook
 extension_endpoint: Punkt końcowy
 extension_operation: Operacja
@@ -673,7 +674,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
   INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
-  GRAPHQL_VALIDATION_EXCEPTION: Wyjątek sprawdzania poprawności grafiki
   SERVICE_UNAVAILABLE: Serwis niedostępny
   UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
   UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
@@ -1970,6 +1970,8 @@ displays:
     icon: Ikona
     border: Krawędź
     border_label: Pokaż obramowanie
+    mask: Zamaskowany
+    mask_label: Ukryj rzeczywistą wartość
     text: Tekst
     text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:

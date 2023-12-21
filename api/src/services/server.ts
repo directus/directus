@@ -1,5 +1,6 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
+import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
@@ -14,7 +15,6 @@ import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { version, releaseVersion } from '../utils/package.js';
 import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
 
@@ -104,7 +104,7 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-			info['version'] = releaseVersion;
+			info['version'] = version;
 		}
 
 		return info;

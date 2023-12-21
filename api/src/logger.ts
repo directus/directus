@@ -125,6 +125,8 @@ export const expressLogger = pinoHttp({
 	},
 }) as RequestHandler;
 
+export const useLogger = () => logger;
+
 export default logger;
 
 function redactQuery(originalPath: string) {
