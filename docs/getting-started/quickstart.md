@@ -48,18 +48,17 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-For quick prototyping and local developments, you can initialize a new Directus project using the CLI command:
+You can initialize a new Directus project using the CLI command:
 `npm init directus-project`.
 
-This will prompt you to choose a database client and path. Go ahead to also create your first admin user.
+Follow prompts to configure your database and create your first admin user.
 
-To start up Directus locally, run `npx directus start`.
+To start Directus locally, run `npx directus start`.
 
-::: danger Docker is Recommended for Production
+:::danger Docker is Recommended
 
-While this method is suitable for quick tests and prototypes, it is not recommended for production. We recommend you use
-[Docker](/self-hosted/quickstart) because it removes environment-specific quirks that can lead to Directus not running
-properly.
+While this method works and is maintained, it is not recommended. Docker removes environment-specific quirks that can lead to Directus not running
+properly in some contexts. 
 
 :::
 
