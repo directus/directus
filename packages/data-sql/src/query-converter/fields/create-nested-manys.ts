@@ -39,8 +39,6 @@ export interface NestedManyResult {
  * @returns A function which creates a sub query and the select part for the root query
  */
 export function getNestedMany(collection: string, field: AbstractQueryFieldNodeNestedSingleMany): NestedManyResult {
-	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
-
 	const index = parameterIndexGenerator();
 
 	const nestedFieldNodes = convertFieldNodes(field.nesting.foreign.collection, field.fields, index);
