@@ -2,14 +2,17 @@ import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
 import env from '../../env.js';
 import { getExtensionsPath } from './get-extensions-path.js';
+import logger from '../../logger.js';
 
 export const getExtensions = async () => {
 	const loadedExtensions = new Map();
+	const duplicateExtensions: string[] = [];
 
 	const filterDuplicates = (extension: Extension) => {
 		const isExistingExtension = loadedExtensions.has(extension.name);
 
 		if (isExistingExtension) {
+			duplicateExtensions.push(extension.name);
 			return;
 		}
 
@@ -19,6 +22,7 @@ export const getExtensions = async () => {
 			for (const entry of extension.entries) {
 				if (bundleEntryNames.has(entry.name)) {
 					// Do not load entire bundle if it has duplicated entries
+					duplicateExtensions.push(extension.name);
 					return;
 				}
 
@@ -35,6 +39,9 @@ export const getExtensions = async () => {
 
 	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
 
+	if (duplicateExtensions.length > 0) {
+		logger.info(`Skipped loading duplicates of extensions: ${duplicateExtensions.join(', ')}`);
+	}
 
 	return Array.from(loadedExtensions.values());
 };
