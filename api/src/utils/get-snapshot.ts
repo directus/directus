@@ -26,8 +26,8 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	]);
 
 	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item));
-	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item)) as SnapshotField[];
-	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item)) as SnapshotRelation[];
+	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item));
+	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
 	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['meta.id']).map(omitID) as SnapshotField[];
