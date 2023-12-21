@@ -2,7 +2,7 @@ import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { useEnv } from '../../env.js';
-import { releaseVersion } from '../../utils/package.js';
+import { version } from 'directus/version';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount, type UserCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
@@ -51,7 +51,7 @@ test('Returns environment information', async () => {
 
 	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
 	expect(report.database).toBe('test-db');
-	expect(report.version).toBe(releaseVersion);
+	expect(report.version).toBe(version);
 });
 
 test('Runs and returns basic counts', async () => {

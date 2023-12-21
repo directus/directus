@@ -1,6 +1,6 @@
+import { version } from 'directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { useEnv } from '../../env.js';
-import { releaseVersion } from '../../utils/package.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
@@ -30,7 +30,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 	return {
 		url: env['PUBLIC_URL'],
-		version: releaseVersion,
+		version: version,
 		database: getDatabaseClient(),
 
 		dashboards: basicCounts.directus_dashboards,
