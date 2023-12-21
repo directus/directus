@@ -14,7 +14,6 @@ beforeEach(() => {
 
 	mockDb = {
 		count: vi.fn().mockReturnThis(),
-		as: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
 		first: vi.fn().mockResolvedValue(mockResult),
 	} as unknown as Knex;
@@ -36,8 +35,7 @@ describe('countCollection', () => {
 
 		const res = await countCollection(mockDb, collection);
 
-		expect(mockDb.count).toHaveBeenCalledWith('*');
-		expect(mockDb.as).toHaveBeenCalledWith('count');
+		expect(mockDb.count).toHaveBeenCalledWith('*', { as: 'count' });
 		expect(mockDb.from).toHaveBeenCalledWith(collection);
 		expect(mockDb.first).toHaveBeenCalled();
 

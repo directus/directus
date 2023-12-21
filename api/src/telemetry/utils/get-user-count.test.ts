@@ -1,5 +1,5 @@
 import { type Knex } from 'knex';
-import { beforeEach, vi, afterEach, test, expect } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getUserCount } from './get-user-count.js';
 
 let mockResult: { admin_access: number; app_access: number; count: string }[];
@@ -26,7 +26,6 @@ beforeEach(() => {
 
 	mockDb = {
 		count: vi.fn().mockReturnThis(),
-		as: vi.fn().mockReturnThis(),
 		select: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
 		leftJoin: vi.fn().mockReturnThis(),
@@ -41,8 +40,7 @@ afterEach(() => {
 test('Fetches counts from the database', async () => {
 	await getUserCount(mockDb);
 
-	expect(mockDb.count).toHaveBeenCalledWith('directus_users.id');
-	expect(mockDb.as).toHaveBeenCalledWith('count');
+	expect(mockDb.count).toHaveBeenCalledWith('directus_users.id', { as: 'count' });
 	expect(mockDb.select).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 	expect(mockDb.from).toHaveBeenCalledWith('directus_users');
 	expect(mockDb.leftJoin).toHaveBeenCalledWith('directus_roles', 'directus_users.role', '=', 'directus_roles.id');

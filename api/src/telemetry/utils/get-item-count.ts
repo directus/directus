@@ -13,7 +13,7 @@ export interface CollectionCount {
  * @returns Collection name and count
  */
 export const countCollection = async (db: Knex, collection: string): Promise<CollectionCount> => {
-	const count = await db.count('*').as('count').from(collection).first();
+	const count = await db.count('*', { as: 'count' }).from(collection).first();
 	return { collection, count: Number(count?.['count'] ?? 0) };
 };
 
