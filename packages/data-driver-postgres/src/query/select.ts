@@ -1,6 +1,7 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
-import { wrapColumn } from '../utils/wrap-column.js';
 import { applySelectFunction } from '../utils/functions.js';
+import { columnIndexToIdentifier, tableIndexToIdentifier } from '../utils/index-to-identifier.js';
+import { wrapColumn } from '../utils/wrap-column.js';
 
 /**
  * Generates the `SELECT x, y` part of a SQL statement.
@@ -12,7 +13,10 @@ import { applySelectFunction } from '../utils/functions.js';
 export const select = ({ select }: AbstractSqlClauses): string => {
 	const escapedColumns = select.map((selectNode) => {
 		if (selectNode.type === 'primitive') {
-			return wrapColumn(selectNode.table, selectNode.column, selectNode.as);
+			const tableAlias = tableIndexToIdentifier(selectNode.tableIndex);
+			const columnAlias = columnIndexToIdentifier(selectNode.columnIndex);
+
+			return wrapColumn(tableAlias, selectNode.columnName, columnAlias);
 		}
 
 		if (selectNode.type === 'fn') {

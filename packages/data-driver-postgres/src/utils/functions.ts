@@ -1,7 +1,8 @@
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
-import { wrapColumn } from './wrap-column.js';
 import type { ExtractFn } from '@directus/data';
+import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
 import { escapeIdentifier } from './escape-identifier.js';
+import { columnIndexToIdentifier, tableIndexToIdentifier } from './index-to-identifier.js';
+import { wrapColumn } from './wrap-column.js';
 
 /**
  * Wraps a column with a function.
@@ -10,7 +11,9 @@ import { escapeIdentifier } from './escape-identifier.js';
  * @returns	Basically FN("table"."column")
  */
 export function applyFunction(fnNode: AbstractSqlQueryFnNode): string {
-	const wrappedColumn = wrapColumn(fnNode.table, fnNode.column);
+	const tableAlias = tableIndexToIdentifier(fnNode.tableIndex);
+
+	const wrappedColumn = wrapColumn(tableAlias, fnNode.columnName);
 
 	if (fnNode.fn.type === 'arrayFn') {
 		// count is the only array function we currently support
@@ -21,9 +24,11 @@ export function applyFunction(fnNode: AbstractSqlQueryFnNode): string {
 }
 
 export function applySelectFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
+	const columnAlias = columnIndexToIdentifier(fnNode.columnIndex);
+
 	const fn = applyFunction(fnNode);
 
-	return `${fn} AS ${escapeIdentifier(fnNode.as)}`;
+	return `${fn} AS ${escapeIdentifier(columnAlias)}`;
 }
 
 /**

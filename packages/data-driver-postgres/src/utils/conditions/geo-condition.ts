@@ -1,4 +1,5 @@
 import type { SqlConditionGeoNode } from '@directus/data-sql';
+import { tableIndexToIdentifier } from '../index-to-identifier.js';
 import { wrapColumn } from '../wrap-column.js';
 
 /**
@@ -15,7 +16,9 @@ import { wrapColumn } from '../wrap-column.js';
  * @returns
  */
 export const geoCondition = (condition: SqlConditionGeoNode): string => {
-	const column = wrapColumn(condition.target.table, condition.target.column);
+	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
+
+	const column = wrapColumn(tableAlias, condition.target.columnName);
 	const parameterIndex = condition.compareTo.parameterIndex;
 	const geomConvertedText = `ST_GeomFromText($${parameterIndex + 1})`;
 

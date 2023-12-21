@@ -16,6 +16,7 @@ import pg from 'pg';
 import QueryStream from 'pg-query-stream';
 import { convertToActualStatement } from './query/index.js';
 import { convertParameters } from './query/parameters.js';
+import { columnIndexToIdentifier } from './utils/index-to-identifier.js';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;
@@ -84,8 +85,12 @@ export default class DataDriverPostgres implements DataDriver {
 
 		const rootStream = await this.queryDatabase(converterResult.rootQuery);
 
-		return getMappedQueriesStream(rootStream, converterResult.subQueries, converterResult.aliasMapping, (query) =>
-			this.queryDatabase(query),
+		return getMappedQueriesStream(
+			rootStream,
+			converterResult.subQueries,
+			converterResult.aliasMapping,
+			columnIndexToIdentifier,
+			(query) => this.queryDatabase(query),
 		);
 	}
 }

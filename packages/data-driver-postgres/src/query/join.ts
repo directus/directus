@@ -1,6 +1,7 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { conditionString } from '../utils/conditions/index.js';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
+import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 
 /**
  * Generates `LEFT JOIN x ON y` part.
@@ -10,14 +11,12 @@ import { escapeIdentifier } from '../utils/escape-identifier.js';
 export const join = ({ joins }: AbstractSqlClauses): string | null => {
 	if (joins === undefined || joins.length === 0) return null;
 
-	let joinString = '';
-
-	for (const join of joins) {
-		const tableName = escapeIdentifier(join.table);
-		const alias = escapeIdentifier(join.as);
+	const joinStrings = joins.map((join) => {
+		const tableAlias = tableIndexToIdentifier(join.tableIndex);
 		const joinCondition = conditionString(join.on);
-		joinString += `LEFT JOIN ${tableName} ${alias} ON ${joinCondition}`;
-	}
 
-	return joinString;
+		return `LEFT JOIN ${escapeIdentifier(join.tableName)} AS ${escapeIdentifier(tableAlias)} ON ${joinCondition}`;
+	});
+
+	return joinStrings.join(' ');
 };
