@@ -2060,8 +2060,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.3)(sqlite3@5.1.6)(tedious@16.6.1)
       listr2:
-        specifier: 8.0.0
-        version: 8.0.0
+        specifier: 8.0.1
+        version: 8.0.1
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -13493,8 +13493,8 @@ packages:
       commander: 10.0.1
     dev: false
 
-  /listr2@8.0.0:
-    resolution: {integrity: sha512-u8cusxAcyqAiQ2RhYvV7kRKNLgUvtObIbhOX2NCXqvp1UU32xIg5CT22ykS2TPKJXZWJwtK3IKLiqAGlGNE+Zg==}
+  /listr2@8.0.1:
+    resolution: {integrity: sha512-ovJXBXkKGfq+CwmKTjluEqFi3p4h8xvkxGQQAQan22YCgef4KZ1mKGjzfGh6PL6AW5Csw0QiQPNuQyH+6Xk3hA==}
     engines: {node: '>=18.0.0'}
     dependencies:
       cli-truncate: 4.0.0
