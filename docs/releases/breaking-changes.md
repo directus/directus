@@ -7,21 +7,25 @@ description: A list of any actions you may need to take on upgrades of Directus.
 As we continue to build Directus, we occasionally make changes that change how certain features works. We try and keep
 these to a minimum, but rest assured we only make them with good reason.
 
-[Learn more about Versioning ->](/getting-started/architecture#versioning)
+[Learn more about Versioning](/getting-started/architecture#versioning)
 
-[Learn more about Upgrading your Instance ->](/self-hosted/upgrades-migrations)
+[Learn more about Upgrading your Instance](/self-hosted/upgrades-migrations)
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
 ## Version 10.8.3
 
-### Updated GraphQL content version usage
+### Updated GraphQL Content Version Usage
 
-Content versioning was originally implemented as a GraphQL parameter however the output format for relational fields is
-different for stored versions resulting in a GraphQL error as this is unsupported.
+Previously when accessing content versions via GraphQL, a `version` parameter was used on existing fields. This has now
+been changed and is accessed via dedicated query types (`<collection>_by_version` and `versions`).
+
+::: details Migration/Mitigation
+
+::: code-group
 
 ```graphql [Before]
-// version by id
+# Get an item's version by id
 query {
 	<collection>_by_id(id: 15, version: "draft") {
 		id
@@ -30,7 +34,7 @@ query {
 	}
 }
 
-// version singleton or listing versions
+# Get a version singleton or list versions in a collection
 query {
 	<collection>(version: "draft") {
 		id
@@ -38,11 +42,10 @@ query {
 		body
 	}
 }
-
 ```
 
 ```graphql [After]
-// version by id
+# Get an item's version by id
 query {
 	<collection>_by_version(id: 15, version: "draft") {
 		id
@@ -51,7 +54,7 @@ query {
 	}
 }
 
-// version singleton
+# Get a version singleton
 query {
 	<collection>_by_version(version: "draft") {
 		id
@@ -60,7 +63,7 @@ query {
 	}
 }
 
-// listing versions (/graphql/system)
+# List versions in a collection (`/graphql/system`)
 query {
 	versions(filter: { collection: { _eq: "posts" } }) {
         item
@@ -69,9 +72,21 @@ query {
 }
 ```
 
-### Renamed type `ExtensionItem` in the SDK
+:::
+
+### Renamed `ExtensionItem` Type in the SDK
 
 The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline with other system collections.
+
+## Version 10.7.0
+
+### Replaced Extensions List Endpoints
+
+In previous releases, it was possible to `GET /extensions/:type` to retrieve a list of enabled extensions for a given
+type, with no specific permissions required.
+
+This has been replaced with a `GET /extensions` endpoint that returns all extensions along with their type and status.
+This endpoint requires admin authentication.
 
 ## Version 10.6.2
 
@@ -79,6 +94,8 @@ The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline wi
 
 The parameter order for the `refresh` method and thus also the default auth mode have been swapped in order to work well
 with both auth modes, `cookie` and `json`.
+
+::: details Migration/Mitigation
 
 ::: code-group
 

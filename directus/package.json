@@ -47,7 +47,8 @@
 	],
 	"type": "module",
 	"exports": {
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./version": "./version.js"
 	},
 	"bin": {
 		"directus": "cli.js"

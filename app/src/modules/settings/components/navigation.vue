@@ -2,9 +2,10 @@
 import { useServerStore } from '@/stores/server';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 
 const { t } = useI18n();
-const { info } = useServerStore();
+const { info } = storeToRefs(useServerStore());
 
 const dataItems = [
 	{
