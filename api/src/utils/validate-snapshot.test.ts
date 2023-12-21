@@ -2,10 +2,6 @@ import { describe, expect, test, vi } from 'vitest';
 import type { Snapshot } from '../types/snapshot.js';
 import { validateSnapshot } from './validate-snapshot.js';
 
-vi.mock('./package.js', () => ({
-	version: '10.0.0',
-}));
-
 vi.mock('../database/index.js', () => ({
 	getDatabaseClient: () => 'sqlite',
 }));

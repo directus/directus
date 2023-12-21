@@ -1,7 +1,7 @@
 import mid from 'node-machine-id';
 import env from '../env.js';
 import logger from '../logger.js';
-import { version } from './package.js';
+import { version } from 'directus/version';
 
 export async function collectTelemetry(): Promise<void> {
 	const axios = (await import('axios')).default;

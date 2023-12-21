@@ -104,6 +104,7 @@
 		"date-fns": "3.0.1",
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
+		"directus": "workspace:*",
 		"dotenv": "16.3.1",
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",
