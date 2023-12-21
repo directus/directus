@@ -52,6 +52,7 @@ export interface AbstractQueryFieldNodeNestedRelationalMany {
 		 **/
 		fields: AtLeastOneElement<string>;
 	};
+	is2a?: boolean;
 }
 
 /**

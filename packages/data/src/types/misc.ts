@@ -11,7 +11,7 @@ export type A2ORelation = {
 	foreignCollection: string;
 };
 
-interface FkEntry {
+export interface FkEntry {
 	column: string;
 	value: string | number;
 }

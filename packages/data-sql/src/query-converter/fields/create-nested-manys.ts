@@ -5,9 +5,11 @@
  * like do a sub query in the statement or a join.
  */
 import type {
+	A2ORelation,
 	AbstractQueryFieldNodeNestedRelationalMany,
 	AbstractQueryFieldNodeNestedSingleMany,
 	AtLeastOneElement,
+	FkEntry,
 } from '@directus/data';
 import type {
 	AbstractSqlClauses,
@@ -60,17 +62,37 @@ export function getNestedMany(collection: string, field: AbstractQueryFieldNodeN
 	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(collection, field, alias));
 
 	return {
-		subQuery: (rootRow) => ({
-			rootQuery: {
-				clauses,
-				parameters: [
-					...parameters,
-					...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string),
-				],
-			},
-			subQueries: nestedFieldNodes.subQueries,
-			aliasMapping: nestedFieldNodes.aliasMapping,
-		}),
+		subQuery: (rootRow) => {
+			const params = [...parameters];
+
+			if (field.nesting.is2a) {
+				const foreignKey: FkEntry[] = [];
+
+				field.nesting.local.fields.map((field) => {
+					const id = rootRow[generatedAliasMap[field]!] as string;
+					const fkEntry: FkEntry = { column: field, value: id };
+					foreignKey.push(fkEntry);
+				});
+
+				const theRelationalJsonValue: A2ORelation = {
+					foreignCollection: field.nesting.foreign.collection,
+					foreignKey: foreignKey as AtLeastOneElement<FkEntry>,
+				};
+
+				params.push(JSON.stringify(theRelationalJsonValue));
+			} else {
+				params.push(...field.nesting.local.fields.map((field) => rootRow[generatedAliasMap[field]!] as string));
+			}
+
+			return {
+				rootQuery: {
+					clauses,
+					parameters: params,
+				},
+				subQueries: nestedFieldNodes.subQueries,
+				aliasMapping: nestedFieldNodes.aliasMapping,
+			};
+		},
 		select,
 	};
 }
