@@ -1,6 +1,7 @@
 import { getCache } from '../../cache.js';
 import { useEnv } from '../../env.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';
+import { toBoolean } from '../../utils/to-boolean.js';
 import { track } from './track.js';
 
 /**
@@ -19,7 +20,7 @@ export const jobCallback = () => {
 export const initTelemetry = async () => {
 	const env = useEnv();
 
-	if (env['TELEMETRY'] === false) return false;
+	if (toBoolean(env['TELEMETRY'] === false)) return false;
 
 	scheduleSynchronizedJob('telemetry', '0 */6 * * *', jobCallback);
 
