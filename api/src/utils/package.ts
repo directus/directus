@@ -4,9 +4,15 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const { name, version } = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf8')) as {
+const { name, version } = readPackageFile('api/package.json') as {
 	name: string;
 	version: string;
 };
 
-export { name, version };
+const { version: releaseVersion } = readPackageFile('directus/package.json');
+
+export { name, version, releaseVersion };
+
+function readPackageFile(path: string) {
+	return JSON.parse(readFileSync(resolve(__dirname, '../../../', path), 'utf8'));
+}

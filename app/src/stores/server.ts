@@ -43,6 +43,7 @@ export type Info = {
 		default: number;
 		max: number;
 	};
+	version?: string;
 };
 
 export type Auth = {
@@ -83,6 +84,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.version = serverInfoResponse.data.data?.version;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

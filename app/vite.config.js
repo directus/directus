@@ -18,16 +18,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
-import { version } from '../directus/package.json';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	define: {
-		__DIRECTUS_VERSION__: JSON.stringify(version),
-	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -48,10 +44,7 @@ export default defineConfig({
 		},
 	],
 	resolve: {
-		alias: [
-			{ find: '@', replacement: path.resolve(__dirname, 'src') },
-			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
-		],
+		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	...(!process.env.HISTOIRE && {
