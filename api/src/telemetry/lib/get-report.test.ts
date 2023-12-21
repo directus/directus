@@ -1,6 +1,6 @@
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getDatabase } from '../../database/index.js';
+import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { useEnv } from '../../env.js';
 import { releaseVersion } from '../../utils/package.js';
 import { getItemCount } from '../utils/get-item-count.js';
@@ -24,7 +24,6 @@ let mockUserItemCounts: UserItemCount;
 beforeEach(() => {
 	mockEnv = {
 		PUBLIC_URL: 'test-public-url',
-		DB_CLIENT: 'test-db-client',
 	};
 
 	mockDb = {} as unknown as Knex;
@@ -46,10 +45,12 @@ afterEach(() => {
 });
 
 test('Returns environment information', async () => {
+	vi.mocked(getDatabaseClient).mockReturnValue('test-db' as any);
+
 	const report = await getReport();
 
 	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
-	expect(report.database).toBe(mockEnv['DB_CLIENT']);
+	expect(report.database).toBe('test-db');
 	expect(report.version).toBe(releaseVersion);
 });
 

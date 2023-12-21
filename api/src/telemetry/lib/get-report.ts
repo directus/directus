@@ -1,4 +1,4 @@
-import { getDatabase } from '../../database/index.js';
+import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { useEnv } from '../../env.js';
 import { releaseVersion } from '../../utils/package.js';
 import type { TelemetryReport } from '../types/report.js';
@@ -31,7 +31,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	return {
 		url: env['PUBLIC_URL'],
 		version: releaseVersion,
-		database: env['DB_CLIENT'],
+		database: getDatabaseClient(),
 
 		dashboards: basicCounts.directus_dashboards,
 		extensions: basicCounts.directus_extensions,
