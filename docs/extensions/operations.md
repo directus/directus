@@ -106,5 +106,5 @@ Learn how to build operations with our official guides:
 <GuidesListExtensions type="Operations" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

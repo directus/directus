@@ -183,6 +183,23 @@ You may have noticed that, periodically, you will receive a message with a type 
    application technology stack.
 2. To verify that the connection is still active.
 
+In order to prevent the connection from _closing_, you may reply with a `pong` event:
+
+```js
+// Exemplary code
+connection.addEventListener('message', (message) => {
+	const data = JSON.parse(message.data);
+
+	if (data.type === 'ping') {
+		this.connection.send(
+			JSON.stringify({
+				type: 'pong',
+			}),
+		);
+	}
+});
+```
+
 On Directus Cloud, this feature is enabled. If you are self-hosting, you can alter this behavior with the
 `WEBSOCKETS_HEARTBEAT_ENABLED` and `WEBSOCKETS_HEARTBEAT_PERIOD` environment variables.
 

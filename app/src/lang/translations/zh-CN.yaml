@@ -59,6 +59,7 @@ extension_display: 显示
 extension_layout: 布局
 extension_module: 模块
 extension_panel: 面板
+extension_theme: 主题
 extension_hook: 钩子
 extension_endpoint: 端点
 extension_operation: 操作
@@ -674,7 +675,6 @@ errors:
   VALUE_OUT_OF_RANGE: 数值超出范围
   INVALID_FOREIGN_KEY: 无效的外键
   UNKNOWN: 未知错误
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 验证异常
   SERVICE_UNAVAILABLE: 服务不可用
   UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
   UNEXPECTED_RESPONSE: 响应异常
@@ -1220,6 +1220,7 @@ fields:
     last_page: 尾页
     last_access: 上次访问
     email_notifications: 电子邮件通知
+    appearance: 外观
     theme_light_overrides: 亮色主题自定义
     theme_dark_overrides: 暗色主题自定义
   directus_settings:
@@ -1977,6 +1978,8 @@ displays:
     icon: 图标
     border: 边框
     border_label: 显示边框
+    mask: Masked
+    mask_label: 隐藏真实值
     text: 文本
     text_placeholder: 可选值覆盖...
   formatted-json-value:

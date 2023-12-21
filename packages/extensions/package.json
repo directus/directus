@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,26 +36,26 @@
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@types/express": "4.17.21",
-		"fs-extra": "11.1.1",
+		"fs-extra": "11.2.0",
 		"lodash-es": "4.17.21",
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/fs-extra": "11.0.1",
-		"@types/lodash-es": "4.17.9",
-		"@types/node": "18.16.12",
-		"@types/tmp": "0.2.3",
-		"@vitest/coverage-v8": "1.0.4",
+		"@types/fs-extra": "11.0.4",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "18.19.3",
+		"@types/tmp": "0.2.6",
+		"@vitest/coverage-v8": "1.1.0",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2",
-		"vitest": "1.0.4"
+		"typescript": "5.3.3",
+		"vitest": "1.1.0"
 	},
 	"peerDependencies": {
-		"knex": "2.4.2",
-		"pino": "8.14.1",
-		"vue": "3.3.9",
+		"knex": "3.1.0",
+		"pino": "8.17.1",
+		"vue": "3.3.13",
 		"vue-router": "4.2.5"
 	},
 	"peerDependenciesMeta": {

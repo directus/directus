@@ -4,7 +4,7 @@ import { Activity } from '@/types/activity';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import type { User } from '@directus/types';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

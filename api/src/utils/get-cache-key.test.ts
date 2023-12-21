@@ -3,7 +3,7 @@ import { afterEach, beforeAll, describe, expect, test, vi, type MockInstance } f
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 
-vi.mock('./package.js', () => ({ version: '1.2.3' }));
+vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;

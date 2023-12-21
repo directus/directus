@@ -75,6 +75,9 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+extension_reload_required: Page Reload Required
+extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
+extension_reload_now: Reload now
 enable: Enable
 disable: Disable
 custom: Custom
@@ -318,6 +321,9 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -649,6 +655,8 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
+enabled_dev: Enabled (Dev)
+enabled_dev_tooltip: App extensions cannot be disabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -685,7 +693,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  GRAPHQL_VALIDATION: GraphQL Validation
   SERVICE_UNAVAILABLE: Service Unavailable
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
   UNEXPECTED_RESPONSE: Unexpected response
@@ -1242,6 +1250,9 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
   directus_settings:
@@ -1273,6 +1284,9 @@ fields:
     public_background: Public Background
     public_note: Public Note
     theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
