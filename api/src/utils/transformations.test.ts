@@ -140,6 +140,7 @@ describe('resolvePreset', () => {
 		};
 
 		const output = resolvePreset({ transformationParams }, inputFile);
+
 		expect(output).toStrictEqual([
 			[
 				'resize',
