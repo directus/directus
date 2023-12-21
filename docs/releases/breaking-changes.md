@@ -74,7 +74,7 @@ query {
 
 :::
 
-### Renamed type `ExtensionItem` in the SDK
+### Renamed `ExtensionItem` Type in the SDK
 
 The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline with other system collections.
 
