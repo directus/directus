@@ -33,7 +33,7 @@ export interface AbstractQueryFieldNodeNestedUnionOne {
 }
 
 /**
- * A related, foreign field for o2m.
+ * A related, foreign field for o2m and o2a.
  * The foreign collection is static.
  */
 export interface AbstractQueryFieldNodeNestedSingleMany {
@@ -51,8 +51,7 @@ export interface AbstractQueryFieldNodeNestedSingleMany {
 }
 
 /**
- * A related, foreign field for o2a.
- * The foreign collection is dynamic.
+ * A related, foreign field for ...
  */
 export interface AbstractQueryFieldNodeNestedUnionMany {
 	type: 'nested-union-many';
