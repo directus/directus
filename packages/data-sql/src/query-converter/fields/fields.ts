@@ -57,16 +57,12 @@ export const convertFieldNodes = (
 			 * item has a related item so we don't expand `null` values in a nested object where every
 			 * value is null
 			 */
-
-			if (abstractField.nesting.type === 'relational-many') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
-				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator);
-				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
-				joins.push(sqlJoinNode);
-				select.push(...nestedOutput.clauses.select);
-			}
-
+			const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
+			const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
+			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator);
+			aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
+			joins.push(sqlJoinNode);
+			select.push(...nestedOutput.clauses.select);
 			continue;
 		}
 
