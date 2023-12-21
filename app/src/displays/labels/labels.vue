@@ -91,7 +91,12 @@ const items = computed(() => {
 			</v-chip>
 		</template>
 		<template v-else>
-			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.color ?? item.background" />
+			<display-color
+				v-for="item in items"
+				:key="item.value"
+				v-tooltip="item.text"
+				:value="item.color ?? item.background"
+			/>
 		</template>
 	</div>
 </template>
