@@ -389,6 +389,17 @@ async function buildBundleExtension({
 		process.exit(1);
 	}
 
+	const bundleEntryNames = new Set();
+
+	for (const { name } of entries) {
+		if (bundleEntryNames.has(name)) {
+			log(`Duplicate extension found in bundle for ${chalk.bold(name)}.`, 'error');
+			process.exit(1);
+		}
+
+		bundleEntryNames.add(name);
+	}
+
 	const config = await loadConfig();
 	const plugins = config.plugins ?? [];
 
