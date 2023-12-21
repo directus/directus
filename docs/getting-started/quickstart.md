@@ -30,7 +30,7 @@ Login to your new project using the URL in your email inbox or on your Directus 
 
 _Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/projects)._
 
-== Self-Hosted Installation
+== Docker Installation
 
 You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
