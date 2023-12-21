@@ -6,7 +6,7 @@ import { sendReport } from './send-report.js';
 vi.mock('../../env.js');
 
 beforeEach(() => {
-	global.fetch = vi.fn().mockResolvedValue({ ok: true, text: vi.fn() });
+	vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: vi.fn() }));
 });
 
 afterEach(() => {
