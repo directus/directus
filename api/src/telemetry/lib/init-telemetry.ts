@@ -20,7 +20,7 @@ export const jobCallback = () => {
 export const initTelemetry = async () => {
 	const env = useEnv();
 
-	if (toBoolean(env['TELEMETRY'] === false)) return false;
+	if (toBoolean(env['TELEMETRY']) === false) return false;
 
 	scheduleSynchronizedJob('telemetry', '0 */6 * * *', jobCallback);
 
