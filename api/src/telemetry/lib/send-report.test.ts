@@ -11,7 +11,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.clearAllMocks();
-	vi.mocked(global.fetch).mockReset();
+	vi.unstubAllGlobals();
 });
 
 test('Posts stringified report to configured ingress URL', async () => {
