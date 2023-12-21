@@ -16,3 +16,9 @@ export type WebSocketInterface = {
 	send(data: string): void;
 	close(code?: number, reason?: string): void;
 };
+
+export type LogLevels = 'log' | 'info' | 'warn' | 'error';
+
+export type ConsoleInterface = {
+	[level in LogLevels]: (...args: any) => any;
+};
