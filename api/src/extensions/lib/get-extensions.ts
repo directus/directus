@@ -40,7 +40,11 @@ export const getExtensions = async () => {
 	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
 
 	if (duplicateExtensions.length > 0) {
-		logger.info(`Skipped loading duplicates of extensions: ${duplicateExtensions.join(', ')}`);
+		logger.warn(
+			`Failed to load the following extensions because they have/contain duplicate names: ${duplicateExtensions.join(
+				', ',
+			)}`,
+		);
 	}
 
 	return Array.from(loadedExtensions.values());
