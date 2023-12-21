@@ -1,9 +1,9 @@
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8'));
+const pkg = JSON.parse(await readFile(join(__dirname, 'package.json'), 'utf8'));
 
 export const version = pkg.version;
