@@ -18,7 +18,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 ### Updated GraphQL Content Version Usage
 
 Previously when accessing content versions via GraphQL, a `version` parameter on existing fields. This has now been
-changed and is accessed via dedicated fields (`<collection>_by_version` and `versions`).
+changed and is accessed via dedicated query types (`<collection>_by_version` and `versions`).
 
 ::: details Migration/Mitigation
 
