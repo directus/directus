@@ -1013,7 +1013,7 @@ Directus collects little and anonymized data about your environment.
 | ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
 | `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
 | `TELEMETRY_INGRESS`       | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
-| `TELEMETRY_AUTHORIZATION` | Optional authorization header value                               | --                               |
+| `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
 ## Limits & Optimizations
 
