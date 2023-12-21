@@ -299,7 +299,6 @@ export const defaults: Record<string, any> = {
 
 	TELEMETRY: true,
 	TELEMETRY_INGRESS: 'https://telemetry.directus.io/v1',
-	TELEMETRY_AUTHORIZATION: undefined,
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
