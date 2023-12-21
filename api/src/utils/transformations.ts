@@ -17,29 +17,50 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 	}
 
 	if ((transformationParams.width || transformationParams.height) && file.width && file.height) {
-		const toWidth = transformationParams.width ? Number(transformationParams.width) : file.width;
-		const toHeight = transformationParams.height ? Number(transformationParams.height) : file.height;
+		const toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
+		const toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
 
-		const transformArgs = getResizeArguments(
-			{ w: file.width, h: file.height },
-			{ w: toWidth, h: toHeight },
-			file.focal_point,
-		);
+		/*
+		 * Focal point cropping only works with a fixed size (width x height) when `cover`ing,
+		 * since the other modes show the whole image. Sharp by default also simply scales up/down
+		 * when only supplied with one dimension, so we **must** check, else we break existing behaviour.
+		 * See: https://sharp.pixelplumbing.com/api-resize#resize
+		 * Otherwise fall back to regular behaviour
+		 */
+		if (transformationParams.fit === 'cover' && toWidth && toHeight) {
+			const transformArgs = getResizeArguments(
+				{ w: file.width, h: file.height },
+				{ w: toWidth, h: toHeight },
+				file.focal_point,
+			);
 
-		transforms.push(
-			[
+			transforms.push(
+				[
+					'resize',
+					{
+						width: transformArgs.width,
+						height: transformArgs.height,
+						fit: transformationParams.fit,
+						withoutEnlargement: transformationParams.withoutEnlargement
+							? Boolean(transformationParams.withoutEnlargement)
+							: undefined,
+					},
+				],
+				['extract', transformArgs.region],
+			);
+		} else {
+			transforms.push([
 				'resize',
 				{
-					width: transformArgs.width,
-					height: transformArgs.height,
+					width: toWidth,
+					height: toHeight,
 					fit: transformationParams.fit,
 					withoutEnlargement: transformationParams.withoutEnlargement
 						? Boolean(transformationParams.withoutEnlargement)
 						: undefined,
 				},
-			],
-			['extract', transformArgs.region],
-		);
+			]);
+		}
 	}
 
 	return transforms;

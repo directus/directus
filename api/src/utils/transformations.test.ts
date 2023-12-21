@@ -91,7 +91,7 @@ describe('resolvePreset', () => {
 		]);
 	});
 
-	test('Add resize transformation', () => {
+	test('Add resize transformation: cover', () => {
 		const transformationParams: TransformationParams = {
 			key: 'system-small-cover',
 			width: 64,
@@ -128,6 +128,28 @@ describe('resolvePreset', () => {
 				},
 			],
 			['extract', { left: 25, top: 0, width: 64, height: 64 }],
+		]);
+	});
+
+	test('Add resize transformation: contain', () => {
+		const transformationParams: TransformationParams = {
+			key: 'system-small-cover',
+			width: 64,
+			height: 64,
+			fit: 'contain',
+		};
+
+		const output = resolvePreset({ transformationParams }, inputFile);
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 64,
+					height: 64,
+					fit: 'contain',
+					withoutEnlargement: undefined,
+				},
+			],
 		]);
 	});
 
