@@ -18,7 +18,7 @@ test('Posts stringified report to configured ingress URL', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_INGRESS: mockIngress,
+		TELEMETRY_URL: mockIngress,
 	});
 
 	const url = new URL('/v1/metrics', mockIngress);
@@ -41,7 +41,7 @@ test('Sets optional authorization header based on configured auth var', async ()
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_INGRESS: mockIngress,
+		TELEMETRY_URL: mockIngress,
 		TELEMETRY_AUTHORIZATION: 'test-auth',
 	});
 
@@ -72,7 +72,7 @@ test('Throws error if post was not successful', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_INGRESS: mockIngress,
+		TELEMETRY_URL: mockIngress,
 		TELEMETRY_AUTHORIZATION: 'test-auth',
 	});
 

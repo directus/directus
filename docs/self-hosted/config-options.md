@@ -1012,7 +1012,7 @@ Directus collects little and anonymized data about your environment.
 | Variable                  | Description                                                       | Default Value                    |
 | ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
 | `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
-| `TELEMETRY_INGRESS`       | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
+| `TELEMETRY_URL`       | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
 | `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
 ## Limits & Optimizations
