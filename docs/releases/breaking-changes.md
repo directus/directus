@@ -13,6 +13,16 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.x.y
+
+### Updated Sorting in Schema Snapshots
+
+The sort order of fields and relations inside schema snapshots has been changed to their original creation order. This
+is to increase consistency of resulting snapshots artifacts.
+
+While this is not a breaking change, you are advised to regenerate the snapshot after the version update of Directus,
+provided you are tracking the snapshot in a version control system.
+
 ## Version 10.8.3
 
 ### Updated GraphQL Content Version Usage
