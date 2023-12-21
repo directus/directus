@@ -647,11 +647,22 @@ test.todo('nested a2o field', async () => {
 	// define database response mocks
 	const localDesiredFieldValue1 = randomIdentifier();
 	const localPkFieldValue1 = randomIdentifier();
-	const localRelationalFieldValue1: A2ORelation = { foreignKey: [1, 2], foreignCollection: foreignTable1 };
+
+	const localRelationalFieldValue1: A2ORelation = {
+		foreignKey: [
+			{ column: foreignIdField11, value: 1 },
+			{ column: foreignIdField12, value: 2 },
+		],
+		foreignCollection: foreignTable1,
+	};
 
 	const localDesiredFieldValue2 = randomIdentifier();
 	const localPkFieldValue2 = randomIdentifier();
-	const localRelationalFieldValue2: A2ORelation = { foreignKey: [1], foreignCollection: foreignTable2 };
+
+	const localRelationalFieldValue2: A2ORelation = {
+		foreignKey: [{ column: foreignIdField2, value: 1 }],
+		foreignCollection: foreignTable2,
+	};
 
 	// @TODO change to deterministic generated aliases here instead of random values
 	const mockedRootData = [
