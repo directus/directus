@@ -1,18 +1,16 @@
 import type { ConditionGeoIntersectsBBoxNode } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { GeoJSONGeometry } from 'wellknown';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertGeoCondition } from './geo.js';
 
 test('convert geo condition', () => {
-	const indexGen = createIndexGenerators();
-	const randomCollection = randomIdentifier();
-	const randomField = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
 
-	const gisValue: GeoJSONGeometry = {
+	const multiPolygon: GeoJSONGeometry = {
 		type: 'MultiPolygon',
 		coordinates: [
 			[
@@ -43,41 +41,42 @@ test('convert geo condition', () => {
 		],
 	};
 
-	const con: ConditionGeoIntersectsBBoxNode = {
+	const condition: ConditionGeoIntersectsBBoxNode = {
 		type: 'condition-geo-intersects-bbox',
 		target: {
 			type: 'primitive',
-			field: randomField,
+			field: columnName,
 		},
 		operation: 'intersects_bbox',
-		compareTo: gisValue,
-	};
-
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		condition: {
-			type: 'condition-geo',
-			target: {
-				type: 'primitive',
-				table: randomCollection,
-				column: randomField,
-			},
-			operation: 'intersects_bbox',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
-			},
-		},
-		negate: false,
+		compareTo: multiPolygon,
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				condition: {
+					type: 'condition-geo',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					operation: 'intersects_bbox',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+				negate: false,
+			},
 			joins: [],
 		},
-		parameters: [gisValue],
+		parameters: [multiPolygon],
 	};
 
-	expect(convertGeoCondition(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertGeoCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

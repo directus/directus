@@ -1,108 +1,68 @@
 import type { AbstractQueryFilterNode } from '@directus/data';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
-import { beforeEach, describe, expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../../types/clauses/where/index.js';
-import { createIndexGenerators, type IndexGenerators } from '../../../utils/create-index-generators.js';
+import { describe, expect, test } from 'vitest';
+import { createIndexGenerators } from '../../../utils/create-index-generators.js';
 import { convertFilter } from './filter.js';
 import type { FilterResult } from './utils.js';
 
-let randomCollection: string;
-let randomField1: string;
-let randomField2: string;
-let randomNumber1: number;
-let randomString1: string;
-let indexGen: IndexGenerators;
-let randomCompareTo: number;
-
-beforeEach(() => {
-	randomCompareTo = randomInteger(1, 100);
-	randomCollection = randomIdentifier();
-	randomField1 = randomIdentifier();
-	randomField2 = randomIdentifier();
-	randomNumber1 = randomInteger(1, 100);
-	randomString1 = randomAlpha(5);
-	indexGen = createIndexGenerators();
-});
-
 test('Convert single filter', () => {
-	const sampleFilter: AbstractQueryFilterNode = {
-		type: 'condition',
-		condition: {
-			type: 'condition-number',
-			target: {
-				type: 'primitive',
-				field: randomField1,
-			},
-			operation: 'gt',
-			compareTo: randomCompareTo,
-		},
-	};
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
 
-	const expectedWhere: AbstractSqlQueryConditionNode = {
+	const filter: AbstractQueryFilterNode = {
 		type: 'condition',
-		negate: true,
 		condition: {
 			type: 'condition-number',
 			target: {
 				type: 'primitive',
-				column: randomField1,
-				table: randomCollection,
+				field: columnName,
 			},
 			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
-			},
+			compareTo: columnValue,
 		},
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				negate: true,
+				condition: {
+					type: 'condition-number',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
 			joins: [],
 		},
-		parameters: [randomCompareTo],
+		parameters: [columnValue],
 	};
 
-	expect(convertFilter(sampleFilter, randomCollection, indexGen, true)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertFilter(filter, tableIndex, indexGen, true);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 describe('convert multiple conditions', () => {
 	test('Convert logical node with two conditions', () => {
-		const sampleFilter: AbstractQueryFilterNode = {
-			type: 'logical',
-			operator: 'and',
-			childNodes: [
-				{
-					type: 'condition',
-					condition: {
-						type: 'condition-number',
-						target: {
-							type: 'primitive',
-							field: randomField1,
-						},
-						operation: 'eq',
-						compareTo: randomNumber1,
-					},
-				},
-				{
-					type: 'condition',
-					condition: {
-						type: 'condition-string',
-						target: {
-							type: 'primitive',
-							field: randomField2,
-						},
-						operation: 'starts_with',
-						compareTo: randomString1,
-					},
-				},
-			],
-		};
+		const tableIndex = randomInteger(0, 100);
+		const column1Name = randomIdentifier();
+		const column1Value = randomInteger(1, 100);
+		const column2Name = randomIdentifier();
+		const column2Value = randomAlpha(10);
 
-		const expectedWhere: AbstractSqlQueryLogicalNode = {
+		const filter: AbstractQueryFilterNode = {
 			type: 'logical',
-			negate: false,
 			operator: 'and',
 			childNodes: [
 				{
@@ -111,16 +71,11 @@ describe('convert multiple conditions', () => {
 						type: 'condition-number',
 						target: {
 							type: 'primitive',
-							column: randomField1,
-							table: randomCollection,
+							field: column1Name,
 						},
 						operation: 'eq',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 0,
-						},
+						compareTo: column1Value,
 					},
-					negate: false,
 				},
 				{
 					type: 'condition',
@@ -128,38 +83,81 @@ describe('convert multiple conditions', () => {
 						type: 'condition-string',
 						target: {
 							type: 'primitive',
-							column: randomField2,
-							table: randomCollection,
+							field: column2Name,
 						},
 						operation: 'starts_with',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 1,
-						},
+						compareTo: column2Value,
 					},
-					negate: false,
 				},
 			],
 		};
 
 		const expectedResult: FilterResult = {
 			clauses: {
-				where: expectedWhere,
+				where: {
+					type: 'logical',
+					negate: false,
+					operator: 'and',
+					childNodes: [
+						{
+							type: 'condition',
+							condition: {
+								type: 'condition-number',
+								target: {
+									type: 'primitive',
+									tableIndex,
+									columnName: column1Name,
+								},
+								operation: 'eq',
+								compareTo: {
+									type: 'value',
+									parameterIndex: 0,
+								},
+							},
+							negate: false,
+						},
+						{
+							type: 'condition',
+							condition: {
+								type: 'condition-string',
+								target: {
+									type: 'primitive',
+									tableIndex,
+									columnName: column2Name,
+								},
+								operation: 'starts_with',
+								compareTo: {
+									type: 'value',
+									parameterIndex: 1,
+								},
+							},
+							negate: false,
+						},
+					],
+				},
 				joins: [],
 			},
-			parameters: [randomNumber1, randomString1],
+			parameters: [column1Value, column2Value],
 		};
 
-		expect(convertFilter(sampleFilter, randomCollection, indexGen)).toStrictEqual(expectedResult);
+		const indexGen = createIndexGenerators();
+		const result = convertFilter(filter, tableIndex, indexGen);
+
+		expect(result).toStrictEqual(expectedResult);
 	});
 
 	test('Convert logical node with nested conditions and with negation', () => {
-		const randomField3 = randomIdentifier();
-		const randomField4 = randomIdentifier();
-		const randomNumber2 = randomInteger(1, 100);
-		const randomNumber3 = randomInteger(1, 100);
+		const tableIndex = randomInteger(0, 100);
+		const column1Name = randomIdentifier();
+		const column1Value = randomInteger(1, 100);
+		const column2Name = randomIdentifier();
+		const column2Value = randomAlpha(10);
+		const column3Name = randomIdentifier();
+		const column3Value = randomInteger(1, 100);
+		const column4Name = randomIdentifier();
+		const column4Value = randomInteger(1, 100);
 
-		// "firstField" > 1 OR NOT "secondField" = 2 OR NOT (NOT "thirdField" < 3 AND NOT (NOT ("fourthField" = 4)))
+		// "column1" > 1 OR NOT "column2" = 2 OR NOT (NOT "column3" < 3 AND NOT (NOT ("column4" = 4)))
 		const filter: AbstractQueryFilterNode = {
 			type: 'logical',
 			operator: 'or',
@@ -170,10 +168,10 @@ describe('convert multiple conditions', () => {
 						type: 'condition-number',
 						target: {
 							type: 'primitive',
-							field: randomField1,
+							field: column1Name,
 						},
 						operation: 'gt',
-						compareTo: randomNumber1,
+						compareTo: column1Value,
 					},
 				},
 				{
@@ -184,10 +182,10 @@ describe('convert multiple conditions', () => {
 							type: 'condition-string',
 							target: {
 								type: 'primitive',
-								field: randomField2,
+								field: column2Name,
 							},
 							operation: 'starts_with',
-							compareTo: randomString1,
+							compareTo: column2Value,
 						},
 					},
 				},
@@ -205,10 +203,10 @@ describe('convert multiple conditions', () => {
 										type: 'condition-number',
 										target: {
 											type: 'primitive',
-											field: randomField3,
+											field: column3Name,
 										},
 										operation: 'lt',
-										compareTo: randomNumber2,
+										compareTo: column3Value,
 									},
 								},
 							},
@@ -222,10 +220,10 @@ describe('convert multiple conditions', () => {
 											type: 'condition-number',
 											target: {
 												type: 'primitive',
-												field: randomField4,
+												field: column4Name,
 											},
 											operation: 'eq',
-											compareTo: randomNumber3,
+											compareTo: column4Value,
 										},
 									},
 								},
@@ -236,69 +234,13 @@ describe('convert multiple conditions', () => {
 			],
 		};
 
-		const result = convertFilter(filter, randomCollection, indexGen);
-
-		const expectedWhere: AbstractSqlQueryLogicalNode = {
-			type: 'logical',
-			operator: 'or',
-			negate: false,
-			childNodes: [
-				{
-					type: 'condition',
-					negate: false,
-					condition: {
-						type: 'condition-number',
-						target: {
-							type: 'primitive',
-							table: randomCollection,
-							column: randomField1,
-						},
-						operation: 'gt',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 0,
-						},
-					},
-				},
-				{
-					type: 'condition',
-					negate: true,
-					condition: {
-						type: 'condition-string',
-						target: {
-							type: 'primitive',
-							table: randomCollection,
-							column: randomField2,
-						},
-						operation: 'starts_with',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 1,
-						},
-					},
-				},
-				{
+		const expectedResult: FilterResult = {
+			clauses: {
+				where: {
 					type: 'logical',
-					operator: 'and',
-					negate: true,
+					operator: 'or',
+					negate: false,
 					childNodes: [
-						{
-							type: 'condition',
-							negate: true,
-							condition: {
-								type: 'condition-number',
-								target: {
-									type: 'primitive',
-									table: randomCollection,
-									column: randomField3,
-								},
-								operation: 'lt',
-								compareTo: {
-									type: 'value',
-									parameterIndex: 2,
-								},
-							},
-						},
 						{
 							type: 'condition',
 							negate: false,
@@ -306,29 +248,84 @@ describe('convert multiple conditions', () => {
 								type: 'condition-number',
 								target: {
 									type: 'primitive',
-									table: randomCollection,
-									column: randomField4,
+									tableIndex,
+									columnName: column1Name,
 								},
-								operation: 'eq',
+								operation: 'gt',
 								compareTo: {
 									type: 'value',
-									parameterIndex: 3,
+									parameterIndex: 0,
 								},
 							},
 						},
+						{
+							type: 'condition',
+							negate: true,
+							condition: {
+								type: 'condition-string',
+								target: {
+									type: 'primitive',
+									tableIndex,
+									columnName: column2Name,
+								},
+								operation: 'starts_with',
+								compareTo: {
+									type: 'value',
+									parameterIndex: 1,
+								},
+							},
+						},
+						{
+							type: 'logical',
+							operator: 'and',
+							negate: true,
+							childNodes: [
+								{
+									type: 'condition',
+									negate: true,
+									condition: {
+										type: 'condition-number',
+										target: {
+											type: 'primitive',
+											tableIndex,
+											columnName: column3Name,
+										},
+										operation: 'lt',
+										compareTo: {
+											type: 'value',
+											parameterIndex: 2,
+										},
+									},
+								},
+								{
+									type: 'condition',
+									negate: false,
+									condition: {
+										type: 'condition-number',
+										target: {
+											type: 'primitive',
+											tableIndex,
+											columnName: column4Name,
+										},
+										operation: 'eq',
+										compareTo: {
+											type: 'value',
+											parameterIndex: 3,
+										},
+									},
+								},
+							],
+						},
 					],
 				},
-			],
-		};
-
-		const expectedResults: FilterResult = {
-			clauses: {
-				where: expectedWhere,
 				joins: [],
 			},
-			parameters: [randomNumber1, randomString1, randomNumber2, randomNumber3],
+			parameters: [column1Value, column2Value, column3Value, column4Value],
 		};
 
-		expect(result).toStrictEqual(expectedResults);
+		const indexGen = createIndexGenerators();
+		const result = convertFilter(filter, tableIndex, indexGen);
+
+		expect(result).toStrictEqual(expectedResult);
 	});
 });

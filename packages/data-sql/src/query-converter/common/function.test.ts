@@ -1,52 +1,49 @@
 import type { AbstractQueryFunction } from '@directus/data';
-import { randomAlpha, randomIdentifier } from '@directus/random';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { describe, expect, test } from 'vitest';
 import type { AbstractSqlQueryFnNode } from '../../types/index.js';
 import { convertFn } from './function.js';
-import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
-
-let randomCollection: string;
-let indexGen: IndexGenerators;
-let sampleField: string;
-
-beforeEach(() => {
-	randomCollection = randomIdentifier();
-	indexGen = createIndexGenerators();
-	sampleField = randomIdentifier();
-});
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
 
 describe('Convert function', () => {
 	test('With no args', () => {
+		const tableIndex = randomInteger(0, 100);
+		const columnName = randomIdentifier();
+
 		const sampleAbstractFn: AbstractQueryFunction = {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			field: sampleField,
+			field: columnName,
 		};
 
-		const res = convertFn(randomCollection, sampleAbstractFn, indexGen);
+		const indexGen = createIndexGenerators();
+		const result = convertFn(tableIndex, sampleAbstractFn, indexGen);
 
-		const expectedSqlFn: AbstractSqlQueryFnNode = {
+		const expectedFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			table: randomCollection,
-			column: sampleField,
+			tableIndex,
+			columnName,
 		};
 
-		expect(res).toStrictEqual({
-			fn: expectedSqlFn,
+		expect(result).toStrictEqual({
+			fn: expectedFn,
 			parameters: [],
 		});
 	});
 
 	test('With args', () => {
-		const randomArgument1 = randomAlpha(5);
-		const randomArgument2 = randomAlpha(5);
+		const tableIndex = randomInteger(0, 100);
+		const columnName = randomIdentifier();
+
+		const argument1 = randomAlpha(10);
+		const argument2 = randomAlpha(10);
 
 		const sampleFn: AbstractQueryFunction = {
 			type: 'fn',
@@ -54,29 +51,30 @@ describe('Convert function', () => {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			field: sampleField,
-			args: [randomArgument1, randomArgument2],
+			field: columnName,
+			args: [argument1, argument2],
 		};
 
-		const res = convertFn(randomCollection, sampleFn, indexGen);
+		const indexGen = createIndexGenerators();
+		const result = convertFn(tableIndex, sampleFn, indexGen);
 
-		const sampleSqlFn: AbstractSqlQueryFnNode = {
+		const expectedFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			table: randomCollection,
-			column: sampleField,
+			tableIndex,
+			columnName,
 			arguments: {
 				type: 'values',
 				parameterIndexes: [0, 1],
 			},
 		};
 
-		expect(res).toStrictEqual({
-			fn: sampleSqlFn,
-			parameters: [randomArgument1, randomArgument2],
+		expect(result).toStrictEqual({
+			fn: expectedFn,
+			parameters: [argument1, argument2],
 		});
 	});
 });

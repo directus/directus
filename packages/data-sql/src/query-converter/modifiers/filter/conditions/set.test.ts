@@ -1,52 +1,51 @@
 import type { ConditionSetNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertSetCondition } from './set.js';
 
 test('convert set condition', () => {
-	const indexGen = createIndexGenerators();
-	const randomCollection = randomIdentifier();
-	const randomField = randomIdentifier();
-	const randomValues: number[] = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValues = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
 
-	const con: ConditionSetNode = {
+	const condition: ConditionSetNode = {
 		type: 'condition-set',
 		target: {
 			type: 'primitive',
-			field: randomField,
+			field: columnName,
 		},
 		operation: 'in',
-		compareTo: randomValues,
-	};
-
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		condition: {
-			type: 'condition-set',
-			target: {
-				type: 'primitive',
-				table: randomCollection,
-				column: randomField,
-			},
-			operation: 'in',
-			compareTo: {
-				type: 'values',
-				parameterIndexes: [0, 1, 2],
-			},
-		},
-		negate: false,
+		compareTo: columnValues,
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				condition: {
+					type: 'condition-set',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					operation: 'in',
+					compareTo: {
+						type: 'values',
+						parameterIndexes: [0, 1, 2],
+					},
+				},
+				negate: false,
+			},
 			joins: [],
 		},
-		parameters: randomValues,
+		parameters: columnValues,
 	};
 
-	expect(convertSetCondition(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertSetCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

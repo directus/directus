@@ -1,63 +1,60 @@
 import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionStringNode } from '@directus/data';
-import { randomIdentifier, randomInteger } from '@directus/random';
-import { expect, test, vi } from 'vitest';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
 import { createIndexGenerators } from '../../utils/create-index-generators.js';
 import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './target.js';
 
-vi.mock('../../utils/create-unique-alias.js', () => ({
-	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
-}));
-
 test('convert primitive target', () => {
-	const conditionTargetField = randomIdentifier();
-	const compareValue = randomIdentifier();
-	const collection = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomAlpha(10);
 
-	const stringCondition: ConditionStringNode = {
+	const condition: ConditionStringNode = {
 		type: 'condition-string',
 		operation: 'eq',
 		target: {
 			type: 'primitive',
-			field: conditionTargetField,
+			field: columnName,
 		},
-		compareTo: compareValue,
+		compareTo: columnValue,
 	};
 
-	const expected: TargetConversionResult = {
+	const expectedResult: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			column: conditionTargetField,
-			table: collection,
+			tableIndex,
+			columnName,
 		},
 		joins: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertTarget(stringCondition.target, collection, indexGen);
-	expect(result).toStrictEqual(expected);
+	const result = convertTarget(condition.target, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('convert function target', () => {
-	const conditionTargetField = randomIdentifier();
-	const compareValue = randomInteger(2, 500);
-	const collection = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
 
 	const condition: ConditionNumberNode = {
 		type: 'condition-number',
 		operation: 'eq',
 		target: {
 			type: 'fn',
-			field: conditionTargetField,
+			field: columnName,
 			fn: {
 				type: 'extractFn',
 				fn: 'year',
 				isTimestampType: false,
 			},
 		},
-		compareTo: compareValue,
+		compareTo: columnValue,
 	};
 
-	const expected: TargetConversionResult = {
+	const expectedResult: TargetConversionResult = {
 		value: {
 			type: 'fn',
 			fn: {
@@ -65,58 +62,58 @@ test('convert function target', () => {
 				fn: 'year',
 				isTimestampType: false,
 			},
-			column: conditionTargetField,
-			table: collection,
+			tableIndex,
+			columnName,
 		},
 		joins: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertTarget(condition.target, collection, indexGen);
-	expect(result).toStrictEqual(expected);
+	const result = convertTarget(condition.target, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('convert nested target', () => {
-	const leftCollection = randomIdentifier();
-	const leftIdentifierField = randomIdentifier();
-	const rightIdentifierField = randomIdentifier();
-	const store = randomIdentifier();
-	const filterField = randomIdentifier();
-	const foreignCollection = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const foreignKeyColumnName = randomIdentifier();
 
-	const sample: AbstractQueryTargetNestedOne = {
+	const externalStore = randomIdentifier();
+	const externalTableName = randomIdentifier();
+	const externalTableIndex = 0;
+	const externalColumnName = randomIdentifier();
+	const externalKeyColumnName = randomIdentifier();
+
+	const nestedTarget: AbstractQueryTargetNestedOne = {
 		type: 'nested-one-target',
 		field: {
 			type: 'primitive',
-			field: filterField,
+			field: externalColumnName,
 		},
 		nesting: {
 			type: 'relational-many',
 			local: {
-				fields: [leftIdentifierField],
+				fields: [foreignKeyColumnName],
 			},
 			foreign: {
-				store,
-				collection: foreignCollection,
-				fields: [rightIdentifierField],
+				store: externalStore,
+				collection: externalTableName,
+				fields: [externalKeyColumnName],
 			},
 		},
 	};
 
-	const indexGen = createIndexGenerators();
-	const res = convertNestedOneTarget(leftCollection, sample, indexGen);
-
-	const expected = {
+	const expectedResult: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			table: foreignCollection + '_RANDOM',
-			column: filterField,
+			tableIndex: externalTableIndex,
+			columnName: externalColumnName,
 		},
 		joins: [
 			{
 				type: 'join',
-				table: foreignCollection,
-				as: foreignCollection + '_RANDOM',
+				tableName: externalTableName,
+				tableIndex: externalTableIndex,
 				on: {
 					type: 'condition',
 					negate: false,
@@ -124,14 +121,14 @@ test('convert nested target', () => {
 						type: 'condition-field',
 						target: {
 							type: 'primitive',
-							table: leftCollection,
-							column: leftIdentifierField,
+							tableIndex,
+							columnName: foreignKeyColumnName,
 						},
 						operation: 'eq',
 						compareTo: {
 							type: 'primitive',
-							table: foreignCollection + '_RANDOM',
-							column: rightIdentifierField,
+							tableIndex: externalTableIndex,
+							columnName: externalKeyColumnName,
 						},
 					},
 				},
@@ -139,5 +136,8 @@ test('convert nested target', () => {
 		],
 	};
 
-	expect(res).toStrictEqual(expected);
+	const indexGen = createIndexGenerators();
+	const result = convertNestedOneTarget(nestedTarget, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });

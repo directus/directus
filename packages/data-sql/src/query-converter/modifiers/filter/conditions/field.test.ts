@@ -1,26 +1,25 @@
 import type { ConditionFieldNode } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertFieldCondition } from './field.js';
 
 test('convert field condition', () => {
-	const indexGen = createIndexGenerators();
-	const randomCollection2 = randomIdentifier();
-	const randomField1 = randomIdentifier();
-	const randomField2 = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const column1Name = randomIdentifier();
+	const column2Name = randomIdentifier();
 
-	const con: ConditionFieldNode = {
+	const condition: ConditionFieldNode = {
 		type: 'condition-field',
 		target: {
 			type: 'primitive',
-			field: randomField1,
+			field: column1Name,
 		},
 		operation: 'eq',
 		compareTo: {
 			type: 'primitive',
-			field: randomField2,
+			field: column2Name,
 		},
 	};
 
@@ -33,14 +32,14 @@ test('convert field condition', () => {
 					type: 'condition-field',
 					target: {
 						type: 'primitive',
-						table: randomCollection2,
-						column: randomField1,
+						tableIndex,
+						columnName: column1Name,
 					},
 					operation: 'eq',
 					compareTo: {
 						type: 'primitive',
-						table: randomCollection2,
-						column: randomField2,
+						tableIndex,
+						columnName: column2Name,
 					},
 				},
 			},
@@ -49,5 +48,8 @@ test('convert field condition', () => {
 		parameters: [],
 	};
 
-	expect(convertFieldCondition(con, randomCollection2, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

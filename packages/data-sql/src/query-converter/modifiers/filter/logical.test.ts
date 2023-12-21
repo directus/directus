@@ -1,31 +1,19 @@
-import { expect, test, beforeEach } from 'vitest';
-import { convertLogical } from './logical.js';
-import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
-import type { FilterResult } from './filter.js';
 import type { AtLeastOneElement } from '@directus/data';
-
-// first condition (with nested target)
-let localCollection: string;
-let randomField1: string;
-let randomNumber: number;
-let joinAlias: string;
-
-// second condition
-let foreignCollection: string;
-let randomField2: string;
-let randomString: string;
-
-beforeEach(() => {
-	localCollection = randomIdentifier();
-	randomField1 = randomIdentifier();
-	joinAlias = randomIdentifier();
-	randomField2 = randomIdentifier();
-	randomNumber = randomInteger(1, 100);
-	randomString = randomAlpha(5);
-	foreignCollection = randomIdentifier();
-});
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
+import { convertLogical } from './logical.js';
+import type { FilterResult } from './utils.js';
 
 test('Convert logical node with two conditions', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
+
+	const externalTableName = randomIdentifier();
+	const externalTableIndex = randomInteger(0, 100);
+	const externalColumnName = randomIdentifier();
+	const externalColumnValue = randomAlpha(5);
+
 	const children: AtLeastOneElement<FilterResult> = [
 		{
 			clauses: {
@@ -35,8 +23,8 @@ test('Convert logical node with two conditions', () => {
 						type: 'condition-number',
 						target: {
 							type: 'primitive',
-							column: randomField1,
-							table: foreignCollection,
+							tableIndex,
+							columnName,
 						},
 						operation: 'eq',
 						compareTo: {
@@ -49,30 +37,30 @@ test('Convert logical node with two conditions', () => {
 				joins: [
 					{
 						type: 'join',
-						table: localCollection,
+						tableName: externalTableName,
+						tableIndex: externalTableIndex,
 						on: {
 							type: 'condition',
 							condition: {
 								type: 'condition-field',
 								target: {
 									type: 'primitive',
-									column: randomField1,
-									table: localCollection,
+									tableIndex,
+									columnName,
 								},
 								operation: 'eq',
 								compareTo: {
 									type: 'primitive',
-									column: randomField1,
-									table: localCollection,
+									tableIndex: externalTableIndex,
+									columnName: externalColumnName,
 								},
 							},
 							negate: false,
 						},
-						as: joinAlias,
 					},
 				],
 			},
-			parameters: [randomNumber],
+			parameters: [columnValue],
 		},
 		{
 			clauses: {
@@ -82,8 +70,8 @@ test('Convert logical node with two conditions', () => {
 						type: 'condition-string',
 						target: {
 							type: 'primitive',
-							column: randomField2,
-							table: localCollection,
+							tableIndex: externalTableIndex,
+							columnName: externalColumnName,
 						},
 						operation: 'starts_with',
 						compareTo: {
@@ -95,7 +83,7 @@ test('Convert logical node with two conditions', () => {
 				},
 				joins: [],
 			},
-			parameters: [randomString],
+			parameters: [externalColumnValue],
 		},
 	];
 
@@ -104,26 +92,26 @@ test('Convert logical node with two conditions', () => {
 			joins: [
 				{
 					type: 'join',
-					table: localCollection,
+					tableName: externalTableName,
+					tableIndex: externalTableIndex,
 					on: {
 						type: 'condition',
 						condition: {
 							type: 'condition-field',
 							target: {
 								type: 'primitive',
-								column: randomField1,
-								table: localCollection,
+								tableIndex,
+								columnName,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								column: randomField1,
-								table: localCollection,
+								tableIndex: externalTableIndex,
+								columnName: externalColumnName,
 							},
 						},
 						negate: false,
 					},
-					as: joinAlias,
 				},
 			],
 			where: {
@@ -137,8 +125,8 @@ test('Convert logical node with two conditions', () => {
 							type: 'condition-number',
 							target: {
 								type: 'primitive',
-								column: randomField1,
-								table: foreignCollection,
+								tableIndex,
+								columnName,
 							},
 							operation: 'eq',
 							compareTo: {
@@ -154,8 +142,8 @@ test('Convert logical node with two conditions', () => {
 							type: 'condition-string',
 							target: {
 								type: 'primitive',
-								column: randomField2,
-								table: localCollection,
+								tableIndex: externalTableIndex,
+								columnName: externalColumnName,
 							},
 							operation: 'starts_with',
 							compareTo: {
@@ -168,8 +156,10 @@ test('Convert logical node with two conditions', () => {
 				],
 			},
 		},
-		parameters: [randomNumber, randomString],
+		parameters: [columnValue, externalColumnValue],
 	};
 
-	expect(convertLogical(children, 'and', false)).toStrictEqual(expectedResult);
+	const result = convertLogical(children, 'and', false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

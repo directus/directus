@@ -1,107 +1,104 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { beforeEach, expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
-import { createIndexGenerators, type IndexGenerators } from '../../../../utils/create-index-generators.js';
+import { expect, test } from 'vitest';
+import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertNumberNode } from './number.js';
 
-let indexGen: IndexGenerators;
-let randomCollection: string;
-let randomField: string;
-let randomValue: number;
-
-beforeEach(() => {
-	indexGen = createIndexGenerators();
-	randomCollection = randomIdentifier();
-	randomField = randomIdentifier();
-	randomValue = randomInteger(1, 100);
-});
-
 test('convert number condition', () => {
-	const con: ConditionNumberNode = {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
+
+	const condition: ConditionNumberNode = {
 		type: 'condition-number',
 		target: {
 			type: 'primitive',
-			field: randomField,
+			field: columnName,
 		},
 		operation: 'gt',
-		compareTo: randomValue,
-	};
-
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		negate: false,
-		condition: {
-			type: 'condition-number',
-			target: {
-				type: 'primitive',
-				table: randomCollection,
-				column: randomField,
-			},
-			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
-			},
-		},
+		compareTo: columnValue,
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-number',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
 			joins: [],
 		},
-		parameters: [randomValue],
+		parameters: [columnValue],
 	};
 
-	expect(convertNumberNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertNumberNode(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('convert number condition with function', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
+
 	const con: ConditionNumberNode = {
 		type: 'condition-number',
 		target: {
 			type: 'fn',
-			field: randomField,
+			field: columnName,
 			fn: {
 				type: 'extractFn',
 				fn: 'month',
 			},
 		},
 		operation: 'gt',
-		compareTo: randomValue,
-	};
-
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		condition: {
-			type: 'condition-number',
-			target: {
-				type: 'fn',
-				table: randomCollection,
-				column: randomField,
-				fn: {
-					type: 'extractFn',
-					fn: 'month',
-				},
-			},
-			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
-			},
-		},
-		negate: false,
+		compareTo: columnValue,
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				condition: {
+					type: 'condition-number',
+					target: {
+						type: 'fn',
+						tableIndex,
+						columnName,
+						fn: {
+							type: 'extractFn',
+							fn: 'month',
+						},
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+				negate: false,
+			},
 			joins: [],
 		},
-		parameters: [randomValue],
+		parameters: [columnValue],
 	};
 
-	expect(convertNumberNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertNumberNode(con, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

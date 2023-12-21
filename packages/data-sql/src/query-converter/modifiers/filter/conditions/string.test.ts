@@ -1,52 +1,51 @@
 import type { ConditionStringNode } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/index.js';
 import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertStringNode } from './string.js';
 
 test('convert string condition', () => {
-	const indexGen = createIndexGenerators();
-	const randomCollection = randomIdentifier();
-	const randomField = randomIdentifier();
-	const randomCompareValue = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomAlpha(10);
 
-	const con: ConditionStringNode = {
+	const condition: ConditionStringNode = {
 		type: 'condition-string',
 		target: {
 			type: 'primitive',
-			field: randomField,
+			field: columnName,
 		},
 		operation: 'contains',
-		compareTo: randomCompareValue,
-	};
-
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		negate: false,
-		condition: {
-			type: 'condition-string',
-			target: {
-				type: 'primitive',
-				table: randomCollection,
-				column: randomField,
-			},
-			operation: 'contains',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
-			},
-		},
+		compareTo: columnValue,
 	};
 
 	const expectedResult: FilterResult = {
 		clauses: {
-			where: expectedWhere,
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-string',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					operation: 'contains',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
 			joins: [],
 		},
-		parameters: [randomCompareValue],
+		parameters: [columnValue],
 	};
 
-	expect(convertStringNode(con, randomCollection, indexGen, false)).toStrictEqual(expectedResult);
+	const indexGen = createIndexGenerators();
+	const result = convertStringNode(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });
