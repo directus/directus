@@ -128,17 +128,17 @@ describe('Schema Caching Tests', () => {
 				for (const vendor of vendors) {
 					databases.set(vendor, knex(config.knexConfig[vendor]));
 
-					const cacheNamespace = `directus-${vendor}`;
+					const cacheNamespacePrefix = `directus-${vendor}`;
 
 					const env3 = cloneDeep(config.envs);
 					env3[vendor]['CACHE_ENABLED'] = 'true';
 					env3[vendor]['CACHE_AUTO_PURGE'] = 'true';
 					env3[vendor]['CACHE_SCHEMA'] = 'true';
 					env3[vendor]['CACHE_STORE'] = 'memory';
-					env3[vendor]['CACHE_NAMESPACE'] = cacheNamespace + '3';
+					env3[vendor]['CACHE_NAMESPACE'] = cacheNamespacePrefix + '3';
 
 					const env4 = cloneDeep(env3);
-					env4[vendor]['CACHE_NAMESPACE'] = cacheNamespace + '4';
+					env4[vendor]['CACHE_NAMESPACE'] = cacheNamespacePrefix + '4';
 
 					const newServerPort3 = await getPort();
 					const newServerPort4 = await getPort();

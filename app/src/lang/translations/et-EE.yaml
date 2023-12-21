@@ -1353,6 +1353,8 @@ displays:
     suffix: Järelliide
     color: Värv
     icon: Ikoon
+    mask: Maskeeritud
+    mask_label: Peida algne väärtus
     text: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena

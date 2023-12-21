@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "11.0.2",
+	"version": "11.0.3",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -35,7 +35,7 @@
 	},
 	"peerDependencies": {
 		"knex": "3.1.0",
-		"vue": "3.3.11"
+		"vue": "3.3.13"
 	},
 	"peerDependenciesMeta": {
 		"knex": {

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/stores",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Shared Pinia stores used in @directus/app",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -35,6 +35,6 @@
 	},
 	"peerDependencies": {
 		"pinia": "2.1.7",
-		"vue": "3.3.11"
+		"vue": "3.3.13"
 	}
 }
