@@ -1,7 +1,7 @@
 import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/types';
 import ee2 from 'eventemitter2';
-import logger from './logger.js';
 import getDatabase from './database/index.js';
+import logger from './logger.js';
 
 export class Emitter {
 	private filterEmitter;
@@ -111,5 +111,7 @@ export class Emitter {
 }
 
 const emitter = new Emitter();
+
+export const useEmitter = () => emitter;
 
 export default emitter;

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "13.0.2",
+	"version": "14.0.0",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -51,7 +51,7 @@
 		"@types/node-fetch": "2.6.9",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.0.4"
+		"vitest": "1.1.0"
 	},
 	"engines": {
 		"node": ">=18.0.0"

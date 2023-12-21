@@ -59,6 +59,7 @@ extension_display: Göster
 extension_layout: Yerleşim
 extension_module: Modül
 extension_panel: Panel
+extension_theme: Tema
 extension_hook: Kanca
 extension_bundle: Paket
 extension_interfaces: Arayüzler
@@ -649,7 +650,6 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Doğrulama İstisnası
   SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
   UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
   UNEXPECTED_RESPONSE: Beklenmeyen yanıt
@@ -1896,6 +1896,8 @@ displays:
     icon: İkon
     border: Kenarlık
     border_label: Kenarlık göster
+    mask: Maskelenmiş
+    mask_label: Gerçek değeri gizle
     text: Metin
     text_placeholder: Opsiyonel değer üstüne yazma...
   formatted-json-value:
