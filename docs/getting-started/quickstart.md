@@ -46,6 +46,21 @@ directus/directus
 
 _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
 
+== NPM Installation
+
+For quick prototyping or testing purposes during development, you can initialize a new Directus project using the CLI
+command: `npm init directus-project`.
+
+This will prompt you to choose a database client and path. You'll also create your first admin user.
+
+To start up Directus locally, run `npx directus start`.
+
+::: danger Docker is Recommended for Production
+
+While this method is suitable for quick tests and prototypes, it is not recommended for production. We recommend you use
+[Docker](/self-hosted/quickstart) because it removes environment-specific quirks that can lead to Directus not running
+properly.
+
 :::
 
 ## 2. Create a Collection
