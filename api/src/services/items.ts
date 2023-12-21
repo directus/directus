@@ -179,6 +179,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// In case of an integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
 
+			if (primaryKey) {
+				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+			}
+
 			// If a PK of type number was provided, although the PK is set the auto_increment,
 			// depending on the database, the sequence might need to be reset to protect future PK collisions.
 			let autoIncrementSequenceNeedsToBeReset = false;
