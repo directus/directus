@@ -74,6 +74,7 @@ beforeEach(() => {
 			endpoint: randDomainName(),
 			region: randWord(),
 			forcePathStyle: randBoolean(),
+			sseKmsKeyId: randAlphaNumeric({ length: 40 }).join(''),
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -387,6 +388,21 @@ describe('#read', () => {
 		expect(driver['client'].send).toHaveBeenCalledWith(mockGetObjectCommand);
 		expect(stream).toBe(sample.stream);
 	});
+
+	test('Uses SSE KMS Key ID', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].sseKmsKeyId = sample.config.sseKmsKeyId;
+
+		await driver.read(sample.path.input);
+
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
+		expect(GetObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.inputFull,
+			Bucket: sample.config.bucket,
+			SSECustomerKey: sample.config.sseKmsKeyId,
+		});
+	});
 });
 
 describe('#stat', () => {
@@ -424,6 +440,24 @@ describe('#stat', () => {
 			size: sample.file.size,
 			modified: sample.file.modified,
 		});
+	});
+
+	test('Optionally sets ServerSideEncryption with KMS SSE Key ID', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].sseKmsKeyId = sample.config.sseKmsKeyId;
+
+		const mockHeadObjectCommand = {} as HeadObjectCommand;
+		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
+
+		await driver.stat(sample.path.input);
+
+		expect(HeadObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.inputFull,
+			Bucket: sample.config.bucket,
+			SSECustomerKey: sample.config.sseKmsKeyId,
+		});
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
 	});
 });
 
@@ -490,6 +524,21 @@ describe('#copy', () => {
 		});
 	});
 
+	test('Optionally sets ServerSideEncryption with KMS SSE Key ID', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].sseKmsKeyId = sample.config.sseKmsKeyId;
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.destFull,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
+			ServerSideEncryption: 'aws:kms',
+			SSECustomerKey: sample.config.sseKmsKeyId,
+		});
+	});
+
 	test('Optionally sets ACL', async () => {
 		driver['config'].acl = sample.config.acl;
 
@@ -553,6 +602,24 @@ describe('#write', () => {
 				Bucket: sample.config.bucket,
 				Body: sample.stream,
 				ServerSideEncryption: sample.config.serverSideEncryption,
+			},
+		});
+	});
+
+	test('Optionally sets ServerSideEncryption with KMS SSE Key ID', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].sseKmsKeyId = sample.config.sseKmsKeyId;
+
+		await driver.write(sample.path.input, sample.stream);
+
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ServerSideEncryption: 'aws:kms',
+				SSECustomerKey: sample.config.sseKmsKeyId,
 			},
 		});
 	});

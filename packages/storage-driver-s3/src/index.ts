@@ -1,6 +1,7 @@
 import type {
 	CopyObjectCommandInput,
 	GetObjectCommandInput,
+	HeadObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
 	PutObjectCommandInput,
@@ -35,6 +36,7 @@ export type DriverS3Config = {
 	endpoint?: string;
 	region?: string;
 	forcePathStyle?: boolean;
+	sseKmsKeyId?: string;
 };
 
 export class DriverS3 implements Driver {
@@ -115,6 +117,10 @@ export class DriverS3 implements Driver {
 			commandInput.Range = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
 		}
 
+		if (this.config.serverSideEncryption == 'aws:kms' && this.config.sseKmsKeyId) {
+			commandInput.SSECustomerKey = this.config.sseKmsKeyId;
+		}
+
 		const { Body: stream } = await this.client.send(new GetObjectCommand(commandInput));
 
 		if (!stream || !isReadableStream(stream)) {
@@ -125,12 +131,16 @@ export class DriverS3 implements Driver {
 	}
 
 	async stat(filepath: string) {
-		const { ContentLength, LastModified } = await this.client.send(
-			new HeadObjectCommand({
-				Key: this.fullPath(filepath),
-				Bucket: this.config.bucket,
-			}),
-		);
+		const commandInput: HeadObjectCommandInput = {
+			Key: this.fullPath(filepath),
+			Bucket: this.config.bucket,
+		};
+
+		if (this.config.serverSideEncryption == 'aws:kms' && this.config.sseKmsKeyId) {
+			commandInput.SSECustomerKey = this.config.sseKmsKeyId;
+		}
+
+		const { ContentLength, LastModified } = await this.client.send(new HeadObjectCommand(commandInput));
 
 		return {
 			size: ContentLength as number,
@@ -153,45 +163,53 @@ export class DriverS3 implements Driver {
 	}
 
 	async copy(src: string, dest: string) {
-		const params: CopyObjectCommandInput = {
+		const commandInput: CopyObjectCommandInput = {
 			Key: this.fullPath(dest),
 			Bucket: this.config.bucket,
 			CopySource: `/${this.config.bucket}/${this.fullPath(src)}`,
 		};
 
 		if (this.config.serverSideEncryption) {
-			params.ServerSideEncryption = this.config.serverSideEncryption;
+			commandInput.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (this.config.serverSideEncryption == 'aws:kms' && this.config.sseKmsKeyId) {
+				commandInput.SSECustomerKey = this.config.sseKmsKeyId;
+			}
 		}
 
 		if (this.config.acl) {
-			params.ACL = this.config.acl;
+			commandInput.ACL = this.config.acl;
 		}
 
-		await this.client.send(new CopyObjectCommand(params));
+		await this.client.send(new CopyObjectCommand(commandInput));
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		const params: PutObjectCommandInput = {
+		const commandInput: PutObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Body: content,
 			Bucket: this.config.bucket,
 		};
 
 		if (type) {
-			params.ContentType = type;
+			commandInput.ContentType = type;
 		}
 
 		if (this.config.acl) {
-			params.ACL = this.config.acl;
+			commandInput.ACL = this.config.acl;
 		}
 
 		if (this.config.serverSideEncryption) {
-			params.ServerSideEncryption = this.config.serverSideEncryption;
+			commandInput.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (this.config.serverSideEncryption == 'aws:kms' && this.config.sseKmsKeyId) {
+				commandInput.SSECustomerKey = this.config.sseKmsKeyId;
+			}
 		}
 
 		const upload = new Upload({
 			client: this.client,
-			params,
+			params: commandInput,
 		});
 
 		await upload.done();
@@ -201,39 +219,47 @@ export class DriverS3 implements Driver {
 		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.config.bucket }));
 	}
 
-	async *list(prefix = '') {
-		let Prefix = this.fullPath(prefix);
+	async *list(pathPrefix = '') {
+		let prefix = this.fullPath(pathPrefix);
 
 		// Current dir (`.`) isn't known to S3, needs to be an empty prefix instead
-		if (Prefix === '.') Prefix = '';
+		if (prefix === '.') {
+			prefix = '';
+		}
 
 		let continuationToken: string | undefined = undefined;
 
 		do {
-			const listObjectsV2CommandInput: ListObjectsV2CommandInput = {
+			const commandInput: ListObjectsV2CommandInput = {
 				Bucket: this.config.bucket,
-				Prefix,
+				Prefix: prefix,
 				MaxKeys: 1000,
 			};
 
 			if (continuationToken) {
-				listObjectsV2CommandInput.ContinuationToken = continuationToken;
+				commandInput.ContinuationToken = continuationToken;
 			}
 
-			const response = await this.client.send(new ListObjectsV2Command(listObjectsV2CommandInput));
+			const response = await this.client.send(new ListObjectsV2Command(commandInput));
 
 			continuationToken = response.NextContinuationToken;
 
-			if (response.Contents) {
-				for (const object of response.Contents) {
-					if (!object.Key) continue;
+			if (!response.Contents) {
+				continue;
+			}
 
-					const isDir = object.Key.endsWith('/');
-
-					if (isDir) continue;
-
-					yield object.Key.substring(this.root.length);
+			for (const object of response.Contents) {
+				if (!object.Key) {
+					continue;
 				}
+
+				const isDir = object.Key.endsWith('/');
+
+				if (isDir) {
+					continue;
+				}
+
+				yield object.Key.substring(this.root.length);
 			}
 		} while (continuationToken);
 	}
