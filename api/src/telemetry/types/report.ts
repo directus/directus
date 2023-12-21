@@ -40,7 +40,7 @@ export interface TelemetryReport {
 	flows: number;
 
 	/**
-	 * Number of unique flows in the system
+	 * Number of unique dashboards in the system
 	 */
 	dashboards: number;
 
