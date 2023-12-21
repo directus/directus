@@ -48,8 +48,7 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-For quick prototyping or testing purposes during development, you can initialize a new Directus project using the CLI
-command: `npm init directus-project`.
+For quick prototyping, you can initialize a new Directus project using the CLI command: `npm init directus-project`.
 
 This will prompt you to choose a database client and path. You'll also create your first admin user.
 
