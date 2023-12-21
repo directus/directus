@@ -12,6 +12,8 @@ vi.mock('./database', () => ({
 	validateMigrations: vi.fn(),
 }));
 
+vi.mock('./telemetry/index.js');
+
 vi.mock('./env.js', async () => {
 	const { mockEnv } = await import('./__utils__/mock-env.js');
 	return mockEnv({
