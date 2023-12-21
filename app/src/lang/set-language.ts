@@ -1,7 +1,6 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useTranslationsStore } from '@/stores/translations';
-import { useUserStore } from '@/stores/user';
 import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
@@ -9,7 +8,6 @@ import { i18n, Language, loadedLanguages } from './index';
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
-	const { currentUser } = useUserStore();
 	const translationsStore = useTranslationsStore();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
@@ -33,9 +31,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	try {
-		if (currentUser) {
-			await translationsStore.loadTranslations(lang);
-		}
+		await translationsStore.loadTranslations(lang);
 
 		collectionsStore.translateCollections();
 		fieldsStore.translateFields();

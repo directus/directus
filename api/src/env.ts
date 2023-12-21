@@ -222,6 +222,8 @@ const allowedEnvironmentVars = [
 
 	// telemetry
 	'TELEMETRY',
+	'TELEMETRY_URL',
+	'TELEMETRY_AUTHORIZATION',
 
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
@@ -318,6 +320,7 @@ export const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+	TELEMETRY_URL: 'https://telemetry.directus.io',
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
@@ -411,6 +414,8 @@ process.env = env;
 env = processValues(env);
 
 export default env;
+
+export const useEnv = () => env;
 
 /**
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with

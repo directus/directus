@@ -1,10 +1,9 @@
 import type { Request } from 'express';
-import type { SpyInstance } from 'vitest';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 
-vi.mock('./package.js', () => ({ version: '1.2.3' }));
+vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;
@@ -63,7 +62,7 @@ afterEach(() => {
 
 describe('get cache key', () => {
 	describe('isGraphQl', () => {
-		let getGraphqlQuerySpy: SpyInstance;
+		let getGraphqlQuerySpy: MockInstance;
 
 		beforeAll(() => {
 			getGraphqlQuerySpy = vi.spyOn(getGraphqlQueryUtil, 'getGraphqlQueryAndVariables');

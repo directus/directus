@@ -98,5 +98,4 @@ docker compose up
 
 :::
 
-Directus should now be available at <a href="http://localhost:8055" target="_blank">http://localhost:8055</a> or
-<a href="http://127.0.0.1:8055" target="_blank">http://127.0.0.1:8055</a>
+Directus should now be available at http://localhost:8055 or http://127.0.0.1:8055.

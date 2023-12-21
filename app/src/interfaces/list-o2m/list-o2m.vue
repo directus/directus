@@ -477,11 +477,11 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
@@ -588,6 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
+				background: var(--theme--background);
 				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
@@ -645,6 +646,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {

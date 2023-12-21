@@ -97,6 +97,10 @@ data:
     one_collection: directus_files
 
   - many_collection: directus_settings
+    many_field: public_favicon
+    one_collection: directus_files
+
+  - many_collection: directus_settings
     many_field: storage_default_folder
     one_collection: directus_folders
 

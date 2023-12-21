@@ -279,7 +279,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		:group="{ name: 'g1' }"
 		:item-key="getIndex"
 		:swap-threshold="0.3"
-		force-fallback
+		v-bind="{ 'force-fallback': true }"
 		@change="$emit('change')"
 	>
 		<template #item="{ element, index }">

@@ -186,14 +186,12 @@ async function onGroupSortChange(fields: Field[]) {
 				v-if="localType === 'group'"
 				class="field-grid group full nested"
 				:model-value="nestedFields"
-				force-fallback
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
-				fallback-on-body
-				invert-swap
+				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
