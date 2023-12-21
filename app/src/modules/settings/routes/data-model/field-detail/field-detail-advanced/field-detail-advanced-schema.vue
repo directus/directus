@@ -117,6 +117,7 @@ const special = syncFieldDetailStoreProperty('field.meta.special');
 const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
 const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
+const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', true);
 const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
@@ -444,7 +445,12 @@ function useOnUpdate() {
 
 			<div v-if="!isAlias" class="field half-right">
 				<div class="label type-label">{{ t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="isGenerated" :label="t('value_unique')" block />
+				<v-checkbox v-model="unique" :disabled="isGenerated || indexed" :label="t('value_unique')" block />
+			</div>
+
+			<div v-if="!isAlias" class="field half-left">
+				<div class="label type-label">{{ t('indexed') }}</div>
+				<v-checkbox v-model="indexed" :disabled="unique || isGenerated" :label="t('value_indexed')" block />
 			</div>
 		</div>
 	</div>

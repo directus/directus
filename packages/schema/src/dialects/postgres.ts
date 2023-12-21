@@ -11,6 +11,7 @@ type RawColumn = {
 	schema: string;
 	data_type: string;
 	is_nullable: boolean;
+	is_indexed: boolean;
 	generation_expression: null | string;
 	default_value: null | string;
 	is_generated: boolean;
@@ -367,6 +368,7 @@ export default class Postgres implements SchemaInspector {
 			  rel.relname AS table,
 			  rel.relnamespace::regnamespace::text as schema,
 			  att.atttypid::regtype::text AS data_type,
+			  CASE WHEN idx.indisunique = false THEN true ELSE false END AS is_indexed,
 			  NOT att.attnotnull AS is_nullable,
 			  ${generationSelect}
 			  CASE
@@ -401,6 +403,19 @@ export default class Postgres implements SchemaInspector {
 			  LEFT JOIN pg_class rel ON att.attrelid = rel.oid
 			  LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
 			  LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
+			  LEFT JOIN LATERAL (
+				SELECT
+					indrelid,
+					indkey,
+					indisunique
+				FROM
+					pg_index idx
+				WHERE
+					att.attrelid = idx.indrelid
+					AND att.attnum = ALL(idx.indkey)
+					AND idx.indisunique = false
+				LIMIT 1
+			) idx ON true
 			WHERE
 			  rel.relnamespace IN (${schemaIn})
 			  ${table ? 'AND rel.relname = ?' : ''}

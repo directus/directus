@@ -741,6 +741,19 @@ export class FieldsService {
 			}
 		}
 
+		if (field.schema?.is_indexed === true) {
+			if (
+				!(field.schema?.is_unique || alter?.is_unique) &&
+				!(field.schema?.is_primary_key || alter?.is_primary_key) &&
+				!alter?.is_indexed
+			) {
+				//index only if there is no pk or unique index or its redundant
+				column.index();
+			}
+		} else if (field.schema?.is_indexed === false && alter?.is_indexed === true) {
+			table.dropIndex(field.field);
+		}
+
 		if (alter) {
 			column.alter();
 		}
