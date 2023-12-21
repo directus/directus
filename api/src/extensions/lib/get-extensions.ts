@@ -4,29 +4,37 @@ import env from '../../env.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
-	const localExtensions = await getLocalExtensions(getExtensionsPath());
+	const loadedExtensions = new Map();
 
-	const loadedNames = localExtensions.map(({ name }) => name);
+	const filterDuplicates = (extension: Extension) => {
+		const isExistingExtension = loadedExtensions.has(extension.name);
 
-	const filterDuplicates = ({ name }: Extension) => {
-		const isUnique = loadedNames.includes(name) === false;
-
-		if (isUnique) {
-			loadedNames.push(name);
+		if (isExistingExtension) {
+			return;
 		}
 
-		return isUnique;
+		if (extension.type === 'bundle') {
+			const bundleEntryNames = new Set();
+
+			for (const entry of extension.entries) {
+				if (bundleEntryNames.has(entry.name)) {
+					// Do not load entire bundle if it has duplicated entries
+					return;
+				}
+
+				bundleEntryNames.add(entry.name);
+			}
+		}
+
+		loadedExtensions.set(extension.name, extension);
 	};
 
-	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
-		filterDuplicates(extension),
-	);
+	(await getLocalExtensions(getExtensionsPath())).forEach(filterDuplicates);
 
-	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
+	(await resolvePackageExtensions(getExtensionsPath())).forEach(filterDuplicates);
 
-	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
-		filterDuplicates(extension),
-	);
+	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
 
-	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+
+	return Array.from(loadedExtensions.values());
 };
