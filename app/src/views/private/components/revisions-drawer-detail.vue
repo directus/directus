@@ -52,8 +52,8 @@ function openModal(id: number) {
 	modalActive.value = true;
 }
 
-function onToggle(active: boolean) {
-	if (active && !revisions.value) {
+function onToggle(state: string) {
+	if (state === 'open' && revisions.value === null) {
 		getRevisions();
 	}
 }

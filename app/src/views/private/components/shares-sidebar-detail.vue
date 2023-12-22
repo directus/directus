@@ -22,7 +22,7 @@ const { t } = useI18n();
 
 const { copyToClipboard } = useClipboard();
 
-const shares = ref<Share[] | null>([]);
+const shares = ref<Share[] | null>(null);
 const sharesCount = ref(0);
 const error = ref(null);
 const loading = ref(false);
@@ -190,8 +190,8 @@ async function send() {
 	}
 }
 
-function onToggle(active: boolean) {
-	if (active && !shares.value) {
+function onToggle(state: string) {
+	if (state === 'open' && shares.value === null) {
 		getShares();
 	}
 }

@@ -210,8 +210,8 @@ onMounted(() => {
 	getActivityCount();
 });
 
-function onToggle(active: boolean) {
-	if (active && !activity.value) {
+function onToggle(state: string) {
+	if (state === 'open' && activity.value === null) {
 		getActivity();
 	}
 }
