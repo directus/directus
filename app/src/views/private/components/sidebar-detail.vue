@@ -18,7 +18,9 @@ const { active, toggle } = useGroupable({
 const appStore = useAppStore();
 const { sidebarOpen } = toRefs(appStore);
 
-const emit = defineEmits(['open']);
+const emit = defineEmits<{
+	open: [];
+}>();
 
 function onClick() {
 	toggle();
