@@ -5,20 +5,11 @@ import { Writable } from 'node:stream';
 import { pino } from 'pino';
 import { pinoHttp, type HttpLogger } from 'pino-http';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { doMockEnv } from './__utils__/mock-env.js';
+import { useEnv } from './env.js';
+
+vi.mock('./env.js');
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
-
-const MOCK_ENV = {
-	AUTH_PROVIDERS: 'ranger,monospace',
-	AUTH_RANGER_DRIVER: 'oauth2',
-	AUTH_MONOSPACE_DRIVER: 'openid',
-	REFRESH_TOKEN_COOKIE_NAME,
-	LOG_LEVEL: 'info',
-	LOG_STYLE: 'raw',
-};
-
-const { setEnv } = doMockEnv({ env: MOCK_ENV });
 
 const { httpLoggerOptions } = await import('./logger.js');
 
@@ -31,6 +22,15 @@ beforeEach(() => {
 		write(chunk) {
 			logOutput(JSON.parse(chunk.toString()));
 		},
+	});
+
+	vi.mocked(useEnv).mockReturnValue({
+		AUTH_PROVIDERS: 'ranger,monospace',
+		AUTH_RANGER_DRIVER: 'oauth2',
+		AUTH_MONOSPACE_DRIVER: 'openid',
+		REFRESH_TOKEN_COOKIE_NAME,
+		LOG_LEVEL: 'info',
+		LOG_STYLE: 'raw',
 	});
 });
 
@@ -189,7 +189,15 @@ describe('ignored paths', () => {
 	});
 
 	test('should not log request when it matches ignored path', async () => {
-		setEnv({ LOG_HTTP_IGNORE_PATHS: '/server/ping' });
+		vi.mocked(useEnv).mockReturnValue({
+			AUTH_PROVIDERS: 'ranger,monospace',
+			AUTH_RANGER_DRIVER: 'oauth2',
+			AUTH_MONOSPACE_DRIVER: 'openid',
+			REFRESH_TOKEN_COOKIE_NAME,
+			LOG_LEVEL: 'info',
+			LOG_STYLE: 'raw',
+			LOG_HTTP_IGNORE_PATHS: '/server/ping',
+		});
 
 		const { httpLoggerEnvConfig } = await import('./logger.js');
 

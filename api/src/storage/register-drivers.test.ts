@@ -1,16 +1,13 @@
 import type { Driver, StorageManager } from '@directus/storage';
 import { randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { setEnv } from '../__utils__/mock-env.js';
+import { useEnv } from '../env.js';
 import { getStorageDriver } from './get-storage-driver.js';
 import { registerDrivers } from './register-drivers.js';
 
 vi.mock('./get-storage-driver.js');
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({ withDefaults: false });
-});
+vi.mock('../env.js');
 
 let mockStorage: StorageManager;
 let mockDriver: typeof Driver;
@@ -31,6 +28,8 @@ beforeEach(() => {
 	sample = {
 		name: randWord(),
 	};
+
+	vi.mocked(useEnv).mockReturnValue({});
 });
 
 afterEach(() => {
@@ -44,7 +43,7 @@ test('Does nothing if no storage drivers are configured in Env', async () => {
 });
 
 test('Ignores environment variables that do not start with STORAGE_ and end with _DRIVER', async () => {
-	setEnv({
+	vi.mocked(useEnv).mockReturnValue({
 		[`NOSTORAGE_${randWord().toUpperCase()}_DRIVER`]: randWord(),
 		[`STORAGE_${randWord().toUpperCase()}_NODRIVER`]: randWord(),
 	});

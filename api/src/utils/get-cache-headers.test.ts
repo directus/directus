@@ -1,12 +1,9 @@
 import type { Request } from 'express';
 import { describe, expect, test, vi } from 'vitest';
-import { setEnv } from '../__utils__/mock-env.js';
 import { getCacheControlHeader } from './get-cache-headers.js';
+import { useEnv } from '../env.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv();
-});
+vi.mock('../env.js');
 
 const scenarios = [
 	// Test the cache-control header
@@ -197,7 +194,7 @@ describe('get cache headers', () => {
 				}),
 			} as Partial<Request>;
 
-			setEnv(scenario.input.env);
+			vi.mocked(useEnv).mockReturnValue(scenario.input.env);
 
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
 

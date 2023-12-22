@@ -1,11 +1,8 @@
-import { describe, expect, test, vi } from 'vitest';
-import { setEnv } from '../__utils__/mock-env.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from '../env.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv();
-});
+vi.mock('../env.js');
 
 vi.mock('@directus/utils', async () => {
 	const actual = (await vi.importActual('@directus/utils')) as any;
@@ -14,6 +11,14 @@ vi.mock('@directus/utils', async () => {
 		...actual,
 		parseFilter: vi.fn().mockImplementation((value) => value),
 	};
+});
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('limit', () => {

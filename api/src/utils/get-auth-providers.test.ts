@@ -1,11 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
-import { setEnv } from '../__utils__/mock-env.js';
 import { getAuthProviders } from './get-auth-providers.js';
+import { useEnv } from '../env.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv();
-});
+vi.mock('../env.js');
 
 const scenarios = [
 	{
@@ -68,7 +65,7 @@ const scenarios = [
 describe('get auth providers', () => {
 	for (const scenario of scenarios) {
 		test(scenario.name, () => {
-			setEnv(scenario.input);
+			vi.mocked(useEnv).mockReturnValue(scenario.input);
 
 			expect(getAuthProviders()).toEqual(scenario.output);
 		});

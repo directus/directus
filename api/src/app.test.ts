@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import request from 'supertest';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
+import { useEnv } from './env.js';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -14,18 +15,19 @@ vi.mock('./database', () => ({
 
 vi.mock('./telemetry/index.js');
 
-vi.mock('./env.js', async () => {
-	const { mockEnv } = await import('./__utils__/mock-env.js');
-	return mockEnv({
-		env: {
-			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-			SECRET: 'abcdef',
-			SERVE_APP: 'true',
-			PUBLIC_URL: 'http://localhost:8055/directus',
-			TELEMETRY: 'false',
-			LOG_STYLE: 'raw',
-		},
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: 'true',
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: 'false',
+		LOG_STYLE: 'raw',
 	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());

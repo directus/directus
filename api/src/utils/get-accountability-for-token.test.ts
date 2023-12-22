@@ -1,17 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
+import { useEnv } from '../env.js';
 import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({
-		env: {
-			SECRET: 'super-secure-secret',
-			EXTENSIONS_PATH: './extensions',
-		},
-	});
-});
+vi.mock('../env.js');
 
 vi.mock('../database/index', () => {
 	const self: Record<string, any> = {
@@ -23,6 +16,17 @@ vi.mock('../database/index', () => {
 	};
 
 	return { default: vi.fn(() => self) };
+});
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		SECRET: 'super-secure-secret',
+		EXTENSIONS_PATH: './extensions',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('getAccountabilityForToken', async () => {

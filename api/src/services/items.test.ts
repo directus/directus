@@ -9,13 +9,11 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
 import { getDatabaseClient } from '../database/index.js';
+import { useEnv } from '../env.js';
 import { DatabaseClients, type DatabaseClient } from '../types/database.js';
 import { ItemsService } from './index.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({ env: { CACHE_AUTO_PURGE: 'true' } });
-});
+vi.mock('../env.js');
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -32,6 +30,14 @@ vi.mock('../cache', () => ({
 		},
 	}),
 }));
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({ CACHE_AUTO_PURGE: 'true' });
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;

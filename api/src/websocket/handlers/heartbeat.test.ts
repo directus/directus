@@ -2,6 +2,7 @@ import type { EventContext } from '@directus/types';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
+import { useEnv } from '../../env.js';
 import { getWebSocketController, type WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
 import { HeartbeatHandler } from './heartbeat.js';
@@ -12,9 +13,16 @@ vi.mock('../controllers', () => ({
 	})),
 }));
 
-vi.mock('../../env.js', async () => {
-	const { mockEnv } = await import('../../__utils__/mock-env.js');
-	return mockEnv({ env: { WEBSOCKETS_HEARTBEAT_PERIOD: '1' } });
+vi.mock('../../env.js');
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		WEBSOCKETS_HEARTBEAT_PERIOD: '1',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 function mockClient() {

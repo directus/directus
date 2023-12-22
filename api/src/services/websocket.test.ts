@@ -1,5 +1,6 @@
 import type { Accountability } from '@directus/types';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from '../env.js';
 import { WebSocketController, getWebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketClient } from '../websocket/types.js';
 import { WebSocketService } from './websocket.js';
@@ -7,9 +8,14 @@ import { WebSocketService } from './websocket.js';
 vi.mock('../emitter');
 vi.mock('../websocket/controllers/index');
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({ env: { WEBSOCKETS_ENABLED: 'true' } });
+vi.mock('../env.js');
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({ WEBSOCKETS_ENABLED: 'true' });
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 function mockClient(accountability: Accountability | null = null) {
