@@ -2,13 +2,13 @@ import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
-import env from './env.js';
+import { useBus } from './bus/index.js';
+import { useEnv } from './env.js';
 import logger from './logger.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
-import { useBus } from './bus/index.js';
 
 import { createRequire } from 'node:module';
 
@@ -28,6 +28,8 @@ const messenger = useBus();
 interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
 }
+
+const env = useEnv();
 
 if (
 	env['MESSENGER_STORE'] === 'redis' &&
