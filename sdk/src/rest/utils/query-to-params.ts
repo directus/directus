@@ -39,7 +39,7 @@ export const formatFields = (fields: (string | Record<string, any>)[]) => {
 	};
 
 	return fields.flatMap((value) => walkFields(value));
-}
+};
 
 /**
  * Transform nested query object to an url compatible format
