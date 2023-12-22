@@ -31,7 +31,7 @@ afterEach(() => {
 
 describe('getAccountabilityForToken', async () => {
 	test('minimal token payload', async () => {
-		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, env['SECRET'], {
+		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, 'super-secure-secret', {
 			issuer: 'directus',
 		});
 
@@ -49,7 +49,7 @@ describe('getAccountabilityForToken', async () => {
 				admin_access: 1,
 				app_access: 1,
 			},
-			env['SECRET'],
+			'super-secure-secret',
 			{ issuer: 'directus' },
 		);
 
@@ -63,7 +63,7 @@ describe('getAccountabilityForToken', async () => {
 	});
 
 	test('throws token expired error', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, env['SECRET'], { issuer: 'directus', expiresIn: -1 });
+		const token = jwt.sign({ role: '123-456-789' }, 'super-secure-secret', { issuer: 'directus', expiresIn: -1 });
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
 	});
 

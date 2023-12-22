@@ -4,7 +4,7 @@ import { MessengerMemory, MessengerRedis } from './messenger.js';
 
 vi.mock('ioredis');
 
-vi.mock('../env.js');
+vi.mock('./env.js');
 
 beforeEach(() => {
 	vi.resetModules();

@@ -15,6 +15,8 @@ vi.mock('./database', () => ({
 
 vi.mock('./telemetry/index.js');
 
+vi.mock('./env.js');
+
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
 		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',

@@ -54,7 +54,7 @@ test('Ignores environment variables that do not start with STORAGE_ and end with
 });
 
 test('Only registers driver once per library', async () => {
-	setEnv({
+	vi.mocked(useEnv).mockReturnValue({
 		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 	});
@@ -65,7 +65,7 @@ test('Only registers driver once per library', async () => {
 });
 
 test('Gets storage driver for name', async () => {
-	setEnv({
+	vi.mocked(useEnv).mockReturnValue({
 		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 	});
 
@@ -75,7 +75,7 @@ test('Gets storage driver for name', async () => {
 });
 
 test('Registers storage driver to manager', async () => {
-	setEnv({
+	vi.mocked(useEnv).mockReturnValue({
 		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 	});
 
