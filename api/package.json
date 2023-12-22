@@ -201,7 +201,7 @@
 		"@types/nodemailer": "6.4.14",
 		"@types/object-hash": "3.0.6",
 		"@types/papaparse": "5.3.14",
-		"@types/qs": "6.9.10",
+		"@types/qs": "6.9.11",
 		"@types/sanitize-html": "2.9.5",
 		"@types/stream-json": "1.7.7",
 		"@types/supertest": "2.0.16",
