@@ -4,11 +4,11 @@ import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import env from './env.js';
 import logger from './logger.js';
-import { getMessenger } from './messenger.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
+import { useBus } from './bus/index.js';
 
 import { createRequire } from 'node:module';
 
@@ -23,7 +23,11 @@ let messengerSubscribed = false;
 
 type Store = 'memory' | 'redis';
 
-const messenger = getMessenger();
+const messenger = useBus();
+
+interface CacheMessage {
+	autoPurgeCache: boolean | undefined;
+}
 
 if (
 	env['MESSENGER_STORE'] === 'redis' &&
@@ -33,7 +37,7 @@ if (
 ) {
 	messengerSubscribed = true;
 
-	messenger.subscribe('schemaChanged', async (opts) => {
+	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {
 		if (cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
@@ -97,7 +101,7 @@ export async function clearSystemCache(opts?: {
 
 	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
-	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
+	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
