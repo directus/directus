@@ -250,10 +250,10 @@ function useDisplayValue() {
 			<div
 				v-if="inline"
 				class="inline-display"
-				:class="{ placeholder: !displayValue, label, active, disabled }"
+				:class="{ placeholder: !displayValue.text, label, active, disabled }"
 				@click="toggle"
 			>
-				<slot name="preview">{{ displayValue || placeholder }}</slot>
+				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
 			<slot v-else name="preview">
