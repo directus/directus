@@ -13,7 +13,7 @@ vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
-test.skip('getNestedUnionOne with a single identifier', () => {
+test('getNestedUnionOne with a single identifier', () => {
 	const collection = randomIdentifier();
 	const localIdField = randomIdentifier();
 	const relationalColumn = randomIdentifier();
@@ -88,10 +88,17 @@ test.skip('getNestedUnionOne with a single identifier', () => {
 		],
 	};
 
-	const rootRow = {
+	expect(result).toStrictEqual(expected);
+
+	const exampleRootRow = {
 		[`${localIdField}_RANDOM`]: randomValue,
 		[`${relationalColumn}_RANDOM`]: {
-			foreignKey: [1],
+			foreignKey: [
+				{
+					column: foreignIdField2,
+					value: 1,
+				},
+			],
 			foreignCollection: foreignTable2,
 		},
 	};
@@ -133,6 +140,5 @@ test.skip('getNestedUnionOne with a single identifier', () => {
 		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
 	};
 
-	expect(result).toStrictEqual(expected);
-	expect(result.subQuery(rootRow)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(exampleRootRow)).toStrictEqual(expectedGeneratedQuery);
 });
