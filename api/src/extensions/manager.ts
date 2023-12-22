@@ -220,7 +220,7 @@ export class ExtensionManager {
 	 */
 	public reload(): void {
 		if (this.reloadQueue.size > 0) {
-			// if a pending job is already in queue do not queue anymore re-loads.
+			// if a pending job is already in queue do not queue anymore reloads.
 			// The pending job will register any changes that have been done between the pending and current jobs start.
 			return;
 		}
