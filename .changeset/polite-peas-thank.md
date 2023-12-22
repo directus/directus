@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed object displayed instead of text for v-select preview
+Fixed `v-select` preview showing an object instead of text
