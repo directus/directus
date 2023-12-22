@@ -54,6 +54,30 @@ router.patch(
 	respond,
 );
 
+/*
+ * The delete endpoint does not differentiate between bundles and individual extensions. You can't
+ * uninstall one extension of a bundle. You can only uninstall the whole bundle which has it's own name
+ */
+router.delete(
+	'/:name',
+	asyncHandler(async (req, res, next) => {
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const name = req.params['name'] ?? null;
+
+		if (!name) {
+			throw new ForbiddenError();
+		}
+
+		await service.uninstall(name);
+
+		return next();
+	}),
+);
+
 router.get(
 	'/sources/:chunk',
 	asyncHandler(async (req, res) => {

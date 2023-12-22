@@ -255,6 +255,13 @@ export class ExtensionManager {
 	}
 
 	/**
+	 * Uninstall a given collection
+	 */
+	public uninstall(name: string): void {
+
+	}
+
+	/**
 	 * Return the previously generated app extensions bundle
 	 */
 	public getAppExtensionsBundle(): string | null {

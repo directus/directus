@@ -100,6 +100,14 @@ export class ExtensionsService {
 		}
 	}
 
+	async uninstall(name: string) {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		await this.extensionsManager.uninstall(name);
+	}
+
 	private getKey(bundle: string | null, name: string) {
 		return bundle ? `${bundle}/${name}` : name;
 	}
