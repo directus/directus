@@ -1,9 +1,13 @@
 import { useEnv } from '../../env.js';
 import { redisConfigAvailable } from './redis-config-available.js';
 
-import { expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 
 vi.mock('../../env.js');
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 test('Returns true if REDIS exists in environment', () => {
 	vi.mocked(useEnv).mockReturnValue({

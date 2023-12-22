@@ -11,6 +11,7 @@ import type {
 } from '@directus/extensions';
 import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
+import { createBus } from '@directus/memory';
 import type {
 	ActionHandler,
 	EmbedHandler,
@@ -38,6 +39,7 @@ import emitter, { Emitter } from '../emitter.js';
 import env from '../env.js';
 import { getFlowManager } from '../flows.js';
 import logger from '../logger.js';
+import { useRedis } from '../redis/lib/use-redis.js';
 import * as services from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
@@ -138,6 +140,11 @@ export class ExtensionManager {
 	private watcher: FSWatcher | null = null;
 
 	/**
+	 * Message bus to synchronize reloads across containers
+	 */
+	private bus = createBus({ type: 'redis', redis: useRedis(), namespace: 'directus:extensions' });
+
+	/**
 	 * Load and register all extensions
 	 *
 	 * @param {ExtensionManagerOptions} options - Extension manager configuration options
@@ -169,6 +176,8 @@ export class ExtensionManager {
 		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions(this.extensions);
 		}
+
+		this.bus.subscribe('reload', () => this.reload());
 	}
 
 	/**
