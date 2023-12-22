@@ -1636,6 +1636,8 @@ displays:
     color: Färg
     background: Bakgrund
     icon: Ikon
+    mask: Maskerad
+    mask_label: Dölj det verkliga värdet
     text: Text
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde
