@@ -27,13 +27,25 @@ export function useRevisions(
 	const revisions = ref<Revision[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
 	const loading = ref(false);
+	const loadingCount = ref(false);
 	const revisionsCount = ref(0);
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey, version], () => getRevisions(), { immediate: true });
+	watch([collection, primaryKey, version], () => getRevisions());
 
-	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
+	return {
+		created,
+		revisions,
+		revisionsByDate,
+		getRevisions,
+		loading,
+		refresh,
+		loadingCount,
+		revisionsCount,
+		getRevisionsCount,
+		pagesCount,
+	};
 
 	async function getRevisions(page = 0) {
 		if (typeof unref(primaryKey) === 'undefined') return;
@@ -199,6 +211,64 @@ export function useRevisions(
 			unexpectedError(error);
 		} finally {
 			loading.value = false;
+		}
+	}
+
+	async function getRevisionsCount() {
+		if (typeof unref(primaryKey) === 'undefined') return;
+
+		loadingCount.value = true;
+		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(10, info.queryLimit.max) : 10;
+
+		try {
+			const filter: Filter = {
+				_and: [
+					{
+						collection: {
+							_eq: unref(collection),
+						},
+					},
+					{
+						item: {
+							_eq: unref(primaryKey),
+						},
+					},
+					{
+						version: version?.value
+							? {
+									_eq: version.value.id,
+							  }
+							: { _null: true },
+					},
+				],
+			};
+
+			if (options?.action) {
+				filter._and.push({
+					activity: {
+						action: {
+							_eq: options?.action,
+						},
+					},
+				});
+			}
+
+			type RevisionCountResponse = { data: Pick<Revision, 'id'>[]; meta: { filter_count: number } };
+
+			const response = await api.get<RevisionCountResponse>(`/revisions`, {
+				params: {
+					filter,
+					limit: pageSize,
+					fields: ['id'],
+					meta: ['filter_count'],
+				},
+			});
+
+			revisionsCount.value = response.data.meta.filter_count;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			loadingCount.value = false;
 		}
 	}
 

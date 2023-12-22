@@ -9,6 +9,8 @@ import { useClipboard } from '@/composables/use-clipboard';
 import api from '@/api';
 import ShareItem from './share-item.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { onMounted } from 'vue';
+import { abbreviateNumber } from '@directus/utils';
 
 const props = defineProps<{
 	collection: string;
@@ -21,9 +23,10 @@ const { t } = useI18n();
 const { copyToClipboard } = useClipboard();
 
 const shares = ref<Share[] | null>([]);
-const count = ref(0);
+const sharesCount = ref(0);
 const error = ref(null);
 const loading = ref(false);
+const loadingCount = ref(false);
 const deleting = ref(false);
 const shareToEdit = ref<string | null>(null);
 const shareToSend = ref<Share | null>(null);
@@ -36,7 +39,9 @@ const sendPublicLink = computed(() => {
 	return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
 });
 
-refresh();
+onMounted(() => {
+	getSharesCount();
+});
 
 async function input(data: any) {
 	if (!data) return;
@@ -72,7 +77,11 @@ function unselect() {
 	shareToEdit.value = null;
 }
 
-async function refresh() {
+function refresh() {
+	getShares();
+}
+
+async function getShares() {
 	error.value = null;
 	loading.value = true;
 
@@ -97,12 +106,45 @@ async function refresh() {
 			},
 		});
 
-		count.value = response.data.data.length;
+		sharesCount.value = response.data.data.length;
 		shares.value = response.data.data;
 	} catch (error: any) {
 		error.value = error;
 	} finally {
 		loading.value = false;
+	}
+}
+
+async function getSharesCount() {
+	error.value = null;
+	loadingCount.value = true;
+
+	try {
+		const response = await api.get(`/shares`, {
+			params: {
+				filter: {
+					_and: [
+						{
+							collection: {
+								_eq: props.collection,
+							},
+						},
+						{
+							item: {
+								_eq: props.primaryKey,
+							},
+						},
+					],
+				},
+				fields: ['id'],
+			},
+		});
+
+		sharesCount.value = response.data.data.length;
+	} catch (error: any) {
+		error.value = error;
+	} finally {
+		loadingCount.value = false;
 	}
 }
 
@@ -147,10 +189,21 @@ async function send() {
 		sending.value = false;
 	}
 }
+
+function onOpen() {
+	if (shares.value) {
+		getShares();
+	}
+}
 </script>
 
 <template>
-	<sidebar-detail :title="t('shares')" icon="share" :badge="count">
+	<sidebar-detail
+		:title="t('shares')"
+		icon="share"
+		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
+		@open="onOpen"
+	>
 		<v-notice v-if="error" type="danger">{{ t('unexpected_error') }}</v-notice>
 		<v-progress-linear v-else-if="loading" indeterminate />
 

@@ -2,7 +2,7 @@
 import { useRevisions } from '@/composables/use-revisions';
 import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { ref, toRefs, watch } from 'vue';
+import { ref, toRefs, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
@@ -19,11 +19,18 @@ const { t } = useI18n();
 
 const { collection, primaryKey, version } = toRefs(props);
 
-const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
-	collection,
-	primaryKey,
-	version,
-);
+const {
+	revisions,
+	revisionsByDate,
+	loading,
+	refresh,
+	revisionsCount,
+	pagesCount,
+	created,
+	getRevisions,
+	loadingCount,
+	getRevisionsCount,
+} = useRevisions(collection, primaryKey, version);
 
 const modalActive = ref(false);
 const modalCurrentRevision = ref<number | null>(null);
@@ -36,9 +43,19 @@ watch(
 	},
 );
 
+onMounted(() => {
+	getRevisionsCount();
+});
+
 function openModal(id: number) {
 	modalCurrentRevision.value = id;
 	modalActive.value = true;
+}
+
+function onOpen() {
+	if (!revisions.value) {
+		getRevisions();
+	}
 }
 
 defineExpose({
@@ -50,7 +67,8 @@ defineExpose({
 	<sidebar-detail
 		:title="t('revisions')"
 		icon="change_history"
-		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		@open="onOpen"
 	>
 		<v-progress-linear v-if="!revisions && loading" indeterminate />
 

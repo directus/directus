@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
+import { toRefs, defineEmits } from 'vue';
 
 const props = defineProps<{
 	icon: string;
@@ -17,11 +17,21 @@ const { active, toggle } = useGroupable({
 
 const appStore = useAppStore();
 const { sidebarOpen } = toRefs(appStore);
+
+const emit = defineEmits(['open']);
+
+function onClick() {
+	toggle();
+
+	if (!active.value) {
+		emit('open');
+	}
+}
 </script>
 
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="toggle">
+		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="onClick">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" />

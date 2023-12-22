@@ -2,6 +2,7 @@
 import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
+import { abbreviateNumber } from '@directus/utils';
 import { userName } from '@/utils/user-name';
 import type { User } from '@directus/types';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
@@ -10,6 +11,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
+import { onMounted } from 'vue';
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
@@ -25,19 +27,29 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const { activity, loading, refresh, count, userPreviews } = useActivity(props.collection, props.primaryKey);
+const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
+	useActivity(props.collection, props.primaryKey);
 
 function useActivity(collection: string, primaryKey: string | number) {
 	const regex = /\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
 	const activity = ref<ActivityByDateDisplay[] | null>(null);
-	const count = ref(0);
+	const activityCount = ref(0);
 	const error = ref(null);
 	const loading = ref(false);
+	const loadingCount = ref(false);
 	const userPreviews = ref<Record<string, any>>({});
 
-	getActivity();
-
-	return { activity, error, loading, refresh, count, userPreviews };
+	return {
+		activity,
+		getActivity,
+		error,
+		loading,
+		refresh,
+		activityCount,
+		getActivityCount,
+		loadingCount,
+		userPreviews,
+	};
 
 	async function getActivity() {
 		error.value = null;
@@ -65,7 +77,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 				},
 			});
 
-			count.value = response.data.data.length;
+			activityCount.value = response.data.data.length;
 
 			userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
@@ -120,6 +132,44 @@ function useActivity(collection: string, primaryKey: string | number) {
 		}
 	}
 
+	async function getActivityCount() {
+		error.value = null;
+		loadingCount.value = true;
+
+		try {
+			const response = await api.get(`/activity`, {
+				params: {
+					filter: {
+						_and: [
+							{
+								collection: {
+									_eq: collection,
+								},
+							},
+							{
+								item: {
+									_eq: primaryKey,
+								},
+							},
+							{
+								action: {
+									_eq: 'comment',
+								},
+							},
+						],
+					},
+					fields: ['id'],
+				},
+			});
+
+			activityCount.value = response.data.data.length;
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loadingCount.value = false;
+		}
+	}
+
 	async function refresh() {
 		await getActivity();
 	}
@@ -155,10 +205,25 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 
 	return {};
 }
+
+onMounted(() => {
+	getActivityCount();
+});
+
+function onOpen() {
+	if (!activity.value) {
+		getActivity();
+	}
+}
 </script>
 
 <template>
-	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
+	<sidebar-detail
+		:title="t('comments')"
+		icon="chat_bubble_outline"
+		:badge="!loadingCount && activityCount > 0 ? abbreviateNumber(activityCount) : null"
+		@open="onOpen"
+	>
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
 		<v-progress-linear v-if="loading" indeterminate />
