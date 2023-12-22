@@ -21,6 +21,8 @@ const props = withDefaults(
 		itemValue?: string;
 		/** Which key in items is used to show an icon */
 		itemIcon?: string | null;
+		/** Which key in items is used to show an icon color */
+		itemColor?: string | null;
 		/** Which font family to use for checkbox item label */
 		itemLabelFontFamily?: string;
 		/** Which key in items is used to model the disabled state */
@@ -124,6 +126,7 @@ function useItems() {
 				text,
 				value,
 				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
+				color: props.itemColor ? get(item, props.itemColor) : undefined,
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
 				children: children
@@ -189,33 +192,36 @@ function useDisplayValue() {
 	const displayValue = computed(() => {
 		if (Array.isArray(props.modelValue)) {
 			if (props.modelValue.length < props.multiplePreviewThreshold) {
-				return props.modelValue
-					.map((value) => {
-						return getTextForValue(value) || value;
-					})
-					.join(', ');
+				return {
+					text: props.modelValue
+						.map((value) => {
+							return getItemForValue(value)?.text || value;
+						})
+						.join(', '),
+				};
 			} else {
 				const itemCount = internalItems.value.length + otherValues.value.length;
 				const selectionCount = props.modelValue.length;
 
 				if (itemCount === selectionCount) {
-					return t('all_items');
+					return { text: t('all_items') };
 				} else {
-					return t('item_count', selectionCount);
+					return { text: t('item_count', selectionCount) };
 				}
 			}
 		}
 
-		return getTextForValue(props.modelValue) || props.modelValue;
+		const item = getItemForValue(props.modelValue);
+		return { text: item?.text || props.modelValue, icon: item?.icon, color: item?.color };
 	});
 
 	return { displayValue };
 
-	function getTextForValue(value: string | number | null) {
+	function getItemForValue(value: string | number | null) {
 		return findValue(internalItems.value);
 
-		function findValue(choices: Option[]): string | undefined {
-			let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+		function findValue(choices: Option[]): Option | undefined {
+			let textValue: Option | undefined = choices.find((item) => item.value === value);
 
 			for (const choice of choices) {
 				if (!textValue) {
@@ -254,14 +260,18 @@ function useDisplayValue() {
 				<v-input
 					:full-width="fullWidth"
 					readonly
-					:model-value="displayValue"
+					:model-value="displayValue.text"
 					clickable
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:active="active"
 					@click="toggle"
 				>
-					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
+					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
+						<slot v-if="$slots.prepend" name="prepend" />
+						<v-icon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
+					</template>
 					<template #append>
 						<v-icon name="expand_more" :class="{ active }" />
 						<slot name="append" />
@@ -438,5 +448,10 @@ function useDisplayValue() {
 
 .inline-display.placeholder {
 	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
+}
+
+.color-dot {
+	margin-left: 7px;
+	margin-right: 7px;
 }
 </style>

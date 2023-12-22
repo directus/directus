@@ -607,7 +607,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
   SERVICE_UNAVAILABLE: Servicio no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
   UNEXPECTED_RESPONSE: Respuesta inesperada
@@ -1826,6 +1825,8 @@ displays:
     icon: Icono
     border: Border
     border_label: Mostrar borde
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
     text: Texto
     text_placeholder: Sobrescribir valor opcional...
   formatted-json-value:

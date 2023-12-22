@@ -23,7 +23,9 @@ let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default function getDatabase(): Knex {
+export default getDatabase;
+
+export function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}

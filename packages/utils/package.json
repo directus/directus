@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "11.0.2",
+	"version": "11.0.3",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,7 +33,7 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"date-fns": "3.0.1",
+		"date-fns": "3.0.5",
 		"fs-extra": "11.2.0",
 		"joi": "17.11.0",
 		"lodash-es": "4.17.21",

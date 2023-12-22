@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 
-import { getVueComponentName } from '@/utils/get-vue-component-name';
-import { createPinia } from 'pinia';
-import { createHead } from '@unhead/vue';
+// Note: the import order is important. Vue has to come first. (Unhead will break if that's first)
 import { createApp } from 'vue';
+
+import { getVueComponentName } from '@/utils/get-vue-component-name';
+import { createHead } from '@unhead/vue';
+import { createPinia } from 'pinia';
 import App from './app.vue';
 import { registerComponents } from './components/register';
 import { DIRECTUS_LOGO } from './constants';
@@ -55,10 +57,6 @@ async function init() {
 	console.timeEnd('🕓 Application Loaded');
 
 	console.group(`%c✨ Project Information`, 'color:DodgerBlue'); // groupCollapsed
-
-	if (import.meta.env.DEV) {
-		console.info(`%cVersion: v${version}`, 'color:DodgerBlue');
-	}
 
 	console.info(`%cEnvironment: ${import.meta.env.MODE}`, 'color:DodgerBlue');
 	console.groupEnd();
