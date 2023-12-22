@@ -1,16 +1,16 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
+import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
-import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -46,6 +46,10 @@ const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
+interface FlowMessage {
+	type: 'reload';
+}
+
 class FlowManager {
 	private isLoaded = false;
 
@@ -62,9 +66,9 @@ class FlowManager {
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
-		const messenger = getMessenger();
+		const messenger = useBus();
 
-		messenger.subscribe('flows', (event) => {
+		messenger.subscribe<FlowMessage>('flows', (event) => {
 			if (event['type'] === 'reload') {
 				this.reloadQueue.enqueue(async () => {
 					if (this.isLoaded) {
@@ -85,9 +89,9 @@ class FlowManager {
 	}
 
 	public async reload(): Promise<void> {
-		const messenger = getMessenger();
+		const messenger = useBus();
 
-		messenger.publish('flows', { type: 'reload' });
+		messenger.publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {

@@ -1,5 +1,5 @@
+import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
-import { getMessenger } from '../../messenger.js';
 import type { WebSocketEvent } from '../messages.js';
 
 let actionsRegistered = false;
@@ -146,7 +146,7 @@ function registerSortHooks() {
  * @param transform Transformer function
  */
 function registerAction(event: string, transform: (args: Record<string, any>) => WebSocketEvent) {
-	const messenger = getMessenger();
+	const messenger = useBus();
 
 	emitter.onAction(event, async (data: Record<string, any>) => {
 		// push the event through the Redis pub/sub
