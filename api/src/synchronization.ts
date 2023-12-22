@@ -102,6 +102,7 @@ class SynchronizationManagerRedis implements SynchronizationManager {
 	private client: Redis;
 
 	constructor() {
+		const env = useEnv();
 		const config = getConfigFromEnv('REDIS');
 
 		this.client = new Redis(env['REDIS'] ?? config);

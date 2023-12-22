@@ -278,6 +278,7 @@ const handleError = (e: any) => {
 
 export function createOAuth2AuthRouter(providerName: string): Router {
 	const router = Router();
+	const env = useEnv();
 
 	router.get(
 		'/',

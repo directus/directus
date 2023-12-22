@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
@@ -8,7 +9,6 @@ import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useEnv } from './env.js';
-import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -413,7 +413,7 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				env,
+				env: useEnv(),
 				database: getDatabase(),
 				logger,
 				getSchema,

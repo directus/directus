@@ -74,6 +74,7 @@ async function waitForDatabase(database: Knex) {
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
+	const env = useEnv();
 	const { nanoid } = await import('nanoid');
 
 	logger.info('Setting up first admin role...');

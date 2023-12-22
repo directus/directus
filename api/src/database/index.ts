@@ -314,6 +314,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	const env = useEnv();
 	database = database ?? getDatabase();
 
 	if (getDatabaseClient(database) === 'mysql') {
