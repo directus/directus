@@ -19,15 +19,12 @@ const appStore = useAppStore();
 const { sidebarOpen } = toRefs(appStore);
 
 const emit = defineEmits<{
-	open: [];
+	toggle: [active: boolean];
 }>();
 
 function onClick() {
 	toggle();
-
-	if (!active.value) {
-		emit('open');
-	}
+	emit('toggle', active.value);
 }
 </script>
 

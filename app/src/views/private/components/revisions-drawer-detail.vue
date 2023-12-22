@@ -52,8 +52,8 @@ function openModal(id: number) {
 	modalActive.value = true;
 }
 
-function onOpen() {
-	if (!revisions.value) {
+function onToggle(active: boolean) {
+	if (active && !revisions.value) {
 		getRevisions();
 	}
 }
@@ -68,7 +68,7 @@ defineExpose({
 		:title="t('revisions')"
 		icon="change_history"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
-		@open="onOpen"
+		@toggle="onToggle"
 	>
 		<v-progress-linear v-if="!revisions && loading" indeterminate />
 

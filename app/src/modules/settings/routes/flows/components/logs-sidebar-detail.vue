@@ -93,8 +93,8 @@ const steps = computed(() => {
 	);
 });
 
-function onOpen() {
-	if (!revisionsByDate.value) {
+function onToggle(active: boolean) {
+	if (active && !revisionsByDate.value) {
 		getRevisions();
 	}
 }
@@ -105,7 +105,7 @@ function onOpen() {
 		:title="t('logs')"
 		icon="fact_check"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
-		@open="onOpen"
+		@toggle="onToggle"
 	>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 

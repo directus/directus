@@ -210,8 +210,8 @@ onMounted(() => {
 	getActivityCount();
 });
 
-function onOpen() {
-	if (!activity.value) {
+function onToggle(active: boolean) {
+	if (active && !activity.value) {
 		getActivity();
 	}
 }
@@ -222,7 +222,7 @@ function onOpen() {
 		:title="t('comments')"
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && activityCount > 0 ? abbreviateNumber(activityCount) : null"
-		@open="onOpen"
+		@toggle="onToggle"
 	>
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 

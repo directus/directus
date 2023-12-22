@@ -190,8 +190,8 @@ async function send() {
 	}
 }
 
-function onOpen() {
-	if (shares.value) {
+function onToggle(active: boolean) {
+	if (active && !shares.value) {
 		getShares();
 	}
 }
@@ -202,7 +202,7 @@ function onOpen() {
 		:title="t('shares')"
 		icon="share"
 		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
-		@open="onOpen"
+		@toggle="onToggle"
 	>
 		<v-notice v-if="error" type="danger">{{ t('unexpected_error') }}</v-notice>
 		<v-progress-linear v-else-if="loading" indeterminate />
