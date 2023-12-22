@@ -10,14 +10,10 @@ import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type Image = {
-	type: string;
-	filesize: number;
-	filename_download: string;
-	width: number;
-	height: number;
-	focal_point: File['focal_point'];
-};
+type Image = Pick<
+	File,
+	'type' | 'filesize' | 'filename_download' | 'width' | 'height' | 'focal_point_x' | 'focal_point_y'
+>;
 
 const props = defineProps<{
 	id: string;
@@ -134,7 +130,15 @@ function useImage() {
 
 			const response = await api.get(`/files/${props.id}`, {
 				params: {
-					fields: ['type', 'filesize', 'filename_download', 'width', 'height', 'focal_point'],
+					fields: [
+						'type',
+						'filesize',
+						'filename_download',
+						'width',
+						'height',
+						'focal_point_x',
+						'focal_point_y',
+					] as (keyof Image)[],
 				},
 			});
 
@@ -153,10 +157,11 @@ function useImage() {
 
 		if (localDragMode.value === 'focal_point') {
 			const data = cropperInstance.value?.getData();
-			const x = (data?.x ?? 0) + (data?.width ?? 0) / 2;
-			const y = (data?.y ?? 0) + (data?.height ?? 0) / 2;
+			const x = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2).toString();
+			const y = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2).toString();
 			// Note: Required to include other fields before the `file` key
-			formData.append('focal_point', JSON.stringify({ x, y } satisfies File['focal_point']));
+			formData.append('focal_point_x' as keyof File, x);
+			formData.append('focal_point_y' as keyof File, y);
 			// Reset the cropping area so we dont actually crop the image, but
 			// still honor other changes like flips & rotations in one go when saving
 			cropperInstance.value?.clear();
@@ -187,7 +192,7 @@ function useImage() {
 						saving.value = false;
 					}
 				},
-				imageData.value?.type,
+				imageData.value?.type ?? undefined,
 			);
 	}
 
@@ -210,7 +215,7 @@ function useCropper() {
 	});
 
 	watch(imageData, () => {
-		if (!imageData.value) return;
+		if (!imageData.value || !imageData.value.width || !imageData.value.height) return;
 		localAspectRatio.value = imageData.value.width / imageData.value.height;
 		newDimensions.width = imageData.value.width;
 		newDimensions.height = imageData.value.height;
@@ -228,7 +233,7 @@ function useCropper() {
 	});
 
 	const aspectRatioIcon = computed(() => {
-		if (!imageData.value) return 'crop_original';
+		if (!imageData.value || !imageData.value.width || !imageData.value.height) return 'crop_original';
 
 		if (customAspectRatios) {
 			const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
@@ -271,9 +276,9 @@ function useCropper() {
 				let centeredX = 0;
 				let centeredY = 0;
 
-				if (imageData.value?.focal_point) {
-					centeredX = imageData.value.focal_point.x - boxSize / 2;
-					centeredY = imageData.value.focal_point.y - boxSize / 2;
+				if (imageData.value && imageData.value.focal_point_x !== null && imageData.value.focal_point_y !== null) {
+					centeredX = imageData.value.focal_point_x - boxSize / 2;
+					centeredY = imageData.value.focal_point_y - boxSize / 2;
 				} else {
 					centeredX = (canvasData?.naturalWidth ?? 0) / 2 - boxSize / 2;
 					centeredY = (canvasData?.naturalHeight ?? 0) / 2 - boxSize / 2;
@@ -378,7 +383,7 @@ function useCropper() {
 }
 
 function setAspectRatio() {
-	if (imageData.value) {
+	if (imageData.value && imageData.value.width && imageData.value.height) {
 		aspectRatio.value = imageData.value.width / imageData.value.height;
 	}
 }
@@ -492,7 +497,7 @@ function setAspectRatio() {
 							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
-							v-if="imageData"
+							v-if="imageData && imageData.width && imageData.height"
 							clickable
 							:active="aspectRatio === imageData.width / imageData.height"
 							@click="setAspectRatio"

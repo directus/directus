@@ -143,7 +143,10 @@ fields:
     width: half
     readonly: true
 
-  - field: focal_point
-    readonly: true
-    special:
-      - cast-json
+  - field: focal_point_x
+    width: half
+    hidden: true
+
+  - field: focal_point_y
+    width: half
+    hidden: true
