@@ -7,7 +7,7 @@ import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
+import { useEnv } from './env.js';
 import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
@@ -59,6 +59,8 @@ class FlowManager {
 	private envs: Record<string, any>;
 
 	constructor() {
+		const env = useEnv();
+
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 

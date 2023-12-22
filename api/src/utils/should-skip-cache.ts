@@ -1,7 +1,7 @@
 import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
 import url from 'url';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { Url } from './url.js';
 
 /**
@@ -11,6 +11,8 @@ import { Url } from './url.js';
  */
 
 export function shouldSkipCache(req: Request): boolean {
+	const env = useEnv();
+
 	// Always skip cache for requests coming from the data studio based on Referer header
 	const referer = req.get('Referer');
 

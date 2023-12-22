@@ -1,8 +1,7 @@
-import { expect, describe, test, vi } from 'vitest';
 import jwt from 'jsonwebtoken';
-import env from '../env.js';
-import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import { describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
 vi.mock('../env.js', async () => {
 	const { mockEnv } = await import('../__utils__/mock-env.js');

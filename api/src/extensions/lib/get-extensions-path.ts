@@ -1,7 +1,9 @@
 import { join } from 'path';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 
 export const getExtensionsPath = () => {
+	const env = useEnv();
+
 	if (env['EXTENSIONS_LOCATION']) {
 		return join(env['TEMP_PATH'], 'extensions');
 	}

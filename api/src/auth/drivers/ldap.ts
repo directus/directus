@@ -1,4 +1,13 @@
-import { isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+	isDirectusError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -6,16 +15,7 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidPayloadError,
-	InvalidProviderError,
-	InvalidProviderConfigError,
-	ServiceUnavailableError,
-	UnexpectedResponseError,
-} from '@directus/errors';
+import { useEnv } from '../../env.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -409,6 +409,8 @@ export function createLDAPAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
+			const env = useEnv();
+
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,

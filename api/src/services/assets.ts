@@ -10,7 +10,7 @@ import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import {
 	ForbiddenError,
 	IllegalAssetTransformationError,
@@ -23,6 +23,8 @@ import type { AbstractServiceOptions, Transformation, TransformationSet } from '
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+
+const env = useEnv();
 
 export class AssetsService {
 	knex: Knex;
