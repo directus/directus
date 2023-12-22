@@ -29,7 +29,7 @@ export class JobQueue {
 		this.running = false;
 	}
 
-	public get size() {
+	public get size(): number {
 		return this.jobs.length;
 	}
 }
