@@ -219,6 +219,12 @@ export class ExtensionManager {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	public reload(): void {
+		if (this.reloadQueue.size > 0) {
+			// if a pending job is already in queue do not queue anymore re-loads.
+			// The pending job will register any changes that have been done between the pending and current jobs start.
+			return;
+		}
+
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
 				logger.info('Reloading extensions');

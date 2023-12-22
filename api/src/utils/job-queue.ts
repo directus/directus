@@ -28,4 +28,8 @@ export class JobQueue {
 
 		this.running = false;
 	}
+
+	public get size() {
+		return this.jobs.length;
+	}
 }
