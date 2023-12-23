@@ -161,75 +161,85 @@ function useImage() {
 		}
 	}
 
+	async function persistChanges(focalPoint?: { x: number | null; y: number | null }) {
+		// Wrap the callback so that we can actually listen to it
+		return new Promise<void>((resolve, reject) => {
+			cropperInstance.value
+				?.getCroppedCanvas({
+					imageSmoothingQuality: 'high',
+				})
+				.toBlob(
+					async (blob) => {
+						if (blob === null) {
+							return reject('Cropper-Blob is null');
+						}
+
+						const formData = new FormData();
+
+						if (focalPoint) {
+							formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
+							formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
+						}
+
+						formData.append('file', blob, imageData.value?.filename_download);
+
+						api.patch(`/files/${props.id}`, formData).then(
+							() => resolve(),
+							(err) => reject(err),
+						);
+					},
+					imageData.value?.type ?? undefined,
+				);
+		});
+	}
+
 	async function save() {
 		saving.value = true;
 
-		const patches: Promise<any>[] = [];
+		// Only save focal point if we're also actively selecting it
+		const gotChangeForFocalPoint = localDragMode.value === 'focal_point' && cropping.value;
 
-		// Only save focal point if we're actively selecting it
-		if (localDragMode.value === 'focal_point' && cropping.value) {
+		let focalPointX = null;
+		let focalPointY = null;
+
+		// Important: Check focal point first because we must(!) reset the cropping area
+		// before saving so that we're not wrongfully cropping
+		if (gotChangeForFocalPoint) {
 			const data = cropperInstance.value?.getData();
-			const x = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2);
-			const y = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2);
-
-			const patch = api
-				.patch(`/filesxxx/${props.id}`, { focal_point_x: x, focal_point_y: y } satisfies Partial<File>)
-				.catch((err) => {
-					unexpectedError(err);
-					throw err;
-				});
-
-			// Reset the cropping area so we dont actually crop the image
-			// Rotations and scales are to be saved separately
+			focalPointX = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2);
+			focalPointY = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2);
 			cropperInstance.value?.clear();
-
-			patches.push(patch);
 		}
 
-		// Only save the file to disk if there are changes: Cropping, rotation, flipping
-		if (
-			!isEqual({ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 }, cropperInstance.value?.getData())
-		) {
-			// Wrap the callback so that we can actually listen to it
-			const patch = new Promise<void>((resolve, reject) => {
-				cropperInstance.value
-					?.getCroppedCanvas({
-						imageSmoothingQuality: 'high',
-					})
-					.toBlob(
-						async (blob) => {
-							if (blob === null) {
-								saving.value = false;
-								return;
-							}
+		// Important: This check has to go after(!) we reset the cropping area because
+		// `getData` returns info about our focal point, which leads to a false positive
+		const gotChangeForImg = !isEqual(
+			{ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 },
+			cropperInstance.value?.getData(),
+		);
 
-							const formData = new FormData();
-							formData.append('file', blob, imageData.value?.filename_download);
+		// Collapse focal point patch request and image data into one request if we can
+		let patchRequest = null;
 
-							api.patch(`/files/${props.id}`, formData).then(
-								() => {
-									resolve();
-								},
-								(err) => {
-									unexpectedError(err);
-									reject();
-								},
-							);
-						},
-						imageData.value?.type ?? undefined,
-					);
-			});
-
-			patches.push(patch);
+		if (gotChangeForImg && gotChangeForFocalPoint) {
+			patchRequest = persistChanges({ x: focalPointX, y: focalPointY });
+		} else if (gotChangeForImg) {
+			patchRequest = persistChanges();
+		} else if (gotChangeForFocalPoint) {
+			patchRequest = api.patch(`/files/${props.id}`, {
+				focal_point_x: focalPointX,
+				focal_point_y: focalPointY,
+			} satisfies Partial<File>);
 		}
 
 		try {
-			// `Promise.all` so that we dont leave the image-editor in case of errors
-			await Promise.all(patches);
+			await patchRequest;
 			emit('refresh');
 			localDragMode.value = 'move';
 			randomId.value = nanoid();
 			internalActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			saving.value = false;
 		}
@@ -564,7 +574,7 @@ function setAspectRatio() {
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save" :disabled="!hasEdits">
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
