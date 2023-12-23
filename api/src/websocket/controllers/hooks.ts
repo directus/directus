@@ -144,7 +144,7 @@ function registerSortHooks() {
 function registerVersionHooks() {
 	registerAction('items.version', ({ key, collection, payload = {} }) => ({
 		collection,
-		action: 'version',
+		action: 'create',
 		key,
 		payload,
 	}));
