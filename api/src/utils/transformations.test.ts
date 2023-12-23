@@ -25,7 +25,8 @@ const inputFile: File = {
 	metadata: null,
 	modified_by: null,
 	modified_on: '',
-	focal_point: null,
+	focal_point_x: null,
+	focal_point_y: null,
 };
 
 describe('resolvePreset', () => {
@@ -91,7 +92,7 @@ describe('resolvePreset', () => {
 		]);
 	});
 
-	test('Add resize transformation: cover', () => {
+	test('Add resize transformation: cover without focal point', () => {
 		const transformationParams: TransformationParams = {
 			key: 'system-small-cover',
 			width: 64,
@@ -100,6 +101,36 @@ describe('resolvePreset', () => {
 		};
 
 		const output = resolvePreset({ transformationParams }, inputFile);
+
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 64,
+					height: 64,
+					fit: 'cover',
+					withoutEnlargement: undefined,
+				},
+			],
+		]);
+	});
+
+	test('Add resize transformation: cover with centered focal point', () => {
+		if (inputFile.width === null || inputFile.height === null) {
+			throw new Error('Image width and or height wasnt defined!');
+		}
+
+		const transformationParams: TransformationParams = {
+			key: 'system-small-cover',
+			width: 64,
+			height: 64,
+			fit: 'cover',
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
 
 		/*
 		 * The following is relevant for a centered focal point
@@ -128,6 +159,82 @@ describe('resolvePreset', () => {
 				},
 			],
 			['extract', { left: 25, top: 0, width: 64, height: 64 }],
+		]);
+	});
+
+	test('Add resize transformation: cover with negative focal point', () => {
+		if (inputFile.width === null || inputFile.height === null) {
+			throw new Error('Image width and or height wasnt defined!');
+		}
+
+		const transformationParams: TransformationParams = {
+			key: 'system-small-cover',
+			width: 64,
+			height: 64,
+			fit: 'cover',
+		};
+
+		const output = resolvePreset({ transformationParams }, { ...inputFile, focal_point_x: -999, focal_point_y: -999 });
+
+		/*
+		 * That should result in the following
+		 * <──────────114────────────>
+		 * <───64────><──────50──────>
+		 * ┌─────────┬───────────────┐
+		 * │         │               │
+		 * │ extract │               │
+		 * │         │               │
+		 * └─────────┴───────────────┘
+		 */
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 114,
+					height: 64,
+					fit: 'cover',
+					withoutEnlargement: undefined,
+				},
+			],
+			['extract', { left: 0, top: 0, width: 64, height: 64 }],
+		]);
+	});
+
+	test('Add resize transformation: cover with out of bounds focal point', () => {
+		if (inputFile.width === null || inputFile.height === null) {
+			throw new Error('Image width and or height wasnt defined!');
+		}
+
+		const transformationParams: TransformationParams = {
+			key: 'system-small-cover',
+			width: 64,
+			height: 64,
+			fit: 'cover',
+		};
+
+		const output = resolvePreset({ transformationParams }, { ...inputFile, focal_point_x: 9999, focal_point_y: -999 });
+
+		/*
+		 * That should result in the following
+		 * <──────────114────────────>
+		 * <──────50──────><───64────>
+		 * ┌───────────────┬─────────┐
+		 * │               │         │
+		 * │               │ extract │
+		 * │               │         │
+		 * └───────────────┴─────────┘
+		 */
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 114,
+					height: 64,
+					fit: 'cover',
+					withoutEnlargement: undefined,
+				},
+			],
+			['extract', { left: 50, top: 0, width: 64, height: 64 }],
 		]);
 	});
 
