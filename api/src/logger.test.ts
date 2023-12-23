@@ -7,7 +7,9 @@ import { pinoHttp, type HttpLogger } from 'pino-http';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useEnv } from './env.js';
 
-vi.mock('./env.js');
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('./env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 

@@ -13,11 +13,18 @@ vi.mock('../controllers', () => ({
 	})),
 }));
 
-vi.mock('../../env.js');
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('../../env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+
+let controller: WebSocketController;
 
 beforeEach(() => {
+	vi.useFakeTimers();
+	controller = getWebSocketController()!;
+
 	vi.mocked(useEnv).mockReturnValue({
-		WEBSOCKETS_HEARTBEAT_PERIOD: '1',
+		WEBSOCKETS_HEARTBEAT_PERIOD: 1,
 	});
 });
 
@@ -35,18 +42,6 @@ function mockClient() {
 }
 
 describe('WebSocket heartbeat handler', () => {
-	let controller: WebSocketController;
-
-	beforeEach(() => {
-		vi.useFakeTimers();
-		controller = getWebSocketController();
-	});
-
-	afterEach(() => {
-		vi.useRealTimers();
-		vi.clearAllMocks();
-	});
-
 	test('client should ping', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);

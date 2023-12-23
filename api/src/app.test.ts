@@ -15,7 +15,9 @@ vi.mock('./database', () => ({
 
 vi.mock('./telemetry/index.js');
 
-vi.mock('./env.js');
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('./env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
