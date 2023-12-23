@@ -5,6 +5,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
+import { isEqual } from 'lodash';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
@@ -41,7 +42,7 @@ const internalActive = computed({
 	},
 });
 
-const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
+const { loading, error, imageData, imageElement, hasEdits, save, saving, fetchImage, onImageLoad } = useImage();
 
 const {
 	cropperInstance,
@@ -113,14 +114,24 @@ function useImage() {
 
 	const imageElement = ref<HTMLImageElement | null>(null);
 
+	const hasEdits = computed(() => {
+		return (
+			!isEqual(
+				{ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 },
+				cropperInstance.value?.getData(),
+			) || cropping.value
+		);
+	});
+
 	return {
 		loading,
 		error,
 		imageData,
-		saving,
 		fetchImage,
 		imageElement,
+		hasEdits,
 		save,
+		saving,
 		onImageLoad,
 	};
 
@@ -150,50 +161,78 @@ function useImage() {
 		}
 	}
 
-	function save() {
+	async function save() {
 		saving.value = true;
 
-		const formData = new FormData();
+		const patches: Promise<any>[] = [];
 
-		if (localDragMode.value === 'focal_point') {
+		// Only save focal point if we're actively selecting it
+		if (localDragMode.value === 'focal_point' && cropping.value) {
 			const data = cropperInstance.value?.getData();
-			const x = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2).toString();
-			const y = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2).toString();
-			// Note: Required to include other fields before the `file` key
-			formData.append('focal_point_x' as keyof File, x);
-			formData.append('focal_point_y' as keyof File, y);
-			// Reset the cropping area so we dont actually crop the image, but
-			// still honor other changes like flips & rotations in one go when saving
+			const x = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2);
+			const y = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2);
+
+			const patch = api
+				.patch(`/filesxxx/${props.id}`, { focal_point_x: x, focal_point_y: y } satisfies Partial<File>)
+				.catch((err) => {
+					unexpectedError(err);
+					throw err;
+				});
+
+			// Reset the cropping area so we dont actually crop the image
+			// Rotations and scales are to be saved separately
 			cropperInstance.value?.clear();
+
+			patches.push(patch);
 		}
 
-		cropperInstance.value
-			?.getCroppedCanvas({
-				imageSmoothingQuality: 'high',
-			})
-			.toBlob(
-				async (blob) => {
-					if (blob === null) {
-						saving.value = false;
-						return;
-					}
+		// Only save the file to disk if there are changes: Cropping, rotation, flipping
+		if (
+			!isEqual({ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 }, cropperInstance.value?.getData())
+		) {
+			// Wrap the callback so that we can actually listen to it
+			const patch = new Promise<void>((resolve, reject) => {
+				cropperInstance.value
+					?.getCroppedCanvas({
+						imageSmoothingQuality: 'high',
+					})
+					.toBlob(
+						async (blob) => {
+							if (blob === null) {
+								saving.value = false;
+								return;
+							}
 
-					formData.append('file', blob, imageData.value?.filename_download);
+							const formData = new FormData();
+							formData.append('file', blob, imageData.value?.filename_download);
 
-					try {
-						await api.patch(`/files/${props.id}`, formData);
-						emit('refresh');
-						internalActive.value = false;
-						localDragMode.value = 'move';
-						randomId.value = nanoid();
-					} catch (error) {
-						unexpectedError(error);
-					} finally {
-						saving.value = false;
-					}
-				},
-				imageData.value?.type ?? undefined,
-			);
+							api.patch(`/files/${props.id}`, formData).then(
+								() => {
+									resolve();
+								},
+								(err) => {
+									unexpectedError(err);
+									reject();
+								},
+							);
+						},
+						imageData.value?.type ?? undefined,
+					);
+			});
+
+			patches.push(patch);
+		}
+
+		try {
+			// `Promise.all` so that we dont leave the image-editor in case of errors
+			await Promise.all(patches);
+			emit('refresh');
+			localDragMode.value = 'move';
+			randomId.value = nanoid();
+			internalActive.value = false;
+		} finally {
+			saving.value = false;
+		}
 	}
 
 	async function onImageLoad() {
@@ -269,6 +308,8 @@ function useCropper() {
 			if (newMode === 'move') {
 				cropperInstance.value?.clear();
 				localCropping.value = false;
+			} else if (newMode === 'crop') {
+				cropperInstance.value?.crop();
 			} else if (newMode === 'focal_point') {
 				const canvasData = cropperInstance.value?.getCanvasData();
 				// Size the box as percentage so that it stays visible for both small and large images
@@ -523,7 +564,7 @@ function setAspectRatio() {
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save" :disabled="!hasEdits">
 				<v-icon name="check" />
 			</v-button>
 		</template>
