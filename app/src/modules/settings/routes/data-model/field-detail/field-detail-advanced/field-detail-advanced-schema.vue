@@ -117,7 +117,7 @@ const special = syncFieldDetailStoreProperty('field.meta.special');
 const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
 const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
-const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', true);
+const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', false);
 const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 

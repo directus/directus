@@ -18,6 +18,7 @@ type RawColumn = {
 	schema: string;
 	data_type: string;
 	is_nullable: boolean;
+	is_indexed: boolean;
 	generation_expression: null | string;
 	default_value: null | string;
 	is_generated: boolean;
@@ -345,6 +346,7 @@ export default class CockroachDB implements SchemaInspector {
          SELECT
            att.attname AS name,
            rel.relname AS table,
+		   CASE WHEN idx.indisunique = false THEN true ELSE false END AS is_indexed,
            rel.relnamespace::regnamespace::text AS schema,
            format_type(att.atttypid, null) AS data_type,
            NOT att.attnotnull AS is_nullable,
@@ -382,6 +384,19 @@ export default class CockroachDB implements SchemaInspector {
            LEFT JOIN pg_class rel ON att.attrelid = rel.oid
            LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
            LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
+		   LEFT JOIN LATERAL (
+			SELECT
+				indrelid,
+				indkey,
+				indisunique
+			FROM
+				pg_index idx
+			WHERE
+				att.attrelid = idx.indrelid
+				AND att.attnum = ALL(idx.indkey)
+				AND idx.indisunique = false
+			LIMIT 1
+		) idx ON true
          WHERE
            rel.relnamespace IN (${schemaIn})
            ${table ? 'AND rel.relname = ?' : ''}
@@ -428,7 +443,6 @@ export default class CockroachDB implements SchemaInspector {
 			return {
 				...col,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
-				is_indexed: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment:
 					['integer', 'bigint'].includes(col.data_type) && (col.default_value?.startsWith('nextval(') ?? false),
