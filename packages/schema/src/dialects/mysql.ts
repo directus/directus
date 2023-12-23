@@ -29,7 +29,7 @@ type RawColumn = {
 	REFERENCED_COLUMN_NAME: string | null;
 	UPDATE_RULE: string | null;
 	DELETE_RULE: string | null;
-	COLUMN_KEY: 'PRI' | 'UNI' | null;
+	COLUMN_KEY: 'PRI' | 'UNI' | 'MUL' | null;
 	EXTRA: 'auto_increment' | 'STORED GENERATED' | 'VIRTUAL GENERATED' | null;
 	CONSTRAINT_NAME: 'PRIMARY' | null;
 	GENERATION_EXPRESSION: string;
@@ -54,7 +54,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		is_generated: !!rawColumn.EXTRA?.endsWith('GENERATED'),
 		is_nullable: rawColumn.IS_NULLABLE === 'YES',
 		is_unique: rawColumn.COLUMN_KEY === 'UNI',
-		is_indexed: rawColumn.COLUMN_KEY === 'UNI', //@TODO fix
+		is_indexed: rawColumn.COLUMN_KEY === 'MUL',
 		is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY' || rawColumn.COLUMN_KEY === 'PRI',
 		has_auto_increment: rawColumn.EXTRA === 'auto_increment',
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
