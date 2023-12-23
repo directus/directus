@@ -230,8 +230,8 @@ export class VersionsService extends ItemsService {
 			schema: this.schema,
 		});
 
-		const { item, collection } = version
- 
+		const { item, collection } = version;
+
 		const activity = await activityService.createOne({
 			action: Action.VERSION_SAVE,
 			user: this.accountability?.user ?? null,

@@ -34,7 +34,6 @@ export function registerWebSocketEvents() {
 	registerVersionHooks();
 }
 
-
 function registerActionHooks(modules: string[]) {
 	// register event hooks that can be handled in an uniform manner
 	for (const module of modules) {
