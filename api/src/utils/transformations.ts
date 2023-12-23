@@ -1,4 +1,4 @@
-import type { File, FocalPoint } from '@directus/types';
+import type { File } from '@directus/types';
 import { clamp } from 'lodash-es';
 import type { Region } from 'sharp';
 import type { Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
@@ -25,13 +25,20 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 		 * since the other modes show the whole image. Sharp by default also simply scales up/down
 		 * when only supplied with one dimension, so we **must** check, else we break existing behaviour.
 		 * See: https://sharp.pixelplumbing.com/api-resize#resize
-		 * Otherwise fall back to regular behaviour
+		 * Also only crop to focal point when explicitly defined so that users can still `cover` with
+		 * other parameters like `position` and `gravity` - Else fall back to regular behaviour
 		 */
-		if (transformationParams.fit === 'cover' && toWidth && toHeight) {
+		if (
+			(transformationParams.fit === undefined || transformationParams.fit === 'cover') &&
+			toWidth &&
+			toHeight &&
+			file.focal_point_x !== null &&
+			file.focal_point_y !== null
+		) {
 			const transformArgs = getResizeArguments(
 				{ w: file.width, h: file.height },
 				{ w: toWidth, h: toHeight },
-				file.focal_point,
+				{ x: file.focal_point_x, y: file.focal_point_y },
 			);
 
 			transforms.push(
@@ -100,6 +107,7 @@ export function maybeExtractFormat(transforms: Transformation[]): string | undef
 }
 
 type Dimensions = { w: number; h: number };
+type FocalPoint = { x: number; y: number };
 
 /**
  * Resize an image but keep it centered on the focal point.
