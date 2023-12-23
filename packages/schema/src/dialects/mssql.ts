@@ -21,6 +21,7 @@ type RawColumn = {
 	numeric_scale: number | null;
 	is_generated: boolean | null;
 	is_nullable: 'YES' | 'NO';
+	is_indexed: 'YES' | 'NO';
 	default_value: string | null;
 	is_unique: true | null;
 	is_primary_key: true | null;
@@ -37,7 +38,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		generation_expression: rawColumn.generation_expression || null,
 		is_generated: !!rawColumn.is_generated,
 		is_unique: rawColumn.is_unique === true,
-		is_indexed: rawColumn.is_unique === true, //@TODO fix
+		is_indexed: rawColumn.is_indexed === 'YES',
 		is_primary_key: rawColumn.is_primary_key === true,
 		is_nullable: rawColumn.is_nullable === 'YES',
 		has_auto_increment: rawColumn.has_auto_increment === 'YES',
@@ -293,6 +294,11 @@ export default class MSSQL implements SchemaInspector {
         object_definition ([c].[default_object_id]) AS [default_value],
         [i].[is_primary_key],
         [i].[is_unique],
+		CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 THEN 
+		  'YES' 
+	  	ELSE 
+		  'NO' 
+	  	END AS [is_indexed],
         CASE [c].[is_identity]
         WHEN 1 THEN
           'YES'
