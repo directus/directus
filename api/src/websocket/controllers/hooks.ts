@@ -31,7 +31,9 @@ export function registerWebSocketEvents() {
 	registerFilesHooks();
 	registerRelationsHooks();
 	registerSortHooks();
+	registerVersionHooks();
 }
+
 
 function registerActionHooks(modules: string[]) {
 	// register event hooks that can be handled in an uniform manner
@@ -137,6 +139,15 @@ function registerSortHooks() {
 		action: 'update',
 		keys: [item],
 		payload: {},
+	}));
+}
+
+function registerVersionHooks() {
+	registerAction('items.version', ({ key, collection, payload = {} }) => ({
+		collection,
+		action: 'version',
+		key,
+		payload,
 	}));
 }
 
