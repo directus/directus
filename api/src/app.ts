@@ -50,7 +50,7 @@ import emitter from './emitter.js';
 import { useEnv } from './env.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
-import logger, { expressLogger } from './logger.js';
+import { createExpressLogger, useLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import { checkIP } from './middleware/check-ip.js';
@@ -73,6 +73,7 @@ const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
 	const env = useEnv();
+	const logger = useLogger();
 	const helmet = await import('helmet');
 
 	validateEnv(['KEY', 'SECRET']);
@@ -164,7 +165,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('middlewares.before', { app });
 
-	app.use(expressLogger);
+	app.use(createExpressLogger());
 
 	app.use((_req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
