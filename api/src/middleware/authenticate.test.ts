@@ -10,7 +10,10 @@ import '../types/express.d.ts';
 import { handler } from './authenticate.js';
 
 vi.mock('../database/index');
-vi.mock('../env.js');
+
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('../env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
@@ -99,7 +102,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env['SECRET'],
+		'test',
 		{ issuer: 'directus' },
 	);
 
@@ -149,7 +152,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env['SECRET'],
+		'test',
 		{ issuer: 'directus' },
 	);
 

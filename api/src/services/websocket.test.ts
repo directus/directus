@@ -1,6 +1,5 @@
 import type { Accountability } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { WebSocketController, getWebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketClient } from '../websocket/types.js';
 import { WebSocketService } from './websocket.js';
@@ -10,11 +9,12 @@ vi.mock('../websocket/controllers/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('../env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
-
-beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ WEBSOCKETS_ENABLED: 'true' });
-});
+vi.mock('../env.js', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		WEBSOCKETS_ENABLED: true,
+		EXTENSIONS_PATH: './extensions',
+	}),
+}));
 
 afterEach(() => {
 	vi.clearAllMocks();

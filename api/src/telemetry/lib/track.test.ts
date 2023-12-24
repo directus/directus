@@ -11,9 +11,12 @@ import { track } from './track.js';
 vi.mock('./get-report.js');
 vi.mock('./send-report.js');
 vi.mock('timers/promises');
-vi.mock('../../env.js');
 vi.mock('../utils/get-random-wait-time.js');
 vi.mock('../../logger.js');
+
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('../../env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 let mockLogger: any;
 
