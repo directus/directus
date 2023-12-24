@@ -57,7 +57,7 @@ describe('max limit', () => {
 	});
 
 	test('should apply max if no limit passed in request', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
 
 		const sanitizedQuery = sanitizeQuery({});
 
@@ -344,7 +344,7 @@ describe('deep', () => {
 	});
 
 	test('should work in combination with query limit', () => {
-		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
 
 		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
 
