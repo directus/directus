@@ -74,7 +74,7 @@ const scenarios = [
 		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is true',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: 'true',
+				CACHE_AUTO_PURGE: true,
 			},
 			headers: {},
 			accountability: null,
@@ -88,7 +88,7 @@ const scenarios = [
 		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is false',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: 'true',
+				CACHE_AUTO_PURGE: true,
 			},
 			headers: {},
 			accountability: null,
@@ -99,10 +99,10 @@ const scenarios = [
 		output: 'max-age=5679',
 	},
 	{
-		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is true',
+		name: 'when CACHE_AUTO_PURGE is false and globalCacheSettings is true',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: 'false',
+				CACHE_AUTO_PURGE: false,
 			},
 			headers: {},
 			accountability: null,
@@ -110,7 +110,7 @@ const scenarios = [
 			globalCacheSettings: true,
 			personalized: false,
 		},
-		output: 'max-age=5679, s-maxage=0',
+		output: 'max-age=5679',
 	},
 
 	// Test personalized
@@ -158,7 +158,7 @@ const scenarios = [
 		name: 'when globalCacheSettings is true and CACHE_CONTROL_S_MAXAGE is set',
 		input: {
 			env: {
-				CACHE_CONTROL_S_MAXAGE: '123456',
+				CACHE_CONTROL_S_MAXAGE: 123456,
 			},
 			headers: {},
 			accountability: null,
@@ -171,7 +171,7 @@ const scenarios = [
 	{
 		name: 'when globalCacheSettings is true and CACHE_CONTROL_S_MAXAGE is disabled',
 		input: {
-			env: { CACHE_CONTROL_S_MAXAGE: '-1' },
+			env: { CACHE_CONTROL_S_MAXAGE: -1 },
 			headers: {},
 			accountability: null,
 			ttl: 5678910,
