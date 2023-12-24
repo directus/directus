@@ -2,7 +2,7 @@ import type { Server } from 'graphql-ws';
 import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 import logger from '../../logger.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
@@ -18,6 +18,8 @@ export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_GRAPHQL');
+
+		const env = useEnv();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));

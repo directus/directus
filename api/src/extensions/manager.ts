@@ -35,7 +35,7 @@ import path from 'path';
 import { rollup } from 'rollup';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getFlowManager } from '../flows.js';
 import logger from '../logger.js';
 import * as services from '../services/index.js';
@@ -62,6 +62,8 @@ const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,

@@ -1,17 +1,16 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ForbiddenError } from '@directus/errors';
-import { translateDatabaseError } from '../database/errors/translate.js';
-import { InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -25,6 +24,8 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
+
+const env = useEnv();
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;

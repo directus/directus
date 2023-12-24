@@ -1,6 +1,6 @@
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
-import env from './env.js';
+import { useEnv } from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
@@ -12,6 +12,8 @@ let transporter: Transporter;
 
 export default function getMailer(): Transporter {
 	if (transporter) return transporter;
+
+	const env = useEnv();
 
 	const transportName = env['EMAIL_TRANSPORT'].toLowerCase();
 

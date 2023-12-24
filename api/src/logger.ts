@@ -4,8 +4,10 @@ import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
-import env from './env.js';
+import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+
+const env = useEnv();
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',

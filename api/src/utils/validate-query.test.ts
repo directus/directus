@@ -1,15 +1,21 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { doMockEnv } from '../__utils__/mock-env.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from '../env.js';
 
-const { setEnv } = doMockEnv();
+vi.mock('../env.js');
 
 beforeEach(() => {
 	vi.resetModules();
+
+	vi.mocked(useEnv).mockReturnValue({});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('max limit', () => {
 	describe('max limit of 100', async () => {
-		setEnv({ QUERY_LIMIT_MAX: '100' });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
 		const { validateQuery } = await import('./validate-query.js');
 
 		test.each([-1, 1, 25])('should accept number %i', (limit) => {
@@ -28,7 +34,7 @@ describe('max limit', () => {
 	});
 
 	test('should accept 101 when unlimited', async () => {
-		setEnv({ QUERY_LIMIT_MAX: '-1' });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
 		const { validateQuery } = await import('./validate-query.js');
 
 		expect(() => validateQuery({ limit: 101 })).not.toThrowError('limit');
