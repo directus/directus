@@ -26,6 +26,7 @@ type RawColumn = {
 	CONSTRAINT_TYPE: 'P' | 'U' | 'R' | null;
 	VIRTUAL_COLUMN: 'YES' | 'NO';
 	IDENTITY_COLUMN: 'YES' | 'NO';
+	IS_INDEXED: 'YES' | 'NO'
 };
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
@@ -44,7 +45,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		is_generated: rawColumn.VIRTUAL_COLUMN === 'YES',
 		is_nullable: rawColumn.NULLABLE === 'Y',
 		is_unique: rawColumn.CONSTRAINT_TYPE === 'U',
-		is_indexed: rawColumn.CONSTRAINT_TYPE === 'U', //@TODO fix
+		is_indexed: rawColumn.IS_INDEXED === 'YES',
 		is_primary_key: rawColumn.CONSTRAINT_TYPE === 'P',
 		has_auto_increment: rawColumn.IDENTITY_COLUMN === 'YES',
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
@@ -297,7 +298,8 @@ export default class oracleDB implements SchemaInspector {
             "cm"."COMMENTS" "COLUMN_COMMENT",
             "ct"."CONSTRAINT_TYPE",
             "fk"."TABLE_NAME" "REFERENCED_TABLE_NAME",
-            "fk"."COLUMN_NAME" "REFERENCED_COLUMN_NAME"
+            "fk"."COLUMN_NAME" "REFERENCED_COLUMN_NAME",
+			idx.IS_INDEXED
           FROM "USER_TAB_COLS" "c"
           LEFT JOIN "USER_COL_COMMENTS" "cm"
             ON "c"."TABLE_NAME" = "cm"."TABLE_NAME"
@@ -309,6 +311,24 @@ export default class oracleDB implements SchemaInspector {
             AND "ct"."CONSTRAINT_PRIORITY" = 1
           LEFT JOIN "uc" "fk"
             ON "ct"."R_CONSTRAINT_NAME" = "fk"."CONSTRAINT_NAME"
+		  LEFT JOIN LATERAL (
+				SELECT
+          			CASE WHEN idx.INDEX_NAME IS NOT NULL THEN 'YES' ELSE 'NO' END AS IS_INDEXED
+				FROM
+					user_ind_columns idx
+				WHERE
+					"c"."TABLE_NAME" = idx.TABLE_NAME
+					AND "c"."COLUMN_NAME" = idx.COLUMN_NAME
+					AND idx.INDEX_NAME IN (
+						SELECT aidx.INDEX_NAME
+						FROM all_indexes aidx
+						WHERE aidx.CONSTRAINT_INDEX = 'NO'
+						AND aidx.INDEX_NAME = idx.INDEX_NAME
+						AND aidx.UNIQUENESS = 'NONUNIQUE'
+						FETCH FIRST 1 ROW ONLY
+					)
+        		FETCH FIRST 1 ROW ONLY
+			) idx ON 1=1
         `),
 			)
 			.where({ 'c.HIDDEN_COLUMN': 'NO' });
