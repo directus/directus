@@ -193,7 +193,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (
 				primaryKey &&
 				!opts.bypassAutoIncrementSequenceReset &&
-				pkField!.type === 'integer' &&
+				['integer', 'bigInteger'].includes(pkField!.type) &&
 				pkField!.defaultValue === 'AUTO_INCREMENT'
 			) {
 				autoIncrementSequenceNeedsToBeReset = true;
