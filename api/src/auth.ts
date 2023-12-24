@@ -11,18 +11,16 @@ import {
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import { useEnv } from './env.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getSchema } from './utils/get-schema.js';
 
-const env = useEnv();
-
-const providerNames = toArray(env['AUTH_PROVIDERS']);
-
 const providers: Map<string, AuthDriver> = new Map();
 
 export function getAuthProvider(provider: string): AuthDriver {
+	const logger = useLogger();
+
 	if (!providers.has(provider)) {
 		logger.error('Auth provider not configured');
 		throw new InvalidProviderConfigError({ provider });
@@ -32,7 +30,11 @@ export function getAuthProvider(provider: string): AuthDriver {
 }
 
 export async function registerAuthProviders(): Promise<void> {
+	const env = useEnv();
+	const logger = useLogger();
 	const options = { knex: getDatabase(), schema: await getSchema() };
+
+	const providerNames = toArray(env['AUTH_PROVIDERS']);
 
 	// Register default provider if not disabled
 	if (!env['AUTH_DISABLE_DEFAULT']) {
