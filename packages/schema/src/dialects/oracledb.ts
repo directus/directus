@@ -299,7 +299,7 @@ export default class oracleDB implements SchemaInspector {
             "ct"."CONSTRAINT_TYPE",
             "fk"."TABLE_NAME" "REFERENCED_TABLE_NAME",
             "fk"."COLUMN_NAME" "REFERENCED_COLUMN_NAME",
-            CASE WHEN ai.INDEX_NAME IS NOT NULL THEN 'YES' ELSE 'NO' END AS IS_INDEXED
+            CASE WHEN ui.INDEX_NAME IS NOT NULL THEN 'YES' ELSE 'NO' END AS IS_INDEXED
           FROM "USER_TAB_COLS" "c"
           LEFT JOIN "USER_COL_COMMENTS" "cm"
             ON "c"."TABLE_NAME" = "cm"."TABLE_NAME"
@@ -311,10 +311,10 @@ export default class oracleDB implements SchemaInspector {
             AND "ct"."CONSTRAINT_PRIORITY" = 1
           LEFT JOIN "uc" "fk"
             ON "ct"."R_CONSTRAINT_NAME" = "fk"."CONSTRAINT_NAME"
-		  LEFT JOIN user_ind_columns aic
-			ON aic.TABLE_NAME="c"."TABLE_NAME" AND aic.COLUMN_NAME = "c"."COLUMN_NAME"
-		  LEFT JOIN user_indexes ai
-			ON aic.INDEX_NAME = ai.INDEX_NAME AND ai.CONSTRAINT_INDEX = 'NO' AND ai.UNIQUENESS = 'NONUNIQUE'
+		  LEFT JOIN USER_IND_COLUMNS uic
+			ON uic.TABLE_NAME="c"."TABLE_NAME" AND uic.COLUMN_NAME = "c"."COLUMN_NAME"
+		  LEFT JOIN USER_INDEXES ui
+			ON uic.INDEX_NAME = ui.INDEX_NAME AND ui.CONSTRAINT_INDEX = 'NO' AND ui.UNIQUENESS = 'NONUNIQUE'
         `),
 			)
 			.where({ 'c.HIDDEN_COLUMN': 'NO' });
