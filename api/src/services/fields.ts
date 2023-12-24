@@ -750,6 +750,7 @@ export class FieldsService {
 
 		if (field.schema?.is_indexed === true) {
 			const is_not_unique = !(field.schema?.is_unique || alter?.is_unique) || field.schema?.is_unique === false; //either not already unique or already unique but is being dropped
+
 			if (is_not_unique && !(field.schema?.is_primary_key || alter?.is_primary_key) && !alter?.is_indexed) {
 				//index only if there is no pk or unique index or its redundant
 				column.index();
