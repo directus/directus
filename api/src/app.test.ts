@@ -32,6 +32,10 @@ beforeEach(() => {
 		PUBLIC_URL: 'http://localhost:8055/directus',
 		TELEMETRY: 'false',
 		LOG_STYLE: 'raw',
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+		ROOT_REDIRECT: './admin',
 	});
 });
 

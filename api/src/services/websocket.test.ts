@@ -12,6 +12,7 @@ vi.mock('../websocket/controllers/index');
 vi.mock('../env.js', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		WEBSOCKETS_ENABLED: true,
+		WEBSOCKETS_REST_ENABLED: true,
 		EXTENSIONS_PATH: './extensions',
 	}),
 }));
