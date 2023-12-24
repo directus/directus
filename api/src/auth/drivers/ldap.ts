@@ -16,7 +16,7 @@ import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -50,6 +50,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
 		if (
@@ -76,6 +78,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async validateBindClient(): Promise<void> {
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, provider } = this.config;
 
 		return new Promise((resolve, reject) => {
@@ -231,6 +235,8 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (!payload['identifier']) {
 			throw new InvalidCredentialsError();
 		}
+
+		const logger = useLogger();
 
 		await this.validateBindClient();
 

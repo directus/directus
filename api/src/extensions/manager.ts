@@ -37,7 +37,7 @@ import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { useEnv } from '../env.js';
 import { getFlowManager } from '../flows.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import * as services from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
@@ -177,6 +177,8 @@ export class ExtensionManager {
 	 * Load all extensions from disk and register them in their respective places
 	 */
 	private async load(): Promise<void> {
+		const logger = useLogger();
+
 		try {
 			await syncExtensions();
 		} catch (error) {
@@ -221,6 +223,8 @@ export class ExtensionManager {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	public reload(): void {
+		const logger = useLogger();
+
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
 				logger.info('Reloading extensions');
@@ -298,6 +302,8 @@ export class ExtensionManager {
 	 * Start the chokidar watcher for extensions on the local filesystem
 	 */
 	private initializeWatcher(): void {
+		const logger = useLogger();
+
 		logger.info('Watching extensions for changes...');
 
 		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
@@ -370,6 +376,8 @@ export class ExtensionManager {
 	 * run.
 	 */
 	private async generateExtensionBundle(): Promise<string | null> {
+		const logger = useLogger();
+
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
@@ -407,6 +415,8 @@ export class ExtensionManager {
 	}
 
 	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
+		const logger = useLogger();
+
 		const sandboxMemory = Number(env['EXTENSIONS_SANDBOX_MEMORY']);
 		const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
@@ -667,6 +677,8 @@ export class ExtensionManager {
 	 * Register a single hook
 	 */
 	private registerHook(hookRegistrationCallback: HookConfig, name: string): PromiseCallback[] {
+		const logger = useLogger();
+
 		let scheduleIndex = 0;
 
 		const unregisterFunctions: PromiseCallback[] = [];
@@ -757,6 +769,8 @@ export class ExtensionManager {
 	 * Register an individual endpoint
 	 */
 	private registerEndpoint(config: EndpointConfig, name: string): PromiseCallback {
+		const logger = useLogger();
+
 		const endpointRegistrationCallback = typeof config === 'function' ? config : config.handler;
 		const nameWithoutType = name.includes(':') ? name.split(':')[0] : name;
 		const routeName = typeof config === 'function' ? nameWithoutType : config.id;
@@ -810,6 +824,8 @@ export class ExtensionManager {
 	 * Otherwise, the error will only be logged as a warning.
 	 */
 	private handleExtensionError({ error, reason }: { error?: unknown; reason: string }): void {
+		const logger = useLogger();
+
 		if (toBoolean(env['EXTENSIONS_MUST_LOAD'])) {
 			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
 			logger.error(reason);

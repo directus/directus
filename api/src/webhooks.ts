@@ -1,7 +1,7 @@
 import type { ActionHandler } from '@directus/types';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import { getMessenger } from './messenger.js';
 import { getAxios } from './request/index.js';
 import { WebhooksService } from './services/webhooks.js';
@@ -55,6 +55,8 @@ export function unregister(): void {
 }
 
 function createHandler(webhook: Webhook, event: string): ActionHandler {
+	const logger = useLogger();
+
 	return async (meta, context) => {
 		if (webhook.collections.includes(meta['collection']) === false) return;
 		const axios = await getAxios();

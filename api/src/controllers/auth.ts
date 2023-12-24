@@ -10,7 +10,7 @@ import {
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
@@ -20,6 +20,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 const router = Router();
 const env = useEnv();
+const logger = useLogger();
 
 const authProviders = getAuthProviders();
 
