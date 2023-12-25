@@ -1,9 +1,11 @@
 import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { GraphQLError, GraphQLFormattedError } from 'graphql';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 const processError = (accountability: Accountability | null, error: Readonly<GraphQLError>): GraphQLFormattedError => {
+	const logger = useLogger();
+
 	logger.error(error);
 
 	const { originalError } = error;

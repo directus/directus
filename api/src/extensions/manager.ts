@@ -147,6 +147,8 @@ export class ExtensionManager {
 	 * @param {boolean} options.watch - Whether or not to watch the local extensions folder for changes
 	 */
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
+		const logger = useLogger();
+
 		this.options = {
 			...defaultOptions,
 			...options,

@@ -3,7 +3,7 @@ import type { RequestHandler } from 'express';
 import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export/index.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -15,6 +15,7 @@ import { stringByteSize } from '../utils/get-string-byte-size.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
+	const logger = useLogger();
 
 	const { cache } = getCache();
 

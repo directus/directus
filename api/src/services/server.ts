@@ -8,7 +8,7 @@ import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
@@ -19,6 +19,7 @@ import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class ServerService {
 	knex: Knex;

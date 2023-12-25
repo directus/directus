@@ -1,6 +1,6 @@
 import type { Notification } from '@directus/types';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
@@ -9,6 +9,7 @@ import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;

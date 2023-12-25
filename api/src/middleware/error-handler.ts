@@ -4,12 +4,13 @@ import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	const env = useEnv();
+	const logger = useLogger();
 
 	let payload: any = {
 		errors: [],
