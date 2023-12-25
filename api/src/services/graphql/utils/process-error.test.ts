@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import processError from './process-error.js';
 import { createError } from '@directus/errors';
 
-describe.only('GraphQL processError util', () => {
+describe('GraphQL processError util', () => {
 	const sampleError = new GraphQLError('An error message', { path: ['test_collection'] });
 
 	const redactedError = {
