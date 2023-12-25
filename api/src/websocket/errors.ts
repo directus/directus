@@ -7,8 +7,6 @@ import { useLogger } from '../logger.js';
 import type { WebSocketResponse } from './messages.js';
 import type { WebSocketClient } from './types.js';
 
-const logger = useLogger();
-
 export class WebSocketError extends Error {
 	type: string;
 	code: string;
@@ -52,6 +50,8 @@ export class WebSocketError extends Error {
 }
 
 export function handleWebSocketError(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+	const logger = useLogger();
+
 	if (isDirectusError(error)) {
 		client.send(WebSocketError.fromError(error, type).toMessage());
 		return;

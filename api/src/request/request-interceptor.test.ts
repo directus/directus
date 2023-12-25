@@ -5,8 +5,9 @@ import type { LookupAddress } from 'node:dns';
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import { URL } from 'node:url';
+import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { requestInterceptor } from './request-interceptor.js';
 import { validateIP } from './validate-ip.js';
 
@@ -24,6 +25,8 @@ let sample: {
 	ip: string;
 };
 
+let mockLogger: Logger<never>;
+
 beforeEach(() => {
 	sample = {
 		config: {} as InternalAxiosRequestConfig,
@@ -32,10 +35,15 @@ beforeEach(() => {
 		ip: randIp(),
 	};
 
+	mockLogger = {
+		warn: vi.fn(),
+	} as unknown as Logger<never>;
+
 	vi.mocked(axios.getUri).mockReturnValue(sample.url);
 	vi.mocked(URL).mockReturnValue({ hostname: sample.hostname } as URL);
 	vi.mocked(lookup).mockResolvedValue({ address: sample.ip } as LookupAddress);
 	vi.mocked(isIP).mockReturnValue(0);
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
 });
 
 afterEach(() => {
@@ -71,7 +79,7 @@ test('Logs when the lookup throws an error', async () => {
 	} catch {
 		// Expect to error
 	} finally {
-		expect(logger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for url "${sample.url}"`);
+		expect(mockLogger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for url "${sample.url}"`);
 	}
 });
 
