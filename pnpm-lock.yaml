@@ -885,8 +885,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.56.0)
       marked:
-        specifier: 11.0.1
-        version: 11.0.1
+        specifier: 11.1.0
+        version: 11.1.0
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
@@ -13483,12 +13483,6 @@ packages:
       linkify-it: 3.0.3
       mdurl: 1.0.1
       uc.micro: 1.0.6
-    dev: true
-
-  /marked@11.0.1:
-    resolution: {integrity: sha512-P4kDhFEMlvLePBPRwOcMOv6+lYUbhfbSxJFs3Jb4Qx7v6K7l+k8Dxh9CEGfRvK71tL+qIFz5y7Pe4uzt4+/A3A==}
-    engines: {node: '>= 18'}
-    hasBin: true
     dev: true
 
   /marked@11.1.0:
