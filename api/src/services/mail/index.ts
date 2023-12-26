@@ -9,12 +9,13 @@ import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
 import { useEnv } from '../../env.js';
 import { getExtensionsPath } from '../../extensions/lib/get-extensions-path.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

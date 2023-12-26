@@ -3,12 +3,14 @@ import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { refreshAccountability } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
+
+const logger = useLogger();
 
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {

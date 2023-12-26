@@ -4,7 +4,7 @@ import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
 import { useEnv } from './env.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
@@ -12,6 +12,7 @@ import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
 
+const logger = useLogger();
 const env = useEnv();
 
 const require = createRequire(import.meta.url);

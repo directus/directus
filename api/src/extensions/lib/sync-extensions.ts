@@ -6,15 +6,16 @@ import { mkdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
-import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
 import { useBus } from '../../bus/index.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
 export const syncExtensions = async (): Promise<void> => {
 	const env = useEnv();
+	const logger = useLogger();
 
 	const extensionsPath = getExtensionsPath();
 

@@ -3,7 +3,7 @@ import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -13,6 +13,8 @@ import { ConnectionParams, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
+
+const logger = useLogger();
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;

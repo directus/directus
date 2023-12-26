@@ -1,3 +1,4 @@
+import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
@@ -10,8 +11,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useEnv } from '../../env.js';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { toBoolean } from '../../utils/to-boolean.js';
@@ -25,6 +25,8 @@ import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message
 import { registerWebSocketEvents } from './hooks.js';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+const logger = useLogger();
 
 export default abstract class SocketController {
 	server: WebSocket.Server;

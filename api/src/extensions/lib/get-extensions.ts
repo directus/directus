@@ -1,11 +1,12 @@
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
 	const env = useEnv();
+	const logger = useLogger();
 
 	const loadedExtensions = new Map();
 	const duplicateExtensions: string[] = [];

@@ -20,7 +20,7 @@ import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';
 import { Url } from '../../utils/url.js';
@@ -31,6 +31,7 @@ import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 

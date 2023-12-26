@@ -1,8 +1,8 @@
 import type { ActionHandler } from '@directus/types';
+import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import logger from './logger.js';
-import { useBus } from './bus/index.js';
+import { useLogger } from './logger.js';
 import { getAxios } from './request/index.js';
 import { WebhooksService } from './services/webhooks.js';
 import type { Webhook, WebhookHeader } from './types/index.js';
@@ -59,6 +59,8 @@ export function unregister(): void {
 }
 
 function createHandler(webhook: Webhook, event: string): ActionHandler {
+	const logger = useLogger();
+
 	return async (meta, context) => {
 		if (webhook.collections.includes(meta['collection']) === false) return;
 		const axios = await getAxios();

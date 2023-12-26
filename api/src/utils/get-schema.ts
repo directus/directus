@@ -10,10 +10,12 @@ import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
+
+const logger = useLogger();
 
 export async function getSchema(options?: {
 	database?: Knex;
@@ -25,6 +27,7 @@ export async function getSchema(options?: {
 	bypassCache?: boolean;
 }): Promise<SchemaOverview> {
 	const env = useEnv();
+
 	const database = options?.database || getDatabase();
 	const schemaInspector = createInspector(database);
 

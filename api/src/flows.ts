@@ -10,7 +10,7 @@ import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useEnv } from './env.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -64,6 +64,7 @@ class FlowManager {
 
 	constructor() {
 		const env = useEnv();
+		const logger = useLogger();
 
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
@@ -105,6 +106,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		const logger = useLogger();
+
 		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
 			return null;
@@ -120,6 +123,8 @@ class FlowManager {
 		data: unknown,
 		context: Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		const logger = useLogger();
+
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new ForbiddenError();
@@ -131,6 +136,8 @@ class FlowManager {
 	}
 
 	private async load(): Promise<void> {
+		const logger = useLogger();
+
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -404,6 +411,8 @@ class FlowManager {
 		data: unknown;
 		options: Record<string, any> | null;
 	}> {
+		const logger = useLogger();
+
 		if (!this.operations.has(operation.type)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
 

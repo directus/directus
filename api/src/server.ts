@@ -10,7 +10,7 @@ import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useEnv } from './env.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { toBoolean } from './utils/to-boolean.js';
 import {
@@ -24,6 +24,7 @@ import { startWebSocketHandlers } from './websocket/handlers/index.js';
 export let SERVER_ONLINE = true;
 
 const env = useEnv();
+const logger = useLogger();
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
