@@ -1,3 +1,4 @@
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
@@ -12,10 +13,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
+import { useEnv } from '../env.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -25,6 +23,8 @@ import type {
 } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 
 export type RawCollection = {
 	collection: string;
@@ -272,6 +272,8 @@ export class CollectionsService {
 	 * Read all collections. Currently doesn't support any query.
 	 */
 	async readByQuery(): Promise<Collection[]> {
+		const env = useEnv();
+
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,

@@ -30,7 +30,7 @@ Login to your new project using the URL in your email inbox or on your Directus 
 
 _Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/projects)._
 
-== Self-Hosted Installation
+== Docker Installation
 
 You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
@@ -45,6 +45,19 @@ directus/directus
 ```
 
 _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
+
+== NPM Installation
+
+You can initialize a new Directus project using the CLI command: `npm init directus-project`.
+
+Follow prompts to configure your database and create your first admin user.
+
+To start Directus locally, run `npx directus start`.
+
+:::danger Docker is Recommended
+
+While this method works and is maintained, it is not recommended. Docker removes environment-specific quirks that can
+lead to Directus not running properly in some contexts.
 
 :::
 

@@ -2,11 +2,14 @@ import { toArray } from '@directus/utils';
 import { constants } from 'fs';
 import { access } from 'node:fs/promises';
 import path from 'path';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 export async function validateStorage(): Promise<void> {
+	const env = useEnv();
+	const logger = useLogger();
+
 	if (env['DB_CLIENT'] === 'sqlite3') {
 		try {
 			await access(path.dirname(env['DB_FILENAME']), constants.R_OK | constants.W_OK);

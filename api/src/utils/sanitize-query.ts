@@ -1,11 +1,13 @@
 import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
+	const env = useEnv();
+
 	const query: Query = {};
 
 	const hasMaxLimit =
@@ -109,6 +111,8 @@ function sanitizeSort(rawSort: any) {
 }
 
 function sanitizeAggregate(rawAggregate: any): Aggregate {
+	const logger = useLogger();
+
 	let aggregate: Aggregate = rawAggregate;
 
 	if (typeof rawAggregate === 'string') {
@@ -128,6 +132,8 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
+	const logger = useLogger();
+
 	let filters: Filter | null = rawFilter;
 
 	if (typeof rawFilter === 'string') {
@@ -171,6 +177,8 @@ function sanitizeMeta(rawMeta: any) {
 }
 
 function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
+	const logger = useLogger();
+
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {
@@ -216,6 +224,8 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 }
 
 function sanitizeAlias(rawAlias: any) {
+	const logger = useLogger();
+
 	let alias: Record<string, string> = rawAlias;
 
 	if (typeof rawAlias === 'string') {

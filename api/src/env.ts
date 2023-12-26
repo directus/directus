@@ -391,8 +391,6 @@ process.env = env;
 
 env = processValues(env);
 
-export default env;
-
 export const useEnv = () => env;
 
 /**

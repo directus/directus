@@ -24,6 +24,7 @@ export function registerWebSocketEvents() {
 		'settings',
 		'shares',
 		'users',
+		'versions',
 		'webhooks',
 	]);
 
