@@ -18,7 +18,7 @@ import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useEnv } from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -40,6 +40,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		super(options, config);
 
 		const env = useEnv();
+		const logger = useLogger();
 
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
@@ -131,6 +132,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const logger = useLogger();
+
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsError();
@@ -254,6 +257,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async refresh(user: User): Promise<void> {
+		const logger = useLogger();
+
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -283,6 +288,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 }
 
 const handleError = (e: any) => {
+	const logger = useLogger();
+
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
@@ -349,6 +356,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			const logger = useLogger();
+
 			let tokenData;
 
 			try {

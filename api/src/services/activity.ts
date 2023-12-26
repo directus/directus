@@ -4,7 +4,7 @@ import type { Accountability } from '@directus/types';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
 import { Url } from '../utils/url.js';
@@ -15,6 +15,7 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;

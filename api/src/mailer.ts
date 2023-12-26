@@ -1,7 +1,7 @@
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 import { useEnv } from './env.js';
-import logger from './logger.js';
+import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
@@ -14,6 +14,7 @@ export default function getMailer(): Transporter {
 	if (transporter) return transporter;
 
 	const env = useEnv();
+	const logger = useLogger();
 
 	const transportName = env['EMAIL_TRANSPORT'].toLowerCase();
 

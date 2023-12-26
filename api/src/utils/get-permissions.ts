@@ -6,7 +6,7 @@ import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache 
 import getDatabase from '../database/index.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
 import { useEnv } from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
 import { mergePermissionsForShare } from './merge-permissions-for-share.js';
@@ -16,6 +16,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	const database = getDatabase();
 	const { cache } = getCache();
 	const env = useEnv();
+	const logger = useLogger();
 
 	let permissions: Permission[] = [];
 
