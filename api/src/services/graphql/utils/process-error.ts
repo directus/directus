@@ -34,15 +34,9 @@ const processError = (
 				extensions: {
 					code: 'INTERNAL_SERVER_ERROR',
 				},
+				...(error.locations && { locations: error.locations }),
+				...(error.path && { path: error.path }),
 			};
-
-			if (error.locations) {
-				graphqlFormattedError.locations = error.locations;
-			}
-
-			if (error.path) {
-				graphqlFormattedError.path = error.path;
-			}
 
 			return graphqlFormattedError;
 		} else {
