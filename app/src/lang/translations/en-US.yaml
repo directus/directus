@@ -2031,6 +2031,11 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a hashed value
+    masked: Masked
+    masked_label: Hide the true values
   icon:
     icon: Icon
     description: Display an icon
