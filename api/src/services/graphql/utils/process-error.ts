@@ -7,7 +7,7 @@ const processError = (
 	accountability: Accountability | null,
 	error: Readonly<GraphQLError & { originalError: GraphQLError | DirectusError | Error | undefined }>,
 ): GraphQLFormattedError => {
-  const logger = useLogger();
+	const logger = useLogger();
 
 	logger.error(error);
 
