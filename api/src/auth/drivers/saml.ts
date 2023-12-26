@@ -1,13 +1,12 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '@directus/errors';
+import { useEnv } from '../../env.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -102,6 +101,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 export function createSAMLAuthRouter(providerName: string) {
 	const router = Router();
+	const env = useEnv();
 
 	router.get(
 		'/metadata',

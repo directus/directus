@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
@@ -7,8 +8,7 @@ import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
-import { ForbiddenError } from '@directus/errors';
+import { useEnv } from './env.js';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -59,6 +59,8 @@ class FlowManager {
 	private envs: Record<string, any>;
 
 	constructor() {
+		const env = useEnv();
+
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
@@ -411,7 +413,7 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				env,
+				env: useEnv(),
 				database: getDatabase(),
 				logger,
 				getSchema,

@@ -1,7 +1,7 @@
 import type { Column, SchemaOverview } from '@directus/schema';
 import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import logger from '../logger.js';
 import getLocalType from './get-local-type.js';
 
@@ -43,6 +43,8 @@ function castToBoolean(value: any): boolean {
 }
 
 function castToObject(value: any): any | any[] {
+	const env = useEnv();
+
 	if (!value) return value;
 
 	if (typeof value === 'object') return value;

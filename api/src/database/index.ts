@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import logger from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
@@ -29,6 +29,8 @@ export function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}
+
+	const env = useEnv();
 
 	const {
 		client,
@@ -312,6 +314,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	const env = useEnv();
 	database = database ?? getDatabase();
 
 	if (getDatabaseClient(database) === 'mysql') {

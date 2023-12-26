@@ -1,8 +1,10 @@
 import type { StorageManager } from '@directus/storage';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getStorageDriver } from './get-storage-driver.js';
 
 export const registerDrivers = async (storage: StorageManager) => {
+	const env = useEnv();
+
 	const usedDrivers: string[] = [];
 
 	for (const [key, value] of Object.entries(env)) {

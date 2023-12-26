@@ -1,6 +1,6 @@
 import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import express from 'express';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -10,6 +10,7 @@ import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_extensions'));
 

@@ -14,11 +14,13 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+
+const env = useEnv();
 
 export class SpecificationService {
 	accountability: Accountability | null;

@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import logger from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
@@ -63,6 +63,8 @@ export default abstract class SocketController {
 		};
 		maxConnections: number;
 	} {
+		const env = useEnv();
+
 		const endpoint = String(env[`${configPrefix}_PATH`]);
 		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
 		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
@@ -88,6 +90,8 @@ export default abstract class SocketController {
 	}
 
 	protected getRateLimiter() {
+		const env = useEnv();
+
 		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
 			return createRateLimiter('RATE_LIMITER', {
 				keyPrefix: 'websocket',

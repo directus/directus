@@ -47,7 +47,7 @@ import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq 
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -81,6 +81,8 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+
+const env = useEnv();
 
 const validationRules = Array.from(specifiedRules);
 

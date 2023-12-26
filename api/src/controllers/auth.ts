@@ -1,4 +1,4 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import {
@@ -9,8 +9,7 @@ import {
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import env from '../env.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -20,6 +19,7 @@ import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 const router = Router();
+const env = useEnv();
 
 const authProviders = getAuthProviders();
 
