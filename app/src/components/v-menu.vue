@@ -25,6 +25,8 @@ interface Props {
 	attached?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
+	/** Fixed arrow placement */
+	arrowPlacement?: 'start';
 	/** Menu does not appear */
 	disabled?: boolean;
 	/** Activate the menu on a trigger */
@@ -289,6 +291,7 @@ function usePopper(
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
 		const padding = 8;
+		const arrowPadding = 6;
 
 		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
@@ -311,7 +314,7 @@ function usePopper(
 				...arrow,
 				enabled: options.value.arrow === true,
 				options: {
-					padding: 6,
+					padding: arrowPadding,
 				},
 			},
 			{
@@ -350,7 +353,27 @@ function usePopper(
 				fn({ state }) {
 					if (state.styles.popper) styles.value = state.styles.popper;
 
-					if (state.styles.arrow) arrowStyles.value = state.styles.arrow;
+					if (state.styles.arrow) {
+						if (props.arrowPlacement === 'start') {
+							let x = 0;
+							let y = 0;
+
+							switch (state.placement) {
+								case 'top-start':
+								case 'bottom-start':
+									x = arrowPadding;
+									break;
+								case 'left-start':
+								case 'right-start':
+									y = arrowPadding;
+									break;
+							}
+
+							state.styles.arrow.transform = `translate3d(${x}px, ${y}px, 0)`;
+						}
+
+						arrowStyles.value = state.styles.arrow;
+					}
 
 					callback();
 				},
