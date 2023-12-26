@@ -19,7 +19,7 @@ import type {
 	PromiseCallback,
 	ScheduleHandler,
 } from '@directus/types';
-import { isIn, isTypeIn, pluralize } from '@directus/utils';
+import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
@@ -45,7 +45,6 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { toBoolean } from '../utils/to-boolean.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';

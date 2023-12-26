@@ -1,7 +1,7 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import { parseFilterFunctionPath } from '@directus/utils';
+import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import type {
 	ArgumentNode,
@@ -55,7 +55,6 @@ import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';

@@ -1,7 +1,7 @@
+import { toBoolean } from '@directus/utils';
 import { getCache } from '../../cache.js';
 import { useEnv } from '../../env.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { track } from './track.js';
 
 /**

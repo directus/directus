@@ -1,3 +1,4 @@
+import { toBoolean } from '@directus/utils';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
@@ -12,7 +13,6 @@ import emitter from './emitter.js';
 import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { toBoolean } from './utils/to-boolean.js';
 import {
 	createSubscriptionController,
 	createWebSocketController,

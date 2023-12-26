@@ -1,6 +1,6 @@
+import { toBoolean } from '@directus/utils';
 import type { Server as httpServer } from 'http';
 import { useEnv } from '../../env.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { GraphQLSubscriptionController } from './graphql.js';
 import { WebSocketController } from './rest.js';
 

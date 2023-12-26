@@ -1,6 +1,6 @@
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import type { ParsedUrlQuery } from 'querystring';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
@@ -14,7 +14,6 @@ import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
