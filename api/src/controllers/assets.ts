@@ -1,3 +1,4 @@
+import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
@@ -5,9 +6,8 @@ import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
@@ -19,6 +19,8 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = Router();
+
+const env = useEnv();
 
 router.use(useCollection('directus_files'));
 
@@ -147,6 +149,8 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const id = req.params['pk']!.substring(0, 36);
 
 		const service = new AssetsService({

@@ -7,7 +7,11 @@ import { track } from './track.js';
 
 vi.mock('./track.js');
 vi.mock('../../cache.js');
-vi.mock('../../env.js');
+
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('../../env.js', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+
 vi.mock('../../utils/schedule.js');
 
 let mockCache: ReturnType<typeof getCache>;

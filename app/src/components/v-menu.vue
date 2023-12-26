@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Instance, Modifier, Placement } from '@popperjs/core';
+import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
 import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
@@ -10,7 +10,7 @@ import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
+import { Ref, computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -25,6 +25,8 @@ interface Props {
 	attached?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
+	/** Fixed arrow placement */
+	arrowPlacement?: 'start';
 	/** Menu does not appear */
 	disabled?: boolean;
 	/** Activate the menu on a trigger */
@@ -56,6 +58,16 @@ const emit = defineEmits(['update:modelValue']);
 
 const activator = ref<HTMLElement | null>(null);
 const reference = ref<HTMLElement | null>(null);
+
+const forceMaxHeight = ref<number | null>(null);
+
+const maxHeight = computed(() => {
+	if (forceMaxHeight.value) return `${forceMaxHeight.value}px`;
+
+	if (props.fullHeight) return null;
+
+	return '30vh';
+});
 
 const virtualReference = ref({
 	getBoundingClientRect() {
@@ -278,18 +290,21 @@ function usePopper(
 	}
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
+		const padding = 8;
+		const arrowPadding = 6;
+
 		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
+					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
 				},
 			},
 			{
 				...preventOverflow,
 				options: {
-					padding: 8,
+					padding,
 				},
 			},
 			computeStyles,
@@ -299,7 +314,7 @@ function usePopper(
 				...arrow,
 				enabled: options.value.arrow === true,
 				options: {
-					padding: 6,
+					padding: arrowPadding,
 				},
 			},
 			{
@@ -312,13 +327,53 @@ function usePopper(
 				requires: ['computeStyles'],
 			},
 			{
+				name: 'maxHeight',
+				enabled: true,
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+				requiresIfExists: ['offset'],
+				fn({ state }) {
+					const overflow = detectOverflow(state, {
+						padding,
+					});
+
+					if (state.placement.startsWith('top') && overflow.top < 0) {
+						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.ceil(overflow.top);
+					} else if (state.placement.startsWith('bottom') && overflow.bottom > 0) {
+						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.floor(overflow.bottom);
+					} else {
+						forceMaxHeight.value = null;
+					}
+				},
+			},
+			{
 				name: 'applyStyles',
 				enabled: true,
 				phase: 'write',
 				fn({ state }) {
 					if (state.styles.popper) styles.value = state.styles.popper;
 
-					if (state.styles.arrow) arrowStyles.value = state.styles.arrow;
+					if (state.styles.arrow) {
+						if (props.arrowPlacement === 'start') {
+							let x = 0;
+							let y = 0;
+
+							switch (state.placement) {
+								case 'top-start':
+								case 'bottom-start':
+									x = arrowPadding;
+									break;
+								case 'left-start':
+								case 'right-start':
+									y = arrowPadding;
+									break;
+							}
+
+							state.styles.arrow.transform = `translate3d(${x}px, ${y}px, 0)`;
+						}
+
+						arrowStyles.value = state.styles.arrow;
+					}
 
 					callback();
 				},
@@ -376,7 +431,7 @@ function usePopper(
 					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 					<div
 						class="v-menu-content"
-						:class="{ 'full-height': fullHeight, seamless }"
+						:class="{ seamless }"
 						v-on="{
 							...(closeOnContentClick ? { click: onContentClick } : {}),
 							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
@@ -477,7 +532,7 @@ function usePopper(
 }
 
 .v-menu-content {
-	max-height: 30vh;
+	max-height: v-bind(maxHeight);
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -493,10 +548,6 @@ function usePopper(
 	.v-list {
 		--v-list-background-color: transparent;
 	}
-}
-
-.v-menu-content.full-height {
-	max-height: none;
 }
 
 .v-menu-content.seamless {

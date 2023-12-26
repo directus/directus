@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { shouldSkipCache } from './should-skip-cache.js';
 
 /**
@@ -16,6 +16,8 @@ export function getCacheControlHeader(
 	globalCacheSettings: boolean,
 	personalized: boolean,
 ): string {
+	const env = useEnv();
+
 	// When the user explicitly asked to skip the cache
 	if (shouldSkipCache(req)) return 'no-store';
 

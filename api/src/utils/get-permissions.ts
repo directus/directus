@@ -5,16 +5,18 @@ import hash from 'object-hash';
 import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
-import { mergePermissions } from './merge-permissions.js';
 import { mergePermissionsForShare } from './merge-permissions-for-share.js';
+import { mergePermissions } from './merge-permissions.js';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
 	const { cache } = getCache();
+	const env = useEnv();
+	const logger = useLogger();
 
 	let permissions: Permission[] = [];
 
