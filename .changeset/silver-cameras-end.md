@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed bigInt auto increment not being reset in postgres
+Fixed big integer auto-incremented primary key not being reset in PostgreSQL
