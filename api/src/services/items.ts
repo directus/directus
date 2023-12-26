@@ -177,7 +177,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// The primary key can already exist in the payload.
 			// In case of manual string / UUID primary keys it's always provided at this point.
-			// In case of an integer primary key, it might be provided as the user can specify the value manually.
+			// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			if (primaryKey) {
@@ -192,9 +192,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			if (
 				primaryKey &&
+				pkField &&
 				!opts.bypassAutoIncrementSequenceReset &&
-				['integer', 'bigInteger'].includes(pkField!.type) &&
-				pkField!.defaultValue === 'AUTO_INCREMENT'
+				['integer', 'bigInteger'].includes(pkField.type) &&
+				pkField.defaultValue === 'AUTO_INCREMENT'
 			) {
 				autoIncrementSequenceNeedsToBeReset = true;
 			}
