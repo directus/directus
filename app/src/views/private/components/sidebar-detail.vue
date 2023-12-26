@@ -24,7 +24,7 @@ const emit = defineEmits<{
 
 function onClick() {
 	toggle();
-	emit('toggle', sidebarOpen.value ? 'open' : 'closed');
+	emit('toggle', active.value ? 'closed' : 'open');
 }
 </script>
 
