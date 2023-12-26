@@ -24,6 +24,7 @@ export function registerWebSocketEvents() {
 		'settings',
 		'shares',
 		'users',
+		'versions',
 		'webhooks',
 	]);
 
@@ -31,7 +32,6 @@ export function registerWebSocketEvents() {
 	registerFilesHooks();
 	registerRelationsHooks();
 	registerSortHooks();
-	registerVersionHooks();
 }
 
 function registerActionHooks(modules: string[]) {
@@ -138,15 +138,6 @@ function registerSortHooks() {
 		action: 'update',
 		keys: [item],
 		payload: {},
-	}));
-}
-
-function registerVersionHooks() {
-	registerAction('items.version', ({ key, collection, payload = {} }) => ({
-		collection,
-		action: 'create',
-		key,
-		payload,
 	}));
 }
 

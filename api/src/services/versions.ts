@@ -259,21 +259,6 @@ export class VersionsService extends ItemsService {
 			cache.clear();
 		}
 
-		emitter.emitAction(
-			['items.version', `${collection}.items.version`],
-			{
-				payload: { delta: revisionDelta },
-				collection,
-				item,
-				version,
-			},
-			{
-				database: getDatabase(),
-				schema: this.schema,
-				accountability: this.accountability,
-			},
-		);
-
 		return data;
 	}
 
