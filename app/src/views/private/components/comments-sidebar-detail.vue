@@ -77,8 +77,6 @@ function useActivity(collection: string, primaryKey: string | number) {
 				},
 			});
 
-			activityCount.value = response.data.data.length;
-
 			userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
 			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
@@ -158,11 +156,13 @@ function useActivity(collection: string, primaryKey: string | number) {
 							},
 						],
 					},
-					fields: ['id'],
+					aggregate: {
+						count: 'id',
+					},
 				},
 			});
 
-			activityCount.value = response.data.data.length;
+			activityCount.value = Number(response.data.data[0].count.id);
 		} catch (error: any) {
 			error.value = error;
 		} finally {

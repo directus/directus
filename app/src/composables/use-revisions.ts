@@ -110,7 +110,6 @@ export function useRevisions(
 						'activity.user_agent',
 						'activity.origin',
 					],
-					meta: ['filter_count'],
 				},
 			});
 
@@ -149,7 +148,6 @@ export function useRevisions(
 							'activity.user_agent',
 							'activity.origin',
 						],
-						meta: ['filter_count'],
 					},
 				});
 
@@ -205,7 +203,6 @@ export function useRevisions(
 
 			revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 			revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
-			revisionsCount.value = response.data.meta.filter_count;
 			pagesCount.value = Math.ceil(revisionsCount.value / pageSize);
 		} catch (error) {
 			unexpectedError(error);
@@ -218,7 +215,6 @@ export function useRevisions(
 		if (typeof unref(primaryKey) === 'undefined') return;
 
 		loadingCount.value = true;
-		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(10, info.queryLimit.max) : 10;
 
 		try {
 			const filter: Filter = {
@@ -253,18 +249,16 @@ export function useRevisions(
 				});
 			}
 
-			type RevisionCountResponse = { data: Pick<Revision, 'id'>[]; meta: { filter_count: number } };
-
-			const response = await api.get<RevisionCountResponse>(`/revisions`, {
+			const response = await api.get(`/revisions`, {
 				params: {
 					filter,
-					limit: pageSize,
-					fields: ['id'],
-					meta: ['filter_count'],
+					aggregate: {
+						count: 'id',
+					},
 				},
 			});
 
-			revisionsCount.value = response.data.meta.filter_count;
+			revisionsCount.value = Number(response.data.data[0].count.id);
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

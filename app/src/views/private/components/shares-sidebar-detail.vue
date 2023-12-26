@@ -106,7 +106,6 @@ async function getShares() {
 			},
 		});
 
-		sharesCount.value = response.data.data.length;
 		shares.value = response.data.data;
 	} catch (error: any) {
 		error.value = error;
@@ -136,11 +135,13 @@ async function getSharesCount() {
 						},
 					],
 				},
-				fields: ['id'],
+				aggregate: {
+					count: 'id',
+				},
 			},
 		});
 
-		sharesCount.value = response.data.data.length;
+		sharesCount.value = Number(response.data.data[0].count.id);
 	} catch (error: any) {
 		error.value = error;
 	} finally {
