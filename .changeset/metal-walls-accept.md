@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Dont allow setting nullable for primary key
+Prevented changing primary keys to nullable
