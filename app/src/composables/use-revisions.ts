@@ -267,6 +267,7 @@ export function useRevisions(
 	}
 
 	async function refresh(page = 0) {
+		await getRevisionsCount();
 		await getRevisions(page);
 	}
 
