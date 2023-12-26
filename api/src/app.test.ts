@@ -15,7 +15,33 @@ vi.mock('./database', () => ({
 
 vi.mock('./telemetry/index.js');
 
-vi.mock('./env.js', () => ({ default: {} }));
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('./env.js', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+	}),
+}));
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: 'true',
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: 'false',
+		LOG_STYLE: 'raw',
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+		ROOT_REDIRECT: './admin',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());
 const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });

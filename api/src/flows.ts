@@ -9,7 +9,7 @@ import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
+import { useEnv } from './env.js';
 import logger from './logger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
@@ -63,6 +63,8 @@ class FlowManager {
 	private envs: Record<string, any>;
 
 	constructor() {
+		const env = useEnv();
+
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
@@ -415,7 +417,7 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				env,
+				env: useEnv(),
 				database: getDatabase(),
 				logger,
 				getSchema,

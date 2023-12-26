@@ -15,6 +15,7 @@ import { stringByteSize } from '../utils/get-string-byte-size.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
+
 	const { cache } = getCache();
 
 	let exceedsMaxSize = false;

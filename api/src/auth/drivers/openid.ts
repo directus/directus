@@ -17,7 +17,7 @@ import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -38,6 +38,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
+
+		const env = useEnv();
 
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
@@ -305,6 +307,8 @@ const handleError = (e: any) => {
 };
 
 export function createOpenIDAuthRouter(providerName: string): Router {
+	const env = useEnv();
+
 	const router = Router();
 
 	router.get(

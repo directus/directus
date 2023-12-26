@@ -1,16 +1,9 @@
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
-
+import { useEnv } from '../env.js';
 import logger from '../logger.js';
 import { validateEnv } from './validate-env.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({
-		env: {
-			PRESENT_TEST_VARIABLE: 'true',
-		},
-	});
-});
+vi.mock('../env.js');
 
 vi.mock('../logger', () => ({
 	default: {
@@ -24,6 +17,10 @@ vi.mock('process', () => ({
 
 beforeAll(() => {
 	vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+	vi.mocked(useEnv).mockReturnValue({
+		PRESENT_TEST_VARIABLE: 'true',
+	});
 });
 
 afterEach(() => {

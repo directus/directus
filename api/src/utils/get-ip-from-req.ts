@@ -1,9 +1,11 @@
 import type { Request } from 'express';
 import { isIP } from 'net';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import logger from '../logger.js';
 
 export function getIPFromReq(req: Request): string | null {
+	const env = useEnv();
+
 	let ip = req.ip;
 
 	if (env['IP_CUSTOM_HEADER']) {

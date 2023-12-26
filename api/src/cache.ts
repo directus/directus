@@ -12,6 +12,8 @@ import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
 
+const env = useEnv();
+
 const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
@@ -28,8 +30,6 @@ const messenger = useBus();
 interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
 }
-
-const env = useEnv();
 
 if (
 	env['MESSENGER_STORE'] === 'redis' &&
