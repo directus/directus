@@ -1184,7 +1184,29 @@ importers:
         version: 1.1.0(@types/node@18.19.3)
 
   packages/env:
+    dependencies:
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../constants
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      dotenv:
+        specifier: 16.3.1
+        version: 16.3.1
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
     devDependencies:
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/lodash-es':
+        specifier: 4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: 18.19.3
+        version: 18.19.3
       '@vitest/coverage-v8':
         specifier: 1.1.0
         version: 1.1.0(vitest@1.1.0)
@@ -1196,7 +1218,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.1.0
-        version: 1.1.0(happy-dom@12.10.3)(sass@1.69.5)
+        version: 1.1.0(@types/node@18.19.3)
 
   packages/errors:
     dependencies:
@@ -1934,6 +1956,9 @@ importers:
       joi:
         specifier: 17.11.0
         version: 17.11.0
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1953,6 +1978,9 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/lodash-es':
         specifier: 4.17.12
         version: 4.17.12
