@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed graphQL errors not reporting correct extension code
+Fixed GraphQL errors not containing correct extension code for basic errors
