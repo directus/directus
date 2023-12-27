@@ -1796,6 +1796,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formátovaná hodnota JSON
     description: Zobrazit formátovanou verzi objektu
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Zobrazit ikonu
