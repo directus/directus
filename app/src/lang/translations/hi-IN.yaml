@@ -497,6 +497,8 @@ displays:
     suffix: सफिक्स
     color: Color
     text: Text
+  hash:
+    hash: Hash
   image:
     circle: Circle
   labels:
