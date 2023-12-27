@@ -140,7 +140,7 @@ export class UsersService extends ItemsService {
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
-		email: string
+		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
 		return await this.knex
 			.select('id', 'role', 'status', 'password', 'email')
