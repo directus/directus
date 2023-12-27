@@ -1818,6 +1818,8 @@ displays:
   formatted-json-value:
     formatted-json-value: بەهای JSONی داڕێژراو
     description: پیشاندانی وەشانی داڕێژراوی تەن
+  hash:
+    hash: هاش
   icon:
     icon: ئایکۆن
     description: نیشاندانی ئایکۆنێک
