@@ -142,7 +142,7 @@ export class UsersService extends ItemsService {
 	 */
 	private async getUserByEmail(
 		email: string,
-	): Promise<{ id: string; role: string; status: string; password: string; email: string }> {
+	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
 		return await this.knex
 			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
@@ -396,13 +396,13 @@ export class UsersService extends ItemsService {
 				const subjectLine = subject ?? "You've been invited";
 
 				await mailService.send({
-					to: user.email,
+					to: user?.email ?? email,
 					subject: subjectLine,
 					template: {
 						name: 'user-invitation',
 						data: {
-							url: this.inviteUrl(email, url),
-							email: user.email,
+							url: this.inviteUrl(user?.email ?? email, url),
+							email: user?.email ?? email,
 						},
 					},
 				});
