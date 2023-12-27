@@ -1383,6 +1383,8 @@ displays:
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
     description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว
+  hash:
+    hash: ค่าแฮช
   icon:
     icon: ไอคอน
     description: แสดงไอคอน
