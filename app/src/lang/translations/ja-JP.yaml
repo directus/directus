@@ -1446,6 +1446,8 @@ displays:
     border_label: 区切り線を表示
     mask: マスク
     text: テキスト
+  hash:
+    hash: ハッシュ値
   icon:
     icon: アイコン
   image:
