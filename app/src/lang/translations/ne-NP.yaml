@@ -1633,6 +1633,8 @@ displays:
     text: पाठ
   formatted-json-value:
     formatted-json-value: JSON मान स्वरूप
+  hash:
+    hash: ह्यास
   icon:
     icon: आइकन
     description: आइकन देखाउनुहोस्
