@@ -948,6 +948,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją
+  hash:
+    hash: Maiša
   icon:
     icon: Ikona
     description: Rodyti ikoną
