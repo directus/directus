@@ -8,9 +8,25 @@ ephemeral storage:
 - [Bus](#bus)
 - [Limiter](#limiter)
 
+## Kv
+
+The Kv class is a simple key-value store
+
+### Basic Usage
+
+```ts
+import { createKv } from '@directus/memory';
+
+const cache = createKv({
+	type: 'memory',
+});
+
+await cache.set('my-key', 'my-value');
+```
+
 ## Cache
 
-The cache class is a LRU-based key-value store.
+The cache class is a Kv class extended with an LRU store
 
 ### Basic Usage
 

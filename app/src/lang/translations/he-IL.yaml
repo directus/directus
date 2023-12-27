@@ -27,6 +27,7 @@ method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
+extensions: הרחבות
 modules: מודולים
 module_bar: סרגל מודולים
 logs: לוגים
@@ -51,8 +52,21 @@ and: ו
 or: או
 init: אתחל
 dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+extension_interface: ממשק
+extension_display: תצוגה
+extension_layout: פריסה
+extension_module: מודול
+extension_panel: לוח
 extension_hook: נקודת השחלה
+extension_endpoint: כתובת קצה
+extension_operation: פעולה
+extension_bundle: חבילה
+extension_interfaces: ממשקים
 extension_modules: מודולים
+extension_panels: לוחות
+extension_operations: תהליכים
+extension_bundles: חבילות
+enable: אפשר
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
@@ -62,6 +76,7 @@ add_field: הוסף שדה
 role_name: שם תפקיד
 branch: ענף
 leaf: עלה
+indeterminate: לא מוגדר
 edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
@@ -73,12 +88,19 @@ required: שדה חובה
 required_for_app_access: נדרש עבור גישה לאפליקציה
 requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
+create_panel: יצירת לוח
 create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
+delete_panel: מחיקת לוח
 create_webhook: צור Webhook
+create_custom_translation: יצירת תרגומים
+edit_custom_translation: עריכת תרגומים
+no_custom_translations: חסרים תרגומים
+no_custom_translations_copy: חסרים תרגומים.
 invite_users: הזמן משתמשים
 invite: הזמן
+email_already_invited: כבר נשלחה הזמנה לכתובת מייל "{email}"
 subject: נושא
 inbox: תיבת דואר
 emails: אימייל
@@ -89,6 +111,24 @@ connection_poor: קליטה לא טובה
 primary: ראשי
 rename_folder: שינוי שם תיקיה
 delete_folder: מחק תיקייה
+prefix: קידומת
+suffix: סיומת
+keep: שמור
+version: גרסה
+version_key: מזהה גרסה
+version_name: שם הגרסה
+main_version: ראשי
+switch_version: החלפת גרסה
+switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
+create_version: ליצור גרסה
+rename_version: לשנות שם גרסה
+compare_version: השווה גירסאות
+save_version: לשמור גרסה
+promote_version: לקדם גרסה
+promote_version_disabled: ללא שינויים
+promote_version_drawer_title: לקדם {version} לענף הראשי
+promote_version_changes: שינויים
+promote_version_preview: תצוגה מקדימה
 not_allowed: לא מורשה
 validationError:
   eq: הערך צריך להיות {valid}
@@ -97,6 +137,18 @@ validationError:
   nempty: הערך אינו יכול להיות ריק
   null: הערך צריך להיות null
   nnull: הערך צריך להיות לא null
+  istarts_with: ערך צריך להתחיל ב{substring}
+  nstarts_with: ערך לא יכול יכול להתחיל ב{substring}
+  nistarts_with: ערך לא יכול יכול להתחיל ב{substring}
+  ends_with: ערך צריך להסתיים ב{substring}
+  iends_with: ערך צריך להסתיים ב{substring}
+  nends_with: ערך לא יכול יכול להסתיים ב{substring}
+  niends_with: ערך לא יכול יכול להסתיים ב{substring}
+all_access: גישה פתוחה
+no_access: אין גישה
+use_custom: השתמש במותאם אישית
+nullable: לא חובה
+allow_null_value: אפשר ערך ריק
 allow_multiple: מאפשר כמה
 field_file: קובץ בודד
 field_files: כמה קובצים
@@ -230,7 +282,11 @@ displays:
     boolean: בוליאני
   collection:
     collection: מאגר
+  datetime:
+    suffix: סיומת
   formatted-value:
+    prefix: קידומת
+    suffix: סיומת
     text: טקסט
   labels:
     choices_value_placeholder: הכנס ערך...

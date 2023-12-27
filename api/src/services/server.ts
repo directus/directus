@@ -1,22 +1,25 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
+import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { version, releaseVersion } from '../utils/package.js';
 import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class ServerService {
 	knex: Knex;
@@ -104,7 +107,7 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-			info['version'] = releaseVersion;
+			info['version'] = version;
 		}
 
 		return info;

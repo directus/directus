@@ -1,4 +1,4 @@
-import type { FetchInterface, UrlInterface, WebSocketConstructor } from './globals.js';
+import type { ConsoleInterface, FetchInterface, UrlInterface, WebSocketConstructor } from './globals.js';
 
 /**
  * empty directus client
@@ -16,6 +16,7 @@ export type ClientGlobals = {
 	fetch: FetchInterface;
 	WebSocket: WebSocketConstructor;
 	URL: UrlInterface;
+	logger: ConsoleInterface;
 };
 
 /**
