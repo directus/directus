@@ -1732,6 +1732,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valoare JSON formatată
     description: Afișează o versiune formatată a obiectului
+  hash:
+    hash: Hash
   icon:
     icon: Pictogramă
     description: Afișează o pictogramă
