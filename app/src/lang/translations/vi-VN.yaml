@@ -1139,6 +1139,8 @@ displays:
     color: Màu sắc
     icon: Biểu tượng
     text: Đoạn văn bản
+  hash:
+    hash: Hash
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng
