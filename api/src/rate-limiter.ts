@@ -1,7 +1,7 @@
 import { merge } from 'lodash-es';
 import type { IRateLimiterOptions, IRateLimiterStoreOptions, RateLimiterAbstract } from 'rate-limiter-flexible';
 import { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import env from './env.js';
+import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
@@ -14,6 +14,8 @@ export function createRateLimiter(
 	configPrefix = 'RATE_LIMITER',
 	configOverrides?: IRateLimiterOptionsOverrides,
 ): RateLimiterAbstract {
+	const env = useEnv();
+
 	switch (env['RATE_LIMITER_STORE']) {
 		case 'redis':
 			return new RateLimiterRedis(getConfig('redis', configPrefix, configOverrides));
@@ -42,6 +44,9 @@ function getConfig(
 
 	if (store === 'redis') {
 		const Redis = require('ioredis');
+
+		const env = useEnv();
+
 		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`));
 	}
 

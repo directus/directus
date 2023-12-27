@@ -7,8 +7,8 @@ import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
@@ -17,6 +17,9 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class ServerService {
 	knex: Knex;

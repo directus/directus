@@ -7,8 +7,8 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import env from '../../../env.js';
-import logger from '../../../logger.js';
+import { useEnv } from '../../../env.js';
+import { useLogger } from '../../../logger.js';
 import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';
 import { UsersService } from '../../../services/users.js';
@@ -16,7 +16,11 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
+	const logger = useLogger();
+
 	logger.info('Initializing bootstrap...');
+
+	const env = useEnv();
 
 	const database = getDatabase();
 
@@ -72,6 +76,9 @@ async function waitForDatabase(database: Knex) {
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
+	const logger = useLogger();
+	const env = useEnv();
+
 	const { nanoid } = await import('nanoid');
 
 	logger.info('Setting up first admin role...');

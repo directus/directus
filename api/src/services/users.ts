@@ -1,3 +1,4 @@
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
@@ -6,9 +7,7 @@ import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { ForbiddenError } from '@directus/errors';
-import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -17,6 +16,8 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -140,7 +141,7 @@ export class UsersService extends ItemsService {
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
-		email: string
+		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string }> {
 		return await this.knex
 			.select('id', 'role', 'status', 'password', 'email')
