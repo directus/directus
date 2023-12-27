@@ -1568,6 +1568,8 @@ displays:
     mask: مقنع
     mask_label: إخفاء القيمة الحقيقية
     text: نص
+  hash:
+    hash: الهاش
   icon:
     icon: أيقونة
     description: عرض أيقونة
