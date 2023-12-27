@@ -270,8 +270,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       openapi3-ts:
-        specifier: 4.2.0
-        version: 4.2.0
+        specifier: 4.2.1
+        version: 4.2.1
       openid-client:
         specifier: 5.6.1
         version: 5.6.1
@@ -1520,8 +1520,8 @@ importers:
   packages/specs:
     dependencies:
       openapi3-ts:
-        specifier: 4.2.0
-        version: 4.2.0
+        specifier: 4.2.1
+        version: 4.2.1
     devDependencies:
       npm-watch:
         specifier: 0.11.0
@@ -14707,8 +14707,8 @@ packages:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
     dev: true
 
-  /openapi3-ts@4.2.0:
-    resolution: {integrity: sha512-TeqkZQ44Blw/8SrNhZFMxQVuYWKGktfpEbYWxpvAubhwyYvsuAVUkOlFDI8i5AyuWsQaFWXuttS6bRUKfNtE9g==}
+  /openapi3-ts@4.2.1:
+    resolution: {integrity: sha512-KL1mKwkZii5ce+tb24KCUmQHyWB/oanG5fzUY35UB+wenWJv4Kr/IWBntpn5R8ODiJcxx13ZDophcpHnLGeIOw==}
     dependencies:
       yaml: 2.3.4
     dev: false
