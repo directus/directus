@@ -1642,6 +1642,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde
     description: Visa en formaterad version av objektet
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
     description: Visa en ikon
