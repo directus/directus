@@ -1818,6 +1818,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект
+  hash:
+    hash: Хеш
   icon:
     icon: Икона
     description: Показване като икона
