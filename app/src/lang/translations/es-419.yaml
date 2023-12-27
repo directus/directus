@@ -1904,6 +1904,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto
+  hash:
+    hash: Código criptográfico
   icon:
     icon: Ícono
     description: Presentar un ícono
