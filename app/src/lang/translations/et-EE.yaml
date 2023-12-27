@@ -1359,6 +1359,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena
     description: Näita objekti vormistatud versiooni
+  hash:
+    hash: Hash (räsi)
   icon:
     icon: Ikoon
     description: Kuva ikooni
