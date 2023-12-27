@@ -1834,6 +1834,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto
+  hash:
+    hash: Hash
   icon:
     icon: Ícone
     description: Exibir um ícone
