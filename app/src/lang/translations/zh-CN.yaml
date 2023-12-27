@@ -1985,6 +1985,8 @@ displays:
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 显示对象的格式化版本
+  hash:
+    hash: Hash
   icon:
     icon: 图标
     description: 显示图标
