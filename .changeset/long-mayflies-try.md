@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fix invite email regression
+Fixed invite email regression for new users
