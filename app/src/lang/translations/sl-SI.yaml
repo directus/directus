@@ -1364,6 +1364,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost
     description: Prikaži oblikovano verzijo objekta
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Prikaži ikono
