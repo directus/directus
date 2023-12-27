@@ -29,7 +29,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	]);
 
 	return {
-		url: env['PUBLIC_URL'],
+		url: env['PUBLIC_URL'] as string,
 		version: version,
 		database: getDatabaseClient(),
 

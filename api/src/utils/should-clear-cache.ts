@@ -17,7 +17,7 @@ export function shouldClearCache(
 	const env = useEnv();
 
 	if (env['CACHE_AUTO_PURGE']) {
-		if (collection && env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {
+		if (collection && (env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string).includes(collection)) {
 			return false;
 		}
 

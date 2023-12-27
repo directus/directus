@@ -45,7 +45,9 @@ export class NotificationsService extends ItemsService {
 				fields: ['id', 'email', 'email_notifications', 'role.app_access'],
 			});
 
-			const manageUserAccountUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'users', user['id']).toString();
+			const manageUserAccountUrl = new Url(env['PUBLIC_URL'] as string)
+				.addPath('admin', 'users', user['id'])
+				.toString();
 
 			const html = data.message ? md(data.message) : '';
 

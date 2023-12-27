@@ -92,7 +92,7 @@ export class SharesService extends ItemsService {
 		};
 
 		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
 			issuer: 'directus',
 		});
 
@@ -142,7 +142,7 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env['PUBLIC_URL']).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env['PUBLIC_URL'] as string).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {

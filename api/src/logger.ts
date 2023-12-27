@@ -25,7 +25,7 @@ export const createLogger = () => {
 	const env = useEnv();
 
 	const pinoOptions: LoggerOptions = {
-		level: env['LOG_LEVEL'] || 'info',
+		level: env['LOG_LEVEL'] as string || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -75,7 +75,7 @@ export const createExpressLogger = () => {
 	const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 
 	const httpLoggerOptions: LoggerOptions = {
-		level: env['LOG_LEVEL'] || 'info',
+		level: env['LOG_LEVEL'] as string || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -138,7 +138,7 @@ export const createExpressLogger = () => {
 	}
 
 	if (env['LOG_HTTP_IGNORE_PATHS']) {
-		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS']);
+		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS'] as string);
 
 		httpLoggerEnvConfig['autoLogging'] = {
 			ignore: (req) => {

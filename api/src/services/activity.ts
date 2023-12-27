@@ -83,7 +83,7 @@ export class ActivityService extends ItemsService {
 
 					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-					const href = new Url(env['PUBLIC_URL'])
+					const href = new Url(env['PUBLIC_URL'] as string)
 						.addPath('admin', 'content', data['collection'], data['item'])
 						.toString();
 

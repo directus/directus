@@ -104,7 +104,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: {
 							limit: env['RELATIONAL_BATCH_SIZE'],
-							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * (env['RELATIONAL_BATCH_SIZE'] as number),
 							page: null,
 						},
 					});
@@ -115,7 +115,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 					}
 
-					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
+					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
 						hasMore = false;
 					}
 

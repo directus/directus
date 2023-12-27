@@ -56,17 +56,20 @@ export const syncExtensions = async (): Promise<void> => {
 
 	const storage = await getStorage();
 
-	const disk = storage.location(env['EXTENSIONS_LOCATION']);
+	const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 	// Make sure we don't overload the file handles
 	const queue = new Queue({ concurrency: 1000 });
 
-	for await (const filepath of disk.list(env['EXTENSIONS_PATH'])) {
+	for await (const filepath of disk.list(env['EXTENSIONS_PATH'] as string)) {
 		const readStream = await disk.read(filepath);
 
 		// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 		// extensions path on disk from the start of the file path
-		const destPath = join(extensionsPath, relative(resolve(sep, env['EXTENSIONS_PATH']), resolve(sep, filepath)));
+		const destPath = join(
+			extensionsPath,
+			relative(resolve(sep, env['EXTENSIONS_PATH'] as string), resolve(sep, filepath)),
+		);
 
 		// Ensure that the directory path exists
 		await mkdir(dirname(destPath), { recursive: true });

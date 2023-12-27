@@ -34,7 +34,7 @@ export async function registerAuthProviders(): Promise<void> {
 	const logger = useLogger();
 	const options = { knex: getDatabase(), schema: await getSchema() };
 
-	const providerNames = toArray(env['AUTH_PROVIDERS']);
+	const providerNames = toArray(env['AUTH_PROVIDERS'] as string);
 
 	// Register default provider if not disabled
 	if (!env['AUTH_DISABLE_DEFAULT']) {

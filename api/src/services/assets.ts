@@ -13,6 +13,7 @@ import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
+import type { FailOnOptions } from 'sharp';
 import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
@@ -144,8 +145,8 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
-				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
+				width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
+				height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
 			) {
 				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
 				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
@@ -153,7 +154,7 @@ export class AssetsService {
 
 			const { queue, process } = sharp.counters();
 
-			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
+			if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
 				throw new ServiceUnavailableError({
 					service: 'files',
 					reason: 'Server too busy',
@@ -163,9 +164,9 @@ export class AssetsService {
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
 			const transformer = sharp({
-				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
+				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number, 2),
 				sequentialRead: true,
-				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
+				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'] as FailOnOptions,
 			});
 
 			transformer.timeout({

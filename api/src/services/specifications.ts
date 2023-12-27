@@ -65,7 +65,7 @@ class OASSpecsService implements SpecificationSubService {
 		const components = await this.generateComponents(tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : env['PUBLIC_URL'];
+		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',

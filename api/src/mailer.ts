@@ -16,13 +16,13 @@ export default function getMailer(): Transporter {
 	const env = useEnv();
 	const logger = useLogger();
 
-	const transportName = env['EMAIL_TRANSPORT'].toLowerCase();
+	const transportName = (env['EMAIL_TRANSPORT'] as string).toLowerCase();
 
 	if (transportName === 'sendmail') {
 		transporter = nodemailer.createTransport({
 			sendmail: true,
-			newline: env['EMAIL_SENDMAIL_NEW_LINE'] || 'unix',
-			path: env['EMAIL_SENDMAIL_PATH'] || '/usr/sbin/sendmail',
+			newline: (env['EMAIL_SENDMAIL_NEW_LINE'] as string) || 'unix',
+			path: (env['EMAIL_SENDMAIL_PATH'] as string) || '/usr/sbin/sendmail',
 		});
 	} else if (transportName === 'ses') {
 		const aws = require('@aws-sdk/client-ses');
@@ -39,8 +39,8 @@ export default function getMailer(): Transporter {
 
 		if (env['EMAIL_SMTP_USER'] || env['EMAIL_SMTP_PASSWORD']) {
 			auth = {
-				user: env['EMAIL_SMTP_USER'],
-				pass: env['EMAIL_SMTP_PASSWORD'],
+				user: env['EMAIL_SMTP_USER'] as string,
+				pass: env['EMAIL_SMTP_PASSWORD'] as string,
 			};
 		}
 

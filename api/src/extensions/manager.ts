@@ -66,7 +66,7 @@ const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] as boolean && process.env['NODE_ENV'] !== 'development',
 };
 
 export class ExtensionManager {

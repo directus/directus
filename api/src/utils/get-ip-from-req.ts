@@ -10,7 +10,7 @@ export function getIPFromReq(req: Request): string | null {
 	let ip = req.ip;
 
 	if (env['IP_CUSTOM_HEADER']) {
-		const customIPHeaderValue = req.get(env['IP_CUSTOM_HEADER']) as unknown;
+		const customIPHeaderValue = req.get(env['IP_CUSTOM_HEADER'] as string) as unknown;
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;

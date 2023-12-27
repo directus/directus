@@ -49,7 +49,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
+		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
+			'auth',
+			'login',
+			additionalConfig['provider'],
+			'callback',
+		);
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -395,11 +400,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, {
 					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 

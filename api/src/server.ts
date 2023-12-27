@@ -101,8 +101,8 @@ export async function createServer(): Promise<http.Server> {
 
 	const terminusOptions: TerminusOptions = {
 		timeout:
-			env['SERVER_SHUTDOWN_TIMEOUT'] >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] < Infinity
-				? env['SERVER_SHUTDOWN_TIMEOUT']
+			env['SERVER_SHUTDOWN_TIMEOUT'] as number >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] as number < Infinity
+				? env['SERVER_SHUTDOWN_TIMEOUT'] as number
 				: 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
 		beforeShutdown,
@@ -115,7 +115,7 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		if (env['NODE_ENV'] !== 'development') {
+		if (process.env['NODE_ENV'] !== 'development') {
 			logger.info('Shutting down...');
 		}
 
@@ -143,7 +143,7 @@ export async function createServer(): Promise<http.Server> {
 			},
 		);
 
-		if (env['NODE_ENV'] !== 'development') {
+		if (process.env['NODE_ENV'] !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}
@@ -152,8 +152,8 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const host = env['HOST'];
-	const port = env['PORT'];
+	const host = env['HOST'] as string;
+	const port = env['PORT'] as number;
 
 	server
 		.listen(port, host, () => {

@@ -136,12 +136,12 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
-				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
+				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
-					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], COOKIE_OPTIONS);
+					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, COOKIE_OPTIONS);
 				}
 			}
 
@@ -173,7 +173,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

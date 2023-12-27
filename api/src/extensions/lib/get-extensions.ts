@@ -40,7 +40,7 @@ export const getExtensions = async () => {
 
 	(await resolvePackageExtensions(getExtensionsPath())).forEach(filterDuplicates);
 
-	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
+	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'] as string)).forEach(filterDuplicates);
 
 	if (duplicateExtensions.length > 0) {
 		logger.warn(

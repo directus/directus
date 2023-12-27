@@ -78,7 +78,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -120,12 +120,12 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(
 			handlePressure({
 				sampleInterval,
-				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'],
-				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
-				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
-				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
+				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'] as number,
+				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'] as number,
+				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'] as number,
+				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'] as number,
 				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
-				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
+				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'] as string,
 			}),
 		);
 	}
@@ -179,7 +179,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env['MAX_PAYLOAD_SIZE'],
+				limit: env['MAX_PAYLOAD_SIZE'] as string,
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -196,7 +196,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.get('/', (_req, res, next) => {
 		if (env['ROOT_REDIRECT']) {
-			res.redirect(env['ROOT_REDIRECT']);
+			res.redirect(env['ROOT_REDIRECT'] as string);
 		} else {
 			next();
 		}
@@ -210,7 +210,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 

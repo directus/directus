@@ -114,7 +114,7 @@ export class MailService {
 		};
 
 		function getProjectLogoURL(logoID?: string) {
-			const projectLogoUrl = new Url(env['PUBLIC_URL']);
+			const projectLogoUrl = new Url(env['PUBLIC_URL'] as string);
 
 			if (logoID) {
 				projectLogoUrl.addPath('assets', logoID);
