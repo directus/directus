@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigFromEnv } from './get-config-from-env.js';
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({

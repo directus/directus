@@ -3,7 +3,7 @@ import { redisConfigAvailable } from './redis-config-available.js';
 
 import { afterEach, expect, test, vi } from 'vitest';
 
-vi.mock('../../env.js');
+vi.mock('@directus/env');
 
 afterEach(() => {
 	vi.clearAllMocks();

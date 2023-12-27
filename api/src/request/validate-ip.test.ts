@@ -6,7 +6,7 @@ import { validateIP } from './validate-ip.js';
 
 vi.mock('node:os');
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 let sample: {
 	ip: string;

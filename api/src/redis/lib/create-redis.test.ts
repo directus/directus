@@ -6,7 +6,7 @@ import { createRedis } from './create-redis.js';
 
 vi.mock('ioredis');
 vi.mock('../../utils/get-config-from-env.js');
-vi.mock('../../env.js');
+vi.mock('@directus/env');
 
 let mockRedis: Redis;
 

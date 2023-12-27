@@ -6,7 +6,7 @@ import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 
 vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;

@@ -5,7 +5,7 @@ import { useEnv } from '@directus/env';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { registerLocations } from './register-locations.js';
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 vi.mock('../utils/get-config-from-env.js');
 

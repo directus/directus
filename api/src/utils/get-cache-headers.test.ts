@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { getCacheControlHeader } from './get-cache-headers.js';
 import { useEnv } from '@directus/env';
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 const scenarios = [
 	// Test the cache-control header

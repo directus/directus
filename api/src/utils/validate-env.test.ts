@@ -4,7 +4,7 @@ import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger.js';
 import { validateEnv } from './validate-env.js';
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 vi.mock('../logger');
 

@@ -3,8 +3,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MessengerMemory, MessengerRedis } from './messenger.js';
 
 vi.mock('ioredis');
-
-vi.mock('./env.js');
+vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.resetModules();

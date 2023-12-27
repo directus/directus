@@ -7,7 +7,7 @@ import { registerDrivers } from './register-drivers.js';
 
 vi.mock('./get-storage-driver.js');
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 let mockStorage: StorageManager;
 let mockDriver: typeof Driver;
