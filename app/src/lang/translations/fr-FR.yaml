@@ -1966,6 +1966,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
+  hash:
+    hash: Hash
   icon:
     icon: Icône
     description: Afficher une icône
