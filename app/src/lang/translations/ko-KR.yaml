@@ -1841,6 +1841,8 @@ displays:
   formatted-json-value:
     formatted-json-value: 형식화된 JSON 값
     description: 객체의 형식화된 버전 표시
+  hash:
+    hash: 해시
   icon:
     icon: 아이콘
     description: 아이콘 표시
