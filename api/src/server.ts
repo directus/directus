@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
@@ -101,8 +102,8 @@ export async function createServer(): Promise<http.Server> {
 
 	const terminusOptions: TerminusOptions = {
 		timeout:
-			env['SERVER_SHUTDOWN_TIMEOUT'] as number >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] as number < Infinity
-				? env['SERVER_SHUTDOWN_TIMEOUT'] as number
+			(env['SERVER_SHUTDOWN_TIMEOUT'] as number) >= 0 && (env['SERVER_SHUTDOWN_TIMEOUT'] as number) < Infinity
+				? (env['SERVER_SHUTDOWN_TIMEOUT'] as number)
 				: 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
 		beforeShutdown,
@@ -115,7 +116,7 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		if (process.env['NODE_ENV'] !== 'development') {
+		if (getNodeEnv() !== 'development') {
 			logger.info('Shutting down...');
 		}
 
@@ -143,7 +144,7 @@ export async function createServer(): Promise<http.Server> {
 			},
 		);
 
-		if (process.env['NODE_ENV'] !== 'development') {
+		if (getNodeEnv() !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}

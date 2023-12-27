@@ -21,7 +21,7 @@ import type {
 	ScheduleHandler,
 } from '@directus/types';
 import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
-import { pathToRelativeUrl } from '@directus/utils/node';
+import { getNodeEnv, pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
@@ -66,7 +66,7 @@ const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] as boolean && process.env['NODE_ENV'] !== 'development',
+	watch: (env['EXTENSIONS_AUTO_RELOAD'] as boolean) && getNodeEnv() !== 'development',
 };
 
 export class ExtensionManager {

@@ -1,6 +1,7 @@
 import type { Column, SchemaOverview } from '@directus/schema';
 import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
 import { useLogger } from '../logger.js';
 import getLocalType from './get-local-type.js';
 
@@ -52,7 +53,7 @@ function castToObject(value: any): any | any[] {
 		try {
 			return parseJSON(value);
 		} catch (err: any) {
-			if (process.env['NODE_ENV'] === 'development') {
+			if (getNodeEnv() === 'development') {
 				logger.error(err);
 			}
 

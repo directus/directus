@@ -1,5 +1,6 @@
 import { ErrorCode, MethodNotAllowedError, isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -19,7 +20,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	let status: number | null = null;
 
 	for (const err of errors) {
-		if (process.env['NODE_ENV'] === 'development') {
+		if (getNodeEnv() === 'development') {
 			err.extensions = {
 				...(err.extensions || {}),
 				stack: err.stack,
