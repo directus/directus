@@ -2033,9 +2033,7 @@ displays:
     description: Display a formatted version of the object
   hash:
     hash: Hash
-    description: Display a hashed value
-    masked: Masked
-    masked_label: Hide the true values
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon

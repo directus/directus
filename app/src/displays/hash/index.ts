@@ -8,21 +8,5 @@ export default defineDisplay({
 	types: ['hash'],
 	icon: 'fingerprint',
 	component: DisplayHash,
-	options: [
-		{
-			field: 'masked',
-			name: '$t:displays.hash.masked',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'boolean',
-				options: {
-					label: '$t:displays.hash.masked_label',
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-	],
+	options: [],
 });

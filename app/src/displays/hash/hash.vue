@@ -1,27 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
-const props = withDefaults(
+withDefaults(
 	defineProps<{
 		value: string | null;
-		masked?: boolean;
 	}>(),
 	{
 		value: null,
 	},
 );
-
-const displayValue = computed(() => {
-	if (props.masked) {
-		return '**********';
-	}
-
-	return props.value;
-});
 </script>
 
 <template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
+	<value-null v-if="value === null" />
 
-	<div v-else>{{ displayValue }}</div>
+	<div v-else>**********</div>
 </template>
