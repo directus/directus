@@ -1912,6 +1912,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта
+  hash:
+    hash: Хэш
   icon:
     icon: Иконка
     description: Отображать иконку
