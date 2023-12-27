@@ -842,6 +842,8 @@ displays:
     color: Farge
     icon: Ikon
     text: Tekst
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
   image:
