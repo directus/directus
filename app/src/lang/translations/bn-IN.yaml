@@ -147,6 +147,8 @@ interfaces:
 displays:
   formatted-value:
     text: পাঠ্য
+  hash:
+    hash: হ্যাশ
 operations:
   log:
     message: বার্তা
