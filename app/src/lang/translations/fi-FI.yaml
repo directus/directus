@@ -1648,6 +1648,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio
+  hash:
+    hash: Tiiviste
   icon:
     icon: Kuvake
     description: Näytä kuvake
