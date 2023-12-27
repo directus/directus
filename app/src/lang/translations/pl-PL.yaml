@@ -1977,6 +1977,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Sformatowana wartość JSON
     description: Wyświetl sformatowaną wersję obiektu
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Wyświetl ikonę
