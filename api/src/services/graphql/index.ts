@@ -783,6 +783,48 @@ export class GraphQLService {
 				},
 			});
 
+			const BigIntFilterOperators = schemaComposer.createInputTC({
+				name: 'big_int_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLBigInt,
+					},
+					_neq: {
+						type: GraphQLBigInt,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_gt: {
+						type: GraphQLBigInt,
+					},
+					_gte: {
+						type: GraphQLBigInt,
+					},
+					_lt: {
+						type: GraphQLBigInt,
+					},
+					_lte: {
+						type: GraphQLBigInt,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+				},
+			});
+
 			const GeometryFilterOperators = schemaComposer.createInputTC({
 				name: 'geometry_filter_operators',
 				fields: {
@@ -900,6 +942,8 @@ export class GraphQLService {
 								filterOperatorType = BooleanFilterOperators;
 								break;
 							case GraphQLBigInt:
+								filterOperatorType = BigIntFilterOperators;
+								break;
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
