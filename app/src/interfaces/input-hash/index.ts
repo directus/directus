@@ -7,6 +7,7 @@ export default defineInterface({
 	name: '$t:interfaces.input-hash.hash',
 	description: '$t:interfaces.input-hash.description',
 	icon: 'fingerprint',
+	recommendedDisplays: ['hash'],
 	component: InterfaceInputHash,
 	types: ['hash'],
 	group: 'other',
