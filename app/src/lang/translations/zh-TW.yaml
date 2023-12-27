@@ -1798,6 +1798,8 @@ displays:
   formatted-json-value:
     formatted-json-value: 格式化JSON值
     description: 顯示物件的格式化版本
+  hash:
+    hash: 哈希
   icon:
     icon: 圖示
     description: 顯示圖示
