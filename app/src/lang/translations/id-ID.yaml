@@ -1505,6 +1505,8 @@ displays:
     color: Warna
     icon: Ikon
     text: Teks
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
   image:
