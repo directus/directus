@@ -3,4 +3,4 @@
 '@directus/app': minor
 ---
 
-Allow theme override permissions to be set on a per role basis.
+Enabled theme override permissions to be set on a per role basis
