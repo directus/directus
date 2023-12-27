@@ -305,6 +305,8 @@ displays:
     collection: Колекција
   formatted-value:
     text: Текст
+  hash:
+    hash: Isečak
   user:
     avatar: Аватар
     name: Име
