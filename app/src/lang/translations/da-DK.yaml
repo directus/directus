@@ -1809,6 +1809,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
     description: Vis et ikon
