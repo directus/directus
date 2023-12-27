@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	IllegalAssetTransformationError,
@@ -16,7 +17,6 @@ import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';

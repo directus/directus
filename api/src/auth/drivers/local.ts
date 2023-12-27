@@ -5,7 +5,7 @@ import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
-import { useEnv } from '../../env.js';
+import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';

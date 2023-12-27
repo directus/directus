@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 

@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import type { Column, SchemaOverview } from '@directus/schema';
 import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import getLocalType from './get-local-type.js';
 

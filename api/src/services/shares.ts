@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { useEnv } from '../env.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,

@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import { URL } from 'node:url';
-import { useEnv } from '../../env.js';
 import type { TelemetryReport } from '../types/report.js';
 
 /**

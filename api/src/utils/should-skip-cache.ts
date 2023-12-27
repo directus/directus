@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
 import url from 'url';
-import { useEnv } from '../env.js';
 import { Url } from './url.js';
 
 /**

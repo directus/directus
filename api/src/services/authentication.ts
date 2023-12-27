@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { InvalidCredentialsError, InvalidOtpError, InvalidProviderError, UserSuspendedError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
@@ -9,7 +10,6 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';

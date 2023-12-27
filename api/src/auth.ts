@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
@@ -10,7 +11,6 @@ import {
 } from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';

@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
+import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
-import { useEnv } from '../../env.js';
-import { version } from 'directus/version';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount, type UserCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';

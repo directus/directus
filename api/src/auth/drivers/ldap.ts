@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	InvalidCredentialsError,
@@ -15,7 +16,6 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';

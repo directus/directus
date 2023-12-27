@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getCache } from '../../cache.js';
-import { useEnv } from '../../env.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { initTelemetry, jobCallback } from './init-telemetry.js';
 import { track } from './track.js';

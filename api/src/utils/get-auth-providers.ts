@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
-import { useEnv } from '../env.js';
 
 interface AuthProvider {
 	name: string;

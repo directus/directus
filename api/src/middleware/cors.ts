@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import cors from 'cors';
 import type { RequestHandler } from 'express';
-import { useEnv } from '../env.js';
 
 let corsMiddleware: RequestHandler = (_req, _res, next) => next();
 

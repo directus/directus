@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	InvalidPayloadError,
@@ -19,7 +20,6 @@ import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';

@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import os from 'node:os';
-import { useEnv } from '../env.js';
 
 export const validateIP = async (ip: string, url: string) => {
 	const env = useEnv();

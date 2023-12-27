@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import express from 'express';
-import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';

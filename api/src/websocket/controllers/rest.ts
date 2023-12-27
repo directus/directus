@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
 import { parseJSON } from '@directus/utils';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { refreshAccountability } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';

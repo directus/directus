@@ -2,7 +2,7 @@ import { Router } from 'express';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
-import { useEnv } from './env.js';
+import { useEnv } from '@directus/env';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),

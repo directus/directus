@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export/index.js';
 import { VersionsService } from '../services/versions.js';

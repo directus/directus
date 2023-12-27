@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import { parseJSON } from '@directus/utils';
 import { Redis } from 'ioredis';
-import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;

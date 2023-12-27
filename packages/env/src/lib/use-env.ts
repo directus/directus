@@ -2,7 +2,7 @@ import type { Env } from '../types/env.js';
 import { createEnv } from './create-env.js';
 
 export const _cache: {
-	env: Env;
+	env: Env | undefined;
 } = { env: undefined } as const;
 
 export const useEnv = () => {

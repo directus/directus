@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
-import { useEnv } from '../env.js';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 

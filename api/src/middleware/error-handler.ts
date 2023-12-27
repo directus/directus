@@ -1,9 +1,9 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, MethodNotAllowedError, isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if

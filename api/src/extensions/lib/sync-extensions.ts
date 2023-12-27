@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { NESTED_EXTENSION_TYPES } from '@directus/extensions';
 import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';
@@ -7,7 +8,6 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
 import { useBus } from '../../bus/index.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';

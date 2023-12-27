@@ -1,9 +1,9 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';

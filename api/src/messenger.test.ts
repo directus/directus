@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useEnv } from './env.js';
 import { MessengerMemory, MessengerRedis } from './messenger.js';
 
 vi.mock('ioredis');

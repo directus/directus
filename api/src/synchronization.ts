@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
-import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 interface SynchronizationManager {

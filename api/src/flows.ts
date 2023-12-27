@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
@@ -9,7 +10,6 @@ import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';

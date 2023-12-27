@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import fse from 'fs-extra';
@@ -7,7 +8,6 @@ import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
-import { useEnv } from '../../env.js';
 import { getExtensionsPath } from '../../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../../logger.js';
 import getMailer from '../../mailer.js';

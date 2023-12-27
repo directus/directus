@@ -1,9 +1,9 @@
+import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
-import { useEnv } from '../env.js';
 import { calculateFieldDepth } from './calculate-field-depth.js';
 
 const env = useEnv();

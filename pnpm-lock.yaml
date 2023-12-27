@@ -47,6 +47,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
+      '@directus/env':
+        specifier: workspace:*
+        version: link:../packages/env
       '@directus/errors':
         specifier: workspace:*
         version: link:../packages/errors

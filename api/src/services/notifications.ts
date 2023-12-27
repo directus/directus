@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { Notification } from '@directus/types';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { md } from '../utils/md.js';

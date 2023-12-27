@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
@@ -47,7 +48,6 @@ import {
 	validateMigrations,
 } from './database/index.js';
 import emitter from './emitter.js';
-import { useEnv } from './env.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import { createExpressLogger, useLogger } from './logger.js';

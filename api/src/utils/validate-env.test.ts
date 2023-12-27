@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { validateEnv } from './validate-env.js';
 

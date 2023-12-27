@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { CookieOptions } from 'express';
-import { useEnv } from './env.js';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 

@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { Request } from 'express';
-import { useEnv } from '../env.js';
 import { shouldSkipCache } from './should-skip-cache.js';
 
 /**

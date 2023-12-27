@@ -1,4 +1,5 @@
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import type {
 	ApiExtension,
 	BundleExtension,
@@ -35,7 +36,6 @@ import path from 'path';
 import { rollup } from 'rollup';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
-import { useEnv } from '../env.js';
 import { getFlowManager } from '../flows.js';
 import { useLogger } from '../logger.js';
 import * as services from '../services/index.js';

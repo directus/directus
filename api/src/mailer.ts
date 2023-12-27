@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 

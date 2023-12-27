@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import { isIP } from 'net';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 
 export function getIPFromReq(req: Request): string | null {

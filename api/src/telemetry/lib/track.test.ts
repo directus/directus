@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';

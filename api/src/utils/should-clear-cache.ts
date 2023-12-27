@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type Keyv from 'keyv';
-import { useEnv } from '../env.js';
 import type { MutationOptions } from '../types/items.js';
 
 /**
