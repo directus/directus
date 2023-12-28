@@ -231,7 +231,6 @@ export class ExtensionManager {
 			return;
 		}
 
-    
 		const logger = useLogger();
 
 		this.reloadQueue.enqueue(async () => {
