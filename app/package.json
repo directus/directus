@@ -136,7 +136,7 @@
 		"vue": "3.3.13",
 		"vue-i18n": "9.8.0",
 		"vue-router": "4.2.5",
-		"vue-tsc": "1.8.26",
+		"vue-tsc": "1.8.27",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
 	}
