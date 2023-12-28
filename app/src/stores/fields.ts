@@ -335,7 +335,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	function getFieldsForCollectionSorted(collection: string): Field[] {
 		const fieldsSorted = orderBy(
 			fields.value.filter((field) => field.collection === collection),
-			'meta.sort',
+			['meta.system', 'meta.sort'],
 		);
 
 		const nonGroupFields = fieldsSorted.filter((field: Field) => !field.meta?.group);
