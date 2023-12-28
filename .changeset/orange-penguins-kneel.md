@@ -2,4 +2,4 @@
 '@directus/api': minor
 ---
 
-Do not queue any extension reloads if any reload jobs are pending
+Prevented queueing any extension reloads if a reload job is pending
