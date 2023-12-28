@@ -7,8 +7,9 @@ import {
 	isCompressed,
 	serialize,
 	uint8ArrayToBuffer,
+	uint8ArrayToString,
+	withNamespace,
 } from '../../utils/index.js';
-import { withNamespace } from '../../utils/with-namespace.js';
 import type { Bus, MessageHandler } from '../types/class.js';
 import type { BusConfigRedis } from '../types/config.js';
 
@@ -24,7 +25,7 @@ export class BusRedis implements Bus {
 		this.namespace = config.namespace;
 		this.pub = config.redis;
 		this.sub = config.redis.duplicate();
-		this.sub.on('messageBuffer', this.messageBufferHandler);
+		this.sub.on('messageBuffer', (channel, message) => this.messageBufferHandler(channel, message));
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
 		this.handlers = {};
@@ -79,11 +80,13 @@ export class BusRedis implements Bus {
 	 *
 	 * @NOTE this method expects the namespaced channel name
 	 *
-	 * @param namespacedChannel The namespaced channel the message was sent in
+	 * @param channel The namespaced channel the message was sent in
 	 * @param message Buffer of the message value that was sent in the given channel
 	 */
-	private async messageBufferHandler(namespacedChannel: string, message: Buffer) {
-		if (namespacedChannel in this.handlers === false) {
+	private async messageBufferHandler(channel: Buffer, message: Buffer) {
+		const namespaced = uint8ArrayToString(bufferToUint8Array(channel));
+
+		if (namespaced in this.handlers === false) {
 			return;
 		}
 
@@ -95,6 +98,6 @@ export class BusRedis implements Bus {
 
 		const deserialized = deserialize(binaryArray);
 
-		this.handlers[namespacedChannel]?.forEach((callback) => callback(deserialized));
+		this.handlers[namespaced]?.forEach((callback) => callback(deserialized));
 	}
 }

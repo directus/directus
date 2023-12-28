@@ -1,3 +1,9 @@
+import {
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
@@ -13,14 +19,8 @@ import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ForbiddenError,
-	InvalidPayloadError,
-	ServiceUnavailableError,
-	UnsupportedMediaTypeError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';
 import { Url } from '../../utils/url.js';
@@ -29,6 +29,9 @@ import { FilesService } from '../files.js';
 import { ItemsService } from '../items.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 

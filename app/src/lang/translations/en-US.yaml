@@ -2031,6 +2031,9 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon

@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import env from './env.js';
+import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 interface SynchronizationManager {
@@ -14,6 +14,8 @@ let synchronizationManager: SynchronizationManager;
 
 function getSynchronizationManager() {
 	if (synchronizationManager) return synchronizationManager;
+
+	const env = useEnv();
 
 	if (env['SYNCHRONIZATION_STORE'] === 'redis') {
 		synchronizationManager = new SynchronizationManagerRedis();
@@ -100,6 +102,7 @@ class SynchronizationManagerRedis implements SynchronizationManager {
 	private client: Redis;
 
 	constructor() {
+		const env = useEnv();
 		const config = getConfigFromEnv('REDIS');
 
 		this.client = new Redis(env['REDIS'] ?? config);

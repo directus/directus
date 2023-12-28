@@ -1,14 +1,13 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -47,6 +46,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>) {
+		const logger = useLogger();
+
 		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
@@ -102,6 +103,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 export function createSAMLAuthRouter(providerName: string) {
 	const router = Router();
+	const env = useEnv();
 
 	router.get(
 		'/metadata',
@@ -151,6 +153,8 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/acs',
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
+			const logger = useLogger();
+
 			const relayState: string | undefined = req.body?.RelayState;
 
 			try {
