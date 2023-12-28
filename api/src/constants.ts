@@ -38,7 +38,7 @@ export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	},
 ];
 
-export const ASSET_TRANSFORM_QUERY_KEYS: Array<keyof TransformationParams> = [
+export const ASSET_TRANSFORM_QUERY_KEYS = [
 	'key',
 	'transforms',
 	'width',
@@ -47,7 +47,9 @@ export const ASSET_TRANSFORM_QUERY_KEYS: Array<keyof TransformationParams> = [
 	'fit',
 	'quality',
 	'withoutEnlargement',
-];
+	'focal_point_x',
+	'focal_point_y',
+] as const;
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 

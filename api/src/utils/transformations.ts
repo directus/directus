@@ -20,6 +20,14 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 		const toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
 		const toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
 
+		const toFocalPointX = transformationParams.focal_point_x
+			? Number(transformationParams.focal_point_x)
+			: file.focal_point_x;
+
+		const toFocalPointY = transformationParams.focal_point_y
+			? Number(transformationParams.focal_point_y)
+			: file.focal_point_y;
+
 		/*
 		 * Focal point cropping only works with a fixed size (width x height) when `cover`ing,
 		 * since the other modes show the whole image. Sharp by default also simply scales up/down
@@ -32,13 +40,13 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 			(transformationParams.fit === undefined || transformationParams.fit === 'cover') &&
 			toWidth &&
 			toHeight &&
-			file.focal_point_x !== null &&
-			file.focal_point_y !== null
+			toFocalPointX !== null &&
+			toFocalPointY !== null
 		) {
 			const transformArgs = getResizeArguments(
 				{ w: file.width, h: file.height },
 				{ w: toWidth, h: toHeight },
-				{ x: file.focal_point_x, y: file.focal_point_y },
+				{ x: toFocalPointX, y: toFocalPointY },
 			);
 
 			transforms.push(

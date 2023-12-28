@@ -74,6 +74,8 @@ export type TransformationParams = {
 	transforms?: Transformation[];
 	format?: TransformationFormat | 'auto';
 	quality?: number;
+	focal_point_x?: number;
+	focal_point_y?: number;
 } & TransformationResize;
 
 export type TransformationSet = {
