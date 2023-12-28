@@ -324,12 +324,12 @@ describe('Integration Tests', () => {
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 
-			it('should not checkRemainingAdminExistence for new non admin role', async () => {
+			it('should checkRemainingAdminExistence once for new non admin role', async () => {
 				await service.updateMany([1], { role: { name: 'test' } });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 
-			it('should checkRemainingAdminExistence once for new admin role', async () => {
+			it('should not checkRemainingAdminExistence for new admin role', async () => {
 				await service.updateMany([1], { role: { name: 'test', admin_access: true } });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
 			});
