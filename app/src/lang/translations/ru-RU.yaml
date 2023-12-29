@@ -61,12 +61,24 @@ extension_module: Модуль
 extension_panel: Панель
 extension_theme: Тема
 extension_hook: Хук
+extension_endpoint: Эндпоинт
 extension_operation: Действие
+extension_bundle: Набор
+extension_interfaces: Интерфейсы
 extension_displays: Отображения
+extension_layouts: Шаблоны
 extension_modules: Модули
 extension_panels: Панели
+extension_themes: Темы
 extension_hooks: Хуки
+extension_endpoints: Эндпоинты
+extension_operations: Операции
+extension_bundles: Пакеты
+extension_reload_required: Требуется перезагрузка страницы
+extension_reload_required_copy: Перезагрузка страницы необходима, чтобы увидеть изменения после включения или отключения расширений приложений.
+extension_reload_now: Перезагрузить сейчас
 enable: Включить
+disable: Отключить
 custom: Пользовательский
 hook: Хук
 fill_width: В ширину
@@ -114,6 +126,7 @@ rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
+keep: Оставить
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
@@ -124,8 +137,13 @@ create_version: Создать Версию
 rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
+promote_version: Повысить версию
+promote_version_disabled: Без изменений
+promote_version_drawer_title: Сделать {version} главной
 promote_version_changes: Изменения
 promote_version_preview: Предпросмотр
+outdated_notice: >-
+  Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
