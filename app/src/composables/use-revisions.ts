@@ -32,7 +32,7 @@ export function useRevisions(
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey, version], () => getRevisions());
+	watch([collection, primaryKey, version], () => refresh());
 
 	return {
 		created,

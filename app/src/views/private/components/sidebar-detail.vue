@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
-import { toRefs, defineEmits } from 'vue';
+import { toRefs } from 'vue';
 
 const props = defineProps<{
 	icon: string;
 	title: string;
 	badge?: boolean | string | number;
 	close?: boolean;
+}>();
+
+const emit = defineEmits<{
+	toggle: [open: boolean];
 }>();
 
 const { active, toggle } = useGroupable({
@@ -18,13 +22,9 @@ const { active, toggle } = useGroupable({
 const appStore = useAppStore();
 const { sidebarOpen } = toRefs(appStore);
 
-const emit = defineEmits<{
-	toggle: [state: 'open' | 'closed'];
-}>();
-
 function onClick() {
+	emit('toggle', !active.value);
 	toggle();
-	emit('toggle', active.value ? 'closed' : 'open');
 }
 </script>
 

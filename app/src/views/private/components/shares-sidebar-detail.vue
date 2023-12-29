@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
+import { useClipboard } from '@/composables/use-clipboard';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Share } from '@directus/types';
-import { useClipboard } from '@/composables/use-clipboard';
+import { PrimaryKey, Share } from '@directus/types';
+import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import api from '@/api';
-import ShareItem from './share-item.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { onMounted } from 'vue';
 import { abbreviateNumber } from '@directus/utils';
+import ShareItem from './share-item.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -20,181 +19,232 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const { collection, primaryKey } = toRefs(props);
+
 const { copyToClipboard } = useClipboard();
 
-const shares = ref<Share[] | null>(null);
-const sharesCount = ref(0);
-const error = ref(null);
-const loading = ref(false);
-const loadingCount = ref(false);
-const deleting = ref(false);
-const shareToEdit = ref<string | null>(null);
-const shareToSend = ref<Share | null>(null);
-const shareToDelete = ref<Share | null>(null);
-const sending = ref(false);
-const sendEmails = ref('');
-
-const sendPublicLink = computed(() => {
-	if (!shareToSend.value) return null;
-	return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
-});
+const {
+	shares,
+	shareToEdit,
+	shareToSend,
+	shareToDelete,
+	sharesCount,
+	loading,
+	loadingCount,
+	sendPublicLink,
+	sendEmails,
+	error,
+	getShares,
+	getSharesCount,
+	input,
+	send,
+	select,
+	unselect,
+	remove,
+	sending,
+	deleting,
+} = useShares(collection, primaryKey);
 
 onMounted(() => {
 	getSharesCount();
 });
 
-async function input(data: any) {
-	if (!data) return;
+function onToggle(state: string) {
+	if (state === 'open' && shares.value === null) {
+		getShares();
+	}
+}
 
-	data.collection = props.collection;
-	data.item = props.primaryKey;
+function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
+	const shares = ref<Share[] | null>(null);
+	const sharesCount = ref(0);
+	const error = ref(null);
+	const loading = ref(false);
+	const loadingCount = ref(false);
+	const deleting = ref(false);
+	const shareToEdit = ref<string | null>(null);
+	const shareToSend = ref<Share | null>(null);
+	const shareToDelete = ref<Share | null>(null);
+	const sending = ref(false);
+	const sendEmails = ref('');
 
-	try {
-		if (shareToEdit.value === '+') {
-			await api.post('/shares', data);
-		} else {
-			await api.patch(`/shares/${shareToEdit.value}`, data);
+	watch([collection, primaryKey], () => refresh());
+
+	const sendPublicLink = computed(() => {
+		if (!shareToSend.value) return null;
+		return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
+	});
+
+	return {
+		shares,
+		shareToEdit,
+		shareToSend,
+		shareToDelete,
+		sharesCount,
+		loading,
+		loadingCount,
+		sendPublicLink,
+		sendEmails,
+		error,
+		getShares,
+		getSharesCount,
+		input,
+		send,
+		select,
+		unselect,
+		remove,
+		sending,
+		deleting,
+	};
+
+	async function input(data: any) {
+		if (!data) return;
+
+		data.collection = collection.value;
+		data.item = primaryKey.value;
+
+		try {
+			if (shareToEdit.value === '+') {
+				await api.post('/shares', data);
+			} else {
+				await api.patch(`/shares/${shareToEdit.value}`, data);
+			}
+
+			await refresh();
+
+			shareToEdit.value = null;
+		} catch (error) {
+			unexpectedError(error);
 		}
+	}
 
-		await refresh();
+	function select(id: string) {
+		shareToEdit.value = id;
+	}
 
+	function unselect() {
 		shareToEdit.value = null;
-	} catch (error) {
-		unexpectedError(error);
+	}
+
+	async function refresh() {
+		await getSharesCount();
+		await getShares();
+	}
+
+	async function getShares() {
+		error.value = null;
+		loading.value = true;
+
+		try {
+			const response = await api.get(`/shares`, {
+				params: {
+					filter: {
+						_and: [
+							{
+								collection: {
+									_eq: collection.value,
+								},
+							},
+							{
+								item: {
+									_eq: primaryKey.value,
+								},
+							},
+						],
+					},
+					sort: 'name',
+				},
+			});
+
+			shares.value = response.data.data;
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loading.value = false;
+		}
+	}
+
+	async function getSharesCount() {
+		error.value = null;
+		loadingCount.value = true;
+
+		try {
+			const response = await api.get(`/shares`, {
+				params: {
+					filter: {
+						_and: [
+							{
+								collection: {
+									_eq: collection.value,
+								},
+							},
+							{
+								item: {
+									_eq: primaryKey.value,
+								},
+							},
+						],
+					},
+					aggregate: {
+						count: 'id',
+					},
+				},
+			});
+
+			sharesCount.value = Number(response.data.data[0].count.id);
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loadingCount.value = false;
+		}
+	}
+
+	async function remove() {
+		if (!shareToDelete.value) return;
+
+		deleting.value = true;
+
+		try {
+			await api.delete(`/shares/${shareToDelete.value.id}`);
+			await refresh();
+			shareToDelete.value = null;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			deleting.value = false;
+		}
+	}
+
+	async function send() {
+		if (!shareToSend.value) return;
+
+		sending.value = true;
+
+		try {
+			const emailsParsed = sendEmails.value
+				.split(/,|\n/)
+				.filter((e) => e)
+				.map((email) => email.trim());
+
+			await api.post('/shares/invite', {
+				emails: emailsParsed,
+				share: shareToSend.value.id,
+			});
+
+			sendEmails.value = '';
+
+			shareToSend.value = null;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			sending.value = false;
+		}
 	}
 }
 
 async function copy(id: string) {
 	const url = window.location.origin + getRootPath() + 'admin/shared/' + id;
 	await copyToClipboard(url, { success: t('share_copy_link_success'), fail: t('share_copy_link_error') });
-}
-
-function select(id: string) {
-	shareToEdit.value = id;
-}
-
-function unselect() {
-	shareToEdit.value = null;
-}
-
-function refresh() {
-	getShares();
-}
-
-async function getShares() {
-	error.value = null;
-	loading.value = true;
-
-	try {
-		const response = await api.get(`/shares`, {
-			params: {
-				filter: {
-					_and: [
-						{
-							collection: {
-								_eq: props.collection,
-							},
-						},
-						{
-							item: {
-								_eq: props.primaryKey,
-							},
-						},
-					],
-				},
-				sort: 'name',
-			},
-		});
-
-		shares.value = response.data.data;
-	} catch (error: any) {
-		error.value = error;
-	} finally {
-		loading.value = false;
-	}
-}
-
-async function getSharesCount() {
-	error.value = null;
-	loadingCount.value = true;
-
-	try {
-		const response = await api.get(`/shares`, {
-			params: {
-				filter: {
-					_and: [
-						{
-							collection: {
-								_eq: props.collection,
-							},
-						},
-						{
-							item: {
-								_eq: props.primaryKey,
-							},
-						},
-					],
-				},
-				aggregate: {
-					count: 'id',
-				},
-			},
-		});
-
-		sharesCount.value = Number(response.data.data[0].count.id);
-	} catch (error: any) {
-		error.value = error;
-	} finally {
-		loadingCount.value = false;
-	}
-}
-
-async function remove() {
-	if (!shareToDelete.value) return;
-
-	deleting.value = true;
-
-	try {
-		await api.delete(`/shares/${shareToDelete.value.id}`);
-		await refresh();
-		shareToDelete.value = null;
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		deleting.value = false;
-	}
-}
-
-async function send() {
-	if (!shareToSend.value) return;
-
-	sending.value = true;
-
-	try {
-		const emailsParsed = sendEmails.value
-			.split(/,|\n/)
-			.filter((e) => e)
-			.map((email) => email.trim());
-
-		await api.post('/shares/invite', {
-			emails: emailsParsed,
-			share: shareToSend.value.id,
-		});
-
-		sendEmails.value = '';
-
-		shareToSend.value = null;
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		sending.value = false;
-	}
-}
-
-function onToggle(state: string) {
-	if (state === 'open' && shares.value === null) {
-		getShares();
-	}
 }
 </script>
 

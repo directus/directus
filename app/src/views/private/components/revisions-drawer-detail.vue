@@ -2,7 +2,7 @@
 import { useRevisions } from '@/composables/use-revisions';
 import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { ref, toRefs, watch, onMounted } from 'vue';
+import { onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
@@ -19,6 +19,10 @@ const { t } = useI18n();
 
 const { collection, primaryKey, version } = toRefs(props);
 
+const modalActive = ref(false);
+const modalCurrentRevision = ref<number | null>(null);
+const page = ref<number>(1);
+
 const {
 	revisions,
 	revisionsByDate,
@@ -32,9 +36,9 @@ const {
 	getRevisionsCount,
 } = useRevisions(collection, primaryKey, version);
 
-const modalActive = ref(false);
-const modalCurrentRevision = ref<number | null>(null);
-const page = ref<number>(1);
+onMounted(() => {
+	getRevisionsCount();
+});
 
 watch(
 	() => page.value,
@@ -43,19 +47,13 @@ watch(
 	},
 );
 
-onMounted(() => {
-	getRevisionsCount();
-});
-
 function openModal(id: number) {
 	modalCurrentRevision.value = id;
 	modalActive.value = true;
 }
 
-function onToggle(state: string) {
-	if (state === 'open' && revisions.value === null) {
-		getRevisions();
-	}
+function onToggle(open: boolean) {
+	if (open && revisions.value === null) getRevisions();
 }
 
 defineExpose({

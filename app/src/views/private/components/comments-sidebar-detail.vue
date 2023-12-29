@@ -2,16 +2,15 @@
 import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
-import { abbreviateNumber } from '@directus/utils';
 import { userName } from '@/utils/user-name';
-import type { User } from '@directus/types';
+import type { PrimaryKey, User } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
-import { ref } from 'vue';
+import { Ref, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
-import { onMounted } from 'vue';
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
@@ -22,15 +21,25 @@ type ActivityByDateDisplay = ActivityByDate & {
 
 const props = defineProps<{
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 }>();
 
 const { t } = useI18n();
 
-const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
-	useActivity(props.collection, props.primaryKey);
+const { collection, primaryKey } = toRefs(props);
 
-function useActivity(collection: string, primaryKey: string | number) {
+const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
+	useActivity(collection, primaryKey);
+
+onMounted(() => {
+	getActivityCount();
+});
+
+function onToggle(open: boolean) {
+	if (open && activity.value === null) getActivity();
+}
+
+function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	const regex = /\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
 	const activity = ref<ActivityByDateDisplay[] | null>(null);
 	const activityCount = ref(0);
@@ -38,6 +47,8 @@ function useActivity(collection: string, primaryKey: string | number) {
 	const loading = ref(false);
 	const loadingCount = ref(false);
 	const userPreviews = ref<Record<string, any>>({});
+
+	watch([collection, primaryKey], () => refresh());
 
 	return {
 		activity,
@@ -58,8 +69,8 @@ function useActivity(collection: string, primaryKey: string | number) {
 		try {
 			const response = await api.get(`/activity`, {
 				params: {
-					'filter[collection][_eq]': collection,
-					'filter[item][_eq]': primaryKey,
+					'filter[collection][_eq]': collection.value,
+					'filter[item][_eq]': primaryKey.value,
 					'filter[action][_eq]': 'comment',
 					sort: '-id', // directus_activity has auto increment and is therefore in chronological order
 					fields: [
@@ -141,12 +152,12 @@ function useActivity(collection: string, primaryKey: string | number) {
 						_and: [
 							{
 								collection: {
-									_eq: collection,
+									_eq: collection.value,
 								},
 							},
 							{
 								item: {
-									_eq: primaryKey,
+									_eq: primaryKey.value,
 								},
 							},
 							{
@@ -171,6 +182,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 	}
 
 	async function refresh() {
+		await getActivityCount();
 		await getActivity();
 	}
 }
@@ -204,16 +216,6 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	}
 
 	return {};
-}
-
-onMounted(() => {
-	getActivityCount();
-});
-
-function onToggle(state: string) {
-	if (state === 'open' && activity.value === null) {
-		getActivity();
-	}
 }
 </script>
 

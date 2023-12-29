@@ -93,8 +93,8 @@ const steps = computed(() => {
 	);
 });
 
-function onToggle(state: string) {
-	if (state === 'open' && revisionsByDate.value === null) {
+function onToggle(open: boolean) {
+	if (open && revisionsByDate.value === null) {
 		getRevisions();
 	}
 }
