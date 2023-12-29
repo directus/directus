@@ -3,7 +3,7 @@ import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { translate } from '@/utils/translate-object-values';
 import { Field } from '@directus/types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, orderBy } from 'lodash';
 import { ComputedRef, Ref, computed } from 'vue';
 
 export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
@@ -39,6 +39,12 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 			formFields.push(field);
 		}
 
-		return formFields;
+		const sortedFields = orderBy(
+			formFields,
+			[(field) => !!field.meta?.system, 'meta.group', 'meta.sort', 'meta.id'],
+			['desc', 'desc', 'asc', 'asc'],
+		);
+
+		return sortedFields;
 	});
 }
