@@ -30,7 +30,7 @@ import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
-import isUrlAllowed from '../../utils/is-url-allowed.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -285,6 +285,8 @@ const handleError = (e: any) => {
 	return e;
 };
 
+
+
 export function createOAuth2AuthRouter(providerName: string): Router {
 	const router = Router();
 	const env = useEnv();
@@ -297,7 +299,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const prompt = !!req.query['prompt'];
 			const redirect = req.query['redirect'];
 
-			if (typeof redirect === 'string' && isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+			if (isLoginRedirectAllowed(redirect, providerName)) {
 				throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect after login` });
 			}
 
