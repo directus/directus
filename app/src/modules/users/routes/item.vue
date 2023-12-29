@@ -19,7 +19,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import VForm from '@/components/v-form/v-form.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -30,8 +29,7 @@ const { t, locale } = useI18n();
 
 const router = useRouter();
 
-const systemForm = ref<HTMLElement | null>(null);
-const customForm = ref<InstanceType<typeof VForm> | null>(null);
+const form = ref<HTMLElement>();
 const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
@@ -107,10 +105,8 @@ const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed
 // These fields will be shown in the sidebar instead
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
-const systemFields = computed(() => {
+const fieldsFiltered = computed(() => {
 	return fields.value.filter((field) => {
-		if (!field.meta?.system) return;
-
 		// These fields should only be editable when creating new users or by administrators
 		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 			field.meta.readonly = true;
@@ -120,24 +116,14 @@ const systemFields = computed(() => {
 	});
 });
 
-const customFields = computed(() => {
-	return fields.value.filter((field) => !field.meta?.system);
-});
-
-const showCustomForm = computed(() => {
-	return customFields.value.length > 0 && !customFields.value.every((field) => field.meta?.hidden === true);
-});
-
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
 	if (isArchived.value === true) return t('unarchive');
 	return t('archive');
 });
 
-useShortcut('meta+s', saveAndStay, systemForm);
-useShortcut('meta+shift+s', saveAndAddNew, systemForm);
-useShortcut('meta+s', saveAndStay, customForm);
-useShortcut('meta+shift+s', saveAndAddNew, customForm);
+useShortcut('meta+s', saveAndStay, form);
+useShortcut('meta+shift+s', saveAndAddNew, form);
 
 function navigateBack() {
 	const backState = router.options.history.state.back;
@@ -408,27 +394,14 @@ function revert(values: Record<string, any>) {
 			</div>
 
 			<v-form
-				ref="systemForm"
+				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
-				:fields="systemFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="user"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
-				:show-divider="!customForm?.noVisibleFields"
-			/>
-
-			<v-form
-				ref="customForm"
-				v-model="edits"
-				:disabled="isNew ? false : updateAllowed === false"
-				:fields="customFields"
-				:loading="loading"
-				:initial-values="user"
-				:primary-key="primaryKey"
-				:validation-errors="validationErrors"
-				:show-no-visible-fields="false"
 			/>
 		</div>
 

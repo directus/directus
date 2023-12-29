@@ -8,16 +8,21 @@ import { ComputedRef, Ref, computed } from 'vue';
 
 export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 	return computed(() => {
-		const formFields = [];
+		const systemFields: Field[] = [];
+		const userFields: Field[] = [];
 
-		for (let field of cloneDeep(fields.value)) {
+		const clonedFields = cloneDeep(fields.value);
+
+		const sortedFields = orderBy(clonedFields, ['meta.group', 'meta.sort', 'meta.id'], ['desc', 'asc', 'asc']);
+
+		for (let field of sortedFields) {
 			const systemFake = field.field?.startsWith('$');
 			if (systemFake) continue;
 
 			field = translate(field);
 
 			if (!field.meta) {
-				formFields.push(field);
+				userFields.push(field);
 				continue;
 			}
 
@@ -36,15 +41,23 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 				(field as FormField).hideLoader = true;
 			}
 
-			formFields.push(field);
+			(field.meta.system ? systemFields : userFields).push(field);
 		}
 
-		const sortedFields = orderBy(
-			formFields,
-			[(field) => !!field.meta?.system, 'meta.group', 'meta.sort', 'meta.id'],
-			['desc', 'desc', 'asc', 'asc'],
-		);
-
-		return sortedFields;
+		return [
+			...systemFields,
+			...(systemFields.length > 0 && userFields.length > 0
+				? [
+						{
+							field: '$system_divider',
+							type: 'alias',
+							meta: { interface: 'presentation-divider', group: null },
+							hideLabel: true,
+							hideLoader: true,
+						} as unknown as Field,
+				  ]
+				: []),
+			...userFields,
+		];
 	});
 }
