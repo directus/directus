@@ -326,9 +326,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+			const redirect = req.query['redirect'];
+
+			if (typeof redirect === 'string' && isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+				throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect after login` });
+			}
 
 			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
+				{ verifier: codeVerifier, redirect, prompt },
 				env['SECRET'] as string,
 				{
 					expiresIn: '5m',
@@ -350,9 +355,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		'/callback',
 		express.urlencoded({ extended: false }),
 		(req, res) => {
-			const test = new URLSearchParams(req.body);
-			console.log('callback', test);
-			res.redirect(303, `./callback?${test}`);
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
 		respond,
 	);
@@ -378,7 +381,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
-			console.log(JSON.stringify({ redirect }));
 
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
@@ -424,10 +426,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}
 
-					if (isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
-						throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect login` });
-					}
-
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
@@ -438,10 +436,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				if (isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
-					throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect login` });
-				}
-
 				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
 					httpOnly: true,
 					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
