@@ -94,9 +94,7 @@ const steps = computed(() => {
 });
 
 function onToggle(open: boolean) {
-	if (open && revisionsByDate.value === null) {
-		getRevisions();
-	}
+	if (open && revisionsByDate.value === null) getRevisions();
 }
 </script>
 

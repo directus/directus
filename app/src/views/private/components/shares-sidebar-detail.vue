@@ -49,10 +49,8 @@ onMounted(() => {
 	getSharesCount();
 });
 
-function onToggle(state: string) {
-	if (state === 'open' && shares.value === null) {
-		getShares();
-	}
+function onToggle(open: boolean) {
+	if (open && shares.value === null) getShares();
 }
 
 function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
