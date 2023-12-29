@@ -83,9 +83,10 @@ The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline wi
 ### Replaced Extensions List Endpoints
 
 In previous releases, it was possible to `GET /extensions/:type` to retrieve a list of enabled extensions for a given
-type.
+type, with no specific permissions required.
 
 This has been replaced with a `GET /extensions` endpoint that returns all extensions along with their type and status.
+This endpoint requires admin authentication.
 
 ## Version 10.6.2
 
