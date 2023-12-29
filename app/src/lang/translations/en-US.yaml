@@ -1889,7 +1889,13 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
+    custom_formats_note:
+      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
     options_override: Options Override
+    options_override_note:
+      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
