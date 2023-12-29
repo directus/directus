@@ -294,8 +294,8 @@ importers:
         specifier: 8.17.1
         version: 8.17.1
       pino-http:
-        specifier: 8.6.0
-        version: 8.6.0
+        specifier: 8.6.1
+        version: 8.6.1
       pino-http-print:
         specifier: 3.1.0
         version: 3.1.0
@@ -15279,13 +15279,13 @@ packages:
       through2: 4.0.2
     dev: false
 
-  /pino-http@8.6.0:
-    resolution: {integrity: sha512-SMkt0R7nzoX76BhTlmCWg0s2F0UYKGeln8y+thL2OUcCxZbbPB1AqgrEMuHAjHyc7oBefext3Af3ZT3k9ieETw==}
+  /pino-http@8.6.1:
+    resolution: {integrity: sha512-J0hiJgUExtBXP2BjrK4VB305tHXS31sCmWJ9XJo2wPkLHa1NFPuW4V9wjG27PAc2fmBCigiNhQKpvrx+kntBPA==}
     dependencies:
       get-caller-file: 2.0.5
       pino: 8.17.1
       pino-std-serializers: 6.2.2
-      process-warning: 2.3.2
+      process-warning: 3.0.0
     dev: false
 
   /pino-pretty@10.3.0:
@@ -15896,6 +15896,10 @@ packages:
 
   /process-warning@2.3.2:
     resolution: {integrity: sha512-n9wh8tvBe5sFmsqlg+XQhaQLumwpqoAUruLwjCopgTmUBjJ/fjtBsJzKleCaIGBOMXYEhp1YfKl4d7rJ5ZKJGA==}
+    dev: false
+
+  /process-warning@3.0.0:
+    resolution: {integrity: sha512-mqn0kFRl0EoqhnL0GQ0veqFHyIN1yig9RHh/InzORTUiZHFRAur+aMtRkELNwGs9aNwKS6tg/An4NYBPGwvtzQ==}
     dev: false
 
   /process@0.11.10:
