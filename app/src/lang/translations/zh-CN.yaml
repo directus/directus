@@ -73,6 +73,7 @@ extension_hooks: 钩子
 extension_endpoints: 端点
 extension_operations: 操作
 extension_bundles: 包
+extension_reload_required: 需要重新加载页面
 enable: 启用
 disable: 禁用
 custom: 自定义
@@ -1221,6 +1222,8 @@ fields:
     last_access: 上次访问
     email_notifications: 电子邮件通知
     appearance: 外观
+    theme_light: 浅色
+    theme_dark: 深色
     theme_light_overrides: 亮色主题自定义
     theme_dark_overrides: 暗色主题自定义
   directus_settings:
@@ -1251,6 +1254,9 @@ fields:
     public_background: 公共背景
     public_note: 公共便笺
     theming: 默认主题
+    default_appearance: 默认外观
+    default_theme_light: 默认浅色主题
+    default_theme_dark: 默认深色主题
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
     files_and_thumbnails: 文件和存储
