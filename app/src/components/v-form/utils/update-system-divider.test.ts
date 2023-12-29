@@ -32,7 +32,7 @@ it('should hide system divider when no visible system fields', () => {
 	});
 });
 
-it('should hide system divider when no visible system fields', () => {
+it('should hide system divider when no visible user fields', () => {
 	const fields = cloneDeep(mockFields);
 	fields[2]!.meta!.hidden = true;
 
