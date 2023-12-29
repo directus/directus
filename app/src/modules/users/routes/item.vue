@@ -123,6 +123,10 @@ const customFields = computed(() => {
 	return fields.value.filter((field) => !field.meta?.system);
 });
 
+const showCustomForm = computed(() => {
+	return customFields.value.length > 0 && !customFields.value.every((field) => field.meta?.hidden === true);
+});
+
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
 	if (isArchived.value === true) return t('unarchive');
@@ -411,11 +415,11 @@ function revert(values: Record<string, any>) {
 				:initial-values="user"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
-				:show-divider="customFields.length > 0"
+				:show-divider="showCustomForm"
 			/>
 
 			<v-form
-				v-if="customFields.length > 0"
+				v-if="showCustomForm"
 				ref="customForm"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
