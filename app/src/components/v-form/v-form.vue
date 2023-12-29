@@ -120,6 +120,8 @@ const noVisibleFields = computed(() => {
 	});
 });
 
+defineExpose({ noVisibleFields });
+
 watch(
 	() => props.validationErrors,
 	(newVal, oldVal) => {

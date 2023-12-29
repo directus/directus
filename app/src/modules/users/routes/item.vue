@@ -19,6 +19,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
+import VForm from '@/components/v-form/v-form.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -29,8 +30,8 @@ const { t, locale } = useI18n();
 
 const router = useRouter();
 
-const systemForm = ref<HTMLElement>();
-const customForm = ref<HTMLElement>();
+const systemForm = ref<HTMLElement | null>(null);
+const customForm = ref<InstanceType<typeof VForm> | null>(null);
 const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
@@ -415,11 +416,10 @@ function revert(values: Record<string, any>) {
 				:initial-values="user"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
-				:show-divider="showCustomForm"
+				:show-divider="!customForm?.noVisibleFields"
 			/>
 
 			<v-form
-				v-if="showCustomForm"
 				ref="customForm"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
@@ -428,6 +428,7 @@ function revert(values: Record<string, any>) {
 				:initial-values="user"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
+				:show-no-visible-fields="false"
 			/>
 		</div>
 
