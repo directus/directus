@@ -1,6 +1,7 @@
 import {
 	ErrorCode,
 	InvalidCredentialsError,
+	InvalidPayloadError,
 	InvalidProviderConfigError,
 	InvalidProviderError,
 	InvalidTokenError,
@@ -29,6 +30,7 @@ import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
+import isUrlAllowed from '../../utils/is-url-allowed.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -317,7 +319,9 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		'/callback',
 		express.urlencoded({ extended: false }),
 		(req, res) => {
-			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+			const test = new URLSearchParams(req.body);
+			console.log('callback', test);
+			res.redirect(303, `./callback?${test}`);
 		},
 		respond,
 	);
@@ -343,6 +347,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
+			console.log(JSON.stringify({ redirect }));
 
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
@@ -385,6 +390,10 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}
 
+					if (isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+						throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect login` });
+					}
+
 					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
@@ -395,6 +404,10 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
+				if (isUrlAllowed(redirect, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+					throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect login` });
+				}
+
 				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
 					httpOnly: true,
 					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
