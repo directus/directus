@@ -39,8 +39,11 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
 		"dev": "NODE_ENV=development tsup",
