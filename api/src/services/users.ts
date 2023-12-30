@@ -259,10 +259,12 @@ export class UsersService extends ItemsService {
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
 			if (data['role']) {
-				// data['role'] has the following cases:
-				// - a string with existing role id
-				// - an object with existing role id for GraphQL mutations
-				// - an object with data for new role
+				/*
+				 * data['role'] has the following cases:
+				 * - a string with existing role id
+				 * - an object with existing role id for GraphQL mutations
+				 * - an object with data for new role
+				 */
 				const role = data['role']?.id ?? data['role'];
 
 				let newRole;
