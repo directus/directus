@@ -685,7 +685,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			for (const key of keys) {
 				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-					payload,
+					payloadWithA2O,
 					key,
 					opts,
 				);
@@ -774,7 +774,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						? ['items.update', `${this.collection}.items.update`]
 						: `${this.eventScope}.update`,
 				meta: {
-					payload,
+					payload: payloadAfterHooks,
 					keys,
 					collection: this.collection,
 				},
