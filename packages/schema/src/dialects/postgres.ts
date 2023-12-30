@@ -11,7 +11,7 @@ type RawColumn = {
 	schema: string;
 	data_type: string;
 	is_nullable: boolean;
-	is_indexed: boolean;
+	simple_index_name: string | null;
 	generation_expression: null | string;
 	default_value: null | string;
 	is_generated: boolean;
@@ -368,7 +368,7 @@ export default class Postgres implements SchemaInspector {
 			  rel.relname AS table,
 			  rel.relnamespace::regnamespace::text as schema,
 			  att.atttypid::regtype::text AS data_type,
-			  CASE WHEN idx.indisunique = false THEN true ELSE false END AS is_indexed,
+			  idx_rel.relname as simple_index_name,
 			  NOT att.attnotnull AS is_nullable,
 			  ${generationSelect}
 			  CASE
@@ -405,9 +405,7 @@ export default class Postgres implements SchemaInspector {
 			  LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
 			  LEFT JOIN LATERAL (
 				SELECT
-					indrelid,
-					indkey,
-					indisunique
+					indexrelid
 				FROM
 					pg_index idx
 				WHERE
@@ -416,6 +414,7 @@ export default class Postgres implements SchemaInspector {
 					AND idx.indisunique = false
 				LIMIT 1
 			) idx ON true
+			LEFT JOIN pg_class idx_rel ON idx_rel.oid=idx.indexrelid
 			WHERE
 			  rel.relnamespace IN (${schemaIn})
 			  ${table ? 'AND rel.relname = ?' : ''}
@@ -465,6 +464,10 @@ export default class Postgres implements SchemaInspector {
 
 			return {
 				...col,
+				simple_index: {
+					is_indexed: col.simple_index_name?.length && col.simple_index_name?.length > 0 ? true : false,
+					index_name: col.simple_index_name,
+				},
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment: constraintsForColumn.some((constraint) => constraint.has_auto_increment),

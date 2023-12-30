@@ -18,7 +18,7 @@ type RawColumn = {
 	schema: string;
 	data_type: string;
 	is_nullable: boolean;
-	is_indexed: boolean;
+	simple_index_name: string | null;
 	generation_expression: null | string;
 	default_value: null | string;
 	is_generated: boolean;
@@ -346,7 +346,7 @@ export default class CockroachDB implements SchemaInspector {
          SELECT
            att.attname AS name,
            rel.relname AS table,
-		   CASE WHEN idx.indisunique = false THEN true ELSE false END AS is_indexed,
+		   idx_rel.relname as simple_index_name,
            rel.relnamespace::regnamespace::text AS schema,
            format_type(att.atttypid, null) AS data_type,
            NOT att.attnotnull AS is_nullable,
@@ -385,18 +385,17 @@ export default class CockroachDB implements SchemaInspector {
            LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
            LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
 		   LEFT JOIN LATERAL (
-			SELECT
-				indrelid,
-				indkey,
-				indisunique
-			FROM
-				pg_index idx
-			WHERE
-				att.attrelid = idx.indrelid
-				AND att.attnum = ALL(idx.indkey)
-				AND idx.indisunique = false
-			LIMIT 1
-		) idx ON true
+			 SELECT
+				 indexrelid
+			 FROM
+				 pg_index idx
+			 WHERE
+				 att.attrelid = idx.indrelid
+				 AND att.attnum = ALL(idx.indkey)
+				 AND idx.indisunique = false
+			 LIMIT 1
+		 ) idx ON true
+		 LEFT JOIN pg_class idx_rel ON idx_rel.oid=idx.indexrelid
          WHERE
            rel.relnamespace IN (${schemaIn})
            ${table ? 'AND rel.relname = ?' : ''}
@@ -442,6 +441,10 @@ export default class CockroachDB implements SchemaInspector {
 
 			return {
 				...col,
+				simple_index: {
+					is_indexed: col.simple_index_name?.length && col.simple_index_name?.length > 0 ? true : false,
+					index_name: col.simple_index_name,
+				},
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment:

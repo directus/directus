@@ -26,7 +26,7 @@ type RawColumn = {
 	CONSTRAINT_TYPE: 'P' | 'U' | 'R' | null;
 	VIRTUAL_COLUMN: 'YES' | 'NO';
 	IDENTITY_COLUMN: 'YES' | 'NO';
-	IS_INDEXED: 'YES' | 'NO';
+	INDEX_NAME: string | null;
 };
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
@@ -45,7 +45,10 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		is_generated: rawColumn.VIRTUAL_COLUMN === 'YES',
 		is_nullable: rawColumn.NULLABLE === 'Y',
 		is_unique: rawColumn.CONSTRAINT_TYPE === 'U',
-		is_indexed: rawColumn.IS_INDEXED === 'YES',
+		simple_index: {
+			is_indexed: rawColumn.INDEX_NAME?.length && rawColumn.INDEX_NAME.length > 0 ? true : false,
+			index_name: rawColumn.INDEX_NAME,
+		},
 		is_primary_key: rawColumn.CONSTRAINT_TYPE === 'P',
 		has_auto_increment: rawColumn.IDENTITY_COLUMN === 'YES',
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
@@ -299,7 +302,7 @@ export default class oracleDB implements SchemaInspector {
             "ct"."CONSTRAINT_TYPE",
             "fk"."TABLE_NAME" "REFERENCED_TABLE_NAME",
             "fk"."COLUMN_NAME" "REFERENCED_COLUMN_NAME",
-            CASE WHEN ui.INDEX_NAME IS NOT NULL THEN 'YES' ELSE 'NO' END AS IS_INDEXED
+            ui.INDEX_NAME
           FROM "USER_TAB_COLS" "c"
           LEFT JOIN "USER_COL_COMMENTS" "cm"
             ON "c"."TABLE_NAME" = "cm"."TABLE_NAME"

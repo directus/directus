@@ -9,7 +9,10 @@ export interface Column {
 
 	is_nullable: boolean;
 	is_unique: boolean;
-	is_indexed: boolean;
+	simple_index: {
+		is_indexed: boolean | null;
+		index_name: string | null;
+	} | null;
 	is_primary_key: boolean;
 	is_generated: boolean;
 	generation_expression?: string | null;
