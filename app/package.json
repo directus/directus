@@ -91,7 +91,7 @@
 		"@types/wellknown": "0.5.8",
 		"@unhead/addons": "1.8.9",
 		"@unhead/vue": "1.8.9",
-		"@vitejs/plugin-vue": "4.5.2",
+		"@vitejs/plugin-vue": "4.6.2",
 		"@vue/test-utils": "2.4.3",
 		"@vueuse/core": "10.7.0",
 		"apexcharts": "3.45.0",
