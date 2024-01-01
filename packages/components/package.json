@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.17.6",
-		"@vitejs/plugin-vue": "4.5.2",
+		"@vitejs/plugin-vue": "4.6.2",
 		"@vitest/coverage-v8": "1.1.0",
 		"histoire": "0.17.6",
 		"rollup-plugin-node-externals": "6.1.2",
