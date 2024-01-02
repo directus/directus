@@ -1,6 +1,6 @@
 import type { Reference } from 'isolated-vm';
-import env from '../../../../env.js';
-import logger from '../../../../logger.js';
+import { useEnv } from '../../../../env.js';
+import { useLogger } from '../../../../logger.js';
 
 type Args<T> = T extends (...args: infer Args) => unknown ? Args : any[];
 type Result<T> = T extends (...args: any) => infer Result ? Result : unknown;
@@ -9,6 +9,9 @@ export async function callReference<T extends (...args: any[]) => unknown | Prom
 	fn: Reference<T>,
 	args: Args<T>,
 ): Promise<Reference<Result<T>>> {
+	const env = useEnv();
+	const logger = useLogger();
+
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 	try {

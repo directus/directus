@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-gcs",
-	"version": "10.0.14",
+	"version": "10.0.15",
 	"description": "GCS file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,6 +36,6 @@
 		"@vitest/coverage-v8": "1.1.0",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	}
 }

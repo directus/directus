@@ -1,8 +1,9 @@
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 export default async function count(collection: string): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	if (!collection) {
 		logger.error('Collection is required');

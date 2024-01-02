@@ -1,9 +1,10 @@
 import run from '../../../database/migrations/run.js';
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		logger.info('Running migrations...');

@@ -647,61 +647,53 @@ test.todo('nested a2o field', async () => {
 	// define database response mocks
 	const localDesiredFieldValue1 = randomIdentifier();
 	const localPkFieldValue1 = randomIdentifier();
-
-	const localRelationalFieldValue1: A2ORelation = {
-		foreignKey: [
-			{ column: foreignIdField11, value: 1 },
-			{ column: foreignIdField12, value: 2 },
-		],
-		foreignCollection: foreignTable1,
-	};
-
 	const localDesiredFieldValue2 = randomIdentifier();
 	const localPkFieldValue2 = randomIdentifier();
-
-	const localRelationalFieldValue2: A2ORelation = {
-		foreignKey: [{ column: foreignIdField2, value: 1 }],
-		foreignCollection: foreignTable2,
-	};
-
-	// @TODO change to deterministic generated aliases here instead of random values
-	const mockedRootData = [
-		{
-			[localDesiredFieldId]: localDesiredFieldValue1,
-			[localPkFieldId]: localPkFieldValue1,
-			[localRelationalField]: localRelationalFieldValue1,
-		},
-		{
-			[localDesiredFieldId]: localDesiredFieldValue2,
-			[localPkFieldId]: localPkFieldValue2,
-			[localRelationalField]: localRelationalFieldValue2,
-		},
-	];
-
 	const foreignField1Value1 = randomIdentifier();
 	const foreignField2Value1 = randomIdentifier();
-
-	const mockedDataFromNestedCollection1 = [
-		{
-			[foreignField1Id]: foreignField1Value1,
-			[foreignField2Id]: foreignField2Value1,
-		},
-	];
-
 	const foreignField1Value2 = randomIdentifier();
 	const foreignField2Value2 = randomIdentifier();
 
-	const mockedDataFromNestedCollection2 = [
-		{
-			[foreignField1Id]: foreignField1Value2,
-			[foreignField2Id]: foreignField2Value2,
-		},
-	];
-
 	vi.spyOn(driver, 'getDataFromSource')
-		.mockResolvedValueOnce(getMockedStream(mockedRootData))
-		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection1))
-		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[localDesiredFieldId]: localDesiredFieldValue1,
+					[localPkFieldId]: localPkFieldValue1,
+					[localRelationalField]: {
+						foreignKey: [
+							{ column: foreignIdField11, value: 1 },
+							{ column: foreignIdField12, value: 2 },
+						],
+						foreignCollection: foreignTable1,
+					} as A2ORelation,
+				},
+				{
+					[localDesiredFieldId]: localDesiredFieldValue2,
+					[localPkFieldId]: localPkFieldValue2,
+					[localRelationalField]: {
+						foreignKey: [{ column: foreignIdField2, value: 1 }],
+						foreignCollection: foreignTable2,
+					} as A2ORelation,
+				},
+			]),
+		)
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[foreignField1Id]: foreignField1Value1,
+					[foreignField2Id]: foreignField2Value1,
+				},
+			]),
+		)
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[foreignField1Id]: foreignField1Value2,
+					[foreignField2Id]: foreignField2Value2,
+				},
+			]),
+		);
 
 	const readableStream = await driver.query(query);
 	const actualResult = await readToEnd(readableStream);
