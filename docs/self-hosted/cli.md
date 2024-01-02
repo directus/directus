@@ -13,7 +13,7 @@ readTime: 7 min read
 
 ## Requirements
 
-- Node.js [v18](https://github.com/nodejs/release#release-schedule)
+- Node.js [v18.17.0](https://github.com/nodejs/release#release-schedule)
 
 ## Server
 
