@@ -35,7 +35,7 @@ export class ItemsHandler {
 				'items',
 				'INVALID_COLLECTION',
 				'The provided collection does not exists or is not accessible.',
-				uid
+				uid,
 			);
 		}
 
@@ -107,7 +107,7 @@ export class ItemsHandler {
 					'items',
 					'INVALID_PAYLOAD',
 					"Either 'ids', 'id' or 'query' is required for a DELETE request.",
-					uid
+					uid,
 				);
 			}
 		}

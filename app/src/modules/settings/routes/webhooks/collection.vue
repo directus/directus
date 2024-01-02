@@ -146,7 +146,7 @@ function clearFilters() {
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('webhooks_count', 0)" icon="anchor" center type="info">
+					<v-info :title="t('webhooks_count', 0)" icon="anchor" center>
 						{{ t('no_webhooks_copy') }}
 
 						<template #append>

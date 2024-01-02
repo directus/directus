@@ -214,7 +214,7 @@ describe('Logger Redact Tests', () => {
 										},
 									},
 								},
-								{ cookies: [`${cookieName}=${refreshToken2}`] }
+								{ cookies: [`${cookieName}=${refreshToken2}`] },
 							);
 
 							const logsGql = await loggerGql.getLogs();

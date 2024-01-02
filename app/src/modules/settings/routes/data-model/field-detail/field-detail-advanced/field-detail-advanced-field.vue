@@ -97,14 +97,14 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .form {
-	--form-vertical-gap: 32px;
-	--form-horizontal-gap: 32px;
+	--theme--form--row-gap: 32px;
+	--theme--form--column-gap: 32px;
 
 	@include form-grid;
 }
 
 .monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {

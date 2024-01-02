@@ -1,9 +1,8 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
 import { COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
-import env from '../env.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -13,6 +12,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_shares'));
 
@@ -43,7 +43,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const sharedInviteSchema = Joi.object({
@@ -69,7 +69,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -108,7 +108,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
@@ -172,7 +172,7 @@ router.get(
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -188,7 +188,7 @@ router.get(
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -224,7 +224,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -250,7 +250,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -272,7 +272,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -287,7 +287,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

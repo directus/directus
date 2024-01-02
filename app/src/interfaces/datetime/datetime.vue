@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		use24: true,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -30,7 +30,7 @@ const { displayValue, isValidValue } = useDisplayValue();
 function useDisplayValue() {
 	const displayValue = ref<string | null>(null);
 
-	const isValidValue = computed(() => isValid(parseValue(props.value!)));
+	const isValidValue = computed(() => (props.value ? isValid(parseValue(props.value)) : false));
 
 	watch(() => props.value, setDisplayValue, { immediate: true });
 

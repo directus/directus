@@ -215,13 +215,13 @@ Directus will attempt to [automatically type cast environment variables](#type-c
 clues. If you have a specific need for a given type, you can tell Directus what type to use for the given value by
 prefixing the value with `{type}:`. The following types are available:
 
-| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
-| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
-| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
-| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                                        |
+| Syntax Prefix | Example                                                                                                         | Output                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                                                  | `"value"`                                                                                            |
+| `number`      | `number:3306`                                                                                                   | `3306`                                                                                               |
+| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                  |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
+| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
 ---
 
@@ -235,6 +235,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                                               | `/`                          |
 | `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
 | `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `LOG_HTTP_IGNORE_PATHS`    | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
 | `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
 | `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
 | `SERVE_APP`                | Whether or not to serve the Admin application                                                                               | `true`                       |
@@ -244,6 +245,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
+| `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -291,7 +293,6 @@ into unexpected behaviors.
 | `DB_PASSWORD`              | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
 | `DB_FILENAME`              | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
 | `DB_CONNECTION_STRING`     | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
-| `DB_POOL__*`               | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
 | `DB_EXCLUDE_TABLES`        | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
 | `DB_CHARSET`               | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
 | `DB_VERSION`               | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
@@ -299,16 +300,21 @@ into unexpected behaviors.
 
 ::: tip Additional Database Variables
 
-All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
-Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
-database instance.
+All `DB_*` environment variables are passed to the `connection` configuration of a
+[`Knex` instance](https://knexjs.org/guide/#configuration-options). This means, based on your project's needs, you can
+extend the `DB_*` environment variables with any config you need to pass to the database instance.
 
-:::
+This includes:
 
-::: tip Pooling
+- `DB_POOL__` prefixed options which are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage).
 
-All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
-[Knex](http://knexjs.org#Installation-pooling)
+- `DB_SSL__` prefixed options which are passed to the respective database driver.
+
+  - For example `DB_SSL__CA` which can be used to specify a custom CA certificate for SSL connections. This is
+    **required** if the database server CA is not part of [Node.js' trust store](https://nodejs.org/api/tls.html).
+
+    Note: `DB_SSL__CA_FILE` may be preferred to load the CA directly from a file, see
+    [Environment Variable Files](#environment-variable-files) for more information.
 
 :::
 
@@ -898,18 +904,29 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                             | Description                                             | Default Value  |
-| ------------------------------------ | ------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`                    | Path to your local extensions folder.                   | `./extensions` |
-| `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed. | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.  | --             |
+| Variable                               | Description                                             | Default Value  |
+| -------------------------------------- | ------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.   | `false`        |
+| `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed. | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
+| `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
 
-<sup>[1]</sup> The `EXTENSIONS_CACHE_TTL` environment variable controls for how long custom app extensions (e.t.,
+<sup>[1]</sup> If `EXTENSIONS_LOCATION` is configured, this is the path to the extensions folder within the selected
+storage location.
+
+<sup>[2]</sup> `EXTENSIONS_AUTO_RELOAD` will not work when the `EXTENSION_LOCATION` environment variable is set.
+
+<sup>[3]</sup> The `EXTENSIONS_CACHE_TTL` environment variable controls for how long custom app extensions (e.t.,
 interface, display, layout, module, panel) are cached by browsers. Caching can speed-up the loading of the app as the
 code for the extensions doesn't need to be re-fetched from the server on each app reload. On the other hand, this means
 that code changes to app extensions won't be taken into account by the browser until `EXTENSIONS_CACHE_TTL` has expired.
 By default, extensions are not cached. The input data type for this environment variable is the same as
 [`CACHE_TTL`](#cache).
+
+<sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
+extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
+and then loaded from there.
 
 ## Messenger
 
@@ -989,13 +1006,14 @@ variables to automatically configure the first user:
 
 ## Telemetry
 
-To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
-Directus collects little and anonymized data about your environment. You can easily opt-out with the following
-environment variable:
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the user base,
+Directus collects little and anonymized data about your environment.
 
-| Variable    | Description                                                       | Default Value |
-| ----------- | ----------------------------------------------------------------- | ------------- |
-| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
+| Variable                  | Description                                                       | Default Value                    |
+| ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
+| `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
+| `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
+| `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
 ## Limits & Optimizations
 
@@ -1052,14 +1070,16 @@ These environment variables only exist when you're using the official Docker Con
 For more information on what these options do, please refer to
 [the `pm2` documentation](https://pm2.keymetrics.io/docs/usage/application-declaration/).
 
-| Variable                 | Description                                                        | Default     |
-| ------------------------ | ------------------------------------------------------------------ | ----------- |
-| `PM2_INSTANCES`          | Number of app instance to be launched                              | `1`         |
-| `PM2_EXEC_MODE`          | One of `fork`, `cluster`                                           | `'cluster'` |
-| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | —           |
-| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | —           |
-| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | —           |
-| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | —           |
-| `PM2_MAX_RESTARTS`       | Number of failed restarts before the process is killed             |  —          |
-| `PM2_RESTART_DELAY`      | Time to wait before restarting a crashed app                       | `0`         |
-| `PM2_AUTO_RESTART`       | Automatically restart Directus if it crashes unexpectedly          | `false`     |
+| Variable                      | Description                                                        | Default     |
+| ----------------------------- | ------------------------------------------------------------------ | ----------- |
+| `PM2_INSTANCES`<sup>[1]</sup> | Number of app instance to be launched                              | `1`         |
+| `PM2_EXEC_MODE`               | One of `fork`, `cluster`                                           | `'cluster'` |
+| `PM2_MAX_MEMORY_RESTART`      | App will be restarted if it exceeds the amount of memory specified | —           |
+| `PM2_MIN_UPTIME`              | Min uptime of the app to be considered started                     | —           |
+| `PM2_LISTEN_TIMEOUT`          | Time in ms before forcing a reload if app not listening            | —           |
+| `PM2_KILL_TIMEOUT`            | Time in milliseconds before sending a final SIGKILL                | —           |
+| `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             | —           |
+| `PM2_RESTART_DELAY`           | Time to wait before restarting a crashed app                       | `0`         |
+| `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`     |
+
+<sup>[1]</sup> [Redis](#redis) is required in case of multiple instances.

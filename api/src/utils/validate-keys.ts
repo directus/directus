@@ -10,7 +10,7 @@ export function validateKeys(
 	schema: SchemaOverview,
 	collection: string,
 	keyField: string,
-	keys: PrimaryKey | PrimaryKey[]
+	keys: PrimaryKey | PrimaryKey[],
 ) {
 	if (Array.isArray(keys)) {
 		for (const key of keys) {

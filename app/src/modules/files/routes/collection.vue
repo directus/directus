@@ -104,9 +104,9 @@ function useBatch() {
 			await refresh();
 
 			selection.value = [];
-		} catch (err: any) {
-			unexpectedError(err);
-			error.value = err;
+		} catch (e) {
+			unexpectedError(e);
+			error.value = e;
 		} finally {
 			confirmDelete.value = false;
 			deleting.value = false;
@@ -181,8 +181,8 @@ function useMovetoFolder() {
 
 			await nextTick();
 			await refresh();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			moveToDialogActive.value = false;
 			moving.value = false;
@@ -205,7 +205,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === 'directus_files'
+			(permission) => permission.action === 'update' && permission.collection === 'directus_files',
 		);
 
 		return !!updatePermissions;
@@ -216,7 +216,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
+			(permission) => permission.action === 'delete' && permission.collection === 'directus_files',
 		);
 
 		return !!deletePermissions;
@@ -227,7 +227,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_files'
+			(permission) => permission.action === 'create' && permission.collection === 'directus_files',
 		);
 
 		return !!createPermissions;
@@ -238,7 +238,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
+			(permission) => permission.action === 'create' && permission.collection === 'directus_folders',
 		);
 
 		return !!createPermissions;
@@ -344,7 +344,7 @@ function useFileUpload() {
 					done: 0,
 					total: files.length,
 				},
-				files.length
+				files.length,
 			),
 			type: 'info',
 			persist: true,
@@ -369,7 +369,7 @@ function useFileUpload() {
 							done,
 							total,
 						},
-						files.length
+						files.length,
 					),
 					loading: false,
 					progress: percentageDone,

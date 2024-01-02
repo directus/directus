@@ -1,8 +1,8 @@
 import os from 'node:os';
-import { getEnv } from '../env.js';
+import { useEnv } from '../env.js';
 
 export const validateIP = async (ip: string, url: string) => {
-	const env = getEnv();
+	const env = useEnv();
 
 	if (env['IMPORT_IP_DENY_LIST'].includes(ip)) {
 		throw new Error(`Requested URL "${url}" resolves to a denied IP address`);

@@ -110,18 +110,20 @@ function toggleInput(): void {
 	</component>
 </template>
 
-<style>
-body {
-	--v-checkbox-color: var(--theme--primary);
-	--v-checkbox-unchecked-color: var(--theme--foreground-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
 
+/*
+
+	Available Variables:
+
+		--v-checkbox-color            [var(--theme--primary)]
+		--v-checkbox-unchecked-color  [var(--theme--foreground-subdued)]
+
+*/
+
 .v-checkbox {
-	--v-icon-color: var(--v-checkbox-unchecked-color);
+	--v-icon-color: var(--v-checkbox-unchecked-color, var(--theme--foreground-subdued));
 	--v-icon-color-hover: var(--theme--primary);
 
 	position: relative;
@@ -143,7 +145,7 @@ body {
 			width: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--border-normal);
+			border-bottom: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 
@@ -151,7 +153,7 @@ body {
 	}
 
 	& .checkbox {
-		--v-icon-color: var(--v-checkbox-unchecked-color);
+		--v-icon-color: var(--v-checkbox-unchecked-color, var(--theme--foreground-subdued));
 
 		transition: color var(--fast) var(--transition);
 	}
@@ -171,15 +173,15 @@ body {
 	&.block {
 		position: relative;
 		width: 100%;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--theme--background);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--form--field--input--background);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 		}
 
 		&::before {
@@ -189,7 +191,7 @@ body {
 			z-index: 0;
 			width: 100%;
 			height: 100%;
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 
@@ -204,8 +206,7 @@ body {
 		}
 
 		&.block {
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
 		}
 	}
 
@@ -223,12 +224,12 @@ body {
 
 	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
-			--v-icon-color: var(--v-checkbox-color);
+			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
 		}
 
 		&.block {
 			.label {
-				color: var(--v-checkbox-color);
+				color: var(--v-checkbox-color, var(--theme--primary));
 			}
 		}
 	}

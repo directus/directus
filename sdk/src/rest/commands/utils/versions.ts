@@ -14,7 +14,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 export const saveToContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
-		item: Partial<Item>
+		item: Partial<Item>,
 	): RestCommand<Item, Schema> =>
 	() => {
 		throwIfEmpty(id, 'ID cannot be empty');
@@ -37,7 +37,7 @@ Content Version)
  */
 export const compareContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
-		id: DirectusVersion<Schema>['id']
+		id: DirectusVersion<Schema>['id'],
 	): RestCommand<
 		{
 			outdated: boolean;
@@ -69,7 +69,7 @@ export const promoteContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 		mainHash: string,
-		fields?: (keyof UnpackList<Item>)[]
+		fields?: (keyof UnpackList<Item>)[],
 	): RestCommand<string | number, Schema> =>
 	() => {
 		throwIfEmpty(id, 'ID cannot be empty');

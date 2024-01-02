@@ -1,17 +1,16 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ForbiddenError } from '@directus/errors';
-import { translateDatabaseError } from '../database/errors/translate.js';
-import { InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -25,6 +24,8 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
+
+const env = useEnv();
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -147,7 +148,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								database: trx,
 								schema: this.schema,
 								accountability: this.accountability,
-							}
+							},
 					  )
 					: payload;
 
@@ -176,8 +177,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// The primary key can already exist in the payload.
 			// In case of manual string / UUID primary keys it's always provided at this point.
-			// In case of an integer primary key, it might be provided as the user can specify the value manually.
+			// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
+
+			if (primaryKey) {
+				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+			}
 
 			// If a PK of type number was provided, although the PK is set the auto_increment,
 			// depending on the database, the sequence might need to be reset to protect future PK collisions.
@@ -187,9 +192,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			if (
 				primaryKey &&
+				pkField &&
 				!opts.bypassAutoIncrementSequenceReset &&
-				pkField!.type === 'integer' &&
-				pkField!.defaultValue === 'AUTO_INCREMENT'
+				['integer', 'bigInteger'].includes(pkField.type) &&
+				pkField.defaultValue === 'AUTO_INCREMENT'
 			) {
 				autoIncrementSequenceNeedsToBeReset = true;
 			}
@@ -230,7 +236,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
 				payloadWithPresets,
 				primaryKey,
-				opts
+				opts,
 			);
 
 			nestedActionEvents.push(...nestedActionEventsM2O);
@@ -407,7 +413,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
-						}
+						},
 				  )
 				: query;
 
@@ -453,7 +459,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
-						}
+						},
 				  )
 				: records;
 
@@ -469,7 +475,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		}
 
@@ -623,7 +629,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
-						}
+						},
 				  )
 				: payload;
 
@@ -681,7 +687,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
 					payload,
 					key,
-					opts
+					opts,
 				);
 
 				childrenRevisions.push(...revisions);
@@ -705,7 +711,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						origin: this.accountability!.origin,
 						item: key,
 					})),
-					{ bypassLimits: true }
+					{ bypassLimits: true },
 				);
 
 				if (this.schema.collections[this.collection]!.accountability === 'all') {
@@ -730,7 +736,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								data:
 									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
 								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-							}))
+							})),
 						)
 					).filter((revision) => revision.delta);
 
@@ -916,7 +922,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		}
 
@@ -939,7 +945,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						origin: this.accountability!.origin,
 						item: key,
 					})),
-					{ bypassLimits: true }
+					{ bypassLimits: true },
 				);
 			}
 		});

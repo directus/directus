@@ -11,7 +11,8 @@ author: Bryant Gillespie
 
 ## Explanation
 
-This recipe explains how to schedule content to be published on a future date for dynamic sites.
+This guide explains how to schedule content to be published on a future date for dynamic sites when using Directus as a
+[Headless CMS](https://directus.io/solutions/headless-cms).
 
 Scheduling content has fewer steps for a dynamic site. Since you are calling your Directus API at the time that a
 visitor requests a page from your site, all you need to do is add a filter to your query.
@@ -80,8 +81,7 @@ Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
 // Initialize the SDK.
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const directus = createDirectus('https://directus.example.com').with(rest());
 

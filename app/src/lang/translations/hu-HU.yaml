@@ -594,7 +594,6 @@ errors:
   VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
   INVALID_FOREIGN_KEY: Érvénytelen idegen kulcs
   UNKNOWN: Váratlan hiba történt
-  GRAPHQL_VALIDATION_EXCEPTION: Graphl validáció kivétel
   SERVICE_UNAVAILABLE: Szolgáltatás nem elérhető
   UNSUPPORTED_MEDIA_TYPE: Nem támogatott fájltípus
   UNEXPECTED_RESPONSE: Nem várt kiszolgálóhiba
@@ -721,7 +720,6 @@ layout_options: Elrendezés beállításai
 rows: Sorok
 columns: Oszlopok
 collection_setup: Gyűjtemény beállítások
-optional_system_fields: Opcionális rendszer mezők
 value_unique: Egyedi érték szükséges
 all_activity: Minden Tevékenység
 create_item: Elem létrehozása
@@ -1818,6 +1816,8 @@ displays:
     icon: Ikon
     border: Keret
     border_label: Keret mutatása
+    mask: Maszkolt
+    mask_label: Valós érték elrejtése
     text: Szöveg
     text_placeholder: Opcionális érték törlése...
   formatted-json-value:

@@ -8,8 +8,8 @@ author: Esther Agbaje
 
 <GuideMeta />
 
-Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the
-need to refresh the browser.
+Directus' Live Preview feature allows you to show changes in your website before publishing and without the need to
+refresh the browser. This is useful when using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms).
 
 [Next.js](https://nextjs.org/) Draft Mode feature renders pages on request instead of build time and fetches draft
 content instead of the published content.
@@ -50,7 +50,7 @@ following content:
 
 ```tsx
 import directus from '@/lib/directus';
-import { readItem, readItems } from '@directus/sdk/rest';
+import { readItem, readItems } from '@directus/sdk';
 
 export default async function Post({ params: { id } }: { params: { id: string } }) {
 	const post = await directus.request(readItem('Posts', id));
@@ -93,7 +93,7 @@ In your Next.js application, create a route handler file at `app/api/draft/route
 ```ts
 import { draftMode } from 'next/headers';
 import directus from '@/lib/directus';
-import { readItem } from '@directus/sdk/rest';
+import { readItem } from '@directus/sdk';
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -142,7 +142,7 @@ with the following code:
 
 ```tsx
 import directus from '@/lib/directus';
-import { readItem, readItems } from '@directus/sdk/rest';
+import { readItem, readItems } from '@directus/sdk';
 import { draftMode } from 'next/headers'; // [!code ++]
 
 export default async function Post({ params: { id } }: { params: { id: string } }) {

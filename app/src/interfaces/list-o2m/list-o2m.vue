@@ -53,7 +53,7 @@ const props = withDefaults(
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -87,7 +87,7 @@ const fields = computed(() => {
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.relatedCollection.collection
+			relationInfo.value.relatedCollection.collection,
 		);
 	}
 
@@ -153,7 +153,7 @@ const showingCount = computed(() => {
 		totalItemCount.value,
 		page.value,
 		limit.value,
-		!!(search.value || searchFilter.value)
+		!!(search.value || searchFilter.value),
 	);
 });
 
@@ -199,7 +199,7 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const spacings = {
@@ -211,7 +211,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -327,7 +327,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
@@ -477,11 +477,11 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
@@ -588,7 +588,8 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				background: var(--theme--background);
+				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -597,9 +598,9 @@ function getLinkForItem(item: DisplayItem) {
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
-	padding: var(--v-card-padding);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -626,7 +627,7 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -635,7 +636,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {
@@ -645,6 +646,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {

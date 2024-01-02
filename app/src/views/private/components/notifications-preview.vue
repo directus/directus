@@ -73,7 +73,9 @@ const { lastFour } = storeToRefs(notificationsStore);
 }
 
 .sidebar-button {
-	background-color: var(--background-normal-alt);
+	color: var(--theme--sidebar--section--toggle--foreground);
+	background-color: var(--theme--sidebar--section--toggle--background);
+	--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 }
 
 .inline {
@@ -81,7 +83,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 	right: 0;
 	bottom: 100%;
 	width: 100%;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {

@@ -17,7 +17,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 [managed Directus Cloud service](https://directus.cloud). You can also self-host Directus, ensuring the
 `WEBSOCKETS_ENABLED` environment variable is set to `true`.
 
-Create a new collection called `messages`, with a `date_created` field enabled in the _Optional System Fields_ pane on
+Create a new collection called `messages`, with a `date_created` field enabled in the _Optional Fields_ pane on
 collection creation. Create a text field called `text` and a second called `user`.
 
 If it doesn’t already exist, create a user with a role that can execute **read**, **create** and **update** operations
@@ -179,6 +179,15 @@ function readLatestItem() {
 
 Send the message over the connection by entering `readLatestItem()` your browser console. You will receive a message
 with the result of your query on the collection.
+
+## Pings To Keep Connection Active
+
+You may have noticed that, periodically, you will receive a message with a type of `ping`. This serves two purposes:
+
+1. To act as a periodic message to stop your connection from closing due to inactivity. This may be required by your
+   application technology stack.
+2. To verify that the connection is still active.
+
 
 ## In Summary
 

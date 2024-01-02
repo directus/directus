@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "10.1.5",
+	"version": "10.1.7",
 	"description": "Shared Vue composables for Directus use",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,22 +29,22 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"axios": "1.4.0",
+		"axios": "1.6.2",
 		"lodash-es": "4.17.21",
-		"nanoid": "4.0.2"
+		"nanoid": "5.0.4"
 	},
 	"devDependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/lodash-es": "4.17.7",
-		"@vitest/coverage-c8": "0.31.1",
-		"@vue/test-utils": "2.3.2",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"@types/lodash-es": "4.17.12",
+		"@vitest/coverage-v8": "1.1.0",
+		"@vue/test-utils": "2.4.3",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.1.1"
 	},
 	"peerDependencies": {
-		"vue": "3.3.4"
+		"vue": "3.3.13"
 	}
 }

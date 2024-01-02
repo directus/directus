@@ -3,11 +3,11 @@ layout: home
 ---
 
 <script setup lang="ts">
-import { data } from './.vitepress/data/blog.data.js';
-import Pattern from './.vitepress/components/home/Pattern.vue';
-import Footer from './.vitepress/components/home/Footer.vue';
-import Github from './.vitepress/components/home/icons/Github.vue';
-import Badge from './.vitepress/components/Badge.vue'
+import { data } from '@/data/blog.data.js';
+import Pattern from '@/components/home/Pattern.vue';
+import Footer from '@/components/home/Footer.vue';
+import Github from '@/components/home/icons/Github.vue';
+import Badge from '@/components/Badge.vue';
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
@@ -30,7 +30,7 @@ import Badge from './.vitepress/components/Badge.vue'
 <template #rest>
 
 ```js
-GET /items/products/4
+GET /items/articles/4
 	?fields[]=id
 	&fields[]=status
 	&fields[]=title

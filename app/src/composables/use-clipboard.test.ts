@@ -1,9 +1,8 @@
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h, unref } from 'vue';
 import { createI18n } from 'vue-i18n';
-
 import { useClipboard } from './use-clipboard';
 
 vi.mock('@/utils/notify', () => ({

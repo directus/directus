@@ -1,23 +1,54 @@
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
+import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
-	const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
+	const env = useEnv();
+	const logger = useLogger();
 
-	const loadedNames = localExtensions.map(({ name }) => name);
+	const loadedExtensions = new Map();
+	const duplicateExtensions: string[] = [];
 
-	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
+	const filterDuplicates = (extension: Extension) => {
+		const isExistingExtension = loadedExtensions.has(extension.name);
 
-	const localPackageExtensions = (await resolvePackageExtensions(env['EXTENSIONS_PATH'])).filter((extension) =>
-		filterDuplicates(extension)
-	);
+		if (isExistingExtension) {
+			duplicateExtensions.push(extension.name);
+			return;
+		}
 
-	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
+		if (extension.type === 'bundle') {
+			const bundleEntryNames = new Set();
 
-	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
-		filterDuplicates(extension)
-	);
+			for (const entry of extension.entries) {
+				if (bundleEntryNames.has(entry.name)) {
+					// Do not load entire bundle if it has duplicated entries
+					duplicateExtensions.push(extension.name);
+					return;
+				}
 
-	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+				bundleEntryNames.add(entry.name);
+			}
+		}
+
+		loadedExtensions.set(extension.name, extension);
+	};
+
+	(await getLocalExtensions(getExtensionsPath())).forEach(filterDuplicates);
+
+	(await resolvePackageExtensions(getExtensionsPath())).forEach(filterDuplicates);
+
+	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
+
+	if (duplicateExtensions.length > 0) {
+		logger.warn(
+			`Failed to load the following extensions because they have/contain duplicate names: ${duplicateExtensions.join(
+				', ',
+			)}`,
+		);
+	}
+
+	return Array.from(loadedExtensions.values());
 };

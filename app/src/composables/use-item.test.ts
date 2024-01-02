@@ -28,7 +28,7 @@ beforeEach(() => {
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
 

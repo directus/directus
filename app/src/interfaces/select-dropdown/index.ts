@@ -8,7 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.select-dropdown.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceSelectDropdown,
-	types: ['string', 'integer', 'float', 'bigInteger'],
+	types: ['string', 'integer', 'float', 'decimal', 'bigInteger'],
 	group: 'selection',
 	preview: PreviewSVG,
 	options: ({ field }) => [
@@ -47,6 +47,24 @@ export default defineInterface({
 									placeholder: '$t:interfaces.select-dropdown.choices_value_placeholder',
 								},
 								required: true,
+								width: 'half',
+							},
+						},
+						{
+							field: 'icon',
+							name: '$t:icon',
+							type: 'string',
+							meta: {
+								interface: 'select-icon',
+								width: 'half',
+							},
+						},
+						{
+							field: 'color',
+							name: '$t:color',
+							type: 'string',
+							meta: {
+								interface: 'select-color',
 								width: 'half',
 							},
 						},

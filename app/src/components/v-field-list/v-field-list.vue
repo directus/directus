@@ -7,26 +7,27 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 
-interface Props {
-	collection: string;
-	field?: string;
-	disabledFields?: string[];
-	includeFunctions?: boolean;
-	includeRelations?: boolean;
-	relationalFieldSelectable?: boolean;
-	allowSelectAll?: boolean;
-	rawFieldNames?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	field: undefined,
-	disabledFields: () => [],
-	includeFunctions: false,
-	includeRelations: true,
-	relationalFieldSelectable: true,
-	allowSelectAll: false,
-	rawFieldNames: false,
-});
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		field?: string;
+		disabledFields?: string[];
+		includeFunctions?: boolean;
+		includeRelations?: boolean;
+		relationalFieldSelectable?: boolean;
+		allowSelectAll?: boolean;
+		rawFieldNames?: boolean;
+	}>(),
+	{
+		field: undefined,
+		disabledFields: () => [],
+		includeFunctions: false,
+		includeRelations: true,
+		relationalFieldSelectable: true,
+		allowSelectAll: false,
+		rawFieldNames: false,
+	},
+);
 
 const emit = defineEmits(['add']);
 
@@ -56,7 +57,7 @@ const treeList = computed(() => {
 	return list;
 
 	function setDisabled(
-		field: (typeof treeListOriginal.value)[number]
+		field: (typeof treeListOriginal.value)[number],
 	): (typeof treeListOriginal.value)[number] & { disabled: boolean } {
 		let disabled = field.group || false;
 

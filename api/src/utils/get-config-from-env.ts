@@ -1,13 +1,13 @@
 import camelcase from 'camelcase';
 import { set } from 'lodash-es';
-import { getEnv } from '../env.js';
+import { useEnv } from '../env.js';
 
 export function getConfigFromEnv(
 	prefix: string,
 	omitPrefix?: string | string[],
-	type: 'camelcase' | 'underscore' = 'camelcase'
+	type: 'camelcase' | 'underscore' = 'camelcase',
 ): Record<string, any> {
-	const env = getEnv();
+	const env = useEnv();
 
 	const config: any = {};
 

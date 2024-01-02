@@ -18,16 +18,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
-import { version } from '../directus/package.json';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	define: {
-		__DIRECTUS_VERSION__: JSON.stringify(version),
-	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -48,27 +44,34 @@ export default defineConfig({
 		},
 	],
 	resolve: {
-		alias: [
-			{ find: '@', replacement: path.resolve(__dirname, 'src') },
-			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
-		],
+		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
-	server: {
-		port: 8080,
-		proxy: {
-			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				changeOrigin: true,
+	...(!process.env.HISTOIRE && {
+		server: {
+			port: 8080,
+			proxy: {
+				'^/(?!admin)': {
+					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
+					changeOrigin: true,
+				},
+			},
+			fs: {
+				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 			},
 		},
-		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
-		},
-	},
+	}),
 	test: {
 		environment: 'happy-dom',
 		setupFiles: ['src/__setup__/mock-globals.ts'],
+		// See https://github.com/vitest-dev/vitest/issues/4074#issuecomment-1787934252
+		deps: {
+			optimizer: {
+				web: {
+					enabled: false,
+				},
+			},
+		},
 	},
 });
 
@@ -142,6 +145,13 @@ function directusExtensions() {
 
 		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
 
-		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
+		// default to enabled for app extension in developer mode
+		const extensionSettings = extensions.flatMap((extension) =>
+			extension.type === 'bundle'
+				? extension.entries.map((entry) => ({ name: `${extension.name}/${entry.name}`, enabled: true }))
+				: { name: extension.name, enabled: true },
+		);
+
+		extensionsEntrypoint = generateExtensionsEntrypoint(extensions, extensionSettings);
 	}
 }

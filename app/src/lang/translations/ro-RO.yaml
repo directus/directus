@@ -27,6 +27,7 @@ method: Metodă
 published: Publicat
 draft: Ciornă
 archived: Arhivat
+extensions: Extensii
 modules: Module
 module_bar: Bară module
 logs: Log-uri
@@ -35,6 +36,7 @@ tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 location: Locație
+collection_names_are_case_sensitive: Numele colecțiilor sunt sensibile la distincția dintre majuscule și minuscule
 condition_rules: Reguli
 input: Input
 maps: Hărți
@@ -55,10 +57,25 @@ modifier: Modificator
 extension_interface: Interfață
 extension_display: Afişare
 extension_layout: Aspect
+extension_module: Compartiment
 extension_panel: Panou
 extension_hook: Cârlig
+extension_endpoint: Punct final
+extension_operation: Operațiune
+extension_bundle: Pachet
+extension_interfaces: Interfețe
+extension_displays: Afișaje
+extension_layouts: Aranjamente
 extension_modules: Module
+extension_panels: Panouri
+extension_hooks: Cârlige
+extension_endpoints: Puncte finale
+extension_operations: Operațiuni
+extension_bundles: Pachete
+extension_reload_required_copy: Este necesară o reîncărcare a paginii pentru a vedea modificările după activarea sau dezactivarea extensiilor aplicației.
+extension_reload_now: Reîncarcă acum
 enable: Activare
+disable: Dezactivează
 custom: Personalizat
 hook: Cârlig
 fill_width: Umple lățimea
@@ -87,6 +104,10 @@ create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
+create_custom_translation: Creați traducere personalizată
+edit_custom_translation: Editați traducerea personalizată
+no_custom_translations: Fără Traduceri Personalizate
+no_custom_translations_copy: Nu există incă nicio traducere personalizată.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -102,7 +123,31 @@ rename_folder: Redenumește dosarul
 delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
+keep: Păstrează
+version: Versiune
+version_key: Cheie de versiune
+version_name: Nume Versiune
+main_version: Principal
+switch_version: Schimbă versiunea
+switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
+create_version: Creați versiune
+rename_version: Redenumiți versiunea
+compare_version: Comparați versiunile
+save_version: Salvează versiunea
+promote_version: Promovați versiunea
+promote_version_disabled: Fără modificări
+promote_version_drawer_title: Promovează {version} ca versiunea principală
+promote_version_changes: Modificări
 promote_version_preview: Previzualizare
+outdated_notice: >-
+  Elementul principal a fost actualizat de când a fost creată această versiune. Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+promote_notice: >-
+  Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+delete_version: Ștergeți versiunea
+delete_version_copy: >-
+  Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
+delete_on_promote_copy: >-
+  Vrei să ștergi sau să păstrezi versiunea "{version}" după promovare?
 reset_bookmark: Resetează semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
@@ -124,6 +169,7 @@ archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Următoarele permisiuni minime sunt aplicate automat când "Acces aplicație" este activată. Puteți acorda permisiuni suplimentare dacă este necesar, dar nu puteți reduce permisiunile sub acest nivel.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -147,7 +193,12 @@ validationError:
   nnull: Valoarea nu poate fi nulă
   required: Valoarea este obligatorie
   unique: Valoarea trebuie să fie unică
+  email: Valoarea trebuie să fie o adresă de e-mail validă
   regex: Valoarea nu are formatul corect
+  starts_with: Valoarea trebuie să înceapă cu {substring}
+  istarts_with: Valoarea trebuie să înceapă cu {substring}
+  nstarts_with: Valoarea nu poate începe cu {substring}
+  nistarts_with: Valoarea nu poate începe cu {substring}
 all_access: Acces complet
 no_access: Fără acces
 use_custom: Acces personalizat
@@ -678,7 +729,6 @@ layout_options: Opțiuni aspect
 rows: Rânduri
 columns: Coloane
 collection_setup: Configurare colecție
-optional_system_fields: Câmpuri de sistem opționale
 value_unique: Valoarea trebuie să fie unică
 all_activity: Toată activitatea
 create_item: Creează element
@@ -1675,6 +1725,8 @@ displays:
     icon: Pictogramă
     border: Chenar
     border_label: Arată chenarul
+    mask: Mascat
+    mask_label: Ascunde valoarea reală
     text: Text
     text_placeholder: Suprascrie valoarea opțională...
   formatted-json-value:

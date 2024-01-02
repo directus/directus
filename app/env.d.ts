@@ -1,3 +1,2 @@
 /// <reference types="vite/client" />
-
-declare const __DIRECTUS_VERSION__: string;
+/// <reference types="@histoire/plugin-vue/components" />

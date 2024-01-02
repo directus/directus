@@ -1,3 +1,4 @@
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
@@ -6,9 +7,7 @@ import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { ForbiddenError } from '@directus/errors';
-import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -17,6 +16,8 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -93,7 +94,7 @@ export class UsersService extends ItemsService {
 						context: {
 							value: password,
 						},
-					})
+					}),
 				);
 			}
 		}
@@ -139,9 +140,11 @@ export class UsersService extends ItemsService {
 	/**
 	 * Get basic information of user identified by email
 	 */
-	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string; password: string }> {
+	private async getUserByEmail(
+		email: string,
+	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
 		return await this.knex
-			.select('id', 'role', 'status', 'password')
+			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
 			.first();
@@ -256,10 +259,21 @@ export class UsersService extends ItemsService {
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
 			if (data['role']) {
-				// data['role'] will be an object with id with GraphQL mutations
-				const roleId = data['role']?.id ?? data['role'];
+				/*
+				 * data['role'] has the following cases:
+				 * - a string with existing role id
+				 * - an object with existing role id for GraphQL mutations
+				 * - an object with data for new role
+				 */
+				const role = data['role']?.id ?? data['role'];
 
-				const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
+				let newRole;
+
+				if (typeof role === 'string') {
+					newRole = await this.knex.select('admin_access').from('directus_roles').where('id', role).first();
+				} else {
+					newRole = role;
+				}
 
 				if (!newRole?.admin_access) {
 					await this.checkRemainingAdminExistence(keys);
@@ -393,13 +407,13 @@ export class UsersService extends ItemsService {
 				const subjectLine = subject ?? "You've been invited";
 
 				await mailService.send({
-					to: email,
+					to: user?.email ?? email,
 					subject: subjectLine,
 					template: {
 						name: 'user-invitation',
 						data: {
-							url: this.inviteUrl(email, url),
-							email,
+							url: this.inviteUrl(user?.email ?? email, url),
+							email: user?.email ?? email,
 						},
 					},
 				});
@@ -451,7 +465,7 @@ export class UsersService extends ItemsService {
 			accountability: this.accountability,
 		});
 
-		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
+		const payload = { email: user.email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
 
 		const acceptURL = url
@@ -461,13 +475,13 @@ export class UsersService extends ItemsService {
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
-			to: email,
+			to: user.email,
 			subject: subjectLine,
 			template: {
 				name: 'password-reset',
 				data: {
 					url: acceptURL,
-					email,
+					email: user.email,
 				},
 			},
 		});

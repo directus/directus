@@ -35,6 +35,7 @@ tile_size: Title størrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Placering
+collection_names_are_case_sensitive: Samlingsnavne skelner mellem store og små bogstaver
 condition_rules: Tilstandsregler
 input: Input
 maps: Kort
@@ -57,7 +58,12 @@ extension_display: Vis
 extension_layout: Sideopsætning
 extension_panel: Stykke
 extension_hook: Krog
+extension_bundle: Bundt
+extension_interfaces: Grænseflader
+extension_displays: Viser
+extension_layouts: Layout
 extension_modules: Moduler
+extension_panels: Paneler
 enable: Aktiver
 custom: Brugertilpasset
 hook: Krog
@@ -102,6 +108,7 @@ rename_folder: Omdøb mappe
 delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
+switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
 promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
@@ -124,6 +131,7 @@ archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
 reset_system_permissions_to: 'Nulstil systemtilladelser til:'
 reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
+the_following_are_minimum_permissions: Følgende minimumstilladelser anvendes automatisk, når "Appadgang" er aktiveret. Du kan give yderligere tilladelser, hvis det er nødvendigt, men du kan ikke reducere tilladelser til under dette niveau.
 app_access_minimum: Minimum app-adgang
 recommended_defaults: Anbefalede standarder
 unarchive: Fjern fra arkiv
@@ -591,7 +599,6 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
   UNKNOWN: Uventet Fejl
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-valideringsundtagelse
   SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
   UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
   UNEXPECTED_RESPONSE: Uventet serversvar
@@ -718,7 +725,6 @@ layout_options: Layout indstillinger
 rows: Rækker
 columns: Kolonner
 collection_setup: Opsætning af samling
-optional_system_fields: Valgfrie systemfelter
 value_unique: Værdien skal være unik
 all_activity: Al aktivitet
 create_item: Opret element
@@ -1796,6 +1802,8 @@ displays:
     icon: Ikon
     border: Kant
     border_label: Vis kant
+    mask: Maskeret
+    mask_label: Skjul den reelle værdi
     text: Tekst
     text_placeholder: Valgfri værdi tilsidesættelse...
   formatted-json-value:

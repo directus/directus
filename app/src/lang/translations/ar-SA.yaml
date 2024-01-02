@@ -35,7 +35,6 @@ tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 location: الموقع
-collection_names_are_case_sensitive: Collection names are case sensitive
 condition_rules: قوانين الشرط
 input: إدخال
 maps: الخرائط
@@ -90,7 +89,6 @@ create_webhook: إنشاء Webhook
 create_custom_translation: إنشاء ترجمة مخصصة
 edit_custom_translation: إنشاء ترجمة مخصصة
 no_custom_translations: ترجمات مخصصة
-no_custom_translations_copy: There are no custom translations yet.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
@@ -152,14 +150,10 @@ validationError:
   required: هذه القيمة مطلوبة
   unique: القيمة يجب أن تكون
   regex: القيمة لا تحتوي على التنسيق الصحيح
-  starts_with: 'https://crowdin. com/translate/directus/70/en-ar? filter=basic&value=0#'
-  istarts_with: Arabic Translations
   nstarts_with: يجب أن لا تحتوي القيمة على {substring}
-  nistarts_with: Arabic Translations
+  nistarts_with: يجب أن لا تحتوي القيمة على {substring}
   ends_with: يجب أن لا تحتوي القيمة على {substring}
   iends_with: Value has to end with {substring}
-  nends_with: Translations
-  niends_with: Translations
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص
@@ -169,7 +163,6 @@ allow_multiple: السماح بالاختيار المتعدد
 allow_multiple_to_be_open: السماح بالفتح المتعدد
 enter_value_to_replace_nulls: الرجاء إدخال قيمة جديدة لاستبدال أي ULLL حاليا داخل هذا الحقل.
 field_standard: قياسي
-field_presentation: Presentation & Aliases
 field_file: ملف واحد
 field_files: عدة ملفات
 field_m2o: العلاقة
@@ -186,7 +179,6 @@ permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
-presentation_and_aliases: Presentation & Aliases
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
@@ -241,7 +233,6 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 date_range: فترة التاريخ
-translation_key_placeholder: ARABIC TRANSLATIONS
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
@@ -267,8 +258,8 @@ create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
 refresh_interval: الفاصل الزمني للتحيين
 no_refresh: المتابعة على أية حال
-refresh_interval_seconds: تحديث فوراً <unk> كل ثانية <unk> كل {seconds} ثانية
-refresh_interval_minutes: كل دقيقة <unk> كل {minutes} دقيقة
+refresh_interval_seconds: تحديث فوراً | كل ثانية | كل {seconds} ثانية
+refresh_interval_minutes: كل دقيقة | كل {minutes} دقيقة
 auto_generate: إنشاء تلقائي
 this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
 click_here: اضغط هنا
@@ -730,7 +721,6 @@ layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
 collection_setup: لا توجد مجموعات الإعداد
-optional_system_fields: حقول النظام الاختيارية
 value_unique: القيمة يجب أن تكون
 all_activity: كل النشاط
 create_item: أنشئ عنصر
@@ -1575,6 +1565,8 @@ displays:
     suffix: لاحقة
     color: لون
     icon: أيقونة
+    mask: مقنع
+    mask_label: إخفاء القيمة الحقيقية
     text: نص
   icon:
     icon: أيقونة

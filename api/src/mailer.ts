@@ -1,7 +1,7 @@
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
-import env from './env.js';
-import logger from './logger.js';
+import { useEnv } from './env.js';
+import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
@@ -12,6 +12,9 @@ let transporter: Transporter;
 
 export default function getMailer(): Transporter {
 	if (transporter) return transporter;
+
+	const env = useEnv();
+	const logger = useLogger();
 
 	const transportName = env['EMAIL_TRANSPORT'].toLowerCase();
 
@@ -63,7 +66,7 @@ export default function getMailer(): Transporter {
 					domain: env['EMAIL_MAILGUN_DOMAIN'],
 				},
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
-			}) as any
+			}) as any,
 		);
 	} else if (transportName === 'sendgrid') {
 		const sg = require('nodemailer-sendgrid');
@@ -71,7 +74,7 @@ export default function getMailer(): Transporter {
 		transporter = nodemailer.createTransport(
 			sg({
 				apiKey: env['EMAIL_SENDGRID_API_KEY'],
-			}) as any
+			}) as any,
 		);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');

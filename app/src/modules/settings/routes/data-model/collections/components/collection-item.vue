@@ -24,7 +24,7 @@ const toggleCollapse = () => {
 };
 
 const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
 );
 
 function onGroupSortChange(collections: Collection[]) {
@@ -74,6 +74,7 @@ function onGroupSortChange(collections: Collection[]) {
 				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
 				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
 				clickable
+				class="collapse-toggle"
 				@click.stop.prevent="toggleCollapse"
 			/>
 			<collection-options
@@ -86,13 +87,13 @@ function onGroupSortChange(collections: Collection[]) {
 		<transition-expand class="collection-items">
 			<draggable
 				v-if="isCollectionExpanded"
-				force-fallback
 				:model-value="nestedCollections"
 				:group="{ name: 'collections' }"
 				:swap-threshold="0.3"
 				class="drag-container"
 				item-key="collection"
 				handle=".drag-handle"
+				v-bind="{ 'force-fallback': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #item="{ element }">
@@ -109,7 +110,7 @@ function onGroupSortChange(collections: Collection[]) {
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .drag-container {
 	margin-top: 8px;
 	margin-left: 20px;
@@ -125,7 +126,7 @@ function onGroupSortChange(collections: Collection[]) {
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	pointer-events: none;
 }
 
@@ -157,5 +158,13 @@ function onGroupSortChange(collections: Collection[]) {
 
 .drag-handle {
 	cursor: grab;
+}
+
+.collapse-toggle {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	&:hover {
+		--v-icon-color: var(--theme--foreground);
+	}
 }
 </style>

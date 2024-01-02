@@ -10,9 +10,9 @@
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
-Butterfield
 (C|)ancelling
 (C|c)ancelled
+(C|c)hangesets?
 (C|c)harset
 (C|c)heckboxes
 (C|c)loudinary
@@ -24,6 +24,7 @@ Butterfield
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)ev
 (D|d)onut
 (D|d)ropdown
 (D|d)ropdowns
@@ -122,15 +123,13 @@ Base64
 Blackbox
 buildout
 Butterfield
+Butterfield
 camelCase
 Capterra
 Cardgroup
 cardinality
 CDNs?
 changelogs
-changeset
-changesets
-Changesets
 CLA
 CLI
 CloudFront
@@ -139,7 +138,9 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
+CollectionsService
 CommonJS
 composables
 config-options
@@ -166,9 +167,9 @@ customizations
 DateTime
 DDoS
 destructured
-Dev
 devs
 Devtools
+destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -198,7 +199,9 @@ EXIF
 fallbacks
 falsy
 FavIcon
+FieldsService
 filepath
+FilesService
 free-form
 frontend
 G2
@@ -236,6 +239,7 @@ intwined
 IoT
 ISO8601
 iss
+ItemsService
 iteratively
 Jamstack
 Javascript
@@ -353,6 +357,7 @@ reframe
 REKT
 relationally
 relationally-linked
+RelationsService
 repo
 repurpose
 S3
@@ -398,7 +403,7 @@ SVGs?
 TablePlus
 tfa
 TFA
-Theming
+(T|t)heming
 TileJSON
 TinyMCE
 TLS
@@ -417,6 +422,7 @@ Ungrouped
 unintuitive
 unpaused
 unselectable
+unstyled
 upscaled
 upvotes
 userbase

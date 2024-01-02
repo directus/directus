@@ -30,7 +30,7 @@ Login to your new project using the URL in your email inbox or on your Directus 
 
 _Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/projects)._
 
-== Self-Hosted Installation
+== Docker Installation
 
 You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
@@ -46,6 +46,19 @@ directus/directus
 
 _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
 
+== NPM Installation
+
+You can initialize a new Directus project using the CLI command: `npm init directus-project`.
+
+Follow prompts to configure your database and create your first admin user.
+
+To start Directus locally, run `npx directus start`.
+
+:::danger Docker is Recommended
+
+While this method works and is maintained, it is not recommended. Docker removes environment-specific quirks that can
+lead to Directus not running properly in some contexts.
+
 :::
 
 ## 2. Create a Collection
@@ -57,8 +70,8 @@ Once logged in, you're greeted with the option to create your first
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    For the sake of this demo, we'll call ours `articles`, but feel free to make it your own!
-4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional System Fields"** menu
-   will open.\
+4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional Fields"** menu will
+   open.\
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 

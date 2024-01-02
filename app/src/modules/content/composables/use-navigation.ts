@@ -11,7 +11,7 @@ export function useNavigation(currentCollection: Ref<string | null>) {
 		activeGroups = ref(
 			collectionsStore.collections
 				.filter((collection) => collection.meta?.collapse === 'open' || collection.meta?.collapse === 'locked')
-				.map(({ collection }) => collection)
+				.map(({ collection }) => collection),
 		);
 	}
 
@@ -38,7 +38,7 @@ export function useNavigation(currentCollection: Ref<string | null>) {
 
 			activeGroups.value = [...activeGroups.value, ...collectionsToAdd];
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { showHidden, activeGroups };

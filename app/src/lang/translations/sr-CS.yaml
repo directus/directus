@@ -550,7 +550,6 @@ layout_options: Opcije Izgleda
 rows: Redova
 columns: Kolona
 collection_setup: Podešavanje Kolekcije
-optional_system_fields: Neobavezna Sistemska Polja
 value_unique: Vrijednost mora biti jedinstvena
 all_activity: Sva Aktivnost
 create_item: Napravi Stavku
@@ -1208,6 +1207,8 @@ displays:
     suffix: Sufiks
     color: Boja
     icon: Ikonica
+    mask: Maskirano
+    mask_label: Sakrij pravu vrijednost
     text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost

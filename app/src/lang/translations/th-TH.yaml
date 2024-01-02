@@ -625,7 +625,6 @@ layout_options: ตัวเลือกเค้าโครง
 rows: แถว
 columns: คอลัมน์
 collection_setup: การตั้งค่าคอลเลกชัน
-optional_system_fields: ฟิลด์ระบบอื่นๆ ที่ไม่จำเป็น
 value_unique: ค่าต้องไม่ซ้ำ
 all_activity: กิจกรรมทั้งหมด
 create_item: สร้างไอเท็ม
@@ -1378,6 +1377,8 @@ displays:
     suffix: คำต่อท้าย
     color: สี
     icon: ไอคอน
+    mask: กำหนดหน้ากาก
+    mask_label: ซ่อนค่าจริง
     text: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว

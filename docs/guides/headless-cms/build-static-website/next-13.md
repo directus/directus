@@ -9,8 +9,9 @@ author: Kevin Lewis
 > {{ $frontmatter.description }}
 
 [Next.js](https://nextjs.org/) is a popular JavaScript framework based on React.js. In this tutorial, you will learn how
-to build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title,
-create new pages dynamically based on Directus items, and build a blog.
+to build a website using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms). You will store,
+retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and
+build a blog.
 
 ## Before You Start
 
@@ -56,8 +57,7 @@ To share a single instance of the Directus JavaScript SDK between multiple pages
 file that can be imported later. Create a new directory called `lib` and a new file called `directus.js` inside of it.
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest } from '@directus/sdk/rest';
+import { createDirectus, rest } from '@directus/sdk';
 
 const directus = createDirectus('https://directus.example.com').with(rest());
 
@@ -87,7 +87,7 @@ Inside of the `app` directory, create a new file called `page.tsx`.
 
 ```jsx
 import directus from 'lib/directus';
-import { readItems } from '@directus/sdk/rest';
+import { readItems } from '@directus/sdk';
 
 async function getGlobals() {
 	return directus.request(readItems('global'));
@@ -104,9 +104,9 @@ export default async function HomePage() {
 }
 ```
 
-Type `npm run dev` in your terminal to start the Next development server and open `http://localhost:3000` in your
-browser. You should see data from your Directus Global collection in your page. Some additional files will be created by
-Next that it expects, but do not yet exist - these can be safely ignored for now.
+Type `npm run dev` in your terminal to start the Next development server and open http://localhost:3000 in your browser.
+You should see data from your Directus Global collection in your page. Some additional files will be created by Next
+that it expects, but do not yet exist - these can be safely ignored for now.
 
 ## Creating Pages With Directus
 
@@ -123,7 +123,7 @@ single file can be used for all of the top-level pages.
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest';
+import { readItem } from '@directus/sdk';
 
 async function getPage(slug) {
 	try {
@@ -145,8 +145,8 @@ export default async function DynamicPage({ params }) {
 }
 ```
 
-Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
+Go to http://localhost:3000/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
+single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
 Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
@@ -179,7 +179,7 @@ Inside of the `app` directory, create a new subdirectory called `blog` and a new
 
 ```jsx
 import directus from '@/lib/directus';
-import { readItems } from '@directus/sdk/rest';
+import { readItems } from '@directus/sdk';
 
 async function getPosts() {
 	return directus.request(
@@ -226,7 +226,7 @@ Update the returned HTML:
 </div>;
 ```
 
-Visit `http://localhost:3000` and you should now see a blog post listing, with latest items first.
+Visit http://localhost:3000 and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/next-blog-listing.webp)
 
@@ -238,7 +238,7 @@ Each blog post links to a page that does not yet exist. In the `app/blog` direct
 ```jsx
 import directus from '@/lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest';
+import { readItem } from '@directus/sdk';
 
 async function getPost(slug) {
 	try {

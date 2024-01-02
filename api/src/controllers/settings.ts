@@ -22,7 +22,7 @@ router.get(
 		res.locals['payload'] = { data: records || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -48,7 +48,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

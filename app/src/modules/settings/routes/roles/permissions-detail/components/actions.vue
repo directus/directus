@@ -32,8 +32,8 @@ async function save() {
 
 		emit('refresh');
 		router.push(`/settings/roles/${props.roleKey || 'public'}`);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

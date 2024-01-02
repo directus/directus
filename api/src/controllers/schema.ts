@@ -1,10 +1,10 @@
+import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
@@ -21,7 +21,7 @@ router.get(
 		res.locals['payload'] = { data: currentSnapshot };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
@@ -51,6 +51,8 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	let upload: any | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
+		const logger = useLogger();
+
 		if (isFileIncluded) return next(new InvalidPayloadError({ reason: `More than one file was included in the body` }));
 
 		isFileIncluded = true;
@@ -111,7 +113,7 @@ router.post(
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -123,7 +125,7 @@ router.post(
 		await service.apply(diff);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

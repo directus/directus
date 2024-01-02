@@ -570,7 +570,6 @@ layout_options: Možnosti postavitve
 rows: Vrstice
 columns: Stolpci
 collection_setup: Nastavitve zbirke
-optional_system_fields: Neobvezna sistemska polja
 value_unique: Vrednost mora biti edinstvena
 all_activity: Vse aktivnosti
 create_item: Ustvari zapis
@@ -1359,6 +1358,8 @@ displays:
     suffix: Pripona
     color: Barva
     icon: Ikona
+    mask: Maskirano
+    mask_label: Skrij dejansko vrednost
     text: Tekst
   formatted-json-value:
     formatted-json-value: Oblikovana JSON vrednost

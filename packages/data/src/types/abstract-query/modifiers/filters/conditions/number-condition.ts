@@ -1,5 +1,4 @@
-import type { AbstractQueryFieldNodeFn } from '../../../fields/function.js';
-import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
+import type { AbstractQueryTarget } from '../../target.js';
 
 /**
  * Used to compare a number or date time field with a number value.
@@ -17,7 +16,7 @@ import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.
  */
 export interface ConditionNumberNode {
 	type: 'condition-number';
-	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
+	target: AbstractQueryTarget;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: number;
 }

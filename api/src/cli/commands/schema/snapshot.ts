@@ -1,16 +1,17 @@
-import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
-import { constants as fsConstants, promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs, constants as fsConstants } from 'fs';
 import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
+import path from 'path';
+import getDatabase from '../../../database/index.js';
+import { useLogger } from '../../../logger.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function snapshot(
 	snapshotPath?: string,
-	options?: { yes: boolean; format: 'json' | 'yaml' }
+	options?: { yes: boolean; format: 'json' | 'yaml' },
 ): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		const snapshot = await getSnapshot({ database });

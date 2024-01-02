@@ -20,6 +20,7 @@ const props = withDefaults(
 		background?: string;
 		icon?: string;
 		border?: boolean;
+		masked?: boolean;
 		conditionalFormatting?: {
 			operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
 			value: string;
@@ -32,7 +33,7 @@ const props = withDefaults(
 	{
 		font: 'sans-serif',
 		conditionalFormatting: () => [],
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -70,7 +71,7 @@ const computedFormat = computed(() => {
 			background,
 			icon,
 			text: '',
-		}
+		},
 	);
 });
 
@@ -85,6 +86,8 @@ const computedStyle = computed(() => {
 });
 
 const displayValue = computed(() => {
+	if (props.masked) return '**********';
+
 	if (computedFormat.value.text) {
 		const { text } = computedFormat.value;
 		return text.startsWith('$t:') ? t(text.slice(3)) : text;
@@ -199,15 +202,15 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.sans-serif {
-		font-family: var(--theme--font-family-sans-serif);
+		font-family: var(--theme--fonts--sans--font-family);
 	}
 
 	&.serif {
-		font-family: var(--theme--font-family-serif);
+		font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.monospace {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	.v-icon {

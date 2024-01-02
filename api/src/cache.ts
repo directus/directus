@@ -2,8 +2,8 @@ import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
-import env from './env.js';
-import logger from './logger.js';
+import { useEnv } from './env.js';
+import { useLogger } from './logger.js';
 import { getMessenger } from './messenger.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
@@ -11,6 +11,9 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
+
+const logger = useLogger();
+const env = useEnv();
 
 const require = createRequire(import.meta.url);
 
@@ -140,7 +143,7 @@ export async function setCacheValue(
 	cache: Keyv,
 	key: string,
 	value: Record<string, any> | Record<string, any>[],
-	ttl?: number
+	ttl?: number,
 ) {
 	const compressed = await compress(value);
 	await cache.set(key, compressed, ttl);

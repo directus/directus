@@ -131,19 +131,13 @@ const internalActive = computed({
 	</v-dialog>
 </template>
 
-<style>
-body {
-	--v-drawer-max-width: 856px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-drawer {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: var(--v-drawer-max-width);
+	max-width: 856px;
 	height: 100%;
 	background-color: var(--theme--background);
 
@@ -163,17 +157,14 @@ body {
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-active: var(--background-normal);
-		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-background-color: var(--theme--background-normal);
+		--v-button-background-color-active: var(--theme--background-normal);
+		--v-button-background-color-hover: var(--theme--background-normal);
 		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {
-		--border-radius: 6px;
-		--input-height: 60px;
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
-		--form-vertical-gap: 52px;
+		--theme--form--row-gap: 52px;
 
 		position: relative;
 		display: flex;
@@ -185,8 +176,8 @@ body {
 		line-height: 24px;
 
 		.sidebar {
-			--v-list-item-background-color-hover: var(--background-normal-alt);
-			--v-list-item-background-color-active: var(--background-normal-alt);
+			--v-list-item-background-color-hover: var(--theme--background-accent);
+			--v-list-item-background-color-active: var(--theme--background-accent);
 
 			display: none;
 
@@ -196,10 +187,24 @@ body {
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				background-color: var(--background-normal);
+				background: var(--theme--navigation--background);
+				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
+
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
+
 				height: 100%;
 				overflow-x: hidden;
 				overflow-y: auto;
@@ -246,8 +251,8 @@ body {
 	margin: var(--content-padding);
 
 	nav {
-		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-subdued);
+		border-radius: var(--theme--border-radius);
 	}
 
 	@media (min-width: 960px) {

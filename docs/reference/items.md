@@ -152,7 +152,10 @@ Get an item that exists in Directus.
 
 ```graphql
 type Query {
-	<collection>_by_id(id: ID!, version: String): <collection>
+	<collection>_by_id(id: ID!): <collection>
+}
+type Query {
+	<collection>_by_version(id: ID!, version String!): <collection_version>
 }
 ```
 
@@ -219,7 +222,7 @@ const result = await client.request(readItem('articles', '15'));
 
 For a specific Content Version:
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```http
@@ -234,7 +237,7 @@ GET /items/articles/15
 
 ```graphql
 query {
-	articles_by_id(id: 15, version: "draft") {
+	articles_by_version(id: 15, version: "draft") {
 		id
 		title
 		body
@@ -274,7 +277,7 @@ List a singleton item in Directus.
 
 ```graphql
 type Query {
-	<collection>(version: String): [<collection>]
+	<collection>_by_version(version: String): <collection>
 }
 ```
 
@@ -351,7 +354,7 @@ const result = await client.request(readSingleton('about'));
 
 For a specific Content Version:
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```http
@@ -366,7 +369,7 @@ GET /items/about
 
 ```graphql
 query {
-	about(version: "draft") {
+	about_by_version(version: "draft") {
 		id
 		content
 	}

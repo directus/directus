@@ -21,7 +21,7 @@ const fieldsStore = useFieldsStore();
 
 const parsedFields = computed(() => {
 	return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
-		(field) => field.field.startsWith('$') === false
+		(field) => field.field.startsWith('$') === false,
 	);
 });
 
@@ -125,14 +125,12 @@ async function setNestedSort(updates?: Field[]) {
 		<draggable
 			class="field-grid"
 			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
-			force-fallback
 			handle=".drag-handle"
 			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
 			item-key="field"
 			:animation="150"
-			fallback-on-body
-			invert-swap
+			v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">

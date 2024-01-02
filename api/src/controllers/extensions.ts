@@ -1,6 +1,6 @@
 import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import express from 'express';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -10,6 +10,7 @@ import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_extensions'));
 
@@ -25,7 +26,7 @@ router.get(
 		res.locals['payload'] = { data: extensions || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -51,7 +52,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -76,12 +77,12 @@ router.get(
 
 		res.setHeader(
 			'Cache-Control',
-			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
+			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false),
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(source);
-	})
+	}),
 );
 
 export default router;

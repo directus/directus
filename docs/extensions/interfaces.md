@@ -3,7 +3,7 @@ description: A guide on how to build custom Interfaces in Directus.
 readTime: 4 min read
 ---
 
-# Custom Interfaces <small></small>
+# Custom Interfaces
 
 > Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page. They
 > are developed using Vue.js. [Learn more about Interfaces](/user-guide/overview/glossary#interfaces).
@@ -139,5 +139,5 @@ Learn how to build interfaces with our official guides:
 <GuidesListExtensions type="Interfaces" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

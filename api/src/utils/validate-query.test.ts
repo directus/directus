@@ -1,26 +1,22 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import env from '../env.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from '../env.js';
 
-const getValidateQuery = async (mockedEnv?: { [k: string]: any }) => {
-	vi.doMock('../env', async () => {
-		return {
-			default: {
-				...env,
-				...mockedEnv,
-			},
-		};
-	});
-
-	return (await import('./validate-query.js')).validateQuery;
-};
+vi.mock('../env.js');
 
 beforeEach(() => {
 	vi.resetModules();
+
+	vi.mocked(useEnv).mockReturnValue({});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('max limit', () => {
 	describe('max limit of 100', async () => {
-		const validateQuery = await getValidateQuery({ QUERY_LIMIT_MAX: 100 });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+		const { validateQuery } = await import('./validate-query.js');
 
 		test.each([-1, 1, 25])('should accept number %i', (limit) => {
 			expect(() => validateQuery({ limit })).not.toThrowError('limit');
@@ -32,20 +28,21 @@ describe('max limit', () => {
 	});
 
 	test('should accept 101 when no limit defined', async () => {
-		const validateQuery = await getValidateQuery();
+		const { validateQuery } = await import('./validate-query.js');
 
 		expect(() => validateQuery({ limit: 101 })).not.toThrowError('limit');
 	});
 
 	test('should accept 101 when unlimited', async () => {
-		const validateQuery = await getValidateQuery({ QUERY_LIMIT_MAX: -1 });
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+		const { validateQuery } = await import('./validate-query.js');
 
 		expect(() => validateQuery({ limit: 101 })).not.toThrowError('limit');
 	});
 });
 
 describe('export', async () => {
-	const validateQuery = await getValidateQuery();
+	const { validateQuery } = await import('./validate-query.js');
 
 	test.each(['csv', 'json', 'xml', 'yaml'])('should accept format %i', (format) => {
 		expect(() => validateQuery({ export: format } as any)).not.toThrowError();

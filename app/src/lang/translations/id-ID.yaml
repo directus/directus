@@ -35,6 +35,7 @@ tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 location: Lokasi
+collection_names_are_case_sensitive: Nama koleksi peka huruf besar-kecil
 condition_rules: Gaya Bersyarat
 input: Input
 maps: Peta
@@ -86,6 +87,10 @@ create_user: Buat User
 message: Pesan
 delete_panel: Hapus Panel
 create_webhook: Buat Webhook
+create_custom_translation: Buat Terjemahan Khusus
+edit_custom_translation: Ubah Terjemahan Khusus
+no_custom_translations: Tidak Ada Terjemahan Khusus
+no_custom_translations_copy: Belum ada terjemahan khusus.
 invite_users: Undang Pengguna Lain
 invite: Undang
 email_already_invited: Email "{email}" sudah diundang
@@ -101,6 +106,7 @@ rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
+version_name: Nama Versi
 promote_version_preview: Pratinjau
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
@@ -602,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: Nilai di luar rentang
   INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
-  GRAPHQL_VALIDATION_EXCEPTION: Pengecualian Validasi GraphQL
   SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
   UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
   UNEXPECTED_RESPONSE: Respon tidak terduga
@@ -730,7 +735,6 @@ layout_options: Pilihan Tata Letak
 rows: Baris
 columns: Kolom
 collection_setup: Penyiapan Koleksi
-optional_system_fields: Bidang sistem opsional
 value_unique: Nilai harus unik
 all_activity: Semua Aktivitas
 create_item: Buat item

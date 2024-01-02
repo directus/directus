@@ -1,7 +1,7 @@
+import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import env from '../env.js';
-import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -19,6 +19,8 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+
+const env = useEnv();
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;

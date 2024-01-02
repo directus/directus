@@ -9,10 +9,10 @@
 	--fc-button-active-border-color: transparent;
 	--fc-button-hover-border-color: transparent;
 	--fc-button-text-color: var(--theme--foreground-subdued);
-	--fc-border-color: var(--border-normal);
+	--fc-border-color: var(--theme--form--field--input--border-color);
 	--fc-highlight-color: var(--theme--primary-background);
-	--fc-neutral-bg-color: var(--background-normal);
-	--fc-list-event-hover-bg-color: var(--background-subdued);
+	--fc-neutral-bg-color: var(--theme--background-normal);
+	--fc-list-event-hover-bg-color: var(--theme--form--field--input--background-subdued);
 
 	.fc-more-popover {
 		max-width: var(--form-column-width);
@@ -25,7 +25,7 @@
 	}
 
 	.fc-list-empty {
-		background-color: var(--background-subdued) !important;
+		background-color: var(--theme--background-subdued) !important;
 	}
 
 	.fc-daygrid-more-link {
@@ -106,8 +106,8 @@
 			font-weight: inherit !important;
 			font-size: inherit !important;
 			background-color: var(--theme--background);
-			border-top: 2px solid var(--border-subdued);
-			border-bottom: 2px solid var(--border-subdued);
+			border-top: 2px solid var(--theme--border-color-subdued);
+			border-bottom: 2px solid var(--theme--border-color-subdued);
 			box-shadow: 0 0 0 2px var(--theme--background);
 		}
 	}

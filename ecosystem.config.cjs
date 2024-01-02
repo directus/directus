@@ -12,7 +12,7 @@ module.exports = [
 		args: ['start'],
 
 		// General
-		instances: process.env.PM2_INSTANCES ?? '1',
+		instances: process.env.PM2_INSTANCES ?? 1,
 		exec_mode: process.env.PM2_EXEC_MODE ?? 'cluster',
 		max_memory_restart: process.env.PM2_MAX_MEMORY_RESTART,
 
@@ -23,6 +23,6 @@ module.exports = [
 		wait_ready: true,
 		max_restarts: process.env.PM2_MAX_RESTARTS,
 		restart_delay: process.env.PM2_RESTART_DELAY ?? 0,
-		autorestart: process.env.PM2_AUTO_RESTART ?? false,
+		autorestart: process.env.PM2_AUTO_RESTART === 'true',
 	},
 ];

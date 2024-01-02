@@ -16,7 +16,7 @@ export interface PanelConfig {
 		| DeepPartial<Field>[]
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
 		| ((
-				ctx: Partial<Panel>
+				ctx: Partial<Panel>,
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
 		| ComponentOptions
 		| null;

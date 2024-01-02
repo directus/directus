@@ -96,11 +96,11 @@ code {
 	padding: 2px 4px;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--theme--font-family-monospace), monospace;
+	font-family: var(--theme--fonts--monospace--font-family), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 }
 
 pre {
@@ -108,10 +108,10 @@ pre {
 	overflow: auto;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--theme--font-family-monospace), monospace;
+	font-family: var(--theme--fonts--monospace--font-family), monospace;
 	line-height: 24px;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 }
 
 blockquote {
@@ -120,7 +120,7 @@ blockquote {
 	font-weight: 500;
 	font-size: 15px;
 	line-height: 24px;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--theme--form--field--input--border-color);
 }
 
 blockquote blockquote {
@@ -132,14 +132,14 @@ iframe,
 img {
 	max-width: 100%;
 	height: auto;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 hr {
 	height: 1px;
 	margin-top: 2em;
 	margin-bottom: 2em;
-	background-color: var(--border-normal);
+	background-color: var(--theme--form--field--input--border-color);
 	border: none;
 }
 
@@ -153,7 +153,7 @@ table {
 table th,
 table td {
 	padding: 0.4rem;
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--theme--form--field--input--border-color);
 }
 
 figure {

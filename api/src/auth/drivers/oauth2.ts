@@ -1,24 +1,24 @@
-import { isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	InvalidTokenError,
+	isDirectusError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
-import flatten from 'flat';
+import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidProviderError,
-	InvalidProviderConfigError,
-	InvalidTokenError,
-	ServiceUnavailableError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -38,6 +38,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
+
+		const env = useEnv();
+		const logger = useLogger();
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
@@ -62,7 +65,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
 			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore'
+			'underscore',
 		);
 
 		this.client = new issuer.Client({
@@ -79,8 +82,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	generateAuthUrl(codeVerifier: string, prompt = false): string {
+		const { plainCodeChallenge } = this.config;
+
 		try {
-			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
 			return this.client.authorizationUrl({
@@ -89,7 +94,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				prompt: prompt ? 'consent' : undefined,
 				...paramsConfig,
 				code_challenge: codeChallenge,
-				code_challenge_method: 'S256',
+				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 			});
@@ -109,19 +114,27 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const logger = useLogger();
+
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OAuth2] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsError();
 		}
 
+		const { plainCodeChallenge } = this.config;
+
 		let tokenSet;
 		let userInfo;
 
 		try {
+			const codeChallenge = plainCodeChallenge
+				? payload['codeVerifier']
+				: generators.codeChallenge(payload['codeVerifier']);
+
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
-				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
@@ -160,17 +173,19 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data ?? null },
+				{ auth_data: userPayload.auth_data },
 				{
 					identifier,
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}
@@ -191,7 +206,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -213,6 +228,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	override async refresh(user: User): Promise<void> {
+		const logger = useLogger();
+
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -241,6 +258,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 }
 
 const handleError = (e: any) => {
+	const logger = useLogger();
+
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
@@ -266,6 +285,7 @@ const handleError = (e: any) => {
 
 export function createOAuth2AuthRouter(providerName: string): Router {
 	const router = Router();
+	const env = useEnv();
 
 	router.get(
 		'/',
@@ -280,7 +300,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				{
 					expiresIn: '5m',
 					issuer: 'directus',
-				}
+				},
 			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
@@ -290,7 +310,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
 		},
-		respond
+		respond,
 	);
 
 	router.post(
@@ -299,12 +319,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
-		respond
+		respond,
 	);
 
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			const logger = useLogger();
+
 			let tokenData;
 
 			try {
@@ -390,7 +412,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

@@ -1,60 +1,63 @@
 <script setup lang="ts">
-import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
-import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
+import { getFormFields } from './utils/get-form-fields';
+import { updateFieldWidths } from './utils/update-field-widths';
+import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import type { MenuOptions } from './form-field-menu.vue';
 
 type FieldValues = {
 	[field: string]: any;
 };
 
-interface Props {
-	collection?: string;
-	fields?: Field[];
-	initialValues?: FieldValues | null;
-	modelValue?: FieldValues | null;
-	loading?: boolean;
-	batchMode?: boolean;
-	primaryKey?: string | number;
-	disabled?: boolean;
-	validationErrors?: ValidationError[];
-	autofocus?: boolean;
-	group?: string | null;
-	badge?: string;
-	showValidationErrors?: boolean;
-	showNoVisibleFields?: boolean;
-	/* Enable the raw editor toggler on fields */
-	rawEditorEnabled?: boolean;
-	disabledMenuOptions?: MenuOptions[];
-	direction?: string;
-	showDivider?: boolean;
-	inline?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	collection: undefined,
-	fields: undefined,
-	initialValues: null,
-	modelValue: null,
-	primaryKey: undefined,
-	validationErrors: () => [],
-	group: null,
-	badge: undefined,
-	showValidationErrors: true,
-	showNoVisibleFields: true,
-	direction: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		collection?: string;
+		fields?: Field[];
+		initialValues?: FieldValues | null;
+		modelValue?: FieldValues | null;
+		loading?: boolean;
+		batchMode?: boolean;
+		primaryKey?: string | number;
+		disabled?: boolean;
+		validationErrors?: ValidationError[];
+		autofocus?: boolean;
+		group?: string | null;
+		badge?: string;
+		showValidationErrors?: boolean;
+		showNoVisibleFields?: boolean;
+		/* Enable the raw editor toggler on fields */
+		rawEditorEnabled?: boolean;
+		disabledMenuOptions?: MenuOptions[];
+		direction?: string;
+		showDivider?: boolean;
+		inline?: boolean;
+	}>(),
+	{
+		collection: undefined,
+		fields: undefined,
+		initialValues: null,
+		modelValue: null,
+		primaryKey: undefined,
+		validationErrors: () => [],
+		group: null,
+		badge: undefined,
+		showValidationErrors: true,
+		showNoVisibleFields: true,
+		direction: undefined,
+	},
+);
 
 const { t } = useI18n();
 
@@ -124,7 +127,7 @@ watch(
 		if (!props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
-	}
+	},
 );
 
 provide('values', values);
@@ -141,44 +144,39 @@ function useForm() {
 			if (!isEqual(fields.value, newVal)) {
 				fields.value = newVal;
 			}
-		}
+		},
 	);
 
 	const defaultValues = getDefaultValuesFromFields(fields);
 
-	const { formFields } = useFormFields(fields);
+	const formFields = getFormFields(fields);
 
 	const fieldsWithConditions = computed(() => {
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-		let fields = formFields.value.reduce((result, field) => {
-			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-
-			if (newField.field) result.push(newField);
-			return result;
-		}, [] as Field[]);
+		let fields = formFields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
 
 		fields = pushGroupOptionsDown(fields);
+		updateSystemDivider(fields);
+		updateFieldWidths(fields);
 
 		return fields;
 	});
 
-	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
+	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
 		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
 	});
 
-	const fieldsInGroup = computed(() =>
-		formFields.value.filter(
-			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
-		)
-	);
-
 	const fieldNames = computed(() => {
-		return fieldsInGroup.value.map((f) => f.field);
+		const fieldsInGroup = formFields.value.filter(
+			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group)),
+		);
+
+		return fieldsInGroup.map((field) => field.field);
 	});
 
 	const fieldsForGroup = computed(() => {
-		return fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
+		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
 	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
@@ -354,10 +352,10 @@ function useRawEditor() {
 					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group')"
 					v-show="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-					(el: Element) => {
-						formFieldEls[fieldName] = el;
-					}
-				"
+						(el: Element) => {
+							formFieldEls[fieldName] = el;
+						}
+					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
 						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
@@ -382,7 +380,7 @@ function useRawEditor() {
 				<form-field
 					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-						(el) => {
+						(el: Element) => {
 							formFieldEls[fieldName] = el;
 						}
 					"
@@ -400,7 +398,7 @@ function useRawEditor() {
 						validationErrors.find(
 							(err) =>
 								err.collection === fieldsMap[fieldName]!.collection &&
-								(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
+								(err.field === fieldName || err.field.endsWith(`(${fieldName})`)),
 						)
 					"
 					:badge="badge"

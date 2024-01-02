@@ -1,20 +1,10 @@
-import { expect, describe, test, vi } from 'vitest';
 import jwt from 'jsonwebtoken';
-import env from '../env.js';
-import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
+import { useEnv } from '../env.js';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
-vi.mock('../env', () => {
-	const MOCK_ENV = {
-		SECRET: 'super-secure-secret',
-		EXTENSIONS_PATH: './extensions',
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
-});
+vi.mock('../env.js');
 
 vi.mock('../database/index', () => {
 	const self: Record<string, any> = {
@@ -28,9 +18,20 @@ vi.mock('../database/index', () => {
 	return { default: vi.fn(() => self) };
 });
 
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		SECRET: 'super-secure-secret',
+		EXTENSIONS_PATH: './extensions',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
 describe('getAccountabilityForToken', async () => {
 	test('minimal token payload', async () => {
-		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, env['SECRET'], {
+		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, 'super-secure-secret', {
 			issuer: 'directus',
 		});
 
@@ -48,8 +49,8 @@ describe('getAccountabilityForToken', async () => {
 				admin_access: 1,
 				app_access: 1,
 			},
-			env['SECRET'],
-			{ issuer: 'directus' }
+			'super-secure-secret',
+			{ issuer: 'directus' },
 		);
 
 		const result = await getAccountabilityForToken(token);
@@ -62,7 +63,7 @@ describe('getAccountabilityForToken', async () => {
 	});
 
 	test('throws token expired error', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, env['SECRET'], { issuer: 'directus', expiresIn: -1 });
+		const token = jwt.sign({ role: '123-456-789' }, 'super-secure-secret', { issuer: 'directus', expiresIn: -1 });
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
 	});
 

@@ -1,11 +1,11 @@
+import { InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
-import env from '../../env.js';
-import { InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../../env.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';
@@ -45,6 +45,8 @@ export class LocalAuthDriver extends AuthDriver {
 }
 
 export function createLocalAuthRouter(provider: string): Router {
+	const env = useEnv();
+
 	const router = Router();
 
 	const userLoginSchema = Joi.object({
@@ -88,7 +90,7 @@ export function createLocalAuthRouter(provider: string): Router {
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
-				req.body?.otp
+				req.body?.otp,
 			);
 
 			const payload = {
@@ -107,7 +109,7 @@ export function createLocalAuthRouter(provider: string): Router {
 
 			return next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

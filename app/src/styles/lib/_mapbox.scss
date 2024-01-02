@@ -26,11 +26,11 @@
 		}
 
 		&:hover {
-			background: var(--background-normal) !important;
+			background: var(--theme--background-normal) !important;
 		}
 
 		&.active {
-			color: var(--background-subdued) !important;
+			color: var(--theme--background-subdued) !important;
 			background: var(--theme--foreground) !important;
 		}
 
@@ -80,8 +80,9 @@
 	min-width: 24px;
 	min-height: 24px;
 	color: var(--theme--foreground);
-	background: var(--theme--form--field--input--background) !important;
-	box-shadow: var(--card-shadow);
+	background: var(--theme--popover--menu--background);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 
 	button {
 		opacity: 0.25;
@@ -143,12 +144,12 @@
 
 .mapboxgl-ctrl-geocoder--input {
 	color: var(--theme--foreground) !important;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > li > a {
@@ -157,20 +158,20 @@
 
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
-	color: var(--v-list-item-color-active);
-	background-color: var(--background-normal-alt);
+	color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
+	background-color: var(--theme--background-accent);
 }
 
 .mapboxgl-ctrl-geocoder--button {
-	background: var(--background-subdued);
+	background: var(--theme--background-subdued);
 }
 
 .mapboxgl-ctrl-geocoder--icon {
-	fill: var(--v-icon-color);
+	fill: var(--v-icon-color, currentColor);
 }
 
 .mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
-	fill: var(--v-icon-color-hover);
+	fill: var(--v-icon-color-hover, currentColor);
 }
 
 .mapbox-gl-geocoder--error {

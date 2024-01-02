@@ -44,7 +44,7 @@ export const seedDBValues = async () => {
 				.patch(`/flows/${flowId}`)
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 				.send({ operation: { ...payloadOperationCreate, flow: flowId } });
-		})
+		}),
 	)
 		.then(() => {
 			isSeeded = true;

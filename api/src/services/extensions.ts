@@ -39,7 +39,7 @@ export class ExtensionsService {
 		this.extensionsItemService = new ItemsService('directus_extensions', {
 			knex: this.knex,
 			schema: this.schema,
-			// No accountability here, as every other method is hardcoded to be admin only
+			accountability: this.accountability,
 		});
 
 		this.systemCache = getCache().systemCache;
@@ -47,10 +47,6 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
-
 		const installedExtensions = this.extensionsManager.getExtensions();
 		const configuredExtensions = await this.extensionsItemService.readByQuery({ limit: -1 });
 
@@ -58,13 +54,9 @@ export class ExtensionsService {
 	}
 
 	async readOne(bundle: string | null, name: string) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
-
 		const key = this.getKey(bundle, name);
 
-		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === bundle ?? name);
+		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === (bundle ?? name));
 		const meta = await this.extensionsItemService.readOne(key);
 
 		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
@@ -120,7 +112,24 @@ export class ExtensionsService {
 			let name = meta.name;
 
 			if (name.includes('/')) {
-				[bundleName, name] = name.split('/') as [string, string];
+				const parts = name.split('/');
+
+				// NPM packages can have an optional organization scope in the format
+				// `@<org>/<package>`. This is limited to a single `/`.
+				//
+				// `foo` -> extension
+				// `foo/bar` -> bundle
+				// `@rijk/foo` -> extension
+				// `@rijk/foo/bar -> bundle
+
+				const hasOrg = parts.at(0)!.startsWith('@');
+
+				if (hasOrg && parts.length > 2) {
+					name = parts.pop() as string;
+					bundleName = parts.join('/');
+				} else if (hasOrg === false) {
+					[bundleName, name] = parts as [string, string];
+				}
 			}
 
 			let schema;
@@ -147,7 +156,7 @@ export class ExtensionsService {
 			return {
 				name,
 				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local') : null,
+				schema: schema ? pick(schema, 'type', 'local', 'version') : null,
 				meta: omit(meta, 'name'),
 			};
 		});

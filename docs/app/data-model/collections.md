@@ -60,7 +60,7 @@ each system collection is responsible for, as well as where to find relevant App
 | Revisions         | Revisions are changes/edits made to Items. Directus keeps track of edits made, so you're able to revert to a previous state at will. | [Revert an Item](/user-guide/content-module/content/items#revert-an-item)                                                       | [Revisions](/reference/system/revisions)         |
 | Roles             | Stores information about each role created.                                                                                          | [Users, Roles, and Permissions](/user-guide/user-management/users-roles-permissions)                                            | [Roles](/reference/system/roles)                 |
 | Sessions          | Stores information about each user session, for system purposes.                                                                     | **N/A**                                                                                                                         | **N/A**                                          |
-| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/cloud/project-settings)                                                                          | [settings](/reference/system/settings)           |
+| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/settings/project-settings)                                                                       | [settings](/reference/system/settings)           |
 | Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/user-guide/content-module/content/shares)                                                                       |                                                  |
 | Users             | Stores information about each user within the platform.                                                                              | [User Directory](/user-guide/user-management/user-directory)                                                                    | [Users](/reference/system/relations)             |
 | Webhooks          | Stores all information about configured webhooks.                                                                                    | [Webhooks](/app/webhooks)                                                                                                       | [Webhooks](/reference/system/relations)          |
@@ -82,7 +82,7 @@ To create a collection, follow these steps.
    - **Primary Key Field** — Sets the name of the primary key field, defaults to `id`.
    - **Type** — Sets the [type of ID](/app/data-model#keys-and-ids) to use for this collection.
 4. Click <span mi btn>arrow_forward</span> to confirm.
-5. Enable and rename the other Optional System Fields as desired:
+5. Enable and rename the other Optional Fields as desired:
    - **Status** — Stores item status.
    - **Sort** — Adds a field which enables drag-and-drop sorting of items.
    - **Created On** — Logs the date an item was created.
@@ -231,7 +231,7 @@ These controls allow you to modify how the collection is displayed within the Co
 - **Singleton** — Toggle to bypass the [Collection Page](/user-guide/content-module/content/collections) and take users
   to the [Item Details Page](/user-guide/content-module/content/items).
 - **Collection Naming Translations** — Translate the collection name across multiple languages. When the default
-  language is changed in [Project Settings](/user-guide/cloud/project-settings#general) or
+  language is changed in [Project Settings](/user-guide/settings/project-settings#general) or
   [User Details Page](/user-guide/user-management/user-directory#user-details-page), the relevant translation, if any
   exists, will be used throughout the app.
 

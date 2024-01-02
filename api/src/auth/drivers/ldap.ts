@@ -1,4 +1,13 @@
-import { isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+	isDirectusError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -6,17 +15,8 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidPayloadError,
-	InvalidProviderError,
-	InvalidProviderConfigError,
-	ServiceUnavailableError,
-	UnexpectedResponseError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -50,6 +50,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
 		if (
@@ -76,6 +78,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async validateBindClient(): Promise<void> {
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, provider } = this.config;
 
 		return new Promise((resolve, reject) => {
@@ -123,7 +127,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	private async fetchUserInfo(
 		baseDn: string,
 		filter?: ldap.EqualityFilter,
-		scope?: SearchScope
+		scope?: SearchScope,
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
 
@@ -174,7 +178,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(undefined);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -212,7 +216,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(userGroups);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -232,6 +236,8 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
+		const logger = useLogger();
+
 		await this.validateBindClient();
 
 		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
@@ -242,7 +248,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				attribute: userAttribute ?? 'cn',
 				value: payload['identifier'],
 			}),
-			userScope ?? 'one'
+			userScope ?? 'one',
 		);
 
 		if (!userInfo?.dn) {
@@ -258,7 +264,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
-				groupScope ?? 'one'
+				groupScope ?? 'one',
 			);
 
 			if (userGroups.length) {
@@ -282,7 +288,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				`auth.update`,
 				{},
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Only sync roles if the AD groups are configured
@@ -315,7 +321,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			`auth.create`,
 			userPayload,
 			{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -409,6 +415,8 @@ export function createLDAPAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
+			const env = useEnv();
+
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,
@@ -436,7 +444,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
-				req.body?.otp
+				req.body?.otp,
 			);
 
 			const payload = {
@@ -461,7 +469,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 
 			return next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

@@ -1,5 +1,6 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
+import type { BusboyFileStream } from '@directus/types';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
 import bytes from 'bytes';
@@ -8,8 +9,7 @@ import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
-import env from '../env.js';
-import { ContentTooLargeError, ErrorCode, InvalidPayloadError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -20,6 +20,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_files'));
 
@@ -74,7 +75,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		payload[fieldname] = fieldValue;
 	});
 
-	busboy.on('file', async (_fieldname, fileStream, { filename, mimeType }) => {
+	busboy.on('file', async (_fieldname, fileStream: BusboyFileStream, { filename, mimeType }) => {
 		if (!filename) {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
@@ -104,11 +105,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		// Clear the payload for the next to-be-uploaded file
 		payload = {};
-
-		fileStream.on('limit', () => {
-			const error = new ContentTooLargeError();
-			next(error);
-		});
 
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
@@ -185,7 +181,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const importSchema = Joi.object({
@@ -222,7 +218,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
@@ -267,7 +263,7 @@ router.get(
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -303,7 +299,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -330,7 +326,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -353,7 +349,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -368,7 +364,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

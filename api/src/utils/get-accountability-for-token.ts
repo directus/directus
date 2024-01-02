@@ -1,14 +1,16 @@
+import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { InvalidCredentialsError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability?: Accountability
+	accountability?: Accountability,
 ): Promise<Accountability> {
+	const env = useEnv();
+
 	if (!accountability) {
 		accountability = {
 			user: null,

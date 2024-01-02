@@ -4,6 +4,10 @@ readTime: 10 min read
 pageClass: page-reference
 ---
 
+<script setup lang="ts">
+import { data as packages } from '@/data/packages.data.js';
+</script>
+
 # Accessing Files
 
 > Every file managed by the platform is uploaded to the configured storage adapter, and its associated metadata is
@@ -270,13 +274,16 @@ Who updated the file last. Many-to-one to [users](/reference/system/users).
 Size of the file in bytes.
 
 `width` **number**\
-If the file is a(n) image/video, it's the width in px.
+If the file is a(n) image/video, it's the width in px.\
+This property is only auto-extracted for images.
 
 `height` **number**\
-If the file is a(n) image/video, it's the height in px.
+If the file is a(n) image/video, it's the height in px.\
+This property is only auto-extracted for images.
 
 `duration` **number**\
-If the file contains audio/video, it's the duration in milliseconds.
+If the file contains audio/video, it's the duration in milliseconds.\
+This property is not auto-extracted.
 
 `description` **string**\
 Description of the file.
@@ -594,21 +601,67 @@ Not supported by GraphQL
 </template>
 <template #sdk>
 
+#### Web
+
+::: code-group
+
+```js-vue [index.js]
+import { createDirectus, rest, uploadFiles } from 'https://unpkg.com/@directus/sdk@{{ packages['@directus/sdk'].version.major }}';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const form = document.getElementById('upload-file');
+
+if (form) {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const result = await client.request(uploadFiles(formData));
+
+    form.reset();
+  });
+}
+```
+
+```html [index.html]
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <form id="upload-file">
+      <input type="text" name="title" placeholder="Title..." />
+      <input type="file" name="file" />
+      <button type="submit">Upload</button>
+    </form>
+    <script src="/index.js" type="module"></script>
+  </body>
+</html>
+```
+
+:::
+
+#### Node.js
+
 ```js
 import { createDirectus, rest, uploadFiles } from '@directus/sdk';
 import { readFileSync } from 'node:fs';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const title = 'example';
-const file = new Blob([readFileSync('example.txt')]);
+const title = 'Example';
+const file = new Blob([readFileSync('example.txt')], { type: 'text/plain' });
+const fileName = 'example.txt';
 
 const formData = new FormData();
 formData.append('title', title);
-formData.append('file', file);
+formData.append('file', file, fileName);
 
 const result = await client.request(uploadFiles(formData));
 ```
+
+[Learn more about `FormData` ->](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
 
 </template>
 </SnippetToggler>

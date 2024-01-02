@@ -39,7 +39,7 @@ img {
 	width: auto;
 	height: 100%;
 	vertical-align: -30%;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	&.circle {
 		border-radius: 100%;

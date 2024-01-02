@@ -37,7 +37,7 @@ export function ClearCaches() {
 				expect(response.statusCode).toBe(200);
 				expect(response2.statusCode).toBe(200);
 			},
-			30000
+			30000,
 		);
 	});
 }

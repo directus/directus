@@ -5,16 +5,18 @@ import hash from 'object-hash';
 import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
-import { mergePermissions } from './merge-permissions.js';
 import { mergePermissionsForShare } from './merge-permissions-for-share.js';
+import { mergePermissions } from './merge-permissions.js';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
 	const { cache } = getCache();
+	const env = useEnv();
+	const logger = useLogger();
 
 	let permissions: Permission[] = [];
 
@@ -37,7 +39,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 			const cachedFilterContext = await getCacheValue(
 				cache,
-				`filterContext-${hash({ user, role, permissions: cachedPermissions['permissions'] })}`
+				`filterContext-${hash({ user, role, permissions: cachedPermissions['permissions'] })}`,
 			);
 
 			if (cachedFilterContext) {
@@ -87,7 +89,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			permissions = mergePermissions(
 				'or',
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role })),
 			);
 		}
 
@@ -126,8 +128,6 @@ function parsePermissions(permissions: any[]) {
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
 			permission.permissions = parseJSON(permission.permissions);
-		} else if (permission.permissions === null) {
-			permission.permissions = {};
 		}
 
 		if (permission.validation && typeof permission.validation === 'string') {
@@ -196,7 +196,7 @@ async function getFilterContext(schema: SchemaOverview, accountability: Accounta
 function processPermissions(
 	accountability: Accountability,
 	permissions: Permission[],
-	filterContext: Record<string, any>
+	filterContext: Record<string, any>,
 ) {
 	return permissions.map((permission) => {
 		permission.permissions = parseFilter(permission.permissions, accountability!, filterContext);

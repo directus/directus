@@ -1,18 +1,18 @@
 .emoji-picker__wrapper {
 	.emoji-picker {
 		--category-button-active-color: var(--theme--primary);
-		--font: var(--theme--font-family-sans-serif);
+		--font: var(--theme--fonts--sans--font-family);
 		--text-color: var(--theme--foreground);
 		--dark-text-color: var(--theme--foreground);
 		--secondary-text-color: var(--theme--foreground-accent);
 		--dark-secondary-text-color: var(--theme--foreground-accent);
-		--dark-border-color: var(--border-normal);
-		--dark-background-color: var(--background-subdued);
+		--dark-border-color: var(--theme--form--field--input--border-color);
+		--dark-background-color: var(--theme--form--field--input--background-subdued);
 
-		box-shadow: var(--card-shadow);
-		border-radius: var(--border-radius);
-		border: var(--border-width) solid var(--border-normal);
-		background-color: var(--theme--background);
+		background: var(--theme--popover--menu--background);
+		border-radius: var(--theme--popover--menu--border-radius);
+		box-shadow: var(--theme--popover--menu--box-shadow);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 
 	.emoji-picker__search-container {
@@ -26,18 +26,18 @@
 		}
 
 		input.emoji-picker__search {
-			border-radius: var(--border-radius);
-			border: var(--border-width) solid var(--border-normal);
+			border-radius: var(--theme--border-radius);
+			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			background-color: var(--theme--background);
 
 			height: 100%;
 
 			&:hover {
-				border-color: var(--border-normal-alt);
+				border-color: var(--theme--form--field--input--border-color-hover);
 			}
 
 			&:focus {
-				border-color: var(--theme--primary);
+				border-color: var(--theme--form--field--input--border-color-focus);
 			}
 
 			&::placeholder {
@@ -71,18 +71,18 @@
 		}
 
 		.emoji-picker__emojis {
-			border-top: 2px solid var(--border-normal);
+			border-top: 2px solid var(--theme--form--field--input--border-color);
 		}
 	}
 
 	.emoji-picker__preview {
-		border-top: 2px solid var(--border-normal);
+		border-top: 2px solid var(--theme--form--field--input--border-color);
 	}
 
 	.emoji-picker__emoji {
 		&:hover {
-			background-color: var(--background-normal);
-			border-radius: var(--border-radius);
+			background-color: var(--theme--background-normal);
+			border-radius: var(--theme--border-radius);
 		}
 	}
 }

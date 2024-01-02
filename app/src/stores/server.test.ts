@@ -3,7 +3,7 @@ import * as setLanguageDefault from '@/lang/set-language';
 import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { Auth, Info, useServerStore } from './server';
 import { useUserStore } from './user';
 
@@ -12,7 +12,7 @@ beforeEach(() => {
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
 
@@ -23,8 +23,14 @@ const mockServerInfo: Info = {
 		project_logo: null,
 		project_color: null,
 		default_language: 'de-DE',
+		default_appearance: 'auto',
+		default_theme_light: null,
+		default_theme_dark: null,
+		theme_light_overrides: null,
+		theme_dark_overrides: null,
 		public_foreground: null,
 		public_background: null,
+		public_favicon: null,
 		public_note: null,
 		custom_css: null,
 	},
@@ -45,9 +51,9 @@ const mockAdminUserWithLanguage = {
 	language: 'zh-CN',
 } as User;
 
-let apiGetSpy: SpyInstance;
-let replaceQueueSpy: SpyInstance;
-let setLanguageSpy: SpyInstance;
+let apiGetSpy: MockInstance;
+let replaceQueueSpy: MockInstance;
+let setLanguageSpy: MockInstance;
 
 beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
@@ -74,6 +80,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -97,6 +105,8 @@ describe('hydrate action', async () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -122,6 +132,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -144,6 +156,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -166,6 +180,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -191,6 +207,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -216,6 +234,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -241,6 +261,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -263,6 +285,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -292,6 +316,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -324,6 +350,8 @@ describe('dehydrate action', () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();

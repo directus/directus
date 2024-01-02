@@ -10,15 +10,16 @@ author: Eron Powell
 
 ## Explanation
 
-Remember, your basic [CRUDS permissions](/user-guide/user-management/permissions#configure-permissions) define what a
-role can and can't do to all items in a collection.
+[CRUDS permissions](/user-guide/user-management/permissions#configure-permissions) define what a role can and can't do
+to all items in a collection.
 [Custom access permissions](/user-guide/user-management/permissions#configure-custom-permissions) take things a step
 further and let you define what a role can and can't do to each item in a collection, _based on its
 [field values](/app/data-model/fields)_.
 
 Workflows are when you use these permissions techniques to create structured stages to content or data creation. In
 simplest terms, it is when you have two or more roles, and you give them different permissions at each stage in the
-content creation process.
+content creation process. This is common when using Directus as a
+[Headless CMS](https://directus.io/solutions/headless-cms).
 
 There are an infinite number of possible workflows you could configure. But for this recipe, we will configure a simple
 workflow where `writers` and `editors` work together to create, co-edit and publish `articles`.

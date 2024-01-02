@@ -1,10 +1,12 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
-import env from '../env.js';
-import { InvalidQueryError } from '@directus/errors';
+import { useEnv } from '../env.js';
 import { calculateFieldDepth } from './calculate-field-depth.js';
+
+const env = useEnv();
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -103,6 +105,7 @@ function validateFilter(filter: Query['filter']) {
 		} else if (Array.isArray(nested) === false) {
 			validateFilterPrimitive(nested, '_eq');
 		} else {
+			// @ts-ignore TODO Check which case this is supposed to cover
 			validateFilter(nested);
 		}
 	}

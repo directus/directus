@@ -1,15 +1,17 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, MethodNotAllowedError, isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ErrorCode, MethodNotAllowedError } from '@directus/errors';
-import logger from '../logger.js';
+import { useEnv } from '../env.js';
+import { useLogger } from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+	const env = useEnv();
+	const logger = useLogger();
+
 	let payload: any = {
 		errors: [],
 	};
@@ -89,7 +91,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				database: getDatabase(),
 				schema: req.schema,
 				accountability: req.accountability ?? null,
-			}
+			},
 		)
 		.then((updatedErrors) => {
 			return res.json({ ...payload, errors: updatedErrors });

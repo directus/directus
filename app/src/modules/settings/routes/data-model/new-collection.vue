@@ -69,7 +69,7 @@ const isOpen = useDialogRoute();
 
 const currentTab = ref(['collection_setup']);
 
-const collectionName = ref(null);
+const collectionName = ref<string | null>(null);
 const singleton = ref(false);
 const primaryKeyFieldName = ref('id');
 const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
@@ -126,8 +126,8 @@ async function save() {
 		});
 
 		router.replace(`/settings/data-model/${collectionName.value}`);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -197,14 +197,17 @@ function getSystemFields() {
 						{
 							text: '$t:published',
 							value: 'published',
+							color: 'var(--theme--primary)',
 						},
 						{
 							text: '$t:draft',
 							value: 'draft',
+							color: 'var(--theme--foreground)',
 						},
 						{
 							text: '$t:archived',
 							value: 'archived',
+							color: 'var(--theme--warning)',
 						},
 					],
 				},
@@ -216,20 +219,23 @@ function getSystemFields() {
 						{
 							text: '$t:published',
 							value: 'published',
-							foreground: '#FFFFFF',
-							background: 'var(--theme--primary)',
+							color: 'var(--theme--primary)',
+							foreground: 'var(--theme--primary)',
+							background: 'var(--theme--primary-background)',
 						},
 						{
 							text: '$t:draft',
 							value: 'draft',
-							foreground: '#18222F',
-							background: '#D3DAE4',
+							color: 'var(--theme--foreground)',
+							foreground: 'var(--theme--foreground)',
+							background: 'var(--theme--background-normal)',
 						},
 						{
 							text: '$t:archived',
 							value: 'archived',
-							foreground: '#FFFFFF',
-							background: 'var(--theme--warning)',
+							color: 'var(--theme--warning)',
+							foreground: 'var(--theme--warning)',
+							background: 'var(--theme--warning-background)',
 						},
 					],
 				},
@@ -370,7 +376,7 @@ function getSystemRelations() {
 		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		:sidebar-label="t(currentTab[0])"
+		:sidebar-label="currentTab[0] && t(currentTab[0])"
 		@cancel="router.push('/settings/data-model')"
 	>
 		<template #sidebar>
@@ -384,7 +390,7 @@ function getSystemRelations() {
 
 		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="collection_setup">
-				<v-notice type="info">{{ t('creating_collection_info') }}</v-notice>
+				<v-notice>{{ t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
 					<div class="field half">
@@ -437,7 +443,7 @@ function getSystemRelations() {
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice type="info">{{ t('creating_collection_system') }}</v-notice>
+				<v-notice>{{ t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
 					<div
@@ -521,7 +527,7 @@ function getSystemRelations() {
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {

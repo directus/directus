@@ -9,7 +9,7 @@
 export function generateHostFunctionReference(
 	index: Generator<number, number, number>,
 	args: string[],
-	options: { async: boolean }
+	options: { async: boolean },
 ): string {
 	const argsList = args.join(', ');
 	const i = index.next().value;

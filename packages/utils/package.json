@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "11.0.1",
+	"version": "11.0.3",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -24,37 +24,36 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "concurrently --group 'pnpm:build:*'",
+		"build": "pnpm run '/^build:.*/'",
 		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
 		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
-		"dev": "concurrently 'pnpm:build:* --watch'",
+		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"date-fns": "2.30.0",
-		"fs-extra": "11.1.1",
-		"joi": "17.9.2",
+		"date-fns": "3.0.6",
+		"fs-extra": "11.2.0",
+		"joi": "17.11.0",
 		"lodash-es": "4.17.21",
-		"micromustache": "8.0.3",
-		"tmp": "0.2.1"
+		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/fs-extra": "11.0.1",
-		"@types/lodash-es": "4.17.7",
-		"@types/node": "18.16.12",
-		"@types/tmp": "0.2.3",
-		"@vitest/coverage-c8": "0.31.1",
-		"concurrently": "8.2.1",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"@types/fs-extra": "11.0.4",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "18.19.3",
+		"@types/tmp": "0.2.6",
+		"@vitest/coverage-v8": "1.1.0",
+		"tmp": "0.2.1",
+		"tsup": "8.0.1",
+		"typescript": "5.3.3",
+		"vitest": "1.1.1"
 	},
 	"peerDependencies": {
-		"vue": "3.3.4"
+		"vue": "3.3.13"
 	},
 	"peerDependenciesMeta": {
 		"vue": {

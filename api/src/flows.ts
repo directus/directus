@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
@@ -7,9 +8,8 @@ import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
-import { ForbiddenError } from '@directus/errors';
-import logger from './logger.js';
+import { useEnv } from './env.js';
+import { useLogger } from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
@@ -59,6 +59,9 @@ class FlowManager {
 	private envs: Record<string, any>;
 
 	constructor() {
+		const env = useEnv();
+		const logger = useLogger();
+
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
@@ -99,6 +102,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		const logger = useLogger();
+
 		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
 			return null;
@@ -112,8 +117,10 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: Record<string, unknown>
+		context: Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		const logger = useLogger();
+
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new ForbiddenError();
@@ -125,6 +132,8 @@ class FlowManager {
 	}
 
 	private async load(): Promise<void> {
+		const logger = useLogger();
+
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -169,7 +178,7 @@ class FlowManager {
 								accountability: context['accountability'],
 								database: context['database'],
 								getSchema: context['schema'] ? () => context['schema'] : getSchema,
-							}
+							},
 						);
 
 					events.forEach((event) => emitter.onFilter(event, handler));
@@ -368,7 +377,7 @@ class FlowManager {
 								],
 								values: this.envs,
 							},
-							getRedactedString
+							getRedactedString,
 						),
 					},
 				});
@@ -391,13 +400,15 @@ class FlowManager {
 	private async executeOperation(
 		operation: Operation,
 		keyedData: Record<string, unknown>,
-		context: Record<string, unknown> = {}
+		context: Record<string, unknown> = {},
 	): Promise<{
 		successor: Operation | null;
 		status: 'resolve' | 'reject' | 'unknown';
 		data: unknown;
 		options: Record<string, any> | null;
 	}> {
+		const logger = useLogger();
+
 		if (!this.operations.has(operation.type)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
 
@@ -411,7 +422,7 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				env,
+				env: useEnv(),
 				database: getDatabase(),
 				logger,
 				getSchema,

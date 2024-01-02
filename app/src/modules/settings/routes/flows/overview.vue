@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
-import { Sort, Header } from '@/components/v-table/types';
+import { Header, Sort } from '@/components/v-table/types';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
-import { computed, ref, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
@@ -37,7 +37,7 @@ const conditionalFormatting = ref([
 		value: 'inactive',
 		text: t('inactive'),
 		color: 'var(--theme--foreground-subdued)',
-		background: 'var(--background-normal)',
+		background: 'var(--theme--background-normal)',
 	},
 ]);
 
@@ -76,7 +76,7 @@ const tableHeaders = ref<Header[]>([
 	},
 ]);
 
-const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
+const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
@@ -102,8 +102,8 @@ async function deleteFlow() {
 		await api.delete(`/flows/${confirmDelete.value.id}`);
 		await flowsStore.hydrate();
 		confirmDelete.value = null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deletingFlow.value = false;
 	}
@@ -117,7 +117,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 
 		await flowsStore.hydrate();
 	} catch (error) {
-		unexpectedError(error as Error);
+		unexpectedError(error);
 	}
 }
 

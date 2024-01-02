@@ -1,10 +1,12 @@
 # Directus JavaScript SDK
 
-The design goals for this rebuild:
+## Features
 
-- TypeScript first
-- Modular/Composable architecture
-- Lightweight and Dependency Free
+- **TypeScript first:** The SDK provides a robust and type-safe development experience.
+- **Modular architecture:** The SDK is split into separate modules, giving you granular control over which features to
+  include and which can be pruned at build-time.
+- **Lightweight and dependency-free:** It does not require external libraries, ensuring a lighter bundle and streamlined
+  experience.
 
 ## Composable Client
 
@@ -15,7 +17,7 @@ want.
 const client = createDirectus<Schema>('https://api.directus.io');
 ```
 
-This client is currently an empty wrapper without any functionality.Before you can do anything with it you'll need to
+This client is currently an empty wrapper without any functionality. Before you can do anything with it you'll need to
 add some features. The following composables are available/in progress:
 
 - `rest()` REST request functions
@@ -78,7 +80,7 @@ Subscribing to updates:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const { subscription, unsubscribe } = await client.subscribe('test', {
@@ -98,7 +100,7 @@ Receive/Send messages:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const stop = client.onWebSocket('message', (message) => {

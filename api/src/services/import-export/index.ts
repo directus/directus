@@ -1,3 +1,9 @@
+import {
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
@@ -13,14 +19,8 @@ import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ForbiddenError,
-	InvalidPayloadError,
-	ServiceUnavailableError,
-	UnsupportedMediaTypeError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';
 import { Url } from '../../utils/url.js';
@@ -29,6 +29,9 @@ import { FilesService } from '../files.js';
 import { ItemsService } from '../items.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -47,11 +50,11 @@ export class ImportService {
 		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'create'
+			(permission) => permission.collection === collection && permission.action === 'create',
 		);
 
 		const updatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'update'
+			(permission) => permission.collection === collection && permission.action === 'update',
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
@@ -210,7 +213,7 @@ export class ExportService {
 		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
-		}
+		},
 	) {
 		const { createTmpFile } = await import('@directus/utils/node');
 		const tmpFile = await createTmpFile().catch(() => null);
@@ -280,7 +283,7 @@ export class ExportService {
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
-							})
+							}),
 						);
 					}
 				}
@@ -367,7 +370,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
-		}
+		},
 	): string {
 		if (format === 'json') {
 			let string = JSON.stringify(input || null, null, '\t');

@@ -1,10 +1,11 @@
 import { isInstalled, validateMigrations } from '../database/index.js';
-import { getEnv } from '../env.js';
+import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 export const loadExtensions = async () => {
-	const env = getEnv();
+	const env = useEnv();
+	const logger = useLogger();
 
 	if (!('DB_CLIENT' in env)) return;
 

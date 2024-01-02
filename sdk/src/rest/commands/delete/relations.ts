@@ -13,7 +13,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteRelation =
 	<Schema extends object>(
 		collection: DirectusRelation<Schema>['collection'],
-		field: DirectusRelation<Schema>['field']
+		field: DirectusRelation<Schema>['field'],
 	): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

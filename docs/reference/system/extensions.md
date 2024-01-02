@@ -35,13 +35,17 @@ Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`
 `local` **boolean**\
 Whether the extension exists in the local extensions folder or is loaded from `node_modules`.
 
+`version` **string**\
+The currently loaded version of the plugin as defined by its `package.json`.
+
 ```json
 {
   "name": "my-bundle-operation",
   "bundle": "directus-extension-my-bundle",
   "schema": {
     "type": "operation",
-    "local": true
+    "local": true,
+    "version": "1.0.0"
   },
   "meta": {
     "enabled": true
@@ -134,7 +138,7 @@ Update an existing extension.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /extension/:bundleOrName/:name?`
@@ -180,7 +184,7 @@ Returns the [extension object](#the-extension-object) for the updated extension.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /extensions/my-bundle/draw-interface`

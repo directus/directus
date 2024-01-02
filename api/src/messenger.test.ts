@@ -1,25 +1,26 @@
-import { describe, expect, test, vi, beforeEach } from 'vitest';
-import { getEnv } from './env.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useEnv } from './env.js';
 import { MessengerMemory, MessengerRedis } from './messenger.js';
 
-vi.mock('./env');
 vi.mock('ioredis');
 
-async function dynamicMessenger(mockedEnv: Record<string, any>) {
-	vi.mocked(getEnv).mockReturnValue(mockedEnv);
-
-	return await import('./messenger.js');
-}
+vi.mock('./env.js');
 
 beforeEach(() => {
 	vi.resetModules();
+
+	vi.mocked(useEnv).mockReturnValue({});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('MessengerMemory', () => {
 	test('getMessenger', async () => {
-		const { MessengerMemory, getMessenger } = await dynamicMessenger({
-			MESSENGER_STORE: 'memory',
-		});
+		vi.mocked(useEnv).mockReturnValue({ MESSENGER_STORE: 'memory' });
+
+		const { MessengerMemory, getMessenger } = await import('./messenger.js');
 
 		const messenger = getMessenger();
 
@@ -53,9 +54,8 @@ describe('MessengerMemory', () => {
 
 describe('MessengerRedis', () => {
 	test('getMessenger', async () => {
-		const { MessengerRedis, getMessenger } = await dynamicMessenger({
-			MESSENGER_STORE: 'redis',
-		});
+		vi.mocked(useEnv).mockReturnValue({ MESSENGER_STORE: 'redis' });
+		const { MessengerRedis, getMessenger } = await import('./messenger.js');
 
 		const messenger = getMessenger();
 

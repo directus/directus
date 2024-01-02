@@ -3,7 +3,7 @@ description: A guide on how to build custom hooks in Directus.
 readTime: 7 min read
 ---
 
-# Custom API Hooks <small></small>
+# Custom API Hooks
 
 > Custom API Hooks allow running custom logic when a specified event occurs within your project. There are different
 > types of events to choose from. They are developed using JavaScript / Node.js.
@@ -29,7 +29,7 @@ export default ({ filter, action }) => {
 
 ## Events
 
-Your hook can trigger on a variety of different events. An event is defined by its type and its name.
+Your hook can emit on a variety of different events. An event is defined by its type and its name.
 
 There are five event types to choose from:
 
@@ -39,12 +39,13 @@ There are five event types to choose from:
 - [Schedule](#schedule)
 - [Embed](#embed)
 
-Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
+Use filter hooks when you want the hook to run before the event. Use action hooks when you want the hook to run after
 the event.
 
 ### Filter
 
-Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
+Filter hooks act on the event's payload before the event is emitted. They allow you to check, modify, or cancel an
+event.
 
 Below is an example of canceling a `create` event by throwing a Directus error.
 
@@ -67,7 +68,7 @@ export default ({ filter }) => {
 The filter register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives three parameters:
 
@@ -96,7 +97,7 @@ automate responses to CRUD events on items or server actions.
 The action register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives two parameters:
 
@@ -117,7 +118,7 @@ internal services.
 The init register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives one parameter:
 
@@ -189,10 +190,13 @@ export default ({ embed }, { env }) => {
 
 ## Available Events
 
-### Filter Events
+::: tabs
+
+== Filter Events
 
 | Name                           | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
+| `websocket.message`            | The message send over the WebSocket  |                                             |
 | `request.not_found`            | `false`                              | `request`, `response`                       |
 | `request.error`                | The request errors                   | --                                          |
 | `database.error`               | The database error                   | `client`                                    |
@@ -207,6 +211,8 @@ export default ({ embed }, { env }) => {
 | `(<collection>.)items.update`  | The updated item                     | `keys`, `collection`                        |
 | `(<collection>.)items.promote` | The promoted item                    | `collection`, `item`, `version`             |
 | `(<collection>.)items.delete`  | The keys of the item                 | `collection`                                |
+| `<system-collection>.query`    | The items query                      | `collection`                                |
+| `<system-collection>.read`     | The read item                        | `query`, `collection`                       |
 | `<system-collection>.create`   | The new item                         | `collection`                                |
 | `<system-collection>.update`   | The updated item                     | `keys`, `collection`                        |
 | `<system-collection>.delete`   | The keys of the item                 | `collection`                                |
@@ -217,18 +223,16 @@ export default ({ embed }, { env }) => {
 
 <sup>[3]</sup> Available for `oauth2` and `openid` driver, only if set by provider.
 
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
-`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
-`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
-
-:::
-
-### Action Events
+== Action Events
 
 | Name                           | Meta                                                |
 | ------------------------------ | --------------------------------------------------- |
+| `websocket.message`            | `message`, `client`                                 |
+| `websocket.error`              | `client`, `event`                                   |
+| `websocket.close`              | `client`, `event`                                   |
+| `websocket.connect`            | `client`                                            |
+| `websocket.auth.success`       | `client`                                            |
+| `websocket.auth.failure`       | `client`                                            |
 | `server.start`                 | `server`                                            |
 | `server.stop`                  | `server`                                            |
 | `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
@@ -240,19 +244,12 @@ export default ({ embed }, { env }) => {
 | `(<collection>.)items.promote` | `payload`, `collection`, `item`, `version`          |
 | `(<collection>.)items.delete`  | `keys`, `collection`                                |
 | `(<collection>.)items.sort`    | `collection`, `item`, `to`                          |
+| `<system-collection>.read`     | `payload`, `query`, `collection`                    |
 | `<system-collection>.create`   | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`   | `payload`, `keys`, `collection`                     |
 | `<system-collection>.delete`   | `keys`, `collection`                                |
 
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
-`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
-`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
-
-:::
-
-### Init Events
+== Init Events
 
 | Name                   | Meta      |
 | ---------------------- | --------- |
@@ -266,6 +263,34 @@ export default ({ embed }, { env }) => {
 | `routes.custom.after`  | `app`     |
 | `middlewares.before`   | `app`     |
 | `middlewares.after`    | `app`     |
+
+:::
+
+::: tip System Collections
+
+---
+
+`<system-collection>` should be replaced with one of the
+[system collection](/app/data-model/collections#system-collections) names.
+
+---
+
+Directus reads system collection data to perform correctly, both in the Data Studio and the generated APIs. Be careful
+when modifying the output of system collection read/query events, as this can cause Directus core functionality to
+break.
+
+---
+
+**Event Exceptions**
+
+| Collection    | Detail                                                                   |
+| ------------- | ------------------------------------------------------------------------ |
+| `collections` | No `read` action event                                                   |
+| `fields`      | No `read` action event                                                   |
+| `files`       | `create` and `update` events need to be emitted manually on file upload. |
+| `relations`   | No `delete` event                                                        |
+
+:::
 
 ## Register Function
 
@@ -285,7 +310,7 @@ The second parameter is a context object with the following properties:
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 - `emitter` — [Event emitter](https://github.com/directus/directus/blob/main/api/src/emitter.ts) instance that can be
-  used to trigger custom events for other extensions.
+  used to emit custom events for other extensions.
 
 ::: warning Event loop
 
@@ -301,5 +326,5 @@ Learn how to build hooks with our official guides:
 <GuidesListExtensions type="Hooks" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

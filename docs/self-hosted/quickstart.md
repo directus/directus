@@ -4,7 +4,7 @@ description:
 ---
 
 <script setup lang="ts">
-import { data as directus } from '../.vitepress/data/directus.data.js';
+import { data as packages } from '@/data/packages.data.js';
 </script>
 
 # Self-Hosting Quickstart
@@ -39,12 +39,13 @@ Copy and paste the following and save the file as `docker-compose.yml`:
 version: "3"
 services:
   directus:
-    image: directus/directus:{{ directus.version.full }}
+    image: directus/directus:{{ packages.directus.version.full }}
     ports:
       - 8055:8055
     volumes:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
     environment:
       KEY: "replace-with-random-value"
       SECRET: "replace-with-random-value"
@@ -97,5 +98,4 @@ docker compose up
 
 :::
 
-Directus should now be available at <a href="http://localhost:8055" target="_blank">http://localhost:8055</a> or
-<a href="http://127.0.0.1:8055" target="_blank">http://127.0.0.1:8055</a>
+Directus should now be available at http://localhost:8055 or http://127.0.0.1:8055.
