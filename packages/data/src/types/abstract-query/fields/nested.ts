@@ -1,5 +1,6 @@
 import type {
 	AbstractQueryFieldNodeNestedRelationalAny,
+	AbstractQueryFieldNodeNestedRelationalAnys,
 	AbstractQueryFieldNodeNestedRelationalMany,
 } from '../common/nested/relational.js';
 import type { AbstractQueryFieldNode } from '../fields.js';
@@ -51,7 +52,7 @@ export interface AbstractQueryFieldNodeNestedSingleMany {
 }
 
 /**
- * A related, foreign field for ...
+ * A related, foreign field for o2a.
  */
 export interface AbstractQueryFieldNodeNestedUnionMany {
 	type: 'nested-union-many';
@@ -61,5 +62,5 @@ export interface AbstractQueryFieldNodeNestedUnionMany {
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
 
-	nesting: AbstractQueryFieldNodeNestedRelationalAny;
+	nesting: AbstractQueryFieldNodeNestedRelationalAnys;
 }

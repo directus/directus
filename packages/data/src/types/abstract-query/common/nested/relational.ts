@@ -89,3 +89,34 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 		identifierFields: AtLeastOneElement<string>;
 	};
 }
+
+/**
+ * Used to build a relational query for a2o and o2a relations.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalAnys {
+	type: 'relational-anys';
+
+	collections: AbstractQueryFieldNodeNestedRelationalAnysCollection[];
+}
+
+interface AbstractQueryFieldNodeNestedRelationalAnysCollection {
+	/** The desired fields which should be returned. */
+	fields: AbstractQueryFieldNode[];
+
+	/** The relational data which defines how the two collection are related. */
+	relational: {
+		store: string;
+
+		/** The field name which holds the relational information */
+		field: string;
+
+		/** The name of the foreign collection */
+		collectionName: string;
+
+		/** The UUID of the foreign collection */
+		collectionIdentifier: string;
+
+		/** The column name(s) of the foreign collection which store the primary key(s) */
+		identifierFields: AtLeastOneElement<string>;
+	};
+}
