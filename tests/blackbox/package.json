@@ -33,7 +33,7 @@
 		"typescript": "5.3.3",
 		"uuid": "9.0.1",
 		"vite-tsconfig-paths": "4.2.2",
-		"vitest": "1.1.0",
+		"vitest": "1.1.1",
 		"ws": "8.15.1"
 	}
 }
