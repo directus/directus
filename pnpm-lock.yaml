@@ -958,8 +958,8 @@ importers:
         specifier: 5.0.10
         version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
-        specifier: 3.6.4
-        version: 3.6.4(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
+        specifier: 3.7.0
+        version: 3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
       vitest:
         specifier: 1.1.1
         version: 1.1.1(happy-dom@12.10.3)(sass@1.69.5)
@@ -1823,8 +1823,8 @@ importers:
         specifier: 5.0.10
         version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
-        specifier: 3.6.4
-        version: 3.6.4(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
+        specifier: 3.7.0
+        version: 3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
 
   packages/tsconfig: {}
 
@@ -7850,26 +7850,6 @@ packages:
 
   /@vue/devtools-api@6.5.1:
     resolution: {integrity: sha512-+KpckaAQyfbvshdDW5xQylLni1asvNSGme1JFs8I1+/H5pHEhqUKMEQD/qn3Nx5+/nycBq11qAEi8lk+LXI2dA==}
-
-  /@vue/language-core@1.8.25(typescript@5.3.3):
-    resolution: {integrity: sha512-NJk/5DnAZlpvXX8BdWmHI45bWGLViUaS3R/RMrmFSvFMSbJKuEODpM4kR0F0Ofv5SFzCWuNiMhxameWpVdQsnA==}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@volar/language-core': 1.11.1
-      '@volar/source-map': 1.11.1
-      '@vue/compiler-dom': 3.3.13
-      '@vue/shared': 3.3.13
-      computeds: 0.0.1
-      minimatch: 9.0.3
-      muggle-string: 0.3.1
-      path-browserify: 1.0.1
-      typescript: 5.3.3
-      vue-template-compiler: 2.7.15
-    dev: true
 
   /@vue/language-core@1.8.27(typescript@5.3.3):
     resolution: {integrity: sha512-L8Kc27VdQserNaCUNiSFdDl9LWT24ly8Hpwf1ECy3aFb9m6bDhBGQYOujDm21N7EW3moKIOKEanQwe1q5BK+mA==}
@@ -19034,8 +19014,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.6.4(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10):
-    resolution: {integrity: sha512-yOVhUI/kQhtS6lCXRYYLv2UUf9bftcwQK9ROxCX2ul17poLQs02ctWX7+vXB8GPRzH8VCK3jebEFtPqqijXx6w==}
+  /vite-plugin-dts@3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10):
+    resolution: {integrity: sha512-np1uPaYzu98AtPReB8zkMnbjwcNHOABsLhqVOf81b3ol9b5M2wPcAVs8oqPnOpr6Us+7yDXVauwkxsk5+ldmRA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -19046,7 +19026,7 @@ packages:
     dependencies:
       '@microsoft/api-extractor': 7.39.0
       '@rollup/pluginutils': 5.1.0(rollup@4.9.1)
-      '@vue/language-core': 1.8.25(typescript@5.3.3)
+      '@vue/language-core': 1.8.27(typescript@5.3.3)
       debug: 4.3.4
       kolorist: 1.8.0
       typescript: 5.3.3
