@@ -1,9 +1,10 @@
 import installSeeds from '../../../database/seeds/run.js';
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 export default async function start(): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		await installSeeds(database);

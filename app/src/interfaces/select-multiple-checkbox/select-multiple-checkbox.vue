@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 type Option = {
 	text: string;
 	value: string | number | boolean;
+	disabled?: boolean;
 };
 
 const props = withDefaults(
@@ -89,7 +90,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 			block
 			:value="item.value"
 			:label="item.text"
-			:disabled="disabled"
+			:disabled="item.disabled || disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value || []"

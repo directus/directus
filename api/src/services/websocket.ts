@@ -1,12 +1,14 @@
+import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler } from '@directus/types';
+import emitter from '../emitter.js';
+import { useEnv } from '../env.js';
+import { toBoolean } from '../utils/to-boolean.js';
 import { getWebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketController } from '../websocket/controllers/rest.js';
-import type { WebSocketClient } from '../websocket/types.js';
 import type { WebSocketMessage } from '../websocket/messages.js';
-import { ServiceUnavailableError } from '@directus/errors';
-import { toBoolean } from '../utils/to-boolean.js';
-import emitter from '../emitter.js';
-import env from '../env.js';
+import type { WebSocketClient } from '../websocket/types.js';
+
+const env = useEnv();
 
 export class WebSocketService {
 	private controller: WebSocketController;

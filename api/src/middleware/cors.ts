@@ -1,8 +1,10 @@
 import cors from 'cors';
 import type { RequestHandler } from 'express';
-import env from '../env.js';
+import { useEnv } from '../env.js';
 
 let corsMiddleware: RequestHandler = (_req, _res, next) => next();
+
+const env = useEnv();
 
 if (env['CORS_ENABLED'] === true) {
 	corsMiddleware = cors({

@@ -26,7 +26,7 @@
 		"eslint-plugin-markdown": "3.0.1",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@5.0.1-1",
 		"eslint-plugin-react": "7.33.2",
-		"marked": "11.0.1",
+		"marked": "11.1.0",
 		"spellchecker-cli": "6.1.1",
 		"typedoc": "0.25.4",
 		"typedoc-plugin-frontmatter": "0.0.2",
