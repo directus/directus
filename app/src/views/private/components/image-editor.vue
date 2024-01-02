@@ -377,6 +377,7 @@ function useCropper() {
 		}
 
 		localCropping.value = false;
+		localDragMode.value = 'move';
 
 		cropperInstance.value = new Cropper(imageElement.value as HTMLImageElement, {
 			autoCrop: false,
