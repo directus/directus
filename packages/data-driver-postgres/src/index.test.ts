@@ -875,3 +875,186 @@ test.todo('nested o2a field', async () => {
 
 	expect(actualResult).toStrictEqual(expectedResult);
 });
+
+// on hold until a deterministic alias generation is implemented
+test.todo('nested o2a field', async () => {
+	const localDesiredField = randomIdentifier();
+	const localDesiredFieldId = randomIdentifier();
+	const localDesiredFieldAlias = randomIdentifier();
+	const localRelationalField = randomIdentifier();
+	const localCollection = randomIdentifier();
+	const relatedDataAlias = randomIdentifier();
+
+	// the foreign collection info
+	const foreignTable1 = randomIdentifier();
+	const foreignField1 = randomIdentifier();
+	const foreignField1Id = randomIdentifier();
+	const foreignField1Alias = randomIdentifier();
+	const foreignIdField11 = randomIdentifier();
+	const foreignIdField12 = randomIdentifier();
+
+	// second collection
+	const foreignField2Id = randomIdentifier();
+	const foreignField2Alias = randomIdentifier();
+	const foreignField2 = randomIdentifier();
+	const foreignIdField2 = randomIdentifier();
+	const foreignTable2 = randomIdentifier();
+
+	const query: AbstractQuery = {
+		store: randomIdentifier(),
+		collection: 'images',
+		fields: [
+			{
+				type: 'primitive',
+				field: localDesiredField,
+				alias: localDesiredFieldAlias,
+			},
+			{
+				type: 'nested-union-many',
+				alias: relatedDataAlias,
+				modifiers: {},
+				nesting: {
+					type: 'relational-any',
+					field: localRelationalField,
+					collections: [
+						{
+							fields: [
+								{
+									type: 'primitive',
+									field: foreignField1,
+									alias: foreignField1Alias,
+								},
+							],
+							relational: {
+								store: randomIdentifier(),
+								collectionName: foreignTable1,
+								collectionIdentifier: randomIdentifier(),
+								identifierFields: [foreignField1Id],
+							},
+						},
+						{
+							fields: [
+								{
+									type: 'primitive',
+									field: foreignField2,
+									alias: foreignField2Alias,
+								},
+							],
+							relational: {
+								store: randomIdentifier(),
+								collectionName: foreignTable2,
+								collectionIdentifier: randomIdentifier(),
+								identifierFields: [foreignIdField2],
+							},
+						},
+					],
+				},
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	/*
+	 * Database response mocks
+	 * Let's assume we receive two items from the root chunk.
+	 * Since we have two different foreign collections, we'll do 2x2 so 4 nested queries.
+	 * Therefor 5 mocks are needed.
+	 */
+	const foreignField1Value1 = randomIdentifier();
+	const foreignField2Value1 = randomIdentifier();
+	const foreignField1Value2 = randomIdentifier();
+	const localDesiredFieldValue1 = randomIdentifier();
+	const localDesiredFieldValue2 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource')
+		// the root data
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[localDesiredFieldId]: localDesiredFieldValue1,
+				},
+				{
+					[localDesiredFieldId]: localDesiredFieldValue2,
+				},
+			]),
+		)
+		// the first nested collection data for the first chunk of the root stream
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[foreignField1Id]: foreignField1Value1,
+					[localRelationalField]: {
+						foreignKey: [
+							{ column: foreignIdField11, value: 1 },
+							{ column: foreignIdField12, value: 2 },
+						],
+						foreignCollection: localCollection,
+					} as A2ORelation,
+				},
+				{
+					[foreignField1Id]: foreignField1Value2,
+					[localRelationalField]: {
+						foreignKey: [{ column: foreignIdField11, value: 1 }],
+						foreignCollection: localCollection,
+					} as A2ORelation,
+				},
+			]),
+		)
+		// the second nested collection data for the first chunk of the root stream
+		.mockResolvedValueOnce(getMockedStream([]))
+		// the first nested collection data for the second chunk of the root stream
+		.mockResolvedValueOnce(getMockedStream([]))
+		// the second nested collection data for the second chunk of the root stream
+		.mockResolvedValueOnce(
+			getMockedStream([
+				{
+					[foreignField2Id]: foreignField2Value1,
+					[localRelationalField]: {
+						foreignKey: [
+							{ column: foreignIdField11, value: 1 },
+							{ column: foreignIdField12, value: 2 },
+						],
+						foreignCollection: localCollection,
+					} as A2ORelation,
+				},
+			]),
+		);
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[localDesiredFieldAlias]: localDesiredFieldValue1,
+			[relatedDataAlias]: {
+				[foreignTable1]: [
+					{
+						[foreignField1Alias]: foreignField1Value1,
+					},
+					{
+						[foreignField1Alias]: foreignField1Value2,
+					},
+				],
+				[foreignTable2]: [],
+			},
+		},
+		{
+			[localDesiredFieldAlias]: localDesiredFieldValue2,
+			[relatedDataAlias]: {
+				[foreignTable1]: [],
+				[foreignTable2]: [
+					{
+						[foreignField2Alias]: foreignField2Value1,
+					},
+				],
+			},
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
