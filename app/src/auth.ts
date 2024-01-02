@@ -5,6 +5,8 @@ import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
+import { login as loginCall, authenticateShare } from '@directus/sdk';
+import sdk from './sdk';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -20,35 +22,37 @@ type LoginParams = {
 	share?: boolean;
 };
 
-function getAuthEndpoint(provider?: string, share?: boolean) {
-	if (share) return '/shares/auth';
-	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
-	return `/auth/login/${provider}`;
-}
+// TODO remove
+// function getAuthEndpoint(provider?: string, share?: boolean) {
+// 	if (share) return '/shares/auth';
+// 	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
+// 	return `/auth/login/${provider}`;
+// }
 
-export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
+// TODO fix non-null assertions
+export async function login({ credentials, /*provider, */share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 
-	const response = await api.post<any>(getAuthEndpoint(provider, share), {
-		...credentials,
-		mode: 'cookie',
-	});
-
-	const accessToken = response.data.data.access_token;
+	const response = share
+		? (await sdk.request(authenticateShare(credentials.share!, credentials.password!)))
+		: (await sdk.request(loginCall(credentials.email!, credentials.password!, {
+			...('otp' in credentials ? { otp: credentials.otp } : {}),
+			mode: 'cookie',
+		})));
 
 	// Add the header to the API handler for every request
-	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+	api.defaults.headers.common['Authorization'] = `Bearer ${response.access_token}`;
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
 	// logged in without any noticeable hiccups or delays
 
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054
-	if (response.data.data.expires <= 2100000000) {
-		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
+	if (response.expires! <= 2100000000) {
+		refreshTimeout = setTimeout(() => refresh(), response.expires! - 10000);
 	}
 
-	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+	appStore.accessTokenExpiry = Date.now() + response.expires!;
 	appStore.authenticated = true;
 
 	await hydrate();
