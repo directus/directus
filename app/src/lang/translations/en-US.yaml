@@ -655,7 +655,9 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
-enabled_dev: Enabled (Dev)
+partially_enabled: Partially Enabled
+enable_all: Enable All
+disable_all: Disable All
 enabled_dev_tooltip: App extensions cannot be disabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
