@@ -264,8 +264,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       nodemailer:
-        specifier: 6.9.7
-        version: 6.9.7
+        specifier: 6.9.8
+        version: 6.9.8
       object-hash:
         specifier: 3.0.0
         version: 3.0.0
@@ -14487,8 +14487,8 @@ packages:
     dev: false
     optional: true
 
-  /nodemailer@6.9.7:
-    resolution: {integrity: sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==}
+  /nodemailer@6.9.8:
+    resolution: {integrity: sha512-cfrYUk16e67Ks051i4CntM9kshRYei1/o/Gi8K1d+R34OIs21xdFnW7Pt7EucmVKA0LKtqUGNcjMZ7ehjl49mQ==}
     engines: {node: '>=6.0.0'}
     dev: false
 
