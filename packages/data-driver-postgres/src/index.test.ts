@@ -717,163 +717,11 @@ test.todo('nested a2o field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test.todo('nested o2a field', async () => {
-	const localDesiredField = randomIdentifier();
-	const localDesiredFieldId = randomIdentifier();
-	const localDesiredFieldAlias = randomIdentifier();
-	const foreignCollectionAlias = randomIdentifier();
-	const localRelationalField = randomIdentifier();
-
-	// first collection
-	const foreignTable1 = randomIdentifier();
-	const foreignField1 = randomIdentifier();
-	const foreignField1Id = randomIdentifier();
-	const foreignField1Alias = randomIdentifier();
-	const foreignIdField11 = randomIdentifier();
-	const foreignIdField12 = randomIdentifier();
-
-	// second collection
-	const foreignTable2 = randomIdentifier();
-	const foreignField2 = randomIdentifier();
-	const foreignField2Alias = randomIdentifier();
-	const foreignIdField2 = randomIdentifier();
-
-	const query: AbstractQuery = {
-		collection: randomIdentifier(),
-		store: randomIdentifier(),
-		fields: [
-			{
-				type: 'primitive',
-				field: localDesiredField,
-				alias: localDesiredFieldAlias,
-			},
-			{
-				type: 'nested-union-many',
-				alias: foreignCollectionAlias,
-				modifiers: {},
-				nesting: {
-					type: 'relational-any',
-					field: localRelationalField,
-					collections: [
-						{
-							fields: [
-								{
-									type: 'primitive',
-									field: foreignField1,
-									alias: foreignField1Alias,
-								},
-							],
-							relational: {
-								store: randomIdentifier(),
-								collectionName: foreignTable1,
-								collectionIdentifier: randomIdentifier(),
-								identifierFields: [foreignIdField11, foreignIdField12],
-							},
-						},
-						{
-							fields: [
-								{
-									type: 'primitive',
-									field: foreignField2,
-									alias: foreignField2Alias,
-								},
-							],
-							relational: {
-								store: randomIdentifier(),
-								collectionName: foreignTable2,
-								collectionIdentifier: randomIdentifier(),
-								identifierFields: [foreignIdField2],
-							},
-						},
-					],
-				},
-			},
-		],
-		modifiers: {},
-	};
-
-	const driver = new DataDriverPostgres({
-		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
-	});
-
-	// database response mocks
-
-	const localDesiredFieldValue1 = randomIdentifier();
-	const localDesiredFieldValue2 = randomIdentifier();
-
-	const localRelationalFieldValue1: A2ORelation = {
-		foreignKey: [
-			{ column: foreignIdField11, value: 1 },
-			{ column: foreignIdField12, value: 2 },
-		],
-		foreignCollection: foreignTable1,
-	};
-
-	const localRelationalFieldValue2: A2ORelation = {
-		foreignKey: [{ column: foreignIdField11, value: 1 }],
-		foreignCollection: foreignTable1,
-	};
-
-	const mockedRootData = [
-		{
-			[localDesiredFieldId]: localDesiredFieldValue1,
-			[localRelationalField]: localRelationalFieldValue1,
-		},
-
-		{
-			[localDesiredFieldId]: localDesiredFieldValue2,
-			[localRelationalField]: localRelationalFieldValue2,
-		},
-	];
-
-	const foreignField1Value1 = randomIdentifier();
-	const foreignField1Value2 = randomIdentifier();
-
-	const mockedDataFromNestedCollection1 = [
-		{
-			[foreignField1Id]: foreignField1Value1,
-		},
-		{
-			[foreignField1Id]: foreignField1Value2,
-		},
-	];
-
-	vi.spyOn(driver, 'getDataFromSource')
-		.mockResolvedValueOnce(getMockedStream(mockedRootData))
-		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection1))
-		.mockResolvedValueOnce(getMockedStream([]));
-
-	const readableStream = await driver.query(query);
-	const actualResult = await readToEnd(readableStream);
-	await driver.destroy();
-
-	const expectedResult = [
-		{
-			[localDesiredFieldAlias]: localDesiredFieldValue1,
-			[foreignCollectionAlias]: [
-				{
-					[foreignField1Alias]: foreignField1Value1,
-				},
-				{
-					[foreignField2Alias]: foreignField1Value2,
-				},
-			],
-		},
-		{
-			[localDesiredFieldAlias]: localDesiredFieldValue2,
-			[foreignCollectionAlias]: [],
-		},
-	];
-
-	expect(actualResult).toStrictEqual(expectedResult);
-});
-
 // on hold until a deterministic alias generation is implemented
 test.todo('nested o2a field', async () => {
 	const localDesiredField = randomIdentifier();
 	const localDesiredFieldId = randomIdentifier();
 	const localDesiredFieldAlias = randomIdentifier();
-	const localRelationalField = randomIdentifier();
 	const localCollection = randomIdentifier();
 	const relatedDataAlias = randomIdentifier();
 
@@ -884,6 +732,7 @@ test.todo('nested o2a field', async () => {
 	const foreignField1Alias = randomIdentifier();
 	const foreignIdField11 = randomIdentifier();
 	const foreignIdField12 = randomIdentifier();
+	const jsonFieldName1 = randomIdentifier();
 
 	// second collection
 	const foreignField2Id = randomIdentifier();
@@ -891,6 +740,7 @@ test.todo('nested o2a field', async () => {
 	const foreignField2 = randomIdentifier();
 	const foreignIdField2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
+	const jsonFieldName2 = randomIdentifier();
 
 	const query: AbstractQuery = {
 		store: randomIdentifier(),
@@ -906,8 +756,7 @@ test.todo('nested o2a field', async () => {
 				alias: relatedDataAlias,
 				modifiers: {},
 				nesting: {
-					type: 'relational-any',
-					field: localRelationalField,
+					type: 'relational-anys',
 					collections: [
 						{
 							fields: [
@@ -919,6 +768,7 @@ test.todo('nested o2a field', async () => {
 							],
 							relational: {
 								store: randomIdentifier(),
+								field: jsonFieldName1,
 								collectionName: foreignTable1,
 								collectionIdentifier: randomIdentifier(),
 								identifierFields: [foreignField1Id],
@@ -934,6 +784,7 @@ test.todo('nested o2a field', async () => {
 							],
 							relational: {
 								store: randomIdentifier(),
+								field: jsonFieldName2,
 								collectionName: foreignTable2,
 								collectionIdentifier: randomIdentifier(),
 								identifierFields: [foreignIdField2],
@@ -979,7 +830,7 @@ test.todo('nested o2a field', async () => {
 			getMockedStream([
 				{
 					[foreignField1Id]: foreignField1Value1,
-					[localRelationalField]: {
+					[jsonFieldName1]: {
 						foreignKey: [
 							{ column: foreignIdField11, value: 1 },
 							{ column: foreignIdField12, value: 2 },
@@ -989,7 +840,7 @@ test.todo('nested o2a field', async () => {
 				},
 				{
 					[foreignField1Id]: foreignField1Value2,
-					[localRelationalField]: {
+					[jsonFieldName1]: {
 						foreignKey: [{ column: foreignIdField11, value: 1 }],
 						foreignCollection: localCollection,
 					} as A2ORelation,
@@ -1005,7 +856,7 @@ test.todo('nested o2a field', async () => {
 			getMockedStream([
 				{
 					[foreignField2Id]: foreignField2Value1,
-					[localRelationalField]: {
+					[jsonFieldName2]: {
 						foreignKey: [
 							{ column: foreignIdField11, value: 1 },
 							{ column: foreignIdField12, value: 2 },
