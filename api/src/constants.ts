@@ -49,7 +49,7 @@ export const ASSET_TRANSFORM_QUERY_KEYS = [
 	'withoutEnlargement',
 	'focal_point_x',
 	'focal_point_y',
-] as const;
+] as const satisfies Readonly<(keyof TransformationParams)[]>;
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
