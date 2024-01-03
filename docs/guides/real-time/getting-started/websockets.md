@@ -203,6 +203,11 @@ const stop = client.onWebSocket('message', (message) => {
 });
 ```
 
+On Directus Cloud, this feature is enabled. If you are self-hosting, you can alter this behavior with the
+`WEBSOCKETS_HEARTBEAT_ENABLED` and `WEBSOCKETS_HEARTBEAT_PERIOD` environment variables.
+
+You may wish to exclude these messages from your application logic.
+
 ## In Summary
 
 In this guide, you have successfully created a new WebSocket connection, authenticated yourself, and performed CRUD
