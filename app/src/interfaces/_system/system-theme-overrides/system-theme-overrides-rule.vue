@@ -40,7 +40,7 @@ const showSwatch = computed(() => {
 	try {
 		if (swatchValue.value.startsWith('var(--') || swatchValue.value.startsWith('color-mix(')) {
 			/**
-			 * var and color-mix are not support by the color lib.
+			 * var and color-mix are not supported by the color lib.
 			 * We assume var has been validated by this point and can be directly rendered.
 			 * By rendering the function directly we ensure reactivity for realtime changes.
 			 */
