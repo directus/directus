@@ -74,6 +74,9 @@ extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
 extension_bundles: Pacchetti
+extension_reload_required: È necessario ricaricare la pagina
+extension_reload_required_copy: È necessario ricaricare la pagina per vedere le modifiche dopo aver abilitato o disabilitato le estensioni.
+extension_reload_now: Ricarica ora
 enable: Attivato
 disable: Disattiva
 custom: Personalizzato
@@ -643,6 +646,8 @@ select_an_item: Seleziona un elemento...
 edit: Modifica
 edit_item: Modifica elemento
 enabled: Abilitato
+enabled_dev: Abilitato (sviluppatore)
+enabled_dev_tooltip: Le estensioni non possono essere disabilitate in modalità sviluppatore
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
 tfa_setup: Configura l'autenticazione a due fattori
@@ -679,6 +684,7 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
+  GRAPHQL_VALIDATION: Validazione GraphQL
   SERVICE_UNAVAILABLE: Servizio non disponibile
   UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
   UNEXPECTED_RESPONSE: Risposta inattesa
@@ -1855,7 +1861,9 @@ interfaces:
     description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
+    custom_formats_note: Elenco dei formati dei contenuti di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulla [formattazione dei contenuti](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Ridefinizione delle impostazioni
+    options_override_note: Chiavi e valori di formattazione utente di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulle [opzioni di formattazione utente](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
     imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
@@ -1996,6 +2004,7 @@ displays:
     description: Visualizza una versione formattata dell'oggetto
   hash:
     hash: Hash
+    description: Mostra una versione redatta del valore
   icon:
     icon: Icona
     description: Visualizza un'icona
