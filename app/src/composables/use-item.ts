@@ -42,6 +42,7 @@ export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
 	query: Ref<Query> | Query = {},
+	initialFetch = true,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -78,7 +79,7 @@ export function useItem<T extends Record<string, any>>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: initialFetch });
 
 	return {
 		edits,

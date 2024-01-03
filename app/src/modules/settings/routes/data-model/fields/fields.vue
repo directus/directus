@@ -28,7 +28,7 @@ const { info: collectionInfo } = useCollection(collection);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
-const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
+const { edits, saving, save, remove, deleting } = useItem(ref('directus_collections'), collection, {}, false);
 
 const hasEdits = computed<boolean>(() => {
 	if (!edits.value.meta) return false;
@@ -84,13 +84,13 @@ function discardAndLeave() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="item && item.collection.startsWith('directus_') === false"
+						v-if="collectionInfo?.collection.startsWith('directus_') === false"
 						v-tooltip.bottom="t('delete_collection')"
 						rounded
 						icon
 						class="action-delete"
 						secondary
-						:disabled="item === null"
+						:disabled="collectionInfo === null"
 						@click="on"
 					>
 						<v-icon name="delete" />
@@ -141,10 +141,9 @@ function discardAndLeave() {
 			<v-form
 				v-model="edits.meta"
 				collection="directus_collections"
-				:loading="loading"
 				:initial-values="collectionInfo?.meta"
 				:primary-key="collection"
-				:disabled="item && item.collection.startsWith('directus_')"
+				:disabled="collectionInfo?.collection.startsWith('directus_')"
 			/>
 		</div>
 
