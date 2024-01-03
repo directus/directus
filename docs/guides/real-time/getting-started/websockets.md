@@ -195,11 +195,12 @@ You may have noticed that, periodically, you will receive a message with a type 
 In order to prevent the connection from closing, you may reply with a pong event:
 
 ```js
-const stop = client.onWebSocket('message', (message) => {
-	if ('type' in message && message['type'] === 'pong') {
-		console.log('PONG received');
-		stop();
-	}
+client.onWebSocket('message', (message) => {
+  if (message.type === 'ping') {
+    client.sendMessage({
+      type: 'pong',
+    });
+  }
 });
 ```
 
