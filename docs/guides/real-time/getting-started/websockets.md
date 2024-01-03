@@ -47,11 +47,11 @@ Make sure to replace `your-directus-url` and `your-access-token` with your proje
 At the top of the `<script>` tag, import the composables needed for the SDK
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
 	<body>
 		<script>
-      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk/dist/index.js" // [!code ++]
+			import { createDirectus, staticToken, realtime } from 'https://www.unpkg.com/@directus/sdk/dist/index.js'; // [!code ++]
 
 			const url = 'wss://your-directus-url/websocket';
 			const access_token = 'your-access-token';
@@ -63,7 +63,7 @@ At the top of the `<script>` tag, import the composables needed for the SDK
 
 - `staticToken` is used to authenticate the client we'll create shortly.
 - `createDirectus` is the hook that initializes a Directus client.
-- `realTime` establishes a WebSocket connectivity.
+- `realtime` establishes a WebSocket connectivity.
 
 ## Create a Realtime Client with Authentication
 
@@ -114,17 +114,21 @@ confirm. The connection is now authenticated and will remain open, ready to send
 After subscribing to collections over your connection, you will receive new messages whenever items in the collection
 are created, updated, or deleted.
 
-At the bottom of your `<script>`, create a new function which subscribes to a collection:
+At the bottom of your `<script>`, create a new function `subscribe` which subscribes to a collection:
 
 ```js
-const { subscription } = await client.subscribe('messages', {
-  event: 'update',
-  query: { fields: ['user', 'text'] },
-});
+async function subscribe() {
+  const { subscription } = await client.subscribe('messages', {
+    event: 'update',
+    query: { fields: ['user', 'text'] },
+  });
 
-for await (const item of subscription) {
-  console.log(item);
+  for await (const item of subscription) {
+    console.log(item);
+  }
 }
+
+subscribe();
 ```
 
 Save your file, refresh your browser, and open your browser console.
@@ -188,6 +192,16 @@ You may have noticed that, periodically, you will receive a message with a type 
    application technology stack.
 2. To verify that the connection is still active.
 
+In order to prevent the connection from closing, you may reply with a pong event:
+
+```js
+const stop = client.onWebSocket('message', (message) => {
+	if ('type' in message && message['type'] === 'pong') {
+		console.log('PONG received');
+		stop();
+	}
+});
+```
 
 ## In Summary
 
@@ -201,10 +215,13 @@ operations over the connection. You have also created your first subscription.
 ```html
 <!DOCTYPE html>
 <html>
-	<body>
-		<script>
-
-      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk@11.0.3/dist/index.js"
+  <body>
+    <script>
+      import {
+        createDirectus,
+        staticToken,
+        realtime,
+      } from 'https://www.unpkg.com/@directus/sdk/dist/index.js';
 
       const url = 'wss://your-directus-url/websocket';
       const access_token = 'your-access-token';
@@ -215,6 +232,8 @@ operations over the connection. You have also created your first subscription.
         .with(realtime());
 
       await client.connect();
+
+      subscribe();
 
       client.onWebSocket('open', function () {
         console.log({ event: 'onopen' });
@@ -259,7 +278,7 @@ operations over the connection. You have also created your first subscription.
           query: { limit: 1, sort: '-date_created' },
         });
       }
-		</script>
-	</body>
+    </script>
+  </body>
 </html>
 ```
