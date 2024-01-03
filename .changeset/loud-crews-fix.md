@@ -1,6 +1,6 @@
 ---
-"@directus/app": patch
-"@directus/api": patch
+"@directus/app": minor
+"@directus/api": minor
 "@directus/types": patch
 "@directus/sdk": patch
 ---
