@@ -11,10 +11,17 @@ import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type Image = Pick<
-	File,
-	'type' | 'filesize' | 'filename_download' | 'width' | 'height' | 'focal_point_x' | 'focal_point_y'
->;
+const imageFields = [
+	'type',
+	'filesize',
+	'filename_download',
+	'width',
+	'height',
+	'focal_point_x',
+	'focal_point_y',
+] as const;
+
+type Image = Pick<File, (typeof imageFields)[number]>;
 
 const props = defineProps<{
 	id: string;
@@ -141,15 +148,7 @@ function useImage() {
 
 			const response = await api.get(`/files/${props.id}`, {
 				params: {
-					fields: [
-						'type',
-						'filesize',
-						'filename_download',
-						'width',
-						'height',
-						'focal_point_x',
-						'focal_point_y',
-					] as (keyof Image)[],
+					fields: imageFields,
 				},
 			});
 
