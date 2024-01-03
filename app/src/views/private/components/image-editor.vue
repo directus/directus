@@ -160,7 +160,7 @@ function useImage() {
 		}
 	}
 
-	async function persistChanges(focalPoint?: { x: number | null; y: number | null }) {
+	async function saveImage(focalPoint?: { x: number | null; y: number | null }) {
 		// Wrap the callback so that we can actually listen to it
 		return new Promise<void>((resolve, reject) => {
 			cropperInstance.value
@@ -221,9 +221,9 @@ function useImage() {
 		let patchRequest = null;
 
 		if (gotChangeForImg && gotChangeForFocalPoint) {
-			patchRequest = persistChanges({ x: focalPointX, y: focalPointY });
+			patchRequest = saveImage({ x: focalPointX, y: focalPointY });
 		} else if (gotChangeForImg) {
-			patchRequest = persistChanges();
+			patchRequest = saveImage();
 		} else if (gotChangeForFocalPoint) {
 			patchRequest = api.patch(`/files/${props.id}`, {
 				focal_point_x: focalPointX,
