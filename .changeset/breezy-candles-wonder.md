@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed colors in system theme overrides interface not refreshing on external changes
+Fixed the system theme overrides interface color rules to refresh on external changes
