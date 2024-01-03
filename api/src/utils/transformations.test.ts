@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import type { Transformation, TransformationParams } from '../types/assets.js';
 import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
-const inputFile: File = {
+const inputFile = {
 	id: '43a15f67-84a7-4e07-880d-e46a9f33c542',
 	storage: 'local',
 	filename_disk: 'test',
@@ -27,7 +27,7 @@ const inputFile: File = {
 	modified_on: '',
 	focal_point_x: null,
 	focal_point_y: null,
-};
+} satisfies File;
 
 describe('resolvePreset', () => {
 	test('Prevent input mutation #18301', () => {
@@ -116,10 +116,6 @@ describe('resolvePreset', () => {
 	});
 
 	test('Add resize transformation: cover with centered focal point', () => {
-		if (inputFile.width === null || inputFile.height === null) {
-			throw new Error('Image width and or height wasnt defined!');
-		}
-
 		const transformationParams: TransformationParams = {
 			key: 'system-small-cover',
 			width: 64,
@@ -163,10 +159,6 @@ describe('resolvePreset', () => {
 	});
 
 	test('Add resize transformation: cover with negative focal point', () => {
-		if (inputFile.width === null || inputFile.height === null) {
-			throw new Error('Image width and or height wasnt defined!');
-		}
-
 		const transformationParams: TransformationParams = {
 			key: 'system-small-cover',
 			width: 64,
@@ -179,12 +171,12 @@ describe('resolvePreset', () => {
 		/*
 		 * That should result in the following
 		 * <──────────114────────────>
-		 * <───64────><──────50──────>
-		 * ┌─────────┬───────────────┐
-		 * │         │               │
-		 * │ extract │               │
-		 * │         │               │
-		 * └─────────┴───────────────┘
+		 * <─────64──────><────50────>
+		 * ┌─────────────┬───────────┐
+		 * │             │           │
+		 * │   extract   │           │
+		 * │             │           │
+		 * └─────────────┴───────────┘
 		 */
 		expect(output).toStrictEqual([
 			[
@@ -201,10 +193,6 @@ describe('resolvePreset', () => {
 	});
 
 	test('Add resize transformation: cover with out of bounds focal point', () => {
-		if (inputFile.width === null || inputFile.height === null) {
-			throw new Error('Image width and or height wasnt defined!');
-		}
-
 		const transformationParams: TransformationParams = {
 			key: 'system-small-cover',
 			width: 64,
@@ -217,12 +205,12 @@ describe('resolvePreset', () => {
 		/*
 		 * That should result in the following
 		 * <──────────114────────────>
-		 * <──────50──────><───64────>
-		 * ┌───────────────┬─────────┐
-		 * │               │         │
-		 * │               │ extract │
-		 * │               │         │
-		 * └───────────────┴─────────┘
+		 * <────50────><─────64──────>
+		 * ┌───────────┬─────────────┐
+		 * │           │             │
+		 * │           │   extract   │
+		 * │           │             │
+		 * └───────────┴─────────────┘
 		 */
 		expect(output).toStrictEqual([
 			[

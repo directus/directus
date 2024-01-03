@@ -170,7 +170,7 @@ function useImage() {
 				.toBlob(
 					async (blob) => {
 						if (blob === null) {
-							return reject('Cropper-Blob is null');
+							return reject(`Couldn't process and save edited image`);
 						}
 
 						const formData = new FormData();
@@ -465,7 +465,7 @@ function setAspectRatio() {
 		<div
 			v-if="imageData && !loading && !error"
 			class="editor-container"
-			:class="[localDragMode === 'focal_point' ? 'focal-point' : '']"
+			:class="{ 'focal-point': localDragMode === 'focal_point' }"
 		>
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
