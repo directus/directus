@@ -42,7 +42,12 @@ export default abstract class SocketController {
 	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
-		this.server = new WebSocketServer({ noServer: true });
+		this.server = new WebSocketServer({
+			noServer: true,
+			// @ts-ignore TODO Remove once @types/ws has been updated
+			autoPong: false,
+		});
+
 		this.clients = new Set();
 		this.authInterval = null;
 
