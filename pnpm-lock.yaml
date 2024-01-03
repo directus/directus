@@ -1859,8 +1859,8 @@ importers:
         specifier: 1.6.2
         version: 1.6.2
       axios-cache-interceptor:
-        specifier: 1.3.3
-        version: 1.3.3(axios@1.6.2)
+        specifier: 1.4.1
+        version: 1.4.1(axios@1.6.2)
       boxen:
         specifier: 7.1.1
         version: 7.1.1
@@ -8569,8 +8569,8 @@ packages:
     dev: false
     optional: true
 
-  /axios-cache-interceptor@1.3.3(axios@1.6.2):
-    resolution: {integrity: sha512-i+AU7qIf3trytWR8KmQpGbNm47T9OllnM3j/jtbybG2CN0eSmPL7Szo0VzJZPtuoKXVINvRozieXDLCUREW5kw==}
+  /axios-cache-interceptor@1.4.1(axios@1.6.2):
+    resolution: {integrity: sha512-Ax4+PiGfNxpQvyF00t55nFzWoVnqW7slKCg9va6dbqiuAGIxRE8r1uMzunw8TKJ5iwLivFqAb0EeiLeUCxuZIw==}
     engines: {node: '>=12'}
     peerDependencies:
       axios: ^1
