@@ -62,25 +62,22 @@ function createSubQueryLookUp(
 				indexGenerator,
 			);
 
-			const joins = [...nestedFieldNodes.clauses.joins];
-			const nestedParameters = [...nestedFieldNodes.parameters];
-
 			const fKs = collection.relational.identifierFields.map((idField) => {
 				const correspondingObj = rel.foreignKey.find((fk) => fk.column === idField);
 				if (!correspondingObj) throw new Error('No corresponding foreign key found.');
 				return correspondingObj.value;
 			});
 
-			return function () {
+			return () => {
 				return {
 					rootQuery: {
 						clauses: {
 							select: nestedFieldNodes.clauses.select,
 							from: collection.relational.collectionName,
-							joins: joins,
+							joins: nestedFieldNodes.clauses.joins,
 							where: getRelationConditions(rel, indexGenerator, field.nesting),
 						},
-						parameters: [...nestedParameters, ...fKs],
+						parameters: [...nestedFieldNodes.parameters, ...fKs],
 					},
 					subQueries: nestedFieldNodes.subQueries,
 					aliasMapping: nestedFieldNodes.aliasMapping,
