@@ -27,6 +27,7 @@ method: Метод
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
+extensions: Розширення
 modules: Модулі
 module_bar: Панель модулів
 logs: Логи
@@ -56,10 +57,26 @@ modifier: Модифікатор
 extension_interface: Інтерфейс
 extension_display: Відображати
 extension_layout: Макет
+extension_module: Модуль
 extension_panel: Панель
+extension_theme: Тема
 extension_hook: Хук
+extension_endpoint: Кінцева точка
+extension_operation: Операція
+extension_interfaces: Інтерфейси
+extension_displays: Дисплеї
+extension_layouts: Макети
 extension_modules: Модулі
+extension_panels: Панелі
+extension_themes: Теми
+extension_hooks: Гачки
+extension_endpoints: Кінцеві точки
+extension_operations: Операції
+extension_reload_required: Потрібне перезавантаження сторінки
+extension_reload_required_copy: Щоб побачити зміни після ввімкнення чи вимкнення розширень додатків, потрібно оновити сторінку.
+extension_reload_now: Перезавантажте зараз
 enable: Увімкнути
+disable: Вимкнути
 custom: Власний
 hook: Хук
 fill_width: Ширина заповнення
@@ -88,6 +105,10 @@ create_user: Новий користувач
 message: Повідомлення
 delete_panel: Видалити панель
 create_webhook: Створити вебхук
+create_custom_translation: Створити спеціальний переклад
+edit_custom_translation: Редагувати спеціальний переклад
+no_custom_translations: Немає спеціальних перекладів
+no_custom_translations_copy: Ще немає спеціальних перекладів.
 invite_users: Запросити друзів
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
@@ -103,7 +124,29 @@ rename_folder: Перейменувати папку
 delete_folder: Видалити папку
 prefix: Префікс
 suffix: Суфікс
+keep: Тримати
+version: Версія
+version_key: Ключ версії
+version_name: Назва версії
+main_version: Головна
+switch_version: Змінити версію
+switch_version_copy: Ви впевнені, що бажаєте перейти на версію "{version}"? Незбережені зміни буде втрачено.
+create_version: Створити версію
+rename_version: Перейменувати версію
+compare_version: Порівняти версію
+save_version: Зберегти версію
+promote_version_disabled: Жодних змін
+promote_version_changes: Зміни
 promote_version_preview: Перегляд
+outdated_notice: >-
+  Основний елемент було оновлено після створення цієї версії. Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
+promote_notice: >-
+  Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
+delete_version: Видалити версію
+delete_version_copy: >-
+  Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
+delete_on_promote_copy: >-
+  Ви бажаєте видалити або зберегти версію "{version}" після підвищення?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -125,6 +168,7 @@ archive_confirm_count: >-
   Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
 reset_system_permissions_to: 'Скинути налаштування до:'
 reset_system_permissions_copy: Ця дія перезапише будь-які користувацькі дозволи, які ви могли задати до системних колекцій. Ви впевнені?
+the_following_are_minimum_permissions: Наступні мінімальні дозволи застосовуються автоматично, коли ввімкнено «Доступ до програми». За потреби можна надати додаткові дозволи, але не можна зменшити дозволи нижче цього рівня.
 app_access_minimum: Мінімальний доступ до додатку
 recommended_defaults: Рекомендовані значення за замовчуванням
 unarchive: Розархівувати
@@ -148,7 +192,14 @@ validationError:
   nnull: Значення не може бути null
   required: Значення є обов'язковим
   unique: Значення повинно бути унікальним
+  email: Значення має бути дійсною адресою електронної пошти
   regex: Значення має некоректний формат
+  starts_with: Значення має починатися з {substring}
+  istarts_with: Значення має починатися з {substring}
+  nstarts_with: Значення не може починатися з {substring}
+  nistarts_with: Значення не може починатися з {substring}
+  ends_with: Значення має закінчуватися на {substring}
+  iends_with: Значення має закінчуватися на {substring}
 all_access: Повний доступ
 no_access: Немає доступу
 use_custom: Використайте Користувацькі налаштування
