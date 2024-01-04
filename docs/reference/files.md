@@ -238,6 +238,10 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 </template>
 </SnippetToggler>
 
+### Focal Points
+
+Directus will crop assets when requested with a `width` or `height` query paramater. By default, images are cropped from the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping will center around these coordinates.
+
 ## The File Object
 
 `id` **uuid**\
@@ -281,6 +285,12 @@ This property is only auto-extracted for images.
 If the file is a(n) image/video, it's the height in px.\
 This property is only auto-extracted for images.
 
+`focal_point_x` **number**\
+If the file is an image, cropping will center around this point.
+
+`focal_point_y` **number**\
+If the file is an image, cropping will center around this point.
+
 `duration` **number**\
 If the file contains audio/video, it's the duration in milliseconds.\
 This property is not auto-extracted.
@@ -313,6 +323,8 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"filesize": 3442252,
 	"width": 3456,
 	"height": 5184,
+	"focal_point_x": 1598,
+	"focal_point_y": 1827,
 	"duration": null,
 	"description": null,
 	"location": null,
