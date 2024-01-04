@@ -2,8 +2,7 @@ import type { A2ORelation, AbstractQueryFieldNodeNestedUnionMany } from '@direct
 import { randomIdentifier } from '@directus/random';
 import { afterAll, expect, test, vi } from 'vitest';
 import type { ConverterResult } from '../../index.js';
-import { type NestedManyResult } from './create-nested-manys.js';
-import { getNestedUnionMany } from './create-nested-union-many.js';
+import { getNestedUnionMany, type NestedUnionResult } from './create-nested-union-many.js';
 
 afterAll(() => {
 	vi.restoreAllMocks();
@@ -13,17 +12,17 @@ vi.mock('../../utils/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
-test.skip('getNestedUnionMany', () => {
+test.todo('getNestedUnionMany', () => {
 	const collection = randomIdentifier();
 	const localDesiredField = randomIdentifier();
-	const relationalColumn = randomIdentifier();
-	const localRelationalField = randomIdentifier();
+	const localIdField = randomIdentifier();
 
 	// first foreign collection
 	const foreignField = randomIdentifier();
 	const foreignFieldAlias = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignTable = randomIdentifier();
+	const foreignRelationalField1 = randomIdentifier();
 
 	// second foreign collection
 	const foreignField2 = randomIdentifier();
@@ -31,14 +30,15 @@ test.skip('getNestedUnionMany', () => {
 	const foreignIdField2 = randomIdentifier();
 	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
+	const foreignRelationalField2 = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedUnionMany = {
 		type: 'nested-union-many',
 		alias: foreignTable,
 		modifiers: {},
+		localIdentifierFields: [localIdField],
 		nesting: {
-			type: 'relational-any',
-			field: localRelationalField,
+			type: 'relational-anys',
 			collections: [
 				{
 					fields: [
@@ -50,6 +50,7 @@ test.skip('getNestedUnionMany', () => {
 					],
 					relational: {
 						store: randomIdentifier(),
+						field: foreignRelationalField1,
 						collectionName: foreignTable,
 						collectionIdentifier: randomIdentifier(),
 						identifierFields: [foreignIdField],
@@ -65,6 +66,7 @@ test.skip('getNestedUnionMany', () => {
 					],
 					relational: {
 						store: randomIdentifier(),
+						field: foreignRelationalField2,
 						collectionName: foreignTable2,
 						collectionIdentifier: randomIdentifier(),
 						identifierFields: [foreignIdField2],
@@ -76,71 +78,125 @@ test.skip('getNestedUnionMany', () => {
 
 	const result = getNestedUnionMany(collection, field);
 
-	const expected: NestedManyResult = {
-		subQuery: expect.any(Function),
+	const expected: NestedUnionResult = {
+		subQueries: expect.any(Function),
 		select: [
 			{
 				type: 'primitive',
 				table: collection,
-				column: relationalColumn,
-				as: `${relationalColumn}_RANDOM`,
+				column: localIdField,
+				as: `${localIdField}_RANDOM`,
 			},
 		],
 	};
 
 	expect(result).toStrictEqual(expected);
 
-	const jsonValues: A2ORelation = {
-		foreignKey: [
-			{
-				column: foreignIdField2,
-				value: 1,
-			},
-		],
-		foreignCollection: foreignTable2,
-	};
+	const rootChunkIdValue = randomIdentifier();
 
 	const exampleRootRow = {
+		[`${localIdField}_RANDOM`]: rootChunkIdValue,
 		[`${localDesiredField}_RANDOM`]: randomIdentifier(),
-		[`${relationalColumn}_RANDOM`]: JSON.stringify(jsonValues),
 	};
 
-	const expectedGeneratedQuery: ConverterResult = {
-		rootQuery: {
-			clauses: {
-				select: [
-					{
-						type: 'primitive',
-						table: foreignTable2,
-						column: foreignIdField2,
-						as: `${foreignIdField2}_RANDOM`,
-					},
-				],
-				from: foreignTable2,
-				joins: [],
-				where: {
-					type: 'condition',
-					condition: {
-						type: 'condition-string',
-						operation: 'eq',
-						target: {
+	const expectedFinalQueries: ConverterResult[] = [
+		{
+			rootQuery: {
+				clauses: {
+					select: [
+						{
 							type: 'primitive',
 							table: foreignTable2,
 							column: foreignIdField2,
+							as: `${foreignIdField2}_RANDOM`,
 						},
-						compareTo: {
-							type: 'value',
-							parameterIndex: 0,
+					],
+					from: foreignTable2,
+					joins: [],
+					where: {
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								table: foreignTable2,
+								column: foreignIdField2,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
 						},
+						negate: false,
 					},
-					negate: false,
 				},
+				parameters: [
+					JSON.stringify({
+						foreignKey: [
+							{
+								column: foreignIdField2,
+								value: rootChunkIdValue,
+							},
+						],
+						foreignCollection: foreignTable2,
+					} as A2ORelation),
+				],
 			},
-			parameters: [JSON.stringify(jsonValues)],
+			subQueries: [],
+			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
 		},
-		subQueries: [],
-		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
-	};
+		{
+			rootQuery: {
+				clauses: {
+					select: [
+						{
+							type: 'primitive',
+							table: foreignTable2,
+							column: foreignIdField2,
+							as: `${foreignIdField2}_RANDOM`,
+						},
+					],
+					from: foreignTable2,
+					joins: [],
+					where: {
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								table: foreignTable2,
+								column: foreignIdField2,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
+						},
+						negate: false,
+					},
+				},
+				parameters: [
+					JSON.stringify({
+						foreignKey: [
+							{
+								column: foreignIdField2,
+								value: rootChunkIdValue,
+							},
+						],
+						foreignCollection: foreignTable2,
+					} as A2ORelation),
+				],
+			},
+			subQueries: [],
+			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
+		},
+	];
 
-	expect(result.subQuery(exampleRootRow)).toStrictEqual(expectedGeneratedQuery);
+	if (!result.subQueries) {
+		throw new Error('No sub query defined');
+	}
+
+	expect(result.subQueries(exampleRootRow)).toStrictEqual(expectedFinalQueries);
 });

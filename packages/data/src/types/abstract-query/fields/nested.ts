@@ -1,3 +1,4 @@
+import type { AtLeastOneElement } from '../../misc.js';
 import type {
 	AbstractQueryFieldNodeNestedRelationalAny,
 	AbstractQueryFieldNodeNestedRelationalAnys,
@@ -61,6 +62,9 @@ export interface AbstractQueryFieldNodeNestedUnionMany {
 
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
+
+	/** The field which identifies an item in the root collection, like the primary key column in SQL. */
+	localIdentifierFields: AtLeastOneElement<string>;
 
 	nesting: AbstractQueryFieldNodeNestedRelationalAnys;
 }
