@@ -9,6 +9,7 @@ vi.mock('@directus/env');
 vi.mock('../logger');
 
 vi.mock('process', () => ({
+	cwd: vi.fn(),
 	exit: vi.fn(),
 }));
 

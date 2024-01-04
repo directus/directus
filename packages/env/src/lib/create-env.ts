@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
@@ -30,5 +31,5 @@ export const createEnv = (): Env => {
 		}
 	}
 
-	return output;
+	return { ...DEFAULTS, ...output };
 };
