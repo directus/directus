@@ -240,7 +240,9 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 
 ### Focal Points
 
-Directus will crop assets when requested with a `width` or `height` query paramater. By default, images are cropped from the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping will center around these coordinates.
+Directus will crop assets when requested with a `width` or `height` query paramater. By default, images are cropped from
+the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping will
+center around these coordinates.
 
 ## The File Object
 

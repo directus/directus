@@ -128,12 +128,13 @@ Edits overwrite the original file on disk. This can't be reversed.
 
 ## Set a Focal Point
 
-By default, Directus will crop images from the center when specific sizes are requested. Focal points change the center point to specific coordinates.
+By default, Directus will crop images from the center when specific sizes are requested. Focal points change the center
+point to specific coordinates.
 
 1. From the **File Library**, click a file to open its detail page.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
-2. Click the <span mi btn sec>location_searching</span> button to select a focal point.
-3. Make your changes and click <span mi btn>check</span> in the top right to save the updates.
+3. Click the <span mi btn sec>location_searching</span> button to select a focal point.
+4. Make your changes and click <span mi btn>check</span> in the top right to save the updates.
 
 ## Upload a File
 
