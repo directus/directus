@@ -114,11 +114,7 @@ The file sidebar also includes the following details, which are not editable and
 
 ## Edit an Image
 
-Rotate, crop, flip, or adjust aspect ratios of an image.
-
-<video alt="Edit an Image" loop muted controls autoplay playsinline>
-  <source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220516A/edit-an-image-20220516A.mp4" type="video/mp4">
-</video>
+Rotate, crop, flip, adjust aspect ratios, or set focal points of an image.
 
 1. From the **File Library**, click a file to open its detail page.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
@@ -129,6 +125,15 @@ Rotate, crop, flip, or adjust aspect ratios of an image.
 Edits overwrite the original file on disk. This can't be reversed.
 
 :::
+
+## Set a Focal Point
+
+By default, Directus will crop images from the center when specific sizes are requested. Focal points change the center point to specific coordinates.
+
+1. From the **File Library**, click a file to open its detail page.
+2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
+2. Click the <span mi btn sec>location_searching</span> button to select a focal point.
+3. Make your changes and click <span mi btn>check</span> in the top right to save the updates.
 
 ## Upload a File
 
