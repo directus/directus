@@ -21,7 +21,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;
