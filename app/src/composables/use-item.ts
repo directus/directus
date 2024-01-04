@@ -78,7 +78,7 @@ export function useItem<T extends Record<string, any>>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
 
 	refreshItem();
 
