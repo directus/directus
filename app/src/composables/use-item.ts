@@ -6,6 +6,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { notify } from '@/utils/notify';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -14,9 +15,8 @@ import { Field, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -41,7 +41,7 @@ type UsableItem<T extends Record<string, any>> = {
 export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Ref<Query> | Query = {},
+	query: MaybeRef<Query> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -79,6 +79,8 @@ export function useItem<T extends Record<string, any>>(
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
 	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
+
+	refreshItem();
 
 	return {
 		edits,
@@ -437,10 +439,19 @@ export function useItem<T extends Record<string, any>>(
 
 	function refresh() {
 		error.value = null;
+		validationErrors.value = [];
 		loading.value = false;
 		saving.value = false;
 		deleting.value = false;
+		archiving.value = false;
 
+		item.value = null;
+		edits.value = {};
+
+		refreshItem();
+	}
+
+	function refreshItem() {
 		if (isNew.value === true) {
 			item.value = null;
 		} else {

@@ -5,7 +5,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import formatTitle from '@directus/format-title';
-import { computed, ref, toRefs, unref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
@@ -26,13 +26,11 @@ const { collection } = toRefs(props);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
-// Re-initialize if collection (page) changes
-const usableItem = computed(() => useItem(ref('directus_collections'), collection));
+const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
 
 const hasEdits = computed<boolean>(() => {
-	const edits = unref(usableItem).edits.value;
-	if (!edits.meta) return false;
-	return Object.keys(edits.meta).length > 0;
+	if (!edits.value.meta) return false;
+	return Object.keys(edits.value.meta).length > 0;
 });
 
 useShortcut('meta+s', () => {
@@ -44,27 +42,26 @@ const confirmDelete = ref(false);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function deleteAndQuit() {
-	const item = unref(usableItem);
-	await item.remove();
+	await remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	item.edits.value = {};
+	edits.value = {};
 	router.replace(`/settings/data-model`);
 }
 
 async function saveAndStay() {
-	await unref(usableItem).save();
+	await save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 }
 
 async function saveAndQuit() {
-	await unref(usableItem).save();
+	await save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	router.push(`/settings/data-model`);
 }
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	unref(usableItem).edits.value = {};
+	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
@@ -91,7 +88,7 @@ function discardAndLeave() {
 						icon
 						class="action-delete"
 						secondary
-						:disabled="!unref(usableItem.item)"
+						:disabled="!item"
 						@click="on"
 					>
 						<v-icon name="delete" />
@@ -105,7 +102,7 @@ function discardAndLeave() {
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button kind="danger" :loading="unref(usableItem.deleting)" @click="deleteAndQuit">
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -116,7 +113,7 @@ function discardAndLeave() {
 				v-tooltip.bottom="t('save')"
 				rounded
 				icon
-				:loading="unref(usableItem.saving)"
+				:loading="saving"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
 			>
@@ -140,10 +137,10 @@ function discardAndLeave() {
 			<router-view name="field" :collection="collection" :field="field" :type="type" />
 
 			<v-form
-				v-model="unref(usableItem.edits).meta"
+				v-model="edits.meta"
 				collection="directus_collections"
-				:loading="unref(usableItem.loading)"
-				:initial-values="unref(usableItem.item)?.meta"
+				:loading="loading"
+				:initial-values="item?.meta"
 				:primary-key="collection"
 				:disabled="collection.startsWith('directus_')"
 			/>
