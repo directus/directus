@@ -53,7 +53,7 @@ withDefaults(defineProps<Props>(), {
 		cursor: not-allowed;
 		pointer-events: none;
 
-		& > * {
+		& :deep(> *) {
 			opacity: 0.4;
 		}
 	}

@@ -1,3 +1,4 @@
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
@@ -48,7 +49,6 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -64,11 +64,11 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { collectTelemetry } from './utils/telemetry.js';
 import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
+import { initTelemetry } from './telemetry/index.js';
 
 const require = createRequire(import.meta.url);
 
@@ -310,7 +310,7 @@ export default async function createApp(): Promise<express.Application> {
 	// Register all webhooks
 	await initWebhooks();
 
-	collectTelemetry();
+	initTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 

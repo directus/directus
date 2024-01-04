@@ -43,6 +43,7 @@ export type Info = {
 		default: number;
 		max: number;
 	};
+	version?: string;
 	showAdminOnboarding?: boolean;
 	telemetry?: boolean;
 };
@@ -85,6 +86,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.version = serverInfoResponse.data.data?.version;
 		info.showAdminOnboarding = serverInfoResponse.data.data?.showAdminOnboarding;
 		info.telemetry = serverInfoResponse.data.data?.telemetry;
 

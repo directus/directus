@@ -9,33 +9,34 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 
-interface Props {
-	headers: Header[];
-	sort: Sort;
-	reordering: boolean;
-	allowHeaderReorder: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	someItemsSelected?: boolean;
-	allItemsSelected?: boolean;
-	fixed?: boolean;
-	mustSort?: boolean;
-	hasItemAppendSlot?: boolean;
-	manualSortKey?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	someItemsSelected: false,
-	allItemsSelected: false,
-	fixed: false,
-	mustSort: false,
-	hasItemAppendSlot: false,
-	manualSortKey: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: Header[];
+		sort: Sort;
+		reordering: boolean;
+		allowHeaderReorder: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		someItemsSelected?: boolean;
+		allItemsSelected?: boolean;
+		fixed?: boolean;
+		mustSort?: boolean;
+		hasItemAppendSlot?: boolean;
+		manualSortKey?: string;
+	}>(),
+	{
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		someItemsSelected: false,
+		allItemsSelected: false,
+		fixed: false,
+		mustSort: false,
+		hasItemAppendSlot: false,
+		manualSortKey: undefined,
+	},
+);
 
 const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
 const { t } = useI18n();
@@ -175,7 +176,6 @@ function toggleManualSort() {
 	<thead class="table-header" :class="{ resizing, reordering }">
 		<draggable
 			v-model="headersWritable"
-			force-fallback
 			:class="{ fixed }"
 			item-key="value"
 			tag="tr"
@@ -185,6 +185,7 @@ function toggleManualSort() {
 			animation="150"
 			ghost-class="header-order-ghost"
 			swap-threshold="0.5"
+			v-bind="{ 'force-fallback': true }"
 			@start="$emit('update:reordering', true)"
 			@end="$emit('update:reordering', false)"
 		>

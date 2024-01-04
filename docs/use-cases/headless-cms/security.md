@@ -8,11 +8,11 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-[Headless CMS](/use-cases/headless-cms/introduction) when coupled with statically-generated sites are architecture
-choices that are generally more secure than Traditional CMS because your content is separated from the presentation
-layer. Given that users don't directly interact with a server to construct a page, there is a reduced ability for
-malicious actors to attack the website. However, it is still very important that you follow good security protocols to
-keep your data protected.
+A [Headless CMS](https://directus.io/solutions/headless-cms), when coupled with statically-generated sites, are
+architecture choices that are generally more secure than Traditional CMS because your content is separated from the
+presentation layer. Given that users don't directly interact with a server to construct a page, there is a reduced
+ability for malicious actors to attack the website. However, it is still very important that you follow good security
+protocols to keep your data protected.
 
 In this guide, we'll cover some best practices for keeping your Directus Headless CMS secure.
 
@@ -114,7 +114,7 @@ But when it’s time to go to production and add all your different users, we re
    ![A sample user's detail page is shown. The Two-Factor Authentication form field is highlighted. ](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-user.webp)
 
 2. **Enable the Strong option for Auth Password Policy under
-   [Project Settings > Security](/user-guide/cloud/project-settings#security).**
+   [Project Settings > Security](/user-guide/settings/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
 

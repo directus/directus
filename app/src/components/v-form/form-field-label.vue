@@ -2,33 +2,34 @@
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 
-interface Props {
-	field: FormField;
-	toggle: (event: Event) => any;
-	batchMode?: boolean;
-	batchActive?: boolean;
-	disabled?: boolean;
-	active?: boolean;
-	edited?: boolean;
-	hasError?: boolean;
-	badge?: string | null;
-	loading?: boolean;
-	rawEditorEnabled?: boolean;
-	rawEditorActive?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	batchMode: false,
-	batchActive: false,
-	disabled: false,
-	active: false,
-	edited: false,
-	hasError: false,
-	badge: null,
-	loading: false,
-	rawEditorEnabled: false,
-	rawEditorActive: false,
-});
+withDefaults(
+	defineProps<{
+		field: FormField;
+		toggle: (event: Event) => any;
+		batchMode?: boolean;
+		batchActive?: boolean;
+		disabled?: boolean;
+		active?: boolean;
+		edited?: boolean;
+		hasError?: boolean;
+		badge?: string | null;
+		loading?: boolean;
+		rawEditorEnabled?: boolean;
+		rawEditorActive?: boolean;
+	}>(),
+	{
+		batchMode: false,
+		batchActive: false,
+		disabled: false,
+		active: false,
+		edited: false,
+		hasError: false,
+		badge: null,
+		loading: false,
+		rawEditorEnabled: false,
+		rawEditorActive: false,
+	},
+);
 
 defineEmits(['toggle-batch', 'toggle-raw']);
 

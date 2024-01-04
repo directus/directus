@@ -23,7 +23,7 @@ jobs:
           - javascript
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -42,7 +42,7 @@ jobs:
           output: sarif-results
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sarif-results
           path: sarif-results

@@ -40,6 +40,8 @@ const basicRules = {
 	'no-nested-ternary': 'error',
 	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
+	// Disallow expressions where the operation doesn't affect the value
+	'no-constant-binary-expression': 'error',
 };
 
 const tsRules = {
@@ -67,6 +69,8 @@ const vueRules = {
 	'vue/require-default-prop': 'off',
 	// Require shorthand form attribute when v-bind value is true
 	'vue/prefer-true-attribute-shorthand': 'error',
+	// Allow unused variables when they begin with an underscore
+	'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
 };
 
 const getExtends = (configs = []) => [

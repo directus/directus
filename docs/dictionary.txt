@@ -139,6 +139,7 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
 CollectionsService
 CommonJS
@@ -422,6 +423,7 @@ Ungrouped
 unintuitive
 unpaused
 unselectable
+unstyled
 upscaled
 upvotes
 userbase

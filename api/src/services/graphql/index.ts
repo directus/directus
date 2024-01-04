@@ -201,8 +201,7 @@ export class GraphQLService {
 			},
 		});
 
-		const { ReadCollectionTypes } = getReadableTypes();
-
+		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes();
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -247,6 +246,12 @@ export class GraphQLService {
 
 							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 								`${collection.collection}_aggregated`,
+							);
+						}
+
+						if (this.scope === 'items') {
+							acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
+								`${collection.collection}_by_version`,
 							);
 						}
 
@@ -364,6 +369,7 @@ export class GraphQLService {
 		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
+			const VersionTypes: Record<string, ObjectTypeComposer> = {};
 
 			const CountFunctions = schemaComposer.createObjectTC({
 				name: 'count_functions',
@@ -514,6 +520,12 @@ export class GraphQLService {
 						{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
 					),
 				});
+
+				if (self.scope === 'items') {
+					VersionTypes[collection.collection] = CollectionTypes[collection.collection]!.clone(
+						`version_${collection.collection}`,
+					);
+				}
 			}
 
 			for (const relation of schema[action].relations) {
@@ -538,6 +550,17 @@ export class GraphQLService {
 								},
 							},
 						});
+
+						if (self.scope === 'items') {
+							VersionTypes[relation.related_collection]?.addFields({
+								[relation.meta.one_field]: {
+									type: GraphQLJSON,
+									resolve: (obj: Record<string, any>, _, __, info) => {
+										return obj[info?.path?.key ?? relation.meta!.one_field];
+									},
+								},
+							});
+						}
 					}
 				} else if (relation.meta?.one_allowed_collections && action === 'read') {
 					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
@@ -577,14 +600,14 @@ export class GraphQLService {
 				}
 			}
 
-			return { CollectionTypes };
+			return { CollectionTypes, VersionTypes };
 		}
 
 		/**
 		 * Create readable types and attach resolvers for each. Also prepares full filter argument structures
 		 */
 		function getReadableTypes() {
-			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+			const { CollectionTypes: ReadCollectionTypes, VersionTypes: VersionCollectionTypes } = getTypes('read');
 
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
@@ -1064,12 +1087,6 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
-				} else {
-					resolver.args = {
-						version: {
-							type: GraphQLString,
-						},
-					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
@@ -1112,8 +1129,25 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
-							version: GraphQLString,
 						},
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context['data'] = result;
+							return result;
+						},
+					});
+				}
+
+				if (self.scope === 'items') {
+					VersionCollectionTypes[collection.collection]!.addResolver({
+						name: `${collection.collection}_by_version`,
+						type: VersionCollectionTypes[collection.collection]!,
+						args: collection.singleton
+							? { version: new GraphQLNonNull(GraphQLString) }
+							: {
+									version: new GraphQLNonNull(GraphQLString),
+									id: new GraphQLNonNull(GraphQLID),
+							  },
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
 							context['data'] = result;
@@ -1208,7 +1242,7 @@ export class GraphQLService {
 				}
 			}
 
-			return { ReadCollectionTypes, ReadableCollectionFilterTypes };
+			return { ReadCollectionTypes, VersionCollectionTypes, ReadableCollectionFilterTypes };
 		}
 
 		function getWritableTypes() {
@@ -1418,6 +1452,10 @@ export class GraphQLService {
 
 			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -6);
+			}
+
+			if (collection.endsWith('_by_version') && collection in this.schema.collections === false) {
+				collection = collection.slice(0, -11);
 			}
 		}
 
