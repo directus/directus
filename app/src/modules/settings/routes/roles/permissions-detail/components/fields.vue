@@ -22,9 +22,12 @@ const internalPermission = useSync(props, 'permission', emit);
 const fieldsInCollection = computed(() => {
 	const fields = fieldsStore.getFieldsForCollectionSorted(props.permission.collection);
 
+	const appMinimalPermissionsFields = new Set(props.appMinimal ?? []);
+
 	return fields.map((field: Field) => {
 		return {
 			text: field.field,
+			disabled: appMinimalPermissionsFields.has(field.field),
 			value: field.field,
 		};
 	});

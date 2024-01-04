@@ -43,7 +43,7 @@
 		"@rollup/plugin-replace": "5.0.5",
 		"@rollup/plugin-terser": "0.4.4",
 		"@rollup/plugin-virtual": "3.0.2",
-		"@vitejs/plugin-vue": "4.5.2",
+		"@vitejs/plugin-vue": "4.6.2",
 		"chalk": "5.3.0",
 		"commander": "10.0.1",
 		"esbuild": "0.17.19",
@@ -63,7 +63,7 @@
 		"@types/inquirer": "9.0.7",
 		"@vitest/coverage-v8": "1.1.0",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	},
 	"engines": {
 		"node": ">=12.20.0"

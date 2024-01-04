@@ -1,6 +1,12 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { InvalidCredentialsError, InvalidOtpError, InvalidProviderError, UserSuspendedError } from '@directus/errors';
+import {
+	InvalidCredentialsError,
+	InvalidOtpError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UserSuspendedError,
+} from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
@@ -10,7 +16,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { createRateLimiter } from '../rate-limiter.js';
+import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stall } from '../utils/stall.js';
@@ -144,12 +150,19 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch {
-				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-				user.status = 'suspended';
+			} catch (error) {
+				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
+					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					user.status = 'suspended';
 
-				// This means that new attempts after the user has been re-activated will be accepted
-				await loginAttemptsLimiter.set(user.id, 0, 0);
+					// This means that new attempts after the user has been re-activated will be accepted
+					await loginAttemptsLimiter.set(user.id, 0, 0);
+				} else {
+					throw new ServiceUnavailableError({
+						service: 'authentication',
+						reason: 'Rate limiter unreachable',
+					});
+				}
 			}
 		}
 
