@@ -1207,6 +1207,8 @@ displays:
     suffix: Sufiks
     color: Boja
     icon: Ikonica
+    mask: Maskirano
+    mask_label: Sakrij pravu vrijednost
     text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost

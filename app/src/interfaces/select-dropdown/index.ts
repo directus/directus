@@ -50,6 +50,24 @@ export default defineInterface({
 								width: 'half',
 							},
 						},
+						{
+							field: 'icon',
+							name: '$t:icon',
+							type: 'string',
+							meta: {
+								interface: 'select-icon',
+								width: 'half',
+							},
+						},
+						{
+							field: 'color',
+							name: '$t:color',
+							type: 'string',
+							meta: {
+								interface: 'select-color',
+								width: 'half',
+							},
+						},
 					],
 				},
 			},

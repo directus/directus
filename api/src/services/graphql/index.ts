@@ -47,7 +47,7 @@ import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq 
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import env from '../../env.js';
+import { useEnv } from '../../env.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -81,6 +81,8 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+
+const env = useEnv();
 
 const validationRules = Array.from(specifiedRules);
 
@@ -781,6 +783,48 @@ export class GraphQLService {
 				},
 			});
 
+			const BigIntFilterOperators = schemaComposer.createInputTC({
+				name: 'big_int_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLBigInt,
+					},
+					_neq: {
+						type: GraphQLBigInt,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_gt: {
+						type: GraphQLBigInt,
+					},
+					_gte: {
+						type: GraphQLBigInt,
+					},
+					_lt: {
+						type: GraphQLBigInt,
+					},
+					_lte: {
+						type: GraphQLBigInt,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+				},
+			});
+
 			const GeometryFilterOperators = schemaComposer.createInputTC({
 				name: 'geometry_filter_operators',
 				fields: {
@@ -898,6 +942,8 @@ export class GraphQLService {
 								filterOperatorType = BooleanFilterOperators;
 								break;
 							case GraphQLBigInt:
+								filterOperatorType = BigIntFilterOperators;
+								break;
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;

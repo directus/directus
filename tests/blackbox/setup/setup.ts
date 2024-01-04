@@ -12,14 +12,7 @@ import { USER } from '../common/variables';
 import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
 import global from './global';
 
-let started = false;
-
 export async function setup() {
-	if (started) return;
-	started = true;
-
-	console.log('\n\n');
-
 	console.log(`👮‍♀️ Starting tests!\n`);
 
 	await new Listr([

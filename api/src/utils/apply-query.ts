@@ -644,7 +644,7 @@ export function applyFilter(
 				const functionName = column!.split('(')[0] as FieldFunction;
 				const type = getOutputTypeForFunction(functionName);
 
-				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+				if (['integer', 'float', 'decimal'].includes(type)) {
 					compareValue = Number(compareValue);
 				}
 			}
@@ -664,7 +664,7 @@ export function applyFilter(
 					}
 				}
 
-				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+				if (['integer', 'float', 'decimal'].includes(type)) {
 					if (Array.isArray(compareValue)) {
 						compareValue = compareValue.map((val) => Number(val));
 					} else {

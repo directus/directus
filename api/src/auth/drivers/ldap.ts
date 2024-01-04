@@ -1,4 +1,13 @@
-import { isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+	isDirectusError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -6,17 +15,8 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidPayloadError,
-	InvalidProviderError,
-	InvalidProviderConfigError,
-	ServiceUnavailableError,
-	UnexpectedResponseError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useEnv } from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -50,6 +50,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
 		if (
@@ -76,6 +78,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	private async validateBindClient(): Promise<void> {
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, provider } = this.config;
 
 		return new Promise((resolve, reject) => {
@@ -231,6 +235,8 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (!payload['identifier']) {
 			throw new InvalidCredentialsError();
 		}
+
+		const logger = useLogger();
 
 		await this.validateBindClient();
 
@@ -409,6 +415,8 @@ export function createLDAPAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
+			const env = useEnv();
+
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,

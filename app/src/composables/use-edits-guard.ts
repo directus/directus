@@ -1,5 +1,6 @@
-import { ref, Ref, onBeforeMount, onBeforeUnmount, unref } from 'vue';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard, useRoute } from 'vue-router';
+import { type Ref, ref, unref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useNavigationGuard } from './use-navigation-guard';
 
 type EditsGuardOptions = {
 	ignorePrefix?: string | Ref<string>;
@@ -11,15 +12,7 @@ export function useEditsGuard(hasEdits: Ref<boolean>, opts?: EditsGuardOptions) 
 	const confirmLeave = ref(false);
 	const leaveTo = ref<string | null>(null);
 
-	const beforeUnload = (event: BeforeUnloadEvent) => {
-		if (hasEdits.value) {
-			event.preventDefault();
-			event.returnValue = '';
-			return '';
-		}
-	};
-
-	const editsGuard: NavigationGuard = (to) => {
+	useNavigationGuard(hasEdits, (to) => {
 		const matchesPathPrefix = opts?.ignorePrefix ? to.path.startsWith(unref(opts.ignorePrefix)) : false;
 
 		if (hasEdits.value && !to.path.startsWith(path) && !matchesPathPrefix) {
@@ -27,18 +20,9 @@ export function useEditsGuard(hasEdits: Ref<boolean>, opts?: EditsGuardOptions) 
 			leaveTo.value = to.fullPath;
 			return false;
 		}
-	};
 
-	onBeforeMount(() => {
-		window.addEventListener('beforeunload', beforeUnload);
+		return;
 	});
-
-	onBeforeUnmount(() => {
-		window.removeEventListener('beforeunload', beforeUnload);
-	});
-
-	onBeforeRouteUpdate(editsGuard);
-	onBeforeRouteLeave(editsGuard);
 
 	return { confirmLeave, leaveTo };
 }

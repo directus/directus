@@ -5,12 +5,12 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useCollection } from '@directus/composables';
+import formatTitle from '@directus/format-title';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import formatTitle from '@directus/format-title';
 
 const props = defineProps<{
 	collection: string;
@@ -142,7 +142,7 @@ function discardAndLeave() {
 				v-model="edits.meta"
 				collection="directus_collections"
 				:loading="loading"
-				:initial-values="item && item.meta"
+				:initial-values="collectionInfo?.meta"
 				:primary-key="collection"
 				:disabled="item && item.collection.startsWith('directus_')"
 			/>

@@ -57,8 +57,8 @@ need. The client starts as an empty wrapper without any functionality. To add fe
 - `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and
   .`refresh()` to the client.
 - `staticToken()`: Authentication functions for static tokens.
-- `realtime()`: WebSocket connectivity, adds `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the
-  client.
+- `realtime()`: WebSocket connectivity, adds `.connect()`, `.subscribe(...)`, `.sendMessage(...)` and
+  `.onWebSocket(...)` to the client.
 
 For example, to create a client with REST or GraphQL support, use the following:
 
@@ -252,6 +252,11 @@ often do not ship with an implementation of WebSockets.
 
 - [`ws`](https://www.npmjs.com/package/ws)
 - [`isomorphic-ws`](https://www.npmjs.com/package/isomorphic-ws)
+
+#### The `logger` API
+
+This API is optional and currently only used for debugging the `realtime()` features. This will default to the `Console`
+however in environments where this isn't shipped you can overwrite this with any logger.
 
 ### Polyfilling
 
