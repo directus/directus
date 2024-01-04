@@ -33,9 +33,6 @@ export function getNestedUnionMany(
 				indexGenerator,
 			);
 
-			const nestedJoins = [...nestedFieldNodes.clauses.joins];
-			const nestedParameters = [...nestedFieldNodes.parameters];
-
 			const jsonValue = reCreateJsonValue(
 				field.localIdentifierFields,
 				rootRow,
@@ -54,10 +51,10 @@ export function getNestedUnionMany(
 					clauses: {
 						select: nestedFieldNodes.clauses.select,
 						from: nestedCollection.relational.collectionName,
-						joins: nestedJoins,
+						joins: nestedFieldNodes.clauses.joins,
 						where,
 					},
-					parameters: [...nestedParameters, ...JSON.stringify(jsonValue)],
+					parameters: [...nestedFieldNodes.parameters, ...JSON.stringify(jsonValue)],
 				},
 				subQueries: nestedFieldNodes.subQueries,
 				aliasMapping: nestedFieldNodes.aliasMapping,
