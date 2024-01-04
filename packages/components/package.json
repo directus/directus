@@ -37,7 +37,7 @@
 		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.3.3",
 		"vite": "5.0.10",
-		"vite-plugin-dts": "3.6.4",
+		"vite-plugin-dts": "3.7.0",
 		"vitest": "1.1.1"
 	},
 	"peerDependencies": {
