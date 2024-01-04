@@ -4,9 +4,8 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useCollection } from '@directus/composables';
 import formatTitle from '@directus/format-title';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
@@ -24,15 +23,16 @@ const { t } = useI18n();
 const router = useRouter();
 
 const { collection } = toRefs(props);
-const { info: collectionInfo } = useCollection(collection);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
-const { edits, saving, save, remove, deleting } = useItem(ref('directus_collections'), collection, {}, false);
+// Re-initialize if collection (page) changes
+const usableItem = computed(() => useItem(ref('directus_collections'), collection));
 
 const hasEdits = computed<boolean>(() => {
-	if (!edits.value.meta) return false;
-	return Object.keys(edits.value.meta).length > 0;
+	const edits = unref(usableItem).edits.value;
+	if (!edits.meta) return false;
+	return Object.keys(edits.meta).length > 0;
 });
 
 useShortcut('meta+s', () => {
@@ -44,33 +44,34 @@ const confirmDelete = ref(false);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function deleteAndQuit() {
-	await remove();
+	const item = unref(usableItem);
+	await item.remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	edits.value = {};
+	item.edits.value = {};
 	router.replace(`/settings/data-model`);
 }
 
 async function saveAndStay() {
-	await save();
+	await unref(usableItem).save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 }
 
 async function saveAndQuit() {
-	await save();
+	await unref(usableItem).save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	router.push(`/settings/data-model`);
 }
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	edits.value = {};
+	unref(usableItem).edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
 </script>
 
 <template>
-	<private-view :title="collectionInfo && formatTitle(collectionInfo.collection)">
+	<private-view :title="formatTitle(collection)">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
@@ -84,13 +85,13 @@ function discardAndLeave() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="collectionInfo?.collection.startsWith('directus_') === false"
+						v-if="collection.startsWith('directus_') === false"
 						v-tooltip.bottom="t('delete_collection')"
 						rounded
 						icon
 						class="action-delete"
 						secondary
-						:disabled="collectionInfo === null"
+						:disabled="!unref(usableItem.item)"
 						@click="on"
 					>
 						<v-icon name="delete" />
@@ -104,7 +105,7 @@ function discardAndLeave() {
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						<v-button kind="danger" :loading="unref(usableItem.deleting)" @click="deleteAndQuit">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -115,7 +116,7 @@ function discardAndLeave() {
 				v-tooltip.bottom="t('save')"
 				rounded
 				icon
-				:loading="saving"
+				:loading="unref(usableItem.saving)"
 				:disabled="hasEdits === false"
 				@click="saveAndQuit"
 			>
@@ -139,11 +140,12 @@ function discardAndLeave() {
 			<router-view name="field" :collection="collection" :field="field" :type="type" />
 
 			<v-form
-				v-model="edits.meta"
+				v-model="unref(usableItem.edits).meta"
 				collection="directus_collections"
-				:initial-values="collectionInfo?.meta"
+				:loading="unref(usableItem.loading)"
+				:initial-values="unref(usableItem.item)?.meta"
 				:primary-key="collection"
-				:disabled="collectionInfo?.collection.startsWith('directus_')"
+				:disabled="collection.startsWith('directus_')"
 			/>
 		</div>
 
