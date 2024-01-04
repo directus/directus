@@ -8,8 +8,6 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-export { RateLimiterRes };
-
 type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRateLimiterStoreOptions>;
 
 export function createRateLimiter(
@@ -26,6 +24,8 @@ export function createRateLimiter(
 			return new RateLimiterMemory(getConfig('memory', configPrefix, configOverrides));
 	}
 }
+
+export { RateLimiterRes };
 
 function getConfig(
 	store: 'memory',
