@@ -1,5 +1,9 @@
 import { GraphQLScalarType, Kind } from 'graphql';
 
+// minimum and maximum int64 values database vendors use for big integer
+const MIN_BIG_INT = -9223372036854775808n;
+const MAX_BIG_INT = 9223372036854775807n;
+
 export const GraphQLBigInt = new GraphQLScalarType({
 	name: 'GraphQLBigInt',
 	description: 'BigInt value',
@@ -41,12 +45,9 @@ function parseNumberValue(input: string) {
 		// If the input is not a safe integer, its a big int, so return it as string,
 		// because currently string is the best way to handle big int due to knex limitations and JSON.stringify not able to serialise bigInt
 
-		const minVal = -1n * 2n ** 63n;
-		const maxVal = 2n ** 63n - 1n;
-
 		const bigIntInput = BigInt(input);
 
-		if (bigIntInput < minVal || bigIntInput > maxVal) {
+		if (bigIntInput < MIN_BIG_INT || bigIntInput > MAX_BIG_INT) {
 			throw new Error('Invalid GraphQLBigInt');
 		}
 
