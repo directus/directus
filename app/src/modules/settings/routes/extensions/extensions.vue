@@ -51,12 +51,38 @@ const isBrowserExtension = (type: string) => {
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 };
 
-const refreshExtensions = async (extensionType?: ExtensionType) => {
-	if (extensionType && isBrowserExtension(extensionType)) {
+const refreshExtensions = async ({ extension, children }: { extension: ApiOutput; children: ApiOutput[] }) => {
+	await fetchExtensions();
+
+	if (!extension.schema?.type) {
+		return;
+	}
+
+	if (isBrowserExtension(extension.schema.type)) {
 		needsReload.value = true;
 	}
 
-	await fetchExtensions();
+	if (extension.schema.type !== 'bundle') {
+		return;
+	}
+
+	if (extension.schema.partial === false) {
+		// A non partial bundles entries can only be toggled all at once.
+		// Only type needs to be checked as status will be in sync
+		if (children.some((e) => e.schema?.type && isBrowserExtension(e.schema?.type))) {
+			needsReload.value = true;
+		}
+
+		return;
+	}
+
+	const status = extension.meta.enabled;
+
+	if (children.some((e) => e.meta.enabled === status && e.schema?.type && isBrowserExtension(e.schema.type))) {
+		// A partial bundle can have entries already be in the desired state so we need to check the status and type
+		needsReload.value = true;
+		return;
+	}
 };
 
 fetchExtensions();

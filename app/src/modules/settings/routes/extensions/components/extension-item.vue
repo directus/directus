@@ -18,7 +18,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ refresh: [extensionType?: ExtensionType] }>();
+const emit = defineEmits<{ refresh: [data: { extension: ApiOutput; children: ApiOutput[] }] }>();
 
 const { t } = useI18n();
 
@@ -85,7 +85,7 @@ async function toggleEnabled() {
 		await api.patch(endpoint, { meta: { enabled: !props.extension.meta.enabled } });
 	} finally {
 		changingEnabledState.value = false;
-		emit('refresh', type.value);
+		emit('refresh', { extension: props.extension, children: props.children });
 	}
 }
 </script>
