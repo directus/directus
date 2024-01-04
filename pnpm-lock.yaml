@@ -900,8 +900,8 @@ importers:
         specifier: 4.0.0-next.38
         version: 4.0.0-next.38(typedoc@0.25.6)
       typedoc-plugin-zod:
-        specifier: 1.1.0
-        version: 1.1.0(typedoc@0.25.6)
+        specifier: 1.1.1
+        version: 1.1.1(typedoc@0.25.6)
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.3
         version: 1.0.0-next.3(typedoc-plugin-markdown@4.0.0-next.38)
@@ -18483,8 +18483,8 @@ packages:
       typedoc: 0.25.6(typescript@5.3.3)
     dev: true
 
-  /typedoc-plugin-zod@1.1.0(typedoc@0.25.6):
-    resolution: {integrity: sha512-LaQdkYyVVL8CX+4R0GJuOyDa1meiG3M85FiBTPvlikCGaRkTNGSEBZTbx3gQHAsNQ5NWJpLvYJQB6gMhcO8bWw==}
+  /typedoc-plugin-zod@1.1.1(typedoc@0.25.6):
+    resolution: {integrity: sha512-SjEB3swHW2mD5CnZf6sHX6L9KA1wnqzuJH96SAIMgy1x26AzFkS22zfdoyB4W5IjBnbU/RqH2p8dlo6hZHpiYg==}
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x
     dependencies:
