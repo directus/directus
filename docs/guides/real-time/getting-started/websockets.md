@@ -239,15 +239,17 @@ operations over the connection. You have also created your first subscription.
 
       await client.connect();
 
-      subscribe();
-
       client.onWebSocket('open', function () {
         console.log({ event: 'onopen' });
       });
 
       client.onWebSocket('message', function (message) {
         const { type, data } = message;
-        console.log({ event: 'onmessage', data });
+        if (message.type == 'auth' && message.status == 'ok') {
+          subscribe();
+          console.log({ event: 'onmessage', data });
+        }
+        
       });
 
       client.onWebSocket('close', function () {
