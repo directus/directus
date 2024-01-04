@@ -446,7 +446,6 @@ export function useItem<T extends Record<string, any>>(
 		archiving.value = false;
 
 		item.value = null;
-		edits.value = {};
 
 		refreshItem();
 	}
