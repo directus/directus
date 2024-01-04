@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Small code optimization in collection fields component
+Fixed issues with the form state when navigating between collection settings pages
