@@ -31,6 +31,12 @@ Example of an entry:
 
 Entries in a bundle are located within a `src` directory in the bundle.
 
+## Partial
+
+For bundle type extensions `package.json` file, the `directus:extension` object supports an additional optional
+`partial` property. This boolean property controls whether the bundles entries can be individually disabled. This is
+enabled by default.
+
 ## Add New Extensions To a Bundle
 
 ### Create New
