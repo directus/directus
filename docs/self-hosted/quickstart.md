@@ -102,8 +102,11 @@ Directus should now be available at http://localhost:8055 or http://127.0.0.1:80
 
 :::tip `SQLITE_CANTOPEN`
 
-If you see this error message when first running `docker compose up`, it means that your computer's user profile doesn't have the necessary ownership of the local `database` directory. This directory is connected to the docker container where Directus will run.
+If you see this error message when first running `docker compose up`, it means that your computer's user profile doesn't
+have the necessary ownership of the local `database` directory. This directory is connected to the docker container
+where Directus will run.
 
-On macOS/Linux, run `sudo chown $USER:$USER database` from the directory with your `docker-compose.yml` file to change the ownership to the current user.
+On macOS/Linux, run `sudo chown $USER:$USER database` from the directory with your `docker-compose.yml` file to change
+the ownership to the current user.
 
 :::
