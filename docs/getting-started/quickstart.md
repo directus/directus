@@ -44,6 +44,9 @@ docker run \
 directus/directus
 ```
 
+The initial admin email address and password will be shown in the terminal. Directus should now be available at
+http://localhost:8055 or http://127.0.0.1:8055.
+
 _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
 
 == NPM Installation
