@@ -10,7 +10,7 @@ import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useEnv } from '../env.js';
-import { createRateLimiter } from '../rate-limiter.js';
+import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stall } from '../utils/stall.js';
@@ -144,12 +144,15 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch {
-				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-				user.status = 'suspended';
+			} catch (err) {
+				// This can also be caused by a failed connection to Redis so let's only handle when is caused by brute force
+				if (err && err instanceof RateLimiterRes && err.remainingPoints === 0) {
+					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					user.status = 'suspended';
 
-				// This means that new attempts after the user has been re-activated will be accepted
-				await loginAttemptsLimiter.set(user.id, 0, 0);
+					// This means that new attempts after the user has been re-activated will be accepted
+					await loginAttemptsLimiter.set(user.id, 0, 0);
+				}
 			}
 		}
 

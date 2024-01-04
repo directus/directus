@@ -1,12 +1,14 @@
 import { merge } from 'lodash-es';
 import type { IRateLimiterOptions, IRateLimiterStoreOptions, RateLimiterAbstract } from 'rate-limiter-flexible';
-import { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
+
+export { RateLimiterRes };
 
 type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRateLimiterStoreOptions>;
 
