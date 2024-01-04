@@ -117,7 +117,7 @@ async function toggleEnabled() {
 		/>
 	</v-list-item>
 
-	<v-list v-if="children.length" class="nested" :class="{ partial: isPartialEnabled }">
+	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
 		<extension-item
 			v-for="item in children"
 			:key="item.bundle + '__' + item.name"
