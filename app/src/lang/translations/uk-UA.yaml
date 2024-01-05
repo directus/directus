@@ -296,13 +296,6 @@ time: Час
 timestamp: Часова відмітка
 uuid: UUID
 hash: Хеш
-geometry: Геометрія (Все)
-geometry.Point: Аспект
-geometry.LineString: Лінія
-geometry.Polygon: Полігон
-geometry.MultiPoint: Багатоточковий
-geometry.MultiLineString: Багаторядковий рядок
-geometry.MultiPolygon: Мультимногокутник
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
 auto_refresh: Автооновлення
