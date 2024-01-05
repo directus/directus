@@ -283,13 +283,6 @@ time: Zaman
 timestamp: Zaman Damgası
 uuid: UUID
 hash: Hash
-geometry: Geometri (Tümü)
-geometry.Point: Nokta
-geometry.LineString: Nokta Dizisi
-geometry.Polygon: Poligon
-geometry.MultiPoint: Çoklu Nokta
-geometry.MultiLineString: Çoklu Nokta Dizisi
-geometry.MultiPolygon: Çoklu Poligon
 theme_light: Açık Mod
 theme_dark: Koyu Mod
 not_available_for_type: Bu Tip için Mevcut Değil
