@@ -248,11 +248,6 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
-geometry: الهندسة (الكل)
-geometry.Point: نقطة
-geometry.LineString: LineString
-geometry.Polygon: مضلّع
-geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
