@@ -1,6 +1,6 @@
-import { ENV_TYPES } from '../constants/env-types.js';
+import type { EnvType } from '../types/env-type.js';
 
-export const guessType = (value: unknown): (typeof ENV_TYPES)[number] => {
+export const guessType = (value: unknown): EnvType => {
 	if (value === 'true' || value === 'false') {
 		return 'boolean';
 	}
