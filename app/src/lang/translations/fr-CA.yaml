@@ -295,13 +295,6 @@ time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
-geometry: Géométrie (tous)
-geometry.Point: Point
-geometry.LineString: Chaîne ligne simple
-geometry.Polygon: Polygone
-geometry.MultiPoint: Multi points
-geometry.MultiLineString: Chaîne multi-lignes
-geometry.MultiPolygon: Polygone multiple
 theme_auto: Automatique (basé sur le système)
 theme_light: Mode Clair
 theme_dark: Mode Sombre
