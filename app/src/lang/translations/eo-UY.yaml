@@ -176,8 +176,6 @@ text: Teksto
 time: Tempo
 timestamp: Tempindiko
 uuid: UUID
-geometry: Geometrio (ĉiuj)
-geometry.Point: Punkto
 not_available_for_type: Ne disponebla por la tipo
 create_translations: Krei tradukojn
 auto_refresh: Aŭtomate aktualigi
