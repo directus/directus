@@ -755,6 +755,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle` |
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                    | `<PROVIDER>`     |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                         | --               |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma separated list of URLs allowed for redirecting after successful login                     | --               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
