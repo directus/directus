@@ -112,7 +112,6 @@ string: Strengur
 text: Texti
 time: Tími
 timestamp: Tímastimpill
-geometry.Point: Punktur
 auto_refresh: Sjálfkrafa Endurhlaða
 search_collection: Leit Safn...
 search_field: Leit Reitur...
