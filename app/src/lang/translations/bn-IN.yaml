@@ -128,7 +128,6 @@ time: সময়
 timestamp: টাইমস্ট্যাম্প
 uuid: ইউইউআইডি
 hash: হ্যাশ
-geometry: জ্যামিতি (সমস্ত)
 fields:
   directus_settings:
     module_bar: মডিউল বার
