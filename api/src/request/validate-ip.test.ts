@@ -30,6 +30,22 @@ test(`Does nothing if IP is valid`, async () => {
 	await validateIP(sample.ip, sample.url);
 });
 
+test(`Does nothing if IP is valid outside of ip range`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '111.22.33.44-222.33.44.55' });
+
+	for (const ip of ['110.22.33.44', '111.22.33.43', '222.33.44.56', '223.33.44.55']) {
+		await validateIP(ip, sample.url);
+	}
+});
+
+test(`Does nothing if IP is valid outside of cidr range`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '111.22.33.44/31' });
+
+	for (const ip of ['111.22.33.43', '111.22.33.46']) {
+		await validateIP(ip, sample.url);
+	}
+});
+
 test(`Throws error if passed IP is denylisted`, async () => {
 	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: sample.ip });
 
@@ -38,6 +54,32 @@ test(`Throws error if passed IP is denylisted`, async () => {
 	} catch (err: any) {
 		expect(err).toBeInstanceOf(Error);
 		expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
+	}
+});
+
+test(`Throws error if passed IP is denylisted within the ip range`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '111.22.33.44-222.33.44.55' });
+
+	for (const ip of ['111.22.33.44', '112.22.33.44', '221.33.44.55', '222.33.44.55']) {
+		try {
+			await validateIP(ip, sample.url);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
+		}
+	}
+});
+
+test(`Throws error if passed IP is denylisted within the cidr range`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '111.22.33.44/31' });
+
+	for (const ip of ['111.22.33.44', '111.22.33.45']) {
+		try {
+			await validateIP(ip, sample.url);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
+		}
 	}
 });
 
