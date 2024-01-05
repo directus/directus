@@ -237,7 +237,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry.Point: बिंदु
 click_here: यहाँ क्लिक करें
 new_field: 'नया क्षेत्र'
 new_collection: 'नया संग्रह'
