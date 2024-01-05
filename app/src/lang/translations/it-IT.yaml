@@ -646,8 +646,6 @@ select_an_item: Seleziona un elemento...
 edit: Modifica
 edit_item: Modifica elemento
 enabled: Abilitato
-enabled_dev: Abilitato (sviluppatore)
-enabled_dev_tooltip: Le estensioni non possono essere disabilitate in modalità sviluppatore
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
 tfa_setup: Configura l'autenticazione a due fattori
