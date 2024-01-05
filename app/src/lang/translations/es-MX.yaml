@@ -300,13 +300,6 @@ time: Hora
 timestamp: Marca de tiempo
 uuid: UUID
 hash: Hash
-geometry: Geometría (Todo)
-geometry.Point: Punto
-geometry.LineString: Linea
-geometry.Polygon: Polígono
-geometry.MultiPoint: Multipunto
-geometry.MultiLineString: Multilinea
-geometry.MultiPolygon: Multipolígono
 theme_auto: Automático (basado en el sistema)
 theme_light: Modo claro
 theme_dark: Modo oscuro
