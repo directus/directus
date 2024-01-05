@@ -46,7 +46,7 @@
 		"@vitejs/plugin-vue": "4.6.2",
 		"chalk": "5.3.0",
 		"commander": "10.0.1",
-		"esbuild": "0.17.19",
+		"esbuild": "0.19.11",
 		"execa": "7.2.0",
 		"fs-extra": "11.2.0",
 		"inquirer": "9.2.12",
