@@ -658,7 +658,7 @@ enabled: Enabled
 partially_enabled: Partially Enabled
 enable_all: Enable All
 disable_all: Disable All
-enabled_dev_tooltip: App extensions cannot be disabled in dev mode
+enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
