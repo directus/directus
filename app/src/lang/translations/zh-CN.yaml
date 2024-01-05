@@ -301,13 +301,6 @@ time: 时间
 timestamp: 时间戳
 uuid: UUID
 hash: Hash
-geometry: 几何要素(全部)
-geometry.Point: 点
-geometry.LineString: 单线段
-geometry.Polygon: 多边形
-geometry.MultiPoint: 多点要素
-geometry.MultiLineString: 多线要素
-geometry.MultiPolygon: 复杂多边型
 theme_auto: 自动(基于系统)
 theme_light: 亮色模式
 theme_dark: 暗色模式
