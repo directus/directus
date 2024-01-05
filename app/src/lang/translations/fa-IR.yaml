@@ -250,13 +250,6 @@ time: زمان
 timestamp: الگوی زمانی
 uuid: شماره شناسایی یکتا (UUID)
 hash: هش
-geometry: هندسی (تمام)
-geometry.Point: نقطه
-geometry.LineString: رشته مسیر
-geometry.Polygon: چندضلعی
-geometry.MultiPoint: چندنقطه ای
-geometry.MultiLineString: مجموعه ای از رشته مسیرها
-geometry.MultiPolygon: مجموعه ای از چندضلعی ها
 not_available_for_type: برای این نوع در دسترس نیست
 create_translations: ایجاد ترجمه
 auto_refresh: تازه نمودن خودکار
