@@ -304,13 +304,6 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria (tutte)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
