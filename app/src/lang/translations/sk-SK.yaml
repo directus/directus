@@ -304,13 +304,6 @@ time: Čas
 timestamp: Časová pečiatka
 uuid: UUID
 hash: Hash
-geometry: Geometria (Všetko)
-geometry.Point: Bod
-geometry.LineString: LineString
-geometry.Polygon: Polygón
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automaticky (podľa systému)
 theme_light: Svetlý režim
 theme_dark: Tmavý režim
