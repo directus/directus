@@ -263,13 +263,6 @@ time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
 hash: Hash
-geometry: Gjeometri (Të Gjitha)
-geometry.Point: Pikë
-geometry.LineString: Vijë
-geometry.Polygon: Poligon
-geometry.MultiPoint: ShumëPikë
-geometry.MultiLineString: ShumëVijë
-geometry.MultiPolygon: ShumëPoligon
 not_available_for_type: Nuk është i Disponueshëm për këtë Lloj
 create_translations: Krijo përkthime
 auto_refresh: Rifreskim Automatik
