@@ -51,7 +51,15 @@ const isBrowserExtension = (type: string) => {
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 };
 
-const refreshExtensions = async ({ extension, children }: { extension: ApiOutput; children: ApiOutput[] }) => {
+const refreshExtensions = async ({
+	enabled,
+	extension,
+	children,
+}: {
+	enabled: boolean;
+	extension: ApiOutput;
+	children: ApiOutput[];
+}) => {
 	await fetchExtensions();
 
 	if (!extension.schema?.type) {
@@ -76,9 +84,7 @@ const refreshExtensions = async ({ extension, children }: { extension: ApiOutput
 		return;
 	}
 
-	const status = extension.meta.enabled;
-
-	if (children.some((e) => e.meta.enabled === status && e.schema?.type && isBrowserExtension(e.schema.type))) {
+	if (children.some((e) => e.meta.enabled !== enabled && e.schema?.type && isBrowserExtension(e.schema.type))) {
 		// A partial bundle can have entries already be in the desired state so we need to check the status and type
 		needsReload.value = true;
 		return;

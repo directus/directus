@@ -19,7 +19,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ refresh: [data: { extension: ApiOutput; children: ApiOutput[] }] }>();
+const emit = defineEmits<{ refresh: [data: { enabled: boolean; extension: ApiOutput; children: ApiOutput[] }] }>();
 
 const { t } = useI18n();
 
@@ -77,16 +77,17 @@ async function toggleExtensionStatus(enabled: boolean) {
 	if (changingEnabledState.value === true) return;
 
 	changingEnabledState.value = true;
+	const status = !enabled;
 
 	try {
 		const endpoint = props.extension.bundle
 			? `/extensions/${props.extension.bundle}/${props.extension.name}`
 			: `/extensions/${props.extension.name}`;
 
-		await api.patch(endpoint, { meta: { enabled: !enabled } });
+		await api.patch(endpoint, { meta: { enabled: status } });
 	} finally {
 		changingEnabledState.value = false;
-		emit('refresh', { extension: props.extension, children: props.children });
+		emit('refresh', { enabled: status, extension: props.extension, children: props.children });
 	}
 }
 </script>
