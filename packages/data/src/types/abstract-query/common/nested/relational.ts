@@ -99,7 +99,7 @@ export interface AbstractQueryFieldNodeNestedRelationalAnys {
 	collections: AbstractQueryFieldNodeNestedRelationalAnysCollection[];
 }
 
-interface AbstractQueryFieldNodeNestedRelationalAnysCollection {
+export interface AbstractQueryFieldNodeNestedRelationalAnysCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 

@@ -1,15 +1,22 @@
-import type { A2ORelation, AbstractQueryFieldNodeNestedUnionMany, AtLeastOneElement, FkEntry } from '@directus/data';
+import type {
+	A2ORelation,
+	AbstractQueryFieldNodeNestedRelationalAnysCollection,
+	AbstractQueryFieldNodeNestedUnionMany,
+	AtLeastOneElement,
+	FkEntry,
+} from '@directus/data';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertFieldNodes } from './fields.js';
 import { getRelationCondition } from './create-nested-manys.js';
-import { type AbstractSqlQuerySelectNode, type ConverterResult, type SubQueries } from '../../index.js';
+import type { SubQueries, ConverterResult } from '../../types/abstract-sql.js';
+import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/clauses/select/primitive.js';
 
 export interface NestedUnionResult {
 	/** Function to generate a sub query */
 	subQueries: SubQueries;
 
 	/** The selection of the primary key field */
-	select: AbstractSqlQuerySelectNode[];
+	select: AbstractSqlQuerySelectPrimitiveNode[];
 }
 
 /**
@@ -23,8 +30,25 @@ export function getNestedUnionMany(
 	rootCollection: string,
 	field: AbstractQueryFieldNodeNestedUnionMany,
 ): NestedUnionResult {
-	function sub(rootRow: Record<string, unknown>): ConverterResult[] {
-		return field.nesting.collections.map((nestedCollection) => {
+	return {
+		subQueries: createFunctionToGenerateSubQueries(field.nesting.collections, field.localIdentifierFields),
+		select: createPrimitiveSelect(rootCollection, field.localIdentifierFields),
+	};
+}
+
+/**
+ * Creates a functions which generates all sub queries.
+ *
+ * @param nestedCollections
+ * @param rootIdentifierFields
+ * @returns All the sub queries which need to be queried.
+ */
+function createFunctionToGenerateSubQueries(
+	nestedCollections: AbstractQueryFieldNodeNestedRelationalAnysCollection[],
+	rootIdentifierFields: AtLeastOneElement<string>,
+) {
+	return function (rootRow: Record<string, unknown>): ConverterResult[] {
+		return nestedCollections.map((nestedCollection) => {
 			const indexGenerator = parameterIndexGenerator();
 
 			const nestedFieldNodes = convertFieldNodes(
@@ -33,11 +57,7 @@ export function getNestedUnionMany(
 				indexGenerator,
 			);
 
-			const jsonValue = reCreateJsonValue(
-				field.localIdentifierFields,
-				rootRow,
-				nestedCollection.relational.collectionName,
-			);
+			const jsonValue = reCreateJsonValue(rootIdentifierFields, rootRow, nestedCollection.relational.collectionName);
 
 			/** @TODO needs to be enhanced later to support additional modifiers */
 			const where = getRelationCondition(
@@ -60,18 +80,6 @@ export function getNestedUnionMany(
 				aliasMapping: nestedFieldNodes.aliasMapping,
 			};
 		});
-	}
-
-	return {
-		subQueries: sub,
-		select: field.localIdentifierFields.map((idField) => {
-			return {
-				type: 'primitive',
-				table: rootCollection,
-				column: idField,
-				alias: 'generatedAliasMap[idField]' /** @TODO */,
-			};
-		}),
 	};
 }
 
@@ -83,6 +91,10 @@ export function getNestedUnionMany(
  * or the above layer takes care putting the id field in the right order.
  *
  * Recreates the JSON value which lives in the any-collection, so we can filter the any collection with that value.
+ * @param localIdentifierFields
+ * @param rootRow
+ * @param nestedCollectionName
+ * @returns The JSON value which is stored in the any collection.
  */
 function reCreateJsonValue(
 	localIdentifierFields: AtLeastOneElement<string>,
@@ -97,4 +109,18 @@ function reCreateJsonValue(
 		}) as AtLeastOneElement<FkEntry>,
 		foreignCollection: nestedCollectionName,
 	};
+}
+
+function createPrimitiveSelect(
+	rootCollection: string,
+	rootIdentifierFields: AtLeastOneElement<string>,
+): AbstractSqlQuerySelectPrimitiveNode[] {
+	return rootIdentifierFields.map((idField) => {
+		return {
+			type: 'primitive',
+			table: rootCollection,
+			column: idField,
+			alias: 'generatedAliasMap[idField]' /** @TODO */,
+		};
+	});
 }
