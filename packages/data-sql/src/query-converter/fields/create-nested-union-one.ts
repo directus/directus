@@ -1,6 +1,7 @@
 import type {
 	A2ORelation,
 	AbstractQueryFieldNodeNestedRelationalAny,
+	AbstractQueryFieldNodeNestedRelationalAnyCollection,
 	AbstractQueryFieldNodeNestedUnionOne,
 	AtLeastOneElement,
 } from '@directus/data';
@@ -53,56 +54,72 @@ function createSubQueryLookUp(
 	const subQueryLoopUp = new Map<string, (rel: A2ORelation) => SubQuery>();
 
 	field.nesting.collections.forEach((collection) => {
-		function preparedSubQuery(rel: A2ORelation): SubQuery {
-			const indexGenerator = parameterIndexGenerator();
-
-			const nestedFieldNodes = convertFieldNodes(
-				collection.relational.collectionName,
-				collection.fields,
-				indexGenerator,
-			);
-
-			const fKs = collection.relational.identifierFields.map((idField) => {
-				const correspondingObj = rel.foreignKey.find((fk) => fk.column === idField);
-				if (!correspondingObj) throw new Error('No corresponding foreign key found.');
-				return correspondingObj.value;
-			});
-
-			return () => {
-				return {
-					rootQuery: {
-						clauses: {
-							select: nestedFieldNodes.clauses.select,
-							from: collection.relational.collectionName,
-							joins: nestedFieldNodes.clauses.joins,
-							where: getRelationConditions(rel, indexGenerator, field.nesting),
-						},
-						parameters: [...nestedFieldNodes.parameters, ...fKs],
-					},
-					subQueries: nestedFieldNodes.subQueries,
-					aliasMapping: nestedFieldNodes.aliasMapping,
-				};
-			};
-		}
-
-		subQueryLoopUp.set(collection.relational.collectionName, preparedSubQuery);
+		const generatorFunction = createSubQueryGenerator(collection, field.nesting);
+		subQueryLoopUp.set(collection.relational.collectionName, generatorFunction);
 	});
 
 	return subQueryLoopUp;
 }
 
-function getRelationConditions(
+/**
+ * Creates a sub query function for a specific collection.
+ *
+ * @param collection
+ * @param nesting
+ * @returns A function which creates the sub query for a specific collection.
+ */
+function createSubQueryGenerator(
+	collection: AbstractQueryFieldNodeNestedRelationalAnyCollection,
+	nesting: AbstractQueryFieldNodeNestedRelationalAny,
+) {
+	return (rel: A2ORelation): SubQuery => {
+		const indexGenerator = parameterIndexGenerator();
+		const nestedFieldNodes = convertFieldNodes(collection.relational.collectionName, collection.fields, indexGenerator);
+
+		const fKs = collection.relational.identifierFields.map((idField) => {
+			const correspondingObj = rel.foreignKey.find((fk) => fk.column === idField);
+			if (!correspondingObj) throw new Error('No corresponding foreign key found.');
+			return correspondingObj.value;
+		});
+
+		return () => {
+			return {
+				rootQuery: {
+					clauses: {
+						select: nestedFieldNodes.clauses.select,
+						from: collection.relational.collectionName,
+						joins: nestedFieldNodes.clauses.joins,
+						where: getRelationalCondition(rel, indexGenerator, nesting),
+					},
+					parameters: [...nestedFieldNodes.parameters, ...fKs],
+				},
+				subQueries: nestedFieldNodes.subQueries,
+				aliasMapping: nestedFieldNodes.aliasMapping,
+			};
+		};
+	};
+}
+
+/**
+ * Creates the where condition to filter the foreign collection.
+ *
+ * @param jsonColumn
+ * @param idxGenerator
+ * @param relAny
+ * @returns Either a single condition or a logical condition with multiple conditions for composite keys.
+ */
+function getRelationalCondition(
 	jsonColumn: A2ORelation,
 	idxGenerator: Generator<number, number, number>,
 	relAny: AbstractQueryFieldNodeNestedRelationalAny,
 ): AbstractSqlQueryWhereNode {
-	const tableFromJsonColumn = jsonColumn.foreignCollection;
-
 	const nestedCollection = relAny.collections.find(
-		(collection) => collection.relational.collectionName === tableFromJsonColumn,
+		(collection) => collection.relational.collectionName === jsonColumn.foreignCollection,
 	);
 
-	if (!nestedCollection) throw new Error('No relational data found for the collection stated in the json column');
+	if (!nestedCollection) {
+		throw new Error('No relational data found for the collection stated in the json column');
+	}
 
 	if (jsonColumn.foreignKey.length > 1) {
 		return {
@@ -110,10 +127,14 @@ function getRelationConditions(
 			operator: 'and',
 			negate: false,
 			childNodes: nestedCollection.relational.identifierFields.map((idField) =>
-				getRelationCondition(tableFromJsonColumn, idField, idxGenerator),
+				getRelationCondition(jsonColumn.foreignCollection, idField, idxGenerator),
 			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
-	} else {
-		return getRelationCondition(tableFromJsonColumn, nestedCollection.relational.identifierFields[0], idxGenerator);
 	}
+
+	return getRelationCondition(
+		jsonColumn.foreignCollection,
+		nestedCollection.relational.identifierFields[0],
+		idxGenerator,
+	);
 }

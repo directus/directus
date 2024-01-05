@@ -71,7 +71,7 @@ export interface AbstractQueryFieldNodeNestedRelationalAny {
  * Used to specify the fields which should be returned for a specific collection.
  * It also contains information about how the two collections are related.
  */
-interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
+export interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
