@@ -242,13 +242,6 @@ time: Aika
 timestamp: Aikaleima
 uuid: UUID
 hash: Tiiviste
-geometry: Geometria (kaikki)
-geometry.Point: Piste
-geometry.LineString: LineString
-geometry.Polygon: Monikulmio
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Ei saatavilla tälle tyypille
 create_translations: Luo käännökset
 auto_refresh: Automaattinen päivitys
