@@ -38,6 +38,9 @@ Whether the extension exists in the local extensions folder or is loaded from `n
 `version` **string**\
 The currently loaded version of the plugin as defined by its `package.json`.
 
+`partial` **boolean**\
+Whether or not a bundles entries can be individually disabled. This is applicable to bundle type extensions only.
+
 ```json
 {
   "name": "my-bundle-operation",

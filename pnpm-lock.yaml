@@ -900,8 +900,8 @@ importers:
         specifier: 4.0.0-next.38
         version: 4.0.0-next.38(typedoc@0.25.6)
       typedoc-plugin-zod:
-        specifier: 1.1.0
-        version: 1.1.0(typedoc@0.25.6)
+        specifier: 1.1.1
+        version: 1.1.1(typedoc@0.25.6)
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.3
         version: 1.0.0-next.3(typedoc-plugin-markdown@4.0.0-next.38)
@@ -1780,8 +1780,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.3
-        version: 0.32.3
+        specifier: 0.32.4
+        version: 0.32.4
       '@unhead/vue':
         specifier: 1.8.9
         version: 1.8.9(vue@3.3.13)
@@ -2084,8 +2084,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1
       vite-tsconfig-paths:
-        specifier: 4.2.2
-        version: 4.2.2(typescript@5.3.3)
+        specifier: 4.2.3
+        version: 4.2.3(typescript@5.3.3)
       vitest:
         specifier: 1.1.1
         version: 1.1.1(happy-dom@12.10.3)(sass@1.69.5)
@@ -6368,8 +6368,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sinclair/typebox@0.32.3:
-    resolution: {integrity: sha512-o1OzDySkCSEobAEAVS1SGrzznes9KqPOC3arGfH5rQhOIeokLQYLKQmy68lr979BmPr43v4m9d85ttUSRpHdFA==}
+  /@sinclair/typebox@0.32.4:
+    resolution: {integrity: sha512-Q2Pex6H+HGuyxIGuFadkpqwtjZFXiVZlvy1rVX9XgAzUrDmUDEM69M2c4CkWUgMJ1NaFPvUf+cMBljY96GJVNQ==}
     dev: false
 
   /@sindresorhus/is@4.6.0:
@@ -18483,8 +18483,8 @@ packages:
       typedoc: 0.25.6(typescript@5.3.3)
     dev: true
 
-  /typedoc-plugin-zod@1.1.0(typedoc@0.25.6):
-    resolution: {integrity: sha512-LaQdkYyVVL8CX+4R0GJuOyDa1meiG3M85FiBTPvlikCGaRkTNGSEBZTbx3gQHAsNQ5NWJpLvYJQB6gMhcO8bWw==}
+  /typedoc-plugin-zod@1.1.1(typedoc@0.25.6):
+    resolution: {integrity: sha512-SjEB3swHW2mD5CnZf6sHX6L9KA1wnqzuJH96SAIMgy1x26AzFkS22zfdoyB4W5IjBnbU/RqH2p8dlo6hZHpiYg==}
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x
     dependencies:
@@ -19038,8 +19038,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-tsconfig-paths@4.2.2(typescript@5.3.3):
-    resolution: {integrity: sha512-dq0FjyxHHDnp0uS3P12WEOX2W7NeuLzX9AWP38D7Zw2CTbFErapwQVlCiT5DMJcVWKQ1MMdTe92PZl/rBQ7qcw==}
+  /vite-tsconfig-paths@4.2.3(typescript@5.3.3):
+    resolution: {integrity: sha512-xVsA2xe6QSlzBujtWF8q2NYexh7PAUYfzJ4C8Axpe/7d2pcERYxuxGgph9F4f0iQO36g5tyGq6eBUYIssdUrVw==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
