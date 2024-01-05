@@ -645,8 +645,6 @@ select_an_item: Vyberte položku...
 edit: Upraviť
 edit_item: Upraviť položku
 enabled: Zapnuté
-enabled_dev: Zapnuté (dev)
-enabled_dev_tooltip: Rozšírenia sa nedajú vypnúť v dev režime
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
