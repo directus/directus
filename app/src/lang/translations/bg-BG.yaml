@@ -243,13 +243,6 @@ time: Час
 timestamp: Времеви печат
 uuid: UUID
 hash: Хеш
-geometry: Геометричен (всякакъв)
-geometry.Point: Точка
-geometry.LineString: Линия
-geometry.Polygon: Многоъгълник
-geometry.MultiPoint: Множество точки
-geometry.MultiLineString: Множество линии
-geometry.MultiPolygon: Множество многоъгълници
 not_available_for_type: Не е налично за типът
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
