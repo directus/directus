@@ -299,13 +299,6 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
-geometry: Geometria (wszystkie)
-geometry.Point: Punkt
-geometry.LineString: Ciąg linii
-geometry.Polygon: Wielokąt
-geometry.MultiPoint: Wielopunktowy
-geometry.MultiLineString: Ciąg multilinii
-geometry.MultiPolygon: Wielokąt
 theme_auto: Automatyczne (Oparte na systemie)
 theme_light: Tryb jasny
 theme_dark: Tryb ciemny
