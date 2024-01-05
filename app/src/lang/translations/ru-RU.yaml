@@ -296,13 +296,6 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия (все)
-geometry.Point: Точка
-geometry.LineString: LineString
-geometry.Polygon: Многоугольник
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: Мультиполигон
 theme_light: Светлая тема
 theme_dark: Тёмная тема
 not_available_for_type: Недоступно для этого типа
