@@ -239,13 +239,6 @@ time: समय
 timestamp: समयछाप
 uuid: UUID
 hash: ह्यास
-geometry: ज्यामिति (सबै)
-geometry.Point: बिन्दु
-geometry.LineString: LineString
-geometry.Polygon: बहुभुज
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: यस प्रकारको लागि उपलब्ध छैन
 create_translations: अनुवाद सिर्जना
 auto_refresh: 'स्वत: रिफ्रेस'
