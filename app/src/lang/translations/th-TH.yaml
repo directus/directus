@@ -215,12 +215,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry.Point: จุด
-geometry.LineString: เส้น
-geometry.Polygon: โพลิกอน
-geometry.MultiPoint: หลายจุด
-geometry.MultiLineString: หลายเส้น
-geometry.MultiPolygon: หลายโพลิกอน
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
