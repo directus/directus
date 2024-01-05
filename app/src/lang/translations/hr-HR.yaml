@@ -273,13 +273,6 @@ time: Vrijeme
 timestamp: Vremenska oznaka
 uuid: UUID
 hash: Hash
-geometry: Geometrija (sve)
-geometry.Point: Točka
-geometry.LineString: Linijski niz
-geometry.Polygon: Poligon
-geometry.MultiPoint: Više točaka
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Višestruki poligon
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
