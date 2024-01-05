@@ -251,13 +251,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry: Geometri (Alle)
-geometry.Point: Punkt
-geometry.LineString: Linjestring
-geometry.Polygon: Polygon
-geometry.MultiPoint: Multipunkt
-geometry.MultiLineString: Stræng med linjeskift
-geometry.MultiPolygon: Multipolygon
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret oversættelser
 auto_refresh: Opdater automatisk
