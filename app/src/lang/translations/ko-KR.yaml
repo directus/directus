@@ -245,13 +245,6 @@ time: 시간
 timestamp: 타임스탬프
 uuid: UUID
 hash: 해시
-geometry: 기하학 (전체)
-geometry.Point: 포인트
-geometry.LineString: 줄 문자열
-geometry.Polygon: 다각형
-geometry.MultiPoint: 멀티포인트
-geometry.MultiLineString: 여러 줄 문자열
-geometry.MultiPolygon: 다중 다각형
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
