@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -86,7 +86,51 @@ export class ExtensionsService {
 		}
 
 		if ('meta' in data && 'enabled' in data.meta) {
+			if (bundle === null) {
+				await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
+				const extension = await this.readOne(bundle, name);
+
+				if (extension.schema?.type === 'bundle') {
+					// if a bundle is toggled, then toggle all of its children
+					await this.knex('directus_extensions')
+						.update({ enabled: data.meta.enabled })
+						.where('name', 'LIKE', `${name}/%`);
+				}
+
+				this.extensionsManager.reload();
+				return;
+			}
+
+			const parent = await this.readOne(null, bundle);
+
+			if (parent.schema?.type !== 'bundle') {
+				await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
+
+				this.extensionsManager.reload();
+				return;
+			}
+
+			if (parent.schema.partial === false) {
+				// if a bundle is non-partial do not allow toggling a child
+				throw new UnprocessableContentError({
+					reason: 'Unable to disable an entry for a bundle marked as non partial',
+				});
+			}
+
 			await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
+
+			const child = await this.knex('directus_extensions')
+				.where('name', 'LIKE', `${bundle}/%`)
+				.where({ enabled: true })
+				.first();
+
+			if (!child && parent.meta.enabled) {
+				// if all children are disabled then ensure parent bundle is disabled
+				await this.knex('directus_extensions').update({ enabled: false }).where({ name: parent.name });
+			} else if (child && !parent.meta.enabled) {
+				// if at least one child is enabled then ensure parent bundle is enabled
+				await this.knex('directus_extensions').update({ enabled: true }).where({ name: parent.name });
+			}
 
 			this.extensionsManager.reload();
 		}
@@ -156,7 +200,7 @@ export class ExtensionsService {
 			return {
 				name,
 				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local', 'version') : null,
+				schema: schema ? pick(schema, 'type', 'local', 'version', 'partial') : null,
 				meta: omit(meta, 'name'),
 			};
 		});
