@@ -233,7 +233,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry.Point: Punkt
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
