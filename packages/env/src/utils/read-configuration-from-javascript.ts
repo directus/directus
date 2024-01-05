@@ -6,14 +6,16 @@ export const readConfigurationFromJavaScript = (path: string) => {
 
 	const module = require(path);
 
-	const exported = 'default' in module ? module.default : module;
+	if (typeof module === 'object' || typeof module === 'function') {
+		const exported = 'default' in module ? module.default : module;
 
-	if (typeof exported === 'function') {
-		return exported(process.env) as Record<string, unknown>;
-	}
+		if (typeof exported === 'function') {
+			return exported(process.env) as Record<string, unknown>;
+		}
 
-	if (isPlainObject(exported)) {
-		return exported as Record<string, unknown>;
+		if (isPlainObject(exported)) {
+			return exported as Record<string, unknown>;
+		}
 	}
 
 	throw new Error(
