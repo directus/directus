@@ -281,11 +281,6 @@ time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
-geometry: 国や地域 (全て)
-geometry.Point: ポイント
-geometry.LineString: 単一線分
-geometry.Polygon: ポリゴン
-geometry.MultiPoint: マルチポイント
 theme_light: ライトモード
 theme_dark: ダークモード
 not_available_for_type: このタイプでは利用できません
