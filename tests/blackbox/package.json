@@ -32,7 +32,7 @@
 		"supertest": "6.3.3",
 		"typescript": "5.3.3",
 		"uuid": "9.0.1",
-		"vite-tsconfig-paths": "4.2.2",
+		"vite-tsconfig-paths": "4.2.3",
 		"vitest": "1.1.1",
 		"ws": "8.16.0"
 	}
