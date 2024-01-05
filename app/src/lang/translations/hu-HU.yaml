@@ -244,13 +244,6 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
-geometry: Geometria (összes)
-geometry.Point: Pont
-geometry.LineString: Vonal
-geometry.Polygon: Sokszög
-geometry.MultiPoint: Többpontos
-geometry.MultiLineString: Többvonalas
-geometry.MultiPolygon: Több poligonos
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
