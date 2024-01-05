@@ -259,13 +259,6 @@ time: Čas
 timestamp: Časové razítko
 uuid: UUID
 hash: Hash
-geometry: Geometrie (vše)
-geometry.Point: Bod
-geometry.LineString: LineString
-geometry.Polygon: Mnohoúhelník
-geometry.MultiPoint: Více bodů
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Pro tento typ není k dispozici
 create_translations: Vytvořit překlady
 auto_refresh: Automatické obnovení
