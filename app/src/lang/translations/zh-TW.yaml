@@ -243,13 +243,6 @@ time: 時間
 timestamp: 時間
 uuid: UUID
 hash: 哈希
-geometry: 地圖標記 (全部)
-geometry.Point: 單一點
-geometry.LineString: 單一線段
-geometry.Polygon: 多邊形
-geometry.MultiPoint: 多個點
-geometry.MultiLineString: 多條線段
-geometry.MultiPolygon: 多個多邊形
 not_available_for_type: 此類別無法使用
 create_translations: 創建翻譯
 auto_refresh: 自動重新整理
