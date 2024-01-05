@@ -1,6 +1,7 @@
-import type { RequestHandler } from 'express';
-import getDatabase from '../database/index.js';
 import { InvalidIpError } from '@directus/errors';
+import type { RequestHandler } from 'express';
+import { matches } from 'ip-matching';
+import getDatabase from '../database/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
@@ -18,6 +19,11 @@ export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
 
 	const ipAllowlist = (role?.ip_access || '').split(',').filter((ip: string) => ip);
 
-	if (ipAllowlist.length > 0 && ipAllowlist.includes(req.accountability!.ip) === false) throw new InvalidIpError();
+	for (const allowedIp of ipAllowlist) {
+		if (allowedIp && req.accountability!.ip && !matches(req.accountability!.ip, allowedIp)) {
+			throw new InvalidIpError();
+		}
+	}
+
 	return next();
 });
