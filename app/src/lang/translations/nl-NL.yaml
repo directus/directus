@@ -285,13 +285,6 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometrie (Alle)
-geometry.Point: Punt
-geometry.LineString: LineString
-geometry.Polygon: Veelhoek
-geometry.MultiPoint: Multipoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiVeelhoek
 theme_auto: Automatisch (gebaseerd op systeem)
 theme_light: Lichtmodus
 theme_dark: Donkere Modus
