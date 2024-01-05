@@ -243,13 +243,6 @@ time: کات
 timestamp: مۆری کات
 uuid: UUID
 hash: هاش
-geometry: ئەندازەیی (هەموو)
-geometry.Point: خاڵ
-geometry.LineString: ڕیزەهێڵ
-geometry.Polygon: فرەگۆشە
-geometry.MultiPoint: چەندخاڵی
-geometry.MultiLineString: چەند ڕیزەهێڵی
-geometry.MultiPolygon: چەند فرەگۆشەیی
 not_available_for_type: بەردەست نییە بۆ ئەم جۆرە
 create_translations: دروستکردنی وەرگێڕان
 auto_refresh: نوێبونەوەی خۆکاری
