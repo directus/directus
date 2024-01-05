@@ -91,13 +91,6 @@ time: Vreme
 timestamp: Vremenska oznaka
 uuid: UUID
 hash: Isečak
-geometry: Geometrija (sve)
-geometry.Point: Tačka
-geometry.LineString: Linijski niz
-geometry.Polygon: Mnogougao
-geometry.MultiPoint: Višestruko
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Mnogougao
 not_available_for_type: Није доступно за овај тип
 auto_generate: Аутоматски генериши
 add_note: Додај помоћну напомену за кориснике...
