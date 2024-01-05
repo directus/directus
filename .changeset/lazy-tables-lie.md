@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Allowed updating custom fields for `directus_extensions`
+Allow updating custom fields for `directus_extensions` collection
