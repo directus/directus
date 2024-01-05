@@ -65,7 +65,7 @@
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
-		"@aws-sdk/client-ses": "3.478.0",
+		"@aws-sdk/client-ses": "3.481.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
@@ -141,7 +141,7 @@
 		"nanoid": "5.0.4",
 		"node-machine-id": "1.1.12",
 		"node-schedule": "2.1.1",
-		"nodemailer": "6.9.7",
+		"nodemailer": "6.9.8",
 		"object-hash": "3.0.0",
 		"openapi3-ts": "4.2.1",
 		"openid-client": "5.6.1",
@@ -151,7 +151,7 @@
 		"p-queue": "8.0.1",
 		"papaparse": "5.4.1",
 		"pino": "8.17.1",
-		"pino-http": "8.6.0",
+		"pino-http": "8.6.1",
 		"pino-http-print": "3.1.0",
 		"pino-pretty": "10.3.0",
 		"qs": "6.11.2",
@@ -167,7 +167,7 @@
 		"uuid": "9.0.1",
 		"uuid-validate": "0.0.3",
 		"wellknown": "0.5.0",
-		"ws": "8.15.1",
+		"ws": "8.16.0",
 		"zod": "3.22.4",
 		"zod-validation-error": "2.1.0"
 	},
@@ -216,7 +216,7 @@
 		"knex-mock-client": "2.0.1",
 		"supertest": "6.3.3",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.8.1",

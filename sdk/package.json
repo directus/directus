@@ -39,8 +39,11 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
 		"dev": "NODE_ENV=development tsup",
@@ -51,7 +54,7 @@
 		"@types/node-fetch": "2.6.9",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"

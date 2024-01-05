@@ -311,13 +311,14 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
+geometry:
+  All: Geometry (All)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
@@ -655,8 +656,10 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
-enabled_dev: Enabled (Dev)
-enabled_dev_tooltip: App extensions cannot be disabled in dev mode
+partially_enabled: Partially Enabled
+enable_all: Enable All
+disable_all: Disable All
+enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -1889,7 +1892,13 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
+    custom_formats_note:
+      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
     options_override: Options Override
+    options_override_note:
+      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
@@ -2031,6 +2040,9 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon

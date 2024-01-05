@@ -91,7 +91,7 @@
 		"@types/wellknown": "0.5.8",
 		"@unhead/addons": "1.8.9",
 		"@unhead/vue": "1.8.9",
-		"@vitejs/plugin-vue": "4.5.2",
+		"@vitejs/plugin-vue": "4.6.2",
 		"@vue/test-utils": "2.4.3",
 		"@vueuse/core": "10.7.0",
 		"apexcharts": "3.45.0",
@@ -132,11 +132,11 @@
 		"tinymce": "6.8.2",
 		"typescript": "5.3.3",
 		"vite": "5.0.10",
-		"vitest": "1.1.0",
+		"vitest": "1.1.1",
 		"vue": "3.3.13",
 		"vue-i18n": "9.8.0",
 		"vue-router": "4.2.5",
-		"vue-tsc": "1.8.26",
+		"vue-tsc": "1.8.27",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
 	}
