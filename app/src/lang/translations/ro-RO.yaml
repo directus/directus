@@ -294,13 +294,6 @@ time: Timp
 timestamp: Marcă temporală
 uuid: UUID
 hash: Hash
-geometry: Geometrie (toate)
-geometry.Point: Punct
-geometry.LineString: Șir de linii (LineString)
-geometry.Polygon: Poligon
-geometry.MultiPoint: Multi-punct
-geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
-geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
 auto_refresh: Actualizare automată
