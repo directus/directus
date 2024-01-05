@@ -251,13 +251,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometri (Semua)
-geometry.Point: Titik
-geometry.LineString: StringGaris
-geometry.Polygon: Poligon
-geometry.MultiPoint: TitikMulti
-geometry.MultiLineString: Rangkaian beberapa baris
-geometry.MultiPolygon: Banyak poligon
 not_available_for_type: Tidak Tersedia Untuk Tipe Ini
 create_translations: Buat Terjemahan
 auto_refresh: Penyegaran Otomatis
