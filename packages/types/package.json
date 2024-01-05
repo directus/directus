@@ -21,7 +21,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
+		"build": "tsc",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {

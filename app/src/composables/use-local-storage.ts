@@ -17,9 +17,9 @@ export function useLocalStorage<T extends LocalStorageObjectType>(
 
 		try {
 			return parseJSON(rawExistingValue);
-		} catch (e) {
+		} catch (error) {
 			// eslint-disable-next-line no-console
-			console.warn(`Couldn't parse value from local storage`, e);
+			console.warn(`Couldn't parse value from local storage`, error);
 
 			return defaultValue;
 		}
@@ -28,9 +28,9 @@ export function useLocalStorage<T extends LocalStorageObjectType>(
 	function setValue(value: UnwrapRef<T> | null) {
 		try {
 			localStorage.setItem(internalKey, JSON.stringify(value));
-		} catch (e) {
+		} catch (error) {
 			// eslint-disable-next-line no-console
-			console.warn(`Couldn't stringify and set value to local storage`, e);
+			console.warn(`Couldn't stringify and set value to local storage`, error);
 		}
 	}
 
