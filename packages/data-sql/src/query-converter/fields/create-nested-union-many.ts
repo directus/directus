@@ -10,6 +10,8 @@ import { convertFieldNodes } from './fields.js';
 import { getRelationCondition } from './create-nested-manys.js';
 import type { SubQueries, ConverterResult } from '../../types/abstract-sql.js';
 import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/clauses/select/primitive.js';
+import { createPrimitiveSelect } from './create-primitive-select.js';
+import { createUniqueAlias } from '../../index.js';
 
 export interface NestedUnionResult {
 	/** Function to generate a sub query */
@@ -32,7 +34,7 @@ export function getNestedUnionMany(
 ): NestedUnionResult {
 	return {
 		subQueries: createFunctionToGenerateSubQueries(field.nesting.collections, field.localIdentifierFields),
-		select: createPrimitiveSelect(rootCollection, field.localIdentifierFields),
+		select: createPrimitiveSelects(rootCollection, field.localIdentifierFields),
 	};
 }
 
@@ -122,16 +124,11 @@ function reCreateJsonValue(
  * @param rootIdentifierFields
  * @returns The abstract select part for the primary key field.
  */
-function createPrimitiveSelect(
+function createPrimitiveSelects(
 	rootCollection: string,
 	rootIdentifierFields: AtLeastOneElement<string>,
 ): AbstractSqlQuerySelectPrimitiveNode[] {
-	return rootIdentifierFields.map((idField) => {
-		return {
-			type: 'primitive',
-			table: rootCollection,
-			column: idField,
-			alias: 'generatedAliasMap[idField]' /** @TODO */,
-		};
-	});
+	return rootIdentifierFields.map((idField) =>
+		createPrimitiveSelect(rootCollection, idField, createUniqueAlias(idField)),
+	);
 }
