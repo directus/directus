@@ -111,6 +111,17 @@ function reCreateJsonValue(
 	};
 }
 
+/**
+ * This function creates the abstract select part for the primary key column.
+ *
+ * @remarks
+ * Since the primary key column is always needed in the root query to construct the filter condition,
+ * we need to make sure that the pk column is also part of the select statement.
+ *
+ * @param rootCollection
+ * @param rootIdentifierFields
+ * @returns The abstract select part for the primary key field.
+ */
 function createPrimitiveSelect(
 	rootCollection: string,
 	rootIdentifierFields: AtLeastOneElement<string>,
