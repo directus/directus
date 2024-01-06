@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
+import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import getDatabase from '../database/index.js';
@@ -59,7 +60,7 @@ export class ExtensionsService {
 
 	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
 		const result = await this.knex.transaction(async (trx) => {
-			if (!data.meta) {
+			if (!isObject(data.meta)) {
 				throw new InvalidPayloadError({ reason: `"meta" is required` });
 			}
 
