@@ -6,7 +6,7 @@ import { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { appMinimalPermissions, appRecommendedPermissions } from '../../app-permissions';
+import { appMinimalPermissions, appRecommendedPermissions, disabledActions } from '../../app-permissions';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
@@ -160,6 +160,7 @@ function useReset() {
 						:key="collection.collection"
 						:collection="collection"
 						:role="role"
+						:disabled-actions="disabledActions[collection.collection]"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
 						:app-minimal="
