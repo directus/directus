@@ -5,6 +5,7 @@ import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
 import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
+import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
@@ -32,12 +33,7 @@ interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
 }
 
-if (
-	env['MESSENGER_STORE'] === 'redis' &&
-	env['CACHE_STORE'] === 'memory' &&
-	env['CACHE_AUTO_PURGE'] &&
-	!messengerSubscribed
-) {
+if (redisConfigAvailable() && env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && !messengerSubscribed) {
 	messengerSubscribed = true;
 
 	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {

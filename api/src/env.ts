@@ -173,7 +173,6 @@ const allowedEnvironmentVars = [
 	'EXTENSIONS_SANDBOX_MEMORY',
 	'EXTENSIONS_SANDBOX_TIMEOUT',
 	// messenger
-	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
 	// synchronization
 	'SYNCHRONIZATION_STORE',
