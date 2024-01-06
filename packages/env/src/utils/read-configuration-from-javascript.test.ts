@@ -49,6 +49,15 @@ test('Returns exported thing if it is a plain object', () => {
 	expect(readConfigurationFromJavaScript('./test/path.js')).toBe(config);
 });
 
+test('Returns default key from exported module', () => {
+	const config = { test: 'foo' };
+	const mod = { default: config };
+	vi.mocked(mockRequire).mockReturnValue(mod);
+	vi.mocked(isPlainObject).mockReturnValue(true);
+
+	expect(readConfigurationFromJavaScript('./test/path.js')).toBe(config);
+});
+
 test('Throws an error if the exported value is not a function or plain object', () => {
 	vi.mocked(mockRequire).mockReturnValue(123);
 
