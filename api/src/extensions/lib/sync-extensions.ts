@@ -6,9 +6,9 @@ import { mkdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
+import { useBus } from '../../bus/index.js';
 import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
-import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
@@ -24,7 +24,7 @@ export const syncExtensions = async (): Promise<void> => {
 		return ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 	}
 
-	const messenger = getMessenger();
+	const messenger = useBus();
 
 	const isPrimaryProcess =
 		String(process.env['NODE_APP_INSTANCE']) === '0' || process.env['NODE_APP_INSTANCE'] === undefined;

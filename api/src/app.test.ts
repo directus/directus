@@ -24,25 +24,6 @@ vi.mock('./env.js', () => ({
 	}),
 }));
 
-beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
-		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-		SECRET: 'abcdef',
-		SERVE_APP: 'true',
-		PUBLIC_URL: 'http://localhost:8055/directus',
-		TELEMETRY: 'false',
-		LOG_STYLE: 'raw',
-		EXTENSIONS_PATH: './extensions',
-		STORAGE_LOCATIONS: ['local'],
-		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
-		ROOT_REDIRECT: './admin',
-	});
-});
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());
 const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });
 
@@ -83,6 +64,25 @@ vi.mock('./auth', () => ({
 vi.mock('./webhooks', () => ({
 	init: vi.fn(),
 }));
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: 'true',
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: 'false',
+		LOG_STYLE: 'raw',
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+		ROOT_REDIRECT: './admin',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('createApp', async () => {
 	describe('Content Security Policy', () => {

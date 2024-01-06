@@ -26,7 +26,6 @@ describe('WebSocket General Tests', () => {
 
 			const env1 = cloneDeep(config.envs);
 			env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
-			env1[vendor]['MESSENGER_STORE'] = 'redis';
 			env1[vendor]['MESSENGER_NAMESPACE'] = `directus-ws-${vendor}`;
 
 			const env2 = cloneDeep(env1);

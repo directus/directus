@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
-import { useEnv } from '../env.js';
-import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { useEnv } from '../../env.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 
 /**
  * Create a new Redis instance based on the global env configuration

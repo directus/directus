@@ -2,9 +2,10 @@ import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
+import { useBus } from './bus/index.js';
 import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
-import { getMessenger } from './messenger.js';
+import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
@@ -26,17 +27,16 @@ let messengerSubscribed = false;
 
 type Store = 'memory' | 'redis';
 
-const messenger = getMessenger();
+const messenger = useBus();
 
-if (
-	env['MESSENGER_STORE'] === 'redis' &&
-	env['CACHE_STORE'] === 'memory' &&
-	env['CACHE_AUTO_PURGE'] &&
-	!messengerSubscribed
-) {
+interface CacheMessage {
+	autoPurgeCache: boolean | undefined;
+}
+
+if (redisConfigAvailable() && env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && !messengerSubscribed) {
 	messengerSubscribed = true;
 
-	messenger.subscribe('schemaChanged', async (opts) => {
+	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {
 		if (cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
@@ -100,7 +100,7 @@ export async function clearSystemCache(opts?: {
 
 	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
-	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
+	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {

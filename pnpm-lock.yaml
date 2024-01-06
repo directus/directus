@@ -59,6 +59,9 @@ importers:
       '@directus/format-title':
         specifier: 10.1.0
         version: 10.1.0
+      '@directus/memory':
+        specifier: workspace:*
+        version: link:../packages/memory
       '@directus/pressure':
         specifier: workspace:*
         version: link:../packages/pressure
