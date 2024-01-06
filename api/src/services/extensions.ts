@@ -1,36 +1,31 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
-import type { SchemaInspector } from '@directus/schema';
-import { createInspector } from '@directus/schema';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
-import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
-import { getCache } from '../cache.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
+
+export class ExtensionReadError extends Error {
+	originalError: unknown;
+	constructor(originalError: unknown) {
+		super();
+		this.originalError = originalError;
+	}
+}
 
 export class ExtensionsService {
 	knex: Knex;
-	permissionsService: PermissionsService;
-	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	extensionsItemService: ItemsService<ExtensionSettings>;
-	systemCache: Keyv<any>;
-	helpers: Helpers;
 	extensionsManager: ExtensionManager;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
-		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.extensionsManager = getExtensionManager();
@@ -40,9 +35,6 @@ export class ExtensionsService {
 			schema: this.schema,
 			accountability: this.accountability,
 		});
-
-		this.systemCache = getCache().systemCache;
-		this.helpers = getHelpers(this.knex);
 	}
 
 	async readAll() {
@@ -66,23 +58,39 @@ export class ExtensionsService {
 	}
 
 	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
+		const result = await this.knex.transaction(async (trx) => {
+			if (!data.meta) {
+				throw new InvalidPayloadError({ reason: `"meta" is required` });
+			}
 
-		if (!data.meta) {
-			throw new InvalidPayloadError({ reason: `"meta" is required` });
-		}
+			const service = new ExtensionsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
 
-		const key = this.getKey(bundle, name);
+			const key = this.getKey(bundle, name);
 
-		await this.knex('directus_extensions').update(data.meta).where({ name: key });
+			await service.extensionsItemService.updateOne(key, data.meta);
 
-		if ('enabled' in data.meta) {
-			await this.checkBundleAndSyncStatus(bundle, name, data.meta.enabled);
-		}
+			let extension;
+
+			try {
+				extension = await service.readOne(bundle, name);
+			} catch (error) {
+				throw new ExtensionReadError(error);
+			}
+
+			if ('enabled' in data.meta) {
+				await service.checkBundleAndSyncStatus(trx, extension);
+			}
+
+			return extension;
+		});
 
 		this.extensionsManager.reload();
+
+		return result;
 	}
 
 	private getKey(bundle: string | null, name: string) {
@@ -98,18 +106,18 @@ export class ExtensionsService {
 	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
 	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private async checkBundleAndSyncStatus(bundle: string | null, name: string, enabled: boolean) {
-		if (bundle === null) {
-			const extension = await this.readOne(bundle, name);
-
+	private async checkBundleAndSyncStatus(trx: Knex, extension: ApiOutput) {
+		if (extension.bundle === null) {
 			if (extension.schema?.type === 'bundle') {
-				await this.knex('directus_extensions').update({ enabled }).where('name', 'LIKE', this.getKey(name, '%'));
+				await trx('directus_extensions')
+					.update({ enabled: extension.meta.enabled })
+					.where('name', 'LIKE', this.getKey(extension.name, '%'));
 			}
 
 			return;
 		}
 
-		const parent = await this.readOne(null, bundle);
+		const parent = await this.readOne(null, extension.bundle);
 
 		if (parent.schema?.type !== 'bundle') {
 			return;
@@ -117,19 +125,19 @@ export class ExtensionsService {
 
 		if (parent.schema.partial === false) {
 			throw new UnprocessableContentError({
-				reason: 'Unable to disable an entry for a bundle marked as non partial',
+				reason: 'Unable to toggle status of an entry for a bundle marked as non partial',
 			});
 		}
 
-		const child = await this.knex('directus_extensions')
-			.where('name', 'LIKE', this.getKey(bundle, '%'))
+		const child = await trx('directus_extensions')
+			.where('name', 'LIKE', this.getKey(extension.bundle, '%'))
 			.where({ enabled: true })
 			.first();
 
 		if (!child && parent.meta.enabled) {
-			await this.knex('directus_extensions').update({ enabled: false }).where({ name: parent.name });
+			await trx('directus_extensions').update({ enabled: false }).where({ name: parent.name });
 		} else if (child && !parent.meta.enabled) {
-			await this.knex('directus_extensions').update({ enabled: true }).where({ name: parent.name });
+			await trx('directus_extensions').update({ enabled: true }).where({ name: parent.name });
 		}
 	}
 
