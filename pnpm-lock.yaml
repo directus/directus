@@ -2133,8 +2133,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1
       vite-tsconfig-paths:
-        specifier: 4.2.2
-        version: 4.2.2(typescript@5.3.3)
+        specifier: 4.2.3
+        version: 4.2.3(typescript@5.3.3)
       vitest:
         specifier: 1.1.1
         version: 1.1.1(happy-dom@12.10.3)(sass@1.69.5)
@@ -19087,8 +19087,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-tsconfig-paths@4.2.2(typescript@5.3.3):
-    resolution: {integrity: sha512-dq0FjyxHHDnp0uS3P12WEOX2W7NeuLzX9AWP38D7Zw2CTbFErapwQVlCiT5DMJcVWKQ1MMdTe92PZl/rBQ7qcw==}
+  /vite-tsconfig-paths@4.2.3(typescript@5.3.3):
+    resolution: {integrity: sha512-xVsA2xe6QSlzBujtWF8q2NYexh7PAUYfzJ4C8Axpe/7d2pcERYxuxGgph9F4f0iQO36g5tyGq6eBUYIssdUrVw==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
