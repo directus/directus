@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
