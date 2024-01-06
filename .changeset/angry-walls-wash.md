@@ -1,5 +1,4 @@
 ---
-"@directus/app": patch
 "@directus/api": patch
 "docs": patch
 ---
