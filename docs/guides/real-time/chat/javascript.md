@@ -120,7 +120,7 @@ document.querySelector('#login').addEventListener('submit', function (event) {
   const email = event.target.elements.email.value;
   const password = event.target.elements.password.value;
 
-  await client.login(email, password); // [!code ++]
+  client.login(email, password); // [!code ++]
 });
 ```
 
@@ -132,21 +132,15 @@ await client.connect();
 
 ## Subscribe To Messages
 
-In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Above the event
-handlers, add the following:
+As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
+`Messages` collection.
 
 ```js
 client.onWebSocket('message', function (message) {
-  receiveMessage(message);
+  if (data.type == 'auth' && data.status == 'ok') {
+	  subscribe('update')
+  }
 });
-```
-
-At the bottom of your `<script>`, create the `receiveMessage` function:
-
-```js
-function receiveMessage(message) {
-	const data = JSON.parse(message.data);
-}
 ```
 
 Create a subscribe function that subscribes to events.
@@ -156,12 +150,7 @@ async function subscribe(event) {
   const { subscription } = await client.subscribe('messages', {
     event,
     query: {
-      fields: [
-        '*',
-        {
-          user_created: ['first_name'],
-        },
-      ],
+      fields: ['*', 'user_created.first_name'],
     },
   });
 
@@ -171,16 +160,8 @@ async function subscribe(event) {
 }
 ```
 
-As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
-`Messages` collection.
-
-```js
-if (data.type == 'auth' && data.status == 'ok') {
-	subscribe('update')
-}
-```
-
-When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` function:
+When a subscription is started, a message will be sent to confirm. Create a `receiveMessage` function with the
+following:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
@@ -308,7 +289,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
           console.log(message);
         }
       });
-      await client.connect();
+      client.connect();
       document
         .querySelector('#login')
         .addEventListener('submit', function (event) {
@@ -337,12 +318,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
         const { subscription } = await client.subscribe('messages', {
           event,
           query: {
-            fields: [
-              '*',
-              {
-                user_created: ['first_name'],
-              },
-            ],
+            fields: ['*', 'user_created.first_name'],
           },
         });
 
