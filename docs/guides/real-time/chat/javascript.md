@@ -332,7 +332,12 @@ This guide covers authentication, item creation, and subscription using WebSocke
         const { subscription } = await client.subscribe('messages', {
           event,
           query: {
-            fields: ['text', 'user_created.first_name'],
+            fields: [
+              '*',
+              {
+                user_created: ['first_name'],
+              },
+            ],
           },
         });
 
