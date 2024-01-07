@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	InvalidCredentialsError,
@@ -15,7 +16,6 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -456,11 +456,11 @@ export function createLDAPAuthRouter(provider: string): Router {
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, {
 					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 			}

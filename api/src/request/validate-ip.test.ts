@@ -1,12 +1,12 @@
+import { useEnv } from '@directus/env';
 import { randIp, randUrl } from '@ngneat/falso';
 import os from 'node:os';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
 import { validateIP } from './validate-ip.js';
 
 vi.mock('node:os');
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 let sample: {
 	ip: string;

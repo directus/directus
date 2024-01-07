@@ -1,5 +1,5 @@
+import { toBoolean } from '@directus/utils';
 import { type Knex } from 'knex';
-import { toBoolean } from '../../utils/to-boolean.js';
 
 export interface UserCount {
 	admin: number;

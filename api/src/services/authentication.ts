@@ -1,10 +1,11 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
 	InvalidProviderError,
-	UserSuspendedError,
 	ServiceUnavailableError,
+	UserSuspendedError,
 } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
@@ -15,8 +16,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
-import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
+import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stall } from '../utils/stall.js';
@@ -54,7 +54,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -215,7 +215,7 @@ export class AuthenticationService {
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
 			issuer: 'directus',
 		});
 
@@ -265,7 +265,7 @@ export class AuthenticationService {
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		const { nanoid } = await import('nanoid');
-		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
@@ -386,7 +386,7 @@ export class AuthenticationService {
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
 			issuer: 'directus',
 		});
 

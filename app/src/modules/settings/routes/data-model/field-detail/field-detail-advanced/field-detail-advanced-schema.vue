@@ -75,7 +75,7 @@ const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry',
+		text: '$t:geometry.All',
 		value: 'geometry',
 	},
 	{

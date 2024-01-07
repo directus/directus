@@ -930,10 +930,9 @@ and then loaded from there.
 
 ## Messenger
 
-| Variable              | Description                            | Default Value        |
-| --------------------- | -------------------------------------- | -------------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
+| Variable              | Description                        | Default Value        |
+| --------------------- | ---------------------------------- | -------------------- |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis | `directus-messenger` |
 
 ## Synchronization
 
