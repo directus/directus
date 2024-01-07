@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
@@ -9,7 +10,6 @@ import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
@@ -67,7 +67,7 @@ class FlowManager {
 		const logger = useLogger();
 
 		this.reloadQueue = new JobQueue();
-		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
+		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
 		const messenger = useBus();
 

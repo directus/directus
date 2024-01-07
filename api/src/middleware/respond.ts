@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export/index.js';
 import { VersionsService } from '../services/versions.js';
@@ -23,7 +23,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
-		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE']);
+		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE'] as string);
 		exceedsMaxSize = valueSize > maxSize;
 	}
 

@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import { isInstalled, validateMigrations } from '../database/index.js';
-import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { useLogger } from '../logger.js';
 

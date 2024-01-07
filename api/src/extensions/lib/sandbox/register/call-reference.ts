@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { Reference } from 'isolated-vm';
-import { useEnv } from '../../../../env.js';
 import { useLogger } from '../../../../logger.js';
 
 type Args<T> = T extends (...args: infer Args) => unknown ? Args : any[];

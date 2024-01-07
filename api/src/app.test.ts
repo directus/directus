@@ -2,7 +2,7 @@ import { Router } from 'express';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
-import { useEnv } from './env.js';
+import { useEnv } from '@directus/env';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('./telemetry/index.js');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('./env.js', () => ({
+vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EXTENSIONS_PATH: './extensions',
 		STORAGE_LOCATIONS: ['local'],

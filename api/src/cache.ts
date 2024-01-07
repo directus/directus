@@ -1,9 +1,9 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
@@ -33,6 +33,10 @@ interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
 }
 
+interface CacheMessage {
+	autoPurgeCache: boolean | undefined;
+}
+
 if (redisConfigAvailable() && env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && !messengerSubscribed) {
 	messengerSubscribed = true;
 
@@ -52,17 +56,22 @@ export function getCache(): {
 } {
 	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_TTL']));
+		cache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_TTL']));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
+		systemCache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (sharedSchemaCache === null) {
-		sharedSchemaCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema_shared');
+		sharedSchemaCache = getKeyvInstance(
+			env['CACHE_STORE'] as Store,
+			getMilliseconds(env['CACHE_SYSTEM_TTL']),
+			'_schema_shared',
+		);
+
 		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
 	}
 
@@ -72,7 +81,7 @@ export function getCache(): {
 	}
 
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(env['CACHE_STORE'], undefined, '_lock');
+		lockCache = getKeyvInstance(env['CACHE_STORE'] as Store, undefined, '_lock');
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
