@@ -156,7 +156,12 @@ async function subscribe(event) {
   const { subscription } = await client.subscribe('messages', {
     event,
     query: {
-      fields: ['text', 'user_created.first_name'],
+      fields: [
+        '*',
+        {
+          user_created: ['first_name'],
+        },
+      ],
     },
   });
 
@@ -219,7 +224,7 @@ At the bottom of your `<script>`, create an `addMessageToList` function:
 function addMessageToList(message) {
 	const li = document.createElement('li');
 	li.setAttribute('id', message.id);
-	li.textContent = `${message.user_created}: ${message.text}`;
+	li.textContent = `${message.user_created.first_name}: ${message.text}`;
 	document.querySelector('ol').appendChild(li);
 }
 ```
