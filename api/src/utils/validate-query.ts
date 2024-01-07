@@ -15,7 +15,10 @@ const querySchema = Joi.object({
 	filter: Joi.object({}).unknown(),
 	limit:
 		'QUERY_LIMIT_MAX' in env && env['QUERY_LIMIT_MAX'] !== -1
-			? Joi.number().integer().min(-1).max(env['QUERY_LIMIT_MAX'] as number) // min should be 0
+			? Joi.number()
+					.integer()
+					.min(-1)
+					.max(env['QUERY_LIMIT_MAX'] as number) // min should be 0
 			: Joi.number().integer().min(-1),
 	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),

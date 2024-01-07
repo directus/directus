@@ -41,7 +41,11 @@ export function getCacheControlHeader(
 	headerValues.push(`max-age=${ttlSeconds}`);
 
 	// When the s-maxage flag should be included
-	if (globalCacheSettings && Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) && (env['CACHE_CONTROL_S_MAXAGE'] as number) >= 0) {
+	if (
+		globalCacheSettings &&
+		Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) &&
+		(env['CACHE_CONTROL_S_MAXAGE'] as number) >= 0
+	) {
 		headerValues.push(`s-maxage=${env['CACHE_CONTROL_S_MAXAGE']}`);
 	}
 

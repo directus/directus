@@ -224,7 +224,10 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[]): Promise<Metadata> {
+	async getMetadata(
+		stream: Readable,
+		allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
+	): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,

@@ -460,7 +460,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 					httpOnly: true,
 					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean ?? false,
+					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 			}

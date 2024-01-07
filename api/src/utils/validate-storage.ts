@@ -15,7 +15,9 @@ export async function validateStorage(): Promise<void> {
 			await access(path.dirname(env['DB_FILENAME'] as string), constants.R_OK | constants.W_OK);
 		} catch {
 			logger.warn(
-				`Directory for SQLite database file (${path.resolve(path.dirname(env['DB_FILENAME'] as string))}) is not read/writeable!`,
+				`Directory for SQLite database file (${path.resolve(
+					path.dirname(env['DB_FILENAME'] as string),
+				)}) is not read/writeable!`,
 			);
 		}
 	}

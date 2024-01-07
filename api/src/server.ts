@@ -154,7 +154,7 @@ export async function startServer(): Promise<void> {
 	const server = await createServer();
 
 	const host = env['HOST'] as string;
- 	const port = parseInt(env['PORT'] as string);
+	const port = parseInt(env['PORT'] as string);
 
 	server
 		.listen(port, host, () => {

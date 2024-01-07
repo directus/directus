@@ -1,6 +1,6 @@
-import { _cache, useEnv } from "./use-env.js";
+import { _cache, useEnv } from './use-env.js';
 import { test, expect, vi, afterEach } from 'vitest';
-import { createEnv } from "./create-env.js";
+import { createEnv } from './create-env.js';
 
 vi.mock('./create-env.js');
 
@@ -16,7 +16,7 @@ test('Returns cached env if exists', () => {
 	const env = useEnv();
 
 	expect(env).toBe(_cache.env);
-})
+});
 
 test('Creates new cached env if not exists', () => {
 	const mockEnv = {};
@@ -26,4 +26,4 @@ test('Creates new cached env if not exists', () => {
 
 	expect(env).toBe(mockEnv);
 	expect(_cache.env).toBe(mockEnv);
-})
+});
