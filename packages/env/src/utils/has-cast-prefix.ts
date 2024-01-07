@@ -6,9 +6,9 @@ export const getCastFlag = (value: unknown) => {
 
 	if (value.includes(':') === false) return null;
 
-	const castPrefix = value.split(':')[0]!;
+	const castPrefix = (value.split(':') as [string])[0];
 
-	if(isIn(castPrefix, ENV_TYPES) === false) return null;
+	if (isIn(castPrefix, ENV_TYPES) === false) return null;
 
 	return castPrefix;
 };

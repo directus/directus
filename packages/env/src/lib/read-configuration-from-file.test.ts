@@ -5,7 +5,7 @@ import { readConfigurationFromJavaScript } from '../utils/read-configuration-fro
 import { readConfigurationFromJson } from '../utils/read-configuration-from-json.js';
 import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml.js';
 import { readConfigurationFromFile } from './read-configuration-from-file.js';
-import { test, describe, afterEach, beforeEach, vi, expect } from 'vitest';
+import { test, afterEach, beforeEach, vi, expect } from 'vitest';
 
 vi.mock('node:fs');
 vi.mock('../utils/get-file-extension.js');

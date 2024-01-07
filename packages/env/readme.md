@@ -1,10 +1,11 @@
 # @directus/env
 
-Environment variable configuration extraction for Directus
+Environment variable configuration extraction for Directus.
 
 ## Description
 
-This package exports a pressure based rate limiter that is used within Directus, an open-source headless CMS.
+This package exports utilities for environment variable configuration extraction that are used within Directus, an
+open-source headless CMS.
 
 For more information about Directus, visit the [official website](https://directus.io).
 

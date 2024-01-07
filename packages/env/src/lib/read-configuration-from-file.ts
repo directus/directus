@@ -8,7 +8,7 @@ import { readConfigurationFromJson } from '../utils/read-configuration-from-json
 import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml.js';
 
 /**
- * Read all configuration variables. Variables from the config path
+ * Read configuration variables from config file
  */
 export const readConfigurationFromFile = (path: string) => {
 	if (existsSync(path) === false) {
