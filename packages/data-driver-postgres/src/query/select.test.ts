@@ -1,47 +1,47 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
-import { beforeEach, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 import { select } from './select.js';
-import { randomIdentifier } from '@directus/random';
-
-let randomTable: string;
-
-beforeEach(() => {
-	randomTable = randomIdentifier();
-});
+import { randomIdentifier, randomInteger } from '@directus/random';
 
 test('With multiple provided fields', () => {
-	const randomTable2 = randomIdentifier();
-	const randomColumn1 = randomIdentifier();
-	const randomColumn1As = randomIdentifier();
-	const randomColumn2 = randomIdentifier();
-	const randomColumn2As = randomIdentifier();
+	const tableName1 = randomIdentifier();
+	const tableIndex1 = randomInteger(0, 100);
+	const tableIndex2 = randomInteger(0, 100);
+	const columnName1 = randomIdentifier();
+	const columnIndex1 = randomInteger(0, 100);
+	const columnIndex2 = randomInteger(0, 100);
+	const columnName2 = randomIdentifier();
 
 	const sample: AbstractSqlClauses = {
 		select: [
 			{
 				type: 'primitive',
-				table: randomTable,
-				column: randomColumn1,
-				as: randomColumn1As,
+				tableIndex: tableIndex1,
+				columnIndex: columnIndex1,
+				columnName: columnName1,
 			},
 			{
 				type: 'primitive',
-				table: randomTable2,
-				column: randomColumn2,
-				as: randomColumn2As,
+				tableIndex: tableIndex2,
+				columnName: columnName2,
+				columnIndex: columnIndex2,
 			},
 		],
-		from: randomTable,
+		from: {
+			tableName: tableName1,
+			tableIndex: tableIndex1,
+		},
 	};
 
 	const res = select(sample);
-	const expected = `SELECT "${randomTable}"."${randomColumn1}" AS "${randomColumn1As}", "${randomTable2}"."${randomColumn2}" AS "${randomColumn2As}"`;
+	const expected = `SELECT "t${tableIndex1}"."${columnName1}" AS "c${columnIndex1}", "t${tableIndex2}"."${columnName2}" AS "c${columnIndex2}"`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('With a count', () => {
-	const randomTable = randomIdentifier();
-	const randomAs = randomIdentifier();
+	const tableName = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnIndex = randomInteger(0, 100);
 
 	const sample: AbstractSqlClauses = {
 		select: [
@@ -51,15 +51,18 @@ test('With a count', () => {
 					type: 'arrayFn',
 					fn: 'count',
 				},
-				table: randomTable,
-				column: '*',
-				as: randomAs,
+				tableIndex,
+				columnName: '*',
+				columnIndex: columnIndex,
 			},
 		],
-		from: randomTable,
+		from: {
+			tableName,
+			tableIndex,
+		},
 	};
 
 	const res = select(sample);
-	const expected = `SELECT COUNT("${randomTable}"."*") AS "${randomAs}"`;
+	const expected = `SELECT COUNT("t${tableIndex}"."*") AS "c${columnIndex}"`;
 	expect(res).toStrictEqual(expected);
 });

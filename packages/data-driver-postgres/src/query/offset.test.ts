@@ -1,6 +1,6 @@
 import { test, expect, beforeEach } from 'vitest';
 import { offset } from './offset.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import type { AbstractSqlClauses } from '@directus/data-sql';
 
 let sample: AbstractSqlClauses;
@@ -8,7 +8,10 @@ let sample: AbstractSqlClauses;
 beforeEach(() => {
 	sample = {
 		select: [],
-		from: randomIdentifier(),
+		from: {
+			tableName: randomIdentifier(),
+			tableIndex: 0,
+		},
 	};
 });
 
@@ -17,6 +20,7 @@ test('Empty string when offset is not defined', () => {
 });
 
 test('Returns offset', () => {
-	sample.offset = { type: 'value', parameterIndex: 0 };
-	expect(offset(sample)).toStrictEqual(`OFFSET $1`);
+	const parameterIndex = randomInteger(0, 100);
+	sample.offset = { type: 'value', parameterIndex };
+	expect(offset(sample)).toStrictEqual(`OFFSET $${parameterIndex + 1}`);
 });

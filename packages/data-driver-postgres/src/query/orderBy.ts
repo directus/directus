@@ -7,7 +7,7 @@ import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
  * Generates the `ORDER BY x` part of a SQL statement.
  * The order direction is always set explicitly, although Postgres defaults to `ASC`.
  *
- * @param query - The abstract query
+ * @param query - The whole abstract SQL query
  * @returns The `ORDER BY x` part of a SQL statement
  */
 export function orderBy({ order }: AbstractSqlClauses): string | null {

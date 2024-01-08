@@ -5,7 +5,8 @@ import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 
 /**
  * Generates `LEFT JOIN x ON y` part.
- * @param query the whole abstract query
+ *
+ * @param query - The whole abstract SQL query
  * @returns the JOIN part or null if there are no joins in the query
  */
 export const join = ({ joins }: AbstractSqlClauses): string | null => {

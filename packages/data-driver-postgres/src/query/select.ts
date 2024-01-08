@@ -7,7 +7,7 @@ import { wrapColumn } from '../utils/wrap-column.js';
  * Generates the `SELECT x, y` part of a SQL statement.
  * The fields are always prefixed with the table name.
  *
- * @param AbstractSqlQuery the whole query object
+ * @param query - The whole abstract SQL query
  * @returns the `SELECT x, y` part of a SQL statement
  */
 export const select = ({ select }: AbstractSqlClauses): string => {

@@ -1,6 +1,6 @@
 import { test, expect, beforeEach } from 'vitest';
 import { limit } from './limit.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import type { AbstractSqlClauses } from '@directus/data-sql';
 
 let sample: AbstractSqlClauses;
@@ -8,7 +8,10 @@ let sample: AbstractSqlClauses;
 beforeEach(() => {
 	sample = {
 		select: [],
-		from: randomIdentifier(),
+		from: {
+			tableName: randomIdentifier(),
+			tableIndex: randomInteger(0, 100),
+		},
 	};
 });
 
@@ -17,6 +20,7 @@ test('Empty parametrized statement when limit is not defined', () => {
 });
 
 test('Returns limit part with one parameter', () => {
-	sample.limit = { type: 'value', parameterIndex: 0 };
-	expect(limit(sample)).toStrictEqual(`LIMIT $1`);
+	const parameterIndex = randomInteger(0, 100);
+	sample.limit = { type: 'value', parameterIndex };
+	expect(limit(sample)).toStrictEqual(`LIMIT $${parameterIndex + 1}`);
 });
