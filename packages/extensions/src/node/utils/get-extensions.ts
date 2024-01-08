@@ -1,14 +1,14 @@
 import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
-import path from 'path';
+import { resolve, join } from 'path';
 import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
 import type { Extension } from '../../shared/types/index.js';
 
 export const findExtension = async (folder: string, filename: string) => {
-	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
-	if (await fse.exists(path.join(folder, `${filename}.mjs`))) return `${filename}.mjs`;
+	if (await fse.exists(join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
+	if (await fse.exists(join(folder, `${filename}.mjs`))) return `${filename}.mjs`;
 	return `${filename}.js`;
 };
 
@@ -22,8 +22,15 @@ export async function resolveExtensions(root: string, extensionNames?: string[])
 	}
 
 	for (const extensionName of extensionNames) {
-		const extensionPath = local ? path.join(root, extensionName) : resolvePackage(extensionName, root);
-		const extensionManifest: Record<string, any> = await fse.readJSON(path.join(extensionPath, 'package.json'));
+		const pkgExists = await fse.exists(join(root, extensionName, 'package.json'));
+
+		if (pkgExists === false) {
+			throw new Error(`Extension "${extensionName}" does not contain a package.json file.`);
+		}
+
+		const extensionPath = local ? join(root, extensionName) : resolvePackage(extensionName, root);
+
+		const extensionManifest: Record<string, any> = await fse.readJSON(join(extensionPath, 'package.json'));
 
 		let parsedManifest;
 
@@ -101,9 +108,9 @@ export async function resolveDependencyExtensions(root: string): Promise<Extensi
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
-		pkg = await fse.readJSON(path.resolve(root, 'package.json'));
+		pkg = await fse.readJSON(resolve(root, 'package.json'));
 	} catch {
-		throw new Error('Current folder does not contain a package.json file');
+		throw new Error(`Path "${root}" does not contain a package.json file`);
 	}
 
 	const dependencyNames = Object.keys(pkg.dependencies ?? {});
