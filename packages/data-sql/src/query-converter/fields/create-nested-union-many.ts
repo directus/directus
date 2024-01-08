@@ -48,7 +48,7 @@ export function getNestedUnionMany(
 function createFunctionToGenerateSubQueries(
 	nestedCollections: AbstractQueryFieldNodeNestedRelationalAnysCollection[],
 	rootIdentifierFields: AtLeastOneElement<string>,
-) {
+): SubQueries {
 	return function (rootRow: Record<string, unknown>): ConverterResult[] {
 		return nestedCollections.map((nestedCollection) => {
 			const indexGenerator = parameterIndexGenerator();
