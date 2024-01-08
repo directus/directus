@@ -62,7 +62,7 @@ const url = 'https://your-directus-url';
 
 ## Import the SDK Composables
 
-At the top of the `<script>` tag, import the SDK composables needed for this prooject
+At the top of the `<script>` tag, import the SDK composables needed for this project
 
 ```html
 <!doctype html>
