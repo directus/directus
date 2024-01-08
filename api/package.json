@@ -118,7 +118,7 @@
 		"glob-to-regexp": "0.4.1",
 		"graphql": "16.8.1",
 		"graphql-compose": "9.0.10",
-		"graphql-ws": "5.14.2",
+		"graphql-ws": "5.14.3",
 		"helmet": "7.1.0",
 		"icc": "3.0.0",
 		"inquirer": "9.2.12",

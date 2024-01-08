@@ -198,8 +198,8 @@ importers:
         specifier: 9.0.10
         version: 9.0.10(graphql@16.8.1)
       graphql-ws:
-        specifier: 5.14.2
-        version: 5.14.2(graphql@16.8.1)
+        specifier: 5.14.3
+        version: 5.14.3(graphql@16.8.1)
       helmet:
         specifier: 7.1.0
         version: 7.1.0
@@ -2103,8 +2103,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0
       graphql-ws:
-        specifier: 5.14.2
-        version: 5.14.2(graphql@16.8.1)
+        specifier: 5.14.3
+        version: 5.14.3(graphql@16.8.1)
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -11846,8 +11846,8 @@ packages:
       graphql: 16.8.1
     dev: false
 
-  /graphql-ws@5.14.2(graphql@16.8.1):
-    resolution: {integrity: sha512-LycmCwhZ+Op2GlHz4BZDsUYHKRiiUz+3r9wbhBATMETNlORQJAaFlAgTFoeRh6xQoQegwYwIylVD1Qns9/DA3w==}
+  /graphql-ws@5.14.3(graphql@16.8.1):
+    resolution: {integrity: sha512-F/i2xNIVbaEF2xWggID0X/UZQa2V8kqKDPO8hwmu53bVOcTL7uNkxnexeEgSCVxYBQUTUNEI8+e4LO1FOhKPKQ==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: '>=0.11 <=16'
