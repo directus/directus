@@ -26,7 +26,6 @@ describe('WebSocket General Tests', () => {
 
 			const env1 = cloneDeep(config.envs);
 			env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
-			env1[vendor]['MESSENGER_STORE'] = 'redis';
 			env1[vendor]['MESSENGER_NAMESPACE'] = `directus-ws-${vendor}`;
 
 			const env2 = cloneDeep(env1);
@@ -34,8 +33,8 @@ describe('WebSocket General Tests', () => {
 			const newServerPort1 = Number(env1[vendor]!.PORT) + 250;
 			const newServerPort2 = Number(env2[vendor]!.PORT) + 300;
 
-			env1[vendor]!.PORT = String(newServerPort1);
-			env2[vendor]!.PORT = String(newServerPort2);
+			env1[vendor].PORT = String(newServerPort1);
+			env2[vendor].PORT = String(newServerPort2);
 
 			const server1 = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env1[vendor] });
 			const server2 = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env2[vendor] });

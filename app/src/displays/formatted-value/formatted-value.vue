@@ -20,6 +20,7 @@ const props = withDefaults(
 		background?: string;
 		icon?: string;
 		border?: boolean;
+		masked?: boolean;
 		conditionalFormatting?: {
 			operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
 			value: string;
@@ -85,6 +86,8 @@ const computedStyle = computed(() => {
 });
 
 const displayValue = computed(() => {
+	if (props.masked) return '**********';
+
 	if (computedFormat.value.text) {
 		const { text } = computedFormat.value;
 		return text.startsWith('$t:') ? t(text.slice(3)) : text;

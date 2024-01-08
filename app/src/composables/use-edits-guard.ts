@@ -1,44 +1,38 @@
-import { ref, Ref, onBeforeMount, onBeforeUnmount, unref } from 'vue';
-import { onBeforeRouteUpdate, onBeforeRouteLeave, NavigationGuard, useRoute } from 'vue-router';
+import { ref, unref, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useNavigationGuard } from './use-navigation-guard';
 
 type EditsGuardOptions = {
 	ignorePrefix?: string | Ref<string>;
 };
 
 export function useEditsGuard(hasEdits: Ref<boolean>, opts?: EditsGuardOptions) {
-	const { path } = useRoute();
-
 	const confirmLeave = ref(false);
 	const leaveTo = ref<string | null>(null);
 
-	const beforeUnload = (event: BeforeUnloadEvent) => {
-		if (hasEdits.value) {
-			event.preventDefault();
-			event.returnValue = '';
-			return '';
-		}
-	};
+	useNavigationGuard(hasEdits, (to) => {
+		const { path } = useRoute();
 
-	const editsGuard: NavigationGuard = (to) => {
-		const matchesPathPrefix = opts?.ignorePrefix ? to.path.startsWith(unref(opts.ignorePrefix)) : false;
-
-		if (hasEdits.value && !to.path.startsWith(path) && !matchesPathPrefix) {
+		if (hasEdits.value && !isSubpath(path, to.path) && !isIgnoredPath(unref(opts?.ignorePrefix), to.path)) {
 			confirmLeave.value = true;
 			leaveTo.value = to.fullPath;
 			return false;
 		}
-	};
 
-	onBeforeMount(() => {
-		window.addEventListener('beforeunload', beforeUnload);
+		return;
 	});
-
-	onBeforeUnmount(() => {
-		window.removeEventListener('beforeunload', beforeUnload);
-	});
-
-	onBeforeRouteUpdate(editsGuard);
-	onBeforeRouteLeave(editsGuard);
 
 	return { confirmLeave, leaveTo };
+}
+
+function isSubpath(currentPath: string, newPath: string) {
+	return (
+		currentPath === newPath || (newPath.startsWith(currentPath) && newPath.substring(currentPath.length).includes('/'))
+	);
+}
+
+function isIgnoredPath(ignorePrefix: string | undefined, newPath: string) {
+	if (!ignorePrefix) return false;
+
+	return newPath.startsWith(ignorePrefix);
 }

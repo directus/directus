@@ -75,6 +75,9 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+extension_reload_required: Page Reload Required
+extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
+extension_reload_now: Reload now
 enable: Enable
 disable: Disable
 custom: Custom
@@ -308,16 +311,20 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
+geometry:
+  All: Geometry (All)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -649,6 +656,10 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
+partially_enabled: Partially Enabled
+enable_all: Enable All
+disable_all: Disable All
+enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -685,7 +696,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  GRAPHQL_VALIDATION: GraphQL Validation
   SERVICE_UNAVAILABLE: Service Unavailable
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
   UNEXPECTED_RESPONSE: Unexpected response
@@ -1242,6 +1253,9 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
   directus_settings:
@@ -1273,6 +1287,9 @@ fields:
     public_background: Public Background
     public_note: Public Note
     theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -1875,7 +1892,13 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
+    custom_formats_note:
+      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
     options_override: Options Override
+    options_override_note:
+      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
@@ -2010,11 +2033,16 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon

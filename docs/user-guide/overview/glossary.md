@@ -294,7 +294,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 
 - [Creating a Project](/self-hosted/quickstart)
 - [Configuring a Project](/self-hosted/config-options)
-- [Adjusting Project Settings](/user-guide/cloud/project-settings)
+- [Adjusting Project Settings](/user-guide/settings/project-settings)
 - [Upgrading a Project](/self-hosted/upgrades-migrations)
 - [Backing-up a Project](/self-hosted/upgrades-migrations#backing-up-a-project)
 - [Migrating a Project](/self-hosted/upgrades-migrations#migrating-a-project)

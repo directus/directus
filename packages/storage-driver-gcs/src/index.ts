@@ -54,7 +54,7 @@ export class DriverGCS implements Driver {
 
 	async stat(filepath: string) {
 		const [{ size, updated }] = await this.file(this.fullPath(filepath)).getMetadata();
-		return { size, modified: updated };
+		return { size: size as number, modified: new Date(updated as string) };
 	}
 
 	async exists(filepath: string) {

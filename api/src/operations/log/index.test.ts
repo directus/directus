@@ -1,14 +1,19 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import type { Logger } from 'pino';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../../logger.js';
+import config from './index.js';
 
-const loggerInfo = vi.fn();
+vi.mock('../../logger.js');
 
-vi.doMock('../../logger', () => ({
-	default: {
-		info: loggerInfo,
-	},
-}));
+let mockLogger: Logger<never>;
 
-const { default: config } = await import('./index.js');
+beforeEach(() => {
+	mockLogger = {
+		info: vi.fn(),
+	} as unknown as Logger<never>;
+
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
+});
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -19,7 +24,7 @@ test('logs number message as string', () => {
 
 	config.handler({ message }, {} as any);
 
-	expect(loggerInfo).toHaveBeenCalledWith(String(1));
+	expect(mockLogger.info).toHaveBeenCalledWith(String(1));
 });
 
 test('logs json message as stringified json', () => {
@@ -27,5 +32,5 @@ test('logs json message as stringified json', () => {
 
 	config.handler({ message }, {} as any);
 
-	expect(loggerInfo).toHaveBeenCalledWith(JSON.stringify(message));
+	expect(mockLogger.info).toHaveBeenCalledWith(JSON.stringify(message));
 });

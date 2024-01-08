@@ -1,7 +1,8 @@
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
-import flat from 'flat';
+import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
@@ -10,7 +11,6 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -210,7 +210,7 @@ export class PayloadService {
 
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, flat.unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}

@@ -39,6 +39,7 @@ export async function resolveExtensions(root: string, extensionNames?: string[])
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
+				partial: extensionOptions.partial,
 				version: parsedManifest.version,
 				type: extensionOptions.type,
 				entrypoint: {

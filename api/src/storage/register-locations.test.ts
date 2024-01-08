@@ -1,17 +1,12 @@
 import type { StorageManager } from '@directus/storage';
-import { toArray } from '@directus/utils';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { setEnv } from '../__utils__/mock-env.js';
+import { useEnv } from '@directus/env';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { registerLocations } from './register-locations.js';
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv();
-});
+vi.mock('@directus/env');
 
-vi.mock('@directus/utils');
 vi.mock('../utils/get-config-from-env.js');
 
 let sample: {
@@ -48,20 +43,13 @@ beforeEach(() => {
 
 	vi.mocked(getConfigFromEnv).mockImplementation((name) => sample.options[name]!);
 
-	setEnv({
-		STORAGE_LOCATIONS: sample.locations.join(', '),
+	vi.mocked(useEnv).mockReturnValue({
+		STORAGE_LOCATIONS: sample.locations.join(','),
 	});
-
-	vi.mocked(toArray).mockReturnValue(sample.locations);
 });
 
 afterEach(() => {
 	vi.resetAllMocks();
-});
-
-test('Converts storage locations env var to array', async () => {
-	await registerLocations(mockStorage);
-	expect(toArray).toHaveBeenCalledWith(sample.locations.join(', '));
 });
 
 test('Gets config for each location', async () => {

@@ -6,12 +6,11 @@ node_modules/
 
 # Builds / Caches
 dist/
-storybook-static/
 coverage/
+.histoire/
 *.tsbuildinfo
 **/.vitepress/cache/
 **/.vitepress/.temp/
-.thumbsmith/
 .eslintcache
 
 # Dotenv configs

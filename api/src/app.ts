@@ -1,3 +1,5 @@
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
@@ -46,11 +48,9 @@ import {
 	validateMigrations,
 } from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
-import logger, { expressLogger } from './logger.js';
+import { createExpressLogger, useLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import { checkIP } from './middleware/check-ip.js';
@@ -62,8 +62,8 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { collectTelemetry } from './utils/telemetry.js';
 import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -72,11 +72,13 @@ import { init as initWebhooks } from './webhooks.js';
 const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
+	const env = useEnv();
+	const logger = useLogger();
 	const helmet = await import('helmet');
 
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -118,12 +120,12 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(
 			handlePressure({
 				sampleInterval,
-				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'],
-				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
-				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
-				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
+				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'] as number,
+				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'] as number,
+				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'] as number,
+				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'] as number,
 				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
-				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
+				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'] as string,
 			}),
 		);
 	}
@@ -163,7 +165,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('middlewares.before', { app });
 
-	app.use(expressLogger);
+	app.use(createExpressLogger());
 
 	app.use((_req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
@@ -177,7 +179,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env['MAX_PAYLOAD_SIZE'],
+				limit: env['MAX_PAYLOAD_SIZE'] as string,
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -194,7 +196,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.get('/', (_req, res, next) => {
 		if (env['ROOT_REDIRECT']) {
-			res.redirect(env['ROOT_REDIRECT']);
+			res.redirect(env['ROOT_REDIRECT'] as string);
 		} else {
 			next();
 		}
@@ -208,7 +210,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 
@@ -308,7 +310,7 @@ export default async function createApp(): Promise<express.Application> {
 	// Register all webhooks
 	await initWebhooks();
 
-	collectTelemetry();
+	initTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 

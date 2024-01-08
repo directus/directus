@@ -1,5 +1,7 @@
+import { useEnv } from '@directus/env';
+import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import type { ParsedUrlQuery } from 'querystring';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
@@ -9,12 +11,9 @@ import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
@@ -25,6 +24,8 @@ import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message
 import { registerWebSocketEvents } from './hooks.js';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+const logger = useLogger();
 
 export default abstract class SocketController {
 	server: WebSocket.Server;
@@ -37,10 +38,15 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
-	private authInterval: NodeJS.Timer | null;
+	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
-		this.server = new WebSocketServer({ noServer: true });
+		this.server = new WebSocketServer({
+			noServer: true,
+			// @ts-ignore TODO Remove once @types/ws has been updated
+			autoPong: false,
+		});
+
 		this.clients = new Set();
 		this.authInterval = null;
 
@@ -63,6 +69,8 @@ export default abstract class SocketController {
 		};
 		maxConnections: number;
 	} {
+		const env = useEnv();
+
 		const endpoint = String(env[`${configPrefix}_PATH`]);
 		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
 		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
@@ -88,6 +96,8 @@ export default abstract class SocketController {
 	}
 
 	protected getRateLimiter() {
+		const env = useEnv();
+
 		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
 			return createRateLimiter('RATE_LIMITER', {
 				keyPrefix: 'websocket',
