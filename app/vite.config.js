@@ -1,8 +1,8 @@
-import { APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES, APP_SHARED_DEPS } from '@directus/extensions';
+import { APP_SHARED_DEPS } from '@directus/extensions';
 import {
 	generateExtensionsEntrypoint,
-	resolveDependencyExtensions,
 	resolveExtensions,
+	resolveDependencyExtensions,
 } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import UnheadVite from '@unhead/addons/vite';
@@ -13,6 +13,12 @@ import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
+
+/*
+ * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
+ * as expected when extensions are read from a different location locally through the
+ * EXTENSIONS_LOCATION env var
+ */
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
@@ -129,16 +135,16 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const packageExtensions = await resolveExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const dependencyExtensions = await resolveDependencyExtensions(EXTENSIONS_PATH);
+		const localExtensions = await resolveExtensions(EXTENSIONS_PATH);
+		const dependencyExtensions = await resolveDependencyExtensions(API_PATH);
 
-		/**
+		/*
 		 * @TODO
 		 * These aren't deduplicated, whereas the production ones are. This has seemingly
 		 * always been the case. Is this a bug?
 		 * @see /api/src/extensions/lib/get-extensions.ts
 		 */
-		const extensions = [...packageExtensions, ...dependencyExtensions];
+		const extensions = [...localExtensions, ...dependencyExtensions];
 
 		// default to enabled for app extension in developer mode
 		const extensionSettings = extensions.flatMap((extension) =>
