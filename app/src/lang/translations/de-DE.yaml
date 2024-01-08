@@ -59,6 +59,7 @@ extension_display: Anzeige
 extension_layout: Ansicht
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Design
 extension_hook: Hook
 extension_endpoint: Endpunkt
 extension_operation: Operation
@@ -674,7 +675,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
   UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
@@ -1219,6 +1219,7 @@ fields:
     last_page: Letzte Seite
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
+    appearance: Erscheinung
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
@@ -1976,6 +1977,8 @@ displays:
     icon: Symbol
     border: Umrandung
     border_label: Rahmen anzeigen
+    mask: Maskiert
+    mask_label: Tatsächlichen Wert ausblenden
     text: Text
     text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:

@@ -1,11 +1,13 @@
 import { toArray } from '@directus/utils';
-import logger from '../logger.js';
 import { URL } from 'url';
+import { useLogger } from '../logger.js';
 
 /**
  * Check if url matches allow list either exactly or by domain+path
  */
 export default function isUrlAllowed(url: string, allowList: string | string[]): boolean {
+	const logger = useLogger();
+
 	const urlAllowList = toArray(allowList);
 
 	if (urlAllowList.includes(url)) return true;

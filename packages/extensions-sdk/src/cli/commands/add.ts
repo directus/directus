@@ -101,6 +101,13 @@ export default async function add(options: AddOptions): Promise<void> {
 			},
 		]);
 
+		const bundleEntryNames = new Set(extensionOptions.entries.map((entry) => entry.name));
+
+		if (bundleEntryNames.has(name)) {
+			log(`Extension ${chalk.bold(name)} already exists for this bundle.`, 'error');
+			process.exit(1);
+		}
+
 		const spinner = ora(chalk.bold('Modifying Directus extension...')).start();
 
 		const source = alternativeSource ?? 'src';

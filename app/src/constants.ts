@@ -109,7 +109,7 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry',
+		text: '$t:geometry.All',
 		value: 'geometry',
 	},
 	{ divider: true },

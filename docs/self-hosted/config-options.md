@@ -930,10 +930,9 @@ and then loaded from there.
 
 ## Messenger
 
-| Variable              | Description                            | Default Value        |
-| --------------------- | -------------------------------------- | -------------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
+| Variable              | Description                        | Default Value        |
+| --------------------- | ---------------------------------- | -------------------- |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis | `directus-messenger` |
 
 ## Synchronization
 
@@ -1006,13 +1005,14 @@ variables to automatically configure the first user:
 
 ## Telemetry
 
-To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
-Directus collects little and anonymized data about your environment. You can easily opt-out with the following
-environment variable:
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the user base,
+Directus collects little and anonymized data about your environment.
 
-| Variable    | Description                                                       | Default Value |
-| ----------- | ----------------------------------------------------------------- | ------------- |
-| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
+| Variable                  | Description                                                       | Default Value                    |
+| ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
+| `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
+| `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
+| `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
 ## Limits & Optimizations
 

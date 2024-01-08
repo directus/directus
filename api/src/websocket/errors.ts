@@ -3,7 +3,7 @@ import { isDirectusError } from '@directus/errors';
 import type { WebSocket } from 'ws';
 import { ZodError } from 'zod';
 import { fromZodError } from 'zod-validation-error';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import type { WebSocketResponse } from './messages.js';
 import type { WebSocketClient } from './types.js';
 
@@ -50,6 +50,8 @@ export class WebSocketError extends Error {
 }
 
 export function handleWebSocketError(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+	const logger = useLogger();
+
 	if (isDirectusError(error)) {
 		client.send(WebSocketError.fromError(error, type).toMessage());
 		return;

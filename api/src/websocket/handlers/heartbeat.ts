@@ -1,12 +1,14 @@
+import { useEnv } from '@directus/env';
+import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { WebSocketController, getWebSocketController } from '../controllers/index.js';
 import { WebSocketMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { ServiceUnavailableError } from '@directus/errors';
+
+const env = useEnv();
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 
