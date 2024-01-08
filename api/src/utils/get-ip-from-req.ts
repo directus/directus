@@ -1,13 +1,16 @@
+import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import { isIP } from 'net';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 export function getIPFromReq(req: Request): string | null {
+	const env = useEnv();
+	const logger = useLogger();
+
 	let ip = req.ip;
 
 	if (env['IP_CUSTOM_HEADER']) {
-		const customIPHeaderValue = req.get(env['IP_CUSTOM_HEADER']) as unknown;
+		const customIPHeaderValue = req.get(env['IP_CUSTOM_HEADER'] as string) as unknown;
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;

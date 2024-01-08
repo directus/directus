@@ -27,13 +27,25 @@ export function useRevisions(
 	const revisions = ref<Revision[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
 	const loading = ref(false);
+	const loadingCount = ref(false);
 	const revisionsCount = ref(0);
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey, version], () => getRevisions(), { immediate: true });
+	watch([collection, primaryKey, version], () => refresh());
 
-	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
+	return {
+		created,
+		revisions,
+		revisionsByDate,
+		getRevisions,
+		loading,
+		refresh,
+		loadingCount,
+		revisionsCount,
+		getRevisionsCount,
+		pagesCount,
+	};
 
 	async function getRevisions(page = 0) {
 		if (typeof unref(primaryKey) === 'undefined') return;
@@ -98,7 +110,6 @@ export function useRevisions(
 						'activity.user_agent',
 						'activity.origin',
 					],
-					meta: ['filter_count'],
 				},
 			});
 
@@ -137,7 +148,6 @@ export function useRevisions(
 							'activity.user_agent',
 							'activity.origin',
 						],
-						meta: ['filter_count'],
 					},
 				});
 
@@ -193,7 +203,6 @@ export function useRevisions(
 
 			revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 			revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
-			revisionsCount.value = response.data.meta.filter_count;
 			pagesCount.value = Math.ceil(revisionsCount.value / pageSize);
 		} catch (error) {
 			unexpectedError(error);
@@ -202,7 +211,63 @@ export function useRevisions(
 		}
 	}
 
+	async function getRevisionsCount() {
+		if (typeof unref(primaryKey) === 'undefined') return;
+
+		loadingCount.value = true;
+
+		try {
+			const filter: Filter = {
+				_and: [
+					{
+						collection: {
+							_eq: unref(collection),
+						},
+					},
+					{
+						item: {
+							_eq: unref(primaryKey),
+						},
+					},
+					{
+						version: version?.value
+							? {
+									_eq: version.value.id,
+							  }
+							: { _null: true },
+					},
+				],
+			};
+
+			if (options?.action) {
+				filter._and.push({
+					activity: {
+						action: {
+							_eq: options?.action,
+						},
+					},
+				});
+			}
+
+			const response = await api.get(`/revisions`, {
+				params: {
+					filter,
+					aggregate: {
+						count: 'id',
+					},
+				},
+			});
+
+			revisionsCount.value = Number(response.data.data[0].count.id);
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			loadingCount.value = false;
+		}
+	}
+
 	async function refresh(page = 0) {
+		await getRevisionsCount();
 		await getRevisions(page);
 	}
 

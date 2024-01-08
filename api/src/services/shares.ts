@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import env from '../env.js';
-import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -19,6 +19,8 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+
+const env = useEnv();
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -90,7 +92,7 @@ export class SharesService extends ItemsService {
 		};
 
 		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
 			issuer: 'directus',
 		});
 
@@ -140,7 +142,7 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env['PUBLIC_URL']).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env['PUBLIC_URL'] as string).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {
