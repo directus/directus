@@ -249,7 +249,7 @@ operations over the connection. You have also created your first subscription.
           subscribe();
           console.log({ event: 'onmessage', data });
         }
-        
+
       });
 
       client.onWebSocket('close', function () {
