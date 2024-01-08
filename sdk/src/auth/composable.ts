@@ -1,4 +1,5 @@
 import type { LoginOptions } from '../index.js';
+import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -117,7 +118,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const requestUrl = getRequestUrl(client.url, '/auth/login');
+				const path = getAuthEndpoint(options.provider, options.share);
+				const requestUrl = getRequestUrl(client.url, path);
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;

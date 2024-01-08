@@ -1,9 +1,12 @@
 import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
+import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
 
-export interface LoginOptions {
+export type LoginOptions = {
 	otp?: string;
 	mode?: AuthenticationMode;
+	share?: boolean;
+	provider?: string;
 }
 
 /**
@@ -22,8 +25,9 @@ export const login =
 		options: LoginOptions = {},
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
+		const path = getAuthEndpoint(options.provider, options.share);
 		const data: Record<string, string> = { email, password };
 		if ('otp' in options) data['otp'] = options.otp;
 		data['mode'] = options.mode ?? 'cookie';
-		return { path: '/auth/login', method: 'POST', body: JSON.stringify(data) };
+		return { path, method: 'POST', body: JSON.stringify(data) };
 	};
