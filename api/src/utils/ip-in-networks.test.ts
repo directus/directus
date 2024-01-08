@@ -69,6 +69,6 @@ describe('CIDR block', () => {
 	});
 });
 
-test(`throws if network definitions are invalid`, async () => {
+test(`Throws if network definitions are invalid`, async () => {
 	expect(() => ipInNetworks('192.168.0.1', ['invalid'])).toThrowError();
 });

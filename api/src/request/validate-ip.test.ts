@@ -59,8 +59,10 @@ test(`Throws and logs error if deny list is invalid`, async () => {
 
 	vi.mocked(useLogger).mockReturnValue(mockLogger);
 
+	const error = new Error();
+
 	vi.mocked(ipInNetworks).mockImplementation(() => {
-		throw new Error();
+		throw error;
 	});
 
 	expect(() => validateIp(sample.ip, sample.url)).toThrowError(
@@ -68,6 +70,7 @@ test(`Throws and logs error if deny list is invalid`, async () => {
 	);
 
 	expect(mockLogger.warn).toHaveBeenCalledWith(`Invalid "IMPORT_IP_DENY_LIST" configuration`);
+	expect(mockLogger.warn).toHaveBeenCalledWith(error);
 });
 
 test(`Checks against IPs of local network interfaces if deny list contains 0.0.0.0`, async () => {

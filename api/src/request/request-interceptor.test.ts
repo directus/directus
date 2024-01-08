@@ -74,25 +74,18 @@ test('Logs when the lookup throws an error', async () => {
 	const mockError = new Error();
 	vi.mocked(lookup).mockRejectedValue(mockError);
 
-	try {
-		await requestInterceptor(sample.config);
-	} catch {
-		// Expect to error
-	} finally {
-		expect(mockLogger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for URL "${sample.url}"`);
-	}
+	await expect(() => requestInterceptor(sample.config)).rejects.toThrowError();
+	expect(mockLogger.warn).toHaveBeenCalledWith(`Couldn't lookup the DNS for URL "${sample.url}"`);
+	expect(mockLogger.warn).toHaveBeenCalledWith(mockError);
 });
 
 test('Throws error when dns lookup fails', async () => {
 	const mockError = new Error();
 	vi.mocked(lookup).mockRejectedValue(mockError);
 
-	try {
-		await requestInterceptor(sample.config);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
-	}
+	await expect(() => requestInterceptor(sample.config)).rejects.toThrowError(
+		`Requested URL "${sample.url}" resolves to a denied IP address`,
+	);
 });
 
 test('Validates IP', async () => {
