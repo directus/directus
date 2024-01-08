@@ -37,13 +37,6 @@ const VMenu = {
 	`,
 };
 
-const VInput = {
-	template: `<div id="v-input-stub" />`,
-	setup(_props: any, { emit }: any) {
-		emit('update:modelValue', 'Item 1');
-	},
-};
-
 const VListItem = {
 	template: `
 	<div id="v-list-item-stub">
@@ -71,6 +64,7 @@ const global: GlobalMountOptions = {
 		'v-divider': true,
 		'v-checkbox': true,
 		'v-icon': true,
+		'display-color': true,
 	},
 	plugins: [i18n],
 	directives: {
@@ -120,6 +114,13 @@ describe('should hide items not matching search value', () => {
 	});
 
 	const stringItems = Array.from({ length: 11 }, (_, index) => `Item ${index + 1}`);
+
+	const VInput = {
+		template: `<div id="v-input-stub" />`,
+		setup(_props: any, { emit }: any) {
+			emit('update:modelValue', 'Item 1');
+		},
+	};
 
 	test.each([
 		['object items', objectItems],

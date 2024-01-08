@@ -147,7 +147,7 @@ function useComputedValues() {
 
 <template>
 	<div class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -206,7 +206,7 @@ function useComputedValues() {
 			@set-raw-value="onRawValueSubmit"
 		/>
 
-		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
+		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
 		<small v-if="validationError" class="validation-error selectable">
 			<template v-if="field.meta?.validation_message">

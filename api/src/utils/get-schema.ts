@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Filter, SchemaOverview } from '@directus/types';
@@ -9,11 +10,12 @@ import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
+
+const logger = useLogger();
 
 export async function getSchema(options?: {
 	database?: Knex;
@@ -24,6 +26,8 @@ export async function getSchema(options?: {
 	 */
 	bypassCache?: boolean;
 }): Promise<SchemaOverview> {
+	const env = useEnv();
+
 	const database = options?.database || getDatabase();
 	const schemaInspector = createInspector(database);
 
@@ -57,6 +61,8 @@ export async function getSchema(options?: {
 }
 
 async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {
+	const env = useEnv();
+
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],

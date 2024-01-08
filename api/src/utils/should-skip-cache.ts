@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { getEndpoint } from '@directus/utils';
 import type { Request } from 'express';
 import url from 'url';
-import env from '../env.js';
 import { Url } from './url.js';
 
 /**
@@ -11,11 +11,13 @@ import { Url } from './url.js';
  */
 
 export function shouldSkipCache(req: Request): boolean {
+	const env = useEnv();
+
 	// Always skip cache for requests coming from the data studio based on Referer header
 	const referer = req.get('Referer');
 
 	if (referer) {
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
 
 		if (adminUrl.isRootRelative()) {
 			const refererUrl = new Url(referer);
@@ -36,7 +38,7 @@ export function shouldSkipCache(req: Request): boolean {
 
 		if (!path) return false;
 
-		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
+		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST'] as string[]) {
 			const ignoredPath = getEndpoint(collection);
 
 			if (path.startsWith(ignoredPath)) {

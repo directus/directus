@@ -21,8 +21,8 @@ export function useApi(): AxiosInstance {
 	return api;
 }
 
-export function useSdk(): DirectusClient<any> & RestClient<any> {
-	const sdk = inject<DirectusClient<any> & RestClient<any>>(SDK_INJECT);
+export function useSdk<Schema extends object = any>(): DirectusClient<Schema> & RestClient<Schema> {
+	const sdk = inject<DirectusClient<Schema> & RestClient<Schema>>(SDK_INJECT);
 
 	if (!sdk) throw new Error('[useSdk]: The sdk could not be found.');
 

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "11.0.2",
+	"version": "11.0.3",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,7 +21,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
+		"build": "tsc",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {

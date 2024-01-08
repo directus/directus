@@ -7,6 +7,7 @@ import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { login as loginCall, authenticateShare } from '@directus/sdk';
 import sdk from './sdk';
+import { useServerStore } from './stores/server';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -32,6 +33,7 @@ type LoginParams = {
 // TODO fix non-null assertions
 export async function login({ credentials, /*provider, */share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
+	const serverStore = useServerStore();
 
 	const response = share
 		? (await sdk.request(authenticateShare(credentials.share!, credentials.password!)))
@@ -54,6 +56,9 @@ export async function login({ credentials, /*provider, */share }: LoginParams): 
 
 	appStore.accessTokenExpiry = Date.now() + response.expires!;
 	appStore.authenticated = true;
+
+	// Reload server store to get authenticated data
+	serverStore.hydrate();
 
 	await hydrate();
 }

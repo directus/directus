@@ -1377,6 +1377,8 @@ displays:
     suffix: คำต่อท้าย
     color: สี
     icon: ไอคอน
+    mask: กำหนดหน้ากาก
+    mask_label: ซ่อนค่าจริง
     text: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว

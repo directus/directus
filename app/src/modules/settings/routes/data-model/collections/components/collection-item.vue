@@ -74,6 +74,7 @@ function onGroupSortChange(collections: Collection[]) {
 				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
 				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
 				clickable
+				class="collapse-toggle"
 				@click.stop.prevent="toggleCollapse"
 			/>
 			<collection-options
@@ -109,7 +110,7 @@ function onGroupSortChange(collections: Collection[]) {
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .drag-container {
 	margin-top: 8px;
 	margin-left: 20px;
@@ -157,5 +158,13 @@ function onGroupSortChange(collections: Collection[]) {
 
 .drag-handle {
 	cursor: grab;
+}
+
+.collapse-toggle {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	&:hover {
+		--v-icon-color: var(--theme--foreground);
+	}
 }
 </style>

@@ -592,7 +592,6 @@ errors:
   VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
   INVALID_FOREIGN_KEY: Virheellinen vierasavain
   UNKNOWN: Odottamaton virhe
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-validointivirhe
   SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
   UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
   UNEXPECTED_RESPONSE: Odottamaton vastaus
@@ -1643,6 +1642,8 @@ displays:
     suffix: Jälkiliite
     color: Väri
     icon: Kuvake
+    mask: Maskeerattu
+    mask_label: Piilota todellinen arvo
     text: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
