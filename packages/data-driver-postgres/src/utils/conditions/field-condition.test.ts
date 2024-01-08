@@ -1,30 +1,30 @@
 import { expect, test } from 'vitest';
 import { fieldCondition } from './field-condition.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 
 test('field condition', () => {
-	const table1 = randomIdentifier();
-	const table2 = randomIdentifier();
-	const column1 = randomIdentifier();
-	const column2 = randomIdentifier();
+	const tableIndex1 = randomInteger(0, 100);
+	const tableIndex2 = randomInteger(0, 100);
+	const columnName1 = randomIdentifier();
+	const columnName2 = randomIdentifier();
 
 	const res = fieldCondition(
 		{
 			type: 'condition-field',
 			target: {
 				type: 'primitive',
-				table: table1,
-				column: column1,
+				tableIndex: tableIndex1,
+				columnName: columnName1,
 			},
 			operation: 'eq',
 			compareTo: {
 				type: 'primitive',
-				table: table2,
-				column: column2,
+				tableIndex: tableIndex2,
+				columnName: columnName2,
 			},
 		},
 		false,
 	);
 
-	expect(res).toStrictEqual(`"${table1}"."${column1}" = "${table2}"."${column2}"`);
+	expect(res).toStrictEqual(`"t${tableIndex1}"."${columnName1}" = "t${tableIndex2}"."${columnName2}"`);
 });

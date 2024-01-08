@@ -4,21 +4,21 @@ import { geoCondition } from './geo-condition.js';
 import type { SqlConditionGeoNode } from '@directus/data-sql';
 
 let sampleCondition: SqlConditionGeoNode;
-let randomTable: string;
-let randomColumn: string;
+let tableIndex: number;
+let columnName: string;
 let parameterIndex: number;
 
 beforeEach(() => {
-	randomTable = randomIdentifier();
-	randomColumn = randomIdentifier();
+	tableIndex = randomInteger(0, 100);
+	columnName = randomIdentifier();
 	parameterIndex = randomInteger(0, 100);
 
 	sampleCondition = {
 		type: 'condition-geo',
 		target: {
 			type: 'primitive',
-			table: randomTable,
-			column: randomColumn,
+			tableIndex: tableIndex,
+			columnName: columnName,
 		},
 		operation: 'intersects',
 		compareTo: {
@@ -30,7 +30,7 @@ beforeEach(() => {
 
 test('intersects', () => {
 	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`ST_Intersects("${randomTable}"."${randomColumn}", ST_GeomFromText($${parameterIndex + 1}))`,
+		`ST_Intersects("t${tableIndex}"."${columnName}", ST_GeomFromText($${parameterIndex + 1}))`,
 	);
 });
 
@@ -38,6 +38,6 @@ test('intersects_bbox', () => {
 	sampleCondition.operation = 'intersects_bbox';
 
 	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`"${randomTable}"."${randomColumn}" && ST_GeomFromText($${parameterIndex + 1}))`,
+		`"t${tableIndex}"."${columnName}" && ST_GeomFromText($${parameterIndex + 1}))`,
 	);
 });

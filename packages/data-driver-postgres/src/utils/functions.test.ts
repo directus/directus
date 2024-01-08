@@ -1,20 +1,20 @@
 import { expect, test, describe, beforeEach } from 'vitest';
 import { applyFunction, applySelectFunction } from './functions.js';
-import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
-import { randomIdentifier } from '@directus/random';
+import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
+import { randomIdentifier, randomInteger } from '@directus/random';
 
-let randomTable: string;
-let randomColumn: string;
-let sample: AbstractSqlQueryFnNode;
+let tableIndex: number;
+let columnName: string;
+let sample: AbstractSqlQueryFnNode | AbstractSqlQuerySelectFnNode;
 
 beforeEach(() => {
-	randomTable = randomIdentifier();
-	randomColumn = randomIdentifier();
+	tableIndex = randomInteger(1, 100);
+	columnName = randomIdentifier();
 
 	sample = {
 		type: 'fn',
-		table: randomTable,
-		column: randomColumn,
+		tableIndex,
+		columnName,
 		fn: {
 			type: 'extractFn',
 			fn: 'year',
@@ -26,7 +26,7 @@ beforeEach(() => {
 describe('Apply date time function', () => {
 	test('On timestamp column', () => {
 		const res = applyFunction(sample);
-		const expected = `EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}")`;
+		const expected = `EXTRACT(YEAR FROM "t${tableIndex}"."${columnName}")`;
 		expect(res).toStrictEqual(expected);
 	});
 
@@ -34,7 +34,7 @@ describe('Apply date time function', () => {
 		// @ts-ignore
 		sample.fn.isTimestampType = true;
 		const res = applyFunction(sample);
-		const expected = `EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}" AT TIME ZONE 'UTC')`;
+		const expected = `EXTRACT(YEAR FROM "t${tableIndex}"."${columnName}" AT TIME ZONE 'UTC')`;
 		expect(res).toStrictEqual(expected);
 	});
 });
@@ -46,12 +46,12 @@ test('Apply count', () => {
 			type: 'arrayFn',
 			fn: 'count',
 		},
-		table: randomTable,
-		column: '*',
+		tableIndex,
+		columnName: '*',
 	};
 
 	const res = applyFunction(sample);
-	const expected = `COUNT("${randomTable}"."*")`;
+	const expected = `COUNT("t${tableIndex}"."*")`;
 	expect(res).toStrictEqual(expected);
 });
 
@@ -62,14 +62,12 @@ test('Apply count with as', () => {
 			type: 'arrayFn',
 			fn: 'count',
 		},
-		table: randomTable,
-		column: '*',
+		tableIndex,
+		columnName: '*',
+		columnIndex: 1,
 	};
 
-	const randomAs = randomIdentifier();
-	const sampleWithAs = { ...sample, as: randomAs };
-
-	const res = applySelectFunction(sampleWithAs);
-	const expected = `COUNT("${randomTable}"."*") AS "${randomAs}"`;
+	const res = applySelectFunction(sample);
+	const expected = `COUNT("t${tableIndex}"."*") AS "c1"`;
 	expect(res).toStrictEqual(expected);
 });

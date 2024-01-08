@@ -3,20 +3,19 @@ import { randomIdentifier } from '@directus/random';
 import { setCondition } from './set-condition.js';
 import type { SqlConditionSetNode } from '@directus/data-sql';
 
-let randomTable: string;
-let randomColumn: string;
+let tableIndex: number;
+let columnName: string;
 let sampleCondition: SqlConditionSetNode;
 
 beforeEach(() => {
-	randomTable = randomIdentifier();
-	randomColumn = randomIdentifier();
+	columnName = randomIdentifier();
 
 	sampleCondition = {
 		type: 'condition-set',
 		target: {
 			type: 'primitive',
-			table: randomTable,
-			column: randomColumn,
+			tableIndex,
+			columnName,
 		},
 		operation: 'in',
 		compareTo: {
@@ -28,12 +27,12 @@ beforeEach(() => {
 
 test('set', () => {
 	const res = setCondition(sampleCondition, false);
-	const expected = `"${randomTable}"."${randomColumn}" IN ($3, $4, $5)`;
+	const expected = `"t${tableIndex}"."${columnName}" IN ($3, $4, $5)`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('negated set', () => {
 	const res = setCondition(sampleCondition, true);
-	const expected = `"${randomTable}"."${randomColumn}" NOT IN ($3, $4, $5)`;
+	const expected = `"t${tableIndex}"."${columnName}" NOT IN ($3, $4, $5)`;
 	expect(res).toStrictEqual(expected);
 });
