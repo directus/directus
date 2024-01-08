@@ -8,9 +8,7 @@ import { matches } from 'ip-matching';
 
 export function ipInNetworks(ip: string, networks: string[]) {
 	for (const allowedIp of networks) {
-		if (matches(ip, allowedIp)) {
-			return true;
-		}
+		if (matches(ip, allowedIp)) return true;
 	}
 
 	return false;

@@ -64,8 +64,8 @@ details, follow these steps.
     - **App Access** — Auto-configures minimum permissions required to log in to the App.
     - **Admin Access** — Auto-configures full permissions to project data and Settings. Must be toggled off to restore
       ability to restrict permissions.
-    - **IP Access** — Allow list of IP addresses, IP ranges and CIDR blocks which are allowed for this role. To add an
-      entry, type it in and hit `Enter` / `Return` to confirm. Leave empty to allow all IP addresses.
+    - **IP Access** — Allow list of IP addresses, IP ranges and CIDR blocks for this role. To add an entry, type it in
+      and hit `Enter` / `Return` to confirm. Leave empty to allow all IP addresses.
 
       | Type       | Example Value   |
       | ---------- | --------------- |

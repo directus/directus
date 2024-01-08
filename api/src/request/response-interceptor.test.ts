@@ -33,7 +33,7 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test(`Validates the IP of the request config`, async () => {
+test(`Validates IP of the request config`, async () => {
 	await responseInterceptor(sampleResponseConfig);
 	expect(validateIp).toHaveBeenCalledWith(sample.remoteAddress, sample.url);
 });
