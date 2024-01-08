@@ -22,7 +22,7 @@
 		"axios": "1.6.2",
 		"get-port": "7.0.0",
 		"globby": "14.0.0",
-		"graphql-ws": "5.14.2",
+		"graphql-ws": "5.14.3",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.5",
 		"knex": "3.1.0",
