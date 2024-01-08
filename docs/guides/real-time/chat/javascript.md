@@ -81,7 +81,7 @@ At the top of the `<script>` tag, import the SDK composables needed for this pro
 - `authentication` authenticates a user with the login and password.
 - `realtime` establishes a WebSocket connectivity.
 
-## Establish and Authenticate WebSocket Client
+## Establish and Authenticate a WebSocket Client
 
 Create and authenticate the WebSocket client
 
@@ -127,7 +127,7 @@ document.querySelector('#login').addEventListener('submit', function (event) {
 Once the client is authenticated, immediately create a WebSocket connection:
 
 ```js
-await client.connect();
+client.connect();
 ```
 
 ## Subscribe To Messages
@@ -143,7 +143,7 @@ client.onWebSocket('message', function (message) {
 });
 ```
 
-Create a subscribe function that subscribes to events.
+Create a `subscribe` function that subscribes to events.
 
 ```js
 async function subscribe(event) {
