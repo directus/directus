@@ -19,7 +19,7 @@ export const requestInterceptor = async (config: InternalAxiosRequestConfig) => 
 			const dns = await lookup(hostname);
 			ip = dns.address;
 		} catch (error) {
-			logger.warn(`Couldn't lookup the DNS for url "${uri}"`);
+			logger.warn(`Couldn't lookup the DNS for URL "${uri}"`);
 			logger.warn(error);
 
 			throw new Error(`Requested URL "${uri}" resolves to a denied IP address`);

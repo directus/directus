@@ -33,7 +33,7 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test(`Calls validateIp with IP/URL from axios request config`, async () => {
+test(`Validates the IP of the request config`, async () => {
 	await responseInterceptor(sampleResponseConfig);
 	expect(validateIp).toHaveBeenCalledWith(sample.remoteAddress, sample.url);
 });
