@@ -225,16 +225,49 @@ and navigate to your index.html file, login and submit a message there and both 
 
 ## Display Historical Messages
 
-Replace the `console.log()` you created when the subscription is initialized:
+To display the list of all existing messages, create a function `readAllMessages` with the following:
 
 ```js
-if (data.type == 'subscription' && data.event == 'init') {
-	console.log('subscription started'); // [!code --]
-
-	for (const message of data.data) { // [!code ++]
-		addMessageToList(message); // [!code ++]
-	} // [!code ++]
+function readAllMessages() {
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'read',
+    query: {
+      limit: 10,
+      sort: '-date_created',
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
 }
+```
+
+Invoke this function directly before subscribing to any events
+
+```js
+client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages() // [!code ++]
+    subscribe('create');
+  }
+});
+```
+
+Within the connection, listen for "items" message to update the user interface with message history.
+
+```js
+client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages()
+    subscribe('create');
+  }
+
+  if (data.type === 'items') { // [!code ++]
+    for (const item of data.data) { // [!code ++]
+      addMessageToList(item); // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+});
 ```
 
 Refresh your browser, login, and you should see the existing messages shown in your browser.
@@ -283,13 +316,21 @@ This guide covers authentication, item creation, and subscription using WebSocke
         .with(authentication())
         .with(realtime());
 
-      client.onWebSocket('message', function (message) {
-        if (message.type == 'auth' && message.status == 'ok') {
+      client.onWebSocket('message', function (data) {
+        if (data.type == 'auth' && data.status == 'ok') {
+          readAllMessages()
           subscribe('create');
-          console.log(message);
+        }
+
+        if (data.type === 'items') {
+          for (const item of data.data) {
+           addMessageToList(item);
+          }
         }
       });
+
       client.connect();
+
       document
         .querySelector('#login')
         .addEventListener('submit', function (event) {
@@ -327,11 +368,11 @@ This guide covers authentication, item creation, and subscription using WebSocke
         }
       }
 
-      function receiveMessage(message) {
-        if (message.type == 'subscription' && message.event == 'init') {
+      function receiveMessage(data) {
+        if (data.type == 'subscription' && data.event == 'init') {
           console.log('subscription started');
         }
-        if (message.type == 'subscription' && message.event == 'create') {
+        if (data.type == 'subscription' && data.event == 'create') {
           addMessageToList(message.data[0]);
         }
       }
