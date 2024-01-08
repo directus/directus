@@ -79,7 +79,7 @@ test('Logs when the lookup throws an error', async () => {
 	} catch {
 		// Expect to error
 	} finally {
-		expect(mockLogger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for url "${sample.url}"`);
+		expect(mockLogger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for URL "${sample.url}"`);
 	}
 });
 
