@@ -321,11 +321,11 @@ export default function App() {
         subscribe('create');
       }
 
-      if (data.type === 'items') { 
-        for (const item of data.data) { 
-          addMessageToList(item); 
-        } 
-      } 
+      if (data.type === 'items') {
+        for (const item of data.data) {
+          addMessageToList(item);
+        }
+      }
       console.log(message);
     });
 
