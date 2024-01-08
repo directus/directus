@@ -92,10 +92,9 @@ export async function resolveExtensions(root: string, extensionNames?: string[])
 	return extensions;
 }
 
-const isExtension = async (pkgName: string) => {
-	const pkgPath = resolvePackage(pkgName);
-	const extensionManifest: Record<string, any> = await fse.readJSON(path.join(pkgPath, 'package.json'));
-	return EXTENSION_PKG_KEY in extensionManifest;
+const isExtension = (pkgName: string) => {
+	const regex = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-)(.+)$/;
+	return regex.test(pkgName);
 };
 
 export async function resolveDependencyExtensions(root: string): Promise<Extension[]> {
@@ -109,9 +108,7 @@ export async function resolveDependencyExtensions(root: string): Promise<Extensi
 
 	const dependencyNames = Object.keys(pkg.dependencies ?? {});
 
-	const dependencyIsExtensionArray = await Promise.all(dependencyNames.map(isExtension));
-
-	const extensionNames = dependencyNames.filter((_name, index) => dependencyIsExtensionArray[index]);
+	const extensionNames = dependencyNames.filter((name) => isExtension(name));
 
 	return resolveExtensions(root, extensionNames);
 }
