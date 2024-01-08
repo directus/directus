@@ -246,8 +246,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       marked:
-        specifier: 11.1.0
-        version: 11.1.0
+        specifier: 11.1.1
+        version: 11.1.1
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
@@ -788,8 +788,8 @@ importers:
         specifier: 1.15.3
         version: 1.15.3(mapbox-gl@1.13.3)
       marked:
-        specifier: 11.1.0
-        version: 11.1.0
+        specifier: 11.1.1
+        version: 11.1.1
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
@@ -891,8 +891,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.56.0)
       marked:
-        specifier: 11.1.0
-        version: 11.1.0
+        specifier: 11.1.1
+        version: 11.1.1
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
@@ -13672,8 +13672,8 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /marked@11.1.0:
-    resolution: {integrity: sha512-fvKJWAPEafVj1dwGwcPI5mBB/0pvViL6NlCbNDG1HOIRwwAU/jeMoFxfbRLuirO1wRH7m4yPvBqD/O1wyWvayw==}
+  /marked@11.1.1:
+    resolution: {integrity: sha512-EgxRjgK9axsQuUa/oKMx5DEY8oXpKJfk61rT5iY3aRlgU6QJtUcxU5OAymdhCvWvhYcd9FKmO5eQoX8m9VGJXg==}
     engines: {node: '>= 18'}
     hasBin: true
 
