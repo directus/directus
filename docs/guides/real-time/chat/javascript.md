@@ -91,8 +91,8 @@ const client = createDirectus(url)
   .with(realtime());
 ```
 
-Now, we'll need to extract the `email` and `password` values from the form. To do this, create event listeners which are
-triggered on the form submissions:
+Now, extract the `email` and `password` values from the form. To do this, create event listeners which are triggered on
+the form submissions:
 
 ```js
 document.querySelector('#login').addEventListener('submit', function (event) {
