@@ -78,40 +78,44 @@ Also create a `results.html` file and open it in your editor. Add the following:
 ```html
 <!DOCTYPE html>
 <html>
-	<body>
-		<div style="display: flex; justify-content: center; height: 80vh">
-			<canvas id="chart"></canvas>
-		</div>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-		<script>
-			const socket = new WebSocket('wss://your-directus-url/websocket');
-			const access_token = 'your-access-token';
+  <body>
+    <div style="display: flex; justify-content: center; height: 80vh">
+      <canvas id="chart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+      import {
+        createDirectus,
+        realtime,
+        authentication,
+        staticToken,
+      } from 'https://www.unpkg.com/@directus/sdk/dist/index.js';
 
-			socket.addEventListener('open', function () {
-				console.log({ event: 'onopen' });
+      const url = 'https://your-directus-url/';
+      const access_token = 'your-access-token';
 
-				socket.send(
-					JSON.stringify({
-						type: 'auth',
-						access_token,
-					})
-				);
-			});
+      const client = createDirectus(url)
+        .with(staticToken(access_token))
+        .with(realtime());
 
-			socket.addEventListener('message', function (message) {
-				const data = JSON.parse(message.data);
+      client.connect();
 
-				if (data.type == 'auth' && data.status == 'ok') {
-				}
+      client.onWebSocket('open', function () {
+        console.log({ event: 'onopen' });
+      });
 
-				if (data.type == 'subscription' && data.event == 'init') {
-				}
+      client.onWebSocket('message', function (data) {
+        if (data.type == 'auth' && data.status == 'ok') {
+        }
 
-				if (data.type == 'subscription' && data.event == 'create') {
-				}
-			});
-		</script>
-	</body>
+        if (data.type == 'subscription' && data.event == 'init') {
+        }
+
+        if (data.type == 'subscription' && data.event == 'create') {
+        }
+      });
+    </script>
+  </body>
 </html>
 ```
 
@@ -152,8 +156,7 @@ Once authenticated, immediately subscribe to the `votes` collection:
 
 ```js
 if (data.type == 'auth' && data.status == 'ok') {
-	socket.send( // [!code ++]
-		JSON.stringify({ // [!code ++]
+	client.sendMessage({ // [!code ++]
 			type: 'subscribe', // [!code ++]
 			collection: 'votes', // [!code ++]
 			query: { // [!code ++]
@@ -161,7 +164,6 @@ if (data.type == 'auth' && data.status == 'ok') {
 				groupBy: ['choice'], // [!code ++]
 			}, // [!code ++]
 		}) // [!code ++]
-	); // [!code ++]
 }
 ```
 
@@ -256,82 +258,84 @@ There are many ways to improve the project built in this guide:
 ```html
 <!DOCTYPE html>
 <html>
-	<body>
-		<div style="display: flex; justify-content: center; height: 80vh">
-			<canvas id="chart"></canvas>
-		</div>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-		<script>
-			const socket = new WebSocket('wss://your-directus-url/websocket');
-			const access_token = 'your-access-token';
+  <body>
+    <div style="display: flex; justify-content: center; height: 80vh">
+      <canvas id="chart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+      import {
+        createDirectus,
+        realtime,
+        authentication,
+        staticToken,
+      } from 'https://www.unpkg.com/@directus/sdk/dist/index.js';
 
-			socket.addEventListener('open', function () {
-				console.log({ event: 'onopen' });
+      const url = 'https://your-directus-url/';
+      const access_token = 'your-access-token';
 
-				socket.send(
-					JSON.stringify({
-						type: 'auth',
-						access_token,
-					})
-				);
-			});
+      const client = createDirectus(url)
+        .with(staticToken(access_token))
+        .with(realtime());
 
-			socket.addEventListener('message', function (message) {
-				const data = JSON.parse(message.data);
+      client.connect();
 
-				if (data.type == 'auth' && data.status == 'ok') {
-					socket.send(
-						JSON.stringify({
-							type: 'subscribe',
-							collection: 'votes',
-							query: {
-								aggregate: { count: 'choice' },
-								groupBy: ['choice'],
-							},
-						})
-					);
-				}
+      client.onWebSocket('open', function () {
+        console.log({ event: 'onopen' });
+      });
 
-				if (data.type == 'subscription' && data.event == 'init') {
-					for (const item of data.data) {
-						chart.data.labels.push(item.choice);
-						chart.data.datasets[0].data.push(item.count.choice);
-					}
+      client.onWebSocket('message', function (data) {
+        if (data.type == 'auth' && data.status == 'ok') {
+          client.sendMessage({
+            type: 'subscribe',
+            collection: 'votes',
+            query: {
+              aggregate: { count: 'choice' },
+              groupBy: ['choice'],
+            },
+          });
+        }
 
-					chart.update();
-				}
+        if (data.type == 'subscription' && data.event == 'init') {
+          for (const item of data.data) {
+            chart.data.labels.push(item.choice);
+            chart.data.datasets[0].data.push(item.count.choice);
+          }
 
-				if (data.type == 'subscription' && data.event == 'create') {
-					const vote = data.data[0];
-					const itemToUpdate = chart.data.labels.indexOf(vote.choice);
+          chart.update();
+        }
 
-					if (itemToUpdate !== -1) {
-						chart.data.datasets[0].data[itemToUpdate]++;
-					} else {
-						chart.data.labels.push(vote.choice);
-						chart.data.datasets[0].data.push(1);
-					}
+        if (data.type == 'subscription' && data.event == 'create') {
+          const vote = data.data[0];
+          const itemToUpdate = chart.data.labels.indexOf(vote.choice);
 
-					chart.update();
-				}
-			});
+          if (itemToUpdate !== -1) {
+            chart.data.datasets[0].data[itemToUpdate]++;
+          } else {
+            chart.data.labels.push(vote.choice);
+            chart.data.datasets[0].data.push(1);
+          }
 
-			const ctx = document.getElementById('chart');
+          chart.update();
+        }
+      });
 
-			const chart = new Chart(ctx, {
-				type: 'pie',
-				data: {
-					labels: [],
-					datasets: [
-						{
-							label: '# of Votes',
-							data: [],
-							backgroundColor: ['#4f46e5', '#f472b6'],
-						},
-					],
-				},
-			});
-		</script>
-	</body>
+      const ctx = document.getElementById('chart');
+
+      const chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: '# of Votes',
+              data: [],
+              backgroundColor: ['#4f46e5', '#f472b6'],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
 </html>
 ```
