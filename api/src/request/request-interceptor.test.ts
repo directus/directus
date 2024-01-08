@@ -9,7 +9,7 @@ import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger.js';
 import { requestInterceptor } from './request-interceptor.js';
-import { validateIP } from './validate-ip.js';
+import { validateIp } from './validate-ip.js';
 
 vi.mock('axios');
 vi.mock('node:net');
@@ -97,13 +97,13 @@ test('Throws error when dns lookup fails', async () => {
 
 test('Validates IP', async () => {
 	await requestInterceptor(sample.config);
-	expect(validateIP).toHaveBeenCalledWith(sample.ip, sample.url);
+	expect(validateIp).toHaveBeenCalledWith(sample.ip, sample.url);
 });
 
 test('Validates IP from hostname if URL hostname is IP', async () => {
 	vi.mocked(isIP).mockReturnValue(4);
 	await requestInterceptor(sample.config);
-	expect(validateIP).toHaveBeenCalledWith(sample.hostname, sample.url);
+	expect(validateIp).toHaveBeenCalledWith(sample.hostname, sample.url);
 });
 
 test('Returns config unmodified', async () => {
