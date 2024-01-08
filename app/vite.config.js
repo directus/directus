@@ -21,6 +21,8 @@ const API_PATH = path.join('..', 'api');
  */
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
+const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
+
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
@@ -73,7 +75,7 @@ export default defineConfig({
 });
 
 function getExtensionsRealPaths() {
-	return fs.existsSync(EXTENSIONS_PATH)
+	return extensionsPathExists
 		? fs
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
@@ -135,7 +137,7 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const localExtensions = await resolveExtensions(EXTENSIONS_PATH);
+		const localExtensions = extensionsPathExists ? await resolveExtensions(EXTENSIONS_PATH) : [];
 		const dependencyExtensions = await resolveDependencyExtensions(API_PATH);
 
 		/*
