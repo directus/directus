@@ -108,7 +108,7 @@ const messageSubmit = (event) => {
 };
 ```
 
-Now, we'll need to extract the `email` and `password` values from the login form.
+Now, extract the `email` and `password` values from the login form.
 
 ```js
  const loginSubmit = (event) => {
@@ -131,14 +131,15 @@ to updates on the `Messages` collection.
 
 ```js
 useEffect(() => {
-  const cleanup = client.onWebSocket('message', function (message) {
-    if (message.type == 'auth' && message.status == 'ok') {
+  const cleanup = client.onWebSocket('message', function (data) {
+    if (data.type == 'auth' && data.status == 'ok') {
       subscribe('create');
     }
     console.log(message);
   });
 
   client.connect();
+
   return cleanup;
 }, []);
 ```
@@ -244,16 +245,49 @@ and navigate to your index.html file, login and submit a message there and both 
 
 ## Display Historical Messages
 
-Replace the `console.log()` you created when the subscription is initialized:
+To display the list of all existing messages, create a function `readAllMessages` with the following:
 
 ```js
-if (data.type === 'subscription' && data.event === 'init') {
-	console.log('subscription started'); // [!code --]
-
-	for (const message of data.data) { // [!code ++]
-		setMessageHistory((history) => [...messageHistory, message]); // [!code ++]
-	} // [!code ++]
+function readAllMessages() {
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'read',
+    query: {
+      limit: 10,
+      sort: '-date_created',
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
 }
+```
+
+Invoke this function directly before subscribing to any events
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages() // [!code ++]
+    subscribe('create');
+  }
+});
+```
+
+Within the connection, listen for "items" message to update the user interface with message history.
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages()
+    subscribe('create');
+  }
+
+  if (data.type === 'items') { // [!code ++]
+    for (const item of data.data) { // [!code ++]
+      addMessageToList(item); // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+});
 ```
 
 Refresh your browser, login, and you should see the existing messages shown in your browser.
@@ -281,14 +315,22 @@ export default function App() {
   const [messageHistory, setMessageHistory] = useState([]);
 
   useEffect(() => {
-    const cleanup = client.onWebSocket('message', function (message) {
-      if (message.type == 'auth' && message.status == 'ok') {
+    const cleanup = client.onWebSocket('message', function (data) {
+      if (data.type == 'auth' && data.status == 'ok') {
+        readAllMessages()
         subscribe('create');
       }
+
+      if (data.type === 'items') { 
+        for (const item of data.data) { 
+          addMessageToList(item); 
+        } 
+      } 
       console.log(message);
     });
 
     client.connect();
+
     return cleanup;
   }, []);
 
@@ -311,6 +353,19 @@ export default function App() {
       console.log('receiveMessage', message);
       receiveMessage(message);
     }
+  }
+
+  function readAllMessages() {
+    client.sendMessage({
+      type: 'items',
+      collection: 'messages',
+      action: 'read',
+      query: {
+        limit: 10,
+        sort: '-date_created',
+        fields: ['*', 'user_created.first_name'],
+      },
+    });
   }
 
   function receiveMessage(data) {
