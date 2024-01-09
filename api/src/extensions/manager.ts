@@ -179,12 +179,14 @@ export class ExtensionManager {
 	private async load(): Promise<void> {
 		const logger = useLogger();
 
-		try {
-			await syncExtensions();
-		} catch (error) {
-			logger.error(`Failed to sync extensions`);
-			logger.error(error);
-			process.exit(1);
+		if (env['EXTENSIONS_LOCATION']) {
+			try {
+				await syncExtensions();
+			} catch (error) {
+				logger.error(`Failed to sync extensions`);
+				logger.error(error);
+				process.exit(1);
+			}
 		}
 
 		try {
