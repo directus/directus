@@ -1,4 +1,4 @@
-import api from '@/api';
+import api, { resumeQueue } from '@/api';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
@@ -98,6 +98,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 		return;
+	} finally {
+		resumeQueue();
 	}
 }
 
