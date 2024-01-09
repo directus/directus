@@ -1,7 +1,7 @@
-import { createDirectus, rest } from '@directus/sdk';
 import type { DirectusClient, RestClient } from '@directus/sdk';
-import { getPublicURL } from './utils/get-root-path';
+import { createDirectus, rest } from '@directus/sdk';
 import api from './api';
+import { getPublicURL } from './utils/get-root-path';
 
 type SdkClient = DirectusClient<any> & RestClient<any>;
 
@@ -23,7 +23,7 @@ const sdk: SdkClient = createDirectus(getPublicURL()).with(
 				req.headers.set('Authorization', accessToken);
 			} else {
 				req.headers = {
-					...req.headers,
+					...(req.headers ?? {}),
 					Authorization: accessToken,
 				};
 			}
