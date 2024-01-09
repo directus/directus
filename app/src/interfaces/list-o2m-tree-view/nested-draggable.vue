@@ -292,6 +292,10 @@ function stageEdits(item: Record<string, any>) {
 			min-height: 0;
 		}
 	}
+
+	&.v-list {
+		overflow: hidden;
+	}
 }
 
 .row {
