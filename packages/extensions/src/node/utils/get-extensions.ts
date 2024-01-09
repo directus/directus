@@ -1,49 +1,40 @@
-import { isIn, isTypeIn, listFolders, pluralize, resolvePackage } from '@directus/utils/node';
+import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
-import path from 'path';
-import {
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
-} from '../../shared/constants/index.js';
+import { join, resolve } from 'path';
+import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
-import type { ApiExtensionType, AppExtensionType, Extension } from '../../shared/types/index.js';
+import type { Extension } from '../../shared/types/index.js';
 
-export const findExtension = async (folder: string, filename: string) => {
-	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
-	if (await fse.exists(path.join(folder, `${filename}.mjs`))) return `${filename}.mjs`;
-	return `${filename}.js`;
-};
+type ExtensionList = [name: string, path: string][];
 
-export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
+export async function getExtensions(extensionList: ExtensionList, local: boolean): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
-	const local = extensionNames === undefined;
+	for (const [name, path] of extensionList) {
+		const packageJsonPath = join(path, 'package.json');
 
-	if (extensionNames === undefined) {
-		extensionNames = await listFolders(root);
-		extensionNames = extensionNames.filter((name) => EXTENSION_NAME_REGEX.test(name));
-	}
+		const pkgExists = await fse.exists(packageJsonPath);
 
-	for (const extensionName of extensionNames) {
-		const extensionPath = local ? path.join(root, extensionName) : resolvePackage(extensionName, root);
-		const extensionManifest: Record<string, any> = await fse.readJSON(path.join(extensionPath, 'package.json'));
+		if (pkgExists === false) {
+			throw new Error(`${local ? 'Local' : 'Package'} extension "${name}" does not contain a package.json file.`);
+		}
+
+		const extensionManifest: Record<string, any> = await fse.readJSON(packageJsonPath);
 
 		let parsedManifest;
 
 		try {
 			parsedManifest = ExtensionManifest.parse(extensionManifest);
 		} catch (error) {
-			throw new Error(`The extension manifest of "${extensionName}" is not valid.\n${error}`);
+			throw new Error(`The manifest of ${local ? 'local' : 'package'} extension "${name}" is invalid.\n${error}`);
 		}
 
 		const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];
 
 		if (extensionOptions.type === 'bundle') {
 			extensions.push({
-				path: extensionPath,
+				path,
 				name: parsedManifest.name,
 				partial: extensionOptions.partial,
 				version: parsedManifest.version,
@@ -58,7 +49,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 			});
 		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
 			extensions.push({
-				path: extensionPath,
+				path,
 				name: parsedManifest.name,
 				version: parsedManifest.version,
 				type: extensionOptions.type,
@@ -72,7 +63,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 			});
 		} else if (extensionOptions.type === 'hook' || extensionOptions.type === 'endpoint') {
 			extensions.push({
-				path: extensionPath,
+				path,
 				name: parsedManifest.name,
 				version: parsedManifest.version,
 				type: extensionOptions.type,
@@ -84,7 +75,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 		} else {
 			// App extensions
 			extensions.push({
-				path: extensionPath,
+				path,
 				name: parsedManifest.name,
 				version: parsedManifest.version,
 				type: extensionOptions.type,
@@ -98,58 +89,33 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 	return extensions;
 }
 
-export async function getPackageExtensions(root: string): Promise<Extension[]> {
+export async function resolveLocalExtensions(root: string): Promise<Extension[]> {
+	const extensionFolders = await listFolders(root);
+
+	const extensionList: ExtensionList = extensionFolders.map((folder) => [folder, join(root, folder)]);
+
+	return getExtensions(extensionList, false);
+}
+
+const isExtension = (pkgName: string) => {
+	const regex = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-)(.+)$/;
+	return regex.test(pkgName);
+};
+
+export async function resolvePackageExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
-		pkg = await fse.readJSON(path.resolve(root, 'package.json'));
+		pkg = await fse.readJSON(resolve(root, 'package.json'));
 	} catch {
-		throw new Error('Current folder does not contain a package.json file');
+		throw new Error(`Couldn't resolve package extensions: Path "${root}" does not contain a package.json file`);
 	}
 
-	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
+	const dependencyNames = Object.keys(pkg.dependencies ?? {});
 
-	return resolvePackageExtensions(root, extensionNames);
-}
+	const extensionNames = dependencyNames.filter((name) => isExtension(name));
 
-export async function getLocalExtensions(root: string): Promise<Extension[]> {
-	const extensions: Extension[] = [];
+	const extensionList: ExtensionList = extensionNames.map((pkgName) => [pkgName, resolvePackage(pkgName, root)]);
 
-	for (const extensionType of NESTED_EXTENSION_TYPES) {
-		const typeDir = pluralize(extensionType);
-		const typePath = path.resolve(root, typeDir);
-
-		try {
-			const extensionNames = await listFolders(typePath);
-
-			for (const extensionName of extensionNames) {
-				const extensionPath = path.join(typePath, extensionName);
-
-				if (isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
-					extensions.push({
-						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
-						type: extensionType,
-						entrypoint: {
-							app: await findExtension(extensionPath, 'app'),
-							api: await findExtension(extensionPath, 'api'),
-						},
-						local: true,
-					});
-				} else {
-					extensions.push({
-						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
-						type: extensionType as AppExtensionType | ApiExtensionType,
-						entrypoint: await findExtension(extensionPath, 'index'),
-						local: true,
-					});
-				}
-			}
-		} catch (e) {
-			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
-		}
-	}
-
-	return extensions;
+	return getExtensions(extensionList, true);
 }

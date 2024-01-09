@@ -1,4 +1,3 @@
-import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type {
 	ApiExtension,
@@ -10,7 +9,7 @@ import type {
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -20,7 +19,7 @@ import type {
 	PromiseCallback,
 	ScheduleHandler,
 } from '@directus/types';
-import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
+import { isTypeIn, toBoolean } from '@directus/utils';
 import { getNodeEnv, pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
@@ -180,12 +179,14 @@ export class ExtensionManager {
 	private async load(): Promise<void> {
 		const logger = useLogger();
 
-		try {
-			await syncExtensions();
-		} catch (error) {
-			logger.error(`Failed to sync extensions`);
-			logger.error(error);
-			process.exit(1);
+		if (env['EXTENSIONS_LOCATION']) {
+			try {
+				await syncExtensions();
+			} catch (error) {
+				logger.error(`Failed to sync extensions`);
+				logger.error(error);
+				process.exit(1);
+			}
 		}
 
 		try {
@@ -309,21 +310,8 @@ export class ExtensionManager {
 
 		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
 
-		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
-
-			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-				return [
-					path.posix.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-					path.posix.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-				];
-			} else {
-				return path.posix.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
-			}
-		});
-
 		this.watcher = chokidar.watch(
-			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json'), ...localExtensionUrls],
+			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
 			{
 				ignoreInitial: true,
 			},

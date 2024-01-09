@@ -1,14 +1,7 @@
+import { APP_SHARED_DEPS } from '@directus/extensions';
 import {
-	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/extensions';
-import {
-	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
-	getLocalExtensions,
-	getPackageExtensions,
+	resolveLocalExtensions,
 	resolvePackageExtensions,
 } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
@@ -20,7 +13,15 @@ import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
+
+/*
+ * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
+ * as expected when extensions are read from a different location locally through the
+ * EXTENSIONS_LOCATION env var
+ */
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
+
+const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -74,7 +75,7 @@ export default defineConfig({
 });
 
 function getExtensionsRealPaths() {
-	return fs.existsSync(EXTENSIONS_PATH)
+	return extensionsPathExists
 		? fs
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
@@ -136,12 +137,16 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
-		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		const localExtensions = extensionsPathExists ? await resolveLocalExtensions(EXTENSIONS_PATH) : [];
+		const packageExtensions = await resolvePackageExtensions(API_PATH);
 
-		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+		/*
+		 * @TODO
+		 * These aren't deduplicated, whereas the production ones are. This has seemingly
+		 * always been the case. Is this a bug?
+		 * @see /api/src/extensions/lib/get-extensions.ts
+		 */
+		const extensions = [...localExtensions, ...packageExtensions];
 
 		// default to enabled for app extension in developer mode
 		const extensionSettings = extensions.flatMap((extension) =>
