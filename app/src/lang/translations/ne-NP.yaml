@@ -1191,7 +1191,6 @@ field_options:
   directus_roles:
     name: "यो भूमिकाको लागि अद्वितीय नाम ...\n"
     description: यस भूमिकाको विवरण...
-    ip_access: "अनुमति दिइएको IP ठेगानाहरू थप्नुहोस्, सबैलाई अनुमति दिन खाली छोड्नुहोस्...\n"
     fields:
       icon_name: आइकन
       name_name: नाम
