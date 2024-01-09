@@ -716,8 +716,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(vue@3.3.13)
       apexcharts:
-        specifier: 3.45.0
-        version: 3.45.0
+        specifier: 3.45.1
+        version: 3.45.1
       axios:
         specifier: 1.6.2
         version: 1.6.2
@@ -8422,8 +8422,8 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  /apexcharts@3.45.0:
-    resolution: {integrity: sha512-o+XI4ysvKtt+l+bGbk19s6Y2gFes/7LRLMAonDgcapz4frS0vzTfXiK77QcQc30TMwPiSN9Z8Tv+CBn57x63wg==}
+  /apexcharts@3.45.1:
+    resolution: {integrity: sha512-pPjj/SA6dfPvR/IKRZF0STdfBGpBh3WRt7K0DFuW9P8erypYkX17EHu3/molPRfo2zSiQwTVpshHC5ncysqfkA==}
     dependencies:
       '@yr/monotone-cubic-spline': 1.0.3
       svg.draggable.js: 2.2.2
