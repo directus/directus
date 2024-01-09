@@ -56,12 +56,12 @@ let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
 idleTracker.on('idle', () => {
-	// clearTimeout(refreshTimeout);
+	sdk.stopRefreshing();
 	idle = true;
 });
 
 idleTracker.on('hide', () => {
-	// clearTimeout(refreshTimeout);
+	sdk.stopRefreshing();
 	idle = true;
 });
 
@@ -126,7 +126,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 
 	delete api.defaults.headers.common['Authorization'];
 
-	// clearTimeout(refreshTimeout);
+	sdk.stopRefreshing();
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
