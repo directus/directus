@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { HitRateLimitError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import { useEnv } from '../env.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
@@ -29,7 +29,7 @@ if (env['RATE_LIMITER_ENABLED'] === true) {
 
 				res.set('Retry-After', String(Math.round(rateLimiterRes.msBeforeNext / 1000)));
 				throw new HitRateLimitError({
-					limit: +env['RATE_LIMITER_POINTS'],
+					limit: +(env['RATE_LIMITER_POINTS'] as string),
 					reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
 				});
 			}

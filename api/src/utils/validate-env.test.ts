@@ -1,16 +1,12 @@
+import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { validateEnv } from './validate-env.js';
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 vi.mock('../logger');
-
-vi.mock('process', () => ({
-	exit: vi.fn(),
-}));
 
 let mockLogger: Logger<never>;
 

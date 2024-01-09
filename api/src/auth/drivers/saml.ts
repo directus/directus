@@ -1,4 +1,5 @@
 import * as validator from '@authenio/samlify-node-xmllint';
+import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
@@ -6,7 +7,6 @@ import { getAuthProvider } from '../../auth.js';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -136,12 +136,12 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
-				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
+				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
-					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], COOKIE_OPTIONS);
+					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, COOKIE_OPTIONS);
 				}
 			}
 
@@ -173,7 +173,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

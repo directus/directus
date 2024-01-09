@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
 import { COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
-import { useEnv } from '../env.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -37,7 +37,7 @@ router.post(
 
 		const { accessToken, refreshToken, expires } = await service.login(req.body);
 
-		res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+		res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
 
 		res.locals['payload'] = { data: { access_token: accessToken, expires } };
 

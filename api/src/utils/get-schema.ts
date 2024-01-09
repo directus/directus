@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Filter, SchemaOverview } from '@directus/types';
@@ -9,7 +10,6 @@ import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';

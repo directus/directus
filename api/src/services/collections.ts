@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -13,7 +14,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -345,7 +345,9 @@ export class CollectionsService {
 		}
 
 		if (env['DB_EXCLUDE_TABLES']) {
-			return collections.filter((collection) => env['DB_EXCLUDE_TABLES'].includes(collection.collection) === false);
+			return collections.filter(
+				(collection) => (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection) === false,
+			);
 		}
 
 		return collections;
