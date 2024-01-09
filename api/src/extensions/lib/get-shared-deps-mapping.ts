@@ -1,10 +1,10 @@
+import { useEnv } from '@directus/env';
 import { resolvePackage } from '@directus/utils/node';
 import { escapeRegExp } from 'lodash-es';
 import { readdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { Url } from '../../utils/url.js';
 
@@ -22,7 +22,7 @@ export const getSharedDepsMapping = async (deps: string[]): Promise<Record<strin
 		const depName = appDir.find((file) => depRegex.test(file));
 
 		if (depName) {
-			const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
+			const depUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'assets', depName);
 
 			depsMapping[dep] = depUrl.toString({ rootRelative: true });
 		} else {

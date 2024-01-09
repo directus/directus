@@ -54,7 +54,7 @@ post:
             external_id:
               description: ID used with external services in SCIM.
               type: string
-            ip_whitelist:
+            ip_access:
               description: Array of IP addresses that are allowed to connect to the API as a user of this role.
               type: array
               items:
@@ -120,7 +120,7 @@ patch:
                 external_id:
                   description: ID used with external services in SCIM.
                   type: string
-                ip_whitelist:
+                ip_access:
                   description: Array of IP addresses that are allowed to connect to the API as a user of this role.
                   type: array
                   items:
