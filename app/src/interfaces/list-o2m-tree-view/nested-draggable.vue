@@ -90,12 +90,8 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } = useRelationMultiple(
-	value,
-	query,
-	relationInfo,
-	primaryKey,
-);
+const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
+	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
@@ -191,11 +187,16 @@ function stageEdits(item: Record<string, any>) {
 </script>
 
 <template>
+	<v-skeleton-loader v-if="loading" type="block-list-item-dense" />
+	<v-notice v-else-if="filteredDisplayItems.length === 0">
+		{{ t('no_items') }}
+	</v-notice>
+
 	<draggable
 		v-bind="dragOptions"
 		class="drag-area"
 		:class="{ root, drag }"
-		tag="ul"
+		tag="v-list"
 		:model-value="filteredDisplayItems"
 		:group="{ name: 'g1' }"
 		item-key="id"
@@ -207,7 +208,7 @@ function stageEdits(item: Record<string, any>) {
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
+			<v-list-item class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
 					:edits="getItemEdits(element)"
@@ -238,7 +239,7 @@ function stageEdits(item: Record<string, any>) {
 					:items-moved="itemsMoved"
 					@update:model-value="updateModelValue($event, index)"
 				/>
-			</li>
+			</v-list-item>
 		</template>
 	</draggable>
 
@@ -272,6 +273,14 @@ function stageEdits(item: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+.v-skeleton-loader,
+.v-notice {
+	margin: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
+	margin-top: 12px;
+	margin-left: 24px;
+	min-height: auto !important;
+}
+
 .drag-area {
 	min-height: 12px;
 
@@ -288,16 +297,20 @@ function stageEdits(item: Record<string, any>) {
 .row {
 	.preview {
 		padding: 12px;
-		background-color: var(--theme--popover--menu--background);
-		border-radius: var(--theme--popover--menu--border-radius);
-		box-shadow: var(--theme--popover--menu--box-shadow);
 		cursor: grab;
-		transition: var(--fast) var(--transition);
-		transition-property: box-shadow, background-color;
+		border-style: solid;
+		background-color: var(--theme--background);
+		border: var(--theme--border-width) solid var(--theme--border-color);
+		border-radius: var(--theme--border-radius);
 
 		& + .drag-area {
 			padding-top: 12px;
 		}
+	}
+
+	&.v-list-item {
+		display: block;
+		--v-list-item-padding: 0;
 	}
 
 	&:not(.draggable) .preview {
@@ -307,7 +320,6 @@ function stageEdits(item: Record<string, any>) {
 
 .ghost .preview {
 	background-color: var(--theme--primary-background);
-	box-shadow: 0 !important;
 }
 
 .actions {
