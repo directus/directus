@@ -8,7 +8,7 @@ type SdkClient<Schema extends object = any> = DirectusClient<Schema> &
 	RestClient<Schema>;
 
 const sdk: SdkClient = createDirectus(getPublicURL())
-	.with(authentication('cookie', { credentials: 'include' }))
+	.with(authentication('cookie', { credentials: 'include', msRefreshBeforeExpires: 10_000 }))
 	.with(
 		rest({
 			credentials: 'include',
