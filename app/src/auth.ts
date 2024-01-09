@@ -23,13 +23,6 @@ type LoginParams = {
 	share?: boolean;
 };
 
-// TODO remove
-// function getAuthEndpoint(provider?: string, share?: boolean) {
-// 	if (share) return '/shares/auth';
-// 	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
-// 	return `/auth/login/${provider}`;
-// }
-
 // TODO fix non-null assertions
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
@@ -49,15 +42,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	// Add the header to the API handler for every request
 	api.defaults.headers.common['Authorization'] = `Bearer ${response.access_token}`;
 
-	// Refresh the token 10 seconds before the access token expires. This means the user will stay
-	// logged in without any noticeable hiccups or delays
-
-	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-	// for tokens that last > 24 days. Ref #4054
-	// if (response.expires !== null && response.expires <= 2100000000) {
-	// 	refreshTimeout = setTimeout(() => refresh(), response.expires! - 10000);
-	// }
-
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	appStore.authenticated = true;
 
@@ -67,7 +51,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	await hydrate();
 }
 
-let refreshTimeout: any;
 let idle = false;
 let firstRefresh = true;
 
@@ -114,6 +97,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		return response.access_token;
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
+		return;
 	}
 }
 

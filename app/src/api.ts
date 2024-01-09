@@ -99,7 +99,7 @@ export function getToken(): string | null {
 }
 
 export function addTokenToURL(url: string, token?: string): string {
-	const accessToken = token || getToken();
+	const accessToken = token || getToken(); // TODO make async and use SDK
 	if (!accessToken) return url;
 
 	return addQueryToPath(url, { access_token: accessToken });
