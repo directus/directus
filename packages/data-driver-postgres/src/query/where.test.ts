@@ -4,15 +4,11 @@ import { where } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: AbstractSqlClauses;
-let foreignTableName: string;
 let targetTableIndex: number;
 let foreignColumnName: string;
-let foreignColumnIndex: number;
 
 beforeEach(() => {
-	foreignTableName = randomIdentifier();
 	foreignColumnName = randomIdentifier();
-	foreignColumnIndex = randomInteger(0, 100);
 	targetTableIndex = randomInteger(0, 100);
 
 	sample = {
