@@ -41,11 +41,11 @@ const inputBorder = computed(() => (isInputValid.value ? 'none' : 'var(--theme--
 
 function onEffect(value: typeof props.value) {
 	inputLength.value = value?.toString().length;
-	isInputValid.value = true;
+	isInputValid.value = isValueValid(value);
 }
 
 /**
- * Because theres currently (2023-12-13) no way to uniquely identify filters
+ * Because theres currently (2024-01-09) no way to uniquely identify filters
  * we run into rendering issues when dragging and reordering input-groups/input-components
  * By listening for the DOM changes via `onUpdated` we can keep this component updated
  * without having a `key` for each input-group in nodes
@@ -84,9 +84,8 @@ const inputPattern = computed(() => {
 	}
 });
 
-function emitValue(value: string | null): boolean {
-	if (value === '') {
-		emit('input', null);
+function isValueValid(value: any): boolean {
+	if (value === '' || typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
 		return true;
 	}
 
@@ -95,12 +94,6 @@ function emitValue(value: string | null): boolean {
 		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
 			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		emit('input', value);
-		return true;
-	}
-
-	if (typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
-		emit('input', value);
 		return true;
 	}
 
@@ -109,7 +102,11 @@ function emitValue(value: string | null): boolean {
 
 function onInput(value: string | null) {
 	inputLength.value = value?.length;
-	isInputValid.value = emitValue(value);
+	isInputValid.value = isValueValid(value);
+
+	if (isInputValid.value) {
+		emit('input', value === '' ? null : value);
+	}
 }
 </script>
 
@@ -139,7 +136,7 @@ function onInput(value: string | null) {
 		:placeholder="t('select')"
 		allow-other
 		group-selectable
-		@update:model-value="emitValue($event)"
+		@update:model-value="onInput($event)"
 	/>
 	<template v-else-if="is === 'interface-datetime'">
 		<input
@@ -176,7 +173,7 @@ function onInput(value: string | null) {
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="onInput($event)" />
 		</div>
 	</v-menu>
 </template>
