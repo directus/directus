@@ -212,6 +212,9 @@ importers:
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
+      ip-matching:
+        specifier: 2.1.2
+        version: 2.1.2
       isolated-vm:
         specifier: 4.6.0
         version: 4.6.0
@@ -535,6 +538,9 @@ importers:
       '@directus/format-title':
         specifier: 10.1.0
         version: 10.1.0
+      '@directus/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
@@ -713,8 +719,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(vue@3.3.13)
       apexcharts:
-        specifier: 3.45.0
-        version: 3.45.0
+        specifier: 3.45.1
+        version: 3.45.1
       axios:
         specifier: 1.6.2
         version: 1.6.2
@@ -994,6 +1000,9 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../extensions
+      '@directus/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1823,8 +1832,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.4
-        version: 0.32.4
+        specifier: 0.32.5
+        version: 0.32.5
       '@unhead/vue':
         specifier: 1.8.9
         version: 1.8.9(vue@3.3.13)
@@ -6417,8 +6426,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sinclair/typebox@0.32.4:
-    resolution: {integrity: sha512-Q2Pex6H+HGuyxIGuFadkpqwtjZFXiVZlvy1rVX9XgAzUrDmUDEM69M2c4CkWUgMJ1NaFPvUf+cMBljY96GJVNQ==}
+  /@sinclair/typebox@0.32.5:
+    resolution: {integrity: sha512-0M6FyxZwIEu/Ly6W+l7iYqiZQYJ8khLOJGzg+cxivNKRKqk9hctcuDC0UYI7B9vNgycExA8w40m4M3yDKW37RA==}
     dev: false
 
   /@sindresorhus/is@4.6.0:
@@ -7065,6 +7074,7 @@ packages:
 
   /@types/caseless@0.12.5:
     resolution: {integrity: sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==}
+    requiresBuild: true
     dev: false
 
   /@types/chroma-js@2.4.3:
@@ -7509,6 +7519,7 @@ packages:
 
   /@types/tough-cookie@4.0.5:
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
+    requiresBuild: true
     dev: false
 
   /@types/trusted-types@2.0.7:
@@ -8417,8 +8428,8 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  /apexcharts@3.45.0:
-    resolution: {integrity: sha512-o+XI4ysvKtt+l+bGbk19s6Y2gFes/7LRLMAonDgcapz4frS0vzTfXiK77QcQc30TMwPiSN9Z8Tv+CBn57x63wg==}
+  /apexcharts@3.45.1:
+    resolution: {integrity: sha512-pPjj/SA6dfPvR/IKRZF0STdfBGpBh3WRt7K0DFuW9P8erypYkX17EHu3/molPRfo2zSiQwTVpshHC5ncysqfkA==}
     dependencies:
       '@yr/monotone-cubic-spline': 1.0.3
       svg.draggable.js: 2.2.2
@@ -11356,6 +11367,7 @@ packages:
   /form-data@2.5.1:
     resolution: {integrity: sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==}
     engines: {node: '>= 0.12'}
+    requiresBuild: true
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -12351,6 +12363,10 @@ packages:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /ip-matching@2.1.2:
+    resolution: {integrity: sha512-/ok+VhKMasgR5gvTRViwRFQfc0qYt9Vdowg6TO4/pFlDCob5ZjGPkwuOoQVCd5OrMm20zqh+1vA8KLJZTeWudg==}
     dev: false
 
   /ip@2.0.0:
