@@ -56,6 +56,8 @@ const editActive = ref(false);
 <style lang="scss" scoped>
 div.preview {
 	display: flex;
+	height: var(--theme--form--field--input--height);
+	align-items: center;
 
 	&:not(.open) {
 		margin-bottom: 12px;

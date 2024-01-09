@@ -187,7 +187,7 @@ function stageEdits(item: Record<string, any>) {
 </script>
 
 <template>
-	<v-skeleton-loader v-if="loading" type="block-list-item-dense" />
+	<v-skeleton-loader v-if="loading" type="block-list-item" />
 	<v-notice v-else-if="filteredDisplayItems.length === 0">
 		{{ t('no_items') }}
 	</v-notice>
@@ -273,11 +273,6 @@ function stageEdits(item: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-.v-skeleton-loader,
-.v-notice {
-	min-height: auto !important;
-}
-
 .drag-area {
 	min-height: 12px;
 
@@ -287,7 +282,8 @@ function stageEdits(item: Record<string, any>) {
 
 		.v-skeleton-loader,
 		.v-notice {
-			margin: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
+			width: auto;
+			margin-bottom: 12px;
 			margin-top: 12px;
 			margin-left: 24px;
 		}
