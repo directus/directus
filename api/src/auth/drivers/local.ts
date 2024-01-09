@@ -5,7 +5,7 @@ import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
-import { useEnv } from '../../env.js';
+import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';
@@ -59,7 +59,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const STALL_TIME = env['LOGIN_STALL_TIME'];
+			const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 			const timeStart = performance.now();
 
 			const accountability: Accountability = {
@@ -102,7 +102,7 @@ export function createLocalAuthRouter(provider: string): Router {
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
 			}
 
 			res.locals['payload'] = payload;

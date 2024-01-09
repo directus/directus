@@ -1,10 +1,10 @@
-import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { useEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { ExtensionsService } from '../services/extensions.js';
+import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -44,11 +44,22 @@ router.patch(
 			throw new ForbiddenError();
 		}
 
-		await service.updateOne(bundle, name, req.body);
+		try {
+			const result = await service.updateOne(bundle, name, req.body);
+			res.locals['payload'] = { data: result || null };
+		} catch (error) {
+			let finalError = error;
 
-		const updated = await service.readOne(bundle, name);
+			if (error instanceof ExtensionReadError) {
+				finalError = error.originalError;
 
-		res.locals['payload'] = { data: updated || null };
+				if (isDirectusError(finalError, ErrorCode.Forbidden)) {
+					return next();
+				}
+			}
+
+			throw finalError;
+		}
 
 		return next();
 	}),

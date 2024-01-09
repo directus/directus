@@ -3,14 +3,9 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { cryptoStub } from '@/__utils__/crypto';
 import { expect, test, vi } from 'vitest';
 import { getPublicURL } from '@/utils/get-root-path';
-import { URL } from 'node:url';
 
 vi.stubGlobal('crypto', cryptoStub);
 vi.mock('@/utils/get-root-path');
-
-Object.defineProperty(window, 'URL', {
-	value: URL,
-});
 
 test('Get asset url', () => {
 	vi.mocked(getPublicURL).mockReturnValueOnce('https://directus.io/');
