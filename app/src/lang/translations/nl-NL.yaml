@@ -1257,7 +1257,6 @@ field_options:
   directus_files:
     title: Een unieke titel...
   directus_roles:
-    ip_access: Toegestane IP-adressen toevoegen, leeg laten om alles toe te staan...
     fields:
       icon_name: Icoon
       name_name: Naam
