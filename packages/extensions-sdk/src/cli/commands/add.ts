@@ -284,7 +284,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		const newExtensionManifest = {
 			...extensionManifest,
 			name: extensionName,
-			keywords: ['directus', 'directus-extension', `directus-custom-bundle`],
+			keywords: ['directus', 'directus-extension', `directus-extension-bundle`],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: {
 				...extensionManifest.devDependencies,

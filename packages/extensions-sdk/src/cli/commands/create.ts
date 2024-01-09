@@ -180,7 +180,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		description: 'Please enter a description for your extension',
 		icon: 'extension',
 		version: '1.0.0',
-		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
+		keywords: ['directus', 'directus-extension', `directus-extension-${options.type}`],
 		type: 'module',
 		[EXTENSION_PKG_KEY]: options,
 		scripts: {
