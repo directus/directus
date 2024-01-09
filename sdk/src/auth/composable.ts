@@ -119,7 +119,6 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		return {
 			refresh,
 			async login(email: string, password: string, options: LoginOptions = {}) {
-				// TODO: allow for websocket only authentication
 				resetStorage();
 
 				const path = getAuthEndpoint(options.provider, options.share);
@@ -169,8 +168,13 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
 				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
-				if (refreshTimeout) clearTimeout(refreshTimeout);
+				this.stopRefreshing();
 				resetStorage();
+			},
+			stopRefreshing() {
+				if (refreshTimeout) {
+					clearTimeout(refreshTimeout);
+				}
 			},
 			async getToken() {
 				await refreshIfExpired();
