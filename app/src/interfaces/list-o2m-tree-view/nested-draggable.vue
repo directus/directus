@@ -275,9 +275,6 @@ function stageEdits(item: Record<string, any>) {
 <style lang="scss" scoped>
 .v-skeleton-loader,
 .v-notice {
-	margin: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
-	margin-top: 12px;
-	margin-left: 24px;
 	min-height: auto !important;
 }
 
@@ -287,6 +284,13 @@ function stageEdits(item: Record<string, any>) {
 	&.root {
 		margin-left: 0;
 		padding: 0;
+
+		.v-skeleton-loader,
+		.v-notice {
+			margin: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
+			margin-top: 12px;
+			margin-left: 24px;
+		}
 
 		&:empty {
 			min-height: 0;
