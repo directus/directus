@@ -1218,7 +1218,6 @@ field_options:
   directus_roles:
     name: 這個角色的名稱
     description: 這個角色的簡介
-    ip_access: 輸入允許的IP位置，留白的話則全部允許
     fields:
       icon_name: 圖示
       name_name: 名稱
