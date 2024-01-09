@@ -538,6 +538,9 @@ importers:
       '@directus/format-title':
         specifier: 10.1.0
         version: 10.1.0
+      '@directus/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
@@ -997,6 +1000,9 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../extensions
+      '@directus/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
