@@ -1178,7 +1178,6 @@ field_options:
   directus_roles:
     name: このロールの唯一無二な名前...
     description: このロールの説明...
-    ip_access: 許可するIPアドレスを追加します。空欄の場合全てのIPアドレスが許可されます。
     fields:
       icon_name: アイコン
       name_name: 名前
