@@ -331,14 +331,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect, prompt },
-				env['SECRET'] as string,
-				{
-					expiresIn: '5m',
-					issuer: 'directus',
-				},
-			);
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, env['SECRET'] as string, {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
 
 			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,
