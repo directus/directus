@@ -44,11 +44,11 @@ function onEffect(value: typeof props.value) {
 	isInputValid.value = isValueValid(value);
 }
 
-/**
- * Because theres currently (2024-01-09) no way to uniquely identify filters
- * we run into rendering issues when dragging and reordering input-groups/input-components
+/*
+ * Because there's currently (2024-01-09) no way to uniquely identify filters
+ * we run into rendering issues when dragging and reordering input-groups/input-components.
  * By listening for the DOM changes via `onUpdated` we can keep this component updated
- * without having a `key` for each input-group in nodes
+ * without having a `key` for each input-group in nodes.
  */
 onUpdated(() => onEffect(props.value));
 
