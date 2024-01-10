@@ -20,9 +20,8 @@ const collectionExists = computed(() => {
 
 const availableCollections = computed(() => {
 	return orderBy(
-		collectionsStore.databaseCollections.filter((d) => d.meta),
-		['sort', 'collection'],
-		['asc'],
+		collectionsStore.databaseCollections.filter((collection) => collection.meta),
+		['meta.sort', 'collection'],
 	);
 });
 
