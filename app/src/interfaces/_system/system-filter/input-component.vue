@@ -27,36 +27,10 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const inputEl = ref<HTMLInputElement | null>(null);
-const inputLength = ref<number>();
 const dateTimeMenu = ref();
-
-onMounted(() => {
-	if (props.focus) inputEl.value?.focus();
-});
-
-const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
+const inputEl = ref<HTMLInputElement | null>(null);
 const isInputValid = ref(true);
-const inputBorder = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
-
-function onEffect(value: typeof props.value) {
-	inputLength.value = value?.toString().length;
-	isInputValid.value = isValueValid(value);
-}
-
-/*
- * Because there's currently (2024-01-09) no way to uniquely identify filters
- * we run into rendering issues when dragging and reordering input-groups/input-components.
- * By listening for the DOM changes via `onUpdated` we can keep this component updated
- * without having a `key` for each input-group in nodes.
- */
-onUpdated(() => onEffect(props.value));
-
-watch(
-	() => props.value,
-	(value) => onEffect(value),
-	{ immediate: true },
-);
+const inputBorderColor = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -84,6 +58,24 @@ const inputPattern = computed(() => {
 	}
 });
 
+onMounted(() => {
+	if (props.focus) inputEl.value?.focus();
+});
+
+/*
+ * Because there's currently (2024-01-09) no way to uniquely identify filters
+ * we run into rendering issues when dragging and reordering input-groups/input-components.
+ * By listening for the DOM changes via `onUpdated` we can keep this component updated
+ * without having a `key` for each input-group in nodes.
+ */
+onUpdated(() => onEffect(props.value));
+
+watch(
+	() => props.value,
+	(value) => onEffect(value),
+	{ immediate: true },
+);
+
 function isValueValid(value: any): boolean {
 	if (value === '' || typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
 		return true;
@@ -100,8 +92,11 @@ function isValueValid(value: any): boolean {
 	return false;
 }
 
+function onEffect(value: typeof props.value) {
+	isInputValid.value = isValueValid(value);
+}
+
 function onInput(value: string | null) {
-	inputLength.value = value?.length;
 	isInputValid.value = isValueValid(value);
 
 	if (isInputValid.value) {
@@ -122,6 +117,7 @@ function onInput(value: string | null) {
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
+		v-input-auto-width
 		type="text"
 		:pattern="inputPattern"
 		:value="value"
@@ -141,8 +137,8 @@ function onInput(value: string | null) {
 	<template v-else-if="is === 'interface-datetime'">
 		<input
 			ref="inputEl"
+			v-input-auto-width
 			type="text"
-			:pattern="inputPattern"
 			:value="value"
 			placeholder="--"
 			@input="onInput(($event.target as HTMLInputElement).value)"
@@ -218,8 +214,8 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
-	box-shadow: 0 5px 0 -2px v-bind(inputBorder);
-	width: clamp(3ch, v-bind(inputWidth), 40ch);
+	max-width: 40ch;
+	box-shadow: 0 4px 0 -2px v-bind(inputBorderColor);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
