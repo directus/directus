@@ -516,11 +516,11 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">

@@ -91,6 +91,7 @@ function onCloseClick(event: MouseEvent) {
 		--v-chip-close-color             [var(--theme--danger)]
 		--v-chip-close-color-disabled    [var(--theme--primary)]
 		--v-chip-close-color-hover       [var(--theme--primary-accent)]
+		--v-chip-padding                 [0 8px]
 
 */
 
@@ -98,7 +99,7 @@ function onCloseClick(event: MouseEvent) {
 	display: inline-flex;
 	align-items: center;
 	height: 36px;
-	padding: 0 8px;
+	padding: var(--v-chip-padding, 0 8px);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
 	line-height: 22px;
@@ -131,28 +132,28 @@ function onCloseClick(event: MouseEvent) {
 
 	&.x-small {
 		height: 20px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 4px);
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
 		height: 24px;
-		padding: 0 8px;
+		padding: var(--v-chip-padding, 0 8px);
 		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
 		height: 44px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
 		height: 48px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 18px;
 		border-radius: 24px;
 	}

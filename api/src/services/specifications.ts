@@ -1,6 +1,8 @@
+import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
+import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -13,12 +15,12 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
-import { version } from '../utils/package.js';
-import { GraphQLService } from './graphql/index.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
+import { GraphQLService } from './graphql/index.js';
+
+const env = useEnv();
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -63,7 +65,7 @@ class OASSpecsService implements SpecificationSubService {
 		const components = await this.generateComponents(tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : env['PUBLIC_URL'];
+		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',

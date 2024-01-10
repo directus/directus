@@ -110,6 +110,7 @@ const dragOptions = {
 	group: 'description',
 	disabled: false,
 	ghostClass: 'ghost',
+	forceFallback: true,
 };
 
 const filteredDisplayItems = computed(() => {
@@ -201,7 +202,6 @@ function stageEdits(item: Record<string, any>) {
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
-		force-fallback
 		@start="drag = true"
 		@end="drag = false"
 		@change="change($event as ChangeEvent)"

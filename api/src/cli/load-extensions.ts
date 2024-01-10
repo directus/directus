@@ -1,9 +1,12 @@
+import { useEnv } from '@directus/env';
 import { isInstalled, validateMigrations } from '../database/index.js';
-import env from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 export const loadExtensions = async () => {
+	const env = useEnv();
+	const logger = useLogger();
+
 	if (!('DB_CLIENT' in env)) return;
 
 	const installed = await isInstalled();

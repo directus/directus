@@ -42,7 +42,7 @@ jobs:
         uses: tj-actions/changed-files@v40
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
           # option, which in turn means we need to fetch the full git history so git is able to diff

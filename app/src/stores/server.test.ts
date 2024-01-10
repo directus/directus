@@ -3,7 +3,7 @@ import * as setLanguageDefault from '@/lang/set-language';
 import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { Auth, Info, useServerStore } from './server';
 import { useUserStore } from './user';
 
@@ -51,9 +51,9 @@ const mockAdminUserWithLanguage = {
 	language: 'zh-CN',
 } as User;
 
-let apiGetSpy: SpyInstance;
-let replaceQueueSpy: SpyInstance;
-let setLanguageSpy: SpyInstance;
+let apiGetSpy: MockInstance;
+let replaceQueueSpy: MockInstance;
+let setLanguageSpy: MockInstance;
 
 beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');

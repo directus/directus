@@ -1,11 +1,12 @@
 import { expect, test, vi } from 'vitest';
 import { convertModifiers, type ModifierConversionResult } from './modifiers.js';
 import type { AbstractQueryModifiers } from '@directus/data';
-import { convertFilter, type FilterResult } from './filter/filter.js';
+import { convertFilter } from './filter/filter.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import type { AbstractSqlQueryJoinNode } from '../../index.js';
 import { convertSort, type SortConversionResult } from './sort.js';
+import type { FilterResult } from './filter/utils.js';
 
 vi.mock('./filter/filter.js', (importOriginal) => {
 	const mod = importOriginal();

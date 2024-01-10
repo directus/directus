@@ -1,5 +1,5 @@
 import type { AbstractQueryFunction } from '@directus/data';
-import type { ParameterTypes, ValuesNode, AbstractSqlQueryFnNode } from '../types/index.js';
+import type { AbstractSqlQuerySelectFnNode, ParameterTypes, ValuesNode } from '../types/index.js';
 
 /**
  * @param collection
@@ -12,8 +12,8 @@ export function convertFn(
 	abstractFunction: AbstractQueryFunction,
 	idxGenerator: Generator,
 	generatedAlias?: string,
-): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
-	const fn: AbstractSqlQueryFnNode = {
+): { fn: AbstractSqlQuerySelectFnNode; parameters: ParameterTypes[] } {
+	const fn: AbstractSqlQuerySelectFnNode = {
 		type: 'fn',
 		fn: abstractFunction.fn,
 		table: collection,

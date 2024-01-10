@@ -1,5 +1,4 @@
-import type { AbstractSqlQueryFnNode } from '../../select/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../select/primitive.js';
+import type { AbstractSqlQuerySelectNode } from '../../select.js';
 
 /**
  * Condition to filter rows where two columns of different tables are equal.
@@ -8,6 +7,6 @@ import type { AbstractSqlQuerySelectNode } from '../../select/primitive.js';
 export interface SqlConditionFieldNode {
 	type: 'condition-field';
 	operation: 'eq';
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
-	compareTo: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	target: AbstractSqlQuerySelectNode;
+	compareTo: AbstractSqlQuerySelectNode;
 }

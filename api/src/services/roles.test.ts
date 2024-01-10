@@ -1,10 +1,19 @@
+import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { MockedFunction, SpyInstance } from 'vitest';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import {
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+	type MockedFunction,
+	type MockInstance,
+} from 'vitest';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
@@ -66,7 +75,7 @@ describe('Integration Tests', () => {
 	describe('Services / RolesService', () => {
 		describe('updateOne', () => {
 			let service: RolesService;
-			let superUpdateOne: SpyInstance;
+			let superUpdateOne: MockInstance;
 			const adminRoleId = 'cbfd1e77-b883-4090-93e4-5bcbfbd48aba';
 			const userId1 = '07a5fee0-c168-49e2-8e33-4bae280e0c48';
 			const userId2 = 'abedf9a4-6956-4a9c-8904-c1aa08a68173';
@@ -766,8 +775,8 @@ describe('Integration Tests', () => {
 
 	describe('Services / Roles', () => {
 		let service: RolesService;
-		let checkForOtherAdminRolesSpy: SpyInstance;
-		let checkForOtherAdminUsersSpy: SpyInstance;
+		let checkForOtherAdminRolesSpy: MockInstance;
+		let checkForOtherAdminUsersSpy: MockInstance;
 
 		beforeEach(() => {
 			service = new RolesService({

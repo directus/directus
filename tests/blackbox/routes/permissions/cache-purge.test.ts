@@ -3,92 +3,14 @@ import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
-import type { Knex } from 'knex';
-import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { collection, type Collection } from './cache-purge.seed';
+import getPort from 'get-port';
 
 describe('Permissions Cache Purging Tests', () => {
-	const databases = new Map<string, Knex>();
-	const directusInstances = {} as { [vendor: string]: ChildProcess[] };
-	const envKeys = ['envMem', 'envMemPurge', 'envRedis', 'envRedisPurge'] as const;
-	type EnvTypes = Record<(typeof envKeys)[number], Env>;
-	const envs = {} as Record<Vendor, EnvTypes>;
-	const cacheNamespacePrefix = 'directus-perms-caching';
 	const cacheStatusHeader = 'x-cache-status';
-
-	beforeAll(async () => {
-		const promises = [];
-
-		for (const vendor of vendors) {
-			databases.set(vendor, knex(config.knexConfig[vendor]!));
-
-			const envMem = cloneDeep(config.envs);
-			envMem[vendor]['CACHE_ENABLED'] = 'true';
-			envMem[vendor]['CACHE_STATUS_HEADER'] = cacheStatusHeader;
-			envMem[vendor]['CACHE_AUTO_PURGE'] = 'false';
-			envMem[vendor]['CACHE_STORE'] = 'memory';
-			envMem[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_mem`;
-
-			const envMemPurge = cloneDeep(envMem);
-			envMemPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
-			envMemPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_mem_purge`;
-
-			const envRedis = cloneDeep(envMem);
-			envRedis[vendor]['REDIS_HOST'] = 'localhost';
-			envRedis[vendor]['REDIS_PORT'] = '6108';
-			envRedis[vendor]['CACHE_STORE'] = 'redis';
-			envRedis[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis`;
-
-			const envRedisPurge = cloneDeep(envRedis);
-			envRedisPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
-			envRedisPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis_purge`;
-
-			const newServerPortMem = Number(envMem[vendor].PORT) + 150;
-			const newServerPortMemPurge = Number(envMemPurge[vendor].PORT) + 200;
-			const newServerPortRedis = Number(envRedis[vendor].PORT) + 250;
-			const newServerPortRedisPurge = Number(envRedisPurge[vendor].PORT) + 300;
-
-			envMem[vendor].PORT = String(newServerPortMem);
-			envMemPurge[vendor].PORT = String(newServerPortMemPurge);
-			envRedis[vendor].PORT = String(newServerPortRedis);
-			envRedisPurge[vendor].PORT = String(newServerPortRedisPurge);
-
-			const serverMem = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envMem[vendor] });
-			const serverMemPurge = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envMemPurge[vendor] });
-			const serverRedis = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envRedis[vendor] });
-			const serverRedisPurge = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envRedisPurge[vendor] });
-
-			directusInstances[vendor] = [serverMem, serverMemPurge, serverRedis, serverRedisPurge];
-			envs[vendor] = { envMem, envMemPurge, envRedis, envRedisPurge };
-
-			promises.push(awaitDirectusConnection(newServerPortMem));
-			promises.push(awaitDirectusConnection(newServerPortMemPurge));
-			promises.push(awaitDirectusConnection(newServerPortRedis));
-			promises.push(awaitDirectusConnection(newServerPortRedisPurge));
-		}
-
-		// Give the server some time to start
-		await Promise.all(promises);
-	}, 180_000);
-
-	afterAll(async () => {
-		for (const [vendor, connection] of databases) {
-			for (const instance of directusInstances[vendor]!) {
-				instance.kill();
-			}
-
-			await connection.destroy();
-		}
-	});
-
-	async function clearCacheAndFetchOnce(vendor: Vendor, env: Env) {
-		await request(getUrl(vendor, env)).post(`/utils/cache/clear`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		await request(getUrl(vendor, env)).get(`/items/${collection}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-	}
 
 	const action = 'read';
 	const updatedAction = 'update';
@@ -219,12 +141,53 @@ describe('Permissions Cache Purging Tests', () => {
 		},
 	};
 
-	describe.each(Object.keys(mutations))('Purges cache after %s in permissions', (mutationKey) => {
-		describe.each(envKeys)('%s', (key) => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Setup
-				const env = envs[vendor][key];
+	describe.each(vendors)('%s', (vendor) => {
+		const cacheNamespacePrefix = 'directus-perms-caching';
 
+		const envMem = cloneDeep(config.envs);
+		envMem[vendor]['CACHE_ENABLED'] = 'true';
+		envMem[vendor]['CACHE_STATUS_HEADER'] = cacheStatusHeader;
+		envMem[vendor]['CACHE_AUTO_PURGE'] = 'false';
+		envMem[vendor]['CACHE_STORE'] = 'memory';
+		envMem[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_mem`;
+
+		const envMemPurge = cloneDeep(envMem);
+		envMemPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
+		envMemPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_mem_purge`;
+
+		const envRedis = cloneDeep(envMem);
+		envRedis[vendor]['REDIS_HOST'] = 'localhost';
+		envRedis[vendor]['REDIS_PORT'] = '6108';
+		envRedis[vendor]['CACHE_STORE'] = 'redis';
+		envRedis[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis`;
+
+		const envRedisPurge = cloneDeep(envRedis);
+		envRedisPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
+		envRedisPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis_purge`;
+
+		describe.each([
+			['memory', envMem],
+			['memory (purge)', envMemPurge],
+			['redis', envRedis],
+			['redis (purge)', envRedisPurge],
+		])('%s', (_, env) => {
+			let instance: ChildProcess;
+
+			beforeAll(async () => {
+				const newServerPort = await getPort();
+
+				env[vendor].PORT = String(newServerPort);
+
+				instance = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
+
+				await awaitDirectusConnection(newServerPort);
+			}, 60_000);
+
+			afterAll(async () => {
+				instance.kill();
+			});
+
+			it.each(Object.keys(mutations))('Purges cache after %s in permissions', async (mutationKey) => {
 				// Action
 				await mutations[mutationKey as keyof typeof mutations](vendor, env);
 
@@ -239,3 +202,9 @@ describe('Permissions Cache Purging Tests', () => {
 		});
 	});
 });
+
+async function clearCacheAndFetchOnce(vendor: Vendor, env: Env) {
+	await request(getUrl(vendor, env)).post(`/utils/cache/clear`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	await request(getUrl(vendor, env)).get(`/items/${collection}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+}

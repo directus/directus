@@ -297,6 +297,7 @@ const Rules = Type.Object({
 });
 
 export const ThemeSchema = Type.Object({
+	id: Type.String(),
 	name: Type.String(),
 	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
 	rules: Rules,

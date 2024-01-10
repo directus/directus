@@ -1,11 +1,11 @@
 import { expect, test, describe, beforeEach } from 'vitest';
 import { applyFunction } from './functions.js';
-import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
+import type { AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
 let randomTable: string;
 let randomColumn: string;
-let sample: AbstractSqlQueryFnNode;
+let sample: AbstractSqlQuerySelectFnNode;
 
 beforeEach(() => {
 	randomTable = randomIdentifier();

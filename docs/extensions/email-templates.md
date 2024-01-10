@@ -34,5 +34,5 @@ Learn how to build email templates with our official guides:
 <GuidesListExtensions type="Email Templates" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

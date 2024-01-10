@@ -194,7 +194,6 @@ function onClick(event: PointerEvent) {
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-hover,
@@ -217,7 +216,6 @@ function onClick(event: PointerEvent) {
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-active,
@@ -227,7 +225,6 @@ function onClick(event: PointerEvent) {
 	}
 
 	&:not(.dense).active {
-		--v-list-item-icon-color: var(--v-list-item-icon-color-active);
 		color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 		background-color: var(
 			--v-list-item-background-color-active,

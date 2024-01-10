@@ -1,24 +1,24 @@
-import { isDirectusError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	InvalidTokenError,
+	isDirectusError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
-import flatten from 'flat';
+import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidProviderError,
-	InvalidProviderConfigError,
-	InvalidTokenError,
-	ServiceUnavailableError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -39,6 +39,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const env = useEnv();
+		const logger = useLogger();
+
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
 		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
@@ -46,7 +49,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
+		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
+			'auth',
+			'login',
+			additionalConfig['provider'],
+			'callback',
+		);
 
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
@@ -129,6 +137,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const logger = useLogger();
+
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsError();
@@ -252,6 +262,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async refresh(user: User): Promise<void> {
+		const logger = useLogger();
+
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -281,6 +293,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 }
 
 const handleError = (e: any) => {
+	const logger = useLogger();
+
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
@@ -305,6 +319,8 @@ const handleError = (e: any) => {
 };
 
 export function createOpenIDAuthRouter(providerName: string): Router {
+	const env = useEnv();
+
 	const router = Router();
 
 	router.get(
@@ -345,6 +361,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			const logger = useLogger();
+
 			let tokenData;
 
 			try {
@@ -416,11 +434,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, {
 					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 

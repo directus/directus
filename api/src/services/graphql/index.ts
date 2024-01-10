@@ -1,7 +1,8 @@
 import { Action, FUNCTIONS } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import { parseFilterFunctionPath } from '@directus/utils';
+import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import type {
 	ArgumentNode,
@@ -47,7 +48,6 @@ import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq 
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import env from '../../env.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -55,7 +55,6 @@ import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
@@ -81,6 +80,8 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+
+const env = useEnv();
 
 const validationRules = Array.from(specifiedRules);
 
@@ -201,8 +202,7 @@ export class GraphQLService {
 			},
 		});
 
-		const { ReadCollectionTypes } = getReadableTypes();
-
+		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes();
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -247,6 +247,12 @@ export class GraphQLService {
 
 							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 								`${collection.collection}_aggregated`,
+							);
+						}
+
+						if (this.scope === 'items') {
+							acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
+								`${collection.collection}_by_version`,
 							);
 						}
 
@@ -364,6 +370,7 @@ export class GraphQLService {
 		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
+			const VersionTypes: Record<string, ObjectTypeComposer> = {};
 
 			const CountFunctions = schemaComposer.createObjectTC({
 				name: 'count_functions',
@@ -514,6 +521,12 @@ export class GraphQLService {
 						{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
 					),
 				});
+
+				if (self.scope === 'items') {
+					VersionTypes[collection.collection] = CollectionTypes[collection.collection]!.clone(
+						`version_${collection.collection}`,
+					);
+				}
 			}
 
 			for (const relation of schema[action].relations) {
@@ -538,6 +551,17 @@ export class GraphQLService {
 								},
 							},
 						});
+
+						if (self.scope === 'items') {
+							VersionTypes[relation.related_collection]?.addFields({
+								[relation.meta.one_field]: {
+									type: GraphQLJSON,
+									resolve: (obj: Record<string, any>, _, __, info) => {
+										return obj[info?.path?.key ?? relation.meta!.one_field];
+									},
+								},
+							});
+						}
 					}
 				} else if (relation.meta?.one_allowed_collections && action === 'read') {
 					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
@@ -577,14 +601,14 @@ export class GraphQLService {
 				}
 			}
 
-			return { CollectionTypes };
+			return { CollectionTypes, VersionTypes };
 		}
 
 		/**
 		 * Create readable types and attach resolvers for each. Also prepares full filter argument structures
 		 */
 		function getReadableTypes() {
-			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+			const { CollectionTypes: ReadCollectionTypes, VersionTypes: VersionCollectionTypes } = getTypes('read');
 
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
@@ -758,6 +782,48 @@ export class GraphQLService {
 				},
 			});
 
+			const BigIntFilterOperators = schemaComposer.createInputTC({
+				name: 'big_int_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLBigInt,
+					},
+					_neq: {
+						type: GraphQLBigInt,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_gt: {
+						type: GraphQLBigInt,
+					},
+					_gte: {
+						type: GraphQLBigInt,
+					},
+					_lt: {
+						type: GraphQLBigInt,
+					},
+					_lte: {
+						type: GraphQLBigInt,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+				},
+			});
+
 			const GeometryFilterOperators = schemaComposer.createInputTC({
 				name: 'geometry_filter_operators',
 				fields: {
@@ -875,6 +941,8 @@ export class GraphQLService {
 								filterOperatorType = BooleanFilterOperators;
 								break;
 							case GraphQLBigInt:
+								filterOperatorType = BigIntFilterOperators;
+								break;
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
@@ -1064,12 +1132,6 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
-				} else {
-					resolver.args = {
-						version: {
-							type: GraphQLString,
-						},
-					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
@@ -1112,8 +1174,25 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
-							version: GraphQLString,
 						},
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context['data'] = result;
+							return result;
+						},
+					});
+				}
+
+				if (self.scope === 'items') {
+					VersionCollectionTypes[collection.collection]!.addResolver({
+						name: `${collection.collection}_by_version`,
+						type: VersionCollectionTypes[collection.collection]!,
+						args: collection.singleton
+							? { version: new GraphQLNonNull(GraphQLString) }
+							: {
+									version: new GraphQLNonNull(GraphQLString),
+									id: new GraphQLNonNull(GraphQLID),
+							  },
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
 							context['data'] = result;
@@ -1208,7 +1287,7 @@ export class GraphQLService {
 				}
 			}
 
-			return { ReadCollectionTypes, ReadableCollectionFilterTypes };
+			return { ReadCollectionTypes, VersionCollectionTypes, ReadableCollectionFilterTypes };
 		}
 
 		function getWritableTypes() {
@@ -1418,6 +1497,10 @@ export class GraphQLService {
 
 			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -6);
+			}
+
+			if (collection.endsWith('_by_version') && collection in this.schema.collections === false) {
+				collection = collection.slice(0, -11);
 			}
 		}
 
@@ -2127,11 +2210,11 @@ export class GraphQLService {
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
 							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
@@ -2165,7 +2248,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
@@ -2176,11 +2259,11 @@ export class GraphQLService {
 					const result = await authenticationService.refresh(currentRefreshToken);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
 							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
@@ -2213,7 +2296,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({

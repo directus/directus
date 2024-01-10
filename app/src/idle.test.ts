@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { DefineComponent, defineComponent, h, onMounted, onUnmounted } from 'vue';
 
 import { time as timeoutDuration } from './idle';
@@ -10,7 +10,7 @@ vi.mock('lodash', () => ({
 
 describe('idle', () => {
 	let testComponent: DefineComponent<any>;
-	let idleTrackerEmitSpy: SpyInstance;
+	let idleTrackerEmitSpy: MockInstance;
 
 	beforeEach(async () => {
 		vi.useFakeTimers();

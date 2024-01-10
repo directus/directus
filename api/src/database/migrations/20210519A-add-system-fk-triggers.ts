@@ -1,6 +1,6 @@
-import type { Knex } from 'knex';
 import { createInspector } from '@directus/schema';
-import logger from '../../logger.js';
+import type { Knex } from 'knex';
+import { useLogger } from '../../logger.js';
 
 /**
  * Things to keep in mind:
@@ -81,6 +81,8 @@ const updates = [
 ];
 
 export async function up(knex: Knex): Promise<void> {
+	const logger = useLogger();
+
 	const inspector = createInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
@@ -136,6 +138,8 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
+	const logger = useLogger();
+
 	for (const update of updates) {
 		for (const constraint of update.constraints) {
 			try {

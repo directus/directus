@@ -1,6 +1,5 @@
 import type { ValuesNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQueryFnNode } from '../../select/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../select/primitive.js';
+import type { AbstractSqlQuerySelectNode } from '../../select.js';
 
 /*
  * Condition to filter rows where a column value is in a list of values.
@@ -13,7 +12,7 @@ export interface SqlConditionSetNode {
 	operation: 'in';
 
 	/* The column in question. */
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	target: AbstractSqlQuerySelectNode;
 
 	/*
 	 * Reference to the list of values to compare the column value with.

@@ -12,7 +12,8 @@ Directus' Live Preview feature allows you to show changes in your website collec
 need to refresh the browser.
 
 By adding a preview URL and setting up your Nuxt 3 application, you can instantly see live changes made to your
-collection inside of Directus.
+collection inside of Directus. This is useful when using Directus as a
+[Headless CMS](https://directus.io/solutions/headless-cms).
 
 ## Before You Start
 

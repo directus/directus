@@ -53,8 +53,8 @@ test('Convert simple query', () => {
 		parameters: [],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with filter', () => {
@@ -114,8 +114,8 @@ test('Convert query with filter', () => {
 		parameters: [compareToValue],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with a limit', () => {
@@ -148,8 +148,8 @@ test('Convert query with a limit', () => {
 		parameters: [sample.modifiers.limit!.value],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with limit and offset', () => {
@@ -187,8 +187,8 @@ test('Convert query with limit and offset', () => {
 		parameters: [sample.modifiers.limit!.value, sample.modifiers.offset!.value],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with a sort', () => {
@@ -239,8 +239,8 @@ test('Convert query with a sort', () => {
 		parameters: [],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert a query with a function as field select', () => {
@@ -286,8 +286,8 @@ test('Convert a query with a function as field select', () => {
 		parameters: [],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert a query with all possible modifiers', () => {
@@ -348,6 +348,6 @@ test('Convert a query with all possible modifiers', () => {
 		parameters: [sample.modifiers.limit!.value, sample.modifiers.offset!.value],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.rootQuery.clauses).toMatchObject(expected.clauses);
+	expect(res.rootQuery.parameters).toMatchObject(expected.parameters);
 });

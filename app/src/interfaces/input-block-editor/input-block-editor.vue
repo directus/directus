@@ -198,8 +198,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) 4px var(--theme--form--field--input--padding)
-		calc(var(--theme--form--field--input--padding) + 8px) !important;
+	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

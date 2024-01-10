@@ -18,16 +18,16 @@ export const useTheme = (
 	const { themes } = storeToRefs(useThemeStore());
 
 	const theme = computed(() => {
-		const themeName = unref(darkMode) ? unref(themeDark) : unref(themeLight);
+		const themeId = unref(darkMode) ? unref(themeDark) : unref(themeLight);
 		const defaultTheme = unref(darkMode) ? themeDefaultDark : themeDefaultLight;
 		const overrides = unref(darkMode) ? unref(themeDarkOverrides) : unref(themeLightOverrides);
 
-		const theme = unref(themes)[unref(darkMode) ? 'dark' : 'light'].find((theme) => theme.name === themeName);
+		const theme = unref(themes)[unref(darkMode) ? 'dark' : 'light'].find((theme) => theme.id === themeId);
 
 		if (!theme) {
-			if (themeName && themeName !== defaultTheme.name) {
+			if (themeId && themeId !== defaultTheme.id) {
 				// eslint-disable-next-line no-console
-				console.warn(`Theme "${themeName}" doesn't exist.`);
+				console.warn(`Theme "${themeId}" doesn't exist.`);
 			}
 
 			return overrides ? merge({}, defaultTheme, { rules: overrides }) : defaultTheme;

@@ -1,27 +1,33 @@
+import stripAnsi from 'strip-ansi';
 import { expect, test, vi } from 'vitest';
 import { updateCheck } from './index.js';
-import stripAnsi from 'strip-ansi';
 
-vi.mock('got', () => {
-	const manifest = {
-		'dist-tags': { latest: '10.6.1' },
-		versions: {
-			'10.4.3': {},
-			'10.5.0': {},
-			'10.5.1': {},
-			'10.5.2': {},
-			'10.5.3': {},
-			'10.6.0': {},
-			'10.6.1': {},
-			'10.7.0-beta.0': {},
+vi.mock('./cache.js');
+
+vi.mock('axios-cache-interceptor', () => ({
+	setupCache: () => ({
+		async get() {
+			return { data: manifest };
 		},
-	};
+	}),
+}));
 
-	return { default: () => ({ json: () => manifest }) };
-});
+const manifest = {
+	'dist-tags': { latest: '10.6.1' },
+	versions: {
+		'10.4.3': {},
+		'10.5.0': {},
+		'10.5.1': {},
+		'10.5.2': {},
+		'10.5.3': {},
+		'10.6.0': {},
+		'10.6.1': {},
+		'10.7.0-beta.0': {},
+	},
+};
 
 test('#updateCheck', async () => {
-	const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+	const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 	const currentVersion = '10.5.0';
 	await updateCheck(currentVersion);

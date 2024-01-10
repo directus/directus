@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: check
-        uses: directus/cla-bot@v0.0.1
+        uses: directus/cla-bot@v0.0.2
+
       - if: failure() && steps.check.outputs.missing
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -22,6 +23,7 @@ jobs:
             Thank you for contributing to Directus! Before we consider your Pull Request, we ask that you sign [our Contributor License Agreement (CLA)](https://github.com/directus/directus/blob/main/cla.md). This is only required for your first Pull Request.
 
             Please [review the CLA](https://github.com/directus/directus/blob/main/cla.md), and sign it by adding your GitHub username to [the contributors.yml file](https://github.com/${{github.event.pull_request.head.repo.full_name}}/blob/${{github.head_ref}}/contributors.yml). Thanks!
+
       - if: success()
         uses: marocchino/sticky-pull-request-comment@v2
         with:

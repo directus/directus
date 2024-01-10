@@ -1,8 +1,8 @@
 import type { Column, SchemaOverview } from '@directus/schema';
 import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import env from '../env.js';
-import logger from '../logger.js';
+import { getNodeEnv } from '@directus/utils/node';
+import { useLogger } from '../logger.js';
 import getLocalType from './get-local-type.js';
 
 export default function getDefaultValue(
@@ -43,6 +43,8 @@ function castToBoolean(value: any): boolean {
 }
 
 function castToObject(value: any): any | any[] {
+	const logger = useLogger();
+
 	if (!value) return value;
 
 	if (typeof value === 'object') return value;
@@ -51,7 +53,7 @@ function castToObject(value: any): any | any[] {
 		try {
 			return parseJSON(value);
 		} catch (err: any) {
-			if (env['NODE_ENV'] === 'development') {
+			if (getNodeEnv() === 'development') {
 				logger.error(err);
 			}
 

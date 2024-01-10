@@ -63,15 +63,24 @@
 #     User:          admin
 #     Password:      --
 
-version: '3.1'
+version: '3.8'
+
 services:
   postgres:
-    image: postgis/postgis:13-3.1-alpine
+    image: postgis/postgis:13-3.4-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
       - 5100:5432
+
+  postgres10:
+    image: postgis/postgis:10-3.2-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5111:5432
 
   mysql:
     image: mysql:8
@@ -84,8 +93,16 @@ services:
     cap_add:
       - SYS_NICE
 
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5108:3306
+
   maria:
-    image: mariadb:10.7
+    image: mariadb:10
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -109,13 +126,19 @@ services:
       - ORACLE_ALLOW_REMOTE=true
     shm_size: '1gb' # more like smh-size amirite 🥁
 
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 5113:26257
+
   redis:
     image: redis:6-alpine
     ports:
       - 5105:6379
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio
     command: server /data/minio/ --console-address :9001
     ports:
       - 5106:9000
@@ -126,16 +149,8 @@ services:
     ports:
       - 5107:10000
 
-  mysql5:
-    image: mysql:5
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: directus
-    ports:
-      - 5108:3306
-
   keycloak:
-    image: jboss/keycloak:latest
+    image: jboss/keycloak
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: secret
@@ -143,17 +158,3 @@ services:
       DB_VENDOR: h2
     ports:
       - 5110:8080
-
-  postgres10:
-    image: postgis/postgis:10-3.1-alpine
-    environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: directus
-    ports:
-      - 5111:5432
-
-  cockroachdb:
-    image: cockroachdb/cockroach:latest-v21.1
-    command: start-single-node --cluster-name=example-single-node --insecure
-    ports:
-      - 5113:26257

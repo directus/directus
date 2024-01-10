@@ -3,27 +3,28 @@ import type { ShowSelect } from '@directus/extensions';
 import { computed } from 'vue';
 import type { Header, Item } from './types';
 
-interface Props {
-	headers: Header[];
-	item: Item;
-	showSelect: ShowSelect;
-	showManualSort?: boolean;
-	isSelected?: boolean;
-	subdued?: boolean;
-	sortedManually?: boolean;
-	hasClickListener?: boolean;
-	height?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showManualSort: false,
-	isSelected: false,
-	subdued: false,
-	sortedManually: false,
-	hasClickListener: false,
-	height: 48,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: Header[];
+		item: Item;
+		showSelect: ShowSelect;
+		showManualSort?: boolean;
+		isSelected?: boolean;
+		subdued?: boolean;
+		sortedManually?: boolean;
+		hasClickListener?: boolean;
+		height?: number;
+	}>(),
+	{
+		showSelect: 'none',
+		showManualSort: false,
+		isSelected: false,
+		subdued: false,
+		sortedManually: false,
+		hasClickListener: false,
+		height: 48,
+	},
+);
 
 defineEmits(['click', 'item-selected']);
 

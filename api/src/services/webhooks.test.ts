@@ -1,9 +1,8 @@
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { SpyInstance } from 'vitest';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getMessenger } from '../messenger.js';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
+import { useBus } from '../bus/index.js';
 import { WebhooksService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -33,7 +32,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Webhooks', () => {
 		let service: WebhooksService;
-		let messengerPublishSpy: SpyInstance;
+		let messengerPublishSpy: MockInstance;
 
 		beforeEach(() => {
 			service = new WebhooksService({
@@ -69,7 +68,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			messengerPublishSpy = vi.spyOn(getMessenger(), 'publish');
+			messengerPublishSpy = vi.spyOn(useBus(), 'publish');
 		});
 
 		afterEach(() => {

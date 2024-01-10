@@ -18,6 +18,7 @@ Example of a theme:
 import { defineTheme } from '@directus/extensions-sdk';
 
 export default defineTheme({
+	id: 'custom',
 	name: 'My Custom Theme',
 	appearance: 'dark',
 	rules: {
@@ -28,6 +29,7 @@ export default defineTheme({
 
 ### Available Options
 
+- `id` — The unique key for this theme. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` - The displayed name for this theme. This must be unique within your Directus project.
 - `appearance` - To which appearance mode the theme belongs to, `light` or `dark`.
 - `rules` - A set of theming rules from the theme schema.

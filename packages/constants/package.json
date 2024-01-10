@@ -1,6 +1,6 @@
 {
 	"name": "@directus/constants",
-	"version": "11.0.1",
+	"version": "11.0.2",
 	"description": "Shared constants for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,6 +28,6 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"tsup": "8.0.1",
-		"typescript": "5.3.2"
+		"typescript": "5.3.3"
 	}
 }
