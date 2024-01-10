@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
