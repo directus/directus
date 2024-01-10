@@ -1,27 +1,24 @@
-import { NESTED_EXTENSION_TYPES } from '@directus/extensions';
-import { ensureExtensionDirs } from '@directus/extensions/node';
+import { useEnv } from '@directus/env';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
-import env from '../../env.js';
-import logger from '../../logger.js';
-import { getMessenger } from '../../messenger.js';
+import { useBus } from '../../bus/index.js';
+import { useLogger } from '../../logger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
 export const syncExtensions = async (): Promise<void> => {
+	const env = useEnv();
+	const logger = useLogger();
+
 	const extensionsPath = getExtensionsPath();
+	const storageExtensionsPath = env['EXTENSIONS_PATH'] as string;
 
-	if (!env['EXTENSIONS_LOCATION']) {
-		// Safe to run with multiple instances since dirs are created with `recursive: true`
-		return ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
-	}
-
-	const messenger = getMessenger();
+	const messenger = useBus();
 
 	const isPrimaryProcess =
 		String(process.env['NODE_APP_INSTANCE']) === '0' || process.env['NODE_APP_INSTANCE'] === undefined;
@@ -53,17 +50,17 @@ export const syncExtensions = async (): Promise<void> => {
 
 	const storage = await getStorage();
 
-	const disk = storage.location(env['EXTENSIONS_LOCATION']);
+	const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 	// Make sure we don't overload the file handles
 	const queue = new Queue({ concurrency: 1000 });
 
-	for await (const filepath of disk.list(env['EXTENSIONS_PATH'])) {
+	for await (const filepath of disk.list(storageExtensionsPath)) {
 		const readStream = await disk.read(filepath);
 
 		// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 		// extensions path on disk from the start of the file path
-		const destPath = join(extensionsPath, relative(resolve(sep, env['EXTENSIONS_PATH']), resolve(sep, filepath)));
+		const destPath = join(extensionsPath, relative(resolve(sep, storageExtensionsPath), resolve(sep, filepath)));
 
 		// Ensure that the directory path exists
 		await mkdir(dirname(destPath), { recursive: true });
@@ -74,8 +71,6 @@ export const syncExtensions = async (): Promise<void> => {
 	}
 
 	await queue.onIdle();
-
-	await ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 
 	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });

@@ -124,5 +124,12 @@ module.exports = {
 				...vueRules,
 			},
 		},
+		// Test files
+		{
+			files: ['*.test.ts'],
+			rules: {
+				'vue/one-component-per-file': 'off',
+			},
+		},
 	],
 };

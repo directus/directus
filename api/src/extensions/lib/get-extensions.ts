@@ -1,24 +1,26 @@
-import type { Extension } from '@directus/extensions';
-import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import env from '../../env.js';
+import { useEnv } from '@directus/env';
+import { resolveLocalExtensions, resolvePackageExtensions } from '@directus/extensions/node';
+import { useLogger } from '../../logger.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
-	const localExtensions = await getLocalExtensions(getExtensionsPath());
+	const env = useEnv();
+	const logger = useLogger();
 
-	const loadedNames = localExtensions.map(({ name }) => name);
+	const localExtensions = await resolveLocalExtensions(getExtensionsPath());
+	const localExtensionNames = localExtensions.map(({ name }) => name);
 
-	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
+	/** Extensions that are listed as dependencies in the root package.json */
+	const packageExtensions = await resolvePackageExtensions(env['PACKAGE_FILE_LOCATION'] as string);
 
-	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
-		filterDuplicates(extension),
-	);
+	const dedupedPackageExtensions = packageExtensions.filter((ext) => {
+		if (localExtensionNames.includes(ext.name)) {
+			logger.warn(`Package extension "${ext.name}" skipped in favor of local extension with the same name.`);
+			return false;
+		}
 
-	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
+		return true;
+	});
 
-	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
-		filterDuplicates(extension),
-	);
-
-	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+	return [...localExtensions, ...dedupedPackageExtensions];
 };

@@ -1,8 +1,8 @@
-import { createError } from '@directus/errors';
-import { describe, expect, test, vi } from 'vitest';
+import { InvalidPayloadError, createError } from '@directus/errors';
+import { type Logger } from 'pino';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ZodError } from 'zod';
-import { InvalidPayloadError } from '@directus/errors';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { WebSocketError, handleWebSocketError } from './errors.js';
 import type { WebSocketClient } from './types.js';
 
@@ -19,6 +19,20 @@ function mockClient() {
 		accountability: null,
 	} as unknown as WebSocketClient;
 }
+
+let mockLogger: Logger<never>;
+
+beforeEach(() => {
+	mockLogger = {
+		error: vi.fn(),
+	} as unknown as Logger<never>;
+
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('WebSocketError', () => {
 	test('with uid', () => {
@@ -64,7 +78,7 @@ describe('handleWebSocketError', () => {
 		const expected = WebSocketError.fromError(error, type).toMessage();
 		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
-		expect(logger.error).not.toBeCalled();
+		expect(mockLogger.error).not.toBeCalled();
 	});
 
 	test('handle InvalidPayloadError', () => {
@@ -73,7 +87,7 @@ describe('handleWebSocketError', () => {
 		const expected = WebSocketError.fromError(error, type).toMessage();
 		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
-		expect(logger.error).not.toBeCalled();
+		expect(mockLogger.error).not.toBeCalled();
 	});
 
 	test('handle WebSocketError', () => {
@@ -82,7 +96,7 @@ describe('handleWebSocketError', () => {
 		const expected = error.toMessage();
 		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
-		expect(logger.error).not.toBeCalled();
+		expect(mockLogger.error).not.toBeCalled();
 	});
 
 	test('handle ZodError', () => {
@@ -95,7 +109,7 @@ describe('handleWebSocketError', () => {
 		const expected = WebSocketError.fromZodError(error, type).toMessage();
 		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
-		expect(logger.error).not.toBeCalled();
+		expect(mockLogger.error).not.toBeCalled();
 	});
 
 	test('unhandled exception', () => {
@@ -103,6 +117,6 @@ describe('handleWebSocketError', () => {
 		const error = new Error('regular error');
 		handleWebSocketError(client, error, type);
 		expect(client.send).not.toBeCalled();
-		expect(logger.error).toBeCalled();
+		expect(mockLogger.error).toBeCalled();
 	});
 });

@@ -131,6 +131,7 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
+CIDR
 CLA
 CLI
 CloudFront

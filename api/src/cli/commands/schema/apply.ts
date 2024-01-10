@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 import type { Snapshot } from '../../../types/index.js';
 import { DiffKind } from '../../../types/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
@@ -14,6 +14,8 @@ import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
+	const logger = useLogger();
+
 	const filename = path.resolve(process.cwd(), snapshotPath);
 
 	const database = getDatabase();

@@ -1,7 +1,8 @@
-import { isDirectusError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import { toArray } from '@directus/utils';
 import type { BusboyFileStream } from '@directus/types';
+import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
 import bytes from 'bytes';
 import type { RequestHandler } from 'express';
@@ -9,8 +10,6 @@ import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
-import env from '../env.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -21,6 +20,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_files'));
 
@@ -57,7 +57,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env['STORAGE_LOCATIONS'])[0];
+	let disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 	let payload: any = {};
 	let fileCount = 0;
 

@@ -33,7 +33,6 @@ describe('Schema Caching Tests', () => {
 					env1[vendor]['CACHE_STORE'] = 'memory';
 					env1[vendor]['CACHE_NAMESPACE'] = 'directus-schema-cache';
 					env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
-					env1[vendor]['MESSENGER_STORE'] = 'redis';
 					env1[vendor]['MESSENGER_NAMESPACE'] = `directus-${vendor}`;
 
 					const env2 = cloneDeep(env1);
