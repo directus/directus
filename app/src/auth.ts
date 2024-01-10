@@ -33,10 +33,10 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 		mode: 'cookie',
 	});
 
-	const accessToken = response.data.data.access_token;
+	// const accessToken = response.data.data.access_token;
 
 	// Add the header to the API handler for every request
-	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+	// api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
 	// logged in without any noticeable hiccups or delays

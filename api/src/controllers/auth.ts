@@ -9,7 +9,7 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { REFRESH_COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { REFRESH_COOKIE_OPTIONS, /*ACCESS_COOKIE_OPTIONS,*/ DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
