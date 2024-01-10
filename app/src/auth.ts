@@ -90,7 +90,7 @@ idleTracker.on('show', () => {
 	}
 });
 
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	// Allow refresh during initial page load
 	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
@@ -120,10 +120,10 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 			},
 		});
 
-		const accessToken = response.data.data.access_token;
+		// const accessToken = response.data.data.access_token;
 
 		// Add the header to the API handler for every request
-		api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+		// api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any notable hiccups or delays
@@ -138,7 +138,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 		appStore.authenticated = true;
 
-		return accessToken;
+		return;
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {

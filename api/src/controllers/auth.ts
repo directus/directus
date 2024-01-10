@@ -9,7 +9,7 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { REFRESH_COOKIE_OPTIONS, /*ACCESS_COOKIE_OPTIONS,*/ DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { REFRESH_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, ACCESS_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -91,15 +91,17 @@ router.post(
 		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 
 		const payload = {
-			data: { access_token: accessToken, expires },
+			data: { expires },
 		} as Record<string, Record<string, any>>;
 
 		if (mode === 'json') {
 			payload['data']!['refresh_token'] = refreshToken;
+			payload['data']!['access_token'] = accessToken;
 		}
 
 		if (mode === 'cookie') {
 			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+			res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
 		}
 
 		res.locals['payload'] = payload;
