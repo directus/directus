@@ -1136,6 +1136,8 @@ displays:
     suffix: Lostger
     color: Liv
     icon: Arlun
+    mask: Kuzhet
+    mask_label: Kuzhat an talvoud gwir
     text: Testenn
   formatted-json-value:
     formatted-json-value: Talvoud JSON furmadet

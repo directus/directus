@@ -247,6 +247,6 @@ describe('applyFilter', () => {
 		const expectedSql = `select * where "${collection}"."${field}" = ?`;
 
 		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
-		expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId);
+		expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId.toString());
 	});
 });

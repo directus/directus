@@ -499,7 +499,7 @@ function getNearAttachment(pos: Vector2) {
 const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
-	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}/`),
+	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}`),
 });
 
 const confirmCancel = ref(false);

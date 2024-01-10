@@ -16,33 +16,25 @@ const props = defineProps({
 	},
 });
 
-const styles = computed(() => {
-	const defaultColor = props.defaultColor?.startsWith('var(')
-		? cssVar(props.defaultColor.slice(4, -1))
-		: props.defaultColor;
+const color = computed(() => props.value ?? props.defaultColor);
 
-	const value = props.value?.startsWith('var(') ? cssVar(props.value.slice(4, -1)) : props.value;
-
-	const style: Record<string, any> = { 'background-color': defaultColor };
-
-	if (value !== null) style['background-color'] = value;
-
-	const pageColorString = cssVar('--theme--background');
-
-	const pageColorRGB = Color(pageColorString);
-	const colorRGB = value === null ? Color(defaultColor) : Color(value);
-
-	if (colorRGB.contrast(pageColorRGB) < 1.1)
-		style['border'] = '1px solid var(--theme--form--field--input--border-color)';
-
-	return style;
+const addBorder = computed(() => {
+	try {
+		const valueColor = Color(color.value);
+		const pageColor = Color(cssVar('--theme--background'));
+		return valueColor.contrast(pageColor) < 1.1;
+	} catch {
+		// There's a chance the color isn't supported by color-js (like with color-mix or other modern
+		// CSS), in which case we'll just show the dot as-is
+		return false;
+	}
 });
 </script>
 
 <template>
 	<div class="color-dot">
 		<value-null v-if="value === null && defaultColor === null" />
-		<div class="dot" :style="styles"></div>
+		<div class="dot" :class="{ 'with-border': addBorder }" />
 	</div>
 </template>
 
@@ -52,11 +44,16 @@ const styles = computed(() => {
 	align-items: center;
 
 	.dot {
+		background-color: v-bind(color);
 		display: inline-block;
 		flex-shrink: 0;
 		width: 10px;
 		height: 10px;
 		border-radius: 5px;
+
+		&.with-border {
+			border: 1px solid var(--theme--form--field--input--border-color);
+		}
 	}
 }
 </style>

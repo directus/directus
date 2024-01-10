@@ -130,6 +130,7 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
+CIDR
 CLA
 CLI
 CloudFront
@@ -138,6 +139,7 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
 CollectionsService
 CommonJS

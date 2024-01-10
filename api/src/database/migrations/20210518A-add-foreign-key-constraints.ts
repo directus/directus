@@ -1,10 +1,12 @@
+import { createInspector } from '@directus/schema';
 import type { RelationMeta } from '@directus/types';
 import type { Knex } from 'knex';
-import { createInspector } from '@directus/schema';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const logger = useLogger();
+
 	const inspector = createInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
@@ -134,6 +136,8 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
+	const logger = useLogger();
+
 	const relations = await knex
 		.select<RelationMeta[]>('many_collection', 'many_field', 'one_collection')
 		.from('directus_relations');

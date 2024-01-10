@@ -1,7 +1,8 @@
 import { Action, FUNCTIONS } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import { parseFilterFunctionPath } from '@directus/utils';
+import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import type {
 	ArgumentNode,
@@ -47,7 +48,6 @@ import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq 
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import env from '../../env.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -55,7 +55,6 @@ import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
@@ -81,6 +80,8 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+
+const env = useEnv();
 
 const validationRules = Array.from(specifiedRules);
 
@@ -781,6 +782,48 @@ export class GraphQLService {
 				},
 			});
 
+			const BigIntFilterOperators = schemaComposer.createInputTC({
+				name: 'big_int_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLBigInt,
+					},
+					_neq: {
+						type: GraphQLBigInt,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_gt: {
+						type: GraphQLBigInt,
+					},
+					_gte: {
+						type: GraphQLBigInt,
+					},
+					_lt: {
+						type: GraphQLBigInt,
+					},
+					_lte: {
+						type: GraphQLBigInt,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_between: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+					_nbetween: {
+						type: new GraphQLList(GraphQLBigInt),
+					},
+				},
+			});
+
 			const GeometryFilterOperators = schemaComposer.createInputTC({
 				name: 'geometry_filter_operators',
 				fields: {
@@ -898,6 +941,8 @@ export class GraphQLService {
 								filterOperatorType = BooleanFilterOperators;
 								break;
 							case GraphQLBigInt:
+								filterOperatorType = BigIntFilterOperators;
+								break;
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
@@ -2165,11 +2210,11 @@ export class GraphQLService {
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
 							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
@@ -2203,7 +2248,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
@@ -2214,11 +2259,11 @@ export class GraphQLService {
 					const result = await authenticationService.refresh(currentRefreshToken);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
 							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
@@ -2251,7 +2296,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({

@@ -10,6 +10,10 @@ const props = defineProps<{
 	close?: boolean;
 }>();
 
+const emit = defineEmits<{
+	toggle: [open: boolean];
+}>();
+
 const { active, toggle } = useGroupable({
 	value: props.title,
 	group: 'sidebar-detail',
@@ -17,11 +21,16 @@ const { active, toggle } = useGroupable({
 
 const appStore = useAppStore();
 const { sidebarOpen } = toRefs(appStore);
+
+function onClick() {
+	emit('toggle', !active.value);
+	toggle();
+}
 </script>
 
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="toggle">
+		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="onClick">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" />

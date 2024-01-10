@@ -1086,6 +1086,8 @@ displays:
     color: Koloro
     background: Fono
     icon: Emblemo
+    mask: Kaŝita
+    mask_label: Kaŝi la veran valoron
     text: Teksto
   icon:
     icon: Emblemo

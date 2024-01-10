@@ -105,6 +105,13 @@ extensions/
   ...
 ```
 
+:::info Directory Name Prefix
+
+When installing extensions locally via the extensions folder, extensions are only recognized and loaded when placed in a
+folder prefixed with `directus-extension-`.
+
+:::
+
 **3. Update Docker Compose File**
 
 Open your `docker-compose.yml` file and add a volume to mount your extensions folder into the Docker container:
