@@ -1,6 +1,6 @@
 {
 	"name": "@directus/update-check",
-	"version": "11.0.3",
+	"version": "11.0.4",
 	"description": "Check if an update for Directus is available",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"axios": "1.6.2",
-		"axios-cache-interceptor": "1.3.3",
+		"axios-cache-interceptor": "1.4.1",
 		"boxen": "7.1.1",
 		"chalk": "5.3.0",
 		"find-cache-dir": "5.0.0",
@@ -42,6 +42,6 @@
 		"strip-ansi": "7.1.0",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	}
 }

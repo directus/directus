@@ -646,8 +646,6 @@ export function applyFilter(
 
 				if (['integer', 'float', 'decimal'].includes(type)) {
 					compareValue = Number(compareValue);
-				} else if (type === 'bigInteger') {
-					compareValue = BigInt(compareValue);
 				}
 			}
 
@@ -671,14 +669,6 @@ export function applyFilter(
 						compareValue = compareValue.map((val) => Number(val));
 					} else {
 						compareValue = Number(compareValue);
-					}
-				}
-
-				if (type === 'bigInteger') {
-					if (Array.isArray(compareValue)) {
-						compareValue = compareValue.map((val) => BigInt(val));
-					} else {
-						compareValue = BigInt(compareValue);
 					}
 				}
 			}

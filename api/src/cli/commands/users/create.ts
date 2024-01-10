@@ -1,7 +1,7 @@
-import { getSchema } from '../../../utils/get-schema.js';
-import { UsersService } from '../../../services/users.js';
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
+import { UsersService } from '../../../services/users.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export default async function usersCreate({
 	email,
@@ -13,6 +13,7 @@ export default async function usersCreate({
 	role?: string;
 }): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	if (!email || !password || !role) {
 		logger.error('Email, password, role are required');

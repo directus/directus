@@ -1,10 +1,12 @@
+import { useEnv } from '@directus/env';
 import type { StorageManager } from '@directus/storage';
 import { toArray } from '@directus/utils';
-import env from '../env.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 
 export const registerLocations = async (storage: StorageManager) => {
-	const locations = toArray(env['STORAGE_LOCATIONS']);
+	const env = useEnv();
+
+	const locations = toArray(env['STORAGE_LOCATIONS'] as string);
 
 	locations.forEach((location: string) => {
 		location = location.trim();

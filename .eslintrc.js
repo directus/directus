@@ -40,6 +40,8 @@ const basicRules = {
 	'no-nested-ternary': 'error',
 	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
+	// Disallow expressions where the operation doesn't affect the value
+	'no-constant-binary-expression': 'error',
 };
 
 const tsRules = {
@@ -120,6 +122,13 @@ module.exports = {
 				...require('@typescript-eslint/eslint-plugin').configs['eslint-recommended'].overrides[0].rules,
 				...tsRules,
 				...vueRules,
+			},
+		},
+		// Test files
+		{
+			files: ['*.test.ts'],
+			rules: {
+				'vue/one-component-per-file': 'off',
 			},
 		},
 	],
