@@ -95,10 +95,7 @@ function filter(field: Field): boolean {
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {
-		return (
-			field.field.toLowerCase().includes(search.value.toLowerCase()) ||
-			field.name.toLowerCase().includes(search.value.toLowerCase())
-		);
+		return field.name.toLowerCase().includes(search.value.toLowerCase());
 	}
 }
 </script>
