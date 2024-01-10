@@ -118,8 +118,10 @@ const isStepDownAllowed = computed(() => {
 });
 
 function processValue(event: KeyboardEvent) {
-	if (!event.key) return;
-	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
+	const key = keyMap[event.key] ?? event.key.toLowerCase();
+
+	if (!key) return;
+
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {

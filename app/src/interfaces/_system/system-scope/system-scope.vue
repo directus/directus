@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'input', value: string | null): void;
+	input: [value: string | null];
 }>();
 
 const { t } = useI18n();
@@ -20,8 +20,10 @@ const collection = ref<string | null>(null);
 const itemName = ref<string | null>(null);
 const loading = ref(false);
 
-const isItem = computed(
-	() => props.value !== null && (props.value.startsWith('role_') || props.value.startsWith('user_')),
+const itemInfo = computed(() =>
+	props.value?.startsWith('role_') || props.value?.startsWith('user_')
+		? (props.value.split('_') as [type: string, id: string])
+		: null,
 );
 
 watch(() => props.value, loadItemName);
@@ -44,8 +46,8 @@ const options = computed(() => {
 		},
 	];
 
-	if (isItem.value) {
-		const [type, id] = props.value!.split('_');
+	if (itemInfo.value) {
+		const [type, id] = itemInfo.value;
 
 		options = [
 			{
@@ -75,14 +77,14 @@ function onSelectItem(value: (string | number)[] | null) {
 }
 
 async function loadItemName() {
-	if (!isItem.value) {
+	if (!itemInfo.value) {
 		itemName.value = null;
 		return;
 	}
 
 	loading.value = true;
 
-	const [endpoint, id] = props.value!.split('_');
+	const [endpoint, id] = itemInfo.value;
 
 	try {
 		if (endpoint === 'role') {
@@ -102,7 +104,7 @@ async function loadItemName() {
 
 			itemName.value = userName(result.data.data);
 		}
-	} catch (error: any) {
+	} catch (error) {
 		unexpectedError(error);
 	} finally {
 		loading.value = false;
