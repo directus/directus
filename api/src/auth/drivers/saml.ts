@@ -4,7 +4,7 @@ import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusErr
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
-import { COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -141,7 +141,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
-					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, COOKIE_OPTIONS);
+					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, REFRESH_COOKIE_OPTIONS);
 				}
 			}
 
@@ -173,7 +173,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

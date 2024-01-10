@@ -4,7 +4,7 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
-import { COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS } from '../../constants.js';
 import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -93,16 +93,16 @@ export function createLocalAuthRouter(provider: string): Router {
 				req.body?.otp,
 			);
 
-			const payload = {
-				data: { access_token: accessToken, expires },
-			} as Record<string, Record<string, any>>;
+			const payload = { data: { expires } } as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
 				payload['data']!['refresh_token'] = refreshToken;
+				payload['data']!['access_token'] = accessToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
 			}
 
 			res.locals['payload'] = payload;
