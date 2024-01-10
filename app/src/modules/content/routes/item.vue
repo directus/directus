@@ -19,6 +19,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
@@ -184,11 +185,25 @@ const isFormDisabled = computed(() => {
 	return true;
 });
 
+const actualPrimaryKey = computed(() => {
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+	}
+
+	return props.primaryKey;
+});
+
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+	}
 
 	return props.primaryKey;
 });
@@ -706,12 +721,12 @@ function revert(values: Record<string, any>) {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-drawer-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
@@ -719,19 +734,19 @@ function revert(values: Record<string, any>) {
 				<comments-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 				/>
 				<shares-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
 					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:has-edits="hasEdits"
 					@refresh="refresh"
 				/>

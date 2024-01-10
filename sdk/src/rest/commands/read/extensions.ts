@@ -1,4 +1,4 @@
-import type { ExtensionItem } from '../../../types/index.js';
+import type { DirectusExtension } from '../../../schema/extension.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
  * @returns An array of extensions.
  */
 export const readExtensions =
-	<Schema extends object>(): RestCommand<ExtensionItem[], Schema> =>
+	<Schema extends object>(): RestCommand<DirectusExtension<Schema>[], Schema> =>
 	() => ({
 		path: `/extensions/`,
 		method: 'GET',

@@ -16,6 +16,15 @@ export const sections = {
 					{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
 				],
 			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'Advanced Filtering',
+						path: '/blog/advanced-filtering-dates-aggregation-and-grouping-and-combining-filters',
+					},
+				],
+			},
 		],
 	},
 	frameworks: {
@@ -36,6 +45,10 @@ export const sections = {
 					{ display: 'Build a Website With Nuxt', path: '/guides/headless-cms/build-static-website/nuxt-3' },
 					{ display: 'Set Up Live Preview With Nuxt', path: '/guides/headless-cms/live-preview/nuxt-3' },
 				],
+			},
+			{
+				title: 'From the Blog',
+				items: [{ display: 'Build a Website With SvelteKit', path: '/blog/getting-started-directus-sveltekit' }],
 			},
 		],
 	},
@@ -64,6 +77,15 @@ export const sections = {
 							{ label: 'Netlify', path: '/guides/headless-cms/trigger-static-builds/netlify' },
 							{ label: 'Vercel', path: '/guides/headless-cms/trigger-static-builds/vercel' },
 						],
+					},
+				],
+			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'SEO Tips & Tricks',
+						path: '/blog/directus-seo-tips-tricks',
 					},
 				],
 			},
@@ -212,6 +234,28 @@ export const sections = {
 					},
 				],
 			},
+			{
+				title: 'Modules',
+				items: [
+					{
+						display: 'Create a Custom Landing Page Module',
+						path: '/guides/extensions/modules-build-landing-page',
+					},
+					{
+						display: 'Use Native Layout Features In Your Modules',
+						path: '/guides/extensions/modules-native-layout-features',
+					},
+				],
+			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'Using Hooks To Monitor & Error Track With Sentry',
+						path: '/blog/hooks-monitoring-error-tracking-sentry',
+					},
+				],
+			},
 		],
 	},
 	administration: {
@@ -228,6 +272,15 @@ export const sections = {
 							{ label: 'Node.js', path: '/guides/migration/node' },
 							{ label: 'Hoppscotch', path: '/guides/migration/hoppscotch' },
 						],
+					},
+				],
+			},
+			{
+				title: 'From the Blog',
+				items: [
+					{
+						display: 'Configuring Okta SSO',
+						path: '/blog/configuring-okta-sso',
 					},
 				],
 			},

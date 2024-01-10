@@ -122,6 +122,8 @@ describe('get', () => {
 	test('Decompresses value when compress has been set and value is gzip compressed', async () => {
 		kv['compression'] = true;
 
+		vi.mocked(kv['redis'].getBuffer).mockResolvedValue(mockBuffer);
+
 		vi.mocked(isCompressed).mockReturnValue(true);
 
 		const result = await kv.get(mockKey);
@@ -134,6 +136,8 @@ describe('get', () => {
 
 	test('Skips decompression if compression is enabled but value is not compressed', async () => {
 		kv['compression'] = true;
+
+		vi.mocked(kv['redis'].getBuffer).mockResolvedValue(mockBuffer);
 
 		vi.mocked(isCompressed).mockReturnValue(false);
 

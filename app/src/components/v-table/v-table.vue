@@ -302,12 +302,12 @@ function updateSort(newSort: Sort) {
 			<draggable
 				v-else
 				v-model="internalItems"
-				force-fallback
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				v-bind="{ 'force-fallback': true }"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">

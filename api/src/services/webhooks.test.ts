@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
-import { getMessenger } from '../messenger.js';
+import { useBus } from '../bus/index.js';
 import { WebhooksService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -68,7 +68,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			messengerPublishSpy = vi.spyOn(getMessenger(), 'publish');
+			messengerPublishSpy = vi.spyOn(useBus(), 'publish');
 		});
 
 		afterEach(() => {

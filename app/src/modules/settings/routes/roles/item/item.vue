@@ -182,20 +182,14 @@ function discardAndLeave() {
 
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
-		<div class="roles">
+		<div v-if="!loading" class="roles">
 			<v-notice v-if="adminEnabled">
 				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
-			<v-form
-				v-model="edits"
-				collection="directus_roles"
-				:primary-key="primaryKey"
-				:loading="loading"
-				:initial-values="item"
-			/>
+			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
 		</div>
 
 		<template #sidebar>

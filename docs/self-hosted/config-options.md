@@ -215,13 +215,13 @@ Directus will attempt to [automatically type cast environment variables](#type-c
 clues. If you have a specific need for a given type, you can tell Directus what type to use for the given value by
 prefixing the value with `{type}:`. The following types are available:
 
-| Syntax Prefix | Example                                                                                                         | Output                                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `string`      | `string:value`                                                                                                  | `"value"`                                                                                                                    |
-| `number`      | `number:3306`                                                                                                   | `3306`                                                                                                                       |
-| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                                          |
-| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", "https://example2.com", /\.example3\.com$/]` |
-| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                                        |
+| Syntax Prefix | Example                                                                                                         | Output                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                                                  | `"value"`                                                                                            |
+| `number`      | `number:3306`                                                                                                   | `3306`                                                                                               |
+| `regex`       | `regex:\.example\.com$`                                                                                         | `/\.example\.com$/`                                                                                  |
+| `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
+| `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
 ---
 
@@ -293,7 +293,6 @@ into unexpected behaviors.
 | `DB_PASSWORD`              | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
 | `DB_FILENAME`              | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
 | `DB_CONNECTION_STRING`     | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
-| `DB_POOL__*`               | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --                            |
 | `DB_EXCLUDE_TABLES`        | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
 | `DB_CHARSET`               | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
 | `DB_VERSION`               | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
@@ -301,16 +300,21 @@ into unexpected behaviors.
 
 ::: tip Additional Database Variables
 
-All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
-Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
-database instance.
+All `DB_*` environment variables are passed to the `connection` configuration of a
+[`Knex` instance](https://knexjs.org/guide/#configuration-options). This means, based on your project's needs, you can
+extend the `DB_*` environment variables with any config you need to pass to the database instance.
 
-:::
+This includes:
 
-::: tip Pooling
+- `DB_POOL__` prefixed options which are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage).
 
-All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.com/vincit/tarn.js#usage) through
-[Knex](http://knexjs.org#Installation-pooling)
+- `DB_SSL__` prefixed options which are passed to the respective database driver.
+
+  - For example `DB_SSL__CA` which can be used to specify a custom CA certificate for SSL connections. This is
+    **required** if the database server CA is not part of [Node.js' trust store](https://nodejs.org/api/tls.html).
+
+    Note: `DB_SSL__CA_FILE` may be preferred to load the CA directly from a file, see
+    [Environment Variable Files](#environment-variable-files) for more information.
 
 :::
 
@@ -347,7 +351,7 @@ Redis is required when you run Directus load balanced across multiple containers
 | `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
 | `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                                                                 | false                     |
 | `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
-| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses. Use `0.0.0.0` for any local IP address                                                                                                                 | `0.0.0.0,169.254.169.254` |
+| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
 | `CONTENT_SECURITY_POLICY_*`      | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
 | `HSTS_ENABLED`                   | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                         | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
@@ -647,7 +651,7 @@ STORAGE_AWS_BUCKET="my-files"
 
 ### Metadata
 
-When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
 | Variable                   | Description                                                                                           | Default Value                                                                 |
@@ -926,10 +930,9 @@ and then loaded from there.
 
 ## Messenger
 
-| Variable              | Description                            | Default Value        |
-| --------------------- | -------------------------------------- | -------------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
+| Variable              | Description                        | Default Value        |
+| --------------------- | ---------------------------------- | -------------------- |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis | `directus-messenger` |
 
 ## Synchronization
 
@@ -1002,13 +1005,14 @@ variables to automatically configure the first user:
 
 ## Telemetry
 
-To more accurately gauge the frequency of installation, version fragmentation, and general size of the userbase,
-Directus collects little and anonymized data about your environment. You can easily opt-out with the following
-environment variable:
+To more accurately gauge the frequency of installation, version fragmentation, and general size of the user base,
+Directus collects little and anonymized data about your environment.
 
-| Variable    | Description                                                       | Default Value |
-| ----------- | ----------------------------------------------------------------- | ------------- |
-| `TELEMETRY` | Allow Directus to collect anonymized data about your environment. | `true`        |
+| Variable                  | Description                                                       | Default Value                    |
+| ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
+| `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
+| `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
+| `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
 ## Limits & Optimizations
 

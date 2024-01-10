@@ -75,5 +75,5 @@ Learn how to build endpoints with our official guides:
 <GuidesListExtensions type="Endpoints" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

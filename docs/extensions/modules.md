@@ -120,3 +120,13 @@ export default {
 If you prefer to use the Vue Options API, you can inject the `api` and `stores` properties directly.
 
 :::
+
+## Guides
+
+Learn how to build modules with our official guides:
+
+<GuidesListExtensions type="Modules" />
+
+<script setup>
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
+</script>

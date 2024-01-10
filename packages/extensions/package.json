@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -46,16 +46,16 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/node": "18.19.3",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "1.0.4",
+		"@vitest/coverage-v8": "1.1.0",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.0.4"
+		"vitest": "1.1.1"
 	},
 	"peerDependencies": {
-		"knex": "2.5.1",
-		"pino": "8.16.2",
-		"vue": "3.3.11",
+		"knex": "3.1.0",
+		"pino": "8.17.1",
+		"vue": "3.3.13",
 		"vue-router": "4.2.5"
 	},
 	"peerDependenciesMeta": {

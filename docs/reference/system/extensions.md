@@ -35,13 +35,20 @@ Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`
 `local` **boolean**\
 Whether the extension exists in the local extensions folder or is loaded from `node_modules`.
 
+`version` **string**\
+The currently loaded version of the plugin as defined by its `package.json`.
+
+`partial` **boolean**\
+Whether or not a bundles entries can be individually disabled. This is applicable to bundle type extensions only.
+
 ```json
 {
   "name": "my-bundle-operation",
   "bundle": "directus-extension-my-bundle",
   "schema": {
     "type": "operation",
-    "local": true
+    "local": true,
+    "version": "1.0.0"
   },
   "meta": {
     "enabled": true

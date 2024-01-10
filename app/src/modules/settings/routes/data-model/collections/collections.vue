@@ -199,13 +199,13 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 			<v-list v-else class="draggable-list">
 				<draggable
-					force-fallback
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
 					:swap-threshold="0.3"
 					class="root-drag-container"
 					item-key="collection"
 					handle=".drag-handle"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="onSort($event, true)"
 				>
 					<template #item="{ element }">

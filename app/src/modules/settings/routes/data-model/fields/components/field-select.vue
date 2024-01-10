@@ -159,6 +159,8 @@ async function onGroupSortChange(fields: Field[]) {
 
 	emit('setNestedSort', updates);
 }
+
+const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : type);
 </script>
 
 <template>
@@ -170,7 +172,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 			<template #input>
 				<div
-					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 					class="label"
 				>
 					<div class="label-inner">
@@ -186,14 +188,12 @@ async function onGroupSortChange(fields: Field[]) {
 				v-if="localType === 'group'"
 				class="field-grid group full nested"
 				:model-value="nestedFields"
-				force-fallback
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
-				fallback-on-body
-				invert-swap
+				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
@@ -227,7 +227,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 				<template #input>
 					<div
-						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+						v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 						class="label"
 						@click="openFieldDetail"
 					>
