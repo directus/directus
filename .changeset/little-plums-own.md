@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixing displaying all nested fields on filter
+Fixed an issue where the field filter in search interface didn't hide non-matching nested fields
