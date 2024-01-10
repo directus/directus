@@ -1,5 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
@@ -7,16 +8,17 @@ import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class ServerService {
 	knex: Knex;
@@ -137,7 +139,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['KEY'],
+			serviceId: env['KEY'] as string,
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),
@@ -369,7 +371,7 @@ export class ServerService {
 
 			const checks: Record<string, HealthCheck[]> = {};
 
-			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
+			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 
@@ -379,7 +381,7 @@ export class ServerService {
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env[envThresholdKey] ? +env[envThresholdKey] : 750,
+						threshold: env[envThresholdKey] ? +(env[envThresholdKey] as string) : 750,
 					},
 				];
 

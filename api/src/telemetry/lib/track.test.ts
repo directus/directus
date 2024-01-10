@@ -1,6 +1,6 @@
+import { getNodeEnv } from '@directus/utils/node';
 import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
@@ -11,9 +11,13 @@ import { track } from './track.js';
 vi.mock('./get-report.js');
 vi.mock('./send-report.js');
 vi.mock('timers/promises');
-vi.mock('../../env.js');
 vi.mock('../utils/get-random-wait-time.js');
 vi.mock('../../logger.js');
+vi.mock('@directus/utils/node');
+
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 let mockLogger: any;
 
@@ -21,10 +25,6 @@ beforeEach(() => {
 	mockLogger = { error: vi.fn() };
 
 	vi.mocked(useLogger).mockReturnValue(mockLogger as any);
-
-	vi.mocked(useEnv).mockReturnValue({
-		NODE_ENV: 'test',
-	});
 });
 
 afterEach(() => {
@@ -55,7 +55,7 @@ test('Catches errors silently', async () => {
 });
 
 test('Logs errors as error when node env is development', async () => {
-	vi.mocked(useEnv).mockReturnValue({ NODE_ENV: 'development' });
+	vi.mocked(getNodeEnv).mockReturnValue('development');
 	const mockError = new Error('test');
 	vi.mocked(sendReport).mockRejectedValue(mockError);
 

@@ -33,7 +33,7 @@ const typeOptions = computed(() => {
 	if (!chosenInterfaceConfig.value) return [];
 
 	return chosenInterfaceConfig.value.types.map((type) => ({
-		text: t(type),
+		text: t(type === 'geometry' ? 'geometry.All' : type),
 		value: type,
 	}));
 });

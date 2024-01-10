@@ -1,5 +1,5 @@
+import { getNodeEnv } from '@directus/utils/node';
 import { setTimeout } from 'timers/promises';
-import { useEnv } from '../../env.js';
 import { useLogger } from '../../logger.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';
@@ -13,7 +13,6 @@ import { sendReport } from './send-report.js';
  * @returns whether or not the tracking was successful
  */
 export const track = async (opts = { wait: true }) => {
-	const env = useEnv();
 	const logger = useLogger();
 
 	if (opts.wait) {
@@ -25,7 +24,7 @@ export const track = async (opts = { wait: true }) => {
 		await sendReport(report);
 		return true;
 	} catch (err) {
-		if (env['NODE_ENV'] === 'development') {
+		if (getNodeEnv() === 'development') {
 			logger.error(err);
 		}
 

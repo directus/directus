@@ -5,10 +5,11 @@ import type { LookupAddress } from 'node:dns';
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import { URL } from 'node:url';
+import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { requestInterceptor } from './request-interceptor.js';
-import { validateIP } from './validate-ip.js';
+import { validateIp } from './validate-ip.js';
 
 vi.mock('axios');
 vi.mock('node:net');
@@ -24,6 +25,8 @@ let sample: {
 	ip: string;
 };
 
+let mockLogger: Logger<never>;
+
 beforeEach(() => {
 	sample = {
 		config: {} as InternalAxiosRequestConfig,
@@ -32,10 +35,15 @@ beforeEach(() => {
 		ip: randIp(),
 	};
 
+	mockLogger = {
+		warn: vi.fn(),
+	} as unknown as Logger<never>;
+
 	vi.mocked(axios.getUri).mockReturnValue(sample.url);
 	vi.mocked(URL).mockReturnValue({ hostname: sample.hostname } as URL);
 	vi.mocked(lookup).mockResolvedValue({ address: sample.ip } as LookupAddress);
 	vi.mocked(isIP).mockReturnValue(0);
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
 });
 
 afterEach(() => {
@@ -66,36 +74,29 @@ test('Logs when the lookup throws an error', async () => {
 	const mockError = new Error();
 	vi.mocked(lookup).mockRejectedValue(mockError);
 
-	try {
-		await requestInterceptor(sample.config);
-	} catch {
-		// Expect to error
-	} finally {
-		expect(logger.warn).toHaveBeenCalledWith(mockError, `Couldn't lookup the DNS for url "${sample.url}"`);
-	}
+	await expect(() => requestInterceptor(sample.config)).rejects.toThrowError();
+	expect(mockLogger.warn).toHaveBeenCalledWith(`Couldn't lookup the DNS for URL "${sample.url}"`);
+	expect(mockLogger.warn).toHaveBeenCalledWith(mockError);
 });
 
 test('Throws error when dns lookup fails', async () => {
 	const mockError = new Error();
 	vi.mocked(lookup).mockRejectedValue(mockError);
 
-	try {
-		await requestInterceptor(sample.config);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
-	}
+	await expect(() => requestInterceptor(sample.config)).rejects.toThrowError(
+		`Requested URL "${sample.url}" resolves to a denied IP address`,
+	);
 });
 
 test('Validates IP', async () => {
 	await requestInterceptor(sample.config);
-	expect(validateIP).toHaveBeenCalledWith(sample.ip, sample.url);
+	expect(validateIp).toHaveBeenCalledWith(sample.ip, sample.url);
 });
 
 test('Validates IP from hostname if URL hostname is IP', async () => {
 	vi.mocked(isIP).mockReturnValue(4);
 	await requestInterceptor(sample.config);
-	expect(validateIP).toHaveBeenCalledWith(sample.hostname, sample.url);
+	expect(validateIp).toHaveBeenCalledWith(sample.hostname, sample.url);
 });
 
 test('Returns config unmodified', async () => {

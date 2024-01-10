@@ -8,6 +8,7 @@ import {
 	isCompressed,
 	serialize,
 	uint8ArrayToBuffer,
+	uint8ArrayToString,
 	withNamespace,
 } from '../../utils/index.js';
 import type { MessageHandler } from '../types/index.js';
@@ -21,6 +22,7 @@ let mockSubRedis: Redis;
 let mockNamespace: string;
 let mockChannel: string;
 let mockNamespacedChannel: string;
+let mockNamespacedChannelBuffer: Buffer;
 let mockBuffer: Buffer;
 let mockUint8Array: Uint8Array;
 let mockCompressedUint8Array: Uint8Array;
@@ -38,6 +40,7 @@ beforeEach(() => {
 	mockNamespace = 'test-namespace';
 	mockChannel = 'test-channel';
 	mockNamespacedChannel = 'test-namespace:test-channel';
+	mockNamespacedChannelBuffer = Buffer.from(mockNamespacedChannel);
 	mockMessage = 'test-message';
 	mockHandler = vi.fn();
 
@@ -52,6 +55,7 @@ beforeEach(() => {
 	});
 
 	vi.mocked(withNamespace).mockReturnValue(mockNamespacedChannel);
+	vi.mocked(uint8ArrayToString).mockReturnValue(mockNamespacedChannel);
 	vi.mocked(bufferToUint8Array).mockReturnValue(mockUint8Array);
 	vi.mocked(uint8ArrayToBuffer).mockReturnValue(mockBuffer);
 	vi.mocked(compress).mockResolvedValue(mockCompressedUint8Array);
@@ -91,7 +95,7 @@ describe('constructor', () => {
 	});
 
 	test('Subscribes to messageBuffers in sub redis', () => {
-		expect(bus['sub'].on).toHaveBeenCalledWith('messageBuffer', bus['messageBufferHandler']);
+		expect(bus['sub'].on).toHaveBeenCalledWith('messageBuffer', expect.any(Function));
 	});
 });
 
@@ -179,9 +183,9 @@ describe('unsubscribe', () => {
 describe('#messageBufferHandler', () => {
 	test('Returns early if no handlers are registered for channel', async () => {
 		bus['handlers'] = {};
-		await bus['messageBufferHandler'](mockNamespacedChannel, mockBuffer);
+		await bus['messageBufferHandler'](mockNamespacedChannelBuffer, mockBuffer);
 
-		expect(bufferToUint8Array).not.toHaveBeenCalled();
+		expect(deserialize).not.toHaveBeenCalled();
 	});
 
 	test('Calls all registered handlers for channel with deserialized message', async () => {
@@ -189,7 +193,7 @@ describe('#messageBufferHandler', () => {
 			[mockNamespacedChannel]: new Set([mockHandler]),
 		};
 
-		await bus['messageBufferHandler'](mockNamespacedChannel, mockBuffer);
+		await bus['messageBufferHandler'](mockNamespacedChannelBuffer, mockBuffer);
 
 		expect(mockHandler).toHaveBeenCalledWith(mockMessage);
 	});
@@ -201,7 +205,7 @@ describe('#messageBufferHandler', () => {
 
 		bus['compression'] = false;
 
-		await bus['messageBufferHandler'](mockNamespacedChannel, mockBuffer);
+		await bus['messageBufferHandler'](mockNamespacedChannelBuffer, mockBuffer);
 
 		expect(decompress).not.toHaveBeenCalled();
 	});
@@ -213,7 +217,7 @@ describe('#messageBufferHandler', () => {
 
 		bus['compression'] = true;
 
-		await bus['messageBufferHandler'](mockNamespacedChannel, mockBuffer);
+		await bus['messageBufferHandler'](mockNamespacedChannelBuffer, mockBuffer);
 
 		expect(decompress).toHaveBeenCalledWith(mockUint8Array);
 		expect(deserialize).toHaveBeenCalledWith(mockDecompressedUint8Array);

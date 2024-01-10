@@ -34,6 +34,7 @@
 		"nanoid": "5.0.4"
 	},
 	"devDependencies": {
+		"@directus/sdk": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
@@ -42,7 +43,7 @@
 		"@vue/test-utils": "2.4.3",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"vitest": "1.1.1"
 	},
 	"peerDependencies": {
 		"vue": "3.3.13"

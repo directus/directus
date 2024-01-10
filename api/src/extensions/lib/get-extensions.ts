@@ -1,10 +1,13 @@
+import { useEnv } from '@directus/env';
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import env from '../../env.js';
+import { useLogger } from '../../logger.js';
 import { getExtensionsPath } from './get-extensions-path.js';
-import logger from '../../logger.js';
 
 export const getExtensions = async () => {
+	const env = useEnv();
+	const logger = useLogger();
+
 	const loadedExtensions = new Map();
 	const duplicateExtensions: string[] = [];
 
@@ -37,7 +40,7 @@ export const getExtensions = async () => {
 
 	(await resolvePackageExtensions(getExtensionsPath())).forEach(filterDuplicates);
 
-	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).forEach(filterDuplicates);
+	(await getPackageExtensions(env['PACKAGE_FILE_LOCATION'] as string)).forEach(filterDuplicates);
 
 	if (duplicateExtensions.length > 0) {
 		logger.warn(

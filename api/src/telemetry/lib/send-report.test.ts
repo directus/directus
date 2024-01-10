@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../../env.js';
+import { useEnv } from '@directus/env';
 import { type TelemetryReport } from '../types/report.js';
 import { sendReport } from './send-report.js';
 
-vi.mock('../../env.js');
+vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: vi.fn() }));

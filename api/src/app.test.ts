@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import request from 'supertest';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
+import { useEnv } from '@directus/env';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -14,19 +15,14 @@ vi.mock('./database', () => ({
 
 vi.mock('./telemetry/index.js');
 
-vi.mock('./env.js', async () => {
-	const { mockEnv } = await import('./__utils__/mock-env.js');
-	return mockEnv({
-		env: {
-			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-			SECRET: 'abcdef',
-			SERVE_APP: 'true',
-			PUBLIC_URL: 'http://localhost:8055/directus',
-			TELEMETRY: 'false',
-			LOG_STYLE: 'raw',
-		},
-	});
-});
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+	}),
+}));
 
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());
 const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });
@@ -68,6 +64,25 @@ vi.mock('./auth', () => ({
 vi.mock('./webhooks', () => ({
 	init: vi.fn(),
 }));
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: 'true',
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: 'false',
+		LOG_STYLE: 'raw',
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+		ROOT_REDIRECT: './admin',
+	});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('createApp', async () => {
 	describe('Content Security Policy', () => {
