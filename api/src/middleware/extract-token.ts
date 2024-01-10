@@ -8,6 +8,7 @@
  */
 
 import type { RequestHandler } from 'express';
+import { InvalidPayloadError } from '@directus/errors';
 
 const extractToken: RequestHandler = (req, _res, next) => {
 	let token: string | null = null;
@@ -16,10 +17,24 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		token = req.query['access_token'] as string;
 	}
 
+	if (req.cookies && req.cookies['access_token']) {
+		if (token !== null) {
+			// RFC6750 compliance:
+			throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token, or is otherwise malformed' });
+		}
+
+		token = req.cookies['access_token'];
+	}
+
 	if (req.headers && req.headers.authorization) {
 		const parts = req.headers.authorization.split(' ');
 
 		if (parts.length === 2 && parts[0]!.toLowerCase() === 'bearer') {
+			if (token !== null) {
+				// RFC6750 compliance:
+				throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token, or is otherwise malformed' });
+			}
+
 			token = parts[1]!;
 		}
 	}
