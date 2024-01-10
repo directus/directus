@@ -15,6 +15,19 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.x.y
 
+### Updated Exif Tags
+
+The library `exif-reader` which is used for Exif metadata extraction of images has been updated to v2. In this release,
+tag names have been aligned with the Exif standard. See https://github.com/devongovett/exif-reader/pull/30 for a
+complete list of updated tags.
+
+This might be a breaking change if
+
+- a custom `FILE_METADATA_ALLOW_LIST` config is in place
+- Exif tags of images are consumed, for example via API
+
+The updated Exif tags only applies to images which are uploaded after upgrading to this release.
+
 ### Updated Sorting in Schema Snapshots
 
 The sort order of fields and relations inside schema snapshots has been changed to their original creation order. This
