@@ -3,7 +3,7 @@ import { Filter } from '@directus/types';
 
 export function getNodeName(node: Filter): string {
 	if (!node) return '';
-	return Object.keys(node)[0] as string;
+	return Object.keys(node)[0];
 }
 
 export function getField(node: Record<string, any>): string {

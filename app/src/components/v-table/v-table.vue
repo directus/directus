@@ -209,9 +209,7 @@ function onItemSelected(event: ItemSelectEvent) {
 }
 
 function getSelectedState(item: Item) {
-	const selectedKeys = props.selectionUseKeys
-		? props.modelValue
-		: props.modelValue.map((item: any) => item[props.itemKey]);
+	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
 
 	return selectedKeys.includes(item[props.itemKey]);
 }
@@ -241,8 +239,8 @@ interface EndEvent extends CustomEvent {
 function onSortChange(event: EndEvent) {
 	if (props.disabled) return;
 
-	const item = internalItems.value[event.oldIndex]?.[props.itemKey];
-	const to = internalItems.value[event.newIndex]?.[props.itemKey];
+	const item = internalItems.value[event.oldIndex][props.itemKey];
+	const to = internalItems.value[event.newIndex][props.itemKey];
 
 	emit('manual-sort', { item, to });
 }

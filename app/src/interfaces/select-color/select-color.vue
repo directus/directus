@@ -121,7 +121,7 @@ function unsetColor() {
 }
 
 function activateColorPicker() {
-	(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0]?.click();
+	htmlColorInput.value?.$el.getElementsByTagName('input')[0]?.click();
 }
 
 function useColor() {

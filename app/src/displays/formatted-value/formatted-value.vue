@@ -38,8 +38,8 @@ const props = withDefaults(
 
 const { t, n } = useI18n();
 
-const matchedConditions = computed(() => {
-	return (props.conditionalFormatting || []).filter(({ operator, value }) => {
+const matchedConditions = computed(() =>
+	(props.conditionalFormatting || []).filter(({ operator, value }) => {
 		if (['string', 'text'].includes(props.type)) {
 			const left = String(props.value);
 			const right = String(value);
@@ -53,8 +53,8 @@ const matchedConditions = computed(() => {
 			const right = parseInt(String(value));
 			return matchNumber(left, right, operator);
 		}
-	});
-});
+	}),
+);
 
 const computedFormat = computed(() => {
 	const { color, background, icon } = props;

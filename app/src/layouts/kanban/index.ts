@@ -608,11 +608,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					fields.push(`${relatedUser}.avatar.modified_on`);
 				}
 
-				if (sort.value.length > 0) {
-					const sortField = sort.value[0]?.startsWith('-') ? sort.value[0].substring(1) : sort.value[0];
+				if (sort.value[0]) {
+					const sortField = sort.value[0].startsWith('-') ? sort.value[0].substring(1) : sort.value[0];
 
-					if (fields.includes(sortField!) === false) {
-						fields.push(sortField!);
+					if (fields.includes(sortField) === false) {
+						fields.push(sortField);
 					}
 				}
 

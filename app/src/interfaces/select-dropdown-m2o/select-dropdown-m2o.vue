@@ -144,10 +144,12 @@ const selection = computed<(number | string)[]>(() => {
 });
 
 function onSelection(selection: (number | string)[] | null) {
-	if (selection!.length === 0) {
-		remove();
-	} else {
-		update(selection![0] as string);
+	if (selection) {
+		if (selection[0]) {
+			update(selection[0]);
+		} else {
+			remove();
+		}
 	}
 
 	selectModalActive.value = false;

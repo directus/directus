@@ -177,7 +177,7 @@ watch(
 					contentWidth[key] = 5;
 				}
 
-				if (String(item[key]).length > contentWidth[key]!) {
+				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
 			});

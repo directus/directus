@@ -1,13 +1,13 @@
 import { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
-import VFancySelect from './v-fancy-select.vue';
+import VFancySelect, { FancySelectItem } from './v-fancy-select.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-divider'],
 };
 
-const items = [
+const items: FancySelectItem[] = [
 	{
 		icon: 'person',
 		value: 'person',
@@ -19,8 +19,6 @@ const items = [
 		text: 'Car',
 	},
 	{
-		icon: 'directions_car',
-		text: 'Car',
 		divider: true,
 	},
 	{

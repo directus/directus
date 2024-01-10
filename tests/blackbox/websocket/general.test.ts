@@ -269,7 +269,7 @@ describe('WebSocket General Tests', () => {
 				'%s',
 				async (vendor) => {
 					// Setup
-					const eventUids = ['create', 'update', 'delete'] as const;
+					const eventUids = [undefined, 'create', 'update', 'delete'] as const;
 					const env = envs[vendor][0];
 
 					const ws = createWebSocketConn(getUrl(vendor, env), {
@@ -291,8 +291,7 @@ describe('WebSocket General Tests', () => {
 					for (const uid of eventUids) {
 						await ws.subscribe({
 							collection: localCollectionFirst,
-							uid,
-							event: uid,
+							...(uid && { uid, event: uid }),
 						});
 
 						const gqlQuery =
@@ -312,8 +311,7 @@ describe('WebSocket General Tests', () => {
 						subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionFirst,
 							jsonQuery: gqlQuery,
-							uid,
-							event: uid,
+							...(uid && { uid, event: uid }),
 						});
 					}
 

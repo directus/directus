@@ -118,14 +118,16 @@ const isStepDownAllowed = computed(() => {
 });
 
 function processValue(event: KeyboardEvent) {
-	if (!event.key) return;
-	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
+	const key = keyMap[event.key] ?? event.key.toLowerCase();
+
+	if (!key) return;
+
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {
 		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789-_~ '.split('');
 
-		const isAllowed = slugSafeCharacters.includes(key!) || systemKeys.includes(key!) || key?.startsWith('arrow');
+		const isAllowed = slugSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 		if (isAllowed === false) {
 			event.preventDefault();
@@ -139,7 +141,7 @@ function processValue(event: KeyboardEvent) {
 	if (props.dbSafe === true) {
 		const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789_ '.split('');
 
-		const isAllowed = dbSafeCharacters.includes(key!) || systemKeys.includes(key!) || key?.startsWith('arrow');
+		const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 		if (isAllowed === false) {
 			event.preventDefault();
@@ -148,7 +150,7 @@ function processValue(event: KeyboardEvent) {
 		const isCombinationWithSystemKeys = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 
 		// Prevent leading number
-		if (value.length === 0 && '0123456789'.split('').includes(key!) && !isCombinationWithSystemKeys) {
+		if (value.length === 0 && '0123456789'.split('').includes(key) && !isCombinationWithSystemKeys) {
 			event.preventDefault();
 		}
 	}

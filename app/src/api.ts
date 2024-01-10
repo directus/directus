@@ -2,7 +2,7 @@ import { logout, LogoutReason, refresh } from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { QueueAddOptions, Options } from 'p-queue';
+import PQueue, { type Options, type QueueAddOptions } from 'p-queue';
 import { addQueryToPath } from './utils/add-query-to-path';
 
 const api = axios.create({
