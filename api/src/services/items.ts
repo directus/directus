@@ -774,7 +774,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						? ['items.update', `${this.collection}.items.update`]
 						: `${this.eventScope}.update`,
 				meta: {
-					payload: payloadAfterHooks,
+					payload: payloadWithPresets,
 					keys,
 					collection: this.collection,
 				},
