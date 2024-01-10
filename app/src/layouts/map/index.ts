@@ -62,7 +62,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		watch(
 			geometryFields,
 			(fields) => {
-				if (!geometryField.value && fields.length > 0) {
+				if (!geometryField.value && fields[0]) {
 					geometryField.value = fields[0].field;
 				}
 			},

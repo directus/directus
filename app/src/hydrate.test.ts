@@ -33,7 +33,7 @@ describe('setLanguage', () => {
 
 		await hydrate();
 
-		expect(vi.mocked(setLanguage).mock.calls[0][0]).not.toBeNull();
+		expect(vi.mocked(setLanguage).mock.calls[0]?.[0]).not.toBeNull();
 	});
 
 	test('should not be called with null user language (in runtime)', async () => {
@@ -42,7 +42,7 @@ describe('setLanguage', () => {
 
 		await hydrate();
 
-		expect(vi.mocked(setLanguage).mock.calls[0][0]).not.toBeNull();
+		expect(vi.mocked(setLanguage).mock.calls[0]?.[0]).not.toBeNull();
 	});
 });
 
