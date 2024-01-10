@@ -361,8 +361,8 @@ importers:
         version: 2.1.0(zod@3.22.4)
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.8.2
-        version: 2.8.2
+        specifier: 2.8.3
+        version: 2.8.3
       mysql:
         specifier: 2.18.1
         version: 2.18.1
@@ -5109,8 +5109,8 @@ packages:
       '@streamparser/json': 0.0.17
     dev: true
 
-  /@keyv/redis@2.8.2:
-    resolution: {integrity: sha512-fpmZdrivQ39xKfbmoJH8SUVNyvwDgGIpXMFGZM5p3Aw8OOFDhl4tHb1qPa/ldtxlg4dHPv7TlXq5YoNf9jqIBQ==}
+  /@keyv/redis@2.8.3:
+    resolution: {integrity: sha512-su/JZZUlhI9HaSNslQpi/5uYHh69NpxevXFeSStDoPe2Qo52w0LLHe+sywZim52NPVKjHNyvfeIyif8Prvi3Ug==}
     engines: {node: '>= 14'}
     requiresBuild: true
     dependencies:
