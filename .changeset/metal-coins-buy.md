@@ -4,4 +4,4 @@
 "docs": patch
 ---
 
-Updated exif-reader to v2
+Updated exif-reader (used for image EXIF extraction) to v2
