@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed use O2M entities modified by filter event for subsequent opertions
+Enabled updates of O2M entities via filter hook on parent level, ensured the payload of update action event reflects the actual updated value
