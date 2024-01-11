@@ -77,7 +77,7 @@ At the top of the `<script>` tag, import the SDK composables needed for this pro
 </html>
 ```
 
-- `createDirectus` is the hook that initializes a Directus client.
+- `createDirectus` is a function that initializes a Directus client.
 - `authentication` authenticates a user with the login and password.
 - `realtime` establishes a WebSocket connectivity.
 
