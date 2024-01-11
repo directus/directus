@@ -1,5 +1,5 @@
 import type { AbstractQueryConditionNode } from '@directus/data';
-import type { IndexGenerators } from '../../../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertFieldCondition } from './field.js';
 import { convertGeoCondition } from './geo.js';

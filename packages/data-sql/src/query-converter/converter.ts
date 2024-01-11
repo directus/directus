@@ -8,7 +8,7 @@ import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';
-import { createIndexGenerators } from '../utils/create-index-generators.js';
+import { createIndexGenerators } from './utils/create-index-generators.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.

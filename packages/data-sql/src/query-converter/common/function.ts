@@ -1,6 +1,6 @@
 import type { AbstractQueryFunction } from '@directus/data';
 import type { AbstractSqlQueryFnNode, ParameterTypes, ValuesNode } from '../../types/index.js';
-import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 
 /**
  * @param tableIndex

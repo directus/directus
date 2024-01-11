@@ -1,6 +1,6 @@
 import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQueryOrderNode } from '../../types/index.js';
-import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { convertTarget } from './target.js';
 
 export type SortConversionResult = {

@@ -1,5 +1,5 @@
 import type { ConditionSetNode } from '@directus/data';
-import type { IndexGenerators } from '../../../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../../../utils/create-index-generators.js';
 import { convertTarget } from '../../target.js';
 import type { FilterResult } from '../utils.js';
 

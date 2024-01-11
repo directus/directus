@@ -1,6 +1,6 @@
 import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
 import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
-import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { convertFn } from '../common/function.js';
 import { createJoin } from '../fields/create-join.js';
 

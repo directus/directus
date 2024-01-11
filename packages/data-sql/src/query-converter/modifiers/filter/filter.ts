@@ -1,5 +1,5 @@
 import type { AbstractQueryFilterNode, AtLeastOneElement } from '@directus/data';
-import type { IndexGenerators } from '../../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
 import type { FilterResult } from './utils.js';

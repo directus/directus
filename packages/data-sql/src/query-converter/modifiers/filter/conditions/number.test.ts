@@ -1,7 +1,7 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import { createIndexGenerators } from '../../../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
 import { convertNumberNode } from './number.js';
 

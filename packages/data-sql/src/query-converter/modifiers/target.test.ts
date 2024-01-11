@@ -1,7 +1,7 @@
 import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionStringNode } from '@directus/data';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './target.js';
 
 test('convert primitive target', () => {

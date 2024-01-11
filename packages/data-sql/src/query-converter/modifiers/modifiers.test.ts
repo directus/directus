@@ -1,7 +1,7 @@
 import type { AbstractQueryModifiers } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 import { convertModifiers, type ModifierConversionResult } from './modifiers.js';
 
 test('Convert primitive filter', () => {

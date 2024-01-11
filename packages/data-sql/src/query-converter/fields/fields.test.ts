@@ -1,7 +1,7 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 
 test('primitives only', () => {

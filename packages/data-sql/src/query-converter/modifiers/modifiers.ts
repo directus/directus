@@ -1,6 +1,6 @@
 import type { AbstractQueryModifiers } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery } from '../../types/index.js';
-import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { convertFilter } from './filter/filter.js';
 import { convertSort } from './sort.js';
 

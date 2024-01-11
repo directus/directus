@@ -1,7 +1,7 @@
 import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 import { convertSort, type SortConversionResult } from './sort.js';
 
 test('convert ascending sort with a single field', () => {

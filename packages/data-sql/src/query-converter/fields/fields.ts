@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
-import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { createJoin } from './create-join.js';
 import { getNestedMany } from './create-nested-manys.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';

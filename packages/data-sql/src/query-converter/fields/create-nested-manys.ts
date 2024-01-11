@@ -6,7 +6,7 @@ import type {
 	AbstractSqlQueryWhereNode,
 	SubQuery,
 } from '../../types/index.js';
-import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators, type IndexGenerators } from '../utils/create-index-generators.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { convertFieldNodes } from './fields.js';

@@ -3,7 +3,7 @@ import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { describe, expect, test } from 'vitest';
 import type { AbstractSqlQueryFnNode } from '../../types/index.js';
 import { convertFn } from './function.js';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 
 describe('Convert function', () => {
 	test('With no args', () => {

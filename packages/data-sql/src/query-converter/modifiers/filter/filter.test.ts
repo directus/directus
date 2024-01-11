@@ -1,7 +1,7 @@
 import type { AbstractQueryFilterNode } from '@directus/data';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { describe, expect, test } from 'vitest';
-import { createIndexGenerators } from '../../../utils/create-index-generators.js';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
 import { convertFilter } from './filter.js';
 import type { FilterResult } from './utils.js';
 
