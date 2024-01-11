@@ -1,5 +1,5 @@
 import { toArray } from "@directus/utils";
-import { useEnv } from "../env.js";
+import { useEnv } from "@directus/env";
 import isUrlAllowed from "./is-url-allowed.js";
 
 /**
