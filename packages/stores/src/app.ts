@@ -16,6 +16,9 @@ export const useAppStore = defineStore('appStore', () => {
 	/** Toggled visibility state notifications drawer */
 	const notificationsDrawerOpen = ref(false);
 
+	/** Toggled visibility state for module nav drawer */
+	const moduleNavDrawerOpen = ref(true);
+
 	/** Full screen hides the sidebars completely */
 	const fullScreen = ref(false);
 
@@ -41,6 +44,7 @@ export const useAppStore = defineStore('appStore', () => {
 		navbarOpen,
 		sidebarOpen,
 		notificationsDrawerOpen,
+		moduleNavDrawerOpen,
 		fullScreen,
 		hydrated,
 		hydrating,
