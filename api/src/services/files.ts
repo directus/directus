@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, File } from '@directus/types';
@@ -18,7 +19,6 @@ import sharp from 'sharp';
 import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -224,7 +224,10 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
+	async getMetadata(
+		stream: Readable,
+		allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
+	): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
@@ -374,7 +377,7 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'])[0],
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(body || {}),

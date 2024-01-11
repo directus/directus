@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
@@ -9,7 +10,6 @@ import {
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -80,7 +80,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
@@ -99,7 +99,7 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
 		}
 
 		res.locals['payload'] = payload;
@@ -127,7 +127,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
@@ -135,11 +135,11 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
-			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], {
+		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
+			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, {
 				httpOnly: true,
-				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
-				secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
+				secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 				sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}

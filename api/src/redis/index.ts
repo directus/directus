@@ -1,2 +1,3 @@
-export { useRedis } from './use-redis.js';
-export { createRedis } from './create-redis.js';
+export { createRedis } from './lib/create-redis.js';
+export { useRedis } from './lib/use-redis.js';
+export { redisConfigAvailable } from './utils/redis-config-available.js';

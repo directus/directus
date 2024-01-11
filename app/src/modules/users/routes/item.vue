@@ -13,7 +13,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import type { Field, User } from '@directus/types';
+import type { User } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -106,7 +106,7 @@ const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
 const fieldsFiltered = computed(() => {
-	return fields.value.filter((field: Field) => {
+	return fields.value.filter((field) => {
 		// These fields should only be editable when creating new users or by administrators
 		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 			field.meta.readonly = true;

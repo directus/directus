@@ -22,7 +22,7 @@
 		"axios": "1.6.2",
 		"get-port": "7.0.0",
 		"globby": "14.0.0",
-		"graphql-ws": "5.14.2",
+		"graphql-ws": "5.14.3",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.5",
 		"knex": "3.1.0",
@@ -32,8 +32,8 @@
 		"supertest": "6.3.3",
 		"typescript": "5.3.3",
 		"uuid": "9.0.1",
-		"vite-tsconfig-paths": "4.2.2",
-		"vitest": "1.1.0",
-		"ws": "8.15.1"
+		"vite-tsconfig-paths": "4.2.3",
+		"vitest": "1.1.1",
+		"ws": "8.16.0"
 	}
 }

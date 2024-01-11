@@ -1,37 +1,32 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
-import type { SchemaInspector } from '@directus/schema';
-import { createInspector } from '@directus/schema';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
-import Joi from 'joi';
-import type Keyv from 'keyv';
+import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
-import { getCache } from '../cache.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
+
+export class ExtensionReadError extends Error {
+	originalError: unknown;
+	constructor(originalError: unknown) {
+		super();
+		this.originalError = originalError;
+	}
+}
 
 export class ExtensionsService {
 	knex: Knex;
-	permissionsService: PermissionsService;
-	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	extensionsItemService: ItemsService<ExtensionSettings>;
-	systemCache: Keyv<any>;
-	helpers: Helpers;
 	extensionsManager: ExtensionManager;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
-		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.extensionsManager = getExtensionManager();
@@ -39,18 +34,11 @@ export class ExtensionsService {
 		this.extensionsItemService = new ItemsService('directus_extensions', {
 			knex: this.knex,
 			schema: this.schema,
-			// No accountability here, as every other method is hardcoded to be admin only
+			accountability: this.accountability,
 		});
-
-		this.systemCache = getCache().systemCache;
-		this.helpers = getHelpers(this.knex);
 	}
 
 	async readAll() {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
-
 		const installedExtensions = this.extensionsManager.getExtensions();
 		const configuredExtensions = await this.extensionsItemService.readByQuery({ limit: -1 });
 
@@ -58,10 +46,6 @@ export class ExtensionsService {
 	}
 
 	async readOne(bundle: string | null, name: string) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
-
 		const key = this.getKey(bundle, name);
 
 		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === (bundle ?? name));
@@ -75,33 +59,87 @@ export class ExtensionsService {
 	}
 
 	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
+		const result = await this.knex.transaction(async (trx) => {
+			if (!isObject(data.meta)) {
+				throw new InvalidPayloadError({ reason: `"meta" is required` });
+			}
 
-		const key = this.getKey(bundle, name);
+			const service = new ExtensionsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
 
-		const updateExtensionSchema = Joi.object({
-			meta: Joi.object({
-				enabled: Joi.boolean(),
-			}),
+			const key = this.getKey(bundle, name);
+
+			await service.extensionsItemService.updateOne(key, data.meta);
+
+			let extension;
+
+			try {
+				extension = await service.readOne(bundle, name);
+			} catch (error) {
+				throw new ExtensionReadError(error);
+			}
+
+			if ('enabled' in data.meta) {
+				await service.checkBundleAndSyncStatus(trx, extension);
+			}
+
+			return extension;
 		});
 
-		const { error } = updateExtensionSchema.validate(data);
+		this.extensionsManager.reload();
 
-		if (error) {
-			throw new InvalidPayloadError({ reason: error.message });
-		}
-
-		if ('meta' in data && 'enabled' in data.meta) {
-			await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
-
-			this.extensionsManager.reload();
-		}
+		return result;
 	}
 
 	private getKey(bundle: string | null, name: string) {
 		return bundle ? `${bundle}/${name}` : name;
+	}
+
+	/**
+	 * Sync a bundles enabled status
+	 *  - If the extension or extensions parent is not a bundle changes are skipped
+	 *  - If a bundles status is toggled, all children are set to that status
+	 *  - If an entries status is toggled, then if the:
+	 *    - Parent bundle is non-partial throws UnprocessableContentError
+	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
+	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
+	 */
+	private async checkBundleAndSyncStatus(trx: Knex, extension: ApiOutput) {
+		if (extension.bundle === null) {
+			if (extension.schema?.type === 'bundle') {
+				await trx('directus_extensions')
+					.update({ enabled: extension.meta.enabled })
+					.where('name', 'LIKE', this.getKey(extension.name, '%'));
+			}
+
+			return;
+		}
+
+		const parent = await this.readOne(null, extension.bundle);
+
+		if (parent.schema?.type !== 'bundle') {
+			return;
+		}
+
+		if (parent.schema.partial === false) {
+			throw new UnprocessableContentError({
+				reason: 'Unable to toggle status of an entry for a bundle marked as non partial',
+			});
+		}
+
+		const child = await trx('directus_extensions')
+			.where('name', 'LIKE', this.getKey(extension.bundle, '%'))
+			.where({ enabled: true })
+			.first();
+
+		if (!child && parent.meta.enabled) {
+			await trx('directus_extensions').update({ enabled: false }).where({ name: parent.name });
+		} else if (child && !parent.meta.enabled) {
+			await trx('directus_extensions').update({ enabled: true }).where({ name: parent.name });
+		}
 	}
 
 	/**
@@ -164,7 +202,7 @@ export class ExtensionsService {
 			return {
 				name,
 				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local', 'version') : null,
+				schema: schema ? pick(schema, 'type', 'local', 'version', 'partial') : null,
 				meta: omit(meta, 'name'),
 			};
 		});

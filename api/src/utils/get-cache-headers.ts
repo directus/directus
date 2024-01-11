@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { Request } from 'express';
-import { useEnv } from '../env.js';
 import { shouldSkipCache } from './should-skip-cache.js';
 
 /**
@@ -41,7 +41,11 @@ export function getCacheControlHeader(
 	headerValues.push(`max-age=${ttlSeconds}`);
 
 	// When the s-maxage flag should be included
-	if (globalCacheSettings && Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) && env['CACHE_CONTROL_S_MAXAGE'] >= 0) {
+	if (
+		globalCacheSettings &&
+		Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) &&
+		(env['CACHE_CONTROL_S_MAXAGE'] as number) >= 0
+	) {
 		headerValues.push(`s-maxage=${env['CACHE_CONTROL_S_MAXAGE']}`);
 	}
 

@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase, {
@@ -7,7 +8,6 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import { useEnv } from '../../../env.js';
 import { useLogger } from '../../../logger.js';
 import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';

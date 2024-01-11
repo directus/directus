@@ -1,12 +1,16 @@
+import { useEnv } from '@directus/env';
 import { randIp, randUrl } from '@ngneat/falso';
 import os from 'node:os';
+import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
-import { validateIP } from './validate-ip.js';
+import { useLogger } from '../logger.js';
+import { ipInNetworks } from '../utils/ip-in-networks.js';
+import { validateIp } from './validate-ip.js';
 
 vi.mock('node:os');
-
-vi.mock('../env.js');
+vi.mock('@directus/env');
+vi.mock('../logger.js');
+vi.mock('../utils/ip-in-networks.js');
 
 let sample: {
 	ip: string;
@@ -24,33 +28,61 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test(`Does nothing if IP is valid`, async () => {
-	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '' });
+test(`Does nothing if deny list is empty`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: [] });
 
-	await validateIP(sample.ip, sample.url);
+	validateIp(sample.ip, sample.url);
 });
 
-test(`Throws error if passed IP is denylisted`, async () => {
-	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: sample.ip });
+test(`Does nothing if IP is not in deny list`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: [sample.ip] });
+	vi.mocked(ipInNetworks).mockReturnValue(false);
 
-	try {
-		await validateIP(sample.ip, sample.url);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
-	}
+	validateIp(sample.ip, sample.url);
 });
 
-test(`Checks against IPs of local networkInterfaces if IP deny list contains 0.0.0.0`, async () => {
-	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '0.0.0.0' });
+test(`Throws error if IP is in deny list`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: [sample.ip] });
+	vi.mocked(ipInNetworks).mockReturnValue(true);
+
+	expect(() => validateIp(sample.ip, sample.url)).toThrowError(
+		`Requested URL "${sample.url}" resolves to a denied IP address`,
+	);
+});
+
+test(`Throws and logs error if deny list is invalid`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['invalid'] });
+
+	const mockLogger = {
+		warn: vi.fn(),
+	} as unknown as Logger;
+
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
+
+	const error = new Error();
+
+	vi.mocked(ipInNetworks).mockImplementation(() => {
+		throw error;
+	});
+
+	expect(() => validateIp(sample.ip, sample.url)).toThrowError(
+		`Requested URL "${sample.url}" resolves to a denied IP address`,
+	);
+
+	expect(mockLogger.warn).toHaveBeenCalledWith(`Invalid "IMPORT_IP_DENY_LIST" configuration`);
+	expect(mockLogger.warn).toHaveBeenCalledWith(error);
+});
+
+test(`Checks against IPs of local network interfaces if deny list contains 0.0.0.0`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
 
 	vi.mocked(os.networkInterfaces).mockReturnValue({});
-	await validateIP(sample.ip, sample.url);
+	validateIp(sample.ip, sample.url);
 	expect(os.networkInterfaces).toHaveBeenCalledOnce();
 });
 
-test(`Throws error if IP address matches resolved localhost IP`, async () => {
-	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: '0.0.0.0' });
+test(`Throws error if IP matches resolved local network interface address`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
 
 	vi.mocked(os.networkInterfaces).mockReturnValue({
 		fa0: undefined,
@@ -76,10 +108,7 @@ test(`Throws error if IP address matches resolved localhost IP`, async () => {
 		],
 	});
 
-	try {
-		await validateIP(sample.ip, sample.url);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(`Requested URL "${sample.url}" resolves to a denied IP address`);
-	}
+	expect(() => validateIp(sample.ip, sample.url)).toThrowError(
+		`Requested URL "${sample.url}" resolves to a denied IP address`,
+	);
 });
