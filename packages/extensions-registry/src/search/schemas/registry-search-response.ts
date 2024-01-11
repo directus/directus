@@ -1,4 +1,3 @@
-import { EXTENSION_TYPES } from '@directus/extensions';
 import { z } from 'zod';
 
 export const RegistrySearchResponsePackage = z.object({
@@ -6,7 +5,6 @@ export const RegistrySearchResponsePackage = z.object({
 		name: z.string(),
 		version: z.string(),
 		description: z.string(),
-		type: z.enum(EXTENSION_TYPES),
 		keywords: z.array(z.string()),
 		author: z.object({
 			username: z.string().optional(),

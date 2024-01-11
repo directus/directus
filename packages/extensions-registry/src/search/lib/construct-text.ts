@@ -11,7 +11,7 @@ export const constructText = (options: Pick<SearchOptions, 'text' | 'extensionTy
 		 *
 		 * @TODO remove `directus-custom-x` tag search
 		 */
-		text += ` keywords:directus-extension-${options.extensionType},directus-custom-${options.extensionType}`;
+		text += ` keywords:"directus-extension-${options.extensionType}","directus-custom-${options.extensionType}"`;
 	}
 
 	if (options?.author) {
@@ -22,5 +22,5 @@ export const constructText = (options: Pick<SearchOptions, 'text' | 'extensionTy
 		text += ` maintainer:${options.maintainer}`;
 	}
 
-	return text;
+	return text.trim();
 };

@@ -4,7 +4,9 @@
 export const validateText = (text: string) => {
 	const qualifiers = ['author', 'maintainer', 'keywords', 'not', 'is', 'boost-exact'];
 
-	const containsQualifier = qualifiers.some((qualifier) => text.includes(` ${qualifier}:`));
+	const containsQualifier = qualifiers.some(
+		(qualifier) => text.startsWith(`${qualifier}:`) || text.includes(` ${qualifier}:`),
+	);
 
 	if (containsQualifier) {
 		throw new TypeError('Search text cannot contain npm special search qualifiers');
