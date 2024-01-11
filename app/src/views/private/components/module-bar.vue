@@ -4,12 +4,18 @@ import ModuleBarLogo from './module-bar-logo.vue';
 import ModuleBarAvatar from './module-bar-avatar.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { translate } from '@/utils/translate-object-values';
+import { useAppStore } from '@directus/stores';
+import { storeToRefs } from 'pinia';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { omit } from 'lodash';
 import { useExtensions } from '@/extensions';
+import { useRouter } from 'vue-router';
 
 const settingsStore = useSettingsStore();
 const { modules: registeredModules } = useExtensions();
+const appStore = useAppStore();
+const { moduleNavDrawerOpen } = storeToRefs(appStore);
+const router = useRouter();
 
 const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
 
@@ -43,6 +49,14 @@ const modules = computed(() => {
 			};
 		});
 });
+
+const toggleNav = (to: string) => {
+	if (router.currentRoute.value.path == to) {
+		moduleNavDrawerOpen.value = !moduleNavDrawerOpen.value;
+	} else {
+		moduleNavDrawerOpen.value = true;
+	}
+};
 </script>
 
 <template>
@@ -59,6 +73,7 @@ const modules = computed(() => {
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
+				@click="toggleNav(modulePart.to)"
 			>
 				<v-icon :name="modulePart.icon" />
 			</v-button>
