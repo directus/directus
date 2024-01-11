@@ -34,14 +34,17 @@ const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollec
 
 const availableCollections = computed(() => {
 	return [
-		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
+		...orderBy(
+			collectionsStore.databaseCollections.filter((collection) => collection.meta),
+			['meta.sort', 'collection'],
+		),
 		{
 			divider: true,
 		},
 		{
 			collection: t('system'),
 			selectable: false,
-			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
+			children: collectionsStore.crudSafeSystemCollections,
 		},
 	];
 });

@@ -295,7 +295,7 @@ Location of the file.
 Tags for the file.
 
 `metadata` **object**\
-Any additional metadata Directus was able to scrape from the file. For images, this includes EXIF, IPTC, and ICC information.
+Any additional metadata Directus was able to scrape from the file. For images, this includes Exif, IPTC, and ICC information.
 
 ```json
 {

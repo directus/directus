@@ -92,7 +92,7 @@
 		"@rollup/plugin-virtual": "3.0.2",
 		"argon2": "0.31.2",
 		"async": "3.2.5",
-		"axios": "1.6.2",
+		"axios": "1.6.5",
 		"busboy": "1.6.0",
 		"bytes": "3.1.2",
 		"camelcase": "8.0.0",
@@ -221,7 +221,7 @@
 		"vitest": "1.1.1"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.8.2",
+		"@keyv/redis": "2.8.3",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
