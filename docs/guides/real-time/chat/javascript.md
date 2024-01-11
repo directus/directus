@@ -247,7 +247,7 @@ Invoke this function directly before subscribing to any events
 ```js
 client.onWebSocket('message', function (data) {
   if (data.type == 'auth' && data.status == 'ok') {
-    readAllMessages() // [!code ++]
+    readAllMessages(); // [!code ++]
     subscribe('create');
   }
 });
