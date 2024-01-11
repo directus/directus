@@ -281,7 +281,7 @@ const cleanup = client.onWebSocket('message', function (data) {
     subscribe('create');
   }
 
-  if (data.type === 'items') { // [!code ++]
+  if (data.type == 'items') { // [!code ++]
     for (const item of data.data) { // [!code ++]
       addMessageToList(item); // [!code ++]
     } // [!code ++]
@@ -320,7 +320,7 @@ export default function App() {
         subscribe('create');
       }
 
-      if (data.type === 'items') {
+      if (data.type  'items') {
         for (const item of data.data) {
           addMessageToList(item);
         }

@@ -262,7 +262,7 @@ const cleanup = client.onWebSocket('message', function (data) {
     subscribe('create');
   }
 
-  if (data.type === 'items') { // [!code ++]
+  if (data.type == 'items') { // [!code ++]
     for (const item of data.data) { // [!code ++]
       addMessageToList(item); // [!code ++]
     } // [!code ++]
@@ -328,7 +328,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
             subscribe('create');
           }
 
-          if (data.type === 'items') {
+          if (data.type == 'items') {
             for (const item of data.data) {
               addMessageToList(item);
             }
