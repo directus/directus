@@ -1,10 +1,10 @@
+import { useEnv } from '@directus/env';
 import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type Logger, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
-import { useEnv } from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 export const _cache: {
@@ -25,7 +25,7 @@ export const createLogger = () => {
 	const env = useEnv();
 
 	const pinoOptions: LoggerOptions = {
-		level: env['LOG_LEVEL'] || 'info',
+		level: (env['LOG_LEVEL'] as string) || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -75,7 +75,7 @@ export const createExpressLogger = () => {
 	const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 
 	const httpLoggerOptions: LoggerOptions = {
-		level: env['LOG_LEVEL'] || 'info',
+		level: (env['LOG_LEVEL'] as string) || 'info',
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
@@ -138,7 +138,7 @@ export const createExpressLogger = () => {
 	}
 
 	if (env['LOG_HTTP_IGNORE_PATHS']) {
-		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS']);
+		const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS'] as string);
 
 		httpLoggerEnvConfig['autoLogging'] = {
 			ignore: (req) => {

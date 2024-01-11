@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/utils';
@@ -6,7 +7,6 @@ import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';

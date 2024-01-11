@@ -5,7 +5,7 @@ export type Role = {
 	icon: string;
 	enforce_tfa: null | boolean;
 	external_id: null | string;
-	ip_whitelist: string[];
+	ip_access: string[];
 	app_access: boolean;
 	admin_access: boolean;
 };

@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
@@ -7,7 +8,6 @@ import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import { useEnv } from '../env.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -157,7 +157,7 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'invite' };
 
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
+		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite');
 		inviteURL.setQuery('token', token);
 
 		return inviteURL.toString();
@@ -375,7 +375,7 @@ export class UsersService extends ItemsService {
 		const opts: MutationOptions = {};
 
 		try {
-			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST']) === false) {
+			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST'] as string) === false) {
 				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
@@ -455,7 +455,7 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenError();
 		}
 
-		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
 			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
 		}
 
@@ -470,7 +470,7 @@ export class UsersService extends ItemsService {
 
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
+			: new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password').setQuery('token', token).toString();
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 

@@ -78,6 +78,7 @@ export const ExtensionOptionsHybrid = z.object({
 
 export const ExtensionOptionsBundle = z.object({
 	type: z.literal('bundle'),
+	partial: z.boolean().optional(),
 	path: SplitEntrypoint,
 	entries: z.array(ExtensionOptionsBundleEntry),
 });
