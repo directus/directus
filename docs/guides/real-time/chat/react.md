@@ -261,7 +261,7 @@ function readAllMessages() {
 }
 ```
 
-Invoke this function directly before subscribing to any events
+Run this function directly before subscribing to any events
 
 ```js
 const cleanup = client.onWebSocket('message', function (data) {

@@ -110,7 +110,7 @@ The file sidebar also includes the following details, which are not editable and
 - **Modified** – The timestamp of when the file was last modified.
 - **Edited By** – The User that modified the File.
 - **Folder** – The current parent folder that contains the File.
-- **Metadata** – Metadata JSON dump of the File's EXIF, IPTC, and ICC information.
+- **Metadata** – Metadata JSON dump of the File's Exif, IPTC, and ICC information.
 
 ## Edit an Image
 
