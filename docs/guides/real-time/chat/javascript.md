@@ -78,7 +78,7 @@ At the top of the `<script>` tag, import the SDK composables needed for this pro
 ```
 
 - `createDirectus` is a function that initializes a Directus client.
-- `authentication` authenticates a user with the login and password.
+- `authentication` provides methods to authenticate a user.
 - `realtime` provides methods to establish a WebSocket connection.
 
 ## Establish and Authenticate a WebSocket Client
