@@ -10,22 +10,32 @@ export function isLoginRedirectAllowed(redirect: unknown, provider: string): boo
 	if (typeof redirect !== 'string') return false; // invalid type
 
 	const env = useEnv();
+	const publicUrl = env['PUBLIC_URL'] as string;
 
-	try {
-		const { hostname: redirectDomain } = new URL(redirect);
-
-		const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
-
-		if (envKey in env) {
-			return isUrlAllowed(redirect, [...toArray(env[envKey] as string), env['PUBLIC_URL'] as string]);
+	if (URL.canParse(redirect) === false) {
+		if (redirect.startsWith('//') === false) {
+			// should be a relative path like `/admin/test`
+			return true;
 		}
 
-		// allow redirects to the defined PUBLIC_URL
-		const { hostname: publicDomain } = new URL(env['PUBLIC_URL'] as string);
-
-		return redirectDomain === publicDomain;
-	} catch {
-		// must be a relative path
-		return true;
+		// domain without protocol `//example.com/test`
+		return false;
 	}
+
+	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
+
+	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
+
+	if (envKey in env) {
+		return isUrlAllowed(redirect, [...toArray(env[envKey] as string), publicUrl]);
+	}
+
+	if (URL.canParse(publicUrl) === false) {
+		return false;
+	}
+
+	// allow redirects to the defined PUBLIC_URL
+	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
+
+	return `${redirectProtocol}//${redirectDomain}` === `${publicProtocol}//${publicDomain}`;
 }

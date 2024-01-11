@@ -15,9 +15,9 @@ test('isUrlAllowed should block different domains', () => {
 	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(false);
 });
 
-test('isUrlAllowed accepts varying protocols', () => {
+test('isUrlAllowed blocks varying protocols', () => {
 	const checkUrl = 'http://example.com/'
 	const allowedUrls = ['ftp://example.com/', 'https://example.com/']
 
-	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(true);
+	expect(isUrlAllowed(checkUrl, allowedUrls)).toBe(false);
 });

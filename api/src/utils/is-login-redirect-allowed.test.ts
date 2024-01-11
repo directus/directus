@@ -23,7 +23,6 @@ test('isLoginRedirectAllowed returns false with invalid redirect', () => {
 });
 
 test('isLoginRedirectAllowed returns true for relative paths', () => {
-	const redirect = '/admin/content';
 	const provider = 'local';
 
 	vi.mocked(useEnv).mockReturnValue({
@@ -31,16 +30,19 @@ test('isLoginRedirectAllowed returns true for relative paths', () => {
 		'PUBLIC_URL': 'http://example.com',
 	});
 
-	expect(isLoginRedirectAllowed(redirect, provider)).toBe(true);
+	expect(isLoginRedirectAllowed('/admin/content', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('../admin/content', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('./admin/content', provider)).toBe(true);
 });
 
-test('isLoginRedirectAllowed returns true with no allow list and valid public url', () => {
-	const redirect = '//example.com/admin/content';
+test('isLoginRedirectAllowed returns false if missing protocol', () => {
 	const provider = 'local';
 
 	vi.mocked(useEnv).mockReturnValue({
 		'PUBLIC_URL': 'http://example.com',
 	});
 
-	expect(isLoginRedirectAllowed(redirect, provider)).toBe(true);
+	expect(isLoginRedirectAllowed('//example.com/admin/content', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('//user@password:example.com/', provider)).toBe(false);
 });
+
