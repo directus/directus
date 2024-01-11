@@ -12,7 +12,7 @@ import { validateLimit } from './utils/validate-limit.js';
 import { validateText } from './utils/validate-text.js';
 import type { SearchResult } from './types/search-result.js';
 
-import { search } from './index.js';
+import { search } from './search.js';
 
 vi.mock('ky');
 vi.mock('./lib/construct-text.js');

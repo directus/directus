@@ -3,8 +3,8 @@ import type { SearchOptions } from '../types/search-options.js';
 import { constructText } from './construct-text.js';
 
 const cases: [Pick<SearchOptions, 'text' | 'extensionType' | 'author' | 'maintainer'>, string][] = [
-	[{}, ''],
-	[{ text: 'some search query' }, 'some search query'],
+	[{}, 'keywords:"directus-extension"'],
+	[{ text: 'some search query' }, 'some search query keywords:"directus-extension"'],
 	[
 		{ text: 'some search query', extensionType: 'interface' },
 		'some search query keywords:"directus-extension-interface","directus-custom-interface"',
