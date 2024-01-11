@@ -1,0 +1,46 @@
+import { vi, expect, test, afterEach } from 'vitest';
+import { useEnv } from '@directus/env';
+import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
+
+vi.mock('@directus/env');
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+test('isLoginRedirectAllowed returns true with no redirect', () => {
+	const redirect = undefined;
+	const provider = 'local';
+
+	expect(isLoginRedirectAllowed(redirect, provider)).toBe(true);
+});
+
+test('isLoginRedirectAllowed returns false with invalid redirect', () => {
+	const redirect = 123456;
+	const provider = 'local';
+
+	expect(isLoginRedirectAllowed(redirect, provider)).toBe(false);
+});
+
+test('isLoginRedirectAllowed returns true for relative paths', () => {
+	const redirect = '/admin/content';
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://directus.io',
+		'PUBLIC_URL': 'http://example.com',
+	});
+
+	expect(isLoginRedirectAllowed(redirect, provider)).toBe(true);
+});
+
+test('isLoginRedirectAllowed returns true with no allow list and valid public url', () => {
+	const redirect = '//example.com/admin/content';
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		'PUBLIC_URL': 'http://example.com',
+	});
+
+	expect(isLoginRedirectAllowed(redirect, provider)).toBe(true);
+});
