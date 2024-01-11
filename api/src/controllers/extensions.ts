@@ -1,5 +1,8 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { EXTENSION_TYPES } from '@directus/extensions';
+import { search, type SearchOptions } from '@directus/extensions-registry';
+import { isIn } from '@directus/utils';
 import express from 'express';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
@@ -24,6 +27,41 @@ router.get(
 
 		const extensions = await service.readAll();
 		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/registry',
+	asyncHandler(async (req, res, next) => {
+		const { text, limit, offset, type } = req.query;
+
+		const options: SearchOptions = {};
+
+		if (typeof text === 'string') {
+			options.text = text;
+		}
+
+		if (typeof limit === 'string') {
+			options.limit = Number(limit);
+		}
+
+		if (typeof offset === 'string') {
+			options.offset = Number(offset);
+		}
+
+		if (typeof type === 'string') {
+			if (isIn(type, EXTENSION_TYPES) === false) {
+				throw new ForbiddenError();
+			}
+
+			options.extensionType = type;
+		}
+
+		const payload = await search(options);
+
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond,
