@@ -325,7 +325,6 @@ export default function App() {
           addMessageToList(item);
         }
       }
-      console.log(message);
     });
 
     client.connect();

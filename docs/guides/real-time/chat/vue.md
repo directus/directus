@@ -119,7 +119,6 @@ onMounted(() => {
     if (message.type == 'auth' && message.status == 'ok') {
       subscribe('create');
     }
-    console.log(message);
   });
 
   client.connect();
