@@ -286,25 +286,25 @@ This guide covers authentication, item creation, and subscription using WebSocke
 ```html
 <!DOCTYPE html>
 <html>
-	<body>
-		<form id="login">
-			<label for="email">Email</label>
-			<input type="email" id="email" />
-			<label for="password">Password</label>
-			<input type="password" id="password" />
-			<input type="submit" />
-		</form>
+  <body>
+    <form id="login">
+      <label for="email">Email</label>
+      <input type="email" id="email" />
+      <label for="password">Password</label>
+      <input type="password" id="password" />
+      <input type="submit" />
+    </form>
 
-		<ol></ol>
+    <ol></ol>
 
-		<form id="new">
-			<label for="message">Message</label>
-			<input type="text" id="text" />
-			<input type="submit" />
-		</form>
+    <form id="new">
+      <label for="message">Message</label>
+      <input type="text" id="text" />
+      <input type="submit" />
+    </form>
 
-		<script>
-		  import {
+    <script>
+      import {
         createDirectus,
         authentication,
         realtime,
@@ -318,13 +318,13 @@ This guide covers authentication, item creation, and subscription using WebSocke
 
       client.onWebSocket('message', function (data) {
         if (data.type == 'auth' && data.status == 'ok') {
-          readAllMessages()
+          readAllMessages();
           subscribe('create');
         }
 
         if (data.type === 'items') {
           for (const item of data.data) {
-           addMessageToList(item);
+            addMessageToList(item);
           }
         }
       });
@@ -383,7 +383,8 @@ This guide covers authentication, item creation, and subscription using WebSocke
         li.textContent = `${message.user_created.first_name}: ${message.text}`;
         document.querySelector('ol').appendChild(li);
       }
-		</script>
-	</body>
+    </script>
+  </body>
 </html>
+
 ```
