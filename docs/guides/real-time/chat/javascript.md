@@ -185,7 +185,7 @@ document.querySelector('#new').addEventListener('submit', function (event) {
     type: 'items', // [!code ++]
     collection: 'messages', // [!code ++]
     action: 'create', // [!code ++]
-    data: { text}, // [!code ++]
+    data: { text }, // [!code ++]
   });
 
 	document.querySelector('#text').value = ''; // [!code ++]
