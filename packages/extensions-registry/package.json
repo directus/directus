@@ -29,10 +29,12 @@
 		"@directus/extensions": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"ky": "1.2.0",
+		"lodash-es": "4.17.21",
 		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@types/lodash-es": "4.17.12",
 		"@vitest/coverage-v8": "1.1.0",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
