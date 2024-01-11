@@ -77,9 +77,9 @@ At the top of the `<script>` tag, import the SDK composables needed for this pro
 </html>
 ```
 
-- `createDirectus` is the hook that initializes a Directus client.
-- `authentication` authenticates a user with the login and password.
-- `realtime` establishes a WebSocket connectivity.
+- `createDirectus` is a function that initializes a Directus client.
+- `authentication` provides methods to authenticate a user.
+- `realtime` provides methods to establish a WebSocket connection.
 
 ## Establish and Authenticate a WebSocket Client
 
@@ -247,7 +247,7 @@ Invoke this function directly before subscribing to any events
 ```js
 client.onWebSocket('message', function (data) {
   if (data.type == 'auth' && data.status == 'ok') {
-    readAllMessages() // [!code ++]
+    readAllMessages(); // [!code ++]
     subscribe('create');
   }
 });
