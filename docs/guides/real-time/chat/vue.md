@@ -247,7 +247,7 @@ Invoke this function directly before subscribing to any events
 ```js
 const cleanup = client.onWebSocket('message', function (data) {
   if (data.type == 'auth' && data.status == 'ok') {
-    readAllMessages() // [!code ++]
+    readAllMessages(); // [!code ++]
     subscribe('create');
   }
 });
@@ -258,7 +258,7 @@ Within the connection, listen for "items" message to update the user interface w
 ```js
 const cleanup = client.onWebSocket('message', function (data) {
   if (data.type == 'auth' && data.status == 'ok') {
-    readAllMessages()
+    readAllMessages();
     subscribe('create');
   }
 

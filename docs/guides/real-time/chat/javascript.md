@@ -258,7 +258,7 @@ Within the connection, listen for "items" message to update the user interface w
 ```js
 client.onWebSocket('message', function (data) {
   if (data.type == 'auth' && data.status == 'ok') {
-    readAllMessages()
+    readAllMessages();
     subscribe('create');
   }
 
