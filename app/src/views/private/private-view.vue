@@ -222,7 +222,7 @@ const appAccess = computed(() => {
 
 const notificationsPreviewActive = ref(false);
 
-const { sidebarOpen, fullScreen } = storeToRefs(appStore);
+const { sidebarOpen, fullScreen, moduleNavDrawerOpen } = storeToRefs(appStore);
 
 const appearance = computed(() => {
 	return userStore.currentUser && 'appearance' in userStore.currentUser ? userStore.currentUser.appearance : 'auto';
@@ -275,7 +275,7 @@ function getWidth(input: unknown, fallback: number): number {
 				@dragging="(value) => (isDraggingNav = value)"
 				@transition-end="onNavTransitionEnd"
 			>
-				<div class="module-nav alt-colors">
+				<div class="module-nav alt-colors" :class="{ 'is-open': moduleNavDrawerOpen }">
 					<project-info />
 
 					<div class="module-nav-content">
@@ -421,6 +421,9 @@ function getWidth(input: unknown, fallback: number): number {
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
+			}
+			&:not(.is-open) {
+				display: none;
 			}
 		}
 
