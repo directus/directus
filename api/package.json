@@ -71,6 +71,7 @@
 		"@directus/env": "workspace:*",
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
+		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.1.0",
 		"@directus/memory": "workspace:*",
