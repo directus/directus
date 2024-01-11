@@ -135,7 +135,6 @@ useEffect(() => {
     if (data.type == 'auth' && data.status == 'ok') {
       subscribe('create');
     }
-    console.log(message);
   });
 
   client.connect();
