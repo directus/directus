@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getPackageExtensionType } from '../utils/get-package-extension-type.js';
+import { getPackageExtensionType } from '../../../utils/get-package-extension-type.js';
 import { convertToSearchResult } from './convert-to-search-result.js';
 
 vi.mock('../utils/get-package-extension-type.js');

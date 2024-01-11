@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
-import { search, type SearchOptions } from '@directus/extensions-registry';
+import { describe, search, type SearchOptions } from '@directus/extensions-registry';
 import { isIn } from '@directus/utils';
 import express from 'express';
 import { getExtensionManager } from '../extensions/index.js';
@@ -60,6 +60,17 @@ router.get(
 		}
 
 		const payload = await search(options);
+
+		res.locals['payload'] = payload;
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/registry/:extension',
+	asyncHandler(async (req, res, next) => {
+		const payload = await describe(req.params['extension']);
 
 		res.locals['payload'] = payload;
 		return next();

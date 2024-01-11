@@ -1,6 +1,6 @@
 import type { RegistrySearchResponse } from '../schemas/registry-search-response.js';
 import type { SearchResult } from '../types/search-result.js';
-import { getPackageExtensionType } from '../utils/get-package-extension-type.js';
+import { getPackageExtensionType } from '../../../utils/get-package-extension-type.js';
 
 export const convertToSearchResult = (registryResponse: RegistrySearchResponse): SearchResult => {
 	const filterCount = registryResponse.total;

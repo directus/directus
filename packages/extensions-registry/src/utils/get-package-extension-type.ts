@@ -1,11 +1,8 @@
 import type { ExtensionType } from '@directus/extensions';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { isIn } from '@directus/utils';
-import type { RegistrySearchResponsePackage } from '../schemas/registry-search-response.js';
 
-export const getPackageExtensionType = (
-	keywords: RegistrySearchResponsePackage['package']['keywords'],
-): ExtensionType | null => {
+export const getPackageExtensionType = (keywords: string[]): ExtensionType | null => {
 	let type: string | null = null;
 
 	/*
