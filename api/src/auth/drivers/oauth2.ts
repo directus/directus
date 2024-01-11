@@ -290,8 +290,6 @@ const handleError = (e: any) => {
 	return e;
 };
 
-
-
 export function createOAuth2AuthRouter(providerName: string): Router {
 	const router = Router();
 	const env = useEnv();
@@ -305,17 +303,13 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const redirect = req.query['redirect'];
 
 			if (isLoginRedirectAllowed(redirect, providerName)) {
-				throw new InvalidPayloadError({ reason: `Url "${redirect}" can't be used to redirect after login` });
+				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect, prompt },
-				env['SECRET'] as string,
-				{
-					expiresIn: '5m',
-					issuer: 'directus',
-				},
-			);
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, env['SECRET'] as string, {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
 
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,

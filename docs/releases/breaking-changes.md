@@ -17,9 +17,12 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Introduced Allow List for OAuth2/OpenID Redirects
 
-Due to an Open Redirect security issue with the OAuth2 and OpenID SSO providers we have introduced an allow list for these redirects. If your current workflow depends on redirecting to an external domain after successful SSO login using the `?redirect=http://example.com/login` query parameter then you'll need to add this url to the `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`.
+Due to an Open Redirect security issue with the OAuth2 and OpenID SSO providers we have introduced an allow list for
+these redirects. If your current workflow depends on redirecting to an external domain after successful SSO login using
+the `?redirect=http://example.com/login` query parameter then you'll need to add this URL to the
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`.
 
-`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma separated list of URLs (which include the path when comparing)
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma separated list of URLs (which include the path when comparing).
 
 ## Version 10.8.3
 
