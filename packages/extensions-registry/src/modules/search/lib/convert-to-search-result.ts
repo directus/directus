@@ -1,6 +1,6 @@
+import { getPackageExtensionType } from '../../../utils/get-package-extension-type.js';
 import type { RegistrySearchResponse } from '../schemas/registry-search-response.js';
 import type { SearchResult } from '../types/search-result.js';
-import { getPackageExtensionType } from '../../../utils/get-package-extension-type.js';
 
 export const convertToSearchResult = (registryResponse: RegistrySearchResponse): SearchResult => {
 	const filterCount = registryResponse.total;
@@ -14,7 +14,7 @@ export const convertToSearchResult = (registryResponse: RegistrySearchResponse):
 			description: pkg.package.description,
 			version: pkg.package.version,
 			type: getPackageExtensionType(pkg.package.keywords),
-			author: pkg.package.author?.username ?? pkg.package.publisher.username,
+			publisher: pkg.package.publisher.username,
 			maintainers: pkg.package.maintainers.map(({ username }) => username),
 		})),
 	};

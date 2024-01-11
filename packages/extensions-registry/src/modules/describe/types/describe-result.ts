@@ -6,7 +6,7 @@ export interface DescribeResultPackage {
 	description: string;
 	readme: string;
 	type: ExtensionType | null;
-	author: string;
+	publisher: string;
 	maintainers: string[];
 	versions: string[];
 	fileCount: number;

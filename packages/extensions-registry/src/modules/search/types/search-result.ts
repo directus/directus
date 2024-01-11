@@ -9,7 +9,7 @@ export interface SearchResultPackage {
 	version: string;
 	description: string;
 	type: ExtensionType | null;
-	author: string;
+	publisher: string;
 	maintainers: string[];
 }
 

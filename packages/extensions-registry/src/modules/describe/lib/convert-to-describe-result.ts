@@ -20,7 +20,7 @@ export const convertToDescribeResult = (registryResponse: RegistryDescribeRespon
 			description: registryResponse.description,
 			version: registryResponse['dist-tags'].latest,
 			type: getPackageExtensionType(registryResponse.keywords),
-			author: latestVersion._npmUser.name,
+			publisher: latestVersion._npmUser.name,
 			maintainers: registryResponse.maintainers.map(({ name }) => name),
 			readme: registryResponse.readme,
 			versions: Object.keys(registryResponse.versions),
