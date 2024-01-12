@@ -1,16 +1,7 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test } from 'vitest';
 import { orderBy } from './orderBy.js';
-import { applyFunction } from '../utils/functions.js';
-
-vi.mock('../utils/functions.js', async (importOriginal) => {
-	const mod = await importOriginal<typeof import('../utils/functions.js')>();
-	return {
-		...mod,
-		applyFunction: vi.fn(),
-	};
-});
 
 let sample: AbstractSqlClauses;
 
@@ -97,8 +88,7 @@ test('Returns order part when a function was applied', () => {
 		},
 	];
 
-	const fnMock = `COUNT("${tableName}"."${columnName}")`;
-	vi.mocked(applyFunction).mockReturnValueOnce(fnMock);
+	const fnMock = `COUNT("t${tableIndex}"."${columnName}")`;
 	const expected = `ORDER BY ${fnMock} ASC`;
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
