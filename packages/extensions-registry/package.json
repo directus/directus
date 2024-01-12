@@ -26,6 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"ky": "1.2.0",
