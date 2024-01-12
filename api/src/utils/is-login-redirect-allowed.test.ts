@@ -22,6 +22,32 @@ test('isLoginRedirectAllowed returns false with invalid redirect', () => {
 	expect(isLoginRedirectAllowed(redirect, provider)).toBe(false);
 });
 
+test('isLoginRedirectAllowed returns true for allowed URL', () => {
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://example.com,https://example.com,http://example.com:8055/test',
+		'PUBLIC_URL': 'http://example.com',
+	});
+
+	expect(isLoginRedirectAllowed('http://example.com', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('https://example.com', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('http://example.com:8055/test', provider)).toBe(true);
+});
+
+test('isLoginRedirectAllowed returns false for denied URL', () => {
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://example.com',
+		'PUBLIC_URL': 'http://example.com',
+	});
+
+	expect(isLoginRedirectAllowed('https://example.com', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('http://example.com:8055', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('http://example.com/test', provider)).toBe(false);
+});
+
 test('isLoginRedirectAllowed returns true for relative paths', () => {
 	const provider = 'local';
 
