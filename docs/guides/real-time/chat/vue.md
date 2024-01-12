@@ -71,9 +71,9 @@ import { onMounted, ref, onBeforeUnmount } from 'vue';
 import { authentication, createDirectus, realtime } from '@directus/sdk';
 ```
 
-- `createDirectus` is the hook that initializes a Directus client.
-- `authentication` authenticates a user with the login and password.
-- `realtime` establishes a WebSocket connectivity.
+- `createDirectus` is a function that initializes a Directus client.
+- `authentication` provides methods to authenticate a user.
+- `realtime` provides methods to establish a WebSocket connection.
 
 ## Establish and Authenticate a WebSocket Client
 

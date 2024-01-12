@@ -62,8 +62,8 @@ At the top of the `<script>` tag, import the composables needed for the SDK
 ```
 
 - `staticToken` is used to authenticate the client we'll create shortly.
-- `createDirectus` is the hook that initializes a Directus client.
-- `realtime` establishes a WebSocket connectivity.
+- `createDirectus` is a function that initializes a Directus client.
+- `realtime` provides methods to establish a WebSocket connection.
 
 ## Create a Realtime Client with Authentication
 
