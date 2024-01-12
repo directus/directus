@@ -1,7 +1,11 @@
 import type { ExtractFn } from '@directus/data';
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
+import {
+	columnIndexToIdentifier,
+	tableIndexToIdentifier,
+	type AbstractSqlQueryFnNode,
+	type AbstractSqlQuerySelectFnNode,
+} from '@directus/data-sql';
 import { escapeIdentifier } from './escape-identifier.js';
-import { columnIndexToIdentifier, tableIndexToIdentifier } from './index-to-identifier.js';
 import { wrapColumn } from './wrap-column.js';
 
 /**

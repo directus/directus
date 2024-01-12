@@ -1,7 +1,6 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import { tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
 import { conditionString } from '../utils/conditions/index.js';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
-import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 
 /**
  * Generates `LEFT JOIN x ON y` part.

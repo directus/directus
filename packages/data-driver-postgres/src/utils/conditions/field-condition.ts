@@ -1,5 +1,4 @@
-import { convertNumericOperators, type SqlConditionFieldNode } from '@directus/data-sql';
-import { tableIndexToIdentifier } from '../index-to-identifier.js';
+import { convertNumericOperators, tableIndexToIdentifier, type SqlConditionFieldNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
 
 /**

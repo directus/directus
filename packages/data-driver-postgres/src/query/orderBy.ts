@@ -1,7 +1,6 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import { tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 import { applyFunction } from '../utils/functions.js';
-import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 
 /**
  * Generates the `ORDER BY x` part of a SQL statement.

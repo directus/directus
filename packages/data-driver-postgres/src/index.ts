@@ -5,6 +5,7 @@
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
+	columnIndexToIdentifier,
 	convertQuery,
 	getMappedQueriesStream,
 	type AbstractSqlQuery,
@@ -16,7 +17,6 @@ import pg from 'pg';
 import QueryStream from 'pg-query-stream';
 import { convertToActualStatement } from './query/index.js';
 import { convertParameters } from './query/parameters.js';
-import { columnIndexToIdentifier } from './utils/index-to-identifier.js';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;

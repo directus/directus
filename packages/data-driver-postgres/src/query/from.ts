@@ -1,6 +1,5 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import { tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
-import { tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 
 /**
  * Generate the `FROM x` part of a SQL statement.

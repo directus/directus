@@ -1,6 +1,5 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import { columnIndexToIdentifier, tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
 import { applySelectFunction } from '../utils/functions.js';
-import { columnIndexToIdentifier, tableIndexToIdentifier } from '../utils/index-to-identifier.js';
 import { wrapColumn } from '../utils/wrap-column.js';
 
 /**
