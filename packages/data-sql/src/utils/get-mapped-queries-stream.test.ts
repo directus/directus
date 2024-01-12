@@ -16,7 +16,7 @@ function getStreamMock(data: Record<string, unknown>[]): ReadableStream<Record<s
 }
 
 test('nested-many', async () => {
-	const columnIndexToName = (columnIndex: number) => `c${columnIndex}`;
+	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;
 
 	//@todo randomize the values
 	const columnName = randomIdentifier();
@@ -38,12 +38,12 @@ test('nested-many', async () => {
 
 	const rootStream = getStreamMock([
 		{
-			[columnIndexToName(keyColumnIndex)]: keyColumnValue1,
-			[columnIndexToName(columnIndex)]: columnValue1,
+			[columnIndexToIdentifier(keyColumnIndex)]: keyColumnValue1,
+			[columnIndexToIdentifier(columnIndex)]: columnValue1,
 		},
 		{
-			[columnIndexToName(keyColumnIndex)]: keyColumnValue2,
-			[columnIndexToName(columnIndex)]: columnValue2,
+			[columnIndexToIdentifier(keyColumnIndex)]: keyColumnValue2,
+			[columnIndexToIdentifier(columnIndex)]: columnValue2,
 		},
 	]);
 
@@ -73,16 +73,16 @@ test('nested-many', async () => {
 
 	const firstDatabaseResponse = [
 		{
-			[columnIndexToName(externalColumnIndex)]: externalColumnValue1,
+			[columnIndexToIdentifier(externalColumnIndex)]: externalColumnValue1,
 		},
 		{
-			[columnIndexToName(externalColumnIndex)]: externalColumnValue2,
+			[columnIndexToIdentifier(externalColumnIndex)]: externalColumnValue2,
 		},
 	];
 
 	const secondDatabaseResponse = [
 		{
-			[columnIndexToName(externalColumnIndex)]: externalColumnValue3,
+			[columnIndexToIdentifier(externalColumnIndex)]: externalColumnValue3,
 		},
 	];
 
@@ -101,7 +101,7 @@ test('nested-many', async () => {
 		rootStream,
 		[subQuery],
 		aliasMapping,
-		columnIndexToName,
+		columnIndexToIdentifier,
 		queryDataBaseMockFn,
 	);
 

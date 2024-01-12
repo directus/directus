@@ -41,7 +41,7 @@ export interface AbstractSqlQuery {
 
 export type SubQuery = (
 	rootRow: Record<string, unknown>,
-	columnIndexToName: (columnIndex: number) => string,
+	columnIndexToIdentifier: (columnIndex: number) => string,
 ) => {
 	rootQuery: AbstractSqlQuery;
 

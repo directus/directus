@@ -5,7 +5,7 @@ import type { ConverterResult } from '../../index.js';
 import { getNestedMany, type NestedManyResult } from './create-nested-manys.js';
 
 test('getNestedMany with a single identifier', () => {
-	const columnIndexToName = (columnIndex: number) => `c${columnIndex}`;
+	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;
 
 	const tableIndex = randomInteger(0, 100);
 	const keyColumnName = randomIdentifier();
@@ -55,7 +55,7 @@ test('getNestedMany with a single identifier', () => {
 		],
 	};
 
-	const rootRow = { [columnIndexToName(keyColumnIndex)]: keyColumnValue };
+	const rootRow = { [columnIndexToIdentifier(keyColumnIndex)]: keyColumnValue };
 
 	const expectedGeneratedQuery: ConverterResult = {
 		rootQuery: {
@@ -100,11 +100,11 @@ test('getNestedMany with a single identifier', () => {
 	const result = getNestedMany(field, tableIndex);
 
 	expect(result).toStrictEqual(expectedResult);
-	expect(result.subQuery(rootRow, columnIndexToName)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(rootRow, columnIndexToIdentifier)).toStrictEqual(expectedGeneratedQuery);
 });
 
 test('getNestedMany with a multiple identifiers (a composite key)', () => {
-	const columnIndexToName = (columnIndex: number) => `c${columnIndex}`;
+	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;
 
 	const tableIndex = randomInteger(0, 100);
 	const keyColumn1Name = randomIdentifier();
@@ -166,8 +166,8 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	};
 
 	const rootRow = {
-		[columnIndexToName(keyColumn1Index)]: keyColumn1Value,
-		[columnIndexToName(keyColumn2Index)]: keyColumn2Value,
+		[columnIndexToIdentifier(keyColumn1Index)]: keyColumn1Value,
+		[columnIndexToIdentifier(keyColumn2Index)]: keyColumn2Value,
 	};
 
 	const expectedGeneratedQuery: ConverterResult = {
@@ -237,11 +237,11 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	const result = getNestedMany(field, tableIndex);
 
 	expect(result).toStrictEqual(expectedResult);
-	expect(result.subQuery(rootRow, columnIndexToName)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(rootRow, columnIndexToIdentifier)).toStrictEqual(expectedGeneratedQuery);
 });
 
 test('getNestedMany with modifiers', () => {
-	const columnIndexToName = (columnIndex: number) => `c${columnIndex}`;
+	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;
 
 	const tableIndex = randomInteger(0, 100);
 	const keyColumnName = randomIdentifier();
@@ -322,8 +322,8 @@ test('getNestedMany with modifiers', () => {
 	};
 
 	const rootRow = {
-		[columnIndexToName(keyColumnIndex)]: keyColumnValue,
-		[columnIndexToName(externalForeignKeyColumnIndex)]: externalForeignKeyColumnValue,
+		[columnIndexToIdentifier(keyColumnIndex)]: keyColumnValue,
+		[columnIndexToIdentifier(externalForeignKeyColumnIndex)]: externalForeignKeyColumnValue,
 	};
 
 	const expectedGeneratedQuery: ConverterResult = {
@@ -409,11 +409,11 @@ test('getNestedMany with modifiers', () => {
 	const result = getNestedMany(field, tableIndex);
 
 	expect(result).toStrictEqual(expectedResult);
-	expect(result.subQuery(rootRow, columnIndexToName)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(rootRow, columnIndexToIdentifier)).toStrictEqual(expectedGeneratedQuery);
 });
 
 test('getNestedMany with nested modifiers', () => {
-	const columnIndexToName = (columnIndex: number) => `c${columnIndex}`;
+	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;
 
 	const tableIndex = randomInteger(0, 100);
 	const keyColumnName = randomIdentifier();
@@ -603,10 +603,10 @@ test('getNestedMany with nested modifiers', () => {
 		],
 	};
 
-	const rootResultRow = { [columnIndexToName(keyColumnIndex)]: keyColumnValue };
+	const rootResultRow = { [columnIndexToIdentifier(keyColumnIndex)]: keyColumnValue };
 
 	const result = getNestedMany(field, tableIndex);
 
 	expect(result).toStrictEqual(expectedResult);
-	expect(result.subQuery(rootResultRow, columnIndexToName)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(rootResultRow, columnIndexToIdentifier)).toStrictEqual(expectedGeneratedQuery);
 });

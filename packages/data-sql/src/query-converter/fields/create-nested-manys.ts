@@ -66,12 +66,14 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tab
 	const select = generatedAliases.map(([field, alias]) => createPrimitiveSelect(tableIndex, field, alias));
 
 	return {
-		subQuery: (rootRow, columnIndexToName) => ({
+		subQuery: (rootRow, columnIndexToIdentifier) => ({
 			rootQuery: {
 				clauses,
 				parameters: [
 					...parameters,
-					...field.nesting.local.fields.map((field) => rootRow[columnIndexToName(generatedAliasMap[field]!)] as string),
+					...field.nesting.local.fields.map(
+						(field) => rootRow[columnIndexToIdentifier(generatedAliasMap[field]!)] as string,
+					),
 				],
 			},
 
