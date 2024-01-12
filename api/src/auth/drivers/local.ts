@@ -59,7 +59,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+			const STALL_TIME = env['LOGIN_STALL_TIME'];
 			const timeStart = performance.now();
 
 			const accountability: Accountability = {
@@ -101,8 +101,8 @@ export function createLocalAuthRouter(provider: string): Router {
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, REFRESH_COOKIE_OPTIONS);
+				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], accessToken, ACCESS_COOKIE_OPTIONS);
 			}
 
 			res.locals['payload'] = payload;
