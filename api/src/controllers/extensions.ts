@@ -68,13 +68,13 @@ router.get(
 );
 
 router.get(
-	'/registry/:extension',
+	'/registry/*',
 	asyncHandler(async (req, res, next) => {
-		if (typeof req.params['extension'] !== 'string') {
+		if (typeof req.params[0] !== 'string') {
 			throw new ForbiddenError();
 		}
 
-		const payload = await describe(req.params['extension']);
+		const payload = await describe(req.params[0]);
 
 		res.locals['payload'] = payload;
 		return next();
