@@ -227,7 +227,7 @@
 		"nodemailer-sendgrid": "1.0.3",
 		"oracledb": "6.3.0",
 		"pg": "8.11.3",
-		"sqlite3": "5.1.6",
+		"sqlite3": "5.1.7",
 		"tedious": "16.6.1"
 	},
 	"engines": {
