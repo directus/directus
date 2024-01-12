@@ -13,7 +13,7 @@ export const constructText = (options: Pick<SearchOptions, 'text' | 'extensionTy
 		 */
 		text += ` keywords:"directus-extension-${options.extensionType}","directus-custom-${options.extensionType}"`;
 	} else {
-		text += ` keywords:"directus-extension"`
+		text += ' keywords:"directus-extension"';
 	}
 
 	if (options?.author) {
