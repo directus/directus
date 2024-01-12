@@ -903,17 +903,17 @@ importers:
         specifier: 6.1.1
         version: 6.1.1
       typedoc:
-        specifier: 0.25.6
-        version: 0.25.6(typescript@5.3.3)
+        specifier: 0.25.7
+        version: 0.25.7(typescript@5.3.3)
       typedoc-plugin-frontmatter:
         specifier: 0.0.2
         version: 0.0.2
       typedoc-plugin-markdown:
         specifier: 4.0.0-next.38
-        version: 4.0.0-next.38(typedoc@0.25.6)
+        version: 4.0.0-next.38(typedoc@0.25.7)
       typedoc-plugin-zod:
         specifier: 1.1.1
-        version: 1.1.1(typedoc@0.25.6)
+        version: 1.1.1(typedoc@0.25.7)
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.3
         version: 1.0.0-next.3(typedoc-plugin-markdown@4.0.0-next.38)
@@ -18602,20 +18602,20 @@ packages:
       yaml: 2.3.4
     dev: true
 
-  /typedoc-plugin-markdown@4.0.0-next.38(typedoc@0.25.6):
+  /typedoc-plugin-markdown@4.0.0-next.38(typedoc@0.25.7):
     resolution: {integrity: sha512-XrjVxrTvoR85f+elTdSoo/lRVKqk77XntxZvDXYamuxD9c8RjAqAbztM0chcL0rvMOlMotUScRUIBdsGPE6kqA==}
     peerDependencies:
       typedoc: 0.25.x
     dependencies:
-      typedoc: 0.25.6(typescript@5.3.3)
+      typedoc: 0.25.7(typescript@5.3.3)
     dev: true
 
-  /typedoc-plugin-zod@1.1.1(typedoc@0.25.6):
+  /typedoc-plugin-zod@1.1.1(typedoc@0.25.7):
     resolution: {integrity: sha512-SjEB3swHW2mD5CnZf6sHX6L9KA1wnqzuJH96SAIMgy1x26AzFkS22zfdoyB4W5IjBnbU/RqH2p8dlo6hZHpiYg==}
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x
     dependencies:
-      typedoc: 0.25.6(typescript@5.3.3)
+      typedoc: 0.25.7(typescript@5.3.3)
     dev: true
 
   /typedoc-vitepress-theme@1.0.0-next.3(typedoc-plugin-markdown@4.0.0-next.38):
@@ -18623,11 +18623,11 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0-next.19'
     dependencies:
-      typedoc-plugin-markdown: 4.0.0-next.38(typedoc@0.25.6)
+      typedoc-plugin-markdown: 4.0.0-next.38(typedoc@0.25.7)
     dev: true
 
-  /typedoc@0.25.6(typescript@5.3.3):
-    resolution: {integrity: sha512-1rdionQMpOkpA58qfym1J+YD+ukyA1IEIa4VZahQI2ZORez7dhOvEyUotQL/8rSoMBopdzOS+vAIsORpQO4cTA==}
+  /typedoc@0.25.7(typescript@5.3.3):
+    resolution: {integrity: sha512-m6A6JjQRg39p2ZVRIN3NKXgrN8vzlHhOS+r9ymUYtcUP/TIQPvWSq7YgE5ZjASfv5Vd5BW5xrir6Gm2XNNcOow==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
