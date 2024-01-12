@@ -1,3 +1,4 @@
+import { UnprocessableContentError } from '@directus/errors';
 import { getPackageExtensionType } from '../../../utils/get-package-extension-type.js';
 import type { RegistryDescribeResponse } from '../schemas/registry-describe-response.js';
 import type { DescribeResult } from '../types/describe-result.js';
@@ -7,11 +8,15 @@ export const convertToDescribeResult = (registryResponse: RegistryDescribeRespon
 	const latestVersion = registryResponse.versions[registryResponse['dist-tags'].latest];
 
 	if (!latestVersion) {
-		throw new Error(`Could not find package information for version ${registryResponse['dist-tags'].latest}`);
+		throw new UnprocessableContentError({
+			reason: `Could not find package information for version ${registryResponse['dist-tags'].latest}`,
+		});
 	}
 
 	if (!latestVersion['directus:extension']) {
-		throw new Error(`Extension ${registryResponse.name} does not contain a Directus Extensions Manifest`);
+		throw new UnprocessableContentError({
+			reason: `Extension ${registryResponse.name} does not contain a Directus Extensions Manifest`,
+		});
 	}
 
 	return {
