@@ -7,7 +7,7 @@ export interface SearchResultMeta {
 export interface SearchResultPackage {
 	name: string;
 	version: string;
-	description: string;
+	description: string | null;
 	type: ExtensionType | null;
 	publisher: string;
 	maintainers: string[];

@@ -11,7 +11,7 @@ export const convertToSearchResult = (registryResponse: RegistrySearchResponse):
 		},
 		data: registryResponse.objects.map((pkg) => ({
 			name: pkg.package.name,
-			description: pkg.package.description,
+			description: pkg.package.description ?? null,
 			version: pkg.package.version,
 			type: getPackageExtensionType(pkg.package.keywords),
 			publisher: pkg.package.publisher.username,

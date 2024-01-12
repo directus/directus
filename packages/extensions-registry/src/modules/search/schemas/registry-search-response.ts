@@ -4,7 +4,7 @@ export const RegistrySearchResponsePackage = z.object({
 	package: z.object({
 		name: z.string(),
 		version: z.string(),
-		description: z.string(),
+		description: z.string().optional(),
 		keywords: z.array(z.string()),
 		publisher: z.object({
 			username: z.string(),
