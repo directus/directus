@@ -1,6 +1,12 @@
-import type { AbstractSqlQuerySelectFnNode } from '@directus/data-sql';
-import { wrapColumn } from './wrap-column.js';
 import type { ExtractFn } from '@directus/data';
+import {
+	columnIndexToIdentifier,
+	tableIndexToIdentifier,
+	type AbstractSqlQueryFnNode,
+	type AbstractSqlQuerySelectFnNode,
+} from '@directus/data-sql';
+import { escapeIdentifier } from './escape-identifier.js';
+import { wrapColumn } from './wrap-column.js';
 
 /**
  * Wraps a column with a function.
@@ -8,8 +14,10 @@ import type { ExtractFn } from '@directus/data';
  * @param fnNode - The function node which holds the function name and the column
  * @returns	Basically FN("table"."column")
  */
-export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
-	const wrappedColumn = wrapColumn(fnNode.table, fnNode.column);
+export function applyFunction(fnNode: AbstractSqlQueryFnNode): string {
+	const tableAlias = tableIndexToIdentifier(fnNode.tableIndex);
+
+	const wrappedColumn = wrapColumn(tableAlias, fnNode.columnName);
 
 	if (fnNode.fn.type === 'arrayFn') {
 		// count is the only array function we currently support
@@ -17,6 +25,14 @@ export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
 	}
 
 	return applyDateTimeFn(fnNode, wrappedColumn);
+}
+
+export function applySelectFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
+	const columnAlias = columnIndexToIdentifier(fnNode.columnIndex);
+
+	const fn = applyFunction(fnNode);
+
+	return `${fn} AS ${escapeIdentifier(columnAlias)}`;
 }
 
 /**
@@ -30,7 +46,7 @@ export function applyFunction(fnNode: AbstractSqlQuerySelectFnNode): string {
  * @param column - The column which will be used as the argument for the function
  * @returns - F.e. EXTRACT(YEAR FROM "table"."column")
  */
-export const applyDateTimeFn = (fnNode: AbstractSqlQuerySelectFnNode, col: string): string => {
+export const applyDateTimeFn = (fnNode: AbstractSqlQueryFnNode, col: string): string => {
 	switch (fnNode.fn.fn) {
 		case 'year':
 			return applyFn('YEAR', fnNode.fn);
