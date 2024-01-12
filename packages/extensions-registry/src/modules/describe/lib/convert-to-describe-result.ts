@@ -9,13 +9,13 @@ export const convertToDescribeResult = (registryResponse: RegistryDescribeRespon
 
 	if (!latestVersion) {
 		throw new UnprocessableContentError({
-			reason: `Could not find package information for version ${registryResponse['dist-tags'].latest}`,
+			reason: `Could not find package information for version "${registryResponse['dist-tags'].latest}"`,
 		});
 	}
 
 	if (!latestVersion['directus:extension']) {
 		throw new UnprocessableContentError({
-			reason: `Extension ${registryResponse.name} does not contain a Directus Extensions Manifest`,
+			reason: `Extension "${registryResponse.name}" does not contain a Directus Extensions Manifest`,
 		});
 	}
 
