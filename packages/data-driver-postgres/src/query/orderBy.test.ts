@@ -88,7 +88,7 @@ test('Returns order part when a function was applied', () => {
 		},
 	];
 
-	const fnMock = `COUNT("t${tableIndex}"."${columnName}")`;
-	const expected = `ORDER BY ${fnMock} ASC`;
+	const expected = `ORDER BY COUNT("t${tableIndex}"."${columnName}") ASC`;
+
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
