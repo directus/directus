@@ -39,6 +39,7 @@ test('isLoginRedirectAllowed returns false if missing protocol', () => {
 	const provider = 'local';
 
 	vi.mocked(useEnv).mockReturnValue({
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://example.com',
 		'PUBLIC_URL': 'http://example.com',
 	});
 
