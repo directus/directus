@@ -8,6 +8,7 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { AuthorizationService } from '../services/authorization.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -24,6 +25,32 @@ router.get(
 
 		const extensions = await service.readAll();
 		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/:name/:version?',
+	asyncHandler(async (req, _res, next) => {
+		const { name, version } = req.params;
+		const { registry } = req.query;
+
+		if (!name) {
+			throw new ForbiddenError();
+		}
+
+		const authorizationService = new AuthorizationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		//make sure the user can create extensions
+		authorizationService.validatePayload('create', 'directus_extensions', { name, enabled: true });
+
+		const extensionManager = getExtensionManager();
+		await extensionManager.install(name, version, registry as string);
+
 		return next();
 	}),
 	respond,
