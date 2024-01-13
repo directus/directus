@@ -73,6 +73,8 @@ export const DEFAULTS = {
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
 	EXTENSIONS_REGISTRY: 'npm',
 
+	MIGRATIONS_PATH: './migrations',
+
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
