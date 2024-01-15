@@ -128,8 +128,8 @@ Edits overwrite the original file on disk. This can't be reversed.
 
 ## Set a Focal Point
 
-By default, Directus will crop images around the center when specific sizes are requested. Focal points change the center
-point to specific coordinates.
+By default, Directus will crop images around the center when specific sizes are requested. Focal points change the
+center point to specific coordinates.
 
 1. From the **File Library**, click a file to open its detail page.
 2. Click the <span mi btn sec>tune</span> button in the top right to open the image editor.
