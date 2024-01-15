@@ -130,6 +130,7 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
+CIDR
 CLA
 CLI
 CloudFront
@@ -195,7 +196,7 @@ Entrypoint
 env
 ENV
 ESM
-EXIF
+Exif
 fallbacks
 falsy
 FavIcon

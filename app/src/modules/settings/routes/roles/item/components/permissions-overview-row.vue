@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import { Collection } from '@/types/collections';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { Permission } from '@directus/types';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { editablePermissionActions, EditablePermissionsAction } from '../../app-permissions';
 import useUpdatePermissions from '../composables/use-update-permissions';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
-import { Collection } from '@/types/collections';
 
 const props = defineProps<{
 	collection: Collection;
+	disabledActions?: EditablePermissionsAction[];
 	permissions: Permission[];
 	refreshing: number[];
 	role?: string;
@@ -21,7 +24,7 @@ const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions
 
 function isLoading(action: string) {
 	const permission = getPermission(action);
-	if (!permission) return false;
+	if (!permission?.id) return false;
 	return props.refreshing.includes(permission.id);
 }
 </script>
@@ -37,46 +40,18 @@ function isLoading(action: string) {
 			</span>
 		</span>
 
-		<permissions-overview-toggle
-			action="create"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('create')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'create')"
-		/>
-		<permissions-overview-toggle
-			action="read"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('read')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'read')"
-		/>
-		<permissions-overview-toggle
-			action="update"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('update')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'update')"
-		/>
-		<permissions-overview-toggle
-			action="delete"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('delete')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
-		/>
-		<permissions-overview-toggle
-			action="share"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('share')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
-		/>
+		<template v-for="action in editablePermissionActions" :key="action">
+			<permissions-overview-toggle
+				v-if="!disabledActions?.includes(action)"
+				:action="action"
+				:collection="collection"
+				:role="role"
+				:permissions="permissions"
+				:loading="isLoading(action)"
+				:app-minimal="appMinimal && appMinimal.find((p) => p.action === action)"
+			/>
+			<value-null v-else />
+		</template>
 	</div>
 </template>
 
@@ -123,7 +98,14 @@ function isLoading(action: string) {
 		opacity: 1;
 	}
 
-	.permissions-overview-toggle + .permissions-overview-toggle {
+	.null {
+		display: flex;
+		justify-content: center;
+		width: 24px;
+		color: var(--theme--foreground);
+	}
+
+	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
 		margin-left: 20px;
 	}
 

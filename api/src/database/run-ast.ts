@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
 import type { Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
-import { useEnv } from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
@@ -104,7 +104,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: {
 							limit: env['RELATIONAL_BATCH_SIZE'],
-							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * (env['RELATIONAL_BATCH_SIZE'] as number),
 							page: null,
 						},
 					});
@@ -115,7 +115,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 					}
 
-					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
+					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
 						hasMore = false;
 					}
 

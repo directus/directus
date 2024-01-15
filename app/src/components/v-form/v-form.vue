@@ -14,6 +14,7 @@ import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
+import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
 
 type FieldValues = {
@@ -156,6 +157,7 @@ function useForm() {
 		let fields = formFields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
 
 		fields = pushGroupOptionsDown(fields);
+		updateSystemDivider(fields);
 		updateFieldWidths(fields);
 
 		return fields;
@@ -378,7 +380,7 @@ function useRawEditor() {
 				<form-field
 					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-						(el: Element) => {
+						(el) => {
 							formFieldEls[fieldName] = el;
 						}
 					"

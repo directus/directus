@@ -1,4 +1,5 @@
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import type {
 	ApiExtension,
 	BundleExtension,
@@ -19,8 +20,8 @@ import type {
 	PromiseCallback,
 	ScheduleHandler,
 } from '@directus/types';
-import { isIn, isTypeIn, pluralize } from '@directus/utils';
-import { pathToRelativeUrl } from '@directus/utils/node';
+import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
+import { getNodeEnv, pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
@@ -35,7 +36,6 @@ import path from 'path';
 import { rollup } from 'rollup';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
-import { useEnv } from '../env.js';
 import { getFlowManager } from '../flows.js';
 import { useLogger } from '../logger.js';
 import * as services from '../services/index.js';
@@ -45,7 +45,6 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { toBoolean } from '../utils/to-boolean.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
@@ -67,7 +66,7 @@ const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
+	watch: (env['EXTENSIONS_AUTO_RELOAD'] as boolean) && getNodeEnv() !== 'development',
 };
 
 export class ExtensionManager {

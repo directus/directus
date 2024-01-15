@@ -3,37 +3,38 @@ import { expect, test } from 'vitest';
 import { mapResult } from './map-result.js';
 
 test('response with no relation', () => {
-	const randomTitle = randomAlpha(25);
+	const title = randomAlpha(25);
 
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'column1' },
-			{ type: 'root', alias: 'title', column: 'column2' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
+			{ type: 'root', alias: 'title', columnIndex: 2 },
 		],
 		{
-			column1: 1, // id
-			column2: randomTitle, // title
+			c1: 1,
+			c2: title,
 		},
 		[],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
-		title: randomTitle,
+		title,
 	});
 });
 
 test('response with one nested table', () => {
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'c1' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
 			{
 				type: 'nested',
 				alias: 'user',
 				children: [
-					{ type: 'root', alias: 'id', column: 'c2' },
-					{ type: 'root', alias: 'first_name', column: 'c3' },
-					{ type: 'root', alias: 'last_name', column: 'c4' },
+					{ type: 'root', alias: 'id', columnIndex: 2 },
+					{ type: 'root', alias: 'first_name', columnIndex: 3 },
+					{ type: 'root', alias: 'last_name', columnIndex: 4 },
 				],
 			},
 		],
@@ -44,9 +45,10 @@ test('response with one nested table', () => {
 			c4: 'Doe',
 		},
 		[],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
 		user: {
 			id: 1,
@@ -57,20 +59,20 @@ test('response with one nested table', () => {
 });
 
 test('response with multiple nested tables', () => {
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'c1' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
 			{
 				type: 'nested',
 				alias: 'user',
 				children: [
-					{ type: 'root', alias: 'id', column: 'c2' },
-					{ type: 'root', alias: 'first_name', column: 'c3' },
-					{ type: 'root', alias: 'last_name', column: 'c4' },
+					{ type: 'root', alias: 'id', columnIndex: 2 },
+					{ type: 'root', alias: 'first_name', columnIndex: 3 },
+					{ type: 'root', alias: 'last_name', columnIndex: 4 },
 					{
 						type: 'nested',
 						alias: 'city',
-						children: [{ type: 'root', alias: 'name', column: 'c5' }],
+						children: [{ type: 'root', alias: 'name', columnIndex: 5 }],
 					},
 				],
 			},
@@ -83,9 +85,10 @@ test('response with multiple nested tables', () => {
 			c5: 'Somewhere',
 		},
 		[],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
 		user: {
 			id: 1,
@@ -99,9 +102,9 @@ test('response with multiple nested tables', () => {
 });
 
 test('response with one sub result', () => {
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'c1' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
 			{ type: 'sub', alias: 'authors', index: 0 },
 		],
 		{
@@ -113,9 +116,10 @@ test('response with one sub result', () => {
 				{ id: 2, first_name: 'Jane', last_name: 'Doe' },
 			],
 		],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
 		authors: [
 			{ id: 1, first_name: 'John', last_name: 'Doe' },
@@ -125,9 +129,9 @@ test('response with one sub result', () => {
 });
 
 test('response with multiple sub result', () => {
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'c1' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
 			{ type: 'sub', alias: 'comments', index: 1 },
 			{ type: 'sub', alias: 'authors', index: 0 },
 		],
@@ -141,9 +145,10 @@ test('response with multiple sub result', () => {
 			],
 			[{ id: 1, title: 'A nice comment' }],
 		],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
 		comments: [{ id: 1, title: 'A nice comment' }],
 		authors: [
@@ -154,16 +159,16 @@ test('response with multiple sub result', () => {
 });
 
 test('response with one nested table and one sub result', () => {
-	const res = mapResult(
+	const result = mapResult(
 		[
-			{ type: 'root', alias: 'id', column: 'c1' },
+			{ type: 'root', alias: 'id', columnIndex: 1 },
 			{
 				type: 'nested',
 				alias: 'user',
 				children: [
-					{ type: 'root', alias: 'id', column: 'c2' },
-					{ type: 'root', alias: 'first_name', column: 'c3' },
-					{ type: 'root', alias: 'last_name', column: 'c4' },
+					{ type: 'root', alias: 'id', columnIndex: 2 },
+					{ type: 'root', alias: 'first_name', columnIndex: 3 },
+					{ type: 'root', alias: 'last_name', columnIndex: 4 },
 					{ type: 'sub', alias: 'children', index: 0 },
 				],
 			},
@@ -175,9 +180,10 @@ test('response with one nested table and one sub result', () => {
 			c4: 'Doe',
 		},
 		[[{ id: 1, first_name: 'John', last_name: 'Doe' }]],
+		(columnIndex) => `c${columnIndex}`,
 	);
 
-	expect(res).toEqual({
+	expect(result).toEqual({
 		id: 1,
 		user: {
 			id: 1,
