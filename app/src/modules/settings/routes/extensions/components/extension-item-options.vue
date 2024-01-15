@@ -1,14 +1,34 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ExtensionType } from '@directus/extensions';
+import { ExtensionStatus } from '../types';
 
-defineProps<{
-	name: string;
-	enabled: boolean;
+const props = defineProps<{
+	status: ExtensionStatus;
+	type?: ExtensionType;
 }>();
 
-defineEmits<{ toggleEnabled: [] }>();
+defineEmits<{ toggleStatus: [enabled: boolean] }>();
 
 const { t } = useI18n();
+
+const actions = computed(() => {
+	const enabled = props.status === 'enabled';
+
+	if (props.type !== 'bundle') {
+		return [{ text: enabled ? t('disable') : t('enable'), enabled }];
+	}
+
+	if (props.status !== 'partial') {
+		return [{ text: enabled ? t('disable_all') : t('enable_all'), enabled }];
+	}
+
+	return [
+		{ text: t('enable_all'), enabled: false },
+		{ text: t('disable_all'), enabled: true },
+	];
+});
 </script>
 
 <template>
@@ -18,12 +38,17 @@ const { t } = useI18n();
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
-				<v-list-item clickable @click="$emit('toggleEnabled')">
+				<v-list-item
+					v-for="(action, index) in actions"
+					:key="index"
+					clickable
+					@click="$emit('toggleStatus', action.enabled)"
+				>
 					<v-list-item-icon>
-						<v-icon name="mode_off_on" />
+						<v-icon name="mode_off_on" :color="action.enabled ? 'var(--theme--danger)' : 'var(--theme--success)'" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ enabled ? t('disable') : t('enable') }}
+						{{ action.text }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -38,17 +63,5 @@ const { t } = useI18n();
 	&:hover {
 		--v-icon-color: var(--theme--foreground);
 	}
-}
-
-.v-list-item.danger {
-	--v-list-item-color: var(--theme--danger);
-	--v-list-item-color-hover: var(--theme--danger);
-	--v-list-item-icon-color: var(--theme--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--theme--warning);
-	--v-list-item-color-hover: var(--theme--warning);
-	--v-list-item-icon-color: var(--theme--warning);
 }
 </style>

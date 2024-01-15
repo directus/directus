@@ -1,25 +1,28 @@
-import { expect, test } from 'vitest';
-import { createPrimitiveSelect } from './create-primitive-select.js';
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
+import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/index.js';
+import { createPrimitiveSelect } from './create-primitive-select.js';
 
 test('createPrimitiveSelect', () => {
-	const randomPrimitiveField = randomIdentifier();
-	const collection = randomIdentifier();
-	const fieldAlias = `${randomPrimitiveField}_RANDOM`;
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnIndex = randomInteger(0, 100);
 
 	const samplePrimitiveNode: AbstractQueryFieldNodePrimitive = {
 		type: 'primitive',
-		field: randomPrimitiveField,
+		field: columnName,
 		alias: randomIdentifier(),
 	};
 
-	const result = createPrimitiveSelect(collection, samplePrimitiveNode.field, fieldAlias);
-
-	expect(result).toStrictEqual({
+	const expectedResult: AbstractSqlQuerySelectPrimitiveNode = {
 		type: 'primitive',
-		table: collection,
-		column: randomPrimitiveField,
-		as: fieldAlias,
-	});
+		tableIndex,
+		columnName,
+		columnIndex,
+	};
+
+	const result = createPrimitiveSelect(tableIndex, samplePrimitiveNode.field, columnIndex);
+
+	expect(result).toStrictEqual(expectedResult);
 });

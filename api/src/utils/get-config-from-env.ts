@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import camelcase from 'camelcase';
 import { set } from 'lodash-es';
-import { useEnv } from '../env.js';
 
 export function getConfigFromEnv(
 	prefix: string,

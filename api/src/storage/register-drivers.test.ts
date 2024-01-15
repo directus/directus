@@ -1,13 +1,13 @@
+import { useEnv } from '@directus/env';
 import type { Driver, StorageManager } from '@directus/storage';
 import { randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '../env.js';
 import { getStorageDriver } from './get-storage-driver.js';
 import { registerDrivers } from './register-drivers.js';
 
 vi.mock('./get-storage-driver.js');
 
-vi.mock('../env.js');
+vi.mock('@directus/env');
 
 let mockStorage: StorageManager;
 let mockDriver: typeof Driver;

@@ -1,3 +1,6 @@
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
@@ -9,10 +12,8 @@ import url from 'url';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import { useEnv } from './env.js';
 import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { toBoolean } from './utils/to-boolean.js';
 import {
 	createSubscriptionController,
 	createWebSocketController,
@@ -101,8 +102,8 @@ export async function createServer(): Promise<http.Server> {
 
 	const terminusOptions: TerminusOptions = {
 		timeout:
-			env['SERVER_SHUTDOWN_TIMEOUT'] >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] < Infinity
-				? env['SERVER_SHUTDOWN_TIMEOUT']
+			(env['SERVER_SHUTDOWN_TIMEOUT'] as number) >= 0 && (env['SERVER_SHUTDOWN_TIMEOUT'] as number) < Infinity
+				? (env['SERVER_SHUTDOWN_TIMEOUT'] as number)
 				: 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
 		beforeShutdown,
@@ -115,7 +116,7 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		if (env['NODE_ENV'] !== 'development') {
+		if (getNodeEnv() !== 'development') {
 			logger.info('Shutting down...');
 		}
 
@@ -143,7 +144,7 @@ export async function createServer(): Promise<http.Server> {
 			},
 		);
 
-		if (env['NODE_ENV'] !== 'development') {
+		if (getNodeEnv() !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}
@@ -152,8 +153,8 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const host = env['HOST'];
-	const port = env['PORT'];
+	const host = env['HOST'] as string;
+	const port = parseInt(env['PORT'] as string);
 
 	server
 		.listen(port, host, () => {

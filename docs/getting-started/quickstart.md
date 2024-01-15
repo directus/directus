@@ -44,6 +44,9 @@ docker run \
 directus/directus
 ```
 
+The initial admin email address and password will be shown in the terminal. Directus should now be available at
+http://localhost:8055 or http://127.0.0.1:8055.
+
 _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
 
 == NPM Installation
@@ -128,7 +131,7 @@ of <span mi icon dngr>block</span> **No Access**, with full ability to reconfigu
 API return our Items, let's add some read permissions. For simplicity's sake, we'll do this on the Public Role, instead
 of creating a new Role.
 
-1. Navigate to **Settings Module > Roles & Permissions > Public**.
+1. Navigate to **Settings Module > Access Control > Public**.
 2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
    In our case, the Collection name is `articles`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.

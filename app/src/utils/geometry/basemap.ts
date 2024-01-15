@@ -23,7 +23,7 @@ const baseStyle: Style = {
 	glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
 };
 
-export function getBasemapSources(): BasemapSource[] {
+export function getBasemapSources(): [BasemapSource] | BasemapSource[] {
 	const settingsStore = useSettingsStore();
 
 	if (settingsStore.settings?.mapbox_key) {

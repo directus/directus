@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { merge } from 'lodash-es';
 import type { IRateLimiterOptions, IRateLimiterStoreOptions, RateLimiterAbstract } from 'rate-limiter-flexible';
-import { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import { useEnv } from './env.js';
+import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
@@ -24,6 +24,8 @@ export function createRateLimiter(
 			return new RateLimiterMemory(getConfig('memory', configPrefix, configOverrides));
 	}
 }
+
+export { RateLimiterRes };
 
 function getConfig(
 	store: 'memory',
