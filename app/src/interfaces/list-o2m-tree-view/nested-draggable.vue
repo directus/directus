@@ -188,9 +188,12 @@ function stageEdits(item: Record<string, any>) {
 
 <template>
 	<v-skeleton-loader v-if="loading" type="block-list-item" />
-	<v-notice v-else-if="filteredDisplayItems.length === 0">
-		{{ t('no_items') }}
-	</v-notice>
+
+	<template v-else-if="root && filteredDisplayItems.length === 0">
+		<v-notice>
+			{{ t('no_items') }}
+		</v-notice>
+	</template>
 
 	<draggable
 		v-bind="dragOptions"
