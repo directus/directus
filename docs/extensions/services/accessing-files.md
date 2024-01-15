@@ -43,6 +43,41 @@ router.post('/', async (req, res) => {
 });
 ```
 
+## Upload a File
+
+```js
+router.post('/', async (req, res, next) => {
+  const filesService = new FilesService({
+    schema: await getSchema(),
+    accountability: req.accountability,
+  });
+
+  const busboy = Busboy({ headers: req.headers });
+
+  busboy.on('file', async (_, fileStream, { filename, mimeType }) => {
+    // See https://docs.directus.io/reference/files.html#the-file-object
+    const data = {
+      filename_download: filename,
+      type: mimeType,
+      storage: 'local',
+    };
+
+    try {
+      const primaryKey = await filesService.uploadOne(fileStream, data);
+      res.json({ id: primaryKey });
+    } catch (error) {
+      busboy.emit('error', error);
+    }
+  });
+
+  busboy.on('error', (error) => {
+    next(error);
+  });
+
+  req.pipe(busboy);
+});
+```
+
 ## Read a File
 
 ```js
