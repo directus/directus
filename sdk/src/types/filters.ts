@@ -74,7 +74,8 @@ export type FilterOperators<
 	_nintersects: T;
 	_intersects_bbox: T;
 	_nintersects_bbox: T;
-	_regex: IsDateTime<FieldType, never, IsString<T, string, never>>;
+	// regex is not available over the API https://docs.directus.io/reference/filter-rules.html#filter-operators
+	// _regex: IsDateTime<FieldType, never, IsString<T, string, never>>;
 }>;
 
 // filter not applicable filters based on "never" types
