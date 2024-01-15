@@ -1,5 +1,5 @@
+import { useEnv } from '@directus/env';
 import type { CookieOptions } from 'express';
-import { useEnv } from './env.js';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 
@@ -63,9 +63,9 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 

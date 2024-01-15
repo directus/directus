@@ -54,20 +54,29 @@ Next, you will likely need to [configure the role's details](#configure-role-det
 In addition to defining permissions, roles come with a number of other configuration options. To configure a role's
 details, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]**.
-2. Configure the following options as desired:
-   - **Permissions** — Configures [access permissions](#configure-permissions) for the role.
-   - **Role Name** — Sets the name of the role.
-   - **Role Icon** — Sets icon used when referencing this role.
-   - **Description** — Adds a note to help explain the role's purpose.
-   - **App Access** — Auto-configures minimum permissions required to log in to the App.
-   - **Admin Access** — Auto-configures full permissions to project data and Settings. Must be toggled off to restore
-     ability to restrict permissions.
-   - **IP Access** — Adds IP addresses to allow list. Type IP in and hit `Enter` (PC) or `return` (Mac) to confirm.
-     Leave empty to allow all IP addresses.
-   - **Require MFA** — Forces all users within this role to use multi-factor authentication.
-   - **Users in Role** — Lists all users within this role.
-3. Click <span mi btn>check</span> in the page header to confirm.
+1.  Navigate to **Settings > Roles & Permissions > [Role]**.
+2.  Configure the following options as desired:
+
+    - **Permissions** — Configures [access permissions](#configure-permissions) for the role.
+    - **Role Name** — Sets the name of the role.
+    - **Role Icon** — Sets icon used when referencing this role.
+    - **Description** — Adds a note to help explain the role's purpose.
+    - **App Access** — Auto-configures minimum permissions required to log in to the App.
+    - **Admin Access** — Auto-configures full permissions to project data and Settings. Must be toggled off to restore
+      ability to restrict permissions.
+    - **IP Access** — Allow list of IP addresses, IP ranges and CIDR blocks for this role. To add an entry, type it in
+      and hit `Enter` / `Return` to confirm. Leave empty to allow all IP addresses.
+
+      | Type       | Example Value   |
+      | ---------- | --------------- |
+      | IP Address | 1.2.3.4         |
+      | IP Range   | 1.1.1.1-2.2.2.2 |
+      | CIDR Block | 1.2.3.0/24      |
+
+    - **Require MFA** — Forces all users within this role to use multi-factor authentication.
+    - **Users in Role** — Lists all users within this role.
+
+3.  Click <span mi btn>check</span> in the page header to confirm.
 
 ::: tip App Access vs Admin Access
 

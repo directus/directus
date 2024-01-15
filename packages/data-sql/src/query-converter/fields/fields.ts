@@ -1,10 +1,10 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { createUniqueAlias } from '../../utils/create-unique-alias.js';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
-import { convertFn } from '../functions.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { createJoin } from './create-join.js';
 import { getNestedMany } from './create-nested-manys.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
+import { convertFieldFn } from './function.js';
 import { getNestedUnionOne } from './create-nested-union-one.js';
 
 export type FieldConversionResult = {
@@ -24,16 +24,15 @@ export type FieldConversionResult = {
  * While iterating over the nodes, the mapping of the auto generated alias to the original (related) field is created and returned separately.
  * This map of aliases to the relational "path" will be used later on to convert the response to a nested object - the second part of the ORM.
  *
- * @param collection - the current collection, will be an alias when called recursively
  * @param abstractFields - all nodes from the abstract query
- * @param idxGenerator - the generator used to increase the parameter indices
- * @param currentPath - the path which the recursion made for the ORM map
+ * @param tableIndex - the index to the table the field nodes belong to
+ * @param indexGen - the generator used to increase the parameter indices
  * @returns Select, join and parameters
  */
 export const convertFieldNodes = (
-	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
-	idxGenerator: Generator<number, number, number>,
+	tableIndex: number,
+	indexGen: IndexGenerators,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
@@ -43,9 +42,9 @@ export const convertFieldNodes = (
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
-			const generatedAlias = createUniqueAlias(abstractField.field);
-			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
-			const selectNode = createPrimitiveSelect(collection, abstractField.field, generatedAlias);
+			const columnIndex = indexGen.column.next().value;
+			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
+			const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
 			select.push(selectNode);
 			continue;
 		}
@@ -57,25 +56,38 @@ export const convertFieldNodes = (
 			 * item has a related item so we don't expand `null` values in a nested object where every
 			 * value is null
 			 */
-			const externalCollectionAlias = createUniqueAlias(abstractField.nesting.foreign.collection);
-			const sqlJoinNode = createJoin(collection, abstractField.nesting, externalCollectionAlias);
-			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator);
-			aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
-			joins.push(sqlJoinNode);
-			select.push(...nestedOutput.clauses.select);
+
+			if (abstractField.nesting.type === 'relational-many') {
+				const tableIndexRelational = indexGen.table.next().value;
+				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
+				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
+				joins.push(sqlJoinNode);
+				select.push(...nestedOutput.clauses.select);
+			}
+
 			continue;
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			const nestedUnionOneResult = getNestedUnionOne(collection, abstractField);
+			const tableIndex = indexGen.table.next().value;
+			const nestedUnionOneResult = getNestedUnionOne(collection, abstractField, tableIndex);
 			subQueries.push(nestedUnionOneResult.subQuery);
 			select.push(...nestedUnionOneResult.select);
-			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1, isOne: true });
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
 			continue;
 		}
 
 		if (abstractField.type === 'nested-single-many') {
-			const nestedManyResult = getNestedMany(collection, abstractField);
+			/*
+			 * nested many nodes are handled by the driver.
+			 * As a default behavior, we do separate queries for each o part result row.
+			 * The driver itself can use different technique if another technique is more performant,
+			 * like do a sub query in the statement or a join.
+			 */
+
+			const nestedManyResult = getNestedMany(abstractField, tableIndex);
+			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
@@ -83,10 +95,9 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'fn') {
-			const fnField = abstractField;
-			const generatedAlias = createUniqueAlias(`${fnField.fn.fn}_${fnField.field}`);
-			aliasMapping.push({ type: 'root', alias: abstractField.alias, column: generatedAlias });
-			const fn = convertFn(collection, fnField, idxGenerator, generatedAlias);
+			const columnIndex = indexGen.column.next().value;
+			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
+			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 			continue;
