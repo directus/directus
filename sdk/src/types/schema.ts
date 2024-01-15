@@ -49,11 +49,13 @@ export type PrimitiveFields<Schema extends object, Item> = {
 /**
  * Return string keys of all Relational fields in the given schema Item
  */
-export type RelationalFields<Schema extends object, Item> = CompleteSchema<Schema> extends infer FullSchema ?
-FullSchema extends object ?
- {
-	[Key in keyof Item]: Extract<Item[Key], ItemType<FullSchema>> extends never ? never : Key;
-}[keyof Item] : never : never;
+export type RelationalFields<Schema extends object, Item> = CompleteSchema<Schema> extends infer FullSchema
+	? FullSchema extends object
+		? {
+				[Key in keyof Item]: Extract<Item[Key], ItemType<FullSchema>> extends never ? never : Key;
+		  }[keyof Item]
+		: never
+	: never;
 
 /**
  * Remove the related Item types from relational m2o/a2o fields
@@ -110,7 +112,8 @@ export type GetCollection<
 /**
  * Helper to extract a collection name
  */
-export type GetCollectionName<Schema extends object, Collection> = CompleteSchema<Schema> extends infer FullSchema ?
- {
-	[K in keyof FullSchema]: UnpackList<FullSchema[K]> extends Collection ? K : never;
-}[keyof FullSchema] : never;
+export type GetCollectionName<Schema extends object, Collection> = CompleteSchema<Schema> extends infer FullSchema
+	? {
+			[K in keyof FullSchema]: UnpackList<FullSchema[K]> extends Collection ? K : never;
+	  }[keyof FullSchema]
+	: never;

@@ -25,15 +25,22 @@ export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonl
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-export type QueryFieldsRelational<Schema extends object, Item> = CompleteSchema<Schema> extends infer FullSchema ? FullSchema extends object? {
-	[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<FullSchema>> extends infer RelatedCollection
-		? RelatedCollection extends any[]
-			? HasManyToAnyRelation<RelatedCollection> extends never
-				? QueryFields<FullSchema, RelatedCollection> // many-to-many or one-to-many
-				: ManyToAnyFields<FullSchema, RelatedCollection> // many to any
-			: QueryFields<FullSchema, RelatedCollection> // many-to-one
-		: never;
-} : never : never;
+export type QueryFieldsRelational<Schema extends object, Item> = CompleteSchema<Schema> extends infer FullSchema
+	? FullSchema extends object
+		? {
+				[Key in RelationalFields<Schema, Item>]?: Extract<
+					Item[Key],
+					ItemType<FullSchema>
+				> extends infer RelatedCollection
+					? RelatedCollection extends any[]
+						? HasManyToAnyRelation<RelatedCollection> extends never
+							? QueryFields<FullSchema, RelatedCollection> // many-to-many or one-to-many
+							: ManyToAnyFields<FullSchema, RelatedCollection> // many to any
+						: QueryFields<FullSchema, RelatedCollection> // many-to-one
+					: never;
+		  }
+		: never
+	: never;
 
 /**
  * Deal with many-to-any relational fields
