@@ -283,12 +283,9 @@ function stageEdits(item: Record<string, any>) {
 		margin-left: 0;
 		padding: 0;
 
-		.v-skeleton-loader,
-		.v-notice {
-			width: auto;
-			margin-bottom: 12px;
-			margin-top: 12px;
-			margin-left: 24px;
+		.v-skeleton-loader {
+			margin: 12px 0px 12px auto;
+			width: calc(100% - 24px);
 		}
 
 		&:empty {
@@ -311,6 +308,7 @@ function stageEdits(item: Record<string, any>) {
 		border-radius: var(--theme--border-radius);
 
 		& + .drag-area {
+			padding-bottom: 0px;
 			padding-top: 12px;
 		}
 	}
