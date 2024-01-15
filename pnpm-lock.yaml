@@ -282,8 +282,8 @@ importers:
         specifier: 4.2.1
         version: 4.2.1
       openid-client:
-        specifier: 5.6.1
-        version: 5.6.1
+        specifier: 5.6.4
+        version: 5.6.4
       ora:
         specifier: 7.0.1
         version: 7.0.1
@@ -14960,8 +14960,8 @@ packages:
       yaml: 2.3.4
     dev: false
 
-  /openid-client@5.6.1:
-    resolution: {integrity: sha512-PtrWsY+dXg6y8mtMPyL/namZSYVz8pjXz3yJiBNZsEdCnu9miHLB4ELVC85WvneMKo2Rg62Ay7NkuCpM0bgiLQ==}
+  /openid-client@5.6.4:
+    resolution: {integrity: sha512-T1h3B10BRPKfcObdBklX639tVz+xh34O7GjofqrqiAQdm7eHsQ00ih18x6wuJ/E6FxdtS2u3FmUGPDeEcMwzNA==}
     dependencies:
       jose: 4.15.4
       lru-cache: 6.0.0
