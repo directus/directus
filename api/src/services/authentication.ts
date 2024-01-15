@@ -227,7 +227,7 @@ export class AuthenticationService {
 			user: user.id,
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
-			user_agent: this.accountability?.userAgent,
+			user_agent: this.accountability?.userAgent?.substring(0, 255),
 			origin: this.accountability?.origin,
 		});
 
@@ -238,7 +238,7 @@ export class AuthenticationService {
 				action: Action.LOGIN,
 				user: user.id,
 				ip: this.accountability.ip,
-				user_agent: this.accountability.userAgent,
+				user_agent: this.accountability.userAgent?.substring(0, 255),
 				origin: this.accountability.origin,
 				collection: 'directus_users',
 				item: user.id,

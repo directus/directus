@@ -103,7 +103,7 @@ export class SharesService extends ItemsService {
 			token: refreshToken,
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
-			user_agent: this.accountability?.userAgent,
+			user_agent: this.accountability?.userAgent?.substring(0, 255),
 			origin: this.accountability?.origin,
 			share: record.share_id,
 		});

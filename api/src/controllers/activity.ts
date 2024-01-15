@@ -93,7 +93,7 @@ router.post(
 			action: Action.COMMENT,
 			user: req.accountability?.user,
 			ip: getIPFromReq(req),
-			user_agent: req.get('user-agent'),
+			user_agent: req.get('user-agent')?.substring(0, 255),
 			origin: req.get('origin'),
 		});
 

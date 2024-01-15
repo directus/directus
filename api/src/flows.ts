@@ -353,7 +353,7 @@ class FlowManager {
 				user: accountability?.user ?? null,
 				collection: 'directus_flows',
 				ip: accountability?.ip ?? null,
-				user_agent: accountability?.userAgent ?? null,
+				user_agent: accountability?.userAgent?.substring(0, 255) ?? null,
 				origin: accountability?.origin ?? null,
 				item: flow.id,
 			});

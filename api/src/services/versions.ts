@@ -237,7 +237,7 @@ export class VersionsService extends ItemsService {
 			user: this.accountability?.user ?? null,
 			collection,
 			ip: this.accountability?.ip ?? null,
-			user_agent: this.accountability?.userAgent ?? null,
+			user_agent: this.accountability?.userAgent?.substring(0, 255) ?? null,
 			origin: this.accountability?.origin ?? null,
 			item,
 		});
