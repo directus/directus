@@ -7,11 +7,18 @@ export const getPackageExtensionType = (keywords: string[]): ExtensionType | nul
 
 	const keywordPrefix = 'directus-extension-';
 
-	keywords.forEach((keyword) => {
+	for (const keyword of keywords) {
 		if (keyword.startsWith(keywordPrefix)) {
+			/*
+			 * If the type has already been extracted, return null to indicate we can't know the type for sure
+			 */
+			if (type !== null) {
+				return null;
+			}
+
 			type = keyword.substring(keywordPrefix.length);
 		}
-	});
+	}
 
 	return type && isIn(type, EXTENSION_TYPES) ? type : null;
 };
