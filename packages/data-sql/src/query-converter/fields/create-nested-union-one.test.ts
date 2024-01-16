@@ -1,13 +1,14 @@
 import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
-import { randomIdentifier, randomInteger } from '@directus/random';
+import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { ConverterResult } from '../../index.js';
 import { type NestedManyResult } from './create-nested-manys.js';
 import { getNestedUnionOne } from './create-nested-union-one.js';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
 
 test('getNestedUnionOne with a single identifier', () => {
 	const relationalColumn = randomIdentifier();
-	const tableIndex = randomInteger(0, 100);
+	const tableIndex = 0;
 
 	// first foreign collection
 	const foreignIdField = randomIdentifier();
@@ -17,12 +18,10 @@ test('getNestedUnionOne with a single identifier', () => {
 
 	// second foreign collection
 	const foreignIdField2 = randomIdentifier();
-	const foreignIdField2Index = randomInteger(0, 100);
 	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
 	const foreignStore2 = randomIdentifier();
 
-	const randomValue = randomIdentifier();
 	const manyAlias = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedUnionOne = {
@@ -66,7 +65,9 @@ test('getNestedUnionOne with a single identifier', () => {
 		},
 	};
 
-	const result = getNestedUnionOne(field, tableIndex);
+	const indexGenerators = createIndexGenerators();
+
+	const result = getNestedUnionOne(field, tableIndex, indexGenerators);
 
 	const expected: NestedManyResult = {
 		subQuery: expect.any(Function),
@@ -82,17 +83,18 @@ test('getNestedUnionOne with a single identifier', () => {
 
 	expect(result).toStrictEqual(expected);
 
+	const jsonValue = {
+		foreignKey: [
+			{
+				column: foreignIdField2,
+				value: 1,
+			},
+		],
+		foreignCollection: foreignTable2,
+	};
+
 	const exampleRootRow = {
-		c0: randomValue,
-		c1: {
-			foreignKey: [
-				{
-					column: foreignIdField2,
-					value: 1,
-				},
-			],
-			foreignCollection: foreignTable2,
-		},
+		c0: JSON.stringify(jsonValue),
 	};
 
 	const expectedGeneratedQuery: ConverterResult = {
@@ -132,7 +134,7 @@ test('getNestedUnionOne with a single identifier', () => {
 			parameters: [1],
 		},
 		subQueries: [],
-		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: foreignIdField2Index }],
+		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
 	};
 
 	expect(result.subQuery(exampleRootRow, (columnIndex: number) => `c${columnIndex}`)).toStrictEqual(

@@ -15,24 +15,32 @@ import { createPrimitiveSelect } from './create-primitive-select.js';
 /**
  * Converts a nested union one node from the abstract query into a function which creates the sub query for a2o.
  *
- * @param collection - the current collection, will be an alias when called recursively
  * @param field - the nested field data from the abstract query
+ * @param tableIndex - the index of the current collection, will be an alias when called recursively
+ * @param currentIndexGen - the index generator for the current collection
  * @returns The result includes a function which creates a query as well as an abstract select to ensure the any column is queried in the root request.
  */
-export function getNestedUnionOne(field: AbstractQueryFieldNodeNestedUnionOne, tableIndex: number): NestedManyResult {
+export function getNestedUnionOne(
+	field: AbstractQueryFieldNodeNestedUnionOne,
+	tableIndex: number,
+	currentIndexGen: IndexGenerators,
+): NestedManyResult {
+	const unionColumnIndex = currentIndexGen.column.next().value;
 	const indexGenerators = createIndexGenerators();
 	const lookUp = createSubQueryLookUp(field, indexGenerators);
 
 	return {
-		subQuery: (rootRow, indexConverterFn) => {
-			const aliasOfIdField = indexConverterFn(0);
-			const anyColumnValue = rootRow[aliasOfIdField] as A2ORelation | undefined;
-			if (!anyColumnValue) throw new Error('No value found for any column.');
+		subQuery: (rootRow, columnIndexToIdentifier) => {
+			const aliasOfIdField = columnIndexToIdentifier(unionColumnIndex);
+			const anyColumnValueRaw = rootRow[aliasOfIdField] as string;
+			if (!anyColumnValueRaw) throw new Error('No value found for any column.');
+			const anyColumnValue = JSON.parse(anyColumnValueRaw) as A2ORelation;
+
 			const subQueryGenerator = lookUp.get(anyColumnValue.foreignCollection);
 			if (!subQueryGenerator) throw new Error('No sub query generator found.');
-			return subQueryGenerator(anyColumnValue)(rootRow, indexConverterFn);
+			return subQueryGenerator(anyColumnValue)(rootRow, columnIndexToIdentifier);
 		},
-		select: [createPrimitiveSelect(tableIndex, field.nesting.field, indexGenerators.column.next().value)],
+		select: [createPrimitiveSelect(tableIndex, field.nesting.field, unionColumnIndex)],
 	};
 }
 
