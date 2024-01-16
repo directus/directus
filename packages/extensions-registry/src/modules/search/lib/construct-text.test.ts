@@ -7,15 +7,15 @@ const cases: [Pick<SearchOptions, 'text' | 'extensionType' | 'author' | 'maintai
 	[{ text: 'some search query' }, 'some search query keywords:"directus-extension"'],
 	[
 		{ text: 'some search query', extensionType: 'interface' },
-		'some search query keywords:"directus-extension-interface,directus-custom-interface"',
+		'some search query keywords:"directus-extension-interface"',
 	],
 	[
 		{ text: 'some search query', extensionType: 'interface', author: 'rijk' },
-		'some search query keywords:"directus-extension-interface,directus-custom-interface" author:rijk',
+		'some search query keywords:"directus-extension-interface" author:rijk',
 	],
 	[
 		{ text: 'some search query', extensionType: 'interface', author: 'rijk', maintainer: 'ben' },
-		'some search query keywords:"directus-extension-interface,directus-custom-interface" author:rijk maintainer:ben',
+		'some search query keywords:"directus-extension-interface" author:rijk maintainer:ben',
 	],
 ];
 
