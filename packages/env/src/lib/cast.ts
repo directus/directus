@@ -10,7 +10,7 @@ export const cast = (key: string, value: unknown) => {
 	const prefix = `${type}:`;
 
 	if (typeof value === 'string' && value.startsWith(prefix)) {
-		value = value.split(prefix).at(1);
+		value = value.substring(prefix.length);
 	}
 
 	switch (type) {
