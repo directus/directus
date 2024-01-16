@@ -46,12 +46,11 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
+import { ACCESS_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
@@ -2210,13 +2209,8 @@ export class GraphQLService {
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], result['accessToken'], ACCESS_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2248,7 +2242,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
@@ -2259,13 +2253,8 @@ export class GraphQLService {
 					const result = await authenticationService.refresh(currentRefreshToken);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], result['accessToken'], ACCESS_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2296,7 +2285,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
