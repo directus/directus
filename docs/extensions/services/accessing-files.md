@@ -64,8 +64,8 @@ router.post('/', async (req, res, next) => {
   const busboy = Busboy({ headers: req.headers });
 
   busboy.on('file', async (_, fileStream, { filename, mimeType }) => {
-    // See https://docs.directus.io/reference/files.html#the-file-object
-    const data = {
+
+    const file = {
       filename_download: filename,
       type: mimeType,
       storage: 'local',
@@ -86,6 +86,12 @@ router.post('/', async (req, res, next) => {
   req.pipe(busboy);
 });
 ```
+
+::: tip The File Object
+
+Refer to the full list of properties the file can have [in our documentation](/reference/files.html#the-file-object).
+
+:::
 
 ## Read a File
 
