@@ -21,7 +21,7 @@ const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
-const regularCollections = computed(() => collectionsStore.databaseCollections);
+const regularCollections = computed(() => orderBy(collectionsStore.databaseCollections, ['meta.sort', 'collection']));
 
 const systemCollections = computed(() =>
 	orderBy(

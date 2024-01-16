@@ -3,22 +3,22 @@ import { randomIdentifier, randomInteger } from '@directus/random';
 import { numberCondition } from './number-condition.js';
 import type { SqlConditionNumberNode } from '@directus/data-sql';
 
-let randomTable: string;
-let aColumn: string;
+let tableIndex: number;
+let columnName: string;
 let parameterIndex: number;
 let sampleCondition: SqlConditionNumberNode;
 
 beforeEach(() => {
-	randomTable = randomIdentifier();
-	aColumn = randomIdentifier();
+	columnName = randomIdentifier();
 	parameterIndex = randomInteger(0, 100);
+	tableIndex = randomInteger(0, 100);
 
 	sampleCondition = {
 		type: 'condition-number',
 		target: {
 			type: 'primitive',
-			table: randomTable,
-			column: aColumn,
+			tableIndex,
+			columnName,
 		},
 		operation: 'gt',
 		compareTo: {
@@ -30,7 +30,7 @@ beforeEach(() => {
 
 test('number condition', () => {
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(
-		`"${randomTable}"."${aColumn}" > $${parameterIndex + 1}`,
+		`"t${tableIndex}"."${columnName}" > $${parameterIndex + 1}`,
 	);
 });
 
@@ -41,11 +41,11 @@ test('number condition with function', () => {
 			type: 'extractFn',
 			fn: 'month',
 		},
-		table: randomTable,
-		column: aColumn,
+		tableIndex,
+		columnName: columnName,
 	};
 
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(
-		`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $${parameterIndex + 1}`,
+		`EXTRACT(MONTH FROM "t${tableIndex}"."${columnName}") > $${parameterIndex + 1}`,
 	);
 });

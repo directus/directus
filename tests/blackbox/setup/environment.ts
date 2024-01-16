@@ -18,7 +18,7 @@ export default <Environment>{
 			throw 'Missing flow env variables';
 		}
 
-		const testIndex = getReversedTestIndex(testFilePath);
+		const testIndex = getReversedTestIndex(testFilePath, global.__vitest_worker__.ctx.config.name);
 
 		while (testIndex !== 0) {
 			try {

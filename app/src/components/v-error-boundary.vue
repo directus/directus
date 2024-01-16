@@ -27,6 +27,8 @@ onErrorCaptured((err, vm, info) => {
 	// eslint-disable-next-line no-console
 	console.warn(err);
 	if (props.stopPropagation) return false;
+
+	return;
 });
 </script>
 
