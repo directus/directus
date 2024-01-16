@@ -2,10 +2,13 @@ import ky, { type ResponsePromise } from 'ky';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { describe } from './describe.js';
 import { constructUrl } from './lib/construct-url.js';
-import { RegistryDescribeResponse, type RegistryDescribeResponse as TRegistryDescribeResponse } from './schemas/registry-describe-response.js';
-import { validateName } from './utils/validate-name.js';
-import type { DescribeResult } from './types/describe-result.js';
 import { convertToDescribeResult } from './lib/convert-to-describe-result.js';
+import {
+	RegistryDescribeResponse,
+	type RegistryDescribeResponse as TRegistryDescribeResponse,
+} from './schemas/registry-describe-response.js';
+import type { DescribeResult } from './types/describe-result.js';
+import { validateName } from './utils/validate-name.js';
 
 vi.mock('ky');
 vi.mock('./lib/construct-url.js');
