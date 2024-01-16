@@ -7,6 +7,11 @@ import { tryJson } from '../utils/try-json.js';
 
 export const cast = (key: string, value: unknown) => {
 	const type = getCastFlag(value) ?? getTypeFromMap(key) ?? guessType(value);
+	const prefix = `${type}:`;
+
+	if (typeof value === 'string' && value.startsWith(prefix)) {
+		value = value.split(prefix).at(1);
+	}
 
 	switch (type) {
 		case 'string':
