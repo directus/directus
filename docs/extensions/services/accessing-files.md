@@ -65,7 +65,7 @@ router.post('/', async (req, res, next) => {
 
   busboy.on('file', async (_, fileStream, { filename, mimeType }) => {
 
-    const file = {
+    const data = {
       filename_download: filename,
       type: mimeType,
       storage: 'local',
