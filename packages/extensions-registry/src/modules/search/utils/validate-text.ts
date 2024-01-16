@@ -1,5 +1,6 @@
 /**
- * Throw a TypeError if the search text contains an npm special search qualifier
+ * Ensures the search text doesn't contain any npm special search qualifier
+ * @throws TypeError if text contains npm special search qualifiers
  */
 export const validateText = (text: string) => {
 	const qualifiers = ['author', 'maintainer', 'keywords', 'not', 'is', 'boost-exact'];
