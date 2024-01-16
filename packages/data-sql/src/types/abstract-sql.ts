@@ -45,7 +45,7 @@ export type SubQuery = (
 ) => ConverterResult;
 
 export type AliasMapping = (
-	| { type: 'root'; alias: string; columnIndex: string }
+	| { type: 'root'; alias: string; columnIndex: number }
 
 	/** The alias mapping for a sub result which was fetched using a JOIN */
 	| {

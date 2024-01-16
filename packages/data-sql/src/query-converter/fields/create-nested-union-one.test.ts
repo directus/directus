@@ -1,22 +1,13 @@
 import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
-import { afterAll, expect, test, vi } from 'vitest';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
 import type { ConverterResult } from '../../index.js';
 import { type NestedManyResult } from './create-nested-manys.js';
 import { getNestedUnionOne } from './create-nested-union-one.js';
 
-afterAll(() => {
-	vi.restoreAllMocks();
-});
-
-vi.mock('../../utils/create-unique-alias.js', () => ({
-	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
-}));
-
 test('getNestedUnionOne with a single identifier', () => {
-	const collection = randomIdentifier();
-	const localIdField = randomIdentifier();
 	const relationalColumn = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
 
 	// first foreign collection
 	const foreignIdField = randomIdentifier();
@@ -26,6 +17,7 @@ test('getNestedUnionOne with a single identifier', () => {
 
 	// second foreign collection
 	const foreignIdField2 = randomIdentifier();
+	const foreignIdField2Index = randomInteger(0, 100);
 	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
 	const foreignStore2 = randomIdentifier();
@@ -74,16 +66,16 @@ test('getNestedUnionOne with a single identifier', () => {
 		},
 	};
 
-	const result = getNestedUnionOne(collection, field);
+	const result = getNestedUnionOne(field, tableIndex);
 
 	const expected: NestedManyResult = {
 		subQuery: expect.any(Function),
 		select: [
 			{
 				type: 'primitive',
-				table: collection,
-				column: relationalColumn,
-				as: `${relationalColumn}_RANDOM`,
+				tableIndex,
+				columnName: relationalColumn,
+				columnIndex: 0,
 			},
 		],
 	};
@@ -91,8 +83,8 @@ test('getNestedUnionOne with a single identifier', () => {
 	expect(result).toStrictEqual(expected);
 
 	const exampleRootRow = {
-		[`${localIdField}_RANDOM`]: randomValue,
-		[`${relationalColumn}_RANDOM`]: {
+		c0: randomValue,
+		c1: {
 			foreignKey: [
 				{
 					column: foreignIdField2,
@@ -109,12 +101,15 @@ test('getNestedUnionOne with a single identifier', () => {
 				select: [
 					{
 						type: 'primitive',
-						table: foreignTable2,
-						column: foreignIdField2,
-						as: `${foreignIdField2}_RANDOM`,
+						tableIndex,
+						columnName: foreignIdField2,
+						columnIndex: 0,
 					},
 				],
-				from: foreignTable2,
+				from: {
+					tableName: foreignTable2,
+					tableIndex,
+				},
 				joins: [],
 				where: {
 					type: 'condition',
@@ -123,8 +118,8 @@ test('getNestedUnionOne with a single identifier', () => {
 						operation: 'eq',
 						target: {
 							type: 'primitive',
-							table: foreignTable2,
-							column: foreignIdField2,
+							tableIndex,
+							columnName: foreignIdField2,
 						},
 						compareTo: {
 							type: 'value',
@@ -137,8 +132,10 @@ test('getNestedUnionOne with a single identifier', () => {
 			parameters: [1],
 		},
 		subQueries: [],
-		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
+		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: foreignIdField2Index }],
 	};
 
-	expect(result.subQuery(exampleRootRow)).toStrictEqual(expectedGeneratedQuery);
+	expect(result.subQuery(exampleRootRow, (columnIndex: number) => `c${columnIndex}`)).toStrictEqual(
+		expectedGeneratedQuery,
+	);
 });
