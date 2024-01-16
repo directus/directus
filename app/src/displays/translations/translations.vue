@@ -5,6 +5,7 @@
 			:template="internalTemplate"
 			:item="displayItem"
 			:collection="relationInfo.junctionCollection.collection"
+			:title="displayItem.valore"
 		/>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
@@ -25,6 +26,7 @@
 							:template="internalTemplate"
 							:item="item.item"
 							:collection="relationInfo.junctionCollection.collection"
+							:title="item.item.valore"
 						/>
 					</v-list-item-content>
 				</v-list-item>
@@ -100,6 +102,8 @@ const writableFields = computed(() => {
 	);
 });
 
+let test: any;
+
 const translations = computed(() => {
 	if (!relationInfo.value) return [];
 
@@ -108,6 +112,7 @@ const translations = computed(() => {
 	const langField = relationInfo.value.junctionField.field;
 
 	return props.value.map((item) => {
+		test = item.value;
 		const filledFields = writableFields.value.filter((field) => {
 			return field.field in item && !isNil(item?.[field.field]);
 		}).length;
