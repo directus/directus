@@ -1,3 +1,4 @@
+import { ExtensionOptions } from '@directus/extensions';
 import { z } from 'zod';
 
 export const RegistryDescribeResponse = z.object({
@@ -34,11 +35,7 @@ export const RegistryDescribeResponse = z.object({
 			_npmUser: z.object({
 				name: z.string(),
 			}),
-			'directus:extension': z
-				.object({
-					host: z.string(),
-				})
-				.optional(),
+			'directus:extension': ExtensionOptions.optional(),
 		}),
 	),
 	'dist-tags': z.object({

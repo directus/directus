@@ -96,6 +96,7 @@ test('Returns basic conversion from passed data', () => {
 			license: 'BUSL',
 			repository: 'https://github.com/directus/example',
 			tarball: 'test-tarball',
+			sandbox: null,
 		},
 	};
 
@@ -170,4 +171,29 @@ test('Defaults repository to null', () => {
 	const res = convertToDescribeResult(registryResponse);
 
 	expect(res.data.repository).toBe(null);
+});
+
+test('Returns sandbox from response as-is', () => {
+	const sandbox = { enabled: true };
+
+	const registryResponse = {
+		name: 'test-pkg',
+		versions: {
+			x: {
+				_npmUser: {},
+				'directus:extension': {
+					sandbox: sandbox,
+				},
+				dist: {},
+			},
+		},
+		'dist-tags': {
+			latest: 'x',
+		},
+		maintainers: [],
+	} as unknown as RegistryDescribeResponse;
+
+	const res = convertToDescribeResult(registryResponse);
+
+	expect(res.data.sandbox).toBe(sandbox);
 });

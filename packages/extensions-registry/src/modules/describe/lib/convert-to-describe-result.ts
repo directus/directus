@@ -37,6 +37,7 @@ export const convertToDescribeResult = (registryResponse: RegistryDescribeRespon
 			license: registryResponse.license ?? null,
 			repository: registryResponse.repository ? getRepositoryUrl(registryResponse.repository) : null,
 			tarball: latestVersion.dist.tarball,
+			sandbox: 'sandbox' in latestVersion['directus:extension'] ? latestVersion['directus:extension'].sandbox : null,
 		},
 	};
 };

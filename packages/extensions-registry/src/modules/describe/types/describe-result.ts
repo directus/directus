@@ -1,4 +1,4 @@
-import type { ExtensionType } from '@directus/extensions';
+import type { ExtensionSandboxOptions, ExtensionType } from '@directus/extensions';
 
 export interface DescribeResultPackage {
 	name: string;
@@ -17,6 +17,7 @@ export interface DescribeResultPackage {
 	bugs: string | null;
 	repository: string | null;
 	license: string | null;
+	sandbox: ExtensionSandboxOptions | null;
 }
 
 export interface DescribeResult {
