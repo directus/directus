@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 
 ## Upload a File
 
-Uploading a file requires the use of an external dependency called *Busboy*, a streaming parser for Node.js. Import it
+Uploading a file requires the use of an external dependency called _Busboy_, a streaming parser for Node.js. Import it
 at the top of your file as:
 
 ```js
