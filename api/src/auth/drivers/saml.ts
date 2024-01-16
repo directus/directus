@@ -4,7 +4,7 @@ import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusErr
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
-import { REFRESH_COOKIE_OPTIONS } from '../../constants.js';
+import { ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -136,13 +136,13 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
-				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+			if (req.cookies[env['ACCESS_TOKEN_COOKIE_NAME']]) {
+				res.clearCookie(env['ACCESS_TOKEN_COOKIE_NAME'], ACCESS_COOKIE_OPTIONS);
+			}
 
-				if (currentRefreshToken) {
-					await authService.logout(currentRefreshToken);
-					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, REFRESH_COOKIE_OPTIONS);
-				}
+			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+				await authService.logout(req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]);
+				res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], REFRESH_COOKIE_OPTIONS);
 			}
 
 			return res.redirect(context);
@@ -173,7 +173,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, REFRESH_COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

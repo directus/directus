@@ -80,7 +80,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
@@ -100,8 +100,8 @@ router.post(
 		}
 
 		if (mode === 'cookie') {
-			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-			res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, REFRESH_COOKIE_OPTIONS);
+			res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], accessToken, ACCESS_COOKIE_OPTIONS);
 		}
 
 		res.locals['payload'] = payload;
@@ -129,7 +129,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
@@ -137,13 +137,12 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
-			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, {
-				httpOnly: true,
-				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-				secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-				sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-			});
+		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], REFRESH_COOKIE_OPTIONS);
+		}
+
+		if (req.cookies[env['ACCESS_TOKEN_COOKIE_NAME']]) {
+			res.clearCookie(env['ACCESS_TOKEN_COOKIE_NAME'], ACCESS_COOKIE_OPTIONS);
 		}
 
 		return next();

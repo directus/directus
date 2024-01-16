@@ -26,9 +26,9 @@ import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
+import { ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -49,7 +49,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
+		const redirectUrl = new Url(env['PUBLIC_URL']).addPath(
 			'auth',
 			'login',
 			additionalConfig['provider'],
@@ -434,13 +434,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, {
-					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, REFRESH_COOKIE_OPTIONS);
+				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], accessToken, ACCESS_COOKIE_OPTIONS);
 
 				return res.redirect(redirect);
 			}

@@ -54,7 +54,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -215,7 +215,7 @@ export class AuthenticationService {
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
@@ -265,7 +265,7 @@ export class AuthenticationService {
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		const { nanoid } = await import('nanoid');
-		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
@@ -386,7 +386,7 @@ export class AuthenticationService {
 		);
 
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
