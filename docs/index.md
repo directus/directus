@@ -77,7 +77,7 @@ await directus.request(
 
 </section>
 
-<section :class="[$style.sectionPaddingMd, $style.sectionNoPaddingTop, $style.paddingBox]">
+<section :class="[$style.sectionPaddingMd, $style.paddingBox]">
 	<Tabs :class="[$style.sectionContainer, $style.whiteBg]" :tabs="['Developer Reference', 'User Guide']">
 		<template #developer-reference>
 			<Card

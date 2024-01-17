@@ -1,5 +1,5 @@
 .paddingBox {
-	padding: 0 32px;
+	padding: 0 96px;
 }
 
 .sectionContainer {
@@ -12,7 +12,7 @@
 }
 
 .sectionPaddingHero {
-	padding-block: 108px;
+	padding-block: 64px;
 }
 
 .sectionPaddingMd {
@@ -41,7 +41,7 @@
 }
 
 .heroContent h1 {
-	font-size: 60px;
+	font-size: 48px;
 	font-weight: 700;
 	line-height: 1;
 	margin: 20px 0;
@@ -61,7 +61,7 @@
 	width: 100%;
 	max-width: 590px;
 	backdrop-filter: blur(4px);
-	margin-left: 20px;
+	margin-left: 4em;
 }
 
 .heroToggler :global(.snippet-toggler .content-area .copy) {
@@ -154,6 +154,9 @@
 }
 
 @media only screen and (max-width: 1200px) {
+	.paddingBox {
+		padding: 0 64px;
+	}
 	.heroToggler {
 		display: none;
 	}
@@ -163,6 +166,9 @@
 }
 
 @media only screen and (max-width: 768px) {
+	.paddingBox {
+		padding: 0 32px;
+	}
 	.hero {
 		min-height: unset;
 	}
