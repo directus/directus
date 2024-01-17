@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineProps<{
-	title: string;
+	title?: string;
 	tag?: string;
 	url: string;
 	img: string;
 	author?: string;
 	date?: string;
 	desc?: string;
+	alt?: string;
 }>();
 </script>
 
@@ -14,7 +15,7 @@ defineProps<{
 	<div class="article">
 		<a :href="url">
 			<div class="image">
-				<img :src="img" :alt="title" loading="lazy" />
+				<img :src="img" :alt="alt || ''" loading="lazy" />
 			</div>
 			<div class="content">
 				<h3 class="heading">{{ title }}</h3>

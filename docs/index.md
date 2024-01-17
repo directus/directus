@@ -192,29 +192,31 @@ await directus.request(
 <section :class="[$style.paddingBox]">
 	<div :class="[$style.sectionContainer, $style.sectionPaddingLg]">
 		<div :class="$style.header">
-			<h2>Framework Guides</h2>
+			<h2>We 💜 Your Framework</h2>
 			<p>
-				Combine Directus with your favorite framework to create dynamic and efficient web applications.
+				Combine Directus with your favorite framework to create flexible and fast web applications.
 			</p>
 		</div>
-		<div :class="[$style.grid3, $style.m60]">
+		<div :class="[$style.grid4, $style.m60]">
 			<Article
-				title="Build a Static Website with Nuxt.js"
-				desc="Learn how to build a website using Directus as a CMS and Nuxt 3."
-				img="/assets/nuxt-guide.png"
+				alt="Nuxt"
+				img="/assets/frameworks/nuxt.png"
 				url="/guides/headless-cms/build-static-website/nuxt-3"
 			/>
 			<Article
-				title="Set up Live Preview in a Next.js project"
-				desc="By adding a preview URL, you can instantly see live changes made to your collection."
-				img="/assets/next-guide.png"
-				url="/guides/headless-cms/live-preview/nextjs"
+				alt="Next.js"
+				img="/assets/frameworks/next.png"
+				url="/guides/headless-cms/build-static-website/next-13"
 			/>
 			<Article
-				title="Build a Multi-User Chat With React.js"
-				desc="Deep dive into how to use Directus websockets to build an interactive chat application."
-				img="/assets/react-guide.png"
-				url="/guides/real-time/chat/react"
+				alt="SvelteKit"
+				img="/assets/frameworks/sveltekit.png"
+				url="/blog/getting-started-directus-sveltekit"
+			/>
+			<Article
+				alt="Astro"
+				img="/assets/frameworks/astro.png"
+				url="/blog/getting-started-directus-astro"
 			/>
 		</div>
 		<div :class="$style.header">
