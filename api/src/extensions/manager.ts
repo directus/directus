@@ -308,23 +308,23 @@ export class ExtensionManager {
 
 		logger.info('Watching extensions for changes...');
 
-		const extensionsDir = path.posix.resolve(getExtensionsPath());
+		const extensionsDir = path.resolve(getExtensionsPath());
+
+		const rootPackageJson = path.resolve(env['PACKAGE_FILE_LOCATION'] as string, 'package.json');
+		const localExtensions = path.join(extensionsDir, '*', 'package.json');
 
 		const nestedExtensions = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(extensionsDir, pluralize(type));
+			const typeDir = path.join(extensionsDir, pluralize(type));
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 				return [
-					path.posix.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-					path.posix.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
 				];
 			} else {
-				return path.posix.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
+				return path.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
 			}
 		});
-
-		const rootPackageJson = path.resolve(env['PACKAGE_FILE_LOCATION'] as string, 'package.json');
-		const localExtensions = path.posix.join(extensionsDir, '*', 'package.json');
 
 		this.watcher = chokidar.watch([rootPackageJson, localExtensions, ...nestedExtensions], {
 			ignoreInitial: true,
@@ -369,7 +369,7 @@ export class ExtensionManager {
 			const extensionDir = path.resolve(getExtensionsPath());
 
 			const nestedExtensionDirs = NESTED_EXTENSION_TYPES.map((type) => {
-				return path.posix.join(extensionDir, pluralize(type));
+				return path.join(extensionDir, pluralize(type));
 			});
 
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
