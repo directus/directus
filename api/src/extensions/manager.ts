@@ -224,6 +224,11 @@ export class ExtensionManager {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	public reload(): void {
+		if (this.reloadQueue.size > 0) {
+			// The pending job in the queue will already handle the additional changes
+			return;
+		}
+
 		const logger = useLogger();
 
 		this.reloadQueue.enqueue(async () => {
