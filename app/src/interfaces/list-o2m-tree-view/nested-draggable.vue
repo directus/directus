@@ -236,7 +236,6 @@ function parentIsEmpty(relatedField: undefined | unknown[]) {
 	>
 		<template #item="{ element, index }">
 			<v-list-item class="row" :class="{ draggable: element.$type !== 'deleted' }">
-				{{ element }}
 				<item-preview
 					:item="element"
 					:edits="getItemEdits(element)"
