@@ -197,27 +197,27 @@ await directus.request(
 				Combine Directus with your favorite framework to create flexible and fast web applications.
 			</p>
 		</div>
-		<div :class="[$style.grid4, $style.m60]">
-			<Article
-				alt="Nuxt"
-				img="/assets/frameworks/nuxt.png"
-				url="/guides/headless-cms/build-static-website/nuxt-3"
-			/>
-			<Article
-				alt="Next.js"
-				img="/assets/frameworks/next.png"
-				url="/guides/headless-cms/build-static-website/next-13"
-			/>
-			<Article
-				alt="SvelteKit"
-				img="/assets/frameworks/sveltekit.png"
-				url="/blog/getting-started-directus-sveltekit"
-			/>
-			<Article
-				alt="Astro"
-				img="/assets/frameworks/astro.png"
-				url="/blog/getting-started-directus-astro"
-			/>
+		<div :class="[$style.grid4, $style.m60, $style.frameworks]">
+			<a href="/guides/headless-cms/build-static-website/nuxt-3">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/nuxt.png" alt="Nuxt" />
+				</div>
+			</a>
+			<a href="/guides/headless-cms/build-static-website/next-13">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/next.png" alt="Next.js" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-directus-sveltekit">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/sveltekit.png" alt="SvelteKit" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-directus-astro">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/astro.png" alt="Astro" />
+				</div>
+			</a>
 		</div>
 		<div :class="$style.header">
 			<Button href="/guides">View All Guides</Button>
