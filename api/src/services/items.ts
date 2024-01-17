@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
@@ -10,7 +11,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
-import { useEnv } from '../env.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -685,7 +685,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			for (const key of keys) {
 				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-					payload,
+					payloadWithA2O,
 					key,
 					opts,
 				);
@@ -774,7 +774,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						? ['items.update', `${this.collection}.items.update`]
 						: `${this.eventScope}.update`,
 				meta: {
-					payload,
+					payload: payloadWithPresets,
 					keys,
 					collection: this.collection,
 				},

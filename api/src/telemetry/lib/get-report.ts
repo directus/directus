@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
-import { useEnv } from '../../env.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
@@ -29,7 +29,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	]);
 
 	return {
-		url: env['PUBLIC_URL'],
+		url: env['PUBLIC_URL'] as string,
 		version: version,
 		database: getDatabaseClient(),
 

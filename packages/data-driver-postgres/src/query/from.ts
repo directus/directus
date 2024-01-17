@@ -1,11 +1,13 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import { tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 
 /**
- * Generate the `FROM x` part of a SQL statement
- * @param from - The table to select data from
+ * Generate the `FROM x` part of a SQL statement.
+ *
+ * @param query - The whole abstract SQL query
  * @returns The `FROM x` part of a SQL statement
  */
 export function from({ from }: AbstractSqlClauses): string {
-	return `FROM ${escapeIdentifier(from)}`;
+	const tableAlias = tableIndexToIdentifier(from.tableIndex);
+	return `FROM ${escapeIdentifier(from.tableName)} AS ${escapeIdentifier(tableAlias)}`;
 }

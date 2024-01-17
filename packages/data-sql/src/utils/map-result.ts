@@ -45,20 +45,17 @@ export function mapResult(
 	aliasMapping: AliasMapping,
 	rootRow: Record<string, unknown>,
 	subResult: Record<string, unknown>[][],
+	columnIndexToIdentifier: (columnIndex: number) => string,
 ): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
 
 	for (const aliasObject of aliasMapping) {
 		if (aliasObject.type === 'root') {
-			result[aliasObject.alias] = rootRow[aliasObject.column];
+			result[aliasObject.alias] = rootRow[columnIndexToIdentifier(aliasObject.columnIndex)];
 		} else if (aliasObject.type === 'sub') {
-			if (aliasObject.isOne) {
-				result[aliasObject.alias] = subResult[aliasObject.index]![0];
-			} else {
-				result[aliasObject.alias] = subResult[aliasObject.index];
-			}
+			result[aliasObject.alias] = subResult[aliasObject.index];
 		} else {
-			result[aliasObject.alias] = mapResult(aliasObject.children, rootRow, subResult);
+			result[aliasObject.alias] = mapResult(aliasObject.children, rootRow, subResult, columnIndexToIdentifier);
 		}
 	}
 

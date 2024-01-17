@@ -5,6 +5,7 @@
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
+	columnIndexToIdentifier,
 	convertQuery,
 	getMappedQueriesStream,
 	type AbstractSqlQuery,
@@ -79,8 +80,12 @@ export default class DataDriverPostgres implements DataDriver {
 		const converterResult = convertQuery(query);
 		const rootStream = await this.queryDatabase(converterResult.rootQuery);
 
-		return getMappedQueriesStream(rootStream, converterResult.subQueries, converterResult.aliasMapping, (query) =>
-			this.queryDatabase(query),
+		return getMappedQueriesStream(
+			rootStream,
+			converterResult.subQueries,
+			converterResult.aliasMapping,
+			columnIndexToIdentifier,
+			(query) => this.queryDatabase(query),
 		);
 	}
 }

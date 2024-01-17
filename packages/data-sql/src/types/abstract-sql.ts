@@ -39,11 +39,18 @@ export interface AbstractSqlQuery {
 	parameters: ParameterTypes[];
 }
 
-export type SubQuery = (rootRow: Record<string, unknown>) => ConverterResult;
-export type SubQueries = (rootRow: Record<string, unknown>) => ConverterResult[];
+export type SubQuery = (
+	rootRow: Record<string, unknown>,
+	columnIndexToIdentifier: (columnIndex: number) => string,
+) => ConverterResult;
+
+export type SubQueries = (
+	rootRow: Record<string, unknown>,
+	columnIndexToIdentifier: (columnIndex: number) => string,
+) => ConverterResult[];
 
 export type AliasMapping = (
-	| { type: 'root'; alias: string; column: string }
+	| { type: 'root'; alias: string; columnIndex: number }
 
 	/** The alias mapping for a sub result which was fetched using a JOIN */
 	| {
@@ -59,7 +66,6 @@ export type AliasMapping = (
 
 			/** The index of the actual result from the sub query result array */
 			index: number;
-			isOne?: boolean;
 	  }
 )[];
 

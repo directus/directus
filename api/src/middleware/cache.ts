@@ -1,6 +1,6 @@
+import { useEnv } from '@directus/env';
 import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
-import { useEnv } from '../env.js';
 import { useLogger } from '../logger.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';

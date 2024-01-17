@@ -464,7 +464,7 @@ function usePopper(
 .v-menu-popper {
 	position: fixed;
 	left: -999px;
-	z-index: 500;
+	z-index: 600;
 	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
