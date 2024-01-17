@@ -5,7 +5,6 @@ import { useLocalStorage } from '../composables/useLocalStorage';
 const props = defineProps<{
 	choices: string[];
 	group?: string;
-	alwaysDark?: boolean;
 	maintainHeight?: boolean;
 }>();
 
@@ -48,7 +47,7 @@ const changeSelected = async (choice: string, el: HTMLElement) => {
 </script>
 
 <template>
-	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
+	<div class="snippet-toggler">
 		<div class="snippet-toggler-header">
 			<div class="buttons">
 				<button

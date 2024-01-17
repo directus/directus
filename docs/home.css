@@ -24,8 +24,8 @@
 }
 
 .hero {
-	background: var(--vp-docs-section-bg);
-	color: white;
+	/* background: var(--vp-docs-section-bg); */
+	/* color: white; */
 	position: relative;
 	overflow: hidden;
 }
@@ -68,8 +68,6 @@
 	border-radius: 12px;
 	width: 100%;
 	max-width: 590px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	box-shadow: 0 0 100px 24px rgba(255, 255, 255, 0.3);
 	backdrop-filter: blur(4px);
 	margin-left: 20px;
 }

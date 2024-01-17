@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: page
 ---
 
 <script setup lang="ts">
@@ -26,7 +26,7 @@ import Badge from '@/components/Badge.vue';
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" alwaysDark maintainHeight>
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" maintainHeight>
 <template #rest>
 
 ```js
