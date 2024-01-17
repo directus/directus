@@ -117,22 +117,16 @@ html.dark .snippet-toggler,
 	border-radius: var(--rounded-lg);
 }
 
-html.dark .snippet-toggler .button,
-.snippet-toggler.dark .button {
+html.dark .snippet-toggler .button {
 	color: var(--vp-c-gray-light-2);
 }
 
-html.dark .snippet-toggler .button.active,
-.snippet-toggler.dark .button.active {
+html.dark .snippet-toggler .button.active {
 	color: var(--vp-c-gray-light-4);
 }
 
 .snippet-toggler .content-area :deep(.lang) {
 	display: none;
-}
-
-.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
-	display: block;
 }
 
 @media (min-width: 640px) {
