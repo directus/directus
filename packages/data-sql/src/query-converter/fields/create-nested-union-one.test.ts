@@ -137,7 +137,6 @@ test('getNestedUnionOne with a single identifier', () => {
 		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
 	};
 
-	expect(result.subQuery(exampleRootRow, (columnIndex: number) => `c${columnIndex}`)).toStrictEqual(
-		expectedGeneratedQuery,
-	);
+	const aliasingFunction = (columnIndex: number) => `c${columnIndex}`;
+	expect(result.subQuery(exampleRootRow, aliasingFunction)).toStrictEqual(expectedGeneratedQuery);
 });

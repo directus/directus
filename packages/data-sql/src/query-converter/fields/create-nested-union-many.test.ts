@@ -1,21 +1,13 @@
 import type { A2ORelation, AbstractQueryFieldNodeNestedUnionMany } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
-import { afterAll, expect, test, vi } from 'vitest';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
 import type { ConverterResult } from '../../index.js';
 import { getNestedUnionMany, type NestedUnionResult } from './create-nested-union-many.js';
+import { numberGenerator } from '../utils/number-generator.js';
 
-afterAll(() => {
-	vi.restoreAllMocks();
-});
-
-vi.mock('../../utils/create-unique-alias.js', () => ({
-	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
-}));
-
-test.todo('getNestedUnionMany', () => {
-	const collection = randomIdentifier();
-	const localDesiredField = randomIdentifier();
+test('getNestedUnionMany', () => {
 	const localIdField = randomIdentifier();
+	const rootCollectionIndex = randomInteger(0, 100);
 
 	// first foreign collection
 	const foreignField = randomIdentifier();
@@ -29,7 +21,8 @@ test.todo('getNestedUnionMany', () => {
 	const foreignField2Alias = randomIdentifier();
 	const foreignIdField2 = randomIdentifier();
 	const foreignIdFieldAlias2 = randomIdentifier();
-	const foreignTable2 = randomIdentifier();
+	const foreignTable2Name = randomIdentifier();
+	const foreignTable2Index = randomInteger(0, 100);
 	const foreignRelationalField2 = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedUnionMany = {
@@ -67,7 +60,7 @@ test.todo('getNestedUnionMany', () => {
 					relational: {
 						store: randomIdentifier(),
 						field: foreignRelationalField2,
-						collectionName: foreignTable2,
+						collectionName: foreignTable2Name,
 						collectionIdentifier: randomIdentifier(),
 						identifierFields: [foreignIdField2],
 					},
@@ -76,16 +69,18 @@ test.todo('getNestedUnionMany', () => {
 		},
 	};
 
-	const result = getNestedUnionMany(collection, field);
+	const columnIndexGen = numberGenerator();
+	columnIndexGen.next();
+	const result = getNestedUnionMany(field, rootCollectionIndex, columnIndexGen);
 
 	const expected: NestedUnionResult = {
 		subQueries: expect.any(Function),
 		select: [
 			{
 				type: 'primitive',
-				table: collection,
-				column: localIdField,
-				as: `${localIdField}_RANDOM`,
+				tableIndex: rootCollectionIndex,
+				columnName: localIdField,
+				columnIndex: 1,
 			},
 		],
 	};
@@ -95,8 +90,8 @@ test.todo('getNestedUnionMany', () => {
 	const rootChunkIdValue = randomIdentifier();
 
 	const exampleRootRow = {
-		[`${localIdField}_RANDOM`]: rootChunkIdValue,
-		[`${localDesiredField}_RANDOM`]: randomIdentifier(),
+		c0: rootChunkIdValue,
+		c1: randomIdentifier(),
 	};
 
 	const expectedFinalQueries: ConverterResult[] = [
@@ -106,12 +101,15 @@ test.todo('getNestedUnionMany', () => {
 					select: [
 						{
 							type: 'primitive',
-							table: foreignTable2,
-							column: foreignIdField2,
-							as: `${foreignIdField2}_RANDOM`,
+							tableIndex: foreignTable2Index,
+							columnName: foreignIdField2,
+							columnIndex: 0,
 						},
 					],
-					from: foreignTable2,
+					from: {
+						tableName: foreignTable2Name,
+						tableIndex: foreignTable2Index,
+					},
 					joins: [],
 					where: {
 						type: 'condition',
@@ -120,8 +118,8 @@ test.todo('getNestedUnionMany', () => {
 							operation: 'eq',
 							target: {
 								type: 'primitive',
-								table: foreignTable2,
-								column: foreignIdField2,
+								tableIndex: foreignTable2Index,
+								columnName: foreignIdField2,
 							},
 							compareTo: {
 								type: 'value',
@@ -139,12 +137,12 @@ test.todo('getNestedUnionMany', () => {
 								value: rootChunkIdValue,
 							},
 						],
-						foreignCollection: foreignTable2,
+						foreignCollection: foreignTable2Name,
 					} as A2ORelation),
 				],
 			},
 			subQueries: [],
-			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
+			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
 		},
 		{
 			rootQuery: {
@@ -152,12 +150,15 @@ test.todo('getNestedUnionMany', () => {
 					select: [
 						{
 							type: 'primitive',
-							table: foreignTable2,
-							column: foreignIdField2,
-							as: `${foreignIdField2}_RANDOM`,
+							tableIndex: foreignTable2Index,
+							columnName: foreignIdField2,
+							columnIndex: 0,
 						},
 					],
-					from: foreignTable2,
+					from: {
+						tableName: foreignTable2Name,
+						tableIndex: foreignTable2Index,
+					},
 					joins: [],
 					where: {
 						type: 'condition',
@@ -166,8 +167,8 @@ test.todo('getNestedUnionMany', () => {
 							operation: 'eq',
 							target: {
 								type: 'primitive',
-								table: foreignTable2,
-								column: foreignIdField2,
+								tableIndex: foreignTable2Index,
+								columnName: foreignIdField2,
 							},
 							compareTo: {
 								type: 'value',
@@ -185,12 +186,12 @@ test.todo('getNestedUnionMany', () => {
 								value: rootChunkIdValue,
 							},
 						],
-						foreignCollection: foreignTable2,
+						foreignCollection: foreignTable2Name,
 					} as A2ORelation),
 				],
 			},
 			subQueries: [],
-			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, column: `${foreignIdField2}_RANDOM` }],
+			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
 		},
 	];
 
@@ -198,5 +199,6 @@ test.todo('getNestedUnionMany', () => {
 		throw new Error('No sub query defined');
 	}
 
-	expect(result.subQueries(exampleRootRow)).toStrictEqual(expectedFinalQueries);
+	const aliasingFunction = (columnIndex: number) => `c${columnIndex}`;
+	expect(result.subQueries(exampleRootRow, aliasingFunction)).toStrictEqual(expectedFinalQueries);
 });
