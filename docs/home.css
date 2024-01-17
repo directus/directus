@@ -162,10 +162,6 @@
 	scale: 1.05;
 }
 
-/* .frameworks img {
-	cursor: pointer;
-} */
-
 @media only screen and (min-width: 768px) {
 	.headerSelfHosted {
 		align-self: center;
