@@ -68,6 +68,12 @@ const activeTab = ref(props.tabs[0]);
 	padding-top: 30px;
 }
 
+@media only screen and (max-width: 1200px) {
+	.tab-content {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
 @media only screen and (max-width: 768px) {
 	.tab-content {
 		grid-template-columns: 1fr;

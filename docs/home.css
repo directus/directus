@@ -53,7 +53,7 @@
 }
 
 .heroButtons {
-	margin: 48px 0;
+	margin: 24px 0;
 }
 
 .heroToggler {
@@ -155,7 +155,13 @@
 
 @media only screen and (max-width: 1200px) {
 	.paddingBox {
-		padding: 0 64px;
+		padding-inline: 64px;
+	}
+	.sectionPaddingHero {
+		padding-block-end: 0;
+	}
+	.heroButtons {
+		margin-block-start: 0;
 	}
 	.heroToggler {
 		display: none;
