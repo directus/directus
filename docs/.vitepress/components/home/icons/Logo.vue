@@ -1,5 +1,12 @@
 <template>
-	<svg class="logo logo-dark" width="192" height="40" viewBox="0 0 192 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg
+		class="logo logo-dark"
+		width="192"
+		height="40"
+		viewBox="0 0 192 40"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
 		<path
 			fill-rule="evenodd"
 			clip-rule="evenodd"
@@ -39,7 +46,14 @@
 			fill="#172940"
 		/>
 	</svg>
-	<svg class="logo logo-light" width="192" height="40" viewBox="0 0 192 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg
+		class="logo logo-light"
+		width="192"
+		height="40"
+		viewBox="0 0 192 40"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
 		<path
 			fill-rule="evenodd"
 			clip-rule="evenodd"
