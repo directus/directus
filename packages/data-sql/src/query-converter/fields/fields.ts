@@ -90,7 +90,6 @@ export const convertFieldNodes = (
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
-			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
 			continue;
 		}
 
