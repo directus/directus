@@ -90,7 +90,7 @@
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.7",
 		"@types/qrcode": "1.5.5",
 		"@types/wellknown": "0.5.8",
-		"@unhead/addons": "1.8.9",
+		"@unhead/addons": "1.8.10",
 		"@unhead/vue": "1.8.9",
 		"@vitejs/plugin-vue": "4.6.2",
 		"@vue/test-utils": "2.4.3",
