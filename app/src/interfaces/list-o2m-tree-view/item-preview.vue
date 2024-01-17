@@ -54,7 +54,7 @@ const editActive = ref(false);
 </template>
 
 <style lang="scss" scoped>
-div.preview {
+.preview {
 	display: flex;
 	height: var(--theme--form--field--input--height);
 	align-items: center;
@@ -88,6 +88,14 @@ div.preview {
 			--v-icon-color: var(--danger-50);
 			--v-icon-color-hover: var(--theme--danger);
 		}
+	}
+}
+
+.empty.preview {
+	margin-bottom: 0px;
+
+	.v-icon {
+		visibility: hidden;
 	}
 }
 </style>

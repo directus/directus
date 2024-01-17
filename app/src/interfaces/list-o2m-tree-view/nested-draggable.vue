@@ -81,13 +81,25 @@ const { collection, field, primaryKey, relationInfo, root, fields, template, cus
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
 
-const limit = ref(-1);
-const page = ref(1);
+const queryLimit = ref(-1);
+const queryPage = ref(1);
+
+const queryFields = computed(() => {
+	const rawFields = fields.value;
+	const relatedFieldId = `${field.value}.id`;
+
+	if (!rawFields.find((f) => f === relatedFieldId)) {
+		// ensuring this field is present allows us to determine parents child count
+		rawFields.push(relatedFieldId);
+	}
+
+	return rawFields;
+});
 
 const query = computed<RelationQueryMultiple>(() => ({
-	fields: fields.value,
-	limit: limit.value,
-	page: page.value,
+	fields: queryFields.value,
+	limit: queryLimit.value,
+	page: queryPage.value,
 }));
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
@@ -216,6 +228,7 @@ function stageEdits(item: Record<string, any>) {
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
+					:class="{ empty: element[field]?.length === 0 }"
 					:collection="collection"
 					:disabled="disabled"
 					:relation-info="relationInfo"
@@ -227,7 +240,7 @@ function stageEdits(item: Record<string, any>) {
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
-					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
+					v-if="element[field]?.length === 0 || open[element[relationInfo.relatedPrimaryKeyField.field]]"
 					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
