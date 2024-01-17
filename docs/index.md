@@ -4,16 +4,12 @@ layout: page
 
 <script setup lang="ts">
 import { data } from '@/data/blog.data.js';
-import Pattern from '@/components/home/Pattern.vue';
 import Footer from '@/components/home/Footer.vue';
 import Github from '@/components/home/icons/Github.vue';
 import Badge from '@/components/Badge.vue';
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
-	<div :class="$style.heroPattern">
-		 <Pattern />
-	</div>
 	<div :class="[$style.sectionContainer, $style.sectionContainerHero, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
 			<Badge>Resource Hub</Badge>
@@ -81,7 +77,7 @@ await directus.request(
 
 </section>
 
-<section :class="[$style.sectionPaddingLg, $style.paddingBox]">
+<section :class="[$style.sectionPaddingMd, $style.sectionNoPaddingTop, $style.paddingBox]">
 	<Tabs :class="[$style.sectionContainer, $style.whiteBg]" :tabs="['Developer Reference', 'User Guide']">
 		<template #developer-reference>
 			<Card
@@ -162,13 +158,7 @@ await directus.request(
 	</Tabs>
 </section>
 
-<div :class="$style.paddingBox">
-	<div :class="$style.sectionContainer">
-		<Divider />
-	</div>
-</div>
-
-<section :class="[$style.sectionPaddingMd, $style.paddingBox]">
+<section :class="[$style.sectionPaddingMd, $style.mb60, $style.paddingBox]">
 	<div :class="[$style.sectionContainer]">
 		<div :class="$style.header">
 			<h2>Latest From The Blog</h2>
@@ -193,8 +183,14 @@ await directus.request(
 	</div>
 </section>
 
-<section :class="[$style.grayBg, $style.paddingBox]">
-	<div :class="[$style.sectionContainer, $style.sectionPaddingMd]">
+<div :class="$style.paddingBox">
+	<div :class="$style.sectionContainer">
+		<Divider />
+	</div>
+</div>
+
+<section :class="[$style.paddingBox]">
+	<div :class="[$style.sectionContainer, $style.sectionPaddingLg]">
 		<div :class="$style.header">
 			<h2>Framework Guides</h2>
 			<p>
@@ -226,6 +222,12 @@ await directus.request(
 		</div>
 	</div>
 </section>
+
+<div :class="$style.paddingBox">
+	<div :class="$style.sectionContainer">
+		<Divider />
+	</div>
+</div>
 
 <section :class="[$style.sectionPaddingMd, $style.paddingBox]">
 	<div :class="[$style.sectionContainer, $style.sectionContainerSelfHosted]">

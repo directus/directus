@@ -65,7 +65,7 @@ const activeTab = ref(props.tabs[0]);
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 24px;
-	padding-top: 60px;
+	padding-top: 30px;
 }
 
 @media only screen and (max-width: 768px) {

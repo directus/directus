@@ -23,25 +23,17 @@
 	padding-block: 120px;
 }
 
+.sectionNoPaddingTop {
+	padding-block-start: 0;
+}
+
+.sectionNoPaddingBottom {
+	padding-block-end: 0;
+}
+
 .hero {
-	/* background: var(--vp-docs-section-bg); */
-	/* color: white; */
 	position: relative;
 	overflow: hidden;
-}
-
-.heroPattern {
-	position: absolute;
-	top: 40%;
-	left: 50%;
-	translate: -50% -50%;
-	pointer-events: none;
-}
-
-.heroPattern svg {
-	width: 1600px;
-	height: 1000px;
-	opacity: 0.5;
 }
 
 .heroContent {
@@ -112,6 +104,9 @@
 
 .m60 {
 	margin: 60px 0;
+}
+.mb60 {
+	margin-bottom: 60px;
 }
 
 .grid2 {
