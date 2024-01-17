@@ -196,6 +196,18 @@ function addNew(item: Record<string, any>) {
 function stageEdits(item: Record<string, any>) {
 	update(item);
 }
+
+function parentIsEmpty(relatedField: undefined | unknown[]) {
+	if (typeof relatedField === 'undefined') {
+		return true;
+	}
+
+	if (relatedField?.length === 0) {
+		return true;
+	}
+
+	return false;
+}
 </script>
 
 <template>
@@ -224,11 +236,12 @@ function stageEdits(item: Record<string, any>) {
 	>
 		<template #item="{ element, index }">
 			<v-list-item class="row" :class="{ draggable: element.$type !== 'deleted' }">
+				{{ element }}
 				<item-preview
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
-					:class="{ empty: element[field]?.length === 0 }"
+					:class="{ empty: parentIsEmpty(element[field]) }"
 					:collection="collection"
 					:disabled="disabled"
 					:relation-info="relationInfo"
@@ -240,7 +253,7 @@ function stageEdits(item: Record<string, any>) {
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
-					v-if="element[field]?.length === 0 || open[element[relationInfo.relatedPrimaryKeyField.field]]"
+					v-if="parentIsEmpty(element[field]) || open[element[relationInfo.relatedPrimaryKeyField.field]]"
 					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
