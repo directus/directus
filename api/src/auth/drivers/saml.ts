@@ -135,14 +135,16 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
+			const accessTokenName = env['ACCESS_TOKEN_COOKIE_NAME'] as string;
+			const refreshTokenName = env['REFRESH_TOKEN_COOKIE_NAME'] as string;
 
-			if (req.cookies[env['ACCESS_TOKEN_COOKIE_NAME']]) {
-				res.clearCookie(env['ACCESS_TOKEN_COOKIE_NAME'], ACCESS_COOKIE_OPTIONS);
+			if (req.cookies[accessTokenName]) {
+				res.clearCookie(env[accessTokenName] as string, ACCESS_COOKIE_OPTIONS);
 			}
 
-			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
-				await authService.logout(req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]);
-				res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], REFRESH_COOKIE_OPTIONS);
+			if (req.cookies[refreshTokenName]) {
+				await authService.logout(req.cookies[refreshTokenName]);
+				res.clearCookie(refreshTokenName, REFRESH_COOKIE_OPTIONS);
 			}
 
 			return res.redirect(context);
@@ -173,7 +175,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, REFRESH_COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

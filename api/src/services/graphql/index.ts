@@ -2209,8 +2209,8 @@ export class GraphQLService {
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], REFRESH_COOKIE_OPTIONS);
-						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], result['accessToken'], ACCESS_COOKIE_OPTIONS);
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, result['accessToken'], ACCESS_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2242,7 +2242,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
@@ -2253,8 +2253,8 @@ export class GraphQLService {
 					const result = await authenticationService.refresh(currentRefreshToken);
 
 					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], REFRESH_COOKIE_OPTIONS);
-						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'], result['accessToken'], ACCESS_COOKIE_OPTIONS);
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, result['accessToken'], ACCESS_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2285,7 +2285,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({

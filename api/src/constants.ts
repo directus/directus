@@ -1,7 +1,9 @@
-import { getEnvValue } from '@directus/env';
 import type { CookieOptions } from 'express';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
+import { useEnv } from '@directus/env';
+
+const env = useEnv();
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -61,18 +63,18 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: getEnvValue<string>('COOKIE_DOMAIN'),
-	maxAge: getMilliseconds(getEnvValue<string>('REFRESH_TOKEN_TTL')),
-	secure:  getEnvValue<boolean>('COOKIE_SECURE', false),
-	sameSite: getEnvValue<'lax' | 'strict' | 'none'>('COOKIE_SAME_SITE', 'strict'),
+	domain: env['COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL'] as string),
+	secure: Boolean(env['COOKIE_SECURE']),
+	sameSite: (env['COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
 export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: getEnvValue<string>('COOKIE_DOMAIN'),
-	maxAge: getMilliseconds(getEnvValue<string>('ACCESS_TOKEN_TTL')),
-	secure:  getEnvValue<boolean>('COOKIE_SECURE', false),
-	sameSite: getEnvValue<'lax' | 'strict' | 'none'>('COOKIE_SAME_SITE', 'strict'),
+	domain: env['COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['ACCESS_TOKEN_TTL'] as string),
+	secure: Boolean(env['COOKIE_SECURE']),
+	sameSite: (env['COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
