@@ -1,19 +1,15 @@
 ---
-layout: home
+layout: page
 ---
 
 <script setup lang="ts">
 import { data } from '@/data/blog.data.js';
-import Pattern from '@/components/home/Pattern.vue';
 import Footer from '@/components/home/Footer.vue';
 import Github from '@/components/home/icons/Github.vue';
 import Badge from '@/components/Badge.vue';
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
-	<div :class="$style.heroPattern">
-		 <Pattern />
-	</div>
 	<div :class="[$style.sectionContainer, $style.sectionContainerHero, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
 			<Badge>Resource Hub</Badge>
@@ -26,7 +22,7 @@ import Badge from '@/components/Badge.vue';
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" alwaysDark maintainHeight>
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" maintainHeight>
 <template #rest>
 
 ```js
@@ -81,7 +77,7 @@ await directus.request(
 
 </section>
 
-<section :class="[$style.sectionPaddingLg, $style.paddingBox]">
+<section :class="[$style.sectionPaddingMd, $style.paddingBox]">
 	<Tabs :class="[$style.sectionContainer, $style.whiteBg]" :tabs="['Developer Reference', 'User Guide']">
 		<template #developer-reference>
 			<Card
@@ -162,13 +158,7 @@ await directus.request(
 	</Tabs>
 </section>
 
-<div :class="$style.paddingBox">
-	<div :class="$style.sectionContainer">
-		<Divider />
-	</div>
-</div>
-
-<section :class="[$style.sectionPaddingMd, $style.paddingBox]">
+<section :class="[$style.sectionPaddingMd, $style.mb60, $style.paddingBox]">
 	<div :class="[$style.sectionContainer]">
 		<div :class="$style.header">
 			<h2>Latest From The Blog</h2>
@@ -193,39 +183,53 @@ await directus.request(
 	</div>
 </section>
 
-<section :class="[$style.grayBg, $style.paddingBox]">
-	<div :class="[$style.sectionContainer, $style.sectionPaddingMd]">
+<div :class="$style.paddingBox">
+	<div :class="$style.sectionContainer">
+		<Divider />
+	</div>
+</div>
+
+<section :class="[$style.paddingBox]">
+	<div :class="[$style.sectionContainer, $style.sectionPaddingLg]">
 		<div :class="$style.header">
-			<h2>Framework Guides</h2>
+			<h2>We 💜 Your Framework</h2>
 			<p>
-				Combine Directus with your favorite framework to create dynamic and efficient web applications.
+				Combine Directus with your favorite framework to create flexible and fast web applications.
 			</p>
 		</div>
-		<div :class="[$style.grid3, $style.m60]">
-			<Article
-				title="Build a Static Website with Nuxt.js"
-				desc="Learn how to build a website using Directus as a CMS and Nuxt 3."
-				img="/assets/nuxt-guide.png"
-				url="/guides/headless-cms/build-static-website/nuxt-3"
-			/>
-			<Article
-				title="Set up Live Preview in a Next.js project"
-				desc="By adding a preview URL, you can instantly see live changes made to your collection."
-				img="/assets/next-guide.png"
-				url="/guides/headless-cms/live-preview/nextjs"
-			/>
-			<Article
-				title="Build a Multi-User Chat With React.js"
-				desc="Deep dive into how to use Directus websockets to build an interactive chat application."
-				img="/assets/react-guide.png"
-				url="/guides/real-time/chat/react"
-			/>
+		<div :class="[$style.grid4, $style.m60, $style.frameworks]">
+			<a href="/guides/headless-cms/build-static-website/nuxt-3">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/nuxt.png" alt="Nuxt" />
+				</div>
+			</a>
+			<a href="/guides/headless-cms/build-static-website/next-13">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/next.png" alt="Next.js" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-directus-sveltekit">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/sveltekit.png" alt="SvelteKit" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-directus-astro">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/astro.png" alt="Astro" />
+				</div>
+			</a>
 		</div>
 		<div :class="$style.header">
 			<Button href="/guides">View All Guides</Button>
 		</div>
 	</div>
 </section>
+
+<div :class="$style.paddingBox">
+	<div :class="$style.sectionContainer">
+		<Divider />
+	</div>
+</div>
 
 <section :class="[$style.sectionPaddingMd, $style.paddingBox]">
 	<div :class="[$style.sectionContainer, $style.sectionContainerSelfHosted]">
