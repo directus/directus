@@ -68,7 +68,7 @@ const changeSelected = async (choice: string, el: HTMLElement) => {
 					v-if="maintainHeight || choice === selected"
 					:class="{ content: maintainHeight, active: maintainHeight && choice === selected }"
 				>
-					<slot :name="choice.toLowerCase()"></slot>
+					<slot :name="choice.toLowerCase().split(' ').join('-')"></slot>
 				</div>
 			</template>
 		</div>
