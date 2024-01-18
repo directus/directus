@@ -12,12 +12,12 @@ import { projectFields } from './fields/project';
 import { themingProjectFields } from './fields/theming-project';
 import { userFields } from './fields/user';
 
-type OnboardingAction = {
+export type OnboardingAction = {
 	label: string;
 	action?: () => Promise<any>;
 };
 
-type OnboardingSlide = {
+export type OnboardingSlide = {
 	title: string;
 	text: string;
 	form?: {
@@ -27,7 +27,6 @@ type OnboardingSlide = {
 	};
 	primaryAction?: OnboardingAction;
 	secondaryAction?: OnboardingAction;
-	next?: () => Promise<any>;
 };
 
 export function getSlides() {
@@ -139,27 +138,6 @@ export function getSlides() {
 						onboarding: JSON.stringify({
 							primary_skillset: userModel.value.primary_skillset ?? null,
 							wants_emails: userModel.value.wants_emails ?? false,
-							// Dont enable retrying yet, because we dont have consent yet and if the user
-							// Logs out and in, we would transmit data which is **bad**.
-							retry_transmission: false,
-						} satisfies UserOnboarding),
-					});
-
-					await userStore.hydrate();
-				},
-			},
-		},
-		consent: {
-			title: t('onboarding.consent.title'),
-			text: t('onboarding.consent.text'),
-			primaryAction: {
-				label: t('onboarding.action.finish_share'),
-				action: async function () {
-					await api.patch(`/users/${currentUser.id}`, {
-						onboarding: JSON.stringify({
-							primary_skillset: userModel.value.primary_skillset ?? null,
-							wants_emails: userModel.value.wants_emails ?? false,
-							// Important(!) to only enable retrying if we have consent
 							retry_transmission: true,
 						} satisfies UserOnboarding),
 					});
@@ -167,12 +145,6 @@ export function getSlides() {
 					await userStore.hydrate();
 					// Proceed immediately and swallow any errors for seamless user experience
 					api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
-					router.replace('/content');
-				},
-			},
-			secondaryAction: {
-				label: t('onboarding.action.finish_decline'),
-				action: async function () {
 					router.replace('/content');
 				},
 			},

@@ -6,7 +6,7 @@ import { User, UserOnboarding, ValidationError } from '@directus/types';
 import { isArray } from 'lodash';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getSlides } from './slides';
+import { OnboardingAction, getSlides } from './slides';
 
 export function useOnboarding() {
 	const router = useRouter();
@@ -68,7 +68,7 @@ export function useOnboarding() {
 		}
 	}
 
-	async function nextSlide(action?: () => Promise<any>) {
+	async function nextSlide(action?: OnboardingAction['action']) {
 		// Prevent accidental double clicks, skipping over a slide
 		nextButtonDisabled.value = true;
 		setTimeout(() => (nextButtonDisabled.value = false), 500);
