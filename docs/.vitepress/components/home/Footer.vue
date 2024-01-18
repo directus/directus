@@ -88,7 +88,11 @@ a {
 	margin-block-end: 24px;
 }
 
-@media screen and (min-width: 1000px) {
+.content:deep(.logo) {
+	margin: 0 auto 2em;
+}
+
+@media screen and (min-width: 1400px) {
 	.content {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
