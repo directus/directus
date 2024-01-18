@@ -925,7 +925,7 @@ By default, extensions are not cached. The input data type for this environment 
 [`CACHE_TTL`](#cache).
 
 <sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
-extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
+extensions from a storage location instead. Under the hood, they are synced into a local directory within [`TEMP_PATH`](#general)
 and then loaded from there.
 
 ## Messenger
