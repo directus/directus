@@ -32,6 +32,7 @@ const editActive = ref(false);
 		<v-icon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
 			:name="props.open ? 'expand_more' : 'chevron_right'"
+			class="toggle"
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
@@ -94,7 +95,7 @@ const editActive = ref(false);
 .empty.preview {
 	margin-bottom: 0px;
 
-	.v-icon {
+	.v-icon.toggle {
 		visibility: hidden;
 	}
 }
