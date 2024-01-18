@@ -11,6 +11,7 @@ import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
 import { getFolderFilter } from '@/utils/get-folder-filter';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
@@ -28,8 +29,9 @@ type Item = {
 };
 
 const props = defineProps<{
-	folder?: string;
-	special?: 'all' | 'recent' | 'mine';
+  folder?: string;
+  special?: 'all' | 'recent' | 'mine';
+  primaryKey?: string;
 }>();
 
 const { t } = useI18n();
@@ -243,8 +245,18 @@ function usePermissions() {
 
 		return !!createPermissions;
 	});
+	const batchDownloadAllowed = computed(() => {
+    const admin = userStore?.currentUser?.role.admin_access === true;
+    if (admin) return true;
 
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
+    const downloadPermissions = permissionsStore.permissions.find(
+      (permission) => permission.action === 'download' && permission.collection === 'directus_files',
+    );
+
+    return !!downloadPermissions;
+  });
+
+  return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed, batchDownloadAllowed };
 }
 
 function useFileUpload() {
@@ -381,6 +393,27 @@ function useFileUpload() {
 		emitter.emit(Events.upload);
 	}
 }
+
+async function downloadMultipleFiles() {
+  try {
+    const downloadPromises = selection.value.map((primaryKey) => {
+      const downloadUrl = getAssetUrl(primaryKey, true);
+      
+      // Log download URL for debugging
+      console.log('Download URL:', downloadUrl);
+      
+      // Trigger download for each file
+      window.open(downloadUrl, '_blank');
+    });
+
+    // Wait for all download promises to resolve
+    await Promise.all(downloadPromises);
+  } catch (error) {
+    console.error('Error downloading files:', error);
+  }
+}
+
+
 </script>
 
 <template>
@@ -477,17 +510,16 @@ function useFileUpload() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
-					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
-					rounded
-					icon
-					secondary
-					:disabled="batchEditAllowed === false"
-					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
+			<v-button
+				v-tooltip.bottom="batchDownloadAllowed ? t('download_selected') : t('not_allowed')"
+				rounded
+				icon
+				secondary
+				:disabled="selection.length === 0 || batchDownloadAllowed === false"
+				@click="downloadMultipleFiles"
+			>
+				<v-icon name="download" />
+			</v-button>
 
 				<v-button
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
