@@ -34,7 +34,11 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 
-const emit = defineEmits(['update:active', 'click', 'close']);
+const emit = defineEmits<{
+	'update:active': [active: boolean];
+	click: [event: MouseEvent];
+	close: [event: MouseEvent];
+}>();
 
 const internalLocalActive = ref(true);
 

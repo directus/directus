@@ -197,7 +197,7 @@ Entrypoint
 env
 ENV
 ESM
-EXIF
+Exif
 fallbacks
 falsy
 FavIcon

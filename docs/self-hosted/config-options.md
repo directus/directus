@@ -652,7 +652,7 @@ STORAGE_AWS_BUCKET="my-files"
 
 ### Metadata
 
-When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
 | Variable                   | Description                                                                                           | Default Value                                                                 |
