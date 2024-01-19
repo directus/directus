@@ -18,6 +18,8 @@ import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../utils/jwt.js';
 
 const router = Router();
 const env = useEnv();
@@ -86,7 +88,12 @@ function getCurrentRefreshToken(req: Request, mode: AuthMode): string | undefine
 	}
 
 	if (mode === 'session') {
-		return req.cookies[env['SESSION_COOKIE_NAME'] as string];
+		const token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
+
+		if (isDirectusJWT(token)) {
+			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+			return payload.session;
+		}
 	}
 
 	return undefined;
