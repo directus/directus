@@ -152,8 +152,6 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	// delete api.defaults.headers.common['Authorization'];
-
 	clearTimeout(refreshTimeout);
 
 	const options = { ...defaultOptions, ...optionsRaw };
