@@ -1,13 +1,12 @@
 import type { AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { expect, test } from 'vitest';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { conditionString } from './index.js';
 
 test('Convert filter with logical', () => {
-	const randomTable = randomIdentifier();
-
-	const firstColumn = randomIdentifier();
-	const secondColumn = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName1 = randomIdentifier();
+	const columnName2 = randomIdentifier();
 
 	const where: AbstractSqlQueryLogicalNode = {
 		type: 'logical',
@@ -21,8 +20,8 @@ test('Convert filter with logical', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: randomTable,
-						column: firstColumn,
+						tableIndex,
+						columnName: columnName1,
 					},
 					operation: 'gt',
 					compareTo: {
@@ -38,8 +37,8 @@ test('Convert filter with logical', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: randomTable,
-						column: secondColumn,
+						tableIndex,
+						columnName: columnName2,
 					},
 					operation: 'eq',
 					compareTo: {
@@ -52,17 +51,16 @@ test('Convert filter with logical', () => {
 	};
 
 	expect(conditionString(where)).toStrictEqual(
-		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" = $2`,
+		`"t${tableIndex}"."${columnName1}" > $1 OR "t${tableIndex}"."${columnName2}" = $2`,
 	);
 });
 
 test('Convert filter nested and with negation', () => {
-	const randomTable = randomIdentifier();
-
-	const firstColumn = randomIdentifier();
-	const secondColumn = randomIdentifier();
-	const thirdColumn = randomIdentifier();
-	const fourthColumn = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName1 = randomIdentifier();
+	const columnName2 = randomIdentifier();
+	const columnName3 = randomIdentifier();
+	const columnName4 = randomIdentifier();
 
 	const where: AbstractSqlQueryLogicalNode = {
 		type: 'logical',
@@ -76,8 +74,8 @@ test('Convert filter nested and with negation', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: randomTable,
-						column: firstColumn,
+						tableIndex,
+						columnName: columnName1,
 					},
 					operation: 'gt',
 					compareTo: {
@@ -93,8 +91,8 @@ test('Convert filter nested and with negation', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: randomTable,
-						column: secondColumn,
+						tableIndex,
+						columnName: columnName2,
 					},
 					operation: 'eq',
 					compareTo: {
@@ -115,8 +113,8 @@ test('Convert filter nested and with negation', () => {
 							type: 'condition-number',
 							target: {
 								type: 'primitive',
-								table: randomTable,
-								column: thirdColumn,
+								tableIndex,
+								columnName: columnName3,
 							},
 							operation: 'lt',
 							compareTo: {
@@ -132,8 +130,8 @@ test('Convert filter nested and with negation', () => {
 							type: 'condition-number',
 							target: {
 								type: 'primitive',
-								table: randomTable,
-								column: fourthColumn,
+								tableIndex,
+								columnName: columnName4,
 							},
 							operation: 'eq',
 							compareTo: {
@@ -148,6 +146,6 @@ test('Convert filter nested and with negation', () => {
 	};
 
 	expect(conditionString(where)).toStrictEqual(
-		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4)`,
+		`"t${tableIndex}"."${columnName1}" > $1 OR "t${tableIndex}"."${columnName2}" != $2 OR NOT ("t${tableIndex}"."${columnName3}" >= $3 AND "t${tableIndex}"."${columnName4}" = $4)`,
 	);
 });

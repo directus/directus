@@ -1,20 +1,21 @@
 import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/index.js';
 
 /**
- * @param abstractPrimitive
- * @param collection
+ * @param tableIndex
+ * @param field
+ * @param columnIndex
  * @returns the converted primitive node
  */
 export const createPrimitiveSelect = (
-	collection: string,
-	field: string,
-	generatedAlias: string,
+	tableIndex: number,
+	columnName: string,
+	columnIndex: number,
 ): AbstractSqlQuerySelectPrimitiveNode => {
 	const primitive: AbstractSqlQuerySelectPrimitiveNode = {
 		type: 'primitive',
-		table: collection,
-		column: field,
-		as: generatedAlias,
+		tableIndex,
+		columnName,
+		columnIndex,
 	};
 
 	return primitive;

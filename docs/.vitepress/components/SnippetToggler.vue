@@ -5,7 +5,6 @@ import { useLocalStorage } from '../composables/useLocalStorage';
 const props = defineProps<{
 	choices: string[];
 	group?: string;
-	alwaysDark?: boolean;
 	maintainHeight?: boolean;
 }>();
 
@@ -48,7 +47,7 @@ const changeSelected = async (choice: string, el: HTMLElement) => {
 </script>
 
 <template>
-	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
+	<div class="snippet-toggler">
 		<div class="snippet-toggler-header">
 			<div class="buttons">
 				<button
@@ -118,22 +117,16 @@ html.dark .snippet-toggler,
 	border-radius: var(--rounded-lg);
 }
 
-html.dark .snippet-toggler .button,
-.snippet-toggler.dark .button {
+html.dark .snippet-toggler .button {
 	color: var(--vp-c-gray-light-2);
 }
 
-html.dark .snippet-toggler .button.active,
-.snippet-toggler.dark .button.active {
+html.dark .snippet-toggler .button.active {
 	color: var(--vp-c-gray-light-4);
 }
 
 .snippet-toggler .content-area :deep(.lang) {
 	display: none;
-}
-
-.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
-	display: block;
 }
 
 @media (min-width: 640px) {
