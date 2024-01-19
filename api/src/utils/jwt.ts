@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken';
 import { InvalidTokenError, ServiceUnavailableError, TokenExpiredError } from '@directus/errors';
 import type { DirectusTokenPayload } from '../types/index.js';
 
-export function verifyJWT(token: string, secret: string): DirectusTokenPayload {
+export function verifyJWT(token: string, secret: string) {
 	let payload;
 
 	try {
 		payload = jwt.verify(token, secret, {
 			issuer: 'directus',
-		}) as DirectusTokenPayload;
+		}) as Record<string, unknown>;
 	} catch (err) {
 		if (err instanceof jwt.TokenExpiredError) {
 			throw new TokenExpiredError();
@@ -22,8 +22,8 @@ export function verifyJWT(token: string, secret: string): DirectusTokenPayload {
 	return payload;
 }
 
-export function verifyAccessJWT(token: string, secret: string): DirectusTokenPayload {
-	const payload = verifyJWT(token, secret);
+export function verifyAccessJWT(token: string, secret: string) {
+	const payload = verifyJWT(token, secret) as DirectusTokenPayload;
 
 	if (payload.role === undefined || payload.app_access === undefined || payload.admin_access === undefined) {
 		throw new InvalidTokenError();
