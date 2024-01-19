@@ -4,7 +4,7 @@ import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusErr
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
-import { ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
+import { /*REFRESH_COOKIE_OPTIONS, */SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -135,16 +135,11 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-			const accessTokenName = env['ACCESS_TOKEN_COOKIE_NAME'] as string;
-			const refreshTokenName = env['REFRESH_TOKEN_COOKIE_NAME'] as string;
+			const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-			if (req.cookies[accessTokenName]) {
-				res.clearCookie(env[accessTokenName] as string, ACCESS_COOKIE_OPTIONS);
-			}
-
-			if (req.cookies[refreshTokenName]) {
-				await authService.logout(req.cookies[refreshTokenName]);
-				res.clearCookie(refreshTokenName, REFRESH_COOKIE_OPTIONS);
+			if (req.cookies[sessionCookieName]) {
+				await authService.logout(req.cookies[sessionCookieName]);
+				res.clearCookie(sessionCookieName, SESSION_COOKIE_OPTIONS);
 			}
 
 			return res.redirect(context);
@@ -164,7 +159,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
+				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes, undefined, true);
 
 				res.locals['payload'] = {
 					data: {
@@ -175,7 +170,8 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					// res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

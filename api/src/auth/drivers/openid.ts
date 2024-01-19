@@ -28,7 +28,7 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
-import { ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
+import { /*REFRESH_COOKIE_OPTIONS,*/ SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -406,7 +406,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					codeVerifier: verifier,
 					state: req.query['state'],
 					iss: req.query['iss'],
-				});
+				}, undefined, true);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
@@ -434,8 +434,9 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+				// use mode session for compatibility with the App, make the switch here somehow
+				// res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 
 				return res.redirect(redirect);
 			}

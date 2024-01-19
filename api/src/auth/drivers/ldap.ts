@@ -23,8 +23,8 @@ import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { AuthDriver } from '../auth.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 interface UserInfo {
 	dn: string;
@@ -445,6 +445,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 				provider,
 				req.body,
 				req.body?.otp,
+				mode === 'session'
 			);
 
 			const payload = {
@@ -456,13 +457,11 @@ export function createLDAPAuthRouter(provider: string): Router {
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, {
-					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+			}
+
+			if (mode === 'session') {
+				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 			}
 
 			res.locals['payload'] = payload;

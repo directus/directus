@@ -46,7 +46,7 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { ACCESS_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL, REFRESH_COOKIE_OPTIONS } from '../../constants.js';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -2210,7 +2210,6 @@ export class GraphQLService {
 
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
-						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, result['accessToken'], ACCESS_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2250,11 +2249,16 @@ export class GraphQLService {
 						});
 					}
 
-					const result = await authenticationService.refresh(currentRefreshToken);
+					const mode = args['mode'] ?? 'json';
 
-					if (args['mode'] === 'cookie') {
+					const result = await authenticationService.refresh(currentRefreshToken, mode === 'session');
+
+					if (mode === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
-						res?.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, result['accessToken'], ACCESS_COOKIE_OPTIONS);
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, result['accessToken'], SESSION_COOKIE_OPTIONS);
 					}
 
 					return {
