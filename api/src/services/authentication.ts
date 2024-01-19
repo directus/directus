@@ -354,12 +354,19 @@ export class AuthenticationService {
 			});
 		}
 
+		const newRefreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
 			role: record.role_id,
 			app_access: record.role_app_access,
 			admin_access: record.role_admin_access,
 		};
+
+		if (session) {
+			tokenPayload.session = refreshToken;
+		}
 
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
@@ -398,9 +405,6 @@ export class AuthenticationService {
 			expiresIn: TTL,
 			issuer: 'directus',
 		});
-
-		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions')
 			.update({

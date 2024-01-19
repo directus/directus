@@ -39,7 +39,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 	// for tokens that last > 24 days. Ref #4054
 	if (response.data.data.expires <= 2100000000) {
-		console.log('refreshing in ', response.data.data.expires - 10000)
 		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
@@ -97,13 +96,10 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	// Prevent concurrent refreshes
 	if (isRefreshing) return;
 
-	console.log('refresh?')
-
 	// Skip refresh if access token is still fresh
 	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
 		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
 		clearTimeout(refreshTimeout);
-		console.log('refreshing in ', appStore.accessTokenExpiry - 10000)
 		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
 		return;
 	}
@@ -120,7 +116,6 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 		// for tokens that last > 24 days. Ref #4054
 		if (response.data.data.expires <= 2100000000) {
-			console.log('refreshing in ', response.data.data.expires - 10000)
 			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 		}
 

@@ -16,17 +16,14 @@ const extractToken: RequestHandler = (req, _res, next) => {
 
 	let token: string | null = null;
 
+	/**
+	 * Look into RFC6750 compliance:
+	 * In order to be fully compliant with RFC6750, we have to throw a 400 error when you have the
+	 * token in more than 1 place afaik. We also might have to support "access_token" as a post body
+	 * key
+	 */
 	if (req.query && req.query['access_token']) {
 		token = req.query['access_token'] as string;
-	}
-
-	if (req.cookies && req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
-		if (token !== null) {
-			// RFC6750 compliance:
-			throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token' });
-		}
-
-		token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
 	}
 
 	if (req.headers && req.headers.authorization) {
@@ -42,12 +39,15 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		}
 	}
 
-	/**
-	 * Look into RFC6750 compliance:
-	 * In order to be fully compliant with RFC6750, we have to throw a 400 error when you have the
-	 * token in more than 1 place afaik. We also might have to support "access_token" as a post body
-	 * key
-	 */
+	if (req.cookies && req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
+		if (token === null) {
+			// prevent conflicts between access tokens and cookie tokens for now
+			token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
+		} else {
+			// do we need this for RFC6750 too?
+			// throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token' });
+		}
+	}
 
 	req.token = token;
 	next();
