@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { localizedFormat } from '@/utils/localized-format';
@@ -28,7 +28,7 @@ const size = computed(() => {
 const fileLink = computed(() => {
 	if (!props.file?.id) return;
 
-	return addTokenToURL(`${getRootPath()}assets/${props.file.id}`);
+	return `${getRootPath()}assets/${props.file.id}`;
 });
 
 const creationDate = computed(() => {

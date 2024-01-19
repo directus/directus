@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
@@ -46,7 +46,6 @@ const haveValuesChanged = ref(false);
 
 const tools = getTools(
 	{
-		addTokenToURL,
 		baseURL: api.defaults.baseURL,
 		setFileHandler,
 		setCurrentPreview,

@@ -1,4 +1,4 @@
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -303,7 +303,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fit = crop.value ? '&width=250&height=150' : `&key=system-medium-contain`;
 
 			const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}` + fit;
-			return addTokenToURL(url);
+			return url;
 		}
 
 		function useLayoutOptions() {
