@@ -173,6 +173,12 @@
 	}
 }
 
+@media only screen and (max-width: 1400px) {
+	.heroToggler {
+		display: none;
+	}
+}
+
 @media only screen and (max-width: 1200px) {
 	.paddingBox {
 		padding-inline: 64px;
@@ -182,9 +188,6 @@
 	}
 	.heroButtons {
 		margin-block-start: 0;
-	}
-	.heroToggler {
-		display: none;
 	}
 	.grid4 {
 		grid-template-columns: 1fr 1fr;

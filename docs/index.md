@@ -22,52 +22,65 @@ import Badge from '@/components/Badge.vue';
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" maintainHeight>
-<template #rest>
+<SnippetToggler :choices="['Fetch Items', 'Create an Item', 'Authentication', 'Realtime']"  maintainHeight>
+
+<template #fetch-items>
 
 ```js
-GET /items/articles/4
-	?fields[]=id
-	&fields[]=status
-	&fields[]=title
-	&fields[]=category
-	&fields[]=image.id
-	&fields[]=image.name
-```
+import { createDirectus, rest, readItems } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest());
 
-</template>
-<template #graphql>
-
-```graphql
-query {
-	articles_by_id(id: 4) {
-		id
-		status
-		title
-		category
-		image {
-			id
-			name
-		}
-	}
-}
-```
-
-</template>
-<template #sdk>
-
-```js
-await directus.request(
-  readItem('articles', 4, {
-    fields: [
-      'id',
-      'status',
-      'title',
-      'category,',
-      { image: ['id', 'name'] }
-    ]
-  })
+const item = await client.request(
+	readItems('articles', {
+		fields: ['id', 'title', 'date_published', 'summary']
+	})
 );
+```
+
+</template>
+<template #create-an-item>
+
+```js
+import { createDirectus, rest, createItem } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest());
+
+const item = await client.request(
+	createItem('articles', {
+		title: 'Hello, world!',
+		summary: 'This is my next big thing.'
+	})
+);
+```
+
+</template>
+<template #authentication>
+
+```js
+import { createDirectus, rest, createUser } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest());
+
+const newUser = await client.request(
+	createUser({
+		email: 'user@example.com',
+		password: 'd1r3ctu5'
+	})
+);
+
+const user = await client.login('user@example.com', 'd1r3ctu5');
+```
+
+</template>
+<template #realtime>
+
+```js
+import { createDirectus, realtime } from '@directus/sdk'
+const client = createDirectus('https://xyz.directus.app').with(realtime({ authMode: 'public' }));
+
+const { subscription } = await client.subscribe('messages');
+
+for await (const item of subscription) {
+	console.log(item);
+}
 ```
 
 </template>
