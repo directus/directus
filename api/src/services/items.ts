@@ -595,6 +595,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+
+		const isAutoIncrementPK =
+			this.schema.collections[this.collection]!.fields[primaryKeyField]!.defaultValue === 'AUTO_INCREMENT';
+
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
@@ -667,7 +671,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				nestedActionEvents: nestedActionEventsA2O,
 			} = await payloadService.processA2O(payloadWithM2O, opts);
 
-			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
+			const payloadWithoutAliasAndPK = pick(
+				payloadWithA2O,
+				without(fields, ...aliases.concat(isAutoIncrementPK ? [primaryKeyField] : [])),
+			);
+
 			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
 			if (Object.keys(payloadWithTypeCasting).length > 0) {
