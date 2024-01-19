@@ -60,3 +60,5 @@ export type LoginResult = {
 	expires: any;
 	id?: any;
 };
+
+export type AuthenticationMode = 'json' | 'cookie' | 'session';

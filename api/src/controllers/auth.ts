@@ -20,6 +20,7 @@ import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
+import type { AuthenticationMode } from '../types/auth.js';
 
 const router = Router();
 const env = useEnv();
@@ -64,11 +65,9 @@ if (!env['AUTH_DISABLE_DEFAULT']) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
 
-type AuthMode = 'json' | 'cookie' | 'session';
-
-function getCurrentMode(req: Request): AuthMode {
+function getCurrentMode(req: Request): AuthenticationMode {
 	if (req.body.mode) {
-		return req.body.mode as AuthMode;
+		return req.body.mode as AuthenticationMode;
 	}
 
 	if (req.body.refresh_token) {
@@ -78,7 +77,7 @@ function getCurrentMode(req: Request): AuthMode {
 	return 'cookie';
 }
 
-function getCurrentRefreshToken(req: Request, mode: AuthMode): string | undefined {
+function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string | undefined {
 	if (mode === 'json') {
 		return req.body.refresh_token;
 	}

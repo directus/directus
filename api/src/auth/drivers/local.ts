@@ -8,7 +8,7 @@ import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.
 import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
-import type { User } from '../../types/index.js';
+import type { AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { stall } from '../../utils/stall.js';
@@ -85,7 +85,7 @@ export function createLocalAuthRouter(provider: string): Router {
 				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode: 'json' | 'cookie' | 'session' = req.body.mode || 'json';
+			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,

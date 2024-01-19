@@ -7,7 +7,7 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { SharesService } from '../services/shares.js';
-import type { PrimaryKey } from '../types/index.js';
+import type { AuthenticationMode, PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -19,6 +19,7 @@ router.use(useCollection('directus_shares'));
 const sharedLoginSchema = Joi.object({
 	share: Joi.string().required(),
 	password: Joi.string(),
+	mode: Joi.string().valid('cookie', 'json', 'session').optional(),
 }).unknown();
 
 router.post(
@@ -35,7 +36,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		const mode: 'json' | 'cookie' | 'session' = req.body.mode || 'json';
+		const mode: AuthenticationMode = req.body.mode ?? 'json';
 
 		const { accessToken, refreshToken, expires } = await service.login(req.body);
 

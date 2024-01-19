@@ -48,7 +48,7 @@ import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq 
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getService } from '../../utils/get-service.js';
@@ -1991,6 +1991,7 @@ export class GraphQLService {
 			values: {
 				json: { value: 'json' },
 				cookie: { value: 'cookie' },
+				session: { value: 'session' },
 			},
 		});
 
@@ -2206,10 +2207,16 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					if (args['mode'] === 'cookie') {
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp, mode === 'session');
+
+					if (mode === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, result['accessToken'], SESSION_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2249,7 +2256,7 @@ export class GraphQLService {
 						});
 					}
 
-					const mode = args['mode'] ?? 'json';
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
 					const result = await authenticationService.refresh(currentRefreshToken, mode === 'session');
 
