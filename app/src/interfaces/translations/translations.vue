@@ -218,6 +218,7 @@ function useLanguages() {
 		}
 
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+		const sortField = relationInfo.value.relatedCollection.meta?.sort_field;
 
 		fields.add(pkField);
 
@@ -229,7 +230,7 @@ function useLanguages() {
 				{
 					params: {
 						fields: Array.from(fields),
-						sort: props.languageField ?? pkField,
+						sort: sortField ?? props.languageField ?? pkField,
 					},
 				},
 			);
