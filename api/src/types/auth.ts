@@ -32,6 +32,7 @@ export interface Session {
 export type DirectusTokenPayload = {
 	id?: string;
 	role: string | null;
+	session?: string;
 	app_access: boolean | number;
 	admin_access: boolean | number;
 	share?: string;

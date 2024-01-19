@@ -63,18 +63,18 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['COOKIE_DOMAIN'] as string,
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL'] as string),
-	secure: Boolean(env['COOKIE_SECURE']),
-	sameSite: (env['COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+	secure: Boolean(env['REFRESH_TOKEN_COOKIE_SECURE']),
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
-export const ACCESS_COOKIE_OPTIONS: CookieOptions = {
+export const SESSION_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['COOKIE_DOMAIN'] as string,
-	maxAge: getMilliseconds(env['ACCESS_TOKEN_TTL'] as string),
-	secure: Boolean(env['COOKIE_SECURE']),
-	sameSite: (env['COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+	domain: env['SESSION_COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['SESSION_COOKIE_TTL'] as string),
+	secure: Boolean(env['SESSION_COOKIE_SECURE']),
+	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];

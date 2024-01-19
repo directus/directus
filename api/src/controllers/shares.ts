@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ACCESS_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -35,12 +35,29 @@ router.post(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
+		const mode: 'json' | 'cookie' | 'session' = req.body.mode || 'json';
+
 		const { accessToken, refreshToken, expires } = await service.login(req.body);
 
-		res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-		res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+		const payload: Record<string, any> = { expires };
 
-		res.locals['payload'] = { data: { expires } };
+		if (mode === 'json') {
+			payload['access_token'] = accessToken;
+			payload['refresh_token'] = refreshToken;
+
+		}
+
+		if (mode === 'cookie') {
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+			payload['access_token'] = accessToken;
+		}
+
+		if (mode === 'session') {
+			res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+
+		}
+
+		res.locals['payload'] = { data: payload };
 
 		return next();
 	}),

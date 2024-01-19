@@ -13,7 +13,6 @@ import { useEnv } from '@directus/env';
 
 const extractToken: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
-	const cookie_name = env['ACCESS_TOKEN_COOKIE_NAME'] as string;
 
 	let token: string | null = null;
 
@@ -21,13 +20,13 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		token = req.query['access_token'] as string;
 	}
 
-	if (req.cookies && req.cookies[cookie_name]) {
+	if (req.cookies && req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
 		if (token !== null) {
 			// RFC6750 compliance:
 			throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token' });
 		}
 
-		token = req.cookies[cookie_name];
+		token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
 	}
 
 	if (req.headers && req.headers.authorization) {
@@ -44,7 +43,6 @@ const extractToken: RequestHandler = (req, _res, next) => {
 	}
 
 	/**
-	 * @TODO
 	 * Look into RFC6750 compliance:
 	 * In order to be fully compliant with RFC6750, we have to throw a 400 error when you have the
 	 * token in more than 1 place afaik. We also might have to support "access_token" as a post body

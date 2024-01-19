@@ -4,7 +4,7 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
-import { REFRESH_COOKIE_OPTIONS, ACCESS_COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -52,7 +52,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
+		mode: Joi.string().valid('cookie', 'json', 'session'),
 		otp: Joi.string(),
 	}).unknown();
 
@@ -85,12 +85,13 @@ export function createLocalAuthRouter(provider: string): Router {
 				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode = req.body.mode || 'json';
+			const mode: 'json' | 'cookie' | 'session' = req.body.mode || 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
 				req.body?.otp,
+				mode === 'session'
 			);
 
 			const payload = { data: { expires } } as Record<string, Record<string, any>>;
@@ -102,7 +103,11 @@ export function createLocalAuthRouter(provider: string): Router {
 
 			if (mode === 'cookie') {
 				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-				res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+				payload['data']!['access_token'] = accessToken;
+			}
+
+			if (mode === 'session') {
+				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 			}
 
 			res.locals['payload'] = payload;

@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
+import type { Request } from 'express';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -9,7 +10,7 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { REFRESH_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, ACCESS_COOKIE_OPTIONS } from '../constants.js';
+import { REFRESH_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -61,6 +62,36 @@ if (!env['AUTH_DISABLE_DEFAULT']) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
 
+type AuthMode = 'json' | 'cookie' | 'session';
+
+function getCurrentMode(req: Request): AuthMode {
+	if (req.body.mode) {
+		return req.body.mode as AuthMode;
+	}
+
+	if (req.body.refresh_token) {
+		return 'json';
+	}
+
+	return 'cookie';
+}
+
+function getCurrentRefreshToken(req: Request, mode: AuthMode): string | undefined {
+	if (mode === 'json') {
+		return req.body.refresh_token;
+	}
+
+	if (mode === 'cookie') {
+		return req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+	}
+
+	if (mode === 'session') {
+		return req.cookies[env['SESSION_COOKIE_NAME'] as string];
+	}
+
+	return undefined;
+}
+
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
@@ -80,15 +111,14 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+		const mode = getCurrentMode(req);
+		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({ reason: `The refresh or session token is required in either the JSON payload or Cookie` });
 		}
 
-		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
-
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, mode === 'session');
 
 		const payload = {
 			data: { expires },
@@ -101,7 +131,11 @@ router.post(
 
 		if (mode === 'cookie') {
 			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-			res.cookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, accessToken, ACCESS_COOKIE_OPTIONS);
+			payload['data']!['access_token'] = accessToken;
+		}
+
+		if (mode === 'session') {
+			res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 		}
 
 		res.locals['payload'] = payload;
@@ -129,10 +163,11 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+		const mode = getCurrentMode(req);
+		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({ reason: `The refresh or session token is required in either the JSON payload or Cookie` });
 		}
 
 		await authenticationService.logout(currentRefreshToken);
@@ -141,8 +176,8 @@ router.post(
 			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, REFRESH_COOKIE_OPTIONS);
 		}
 
-		if (req.cookies[env['ACCESS_TOKEN_COOKIE_NAME'] as string]) {
-			res.clearCookie(env['ACCESS_TOKEN_COOKIE_NAME'] as string, ACCESS_COOKIE_OPTIONS);
+		if (req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
+			res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
 		}
 
 		return next();
