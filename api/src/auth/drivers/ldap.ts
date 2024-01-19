@@ -408,7 +408,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 	const loginSchema = Joi.object({
 		identifier: Joi.string().required(),
 		password: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
+		mode: Joi.string().valid('cookie', 'json', 'session'),
 		otp: Joi.string(),
 	}).unknown();
 
