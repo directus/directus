@@ -30,7 +30,7 @@ function getAuthEndpoint(provider?: string, share?: boolean) {
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const response = await api.post<any>(getAuthEndpoint(provider, share), {
 		...credentials,
-		mode: 'cookie',
+		mode: 'session',
 	});
 
 	// const accessToken = response.data.data.access_token;
@@ -168,7 +168,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers.common['Authorization'];
+	// delete api.defaults.headers.common['Authorization'];
 
 	clearTimeout(refreshTimeout);
 
