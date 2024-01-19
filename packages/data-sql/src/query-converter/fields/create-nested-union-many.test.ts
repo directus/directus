@@ -90,8 +90,8 @@ test('getNestedUnionMany', () => {
 	const rootChunkIdValue = randomIdentifier();
 
 	const exampleRootRow = {
-		c0: rootChunkIdValue,
-		c1: randomIdentifier(),
+		c0: randomIdentifier(),
+		c1: rootChunkIdValue,
 	};
 
 	const expectedFinalQueries: ConverterResult[] = [

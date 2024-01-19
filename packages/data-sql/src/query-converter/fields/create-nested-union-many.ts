@@ -1,18 +1,19 @@
 import type {
 	A2ORelation,
+	AbstractQueryFieldNode,
 	AbstractQueryFieldNodeNestedRelationalAnysCollection,
 	AbstractQueryFieldNodeNestedUnionMany,
 	AtLeastOneElement,
 	FkEntry,
 } from '@directus/data';
 import { createIndexGenerators } from '../utils/create-index-generators.js';
-
 import { convertFieldNodes } from './fields.js';
 import { getRelationCondition } from './create-nested-manys.js';
-import type { SubQueries, ConverterResult } from '../../types/abstract-sql.js';
+import type { SubQueries, ConverterResult, AliasMapping } from '../../types/abstract-sql.js';
 import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/clauses/select/primitive.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import type { NumberGenerator } from '../utils/number-generator.js';
+import { findIndexForColumn } from '../utils/findex-finder.js';
 
 export interface NestedUnionResult {
 	/** Function to generate a sub query */
@@ -55,8 +56,26 @@ function createFunctionsToGenerateSubQueries(
 		return nestedCollections.map((nestedCollection) => {
 			const indexGenerators = createIndexGenerators();
 			const tableIndex = indexGenerators.table.next().value;
-			const nestedFieldNodes = convertFieldNodes(nestedCollection.fields, tableIndex, indexGenerators);
-			const jsonValue = reCreateJsonValue(rootIdentifierFields, rootRow, nestedCollection.relational.collectionName);
+
+			const idFields: AbstractQueryFieldNode[] = nestedCollection.relational.identifierFields.map((idField) => {
+				return {
+					type: 'primitive',
+					field: idField,
+					alias: idField,
+				};
+			});
+
+			const desiredFields = nestedCollection.fields;
+			const allFields = [...idFields, ...desiredFields];
+			const nestedFieldNodes = convertFieldNodes(allFields, tableIndex, indexGenerators);
+
+			const jsonValue = reCreateJsonValue(
+				rootIdentifierFields,
+				rootRow,
+				nestedCollection.relational.collectionName,
+				nestedFieldNodes.aliasMapping,
+			);
+
 			const where = getRelationCondition(tableIndex, nestedCollection.relational.field, indexGenerators);
 
 			return {
@@ -80,13 +99,14 @@ function createFunctionsToGenerateSubQueries(
 }
 
 /**
+ * Recreates the JSON value which lives in the any-collection, so we can filter the any collection with that value.
+ *
  * @TODO
  * The keys in the json field are not ordered.
  * Therefore we don't know how they are stored in the json field.
  * We need to make them ordered so we can query them probably
  * or the above layer takes care putting the id field in the right order.
  *
- * Recreates the JSON value which lives in the any-collection, so we can filter the any collection with that value.
  * @param localIdentifierFields
  * @param rootRow
  * @param nestedCollectionName
@@ -96,13 +116,17 @@ function reCreateJsonValue(
 	localIdentifierFields: AtLeastOneElement<string>,
 	rootRow: Record<string, unknown>,
 	nestedCollectionName: string,
+	aliasMapping: AliasMapping,
 ): A2ORelation {
+	const foreignKey = localIdentifierFields.map((localIdentifierField) => {
+		const columnIndex = findIndexForColumn(aliasMapping, localIdentifierField);
+		const keyValue = rootRow[`c${columnIndex}`];
+		if (!keyValue) throw new Error('No value found for any column.');
+		return { column: localIdentifierField, value: keyValue };
+	}) as AtLeastOneElement<FkEntry>;
+
 	return {
-		foreignKey: localIdentifierFields.map((localIdentifierField) => {
-			const keyValue = rootRow[localIdentifierField];
-			if (!keyValue) throw new Error('No value found for any column.');
-			return { column: localIdentifierField, value: keyValue as string };
-		}) as AtLeastOneElement<FkEntry>,
+		foreignKey,
 		foreignCollection: nestedCollectionName,
 	};
 }
