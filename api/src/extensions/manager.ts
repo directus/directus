@@ -234,12 +234,12 @@ export class ExtensionManager {
 
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
-				logger.info('Reloading extensions');
-
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
 				await this.load();
+
+				logger.info('Extensions reloaded');
 
 				const added = this.extensions.filter(
 					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path),
