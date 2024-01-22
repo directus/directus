@@ -510,17 +510,19 @@ async function downloadMultipleFiles() {
 					</v-card>
 				</v-dialog>
 
-			<v-button
-				v-tooltip.bottom="batchDownloadAllowed ? t('download_selected') : t('not_allowed')"
-				rounded
-				icon
-				secondary
-				:disabled="selection.length === 0 || batchDownloadAllowed === false"
-				@click="downloadMultipleFiles"
-			>
-				<v-icon name="download" />
-			</v-button>
-
+				<template #activator="{ on }">
+					<v-button
+						v-tooltip.bottom="batchDownloadAllowed ? t('download_selected') : t('download')"
+						rounded
+						icon
+						secondary
+						:disabled="selection.length === 0 || batchDownloadAllowed === false"
+						@click="downloadMultipleFiles"
+					>
+						<v-icon name="download" />
+					</v-button>
+				</template>
+					
 				<v-button
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
