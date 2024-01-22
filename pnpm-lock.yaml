@@ -2049,8 +2049,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/tsconfig
       '@types/node-fetch':
-        specifier: 2.6.9
-        version: 2.6.9
+        specifier: 2.6.11
+        version: 2.6.11
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -3292,7 +3292,7 @@ packages:
       '@azure/core-tracing': 1.0.0-preview.13
       '@azure/core-util': 1.6.1
       '@azure/logger': 1.0.4
-      '@types/node-fetch': 2.6.9
+      '@types/node-fetch': 2.6.11
       '@types/tunnel': 0.0.3
       form-data: 4.0.0
       node-fetch: 2.7.0
@@ -7394,8 +7394,8 @@ packages:
       '@types/unist': 2.0.10
     dev: true
 
-  /@types/node-fetch@2.6.9:
-    resolution: {integrity: sha512-bQVlnMLFJ2d35DkPNjEPmd9ueO/rh5EiaZt2bhqiSarPjZIuIV6bPQVqcrEyvNo+AfTrRGVazle1tl597w3gfA==}
+  /@types/node-fetch@2.6.11:
+    resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
     dependencies:
       '@types/node': 18.19.3
       form-data: 4.0.0
