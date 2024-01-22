@@ -1877,6 +1877,7 @@ interfaces:
     no_collection: No Collection
     toggle_split_view: Toggle Split View
     enable: Enable
+    default_split_view_state: Default Split View State
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
