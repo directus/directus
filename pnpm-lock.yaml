@@ -336,8 +336,8 @@ importers:
         specifier: 1.8.0
         version: 1.8.0
       tinypool:
-        specifier: 0.8.1
-        version: 0.8.1
+        specifier: 0.8.2
+        version: 0.8.2
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -18352,8 +18352,8 @@ packages:
     resolution: {integrity: sha512-Lho79o2Y1Yn+XdlTEkHTEkEmzwYWTXz7IUsvPwxJF3VTtgHUIAAuBab29kik+f2KED3rZvQavr9D7sHVMJ9x4A==}
     dev: true
 
-  /tinypool@0.8.1:
-    resolution: {integrity: sha512-zBTCK0cCgRROxvs9c0CGK838sPkeokNGdQVUUwHAbynHFlmyJYj825f/oRs528HaIJ97lo0pLIlDUzwN+IorWg==}
+  /tinypool@0.8.2:
+    resolution: {integrity: sha512-SUszKYe5wgsxnNOVlBYO6IC+8VGWdVGZWAqUxp3UErNBtptZvWbwyUOyzNL59zigz2rCA92QiL3wvG+JDSdJdQ==}
     engines: {node: '>=14.0.0'}
 
   /tinyqueue@2.0.3:
@@ -19527,7 +19527,7 @@ packages:
       std-env: 3.6.0
       strip-literal: 1.3.0
       tinybench: 2.5.1
-      tinypool: 0.8.1
+      tinypool: 0.8.2
       vite: 5.0.10(@types/node@18.19.3)
       vite-node: 1.1.0(@types/node@18.19.3)
       why-is-node-running: 2.2.2
@@ -19584,7 +19584,7 @@ packages:
       std-env: 3.6.0
       strip-literal: 1.3.0
       tinybench: 2.5.1
-      tinypool: 0.8.1
+      tinypool: 0.8.2
       vite: 5.0.10(@types/node@18.19.3)
       vite-node: 1.1.1(@types/node@18.19.3)
       why-is-node-running: 2.2.2
@@ -19641,7 +19641,7 @@ packages:
       std-env: 3.6.0
       strip-literal: 1.3.0
       tinybench: 2.5.1
-      tinypool: 0.8.1
+      tinypool: 0.8.2
       vite: 5.0.10(sass@1.69.5)
       vite-node: 1.1.1(sass@1.69.5)
       why-is-node-running: 2.2.2
