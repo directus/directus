@@ -25,6 +25,24 @@ fields:
       placeholder: https://example.com
     width: half
 
+  - field: project_error_url
+    interface: system-display-template
+    width: half
+
+  - field: project_bug_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    width: half
+
+  - field: project_feature_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    width: half
+
   - field: default_language
     interface: system-language
     options:

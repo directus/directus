@@ -1,15 +1,34 @@
 <script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { render } from 'micromustache';
+import { storeToRefs } from 'pinia';
 
 const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
-const { isAdmin } = useUserStore();
+const { isAdmin, currentUser } = useUserStore();
+const { settings } = storeToRefs(useSettingsStore());
 
 const notifications = computed(() => notificationsStore.dialogs);
+
+function getErrorUrl(error: undefined | Error) {
+	if (!settings.value?.project_feature_url) {
+		return 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
+	}
+
+	return render(settings.value.project_feature_url, {
+		error,
+		route: useRoute(),
+		navigator,
+		user: currentUser,
+		role: currentUser?.role,
+	});
+}
 
 function done(id: string) {
 	notificationsStore.remove(id);
@@ -28,7 +47,7 @@ function done(id: string) {
 				</v-card-text>
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
-						<a target="_blank" href="https://github.com/directus/directus/issues/new?template=bug_report.yml">
+						<a target="_blank" :href="getErrorUrl(notification.error)">
 							{{ t('report_error') }}
 						</a>
 					</v-button>

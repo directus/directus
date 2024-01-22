@@ -23,6 +23,15 @@ Descriptor of the project, shown in the Admin App.
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
+`project_error_url` **string**\
+Link to the error report page.
+
+`project_bug_url` **string**\
+Link to the bug report page.
+
+`project_feature_url` **string**\
+Link to the feature request page.
+
 `project_color` **string**\
 Brand color for the current project.
 
@@ -94,6 +103,9 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 		"project_name": "Directus",
 		"project_descriptor": "Application",
 		"project_url": null,
+		"project_error_url": null,
+		"project_bug_url": null,
+		"project_feature_url": null,
 		"project_color": null,
 		"project_logo": null,
 		"public_foreground": null,
