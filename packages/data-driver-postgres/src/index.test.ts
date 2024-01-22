@@ -349,3 +349,75 @@ test('nested o2m field', async () => {
 
 	expect(actualResult).toStrictEqual(expectedResult);
 });
+
+test('nested o2m field', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+	const column1 = randomIdentifier();
+	const column1Alias = randomIdentifier();
+	const jsonColumn = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: column1,
+				alias: column1Alias,
+			},
+			{
+				type: 'json',
+				fieldName: jsonColumn,
+				path: {
+					name: 'id',
+					children: [],
+				},
+				alias: jsonColumnAlias,
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	// define database response mocks
+
+	const column1Value1 = randomIdentifier();
+	const column1Value2 = randomIdentifier();
+	const firstName1 = randomIdentifier();
+	const firstName2 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
+		getMockedStream([
+			{
+				c0: column1Value1,
+				c1: firstName1,
+			},
+			{
+				c0: column1Value2,
+				c1: firstName2,
+			},
+		]),
+	);
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[column1Alias]: column1Value1,
+			[jsonColumnAlias]: firstName1,
+		},
+		{
+			[column1Alias]: column1Value2,
+			[jsonColumnAlias]: firstName2,
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
