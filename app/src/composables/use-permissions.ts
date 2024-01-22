@@ -1,35 +1,39 @@
+import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/composables';
-import { Field } from '@directus/types';
+import { Field, ItemPermissions } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { computed, ComputedRef, Ref } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 import { isAllowed } from '../utils/is-allowed';
 
 type UsablePermissions = {
-	createAllowed: ComputedRef<boolean>;
-	deleteAllowed: ComputedRef<boolean>;
-	saveAllowed: ComputedRef<boolean>;
-	archiveAllowed: ComputedRef<boolean>;
-	updateAllowed: ComputedRef<boolean>;
-	shareAllowed: ComputedRef<boolean>;
-	fields: ComputedRef<Field[]>;
-	revisionsAllowed: ComputedRef<boolean>;
+	loading: Ref<boolean>;
+	createAllowed: Ref<boolean>;
+	deleteAllowed: Ref<boolean>;
+	saveAllowed: Ref<boolean>;
+	archiveAllowed: Ref<boolean>;
+	updateAllowed: Ref<boolean>;
+	shareAllowed: Ref<boolean>;
+	fields: Ref<Field[]>;
+	revisionsAllowed: Ref<boolean>;
 };
 
 export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>): UsablePermissions {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
+	const loading = ref(false);
 
-	const { info: collectionInfo, fields: rawFields } = useCollection(collection);
+	const { info: collectionInfo, primaryKeyField, fields: rawFields } = useCollection(collection);
 
 	const createAllowed = computed(() => isAllowed(collection.value, 'create', item.value));
 
-	const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
+	const deleteAllowed = ref(false);
+	const updateAllowed = ref(false);
+	const shareAllowed = ref(false);
 
-	const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
-
-	const shareAllowed = computed(() => isAllowed(collection.value, 'share', item.value));
+	watch([collection, item], () => getItemPermissions(), { immediate: true });
 
 	const saveAllowed = computed(() => {
 		if (isNew.value) {
@@ -105,6 +109,7 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	return {
+		loading,
 		createAllowed,
 		deleteAllowed,
 		saveAllowed,
@@ -114,4 +119,28 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		fields,
 		revisionsAllowed,
 	};
+
+	async function getItemPermissions() {
+		if (!collection.value || !item.value || !primaryKeyField.value) return;
+
+		const primaryKey = item.value[primaryKeyField.value.field];
+
+		loading.value = true;
+
+		try {
+			const { data } = await api.get<ItemPermissions>(`/permissions/me/${collection.value}/${primaryKey}`);
+
+			deleteAllowed.value = data.delete.access;
+			updateAllowed.value = data.update.access;
+			shareAllowed.value = data.share.access;
+		} catch (error) {
+			unexpectedError(error);
+
+			deleteAllowed.value = true;
+			updateAllowed.value = true;
+			shareAllowed.value = true;
+		} finally {
+			loading.value = false;
+		}
+	}
 }

@@ -9,6 +9,7 @@ import { PermissionsService } from '../services/permissions.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import type { ItemPermissions } from '@directus/types';
 
 const router = express.Router();
 
@@ -199,6 +200,37 @@ router.delete(
 		});
 
 		await service.deleteOne(req.params['pk']!);
+
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/me/:collection/:pk',
+	asyncHandler(async (req, res, next) => {
+		const { collection, pk } = req.params;
+
+		const service = new PermissionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { access } = await service.getItemPermissions(collection!, pk!);
+
+		const permissions: ItemPermissions = {
+			update: {
+				access: access.update,
+			},
+			delete: {
+				access: access.delete,
+			},
+			share: {
+				access: access.share,
+			},
+		};
+
+		res.locals['payload'] = permissions;
 
 		return next();
 	}),

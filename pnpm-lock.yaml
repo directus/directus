@@ -385,6 +385,9 @@ importers:
         specifier: 16.6.1
         version: 16.6.1
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../packages/random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig

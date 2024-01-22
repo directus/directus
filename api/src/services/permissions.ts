@@ -2,11 +2,12 @@ import type { PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { ItemPermissions, ItemPermissionsAccess } from '../types/permissions.js';
+import { filterItems } from '../utils/filter-items.js';
+import { AuthorizationService } from './authorization.js';
 import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
-import { filterItems } from '../utils/filter-items.js';
-
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
 
@@ -143,5 +144,46 @@ export class PermissionsService extends ItemsService {
 		}
 
 		return res;
+	}
+
+	async getItemPermissions(collection: string, primaryKey: string): Promise<ItemPermissions> {
+		/*
+		 * TODO: Decide whether it makes sense to early return here.
+		 * - Might be good in order to save resources since this endpoint is public
+		 * - But need to make sure that this doesn't easily reveal info about the existence of a collection (response time)
+		 */
+		// if (this.accountability?.admin === true) {
+		// 	return { access: { update: true, delete: true, share: true } };
+		// }
+		// try {
+		// 	const primaryKeyField = this.schema.collections[collection]?.primary;
+		// 	if (!primaryKeyField) throw new Error();
+		// 	validateKeys(this.schema, collection, primaryKeyField, primaryKey);
+		// } catch {
+		// 	return { access };
+		// }
+
+		const access: ItemPermissionsAccess = {
+			update: false,
+			delete: false,
+			share: false,
+		};
+
+		const authorizationService = new AuthorizationService({
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		await Promise.all(
+			Object.keys(access).map((action) =>
+				authorizationService
+					.checkAccess(action as PermissionsAction, collection, primaryKey)
+					.then(() => (access[action as keyof ItemPermissionsAccess] = true))
+					.catch(() => {}),
+			),
+		);
+
+		return { access };
 	}
 }

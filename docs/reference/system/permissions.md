@@ -820,3 +820,95 @@ const result = await client.request(deletePermissions(['56', '57']));
 
 </template>
 </SnippetToggler>
+
+## Check Permissions for a Specific Item
+
+Check if the current user has Update, Delete and Share permissions on a specific item.
+
+Not intended to check for the existence of an item.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me/:collection/:id`
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, checkPermissions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(checkPermissions(collection_name, item_id));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+```json
+{
+  "data": {
+     "update": {
+       "access": boolean
+    },
+     "delete": {
+       "access": boolean
+    },
+     "share": {
+       "access": boolean
+    }
+  }
+}
+```
+
+##### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me/articles/15`
+
+```json
+{
+  "data": {
+     "update": {
+       "access": true
+    },
+     "delete": {
+       "access": false
+    },
+     "share": {
+       "access": false
+    }
+  }
+}
+```
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, checkPermissions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(checkPermissions('articles', '15'));
+```
+
+</template>
+</SnippetToggler>

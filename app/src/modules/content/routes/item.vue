@@ -72,7 +72,7 @@ const {
 	hasEdits,
 	item,
 	saving,
-	loading,
+	loading: loadingItem,
 	error,
 	save,
 	remove,
@@ -167,6 +167,7 @@ useShortcut(
 );
 
 const {
+	loading: loadingPermissions,
 	createAllowed,
 	deleteAllowed,
 	archiveAllowed,
@@ -176,6 +177,8 @@ const {
 	fields,
 	revisionsAllowed,
 } = usePermissions(collection, item, isNew);
+
+const loading = computed(() => loadingItem.value || loadingPermissions.value);
 
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
