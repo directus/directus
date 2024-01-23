@@ -1,8 +1,8 @@
-/** @TODO */
-// export interface SqlStatementSelectJson {
-// 	type: 'json';
-// 	table: string;
-// 	column: string;
-// 	as?: string;
-// 	path: string;
-// }
+import type { Attribute } from '@directus/data';
+
+export interface SqlStatementSelectJson {
+	type: 'json';
+	tableIndex: number;
+	columnIndex: number;
+	path: Attribute;
+}

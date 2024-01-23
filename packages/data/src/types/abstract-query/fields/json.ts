@@ -24,7 +24,7 @@ export interface AbstractQueryFieldNodeJson {
 	alias: string;
 }
 
-interface Attribute {
+export interface Attribute {
 	name: string;
 	children: Attribute[];
 }
