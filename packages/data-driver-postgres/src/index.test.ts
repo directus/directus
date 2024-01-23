@@ -350,7 +350,7 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test('nested o2m field', async () => {
+test('selecting a json field', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
