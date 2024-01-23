@@ -1,4 +1,4 @@
-import type { AbstractSqlQuerySelectPrimitiveNode } from '../../types/index.js';
+import type { AbstractSqlQuerySelectPrimitiveNode } from '../../../types/index.js';
 
 /**
  * @param tableIndex
