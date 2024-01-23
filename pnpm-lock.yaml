@@ -497,8 +497,8 @@ importers:
         specifier: 8.5.10
         version: 8.5.10
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -949,8 +949,8 @@ importers:
         specifier: 4.6.2
         version: 4.6.2(vite@5.0.10)(vue@3.3.13)
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       histoire:
         specifier: 0.17.6
         version: 0.17.6(sass@1.69.5)(vite@5.0.10)
@@ -1007,8 +1007,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       '@vue/test-utils':
         specifier: 2.4.3
         version: 2.4.3(vue@3.3.13)
@@ -1085,8 +1085,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       dependency-cruiser:
         specifier: 15.5.0
         version: 15.5.0
@@ -1134,8 +1134,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       dependency-cruiser:
         specifier: 15.5.0
         version: 15.5.0
@@ -1174,8 +1174,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       dependency-cruiser:
         specifier: 15.5.0
         version: 15.5.0
@@ -1214,8 +1214,8 @@ importers:
         specifier: 18.19.3
         version: 18.19.3
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.0)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.0)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1245,8 +1245,8 @@ importers:
         specifier: 0.7.34
         version: 0.7.34
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1312,8 +1312,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tmp:
         specifier: 0.2.1
         version: 0.2.1
@@ -1415,8 +1415,8 @@ importers:
         specifier: 9.0.7
         version: 9.0.7
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1449,8 +1449,8 @@ importers:
         specifier: 18.19.3
         version: 18.19.3
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1477,8 +1477,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1498,8 +1498,8 @@ importers:
         specifier: 18.19.3
         version: 18.19.3
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1538,8 +1538,8 @@ importers:
         specifier: 7.5.6
         version: 7.5.6
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1588,8 +1588,8 @@ importers:
         specifier: 18.19.3
         version: 18.19.3
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1619,8 +1619,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1653,8 +1653,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1684,8 +1684,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1712,8 +1712,8 @@ importers:
         specifier: 18.19.3
         version: 18.19.3
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1749,8 +1749,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1783,8 +1783,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1933,8 +1933,8 @@ importers:
         specifier: 7.5.6
         version: 7.5.6
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
@@ -1997,8 +1997,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tmp:
         specifier: 0.2.1
         version: 0.2.1
@@ -2031,8 +2031,8 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
-        specifier: 1.1.0
-        version: 1.1.0(vitest@1.1.1)
+        specifier: 1.2.1
+        version: 1.2.1(vitest@1.1.1)
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -7793,8 +7793,8 @@ packages:
       vue: 3.3.13(typescript@5.3.3)
     dev: true
 
-  /@vitest/coverage-v8@1.1.0(vitest@1.1.0):
-    resolution: {integrity: sha512-kHQRk70vTdXAyQY2C0vKOHPyQD/R6IUzcGdO4vCuyr4alE5Yg1+Sk2jSdjlIrTTXdcNEs+ReWVM09mmSFJpzyQ==}
+  /@vitest/coverage-v8@1.2.1(vitest@1.1.0):
+    resolution: {integrity: sha512-fJEhKaDwGMZtJUX7BRcGxooGwg1Hl0qt53mVup/ZJeznhvL5EodteVnb/mcByhEcvVWbK83ZF31c7nPEDi4LOQ==}
     peerDependencies:
       vitest: ^1.0.0
     dependencies:
@@ -7806,7 +7806,7 @@ packages:
       istanbul-lib-source-maps: 4.0.1
       istanbul-reports: 3.1.6
       magic-string: 0.30.5
-      magicast: 0.3.2
+      magicast: 0.3.3
       picocolors: 1.0.0
       std-env: 3.6.0
       test-exclude: 6.0.0
@@ -7816,8 +7816,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitest/coverage-v8@1.1.0(vitest@1.1.1):
-    resolution: {integrity: sha512-kHQRk70vTdXAyQY2C0vKOHPyQD/R6IUzcGdO4vCuyr4alE5Yg1+Sk2jSdjlIrTTXdcNEs+ReWVM09mmSFJpzyQ==}
+  /@vitest/coverage-v8@1.2.1(vitest@1.1.1):
+    resolution: {integrity: sha512-fJEhKaDwGMZtJUX7BRcGxooGwg1Hl0qt53mVup/ZJeznhvL5EodteVnb/mcByhEcvVWbK83ZF31c7nPEDi4LOQ==}
     peerDependencies:
       vitest: ^1.0.0
     dependencies:
@@ -7829,7 +7829,7 @@ packages:
       istanbul-lib-source-maps: 4.0.1
       istanbul-reports: 3.1.6
       magic-string: 0.30.5
-      magicast: 0.3.2
+      magicast: 0.3.3
       picocolors: 1.0.0
       std-env: 3.6.0
       test-exclude: 6.0.0
@@ -13610,8 +13610,8 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /magicast@0.3.2:
-    resolution: {integrity: sha512-Fjwkl6a0syt9TFN0JSYpOybxiMCkYNEeOTnOTNRbjphirLakznZXAqrXgj/7GG3D1dvETONNwrBfinvAbpunDg==}
+  /magicast@0.3.3:
+    resolution: {integrity: sha512-ZbrP1Qxnpoes8sz47AM0z08U+jW6TyRgZzcWy3Ma3vDhJttwMwAFDMMQFobwdBxByBD46JYmxRzeF7w2+wJEuw==}
     dependencies:
       '@babel/parser': 7.23.6
       '@babel/types': 7.23.6

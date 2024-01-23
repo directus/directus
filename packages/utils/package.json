@@ -48,7 +48,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/node": "18.19.3",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "1.1.0",
+		"@vitest/coverage-v8": "1.2.1",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
