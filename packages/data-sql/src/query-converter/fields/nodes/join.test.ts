@@ -1,8 +1,8 @@
 import type { AbstractQueryFieldNodeNestedRelationalMany } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
-import { createJoin } from './create-join.js';
+import type { AbstractSqlQueryJoinNode } from '../../../types/index.js';
+import { createJoin } from './join.js';
 
 test('Convert m2o relation on single field ', () => {
 	const tableIndex = randomInteger(0, 100);
