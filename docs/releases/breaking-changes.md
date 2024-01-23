@@ -13,6 +13,10 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version [NEXT]
+
+TODO add final breaking change note
+
 ## Version 10.8.3
 
 ### Updated GraphQL Content Version Usage
