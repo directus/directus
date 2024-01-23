@@ -19,20 +19,14 @@ expiration time, and are thus the most secure option to use. The tokens are retu
 used to retrieve a new access token via the [refresh](#refresh) endpoint/mutation.
 
 **Session Token (JWT)** can also be returned by the [login](#login) endpoint/mutation.\
-[TBD extra description]
+[TODO add description here]
 
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
 server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
 user settings inside of the Directus Data Studio User Module, or by updating the user's `token` value via API.
 
-Once you have your access token, there are two ways to pass it to the API, via the `access_token` query parameter, or in
-the request's Authorization Header.
-
-### Query Parameter
-
-```
-?access_token=<token>
-```
+Once you have your access token, there are three ways to pass it to the API, in
+the request's Authorization Header, or as session cookie, or via the `access_token` query parameter.
 
 ### Authorization Header
 
@@ -43,7 +37,13 @@ Authorization: Bearer <token>
 ### Session Cookie
 
 ```
-cookies: directus_session_token=<token>
+Cookie: directus_session_token=<token>
+```
+
+### Query Parameter
+
+```
+?access_token=<token>
 ```
 
 ## Login
