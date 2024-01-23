@@ -365,7 +365,7 @@ export class AuthenticationService {
 		};
 
 		if (session) {
-			tokenPayload.session = refreshToken;
+			tokenPayload.session = newRefreshToken;
 		}
 
 		if (record.share_id) {
