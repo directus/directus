@@ -357,6 +357,8 @@ test('selecting an attribute from a json field', async () => {
 	const column1Alias = randomIdentifier();
 	const jsonColumn = randomIdentifier();
 	const jsonColumnAlias = randomIdentifier();
+	const jsonAttribute = randomIdentifier();
+	const jsonAttributeAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -376,8 +378,8 @@ test('selecting an attribute from a json field', async () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: 'first',
-						alias: 'first',
+						field: jsonAttribute,
+						alias: jsonAttributeAlias,
 					},
 				],
 				alias: jsonColumnAlias,
@@ -394,18 +396,18 @@ test('selecting an attribute from a json field', async () => {
 
 	const column1Value1 = randomIdentifier();
 	const column1Value2 = randomIdentifier();
-	const firstName1 = randomIdentifier();
-	const firstName2 = randomIdentifier();
+	const attributeValue1 = randomIdentifier();
+	const attributeValue2 = randomIdentifier();
 
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
 		getMockedStream([
 			{
 				c0: column1Value1,
-				c1: firstName1,
+				c1: attributeValue1,
 			},
 			{
 				c0: column1Value2,
-				c1: firstName2,
+				c1: attributeValue2,
 			},
 		]),
 	);
@@ -418,13 +420,13 @@ test('selecting an attribute from a json field', async () => {
 		{
 			[column1Alias]: column1Value1,
 			[jsonColumnAlias]: {
-				first: firstName1,
+				[jsonAttributeAlias]: attributeValue1,
 			},
 		},
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				first: firstName2,
+				[jsonAttributeAlias]: attributeValue1,
 			},
 		},
 	];
@@ -439,6 +441,10 @@ test('selecting multiple attributes from json field', async () => {
 	const column1Alias = randomIdentifier();
 	const jsonColumn = randomIdentifier();
 	const jsonColumnAlias = randomIdentifier();
+	const jsonAttribute1 = randomIdentifier();
+	const jsonAttribute1Alias = randomIdentifier();
+	const jsonAttribute2 = randomIdentifier();
+	const jsonAttribute2Alias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -458,13 +464,13 @@ test('selecting multiple attributes from json field', async () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: 'first',
-						alias: 'first',
+						field: jsonAttribute1,
+						alias: jsonAttribute1Alias,
 					},
 					{
 						type: 'primitive',
-						field: 'last',
-						alias: 'last',
+						field: jsonAttribute2,
+						alias: jsonAttribute2Alias,
 					},
 				],
 				alias: jsonColumnAlias,
@@ -481,22 +487,22 @@ test('selecting multiple attributes from json field', async () => {
 
 	const column1Value1 = randomIdentifier();
 	const column1Value2 = randomIdentifier();
-	const firstName1 = randomIdentifier();
-	const firstName2 = randomIdentifier();
-	const lastName1 = randomIdentifier();
-	const lastName2 = randomIdentifier();
+	const attribute1Value1 = randomIdentifier();
+	const attribute1Value2 = randomIdentifier();
+	const attribute2Value1 = randomIdentifier();
+	const attribute2Value2 = randomIdentifier();
 
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
 		getMockedStream([
 			{
 				c0: column1Value1,
-				c1: firstName1,
-				c2: lastName1,
+				c1: attribute1Value1,
+				c2: attribute2Value1,
 			},
 			{
 				c0: column1Value2,
-				c1: firstName2,
-				c2: lastName2,
+				c1: attribute1Value2,
+				c2: attribute2Value2,
 			},
 		]),
 	);
@@ -509,15 +515,15 @@ test('selecting multiple attributes from json field', async () => {
 		{
 			[column1Alias]: column1Value1,
 			[jsonColumnAlias]: {
-				first: firstName1,
-				last: lastName1,
+				[jsonAttribute1Alias]: attribute1Value1,
+				[jsonAttribute2Alias]: attribute2Value1,
 			},
 		},
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				first: firstName2,
-				last: lastName2,
+				[jsonAttribute1Alias]: attribute1Value2,
+				[jsonAttribute2Alias]: attribute2Value2,
 			},
 		},
 	];
@@ -532,6 +538,8 @@ test('selecting one attributes from json field which is an array', async () => {
 	const column1Alias = randomIdentifier();
 	const jsonColumn = randomIdentifier();
 	const jsonColumnAlias = randomIdentifier();
+	const jsonAttribute = randomIdentifier();
+	const jsonAttributeAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -551,8 +559,8 @@ test('selecting one attributes from json field which is an array', async () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: 'stuff',
-						alias: 'first',
+						field: jsonAttribute,
+						alias: jsonAttributeAlias,
 					},
 				],
 				alias: jsonColumnAlias,
@@ -591,13 +599,13 @@ test('selecting one attributes from json field which is an array', async () => {
 		{
 			[column1Alias]: column1Value1,
 			[jsonColumnAlias]: {
-				stuff: [1, 2],
+				[jsonAttributeAlias]: [1, 2],
 			},
 		},
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				stuff: [4, 5],
+				[jsonAttributeAlias]: [4, 5],
 			},
 		},
 	];
