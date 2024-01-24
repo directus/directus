@@ -101,6 +101,18 @@ fields:
               field: status
               key: user.status
               path: user.status
+            - name: Title
+              field: title
+              key: user.title
+              path: user.title
+            - name: Description
+              field: description
+              key: user.description
+              path: user.description
+            - name: Location
+              field: location
+              key: user.location
+              path: user.location
         - name: Role
           field: role
           key: role

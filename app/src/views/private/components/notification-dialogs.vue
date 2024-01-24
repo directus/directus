@@ -17,17 +17,50 @@ const { settings } = storeToRefs(useSettingsStore());
 const notifications = computed(() => notificationsStore.dialogs);
 
 function getErrorUrl(error: undefined | Error) {
-	if (!settings.value?.project_feature_url) {
+	if (!settings.value?.project_error_url) {
 		return 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
 	}
 
-	return render(settings.value.project_feature_url, {
-		error,
-		route: useRoute(),
-		navigator,
-		user: currentUser,
-		role: currentUser?.role,
-	});
+	const route = useRoute();
+
+	const renderScope = {
+		error: {
+			name: error?.name,
+			message: error?.message,
+		},
+		route: {
+			fullPath: route.fullPath,
+			hash: route.hash,
+			name: route.name,
+			path: route.path,
+			query: route.query,
+		},
+		navigator: {
+			language: navigator.language,
+			userAgent: navigator.userAgent,
+		},
+		user: {},
+		role: {},
+	};
+
+	if (currentUser !== null && 'id' in currentUser) {
+		renderScope.user = {
+			id: currentUser.id,
+			first_name: currentUser.first_name,
+			last_name: currentUser.last_name,
+			title: currentUser.title,
+			description: currentUser.description,
+			location: currentUser.location,
+			status: currentUser.status,
+		};
+
+		renderScope.role = {
+			id: currentUser.role?.id,
+			name: currentUser.role?.name,
+		};
+	}
+
+	return render(settings.value.project_error_url, renderScope);
 }
 
 function done(id: string) {

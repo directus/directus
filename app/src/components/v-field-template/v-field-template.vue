@@ -11,6 +11,7 @@ const props = withDefaults(
 		modelValue?: string | null;
 		nullable?: boolean;
 		tree: FieldNode[];
+		handlerFn: (fieldPath: string, root?: FieldNode | undefined) => void;
 		depth?: number;
 		placeholder?: string | null;
 	}>(),
@@ -31,7 +32,7 @@ const contentEl = ref<HTMLElement | null>(null);
 
 const menuActive = ref(false);
 
-const { tree } = toRefs(props);
+const { tree, handlerFn } = toRefs(props);
 
 watch(() => props.modelValue, setContent, { immediate: true });
 
@@ -240,6 +241,10 @@ function setContent() {
 				const fieldKey = part.replace(/({|})/g, '').trim();
 				const fieldPath = fieldKey.split('.');
 
+				for (let i = 0; i < fieldPath.length; i++) {
+					handlerFn.value(fieldPath.slice(0, i).join('.'));
+				}
+
 				const field = findTree(grouplessTree.value, fieldPath);
 
 				if (!field) return '';
@@ -279,7 +284,7 @@ function setContent() {
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false">
+		<v-list v-if="!disabled" :mandatory="false" @toggle="handlerFn($event.value)">
 			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>

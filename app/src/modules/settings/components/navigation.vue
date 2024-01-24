@@ -3,9 +3,11 @@ import { useServerStore } from '@/stores/server';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
+const { settings } = storeToRefs(useSettingsStore());
 
 const dataItems = [
 	{
@@ -64,14 +66,13 @@ const externalItems = computed(() => {
 			icon: 'bug_report',
 			name: t('report_bug'),
 			href:
-				info.value.project?.project_bug_url ??
-				'https://github.com/directus/directus/issues/new?template=bug_report.yml',
+				settings.value?.project_bug_url ?? 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
 		},
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
 			href:
-				info.value.project?.project_feature_url ??
+				settings.value?.project_feature_url ??
 				'https://github.com/directus/directus/discussions/new?category=feature-requests',
 		},
 	];

@@ -22,7 +22,7 @@ const { t } = useI18n();
 
 const { collection, inject } = toRefs(props);
 
-const { treeList } = useFieldTree(collection, inject);
+const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 </script>
 
 <template>
@@ -35,6 +35,7 @@ const { treeList } = useFieldTree(collection, inject);
 			:tree="treeList"
 			:model-value="value"
 			:disabled="disabled"
+			:handler-fn="loadFieldRelations"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>

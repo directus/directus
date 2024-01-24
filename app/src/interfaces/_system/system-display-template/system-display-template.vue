@@ -81,16 +81,16 @@ const injectValue = computed(() => {
 
 const tree = computed(() => {
 	if (props.fields) {
-		return props.fields;
+		return { list: props.fields };
 	}
 
 	if (collection.value === null) {
 		return null;
 	}
 
-	const { treeList } = useFieldTree(collection, injectValue);
+	const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
 
-	return treeList.value;
+	return { list: treeList.value, fn: loadFieldRelations };
 });
 </script>
 
@@ -101,9 +101,10 @@ const tree = computed(() => {
 		</v-notice>
 		<v-field-template
 			v-else
-			:tree="tree"
+			:tree="tree.list"
 			:model-value="value"
 			:disabled="disabled"
+			:handler-fn="tree.fn"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
