@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
-import { Field, Relation } from '@directus/types';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import type { FieldNode } from '@/composables/use-field-tree';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 
@@ -11,13 +10,9 @@ const props = withDefaults(
 		disabled?: boolean;
 		modelValue?: string | null;
 		nullable?: boolean;
-		collection?: string | null;
+		tree: FieldNode[];
 		depth?: number;
 		placeholder?: string | null;
-		inject?: {
-			fields: Field[];
-			relations: Relation[];
-		} | null;
 	}>(),
 	{
 		disabled: false,
@@ -36,13 +31,12 @@ const contentEl = ref<HTMLElement | null>(null);
 
 const menuActive = ref(false);
 
-const { collection, inject } = toRefs(props);
-const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
+const { tree } = toRefs(props);
 
 watch(() => props.modelValue, setContent, { immediate: true });
 
 const grouplessTree = computed(() => {
-	return flattenFieldGroups(treeList.value);
+	return flattenFieldGroups(tree.value);
 });
 
 onMounted(() => {
@@ -246,10 +240,6 @@ function setContent() {
 				const fieldKey = part.replace(/({|})/g, '').trim();
 				const fieldPath = fieldKey.split('.');
 
-				for (let i = 0; i < fieldPath.length; i++) {
-					loadFieldRelations(fieldPath.slice(0, i).join('.'));
-				}
-
 				const field = findTree(grouplessTree.value, fieldPath);
 
 				if (!field) return '';
@@ -289,8 +279,8 @@ function setContent() {
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
-			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
+		<v-list v-if="!disabled" :mandatory="false">
+			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>

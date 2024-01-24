@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import type { Field } from '@directus/types';
 import { computed, inject, ref, unref } from 'vue';
@@ -9,6 +10,7 @@ const props = defineProps<{
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
+	fields?: FieldNode[];
 	injectVersionField?: boolean;
 }>();
 
@@ -76,20 +78,32 @@ const injectValue = computed(() => {
 
 	return { fields: [fakeVersionField] };
 });
+
+const tree = computed(() => {
+	if (props.fields) {
+		return props.fields;
+	}
+
+	if (collection.value === null) {
+		return null;
+	}
+
+	const { treeList } = useFieldTree(collection, injectValue);
+
+	return treeList.value;
+});
 </script>
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null">
+		<v-notice v-if="tree === null">
 			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
-
 		<v-field-template
 			v-else
-			:collection="collection"
+			:tree="tree"
 			:model-value="value"
 			:disabled="disabled"
-			:inject="injectValue"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
