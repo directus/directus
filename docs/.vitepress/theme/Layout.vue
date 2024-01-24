@@ -12,10 +12,20 @@ const title = computed(() => page.value.title);
 const contributors = computed(() => page.value.frontmatter['contributors']);
 const path = computed(() => route.path);
 const isPackagePage = RegExp('^/packages/.+$').test(path.value);
+const isDevPage = RegExp('^\\/(?!$|user-guide|packages).*').test(path.value) || path.value == '/';
+const isUserPage = RegExp('^.*/user-guide/.*$').test(path.value);
 </script>
 
 <template>
 	<Layout>
+		<template #sidebar-nav-before>
+			<div class="sidebar-nav-before">
+				<div class="toggle">
+					<a href="/" :class="{ active: isDevPage }">Developers</a>
+					<a href="/user-guide/overview/data-studio-app" :class="{ active: isUserPage }">User Guide</a>
+				</div>
+			</div>
+		</template>
 		<template #doc-before>
 			<div v-if="isPackagePage" class="warning custom-block" style="padding-bottom: 16px; margin-bottom: 16px">
 				<p>
@@ -40,7 +50,28 @@ const isPackagePage = RegExp('^/packages/.+$').test(path.value);
 	</Layout>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.sidebar-nav-before {
+	padding: 1em 0;
+	border-bottom: 1px solid var(--vp-c-divider)
+}
+.toggle {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.5rem;
+	a {
+		display: block;
+		text-align: center;
+		font-size: 12px;
+		padding: 0.25rem;
+		background: white;
+		font-weight: bold;
+		border-radius: 0.25rem;
+		&.active {
+			background: var(--vp-c-purple-dimm-3);
+		}
+	}
+}
 .newsletter {
 	margin-top: 2em;
 }
