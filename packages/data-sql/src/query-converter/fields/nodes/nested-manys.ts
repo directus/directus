@@ -5,11 +5,11 @@ import type {
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
 	SubQuery,
-} from '../../types/index.js';
-import { createIndexGenerators, type IndexGenerators } from '../utils/create-index-generators.js';
-import { convertModifiers } from '../modifiers/modifiers.js';
-import { createPrimitiveSelect } from './create-primitive-select.js';
-import { convertFieldNodes } from './fields.js';
+} from '../../../types/index.js';
+import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
+import { convertModifiers } from '../../modifiers/modifiers.js';
+import { createPrimitiveSelect } from './primitive-select.js';
+import { convertFieldNodes } from '../fields.js';
 
 export interface NestedManyResult {
 	/** Function to generate a sub query */

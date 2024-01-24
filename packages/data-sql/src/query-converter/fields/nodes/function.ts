@@ -1,7 +1,7 @@
 import type { AbstractQueryFunction } from '@directus/data';
-import type { AbstractSqlQuerySelectFnNode, ParameterTypes } from '../../types/index.js';
-import type { IndexGenerators } from '../utils/create-index-generators.js';
-import { convertFn } from '../common/function.js';
+import type { AbstractSqlQuerySelectFnNode, ParameterTypes } from '../../../types/index.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import { convertFn } from '../../common/function.js';
 
 /**
  * @param tableIndex

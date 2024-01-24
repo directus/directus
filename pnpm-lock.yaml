@@ -309,8 +309,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       pino-pretty:
-        specifier: 10.3.0
-        version: 10.3.0
+        specifier: 10.3.1
+        version: 10.3.1
       qs:
         specifier: 6.11.2
         version: 6.11.2
@@ -621,7 +621,7 @@ importers:
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.8
-        version: 0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13)
+        version: 0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -767,8 +767,8 @@ importers:
         specifier: 12.10.3
         version: 12.10.3
       histoire:
-        specifier: 0.17.6
-        version: 0.17.6(sass@1.69.5)(vite@5.0.10)
+        specifier: 0.17.8
+        version: 0.17.8(sass@1.69.5)(vite@5.0.10)
       html-entities:
         specifier: 2.4.0
         version: 2.4.0
@@ -944,7 +944,7 @@ importers:
         version: link:../tsconfig
       '@histoire/plugin-vue':
         specifier: 0.17.8
-        version: 0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13)
+        version: 0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13)
       '@vitejs/plugin-vue':
         specifier: 4.6.2
         version: 4.6.2(vite@5.0.10)(vue@3.3.13)
@@ -952,8 +952,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0(vitest@1.1.1)
       histoire:
-        specifier: 0.17.6
-        version: 0.17.6(sass@1.69.5)(vite@5.0.10)
+        specifier: 0.17.8
+        version: 0.17.8(sass@1.69.5)(vite@5.0.10)
       rollup-plugin-node-externals:
         specifier: 6.1.2
         version: 6.1.2(rollup@4.9.1)
@@ -1519,8 +1519,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 2.0.12
-        version: 2.0.12(@pnpm/logger@5.0.0)
+        specifier: 2.0.13
+        version: 2.0.13(@pnpm/logger@5.0.0)
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -4681,8 +4681,8 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
-  /@histoire/app@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-SiuH/mMa2dqZmXuxqNzFB9oyQnP7OiC+kwXIvjxTcKAKT/u/Z63jUwgkhKzhKRmsdW5fgYKUa2kfLSF0FqOntg==}
+  /@histoire/app@0.17.8(vite@5.0.10):
+    resolution: {integrity: sha512-aQA+qzYP4kVvZwwjPWZDO+5+2FsON9uBcY5IvAlgpIkfxNfnBtWSFNr2DmS22Hy5DQx74Ugt6aCil+g+xOTbTA==}
     dependencies:
       '@histoire/controls': 0.17.8(vite@5.0.10)
       '@histoire/shared': 0.17.8(vite@5.0.10)
@@ -4690,22 +4690,6 @@ packages:
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.21
       shiki-es: 0.2.0
-    transitivePeerDependencies:
-      - vite
-    dev: true
-
-  /@histoire/controls@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-weJ4fSt2eux2448WwibSki27vaMzxqjJtmvL8Q2fuHUTRaOSuLzsRjxMab3RHjCVgVt5lixpYbUuAbKchVM03A==}
-    dependencies:
-      '@codemirror/commands': 6.3.2
-      '@codemirror/lang-json': 6.0.1
-      '@codemirror/language': 6.9.3
-      '@codemirror/lint': 6.4.2
-      '@codemirror/state': 6.3.3
-      '@codemirror/theme-one-dark': 6.1.2
-      '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.8(vite@5.0.10)
-      '@histoire/vendors': 0.17.8
     transitivePeerDependencies:
       - vite
     dev: true
@@ -4726,7 +4710,7 @@ packages:
       - vite
     dev: true
 
-  /@histoire/plugin-vue@0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13):
+  /@histoire/plugin-vue@0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13):
     resolution: {integrity: sha512-h9lFruxt/zV8pcta+u63HJpEi3syRKbaPJt5fSghuRbjHoxIvHQ9gdRJzNl/ToXGndletQF++oKlFleYZhDBug==}
     peerDependencies:
       histoire: ^0.17.8
@@ -4737,26 +4721,12 @@ packages:
       '@histoire/vendors': 0.17.8
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.6(sass@1.69.5)(vite@5.0.10)
+      histoire: 0.17.8(sass@1.69.5)(vite@5.0.10)
       launch-editor: 2.6.1
       pathe: 1.1.1
       vue: 3.3.13(typescript@5.3.3)
     transitivePeerDependencies:
       - vite
-    dev: true
-
-  /@histoire/shared@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-ZcAawiwZ/LIU2eB2fy+AT/OjCTVa5TkVg08TL/KoACgMiQWt5BFJDhuvlupT8RcB4dDfVYE9AputZ2vFeciMvA==}
-    peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0
-    dependencies:
-      '@histoire/vendors': 0.17.8
-      '@types/fs-extra': 9.0.13
-      '@types/markdown-it': 12.2.3
-      chokidar: 3.5.3
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      vite: 5.0.10(sass@1.69.5)
     dev: true
 
   /@histoire/shared@0.17.8(vite@5.0.10):
@@ -4771,10 +4741,6 @@ packages:
       pathe: 1.1.1
       picocolors: 1.0.0
       vite: 5.0.10(sass@1.69.5)
-    dev: true
-
-  /@histoire/vendors@0.17.6:
-    resolution: {integrity: sha512-9eZa3XqBRmgX02GbqTWX3SesRbrJE/9yCn5dwZH9rFErZMkQimIBmo56kr7hCwl/5n5KAc+HNfNLPn28TS3uvA==}
     dev: true
 
   /@histoire/vendors@0.17.8:
@@ -5744,14 +5710,14 @@ packages:
       '@pnpm/logger': 5.0.0
       '@pnpm/types': 9.1.0
 
-  /@pnpm/core-loggers@9.0.5(@pnpm/logger@5.0.0):
-    resolution: {integrity: sha512-o0gwxOsFjV5usbNbKNLV8ubF4MakdnNsmPvcL9q+npIs4OR+VmJK4PdhEqwtq2ac2ZiJosrhqSNNwIM5E+ynKg==}
+  /@pnpm/core-loggers@9.0.6(@pnpm/logger@5.0.0):
+    resolution: {integrity: sha512-iK67SGbp+06bA/elpg51wygPFjNA7JKHtKkpLxqXXHw+AjFFBC3f2OznJsCIuDK6HdGi5UhHLYqo5QxJ2gMqJQ==}
     engines: {node: '>=16.14'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
     dependencies:
       '@pnpm/logger': 5.0.0
-      '@pnpm/types': 9.4.1
+      '@pnpm/types': 9.4.2
     dev: false
 
   /@pnpm/dedupe.issues-renderer@1.0.0:
@@ -5933,20 +5899,20 @@ packages:
       validate-npm-package-name: 4.0.0
     dev: false
 
-  /@pnpm/npm-resolver@18.0.1(@pnpm/logger@5.0.0):
-    resolution: {integrity: sha512-r4oNWHOwgnVu33Ijm20F60bYV8zMoACGun9SVxoKDVaIWt+5d5cKoVr9BVzKmxOyFNs1l32hGhEIibWiSCRDYQ==}
+  /@pnpm/npm-resolver@18.0.2(@pnpm/logger@5.0.0):
+    resolution: {integrity: sha512-YfjSHpaFgYvqMomKNLMa49pVabGvaSeEBX3J9j1v7FGtzad7SPZ+BH7ObPLHkIm4rA9K5zvuTJ8gBwMiGQJcQg==}
     engines: {node: '>=16.14'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
     dependencies:
-      '@pnpm/core-loggers': 9.0.5(@pnpm/logger@5.0.0)
+      '@pnpm/core-loggers': 9.0.6(@pnpm/logger@5.0.0)
       '@pnpm/error': 5.0.2
       '@pnpm/fetching-types': 5.0.0
       '@pnpm/graceful-fs': 3.2.0
       '@pnpm/logger': 5.0.0
       '@pnpm/resolve-workspace-range': 5.0.1
-      '@pnpm/resolver-base': 11.0.1
-      '@pnpm/types': 9.4.1
+      '@pnpm/resolver-base': 11.0.2
+      '@pnpm/types': 9.4.2
       '@zkochan/retry': 0.2.0
       encode-registry: 3.0.1
       load-json-file: 6.2.0
@@ -5957,7 +5923,7 @@ packages:
       parse-npm-tarball-url: 3.0.0
       path-temp: 2.1.0
       ramda: /@pnpm/ramda@0.28.1
-      rename-overwrite: 4.0.4
+      rename-overwrite: 5.0.0
       semver: 7.5.4
       ssri: 10.0.5
       version-selector-type: 3.0.0
@@ -6039,11 +6005,11 @@ packages:
     dependencies:
       '@pnpm/types': 9.1.0
 
-  /@pnpm/resolver-base@11.0.1:
-    resolution: {integrity: sha512-0EJ8dZqsaa/MCwB49NGNGy2WIIv3KU8xGkskDfSPpi5I5EyiIEVSi7NzUJp8rchrCbotFbOc+IHswHLeF2TSsw==}
+  /@pnpm/resolver-base@11.0.2:
+    resolution: {integrity: sha512-g6VXB/LK7DugXiCPG62qmYtuypVt44nnwyXYkTv86FKudI5d5Wy1FLkYAYKCj+No9h1GG3eSSwGH1NL0y4IbYg==}
     engines: {node: '>=16.14'}
     dependencies:
-      '@pnpm/types': 9.4.1
+      '@pnpm/types': 9.4.2
     dev: false
 
   /@pnpm/store-controller-types@15.0.1:
@@ -6064,8 +6030,8 @@ packages:
     resolution: {integrity: sha512-MMPDMLOY17bfNhLhR9Qmq6/2keoocnR5DWXZfZDC4dKXugrMsE1jB6RnuU8swJIo4zyCsMT/iVSAtl/XK+9Z+A==}
     engines: {node: '>=16.14'}
 
-  /@pnpm/types@9.4.1:
-    resolution: {integrity: sha512-X7k9wdk5XlW1uo9Nq38nSzqRvOAxrPcrzgx8xm2T3DtRsLYsiBbzcGZyqrGpsW37lYf/KLZwoTVMeQkACPE64Q==}
+  /@pnpm/types@9.4.2:
+    resolution: {integrity: sha512-g1hcF8Nv4gd76POilz9gD4LITAPXOe5nX4ijgr8ixCbLQZfcpYiMfJ+C1RlMNRUDo8vhlNB4O3bUlxmT6EAQXA==}
     engines: {node: '>=16.14'}
     dev: false
 
@@ -6073,12 +6039,12 @@ packages:
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  /@pnpm/workspace.pkgs-graph@2.0.12(@pnpm/logger@5.0.0):
-    resolution: {integrity: sha512-Snezd9HrVb+GztDhHC1ZdkL6+xf4lnmSlMpfE6K88ih2STlsZRIOaZKsjBTjJwIMeo6c+KQlSsy9qfwD3ODj4A==}
+  /@pnpm/workspace.pkgs-graph@2.0.13(@pnpm/logger@5.0.0):
+    resolution: {integrity: sha512-XwpApD7dGCxL0xAwNANakxq4Ou91WMWZDF/IkMDnVGS1I3Xxh9tpQExpfpuxFPd//WofPJnxOi6AlXQS4D9bFA==}
     engines: {node: '>=16.14'}
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 18.0.1(@pnpm/logger@5.0.0)
+      '@pnpm/npm-resolver': 18.0.2(@pnpm/logger@5.0.0)
       '@pnpm/resolve-workspace-range': 5.0.1
       ramda: /@pnpm/ramda@0.28.1
     transitivePeerDependencies:
@@ -12086,17 +12052,17 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.6(sass@1.69.5)(vite@5.0.10):
-    resolution: {integrity: sha512-L9xLR0BFk+KIcpfDOPw5i0o4eq1ANj+f0i3xWS6F5yToV0jSu9Dh8eaagSrR1QbUpLoc7Kjhjq408Ecoop3JcA==}
+  /histoire@0.17.8(sass@1.69.5)(vite@5.0.10):
+    resolution: {integrity: sha512-8OeLoi7rjtLVR7LixAnVEXQVoGETYmLigm+yt+1KshQ63hBmiPt4e3/qDsS12hxEWGhY5a9Z5Wi2UFSPB5Ifkg==}
     hasBin: true
     peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0
+      vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
       '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.6(vite@5.0.10)
-      '@histoire/controls': 0.17.6(vite@5.0.10)
-      '@histoire/shared': 0.17.6(vite@5.0.10)
-      '@histoire/vendors': 0.17.6
+      '@histoire/app': 0.17.8(vite@5.0.10)
+      '@histoire/controls': 0.17.8(vite@5.0.10)
+      '@histoire/shared': 0.17.8(vite@5.0.10)
+      '@histoire/vendors': 0.17.8
       '@types/flexsearch': 0.7.6
       '@types/markdown-it': 12.2.3
       birpc: 0.1.1
@@ -15576,8 +15542,8 @@ packages:
       process-warning: 3.0.0
     dev: false
 
-  /pino-pretty@10.3.0:
-    resolution: {integrity: sha512-JthvQW289q3454mhM3/38wFYGWPiBMR28T3CpDNABzoTQOje9UKS7XCJQSnjWF9LQGQkGd8D7h0oq+qwiM3jFA==}
+  /pino-pretty@10.3.1:
+    resolution: {integrity: sha512-az8JbIYeN/1iLj2t0jR9DV48/LQ3RC6hZPpapKPkb84Q+yTidMCpgWxIT3N0flnBDilyBQ1luWNpOeJptjdp/g==}
     hasBin: true
     dependencies:
       colorette: 2.0.20
@@ -16630,8 +16596,8 @@ packages:
       - supports-color
     dev: true
 
-  /rename-overwrite@4.0.4:
-    resolution: {integrity: sha512-5MC+p5npnyaJlFkwTHb0pqU2mkUkkW65ZWH8qwxcDlv+5nchtalcdzG+gaaianbWWwvwxi7vu7WSg6jdCweKug==}
+  /rename-overwrite@5.0.0:
+    resolution: {integrity: sha512-vSxE5Ww7Jnyotvaxi3Dj0vOMoojH8KMkBfs9xYeW/qNfJiLTcC1fmwTjrbGUq3mQSOCxkG0DbdcvwTUrpvBN4w==}
     engines: {node: '>=12.10'}
     dependencies:
       '@zkochan/rimraf': 2.1.3
@@ -17288,6 +17254,7 @@ packages:
 
   /shiki-es@0.2.0:
     resolution: {integrity: sha512-RbRMD+IuJJseSZljDdne9ThrUYrwBwJR04FvN4VXpfsU3MNID5VJGHLAD5je/HGThCyEKNgH+nEkSFEWKD7C3Q==}
+    deprecated: Please migrate to https://github.com/antfu/shikiji
     dev: true
 
   /shiki@0.14.7:
