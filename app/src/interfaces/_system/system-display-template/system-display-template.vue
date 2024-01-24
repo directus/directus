@@ -90,21 +90,21 @@ const tree = computed(() => {
 
 	const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
 
-	return { list: treeList.value, fn: loadFieldRelations };
+	return { list: treeList.value, pathLoader: loadFieldRelations };
 });
 </script>
 
 <template>
 	<div class="system-display-template">
 		<v-notice v-if="tree === null">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
+			{{ t('interfaces.system-display-template.select_a_collection_or_tree_fields') }}
 		</v-notice>
 		<v-field-template
 			v-else
 			:tree="tree.list"
 			:model-value="value"
 			:disabled="disabled"
-			:handler-fn="tree.fn"
+			:load-path-level="tree.pathLoader"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>

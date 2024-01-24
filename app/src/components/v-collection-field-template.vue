@@ -35,7 +35,7 @@ const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 			:tree="treeList"
 			:model-value="value"
 			:disabled="disabled"
-			:handler-fn="loadFieldRelations"
+			:load-path-level="loadFieldRelations"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
