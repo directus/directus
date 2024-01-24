@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useData, useRoute } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
-import { computed, ref, watchEffect } from 'vue';
+import { computed } from 'vue';
 import Feedback from '../components/Feedback.vue';
 import Newsletter from '../components/Newsletter.vue';
 
@@ -12,18 +12,9 @@ const title = computed(() => page.value.title);
 const contributors = computed(() => page.value.frontmatter['contributors']);
 const path = computed(() => route.path);
 
-const isPackagePage = ref(false);
-const isDevPage = ref(false);
-const isUserPage = ref(false);
-
-function determinePageAttributes() {
-	isPackagePage.value = RegExp('^/packages/.+$').test(path.value);
-	isDevPage.value = RegExp('^\\/(?!$|user-guide).*').test(path.value) || path.value == '/';
-	isUserPage.value = RegExp('^.*/user-guide/.*$').test(path.value);
-}
-
-determinePageAttributes();
-watchEffect(determinePageAttributes);
+const isUserPage = computed(() => RegExp('^/user-guide/.*$').test(path.value));
+const isDevPage = computed(() => !isUserPage.value);
+const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 </script>
 
 <template>
