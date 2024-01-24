@@ -3,13 +3,20 @@ contributors: Kevin Lewis, Esther Agbaje
 description: "Learn how to get started with Directus' WebSockets interface."
 ---
 
-# Getting Started With WebSockets
+# Getting Started With WebSockets (with the SDK)
 
 You can connect to a Directus project using a WebSocket interface and get updates on data held in a collection in
 real-time.
 
-This guide will show you how to get started with Directus' WebSockets interface and JavaScript. WebSockets are
+This guide will show you how to get started with Directus' Realtime SDK and JavaScript. WebSockets are
 language-agnostic, so you can apply the same set of steps in your stack of choice.
+
+::: info WebSockets without the SDK
+
+To get started with WebSockets without the SDK please refer to this guide
+[here](/guides/real-time/getting-started/websockets-js.md).
+
+:::
 
 ## Before You Begin
 
