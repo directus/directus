@@ -74,7 +74,7 @@ watchEffect(determinePageAttributes);
 		text-align: center;
 		font-size: 12px;
 		padding: 0.25rem;
-		background: white;
+		background: var(--vp-c-bg-alt);
 		font-weight: bold;
 		border-radius: 0.25rem;
 		&.active {
