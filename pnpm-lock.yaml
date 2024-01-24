@@ -621,7 +621,7 @@ importers:
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.8
-        version: 0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13)
+        version: 0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -767,8 +767,8 @@ importers:
         specifier: 12.10.3
         version: 12.10.3
       histoire:
-        specifier: 0.17.6
-        version: 0.17.6(sass@1.69.5)(vite@5.0.10)
+        specifier: 0.17.8
+        version: 0.17.8(sass@1.69.5)(vite@5.0.10)
       html-entities:
         specifier: 2.4.0
         version: 2.4.0
@@ -944,7 +944,7 @@ importers:
         version: link:../tsconfig
       '@histoire/plugin-vue':
         specifier: 0.17.8
-        version: 0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13)
+        version: 0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13)
       '@vitejs/plugin-vue':
         specifier: 4.6.2
         version: 4.6.2(vite@5.0.10)(vue@3.3.13)
@@ -952,8 +952,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0(vitest@1.1.1)
       histoire:
-        specifier: 0.17.6
-        version: 0.17.6(sass@1.69.5)(vite@5.0.10)
+        specifier: 0.17.8
+        version: 0.17.8(sass@1.69.5)(vite@5.0.10)
       rollup-plugin-node-externals:
         specifier: 6.1.2
         version: 6.1.2(rollup@4.9.1)
@@ -4681,8 +4681,8 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
-  /@histoire/app@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-SiuH/mMa2dqZmXuxqNzFB9oyQnP7OiC+kwXIvjxTcKAKT/u/Z63jUwgkhKzhKRmsdW5fgYKUa2kfLSF0FqOntg==}
+  /@histoire/app@0.17.8(vite@5.0.10):
+    resolution: {integrity: sha512-aQA+qzYP4kVvZwwjPWZDO+5+2FsON9uBcY5IvAlgpIkfxNfnBtWSFNr2DmS22Hy5DQx74Ugt6aCil+g+xOTbTA==}
     dependencies:
       '@histoire/controls': 0.17.8(vite@5.0.10)
       '@histoire/shared': 0.17.8(vite@5.0.10)
@@ -4690,22 +4690,6 @@ packages:
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.21
       shiki-es: 0.2.0
-    transitivePeerDependencies:
-      - vite
-    dev: true
-
-  /@histoire/controls@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-weJ4fSt2eux2448WwibSki27vaMzxqjJtmvL8Q2fuHUTRaOSuLzsRjxMab3RHjCVgVt5lixpYbUuAbKchVM03A==}
-    dependencies:
-      '@codemirror/commands': 6.3.2
-      '@codemirror/lang-json': 6.0.1
-      '@codemirror/language': 6.9.3
-      '@codemirror/lint': 6.4.2
-      '@codemirror/state': 6.3.3
-      '@codemirror/theme-one-dark': 6.1.2
-      '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.8(vite@5.0.10)
-      '@histoire/vendors': 0.17.8
     transitivePeerDependencies:
       - vite
     dev: true
@@ -4726,7 +4710,7 @@ packages:
       - vite
     dev: true
 
-  /@histoire/plugin-vue@0.17.8(histoire@0.17.6)(vite@5.0.10)(vue@3.3.13):
+  /@histoire/plugin-vue@0.17.8(histoire@0.17.8)(vite@5.0.10)(vue@3.3.13):
     resolution: {integrity: sha512-h9lFruxt/zV8pcta+u63HJpEi3syRKbaPJt5fSghuRbjHoxIvHQ9gdRJzNl/ToXGndletQF++oKlFleYZhDBug==}
     peerDependencies:
       histoire: ^0.17.8
@@ -4737,26 +4721,12 @@ packages:
       '@histoire/vendors': 0.17.8
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.6(sass@1.69.5)(vite@5.0.10)
+      histoire: 0.17.8(sass@1.69.5)(vite@5.0.10)
       launch-editor: 2.6.1
       pathe: 1.1.1
       vue: 3.3.13(typescript@5.3.3)
     transitivePeerDependencies:
       - vite
-    dev: true
-
-  /@histoire/shared@0.17.6(vite@5.0.10):
-    resolution: {integrity: sha512-ZcAawiwZ/LIU2eB2fy+AT/OjCTVa5TkVg08TL/KoACgMiQWt5BFJDhuvlupT8RcB4dDfVYE9AputZ2vFeciMvA==}
-    peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0
-    dependencies:
-      '@histoire/vendors': 0.17.8
-      '@types/fs-extra': 9.0.13
-      '@types/markdown-it': 12.2.3
-      chokidar: 3.5.3
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      vite: 5.0.10(sass@1.69.5)
     dev: true
 
   /@histoire/shared@0.17.8(vite@5.0.10):
@@ -4771,10 +4741,6 @@ packages:
       pathe: 1.1.1
       picocolors: 1.0.0
       vite: 5.0.10(sass@1.69.5)
-    dev: true
-
-  /@histoire/vendors@0.17.6:
-    resolution: {integrity: sha512-9eZa3XqBRmgX02GbqTWX3SesRbrJE/9yCn5dwZH9rFErZMkQimIBmo56kr7hCwl/5n5KAc+HNfNLPn28TS3uvA==}
     dev: true
 
   /@histoire/vendors@0.17.8:
@@ -12086,17 +12052,17 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.6(sass@1.69.5)(vite@5.0.10):
-    resolution: {integrity: sha512-L9xLR0BFk+KIcpfDOPw5i0o4eq1ANj+f0i3xWS6F5yToV0jSu9Dh8eaagSrR1QbUpLoc7Kjhjq408Ecoop3JcA==}
+  /histoire@0.17.8(sass@1.69.5)(vite@5.0.10):
+    resolution: {integrity: sha512-8OeLoi7rjtLVR7LixAnVEXQVoGETYmLigm+yt+1KshQ63hBmiPt4e3/qDsS12hxEWGhY5a9Z5Wi2UFSPB5Ifkg==}
     hasBin: true
     peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0
+      vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
       '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.6(vite@5.0.10)
-      '@histoire/controls': 0.17.6(vite@5.0.10)
-      '@histoire/shared': 0.17.6(vite@5.0.10)
-      '@histoire/vendors': 0.17.6
+      '@histoire/app': 0.17.8(vite@5.0.10)
+      '@histoire/controls': 0.17.8(vite@5.0.10)
+      '@histoire/shared': 0.17.8(vite@5.0.10)
+      '@histoire/vendors': 0.17.8
       '@types/flexsearch': 0.7.6
       '@types/markdown-it': 12.2.3
       birpc: 0.1.1
@@ -17288,6 +17254,7 @@ packages:
 
   /shiki-es@0.2.0:
     resolution: {integrity: sha512-RbRMD+IuJJseSZljDdne9ThrUYrwBwJR04FvN4VXpfsU3MNID5VJGHLAD5je/HGThCyEKNgH+nEkSFEWKD7C3Q==}
+    deprecated: Please migrate to https://github.com/antfu/shikiji
     dev: true
 
   /shiki@0.14.7:
