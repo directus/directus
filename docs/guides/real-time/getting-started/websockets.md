@@ -25,7 +25,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 `WEBSOCKETS_ENABLED` environment variable is set to `true`.
 
 Create a new collection called `messages`, with a `date_created` field enabled in the _Optional Fields_ pane on
-collection creation. Create a text field called `text` and a second called `user`.
+collection creation. Create an input field called `text` and a second called `user`.
 
 If it doesn’t already exist, create a user with a role that can execute **read**, **create** and **update** operations
 on the collection.

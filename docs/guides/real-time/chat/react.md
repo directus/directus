@@ -17,7 +17,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 [managed Directus Cloud service](https://directus.cloud).
 
 Create a new collection called `messages`, with `date_created` and `user_created` fields enabled in the _Optional System
-Fields_ pane on collection creation. Create a text field called `text`.
+Fields_ pane on collection creation. Create an input field called `text`.
 
 Create a new Role called `Users`. Give Create and Read access to the `Messages` collection, and Read access to the
 `Directus Users` system collection. Now, create a new user with this role and take note of the password you set.
