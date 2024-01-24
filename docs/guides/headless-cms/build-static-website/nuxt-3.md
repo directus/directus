@@ -129,7 +129,7 @@ const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
 const { data: page } = await useAsyncData('page', () => {
-  return $directus.request($readItem('pages', route.params.slug))
+  return $directus.request($readItem('pages', route.name))
 })
 
 if (!page.value) throw createError({
@@ -232,7 +232,7 @@ const route = useRoute()
 
 const { data: post } = await useAsyncData('post', () => {
   return $directus.request(
-    $readItem('posts', route.params.slug, {
+    $readItem('posts', route.name, {
       fields: ['*', { '*': ['*'] }]
     })
   )
