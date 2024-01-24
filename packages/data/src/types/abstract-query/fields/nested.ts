@@ -5,15 +5,20 @@ import type {
 import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
 
+export interface AbstractQueryFieldNodeNestedObjectMany {
+	type: 'object-many';
+	fieldName: string;
+}
+
 export interface AbstractQueryFieldNodeNestedSingleOne {
 	type: 'nested-single-one';
 
-	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
+	/* From the nested collection/object the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedRelationalMany;
+	nesting: AbstractQueryFieldNodeNestedRelationalMany | AbstractQueryFieldNodeNestedObjectMany;
 }
 
 export interface AbstractQueryFieldNodeNestedUnionOne {
