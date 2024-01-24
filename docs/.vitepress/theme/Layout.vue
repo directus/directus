@@ -63,7 +63,7 @@ watchEffect(determinePageAttributes);
 <style lang="scss" scoped>
 .sidebar-nav-before {
 	padding: 1em 0;
-	border-bottom: 1px solid var(--vp-c-divider)
+	border-bottom: 1px solid var(--vp-c-divider);
 }
 .toggle {
 	display: grid;
