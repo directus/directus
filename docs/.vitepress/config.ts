@@ -133,10 +133,15 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
-		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
+		socialLinks: [
+			{ icon: 'github', link: 'https://github.com/directus/directus' },
+			{ icon: 'twitter', link: 'https://twitter.com/directus' },
+			{ icon: 'discord', link: 'https://directus.chat' },
+		],
 		nav: [
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
+			{ text: 'Directus TV', link: 'https://directus.io/tv' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',
