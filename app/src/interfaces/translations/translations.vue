@@ -11,11 +11,11 @@ import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getEndpoint } from '@directus/utils';
 import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
-import { getEndpoint } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -25,6 +25,7 @@ const props = withDefaults(
 		languageField?: string | null;
 		languageDirectionField?: string | null;
 		defaultLanguage?: string | null;
+		defaultOpenSplitView?: boolean;
 		userLanguage?: boolean;
 		value: (number | string | Record<string, any>)[] | Record<string, any>;
 		autofocus?: boolean;
@@ -37,6 +38,7 @@ const props = withDefaults(
 		autofocus: false,
 		disabled: false,
 		defaultLanguage: null,
+		defaultOpenSplitView: false,
 		userLanguage: false,
 	},
 );
@@ -59,7 +61,7 @@ const permissionsStore = usePermissionsStore();
 
 const { width } = useWindowSize();
 
-const splitView = ref(false);
+const splitView = ref(props.defaultOpenSplitView);
 const firstLang = ref<string>();
 const secondLang = ref<string>();
 
@@ -218,6 +220,7 @@ function useLanguages() {
 		}
 
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+		const sortField = relationInfo.value.relatedCollection.meta?.sort_field;
 
 		fields.add(pkField);
 
@@ -229,7 +232,7 @@ function useLanguages() {
 				{
 					params: {
 						fields: Array.from(fields),
-						sort: props.languageField ?? pkField,
+						sort: sortField ?? props.languageField ?? pkField,
 					},
 				},
 			);

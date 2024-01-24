@@ -51,7 +51,7 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-You can initialize a new Directus project using the CLI command: `npm init directus-project`.
+You can initialize a new Directus project using the CLI command: `npm init directus-project@latest`.
 
 Follow prompts to configure your database and create your first admin user.
 
