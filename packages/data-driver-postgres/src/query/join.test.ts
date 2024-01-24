@@ -1,51 +1,56 @@
 import { test, expect, beforeEach } from 'vitest';
 import { join } from './join.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import type { AbstractSqlClauses } from '@directus/data-sql';
 
 let sample: AbstractSqlClauses;
-let targetTable: string;
-let targetColumn: string;
-let compareToTable: string;
-let compareToColumn: string;
-let alias: string;
+let foreignTableName: string;
+let foreignTableIndex: number;
+let foreignColumnName: string;
+let foreignColumnIndex: number;
+let compareToTableIndex: number;
+let compareToColumnName: string;
 
 beforeEach(() => {
-	targetTable = randomIdentifier();
-	targetColumn = randomIdentifier();
-	compareToTable = randomIdentifier();
-	compareToColumn = randomIdentifier();
-	alias = randomIdentifier();
+	foreignTableName = randomIdentifier();
+	foreignTableIndex = randomInteger(0, 100);
+	foreignColumnName = randomIdentifier();
+	foreignColumnIndex = randomInteger(0, 100);
+	compareToTableIndex = randomInteger(0, 100);
+	compareToColumnName = randomIdentifier();
 
 	sample = {
 		select: [
 			{
 				type: 'primitive',
-				column: randomIdentifier(),
-				table: randomIdentifier(),
-				as: randomIdentifier(),
+				tableIndex: foreignTableIndex,
+				columnName: randomIdentifier(),
+				columnIndex: foreignColumnIndex,
 			},
 		],
-		from: randomIdentifier(),
+		from: {
+			tableName: randomIdentifier(),
+			tableIndex: randomInteger(0, 100),
+		},
 		joins: [
 			{
 				type: 'join',
-				table: targetTable,
-				as: alias,
+				tableName: foreignTableName,
+				tableIndex: foreignTableIndex,
 				on: {
 					type: 'condition',
 					condition: {
 						type: 'condition-field',
 						target: {
 							type: 'primitive',
-							table: targetTable,
-							column: targetColumn,
+							tableIndex: foreignTableIndex,
+							columnName: foreignColumnName,
 						},
 						operation: 'eq',
 						compareTo: {
 							type: 'primitive',
-							table: compareToTable,
-							column: compareToColumn,
+							tableIndex: compareToTableIndex,
+							columnName: compareToColumnName,
 						},
 					},
 					negate: false,
@@ -55,23 +60,23 @@ beforeEach(() => {
 	};
 });
 
-test('With an alias', () => {
+test('Simple join', () => {
 	expect(join(sample)).toStrictEqual(
-		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}"`,
+		`LEFT JOIN "${foreignTableName}" AS "t${foreignTableIndex}" ON "t${foreignTableIndex}"."${foreignColumnName}" = "t${compareToTableIndex}"."${compareToColumnName}"`,
 	);
 });
 
-test('With an alias', () => {
-	const targetTable2 = randomIdentifier();
+test('Nested join', () => {
+	const targetTable2Index = randomInteger(0, 100);
 	const targetColumn2 = randomIdentifier();
-	const compareToTable2 = randomIdentifier();
+	const compareToTable2Index = randomInteger(0, 100);
 	const compareToColumn2 = randomIdentifier();
 
 	sample.joins = [
 		{
 			type: 'join',
-			table: targetTable,
-			as: alias,
+			tableName: foreignTableName,
+			tableIndex: foreignTableIndex,
 			on: {
 				type: 'logical',
 				operator: 'and',
@@ -84,14 +89,14 @@ test('With an alias', () => {
 							type: 'condition-field',
 							target: {
 								type: 'primitive',
-								table: targetTable,
-								column: targetColumn,
+								tableIndex: foreignTableIndex,
+								columnName: foreignColumnName,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								table: compareToTable,
-								column: compareToColumn,
+								tableIndex: compareToTableIndex,
+								columnName: compareToColumnName,
 							},
 						},
 					},
@@ -102,14 +107,14 @@ test('With an alias', () => {
 							type: 'condition-field',
 							target: {
 								type: 'primitive',
-								table: targetTable2,
-								column: targetColumn2,
+								tableIndex: targetTable2Index,
+								columnName: targetColumn2,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								table: compareToTable2,
-								column: compareToColumn2,
+								tableIndex: compareToTable2Index,
+								columnName: compareToColumn2,
 							},
 						},
 					},
@@ -119,6 +124,6 @@ test('With an alias', () => {
 	];
 
 	expect(join(sample)).toStrictEqual(
-		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}" AND "${targetTable2}"."${targetColumn2}" = "${compareToTable2}"."${compareToColumn2}"`,
+		`LEFT JOIN "${foreignTableName}" AS "t${foreignTableIndex}" ON "t${foreignTableIndex}"."${foreignColumnName}" = "t${compareToTableIndex}"."${compareToColumnName}" AND "t${targetTable2Index}"."${targetColumn2}" = "t${compareToTable2Index}"."${compareToColumn2}"`,
 	);
 });

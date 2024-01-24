@@ -1,8 +1,9 @@
+import { useEnv } from '@directus/env';
 import { Router } from 'express';
-import request from 'supertest';
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
-import { useEnv } from '@directus/env';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -65,6 +66,8 @@ vi.mock('./webhooks', () => ({
 	init: vi.fn(),
 }));
 
+vi.mock('./utils/validate-env.js');
+
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
 		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
@@ -84,20 +87,32 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
+const request = async (path: string = '') => {
+	const app = await createApp();
+	const server = http.createServer(app);
+	server.listen(0);
+	const address = server.address() as AddressInfo;
+	const baseUrl = `http://127.0.0.1:${address.port}`;
+
+	const response = await fetch(`${baseUrl}${path}`, { redirect: 'manual' });
+
+	server.close();
+
+	return response;
+};
+
 describe('createApp', async () => {
 	describe('Content Security Policy', () => {
 		test('Should set content-security-policy header by default', async () => {
-			const app = await createApp();
-			const response = await request(app).get('/');
+			const response = await request();
 
-			expect(response.headers).toHaveProperty('content-security-policy');
+			expect(response.headers.has('content-security-policy')).toBe(true);
 		});
 	});
 
 	describe('Root Redirect', () => {
 		test('Should redirect root path by default', async () => {
-			const app = await createApp();
-			const response = await request(app).get('/');
+			const response = await request();
 
 			expect(response.status).toEqual(302);
 		});
@@ -105,58 +120,58 @@ describe('createApp', async () => {
 
 	describe('robots.txt file', () => {
 		test('Should respond with default robots.txt content', async () => {
-			const app = await createApp();
-			const response = await request(app).get('/robots.txt');
+			const response = await request('/robots.txt');
+			const body = await response.text();
 
-			expect(response.text).toEqual('User-agent: *\nDisallow: /');
+			expect(body).toEqual('User-agent: *\nDisallow: /');
 		});
 	});
 
 	describe('Admin App', () => {
 		test('Should set <base /> tag href to public url with admin relative path', async () => {
-			const app = await createApp();
-			const response = await request(app).get('/admin');
+			const response = await request('/admin');
+			const body = await response.text();
 
-			expect(response.text).toEqual(expect.stringContaining(`<base href="/directus/admin/" />`));
+			expect(body).toEqual(expect.stringContaining(`<base href="/directus/admin/" />`));
 		});
 
 		test('Should remove <embed-head /> and <embed-body /> tags when there are no custom embeds', async () => {
 			mockGetEmbeds.mockReturnValueOnce({ head: '', body: '' });
 
-			const app = await createApp();
-			const response = await request(app).get('/admin');
+			const response = await request('/admin');
+			const body = await response.text();
 
-			expect(response.text).not.toEqual(expect.stringContaining(`<embed-head />`));
-			expect(response.text).not.toEqual(expect.stringContaining(`<embed-body />`));
+			expect(body).not.toEqual(expect.stringContaining(`<embed-head />`));
+			expect(body).not.toEqual(expect.stringContaining(`<embed-body />`));
 		});
 
 		test('Should replace <embed-head /> tag with custom embed head', async () => {
 			const mockEmbedHead = '<!-- Test Embed Head -->';
 			mockGetEmbeds.mockReturnValueOnce({ head: mockEmbedHead, body: '' });
 
-			const app = await createApp();
-			const response = await request(app).get('/admin');
+			const response = await request('/admin');
+			const body = await response.text();
 
-			expect(response.text).toEqual(expect.stringContaining(mockEmbedHead));
+			expect(body).toEqual(expect.stringContaining(mockEmbedHead));
 		});
 
 		test('Should replace <embed-body /> tag with custom embed body', async () => {
 			const mockEmbedBody = '<!-- Test Embed Body -->';
 			mockGetEmbeds.mockReturnValueOnce({ head: '', body: mockEmbedBody });
 
-			const app = await createApp();
-			const response = await request(app).get('/admin');
+			const response = await request('/admin');
+			const body = await response.text();
 
-			expect(response.text).toEqual(expect.stringContaining(mockEmbedBody));
+			expect(body).toEqual(expect.stringContaining(mockEmbedBody));
 		});
 	});
 
 	describe('Server ping endpoint', () => {
 		test('Should respond with pong', async () => {
-			const app = await createApp();
-			const response = await request(app).get('/server/ping');
+			const response = await request('/server/ping');
+			const body = await response.text();
 
-			expect(response.text).toEqual('pong');
+			expect(body).toEqual('pong');
 		});
 	});
 
@@ -164,10 +179,10 @@ describe('createApp', async () => {
 		test('Should not contain route for custom endpoint', async () => {
 			const testRoute = '/custom-endpoint-to-test';
 
-			const app = await createApp();
-			const response = await request(app).get(testRoute);
+			const response = await request(testRoute);
+			const body = await response.json();
 
-			expect(response.body).toEqual({
+			expect(body).toEqual({
 				errors: [
 					{
 						extensions: {
@@ -191,10 +206,10 @@ describe('createApp', async () => {
 
 			mockGetEndpointRouter.mockReturnValueOnce(mockRouter);
 
-			const app = await createApp();
-			const response = await request(app).get(testRoute);
+			const response = await request(testRoute);
+			const body = await response.json();
 
-			expect(response.body).toEqual(testResponse);
+			expect(body).toEqual(testResponse);
 		});
 	});
 
@@ -202,10 +217,10 @@ describe('createApp', async () => {
 		test('Should return ROUTE_NOT_FOUND error when a route does not exist', async () => {
 			const testRoute = '/this-route-does-not-exist';
 
-			const app = await createApp();
-			const response = await request(app).get(testRoute);
+			const response = await request(testRoute);
+			const body = await response.json();
 
-			expect(response.body).toEqual({
+			expect(body).toEqual({
 				errors: [
 					{
 						extensions: {
