@@ -1691,6 +1691,7 @@ interfaces:
     collection_field: Collection field
     collection_field_not_setup: The collection field option is misconfigured
     select_a_collection: Select a Collection
+    select_a_collection_or_tree_fields: Select a Collection or Field Tree
   presentation-divider:
     divider: Divider
     description: Label and divide fields into sections
