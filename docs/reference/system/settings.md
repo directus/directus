@@ -24,7 +24,40 @@ Descriptor of the project, shown in the Admin App.
 Link to the (public) website that goes with this project.
 
 `project_error_url` **string**\
-Link to the error report page.
+Link to the error report page. This is a template URL that has access to the following object
+
+```ts
+{
+  error: {
+    name?: string;
+    message?: string;
+  };
+  route: {
+    fullPath: string;
+    hash: string;
+    name: string;
+    path: string;
+    query: string;
+  };
+  navigator: {
+    language: string;
+    userAgent: string;
+  };
+  user: {
+    id?: string | number;
+    first_name?: string;
+    last_name?: string;
+    title?: string;
+    description?: string;
+    location?: string;
+    status?: string;
+  };
+  role: {
+    id?: string;
+    name?: string;
+  };
+}
+```
 
 `project_bug_url` **string**\
 Link to the bug report page.
