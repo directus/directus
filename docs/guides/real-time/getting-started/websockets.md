@@ -11,10 +11,10 @@ real-time.
 This guide will show you how to get started with Directus' Realtime SDK and JavaScript. WebSockets are
 language-agnostic, so you can apply the same set of steps in your stack of choice.
 
-::: info WebSockets without the SDK
+::: info Want to use WebSockets without the SDK?
 
-To get started with WebSockets without the SDK please refer to this guide
-[here](/guides/real-time/getting-started/websockets-js.md).
+To get started with WebSockets without the SDK please refer to our
+[Getting Started with WebSockets guide](/guides/real-time/getting-started/websockets-js.md).
 
 :::
 
