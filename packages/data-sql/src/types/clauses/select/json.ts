@@ -1,8 +1,13 @@
-import type { Attribute } from '@directus/data';
-
-export interface SqlStatementSelectJson {
+export interface AbstractSqlQuerySelectJsonNode {
 	type: 'json';
 	tableIndex: number;
 	columnIndex: number;
-	path: Attribute;
+
+	/**
+	 * The path to the JSON attribute.
+	 *
+	 * ['author', 'name', 'first']
+	 * ['author', 'age']
+	 */
+	path: string[][];
 }
