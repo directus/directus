@@ -135,17 +135,6 @@ gtag('config', 'UA-24637628-7');
 		},
 		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
 		nav: [
-			{
-				text: 'Developer Reference',
-				link: '/getting-started/quickstart',
-				// Active on every path except for '/', '/user-guide', '/packages'
-				activeMatch: '^\\/(?!$|user-guide|packages).*',
-			},
-			{
-				text: 'User Guide',
-				link: '/user-guide/overview/data-studio-app',
-				activeMatch: '/user-guide',
-			},
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 		],
