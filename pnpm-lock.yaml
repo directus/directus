@@ -30,8 +30,8 @@ importers:
         specifier: 9.19.2
         version: 9.19.2(eslint@8.56.0)
       prettier:
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.2.4
+        version: 3.2.4
 
   api:
     dependencies:
@@ -16146,6 +16146,12 @@ packages:
 
   /prettier@3.1.0:
     resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
+  /prettier@3.2.4:
+    resolution: {integrity: sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
