@@ -68,8 +68,13 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 			padding: 0.25rem;
 			font-weight: bold;
 			border-radius: 10rem;
-			border: 1px solid var(--vp-input-border-color);
-			color: var(--vp-input-border-color);
+			border: 1px solid var(--vp-c-text-3);
+			color: var(--vp-c-text-2);
+
+			&:hover {
+				color: var(--vp-c-text-1);
+				border-color: var(--vp-c-text-2);
+			}
 
 			&.active {
 				background: var(--vp-c-brand-darkest);
