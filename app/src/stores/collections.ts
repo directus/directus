@@ -17,10 +17,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const collections = ref<Collection[]>([]);
 
 	const systemCollections = computed(() =>
-		collections.value
-			.filter(({ meta }) => meta?.system)
-			.map(({ collection }) => collection)
-	)
+		collections.value.filter(({ meta }) => meta?.system).map(({ collection }) => collection),
+	);
 
 	const visibleCollections = computed(() =>
 		collections.value

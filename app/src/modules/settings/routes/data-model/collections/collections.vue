@@ -97,7 +97,9 @@ const tableCollections = computed(() => {
 		sortBy(
 			collectionsStore.collections.filter(
 				(collection) =>
-					collectionsStore.systemCollections.includes(collection.collection) === false && !!collection.meta === false && collection.schema,
+					collectionsStore.systemCollections.includes(collection.collection) === false &&
+					!!collection.meta === false &&
+					collection.schema,
 			),
 			['meta.sort', 'collection'],
 		),

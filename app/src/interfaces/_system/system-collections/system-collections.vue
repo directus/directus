@@ -29,7 +29,9 @@ const collections = computed(() => {
 	}
 
 	if (!props.includeSystem) {
-		collections = collections.filter((collection) => collectionsStore.systemCollections.includes(collection.collection) === false);
+		collections = collections.filter(
+			(collection) => collectionsStore.systemCollections.includes(collection.collection) === false,
+		);
 	}
 
 	return collections;

@@ -1,4 +1,4 @@
-import { systemCollectionRows } from "../database/system-data/collections/index.js";
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
 
 /**
  * Checks if provided collection is a system collection
