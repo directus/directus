@@ -74,7 +74,7 @@ test('Print banner if update is available', async () => {
 
 test('Do not fail on empty response', async () => {
 	axiosMock.get.mockResolvedValue({
-		data: {},
+		data: null,
 	});
 
 	const currentVersion = '10.5.0';

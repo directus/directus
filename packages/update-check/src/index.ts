@@ -11,7 +11,7 @@ const instance = Axios.create();
 const axios = cache ? setupCache(instance, { storage: cache }) : instance;
 
 export async function updateCheck(currentVersion: string) {
-	let packageManifest: Partial<Manifest>;
+	let packageManifest: Partial<Manifest> | null;
 
 	try {
 		const response = await axios.get('https://registry.npmjs.org/directus', {
@@ -25,8 +25,8 @@ export async function updateCheck(currentVersion: string) {
 		return;
 	}
 
-	const latestVersion = packageManifest['dist-tags']?.['latest'];
-	const versions = packageManifest.versions;
+	const latestVersion = packageManifest?.['dist-tags']?.['latest'];
+	const versions = packageManifest?.versions;
 
 	if (!latestVersion || !versions || gte(currentVersion, latestVersion)) return;
 
