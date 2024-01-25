@@ -55,27 +55,31 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 .sidebar-nav-before {
 	padding: 1em 0;
 	border-bottom: 1px solid var(--vp-c-divider);
-}
-.toggle {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 0.5rem;
-	a {
-		display: block;
-		text-align: center;
-		font-size: 12px;
-		padding: 0.25rem;
-		font-weight: bold;
-		border-radius: 10rem;
-		border: 1px solid var(--vp-input-border-color);
-		color: var(--vp-input-border-color);
-		&.active {
-			background: var(--vp-c-brand-darkest);
-			color: white;
-			border-color: transparent;
+
+	.toggle {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem;
+
+		a {
+			display: block;
+			text-align: center;
+			font-size: 12px;
+			padding: 0.25rem;
+			font-weight: bold;
+			border-radius: 10rem;
+			border: 1px solid var(--vp-input-border-color);
+			color: var(--vp-input-border-color);
+
+			&.active {
+				background: var(--vp-c-brand-darkest);
+				color: white;
+				border-color: transparent;
+			}
 		}
 	}
 }
+
 .newsletter {
 	margin-top: 2em;
 }
