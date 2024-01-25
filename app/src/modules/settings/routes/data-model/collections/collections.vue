@@ -25,7 +25,7 @@ const collections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.meta,
+				(collection) => collectionsStore.systemCollections.includes(collection.collection) === false && collection.meta,
 			),
 			['meta.sort', 'collection'],
 		),
@@ -97,7 +97,7 @@ const tableCollections = computed(() => {
 		sortBy(
 			collectionsStore.collections.filter(
 				(collection) =>
-					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema,
+					collectionsStore.systemCollections.includes(collection.collection) === false && !!collection.meta === false && collection.schema,
 			),
 			['meta.sort', 'collection'],
 		),
@@ -108,7 +108,7 @@ const systemCollections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections
-				.filter((collection) => collection.collection.startsWith('directus_') === true)
+				.filter((collection) => collectionsStore.systemCollections.includes(collection.collection) === true)
 				.map((collection) => ({ ...collection, icon: 'settings' })),
 			'collection',
 		),

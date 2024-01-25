@@ -25,7 +25,7 @@ const regularCollections = computed(() => orderBy(collectionsStore.databaseColle
 
 const systemCollections = computed(() =>
 	orderBy(
-		collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+		collectionsStore.collections.filter((collection) => collectionsStore.systemCollections.includes(collection.collection) === true),
 		'name',
 	),
 );
@@ -99,7 +99,7 @@ function useReset() {
 		resetting.value = true;
 
 		const toBeDeleted = permissions.value
-			.filter((permission) => permission.collection.startsWith('directus_'))
+			.filter((permission) => collectionsStore.systemCollections.includes(permission.collection))
 			.map((permission) => permission.id);
 
 		try {

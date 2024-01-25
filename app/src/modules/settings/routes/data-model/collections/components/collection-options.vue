@@ -66,7 +66,7 @@ async function update(updates: DeepPartial<Collection>) {
 </script>
 
 <template>
-	<div v-if="collection.collection.startsWith('directus_') === false">
+	<div v-if="collectionsStore.systemCollections.includes(collection.collection) === false">
 		<v-menu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />

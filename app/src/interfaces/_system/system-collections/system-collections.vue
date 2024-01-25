@@ -29,7 +29,7 @@ const collections = computed(() => {
 	}
 
 	if (!props.includeSystem) {
-		collections = collections.filter((collection) => !collection.collection.startsWith('directus_'));
+		collections = collections.filter((collection) => collectionsStore.systemCollections.includes(collection.collection) === false);
 	}
 
 	return collections;

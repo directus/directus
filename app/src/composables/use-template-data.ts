@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
@@ -19,6 +20,8 @@ export function useTemplateData(
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);
+
+	const { systemCollections } = useCollectionsStore();
 
 	const fields = computed(() => {
 		const _template = template?.value || collection.value?.meta?.display_template;
@@ -53,7 +56,7 @@ export function useTemplateData(
 		if (isSingleton.value) {
 			endpoint = baseEndpoint;
 		} else {
-			endpoint = collection.value.collection.startsWith('directus_')
+			endpoint = systemCollections.includes(collection.value.collection)
 				? `${baseEndpoint}/${primaryKey.value}`
 				: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
 		}

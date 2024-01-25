@@ -82,7 +82,7 @@ function discardAndLeave() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="collection.startsWith('directus_') === false"
+						v-if="collectionsStore.systemCollections.includes(collection) === false"
 						v-tooltip.bottom="t('delete_collection')"
 						rounded
 						icon
@@ -142,7 +142,7 @@ function discardAndLeave() {
 				:loading="loading"
 				:initial-values="item?.meta"
 				:primary-key="collection"
-				:disabled="collection.startsWith('directus_')"
+				:disabled="collectionsStore.systemCollections.includes(collection)"
 			/>
 		</div>
 

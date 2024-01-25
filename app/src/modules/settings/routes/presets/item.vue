@@ -316,6 +316,8 @@ function usePreset() {
 function useForm() {
 	const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
+	const { systemCollections } = useCollectionsStore();
+
 	const fields = computed(() => [
 		{
 			field: 'collection',
@@ -330,7 +332,7 @@ function useForm() {
 							value: collection.collection,
 						}))
 						.filter((option) => {
-							if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
+							if (systemCollections.includes(option.value)) return systemCollectionWhiteList.includes(option.value);
 
 							return true;
 						}),

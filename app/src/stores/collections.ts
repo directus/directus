@@ -16,14 +16,20 @@ import { useRelationsStore } from './relations';
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const collections = ref<Collection[]>([]);
 
+	const systemCollections = computed(() =>
+		collections.value
+			.filter(({ meta }) => meta?.system)
+			.map(({ collection }) => collection)
+	)
+
 	const visibleCollections = computed(() =>
 		collections.value
-			.filter(({ collection }) => collection.startsWith('directus_') === false)
+			.filter(({ collection }) => systemCollections.value.includes(collection) === false)
 			.filter((collection) => collection.meta && collection.meta?.hidden !== true),
 	);
 
 	const allCollections = computed(() =>
-		collections.value.filter(({ collection }) => collection.startsWith('directus_') === false),
+		collections.value.filter(({ collection }) => systemCollections.value.includes(collection) === false),
 	);
 
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
@@ -31,7 +37,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const crudSafeSystemCollections = computed(() =>
 		orderBy(
 			collections.value.filter((collection) => {
-				return collection.collection.startsWith('directus_') === true;
+				return systemCollections.value.includes(collection.collection) === true;
 			}),
 			'collection',
 		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
@@ -39,6 +45,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 	return {
 		collections,
+		systemCollections,
 		visibleCollections,
 		allCollections,
 		databaseCollections,

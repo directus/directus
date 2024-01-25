@@ -17,6 +17,7 @@ import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
+import { useCollectionsStore } from '@/stores/collections';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -44,6 +45,7 @@ export function useItem<T extends Record<string, any>>(
 	query: MaybeRef<Query> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+	const { systemCollections } = useCollectionsStore();
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
@@ -460,8 +462,8 @@ export function useItem<T extends Record<string, any>>(
 
 	function setItemValueToResponse(response: AxiosResponse) {
 		if (
-			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+			(systemCollections.includes(collection.value) && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && systemCollections.includes(response.data.data.collection ?? ''))
 		) {
 			response.data.data = translate(response.data.data);
 		}
