@@ -1,7 +1,6 @@
 import stripAnsi from 'strip-ansi';
-import { expect, test, vi, type MockInstance } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi, type MockInstance } from 'vitest';
 import { updateCheck } from './index.js';
-import { afterEach, beforeEach } from 'node:test';
 
 vi.mock('./cache.js');
 
