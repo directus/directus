@@ -57,19 +57,8 @@ Follow prompts to configure your database and create your first admin user.
 
 To start Directus locally, run `npx directus start`.
 
-<details>
-<summary>Notes on Additional Dependencies</summary>
-
-In case you run into errors during installation, run the following command specific to your operating system:
-
-- Windows + OS X users should follow the instructions here: [node-gyp](https://github.com/nodejs/node-gyp)
-- Ubuntu users should run: `sudo apt-get install python g++ build-essential` Alpine users should run:
-  `sudo apk add python3 make g++`
-- Amazon Linux AMI users should run: `sudo yum install gcc72 gcc72-c++`
-- Arch Linux users should run: `sudo pacman -S make gcc python`
-- Red Hat users should run: `sudo dnf install python3 gcc gcc-c++ zlib-devel brotli-devel openssl-devel libuv-devel`
-
-</details>
+Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
+case, make sure you have the required system dependencies for isolated-vm, sharp, and argon2 installed.
 
 :::danger Docker is Recommended
 
