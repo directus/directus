@@ -65,11 +65,14 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 		text-align: center;
 		font-size: 12px;
 		padding: 0.25rem;
-		background: var(--vp-c-bg-alt);
 		font-weight: bold;
-		border-radius: 0.25rem;
+		border-radius: 10rem;
+		border: 1px solid var(--vp-input-border-color);
+		color: var(--vp-input-border-color);
 		&.active {
-			background: var(--vp-c-purple-dimm-3);
+			background: var(--vp-c-brand-darkest);
+			color: white;
+			border-color: transparent;
 		}
 	}
 }
