@@ -1902,11 +1902,11 @@ importers:
   packages/update-check:
     dependencies:
       axios:
-        specifier: 1.6.5
-        version: 1.6.5
+        specifier: 1.6.6
+        version: 1.6.6
       axios-cache-interceptor:
-        specifier: 1.4.1
-        version: 1.4.1(axios@1.6.5)
+        specifier: 1.5.1
+        version: 1.5.1(axios@1.6.6)
       boxen:
         specifier: 7.1.1
         version: 7.1.1
@@ -8698,13 +8698,13 @@ packages:
     dev: false
     optional: true
 
-  /axios-cache-interceptor@1.4.1(axios@1.6.5):
-    resolution: {integrity: sha512-Ax4+PiGfNxpQvyF00t55nFzWoVnqW7slKCg9va6dbqiuAGIxRE8r1uMzunw8TKJ5iwLivFqAb0EeiLeUCxuZIw==}
+  /axios-cache-interceptor@1.5.1(axios@1.6.6):
+    resolution: {integrity: sha512-1p/rTi7DSqUghJ5Ck8GKNt47X6f3IB8XnJ+TM4PwIdhimmCgh0jEQiwI8mBvf2kIMIl4Kz5idwbf/ouK75nEHA==}
     engines: {node: '>=12'}
     peerDependencies:
       axios: ^1
     dependencies:
-      axios: 1.6.5
+      axios: 1.6.6
       cache-parser: 1.2.4
       fast-defer: 1.1.8
       object-code: 1.3.2
@@ -8718,6 +8718,16 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+
+  /axios@1.6.6:
+    resolution: {integrity: sha512-XZLZDFfXKM9U/Y/B4nNynfCRUqNyVZ4sBC/n9GDRCkq9vd2mIvKjKKsbIh1WPmHmNbg6ND7cTBY3Y2+u1G3/2Q==}
+    dependencies:
+      follow-redirects: 1.15.4
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /backoff@2.5.0:
     resolution: {integrity: sha512-wC5ihrnUXmR2douXmXLCe5O3zg3GKIyvRi/hi58a/XyRxVI+3/yM0PYueQOZXPXQ9pxBislYkw+sF9b7C/RuMA==}
