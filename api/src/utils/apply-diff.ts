@@ -68,21 +68,7 @@ export async function applyDiff(
 					// creating a collection without a primary key
 					const fields = snapshotDiff.fields
 						.filter((fieldDiff) => fieldDiff.collection === collection)
-						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
-						.map((fieldDiff) => {
-							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
-							// This is needed because they snapshots UUID fields as char/varchar with length 36.
-							if (
-								['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
-								fieldDiff.schema?.max_length === 36 &&
-								(fieldDiff.schema?.is_primary_key ||
-									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
-							) {
-								return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
-							} else {
-								return fieldDiff;
-							}
-						});
+						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs);
 
 					try {
 						await collectionsService.createOne(
