@@ -41,7 +41,7 @@ const activeTab = ref(props.tabs[0]);
 	margin-inline: auto;
 	padding: 12px;
 	box-shadow: 0 5px 10px 0 rgba(23, 41, 64, 0.1);
-	border-radius: 8px;
+	border-radius: 2em;
 	width: 100%;
 }
 
@@ -56,8 +56,9 @@ const activeTab = ref(props.tabs[0]);
 }
 
 .tab-buttons button.active {
-	background: var(--vp-c-purple-dimm-3);
-	border-radius: 6px;
+	background: var(--vp-c-brand-darkest);
+	color: white;
+	border-radius: 10em;
 	width: 100%;
 }
 
