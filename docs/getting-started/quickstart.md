@@ -58,7 +58,7 @@ Follow prompts to configure your database and create your first admin user.
 To start Directus locally, run `npx directus start`.
 
 Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
-case, make sure you have the required system dependencies for isolated-vm, sharp, and argon2 installed.
+case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
 
 :::danger Docker is Recommended
 
