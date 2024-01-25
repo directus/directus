@@ -964,8 +964,8 @@ importers:
         specifier: 5.0.10
         version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
-        specifier: 3.7.0
-        version: 3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
+        specifier: 3.7.2
+        version: 3.7.2(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
       vitest:
         specifier: 1.1.1
         version: 1.1.1(happy-dom@12.10.3)(sass@1.69.5)
@@ -1869,8 +1869,8 @@ importers:
         specifier: 5.0.10
         version: 5.0.10(sass@1.69.5)
       vite-plugin-dts:
-        specifier: 3.7.0
-        version: 3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
+        specifier: 3.7.2
+        version: 3.7.2(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10)
 
   packages/tsconfig: {}
 
@@ -19250,8 +19250,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.7.0(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10):
-    resolution: {integrity: sha512-np1uPaYzu98AtPReB8zkMnbjwcNHOABsLhqVOf81b3ol9b5M2wPcAVs8oqPnOpr6Us+7yDXVauwkxsk5+ldmRA==}
+  /vite-plugin-dts@3.7.2(rollup@4.9.1)(typescript@5.3.3)(vite@5.0.10):
+    resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
