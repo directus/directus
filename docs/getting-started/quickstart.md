@@ -60,7 +60,7 @@ To start Directus locally, run `npx directus start`.
 <details>
 <summary>Notes on Additional Dependencies</summary>
 
-To prevent potential errors during installation, please run the following command specific to your operating system:
+In case you run into errors during installation, run the following command specific to your operating system:
 
 - Windows + OS X users should follow the instructions here: [node-gyp](https://github.com/nodejs/node-gyp)
 - Ubuntu users should run: `sudo apt-get install python g++ build-essential` Alpine users should run:
