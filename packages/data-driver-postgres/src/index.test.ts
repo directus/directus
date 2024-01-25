@@ -426,7 +426,7 @@ test('selecting an attribute from a json field', async () => {
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: attributeValue1,
+				[jsonAttributeAlias]: attributeValue2,
 			},
 		},
 	];

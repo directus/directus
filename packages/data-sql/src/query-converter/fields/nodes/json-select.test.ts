@@ -11,21 +11,23 @@ test('json select', () => {
 	/**
 	 * Assuming the json value in the database looks like this:
 	 *
-	 * [
-	 *	{
-	 *		author: {
-	 *			name: {
-	 *				first: 'John',
-	 *				last: 'Doe',
-	 *			},
-	 *			age: 42,
+	 * {
+	 *	author: {
+	 *		name: {
+	 *			first: 'John',
+	 *			last: 'Doe',
 	 *		},
+	 *		age: 42,
 	 *	},
-	 * ];
+	 * }
 	 */
 
 	const jsonField: AbstractQueryFieldNodeNestedSingleOne = {
 		type: 'nested-single-one',
+		nesting: {
+			type: 'object-many',
+			fieldName: 'author',
+		},
 		fields: [
 			{
 				type: 'nested-single-one',
@@ -49,10 +51,6 @@ test('json select', () => {
 			},
 		],
 		alias: 'derAuthor',
-		nesting: {
-			type: 'object-many',
-			fieldName: 'author',
-		},
 	};
 
 	const result = convertJson(jsonField, tableIndex, columnIndex);
@@ -60,12 +58,12 @@ test('json select', () => {
 	const expected: AbstractSqlQuerySelectJsonNode = {
 		type: 'json',
 		tableIndex,
-		columnIndex: 0,
+		columnIndex,
 		path: [
 			['author', 'name', 'first'],
 			['author', 'age'],
 		],
 	};
 
-	expect(result).toBe(expected);
+	expect(result).toStrictEqual(expected);
 });
