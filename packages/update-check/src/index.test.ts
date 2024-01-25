@@ -1,33 +1,50 @@
 import stripAnsi from 'strip-ansi';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi, type MockInstance } from 'vitest';
 import { updateCheck } from './index.js';
+import { afterEach, beforeEach } from 'node:test';
 
 vi.mock('./cache.js');
 
-vi.mock('axios-cache-interceptor', () => ({
-	setupCache: () => ({
-		async get() {
-			return { data: manifest };
-		},
-	}),
+const axiosMock = vi.hoisted(() => ({
+	get: vi.fn(),
 }));
 
-const manifest = {
-	'dist-tags': { latest: '10.6.1' },
-	versions: {
-		'10.4.3': {},
-		'10.5.0': {},
-		'10.5.1': {},
-		'10.5.2': {},
-		'10.5.3': {},
-		'10.6.0': {},
-		'10.6.1': {},
-		'10.7.0-beta.0': {},
+vi.mock('axios', () => ({
+	default: {
+		create: () => ({
+			get: axiosMock.get,
+		}),
 	},
-};
+}));
 
-test('#updateCheck', async () => {
-	const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
+let consoleMock: MockInstance;
+
+beforeEach(() => {
+	consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+test('Print banner if update is available', async () => {
+	const manifest = {
+		'dist-tags': { latest: '10.6.1' },
+		versions: {
+			'10.4.3': {},
+			'10.5.0': {},
+			'10.5.1': {},
+			'10.5.2': {},
+			'10.5.3': {},
+			'10.6.0': {},
+			'10.6.1': {},
+			'10.7.0-beta.0': {},
+		},
+	};
+
+	axiosMock.get.mockResolvedValue({
+		data: manifest,
+	});
 
 	const currentVersion = '10.5.0';
 	await updateCheck(currentVersion);
@@ -54,4 +71,15 @@ test('#updateCheck', async () => {
 		   ╰───────────────────────────────────────────────────╯
 		"
 	`);
+});
+
+test('Do not fail on empty response', async () => {
+	axiosMock.get.mockResolvedValue({
+		data: {},
+	});
+
+	const currentVersion = '10.5.0';
+	await updateCheck(currentVersion);
+
+	expect(consoleMock).not.toHaveBeenCalled();
 });
