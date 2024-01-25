@@ -2,7 +2,7 @@ import type { Field, Relation, SchemaOverview } from '@directus/types';
 import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
-import { cloneDeep, merge, set } from 'lodash-es';
+import { cloneDeep, set } from 'lodash-es';
 import { flushCaches } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
