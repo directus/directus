@@ -22,7 +22,7 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 		<template #sidebar-nav-before>
 			<div class="sidebar-nav-before">
 				<div class="toggle">
-					<a href="/getting-started/introduction" :class="{ active: isDevPage }">Developers</a>
+					<a href="/" :class="{ active: isDevPage }">Developers</a>
 					<a href="/user-guide/overview/data-studio-app" :class="{ active: isUserPage }">User Guide</a>
 				</div>
 			</div>
