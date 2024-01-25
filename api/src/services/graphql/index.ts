@@ -80,6 +80,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+import { isSystemCollection } from '../../utils/is-system-collections.js';
 
 const env = useEnv();
 
@@ -206,10 +207,10 @@ export class GraphQLService {
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
-			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
+			if (this.scope === 'items' && isSystemCollection(collection.collection)) return false;
 
 			if (this.scope === 'system') {
-				if (collection.collection.startsWith('directus_') === false) return false;
+				if (isSystemCollection(collection.collection) === false) return false;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) return false;
 			}
 

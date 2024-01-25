@@ -19,6 +19,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { isSystemCollection } from '../utils/is-system-collections.js';
 
 const env = useEnv();
 
@@ -107,7 +108,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		for (const collection of collections) {
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
@@ -141,7 +142,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
@@ -336,7 +337,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (!tag) continue;
 
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			const fieldsInCollection = Object.values(collection.fields);
 
