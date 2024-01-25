@@ -140,7 +140,7 @@ gtag('config', 'UA-24637628-7');
 		],
 		nav: [
 			{ text: 'Website', link: 'https://directus.io/' },
-			{ text: 'Cloud', link: 'https://directus.cloud/' },
+			{ text: 'Cloud Dashboard', link: 'https://directus.cloud/' },
 			{ text: 'Directus TV', link: 'https://directus.io/tv' },
 		],
 		algolia: {
