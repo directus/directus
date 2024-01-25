@@ -23,7 +23,6 @@ import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { systemCollectionRows } from './database/system-data/collections/index.js';
 import { getSystemCollections } from './utils/get-system-collections.js';
 
 let flowManager: FlowManager | undefined;
