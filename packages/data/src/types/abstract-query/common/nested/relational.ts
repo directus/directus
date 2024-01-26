@@ -58,7 +58,7 @@ export interface AbstractQueryFieldNodeNestedSingleRelational {
  * Used to build a relational query for a2o and o2a relations.
  */
 export interface AbstractQueryFieldNodeNestedRelationalAny {
-	type: 'relational-any';
+	type: 'relational-union';
 
 	/** The field name which holds the relational information */
 	field: string;
