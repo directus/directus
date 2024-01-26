@@ -502,7 +502,7 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ::: tip
 
-[DEPRECATED] Use session cookies instead.
+[DEPRECATED] The query parameter approach used here is deprecated, make use of session cookies instead.
 
 :::
 

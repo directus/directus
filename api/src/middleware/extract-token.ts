@@ -40,12 +40,11 @@ const extractToken: RequestHandler = (req, _res, next) => {
 	}
 
 	if (req.cookies && req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
+		/**
+		 * To include session cookies in RFC6750 compliance: throw an error if token !== null
+		 */
 		if (token === null) {
-			// prevent conflicts between access tokens and cookie tokens for now
 			token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
-		} else {
-			// do we need this for RFC6750 too?
-			// throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token' });
 		}
 	}
 

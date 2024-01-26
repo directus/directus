@@ -19,7 +19,7 @@ expiration time, and are thus the most secure option to use. The tokens are retu
 used to retrieve a new access token via the [refresh](#refresh) endpoint/mutation.
 
 **Session Token (JWT)** can also be returned by the [login](#login) endpoint/mutation.\
-[TODO add description here]
+Session tokens combine both a refresh_token and access_token in a single cookie. These tokens should not have a short expiration time like the Temporary tokens as you cannot refresh these after they have expired. 
 
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
 server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
@@ -45,6 +45,12 @@ Cookie: directus_session_token=<token>
 ```
 ?access_token=<token>
 ```
+
+::: Tip
+
+The query parameter option is not recommended in production setups as the parameter can get logged by various systems.
+
+:::
 
 ## Login
 
