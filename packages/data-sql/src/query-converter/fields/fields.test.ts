@@ -344,3 +344,119 @@ test('primitive, o2m', () => {
 
 	expect(result).toStrictEqual(expectedResult);
 });
+
+test('primitive, json path', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnAlias = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
+	const attribute1 = randomIdentifier();
+	const attribute1Alias = randomIdentifier();
+	const attribute2 = randomIdentifier();
+	const attribute2Alias = randomIdentifier();
+	const attribute3 = randomIdentifier();
+	const attribute3Alias = randomIdentifier();
+	const jsonValueAlias = randomIdentifier();
+
+	const fields: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: columnName,
+			alias: columnAlias,
+		},
+		{
+			type: 'nested-single-one',
+			nesting: {
+				type: 'object-many',
+				fieldName: jsonColumnName,
+			},
+			fields: [
+				{
+					type: 'primitive',
+					field: attribute1,
+					alias: attribute1Alias,
+				},
+				{
+					type: 'nested-single-one',
+					nesting: {
+						type: 'object-many',
+						fieldName: attribute2,
+					},
+					fields: [
+						{
+							type: 'primitive',
+							field: attribute3,
+							alias: attribute3Alias,
+						},
+					],
+					alias: attribute2Alias,
+				},
+			],
+			alias: jsonValueAlias,
+		},
+	];
+
+	const expectedResult: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					tableIndex,
+					columnName,
+					columnIndex: 0,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [attribute1],
+					columnIndex: 1,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [attribute2, attribute3],
+					columnIndex: 2,
+				},
+			],
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: columnAlias,
+				columnIndex: 0,
+			},
+			{
+				type: 'nested',
+				alias: jsonValueAlias,
+				children: [
+					{
+						type: 'root',
+						alias: attribute1Alias,
+						columnIndex: 1,
+					},
+					{
+						type: 'nested',
+						alias: attribute2Alias,
+						children: [
+							{
+								type: 'root',
+								alias: attribute3Alias,
+								columnIndex: 2,
+							},
+						],
+					},
+				],
+			},
+		],
+		subQueries: [expect.any(Function)],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
+});
