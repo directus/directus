@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedRelationalMany } from '../../common/nested/relational.js';
+import type { AbstractQueryFieldNodeNestedSingleRelational } from '../../common/nested/relational.js';
 import type { AbstractQueryTarget } from '../target.js';
 
 /**
@@ -11,5 +11,5 @@ export interface AbstractQueryTargetNestedOne {
 	field: AbstractQueryTarget;
 
 	/* A nested one target can only target m2o relationship */
-	nesting: AbstractQueryFieldNodeNestedRelationalMany;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational;
 }
