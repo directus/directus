@@ -21,8 +21,8 @@ import type { AbstractQueryFieldNode } from '../../fields.js';
  * };
  * ```
  */
-export interface AbstractQueryFieldNodeNestedRelationalMany {
-	type: 'relational-many';
+export interface AbstractQueryFieldNodeNestedSingleRelational {
+	type: 'relational-single';
 
 	/**
 	 * The field names which identify an item in the...

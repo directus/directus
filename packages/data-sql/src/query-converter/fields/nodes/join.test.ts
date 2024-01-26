@@ -14,7 +14,7 @@ test('Convert m2o relation on single field ', () => {
 	const externalColumnName = randomIdentifier();
 
 	const relationalField: AbstractQueryFieldNodeNestedRelationalMany = {
-		type: 'relational-many',
+		type: 'relational-single',
 		local: {
 			fields: [columnName],
 		},
@@ -66,7 +66,7 @@ test('Convert m2o relation with composite keys', () => {
 	const externalColumn2Name = randomIdentifier();
 
 	const relationalField: AbstractQueryFieldNodeNestedRelationalMany = {
-		type: 'relational-many',
+		type: 'relational-single',
 		local: {
 			fields: [column1Name, column2Name],
 		},

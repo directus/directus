@@ -586,7 +586,7 @@ test('Convert a query with a relational target string filter', () => {
 							field: externalColumnName,
 						},
 						nesting: {
-							type: 'relational-many',
+							type: 'relational-single',
 							local: {
 								fields: [foreignKeyColumnName],
 							},
@@ -712,7 +712,7 @@ test('Convert a query with a nested field and filtering on another nested field'
 				],
 				alias: randomIdentifier(),
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [foreignKeyColumnName],
 					},
@@ -736,7 +736,7 @@ test('Convert a query with a nested field and filtering on another nested field'
 							field: externalColumn2Name,
 						},
 						nesting: {
-							type: 'relational-many',
+							type: 'relational-single',
 							local: {
 								fields: [foreignKeyColumnName],
 							},
