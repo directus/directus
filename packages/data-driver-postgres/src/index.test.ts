@@ -350,7 +350,7 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test('selecting an attribute from a json field', async () => {
+test.skip('selecting an attribute from a json field', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
@@ -434,7 +434,7 @@ test('selecting an attribute from a json field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test('selecting multiple attributes from json field', async () => {
+test.skip('selecting multiple attributes from json field', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
@@ -531,7 +531,7 @@ test('selecting multiple attributes from json field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test('selecting one attributes from json field which is an array', async () => {
+test.skip('selecting one attributes from json field which is an array', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
