@@ -57,16 +57,16 @@ export interface AbstractQueryFieldNodeNestedSingleRelational {
 /**
  * Used to build a relational query for a2o and o2a relations.
  */
-export interface AbstractQueryFieldNodeNestedRelationalAny {
+export interface AbstractQueryFieldNodeNestedUnionRelational {
 	type: 'relational-union';
 
 	/** The field name which holds the relational information */
 	field: string;
 
-	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
+	collections: RelationalUnionCollection[];
 }
 
-interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
+interface RelationalUnionCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
