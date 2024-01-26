@@ -4,7 +4,7 @@ import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusErr
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
-import { /*REFRESH_COOKIE_OPTIONS, */SESSION_COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -154,12 +154,14 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const relayState: string | undefined = req.body?.RelayState;
 
+			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
+
 			try {
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes, undefined, true);
+				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes, undefined, authMode === 'session');
 
 				res.locals['payload'] = {
 					data: {
@@ -170,8 +172,12 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
-					// res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					if (authMode === 'session') {
+						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					} else {
+						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					}
+
 					return res.redirect(relayState);
 				}
 

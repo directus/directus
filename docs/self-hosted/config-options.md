@@ -698,6 +698,7 @@ For each auth provider you list, you must also provide the following configurati
 | Variable                 | Description                                                             | Default Value |
 | ------------------------ | ----------------------------------------------------------------------- | ------------- |
 | `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap`, `saml` | --            |
+| `AUTH_<PROVIDER>_MODE` | Whether to use `'cookie'` or `'session'` authentication mode when redirecting. Applies to the following drivers `oauth2`, `openid`, `saml` | `session`           |
 
 You may also be required to specify additional variables depending on the auth driver. See configuration details below.
 
