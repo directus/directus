@@ -45,7 +45,6 @@ router.post(
 		if (mode === 'json') {
 			payload['access_token'] = accessToken;
 			payload['refresh_token'] = refreshToken;
-
 		}
 
 		if (mode === 'cookie') {
@@ -55,7 +54,6 @@ router.post(
 
 		if (mode === 'session') {
 			res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
-
 		}
 
 		res.locals['payload'] = { data: payload };

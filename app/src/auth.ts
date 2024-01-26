@@ -107,7 +107,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	isRefreshing = true;
 
 	try {
-		const response = await api.post<any>('/auth/refresh', { mode: "session" });
+		const response = await api.post<any>('/auth/refresh', { mode: 'session' });
 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any notable hiccups or delays

@@ -403,12 +403,17 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				authResponse = await authenticationService.login(providerName, {
-					code: req.query['code'],
-					codeVerifier: verifier,
-					state: req.query['state'],
-					iss: req.query['iss'],
-				}, undefined, authMode === 'session');
+				authResponse = await authenticationService.login(
+					providerName,
+					{
+						code: req.query['code'],
+						codeVerifier: verifier,
+						state: req.query['state'],
+						iss: req.query['iss'],
+					},
+					undefined,
+					authMode === 'session',
+				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
@@ -436,7 +441,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-
 				if (authMode === 'session') {
 					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 				} else {

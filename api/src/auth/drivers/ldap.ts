@@ -445,7 +445,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 				provider,
 				req.body,
 				req.body?.otp,
-				mode === 'session'
+				mode === 'session',
 			);
 
 			const payload = {

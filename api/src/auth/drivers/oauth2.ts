@@ -372,11 +372,16 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				authResponse = await authenticationService.login(providerName, {
-					code: req.query['code'],
-					codeVerifier: verifier,
-					state: req.query['state'],
-				}, undefined, authMode === 'session');
+				authResponse = await authenticationService.login(
+					providerName,
+					{
+						code: req.query['code'],
+						codeVerifier: verifier,
+						state: req.query['state'],
+					},
+					undefined,
+					authMode === 'session',
+				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {

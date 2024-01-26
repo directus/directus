@@ -121,10 +121,15 @@ router.post(
 		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `The refresh or session token is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({
+				reason: `The refresh or session token is required in either the JSON payload or Cookie`,
+			});
 		}
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, mode === 'session');
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(
+			currentRefreshToken,
+			mode === 'session',
+		);
 
 		const payload = {
 			data: { expires },
@@ -173,7 +178,9 @@ router.post(
 		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `The refresh or session token is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({
+				reason: `The refresh or session token is required in either the JSON payload or Cookie`,
+			});
 		}
 
 		await authenticationService.logout(currentRefreshToken);

@@ -32,7 +32,9 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		if (parts.length === 2 && parts[0]!.toLowerCase() === 'bearer') {
 			if (token !== null) {
 				// RFC6750 compliance:
-				throw new InvalidPayloadError({ reason: 'The request uses more than one method for including an access token' });
+				throw new InvalidPayloadError({
+					reason: 'The request uses more than one method for including an access token',
+				});
 			}
 
 			token = parts[1]!;

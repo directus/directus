@@ -91,7 +91,7 @@ export function createLocalAuthRouter(provider: string): Router {
 				provider,
 				req.body,
 				req.body?.otp,
-				mode === 'session'
+				mode === 'session',
 			);
 
 			const payload = { data: { expires } } as Record<string, Record<string, any>>;

@@ -46,7 +46,12 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
+import {
+	DEFAULT_AUTH_PROVIDER,
+	GENERATE_SPECIAL,
+	REFRESH_COOKIE_OPTIONS,
+	SESSION_COOKIE_OPTIONS,
+} from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';

@@ -68,6 +68,6 @@ test('Returns the payload of an access token', () => {
 		app_access: true,
 		admin_access: true,
 		iss: 'directus',
-		iat: expect.any(Number)
+		iat: expect.any(Number),
 	});
 });
