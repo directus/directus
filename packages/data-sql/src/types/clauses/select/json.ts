@@ -1,13 +1,17 @@
 export interface AbstractSqlQuerySelectJsonNode {
 	type: 'json';
 	tableIndex: number;
-	columnIndex: number;
 
+	paths: Path[];
+}
+
+export interface Path {
 	/**
-	 * The path to the JSON attribute.
+	 * The path to the JSON attribute. Like:
 	 *
-	 * ['author', 'name', 'first']
 	 * ['author', 'age']
 	 */
-	path: string[][];
+	path: string[];
+
+	columnIndex: number;
 }

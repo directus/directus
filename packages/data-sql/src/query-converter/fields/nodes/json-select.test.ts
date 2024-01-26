@@ -3,10 +3,10 @@ import { convertJson } from './json-select.js';
 import type { AbstractQueryFieldNodeNestedSingleOne } from '@directus/data';
 import { randomInteger } from '@directus/random';
 import type { AbstractSqlQuerySelectJsonNode } from '../../../index.js';
+import { numberGenerator } from '../../utils/number-generator.js';
 
 test('json select', () => {
 	const tableIndex = randomInteger(0, 100);
-	const columnIndex = randomInteger(0, 100);
 
 	/**
 	 * Assuming the json value in the database looks like this:
@@ -53,15 +53,22 @@ test('json select', () => {
 		alias: 'derAuthor',
 	};
 
-	const result = convertJson(jsonField, tableIndex, columnIndex);
+	const colIndxGenerator = numberGenerator();
+
+	const result = convertJson(jsonField, tableIndex, colIndxGenerator);
 
 	const expected: AbstractSqlQuerySelectJsonNode = {
 		type: 'json',
 		tableIndex,
-		columnIndex,
-		path: [
-			['author', 'name', 'first'],
-			['author', 'age'],
+		paths: [
+			{
+				path: ['author', 'name', 'first'],
+				columnIndex: 0,
+			},
+			{
+				path: ['author', 'age'],
+				columnIndex: 1,
+			},
 		],
 	};
 

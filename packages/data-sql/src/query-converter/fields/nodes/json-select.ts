@@ -1,18 +1,19 @@
 import type { AbstractQueryFieldNode, AbstractQueryFieldNodeNestedSingleOne } from '@directus/data';
-import type { AbstractSqlQuerySelectJsonNode } from '../../../index.js';
+import type { AbstractSqlQuerySelectJsonNode, Path } from '../../../index.js';
+import type { NumberGenerator } from '../../utils/number-generator.js';
 
 export function convertJson(
 	jsonField: AbstractQueryFieldNodeNestedSingleOne,
 	tableIndex: number,
-	columnIndex: number,
+	columnIndexGenerator: NumberGenerator,
 ): AbstractSqlQuerySelectJsonNode {
-	const path = createListFromTree(jsonField, []);
+	const paths = createListFromTree(jsonField, []);
+	const pathsWithColumnIndex = enhanceWithColumnIndex(paths, columnIndexGenerator);
 
 	return {
 		type: 'json',
 		tableIndex,
-		columnIndex,
-		path,
+		paths: pathsWithColumnIndex,
 	};
 }
 
@@ -36,4 +37,11 @@ function createListFromTree(field: AbstractQueryFieldNode, current: string[]): s
 	}
 
 	return res;
+}
+
+function enhanceWithColumnIndex(paths: string[][], columnIndexGenerator: NumberGenerator): Path[] {
+	return paths.map((path) => ({
+		path,
+		columnIndex: columnIndexGenerator.next().value,
+	}));
 }
