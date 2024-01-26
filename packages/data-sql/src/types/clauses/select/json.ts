@@ -1,17 +1,9 @@
+import type { AtLeastOneElement } from '@directus/data';
+
 export interface AbstractSqlQuerySelectJsonNode {
 	type: 'json';
 	tableIndex: number;
-
-	paths: Path[];
-}
-
-export interface Path {
-	/**
-	 * The path to the JSON attribute. Like:
-	 *
-	 * ['author', 'age']
-	 */
-	path: string[];
-
+	columnName: string;
 	columnIndex: number;
+	path: AtLeastOneElement<string>;
 }
