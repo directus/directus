@@ -48,7 +48,7 @@ const {
 	hasEdits,
 	item,
 	saving,
-	loading,
+	loading: loadingItem,
 	save,
 	remove,
 	deleting,
@@ -88,6 +88,19 @@ const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.ava
 
 const avatarError = ref(null);
 
+const {
+	loading: loadingPermissions,
+	createAllowed,
+	deleteAllowed,
+	archiveAllowed,
+	saveAllowed,
+	updateAllowed,
+	revisionsAllowed,
+	fields,
+} = usePermissions('directus_users', primaryKey, isNew);
+
+const loading = computed(() => loadingItem.value || loadingPermissions.value);
+
 const title = computed(() => {
 	if (loading.value === true) return t('loading');
 
@@ -98,9 +111,6 @@ const title = computed(() => {
 
 	return t('adding_user');
 });
-
-const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-	usePermissions(ref('directus_users'), item, isNew);
 
 // These fields will be shown in the sidebar instead
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];

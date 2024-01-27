@@ -16,7 +16,7 @@ import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { usePermissions } from './use-permissions';
+import { useFieldsPermissions } from './use-permissions/fields';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -66,7 +66,7 @@ export function useItem<T extends Record<string, any>>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
+	const { fields: fieldsWithPermissions } = useFieldsPermissions(collection, isNew);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {

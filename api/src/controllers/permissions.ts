@@ -230,7 +230,7 @@ router.get(
 			},
 		};
 
-		res.locals['payload'] = permissions;
+		res.locals['payload'] = { data: permissions };
 
 		return next();
 	}),

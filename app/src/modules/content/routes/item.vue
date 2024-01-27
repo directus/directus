@@ -87,21 +87,6 @@ const {
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const isSavable = computed(() => {
-	if (saveAllowed.value === false && currentVersion.value === null) return false;
-	if (hasEdits.value === true) return true;
-
-	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
-	}
-
-	if (isNew.value === true) {
-		return Object.keys(defaults.value).length > 0 || hasEdits.value;
-	}
-
-	return hasEdits.value;
-});
-
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
@@ -169,16 +154,31 @@ useShortcut(
 const {
 	loading: loadingPermissions,
 	createAllowed,
-	deleteAllowed,
-	archiveAllowed,
-	saveAllowed,
 	updateAllowed,
+	deleteAllowed,
 	shareAllowed,
-	fields,
+	saveAllowed,
+	archiveAllowed,
 	revisionsAllowed,
-} = usePermissions(collection, item, isNew);
+	fields,
+} = usePermissions(collection, primaryKey, isNew);
 
 const loading = computed(() => loadingItem.value || loadingPermissions.value);
+
+const isSavable = computed(() => {
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
+	if (hasEdits.value === true) return true;
+
+	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
+		return !!edits.value?.[primaryKeyField.value.field];
+	}
+
+	if (isNew.value === true) {
+		return Object.keys(defaults.value).length > 0 || hasEdits.value;
+	}
+
+	return hasEdits.value;
+});
 
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;

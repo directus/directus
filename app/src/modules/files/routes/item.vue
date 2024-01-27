@@ -35,8 +35,20 @@ const { breadcrumb } = useBreadcrumb();
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, refresh, validationErrors } =
-	useItem<File>(ref('directus_files'), primaryKey);
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	saving,
+	loading: loadingItem,
+	save,
+	remove,
+	deleting,
+	saveAsCopy,
+	refresh,
+	validationErrors,
+} = useItem<File>(ref('directus_files'), primaryKey);
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
@@ -70,11 +82,17 @@ const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFo
 
 useShortcut('meta+s', saveAndStay, form);
 
-const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-	ref('directus_files'),
-	item,
-	isNew,
-);
+const {
+	loading: loadingPermissions,
+	createAllowed,
+	updateAllowed,
+	deleteAllowed,
+	saveAllowed,
+	revisionsAllowed,
+	fields,
+} = usePermissions('directus_files', primaryKey, isNew);
+
+const loading = computed(() => loadingItem.value || loadingPermissions.value);
 
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
