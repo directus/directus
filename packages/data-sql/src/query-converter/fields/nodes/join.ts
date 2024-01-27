@@ -3,7 +3,7 @@ import type {
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
 	AbstractSqlQueryLogicalNode,
-} from '../../types/index.js';
+} from '../../../types/index.js';
 
 export const createJoin = (
 	relationalField: AbstractQueryFieldNodeNestedRelationalMany,

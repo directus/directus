@@ -2,7 +2,7 @@ import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directu
 import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
 import type { IndexGenerators } from '../utils/create-index-generators.js';
 import { convertFn } from '../common/function.js';
-import { createJoin } from '../fields/create-join.js';
+import { createJoin } from '../fields/nodes/join.js';
 
 export interface TargetConversionResult {
 	value: AbstractSqlQueryTargetNode;

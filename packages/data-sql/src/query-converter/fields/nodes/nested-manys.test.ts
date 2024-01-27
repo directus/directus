@@ -1,8 +1,8 @@
 import type { AbstractQueryFieldNodeNestedSingleMany } from '@directus/data';
 import { randomAlpha, randomIdentifier, randomInteger, randomUUID } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { ConverterResult } from '../../index.js';
-import { getNestedMany, type NestedManyResult } from './create-nested-manys.js';
+import type { ConverterResult } from '../../../index.js';
+import { getNestedMany, type NestedManyResult } from './nested-manys.js';
 
 test('getNestedMany with a single identifier', () => {
 	const columnIndexToIdentifier = (columnIndex: number) => `c${columnIndex}`;

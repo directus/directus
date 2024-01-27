@@ -80,6 +80,21 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'defaultOpenSplitView',
+				name: '$t:interfaces.translations.default_split_view_state',
+				type: 'boolean',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'toggle',
+					options: {
+						label: '$t:start_open',
+					},
+					width: 'half',
+				},
+			},
 		];
 	},
 	preview: PreviewSVG,
