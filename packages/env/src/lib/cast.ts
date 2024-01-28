@@ -22,7 +22,7 @@ export const cast = (key: string, value: unknown): unknown => {
 		case 'regex':
 			return new RegExp(String(value));
 		case 'array':
-			return toArray(value).map((v) => cast(key, v));
+			return toArray(value).map((v) => cast('', v)); // send empty key to avoid wrong type generation from `getTypeFromMap`
 		case 'json':
 			return tryJson(value);
 	}
