@@ -5,8 +5,12 @@ import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { tryJson } from '../utils/try-json.js';
 
-export const cast = (key: string, value: unknown) => {
+export const cast = (key: string, value: unknown): unknown => {
 	const type = getCastFlag(value) ?? getTypeFromMap(key) ?? guessType(value);
+
+	if (getCastFlag(value)) {
+		value = (value as string).split(':').slice(1).join(':');
+	}
 
 	switch (type) {
 		case 'string':
@@ -18,7 +22,7 @@ export const cast = (key: string, value: unknown) => {
 		case 'regex':
 			return new RegExp(String(value));
 		case 'array':
-			return toArray(value);
+			return toArray(value).map((v) => cast(key, v));
 		case 'json':
 			return tryJson(value);
 	}
