@@ -1198,8 +1198,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
+        specifier: 16.4.1
+        version: 16.4.1
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1211,8 +1211,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@types/node':
-        specifier: 18.19.3
-        version: 18.19.3
+        specifier: 18.19.10
+        version: 18.19.10
       '@vitest/coverage-v8':
         specifier: 1.2.2
         version: 1.2.2(vitest@1.2.2)
@@ -1224,7 +1224,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.3)
+        version: 1.2.2(@types/node@18.19.10)
 
   packages/errors:
     dependencies:
@@ -11228,11 +11228,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
     dev: true
-
-  /dotenv@16.3.1:
-    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
-    engines: {node: '>=12'}
-    dev: false
 
   /dotenv@16.4.1:
     resolution: {integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==}
