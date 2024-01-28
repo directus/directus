@@ -1306,8 +1306,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@types/node':
-        specifier: 18.19.3
-        version: 18.19.3
+        specifier: 18.19.10
+        version: 18.19.10
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
@@ -1325,7 +1325,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.3)
+        version: 1.2.2(@types/node@18.19.10)
 
   packages/extensions-sdk:
     dependencies:
