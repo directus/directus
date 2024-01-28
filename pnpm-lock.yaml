@@ -1168,8 +1168,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@types/node':
-        specifier: 18.19.3
-        version: 18.19.3
+        specifier: 18.19.10
+        version: 18.19.10
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8
@@ -1177,8 +1177,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2(vitest@1.2.2)
       dependency-cruiser:
-        specifier: 15.5.0
-        version: 15.5.0
+        specifier: 16.1.0
+        version: 16.1.0
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1187,7 +1187,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.3)
+        version: 1.2.2(@types/node@18.19.10)
 
   packages/env:
     dependencies:
@@ -9058,11 +9058,6 @@ packages:
       acorn: 8.11.3
     dev: true
 
-  /acorn-walk@8.3.0:
-    resolution: {integrity: sha512-FS7hV565M5l1R08MXqo8odwMTB02C2UqzB17RVgu9EyuYFBqJZ3/ZY97sQD5FewVu1UyDFc1yztUDrAwT0EypA==}
-    engines: {node: '>=0.4.0'}
-    dev: true
-
   /acorn-walk@8.3.2:
     resolution: {integrity: sha512-cjkyv4OtNCIeqhHrfS81QWXoCBPExR/J62oyEqepVw8WaQeSqpW2uhuLPh1m9eWhDuOo/jUXVTlifvesOWp/4A==}
     engines: {node: '>=0.4.0'}
@@ -11047,39 +11042,6 @@ packages:
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
-
-  /dependency-cruiser@15.5.0:
-    resolution: {integrity: sha512-f6pY7rh6IHl39pLHdA9CUg3LzbJRDPeZXGa1q0A4v7qTy3CDP8xOg0gsecFglurvsB6kuIYkUSW1PUtfyVkEOA==}
-    engines: {node: ^18.17||>=20}
-    hasBin: true
-    dependencies:
-      acorn: 8.11.2
-      acorn-jsx: 5.3.2(acorn@8.11.2)
-      acorn-jsx-walk: 2.0.0
-      acorn-loose: 8.4.0
-      acorn-walk: 8.3.0
-      ajv: 8.12.0
-      chalk: 5.3.0
-      commander: 11.1.0
-      enhanced-resolve: 5.15.0
-      figures: 6.0.1
-      ignore: 5.3.0
-      indent-string: 5.0.0
-      interpret: 3.1.1
-      is-installed-globally: 1.0.0
-      json5: 2.2.3
-      lodash: 4.17.21
-      picomatch: 3.0.1
-      prompts: 2.4.2
-      rechoir: 0.8.0
-      safe-regex: 2.1.1
-      semver: 7.5.4
-      semver-try-require: 6.2.3
-      teamcity-service-messages: 0.1.14
-      tsconfig-paths-webpack-plugin: 4.1.0
-      watskeburt: 2.0.2
-      wrap-ansi: 9.0.0
-    dev: true
 
   /dependency-cruiser@16.1.0:
     resolution: {integrity: sha512-gmuLNIi4ygkf9KLKZzCWc+og7uwFTkTPauT2ma764NtHQt3r4GoWqCR/lZK/kCfOpNOPU9mB0EM/7RmRL6BFXA==}
@@ -21082,12 +21044,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       xml-name-validator: 4.0.0
-    dev: true
-
-  /watskeburt@2.0.2:
-    resolution: {integrity: sha512-+WhC6hh3ThX7fx78VI4X1mL8ifMTow4j95tLuiUqDP96jnV4Fa4xGIilpeeBAy5hZtbh0n+irgcySkq7iPwZ4w==}
-    engines: {node: ^18||>=20}
-    hasBin: true
     dev: true
 
   /watskeburt@2.0.5:
