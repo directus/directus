@@ -17,7 +17,7 @@ jobs:
       prerelease: ${{ steps.version.outputs.prerelease && true || false }}
     steps:
       - name: Check version
-        uses: madhead/semver-utils@v3
+        uses: madhead/semver-utils@v4
         id: version
         with:
           version: ${{ github.ref_name }}
