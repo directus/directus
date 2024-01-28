@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.17.8",
-		"@vitejs/plugin-vue": "4.6.2",
+		"@vitejs/plugin-vue": "5.0.3",
 		"@vitest/coverage-v8": "1.2.2",
 		"histoire": "0.17.8",
 		"rollup-plugin-node-externals": "6.1.2",
@@ -42,7 +42,7 @@
 	},
 	"peerDependencies": {
 		"pinia": "2.1.7",
-		"vue": "3.3.13",
+		"vue": "3.4.15",
 		"vue-i18n": "9.2.2",
 		"vue-router": "4.2.5"
 	}
