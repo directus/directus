@@ -9,8 +9,8 @@ on:
       - .github/workflows/sync-dockerhub-readme.yml
 
 jobs:
-  sync-dockerhub-readme:
-    name: Sync Readme to Docker Hub
+  sync:
+    name: Sync
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
