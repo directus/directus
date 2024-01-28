@@ -1773,8 +1773,8 @@ importers:
         specifier: 2.5.5
         version: 2.5.5
       undici:
-        specifier: 6.3.0
-        version: 6.3.0
+        specifier: 6.5.0
+        version: 6.5.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -7854,7 +7854,7 @@ packages:
     dependencies:
       '@vitest/spy': 1.2.2
       '@vitest/utils': 1.2.2
-      chai: 4.3.10
+      chai: 4.4.1
     dev: true
 
   /@vitest/runner@1.2.2:
@@ -9192,19 +9192,6 @@ packages:
 
   /ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
-    dev: true
-
-  /chai@4.3.10:
-    resolution: {integrity: sha512-0UXG04VuVbruMUYbJ6JctvH0YnC/4q3/AkT18q4NaITo91CUm0liMS9VqzT9vZhVQ/1eqPanMWjBM+Juhfb/9g==}
-    engines: {node: '>=4'}
-    dependencies:
-      assertion-error: 1.1.0
-      check-error: 1.0.3
-      deep-eql: 4.1.3
-      get-func-name: 2.0.2
-      loupe: 2.3.7
-      pathval: 1.1.1
-      type-detect: 4.0.8
     dev: true
 
   /chai@4.4.1:
@@ -18991,13 +18978,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-
-  /undici@6.3.0:
-    resolution: {integrity: sha512-zkSMOXs2topAR1LF0PxAaNNvhdX4LYEcmRMJLMh3mjgfZpBtc/souXOp4aYiR5Q46HrBPA2/8DkEZhD3eNFE1Q==}
-    engines: {node: '>=18.0'}
-    dependencies:
-      '@fastify/busboy': 2.1.0
-    dev: false
 
   /undici@6.5.0:
     resolution: {integrity: sha512-/MUmPb2ptTvp1j7lPvdMSofMdqPxcOhAaKZi4k55sqm6XMeKI3n1dZJ5cnD4gLjpt2l7CIlthR1IXM59xKhpxw==}
