@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.32.9",
+		"@sinclair/typebox": "0.32.13",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21"
@@ -37,9 +37,9 @@
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@vitejs/plugin-vue": "5.0.3",
-		"rollup-plugin-node-externals": "6.1.2",
+		"rollup-plugin-node-externals": "7.0.0",
 		"typescript": "5.3.3",
-		"vite": "5.0.10",
+		"vite": "5.0.12",
 		"vite-plugin-dts": "3.7.2"
 	},
 	"peerDependencies": {

@@ -1826,8 +1826,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.9
-        version: 0.32.9
+        specifier: 0.32.13
+        version: 0.32.13
       '@unhead/vue':
         specifier: 1.8.9
         version: 1.8.9(vue@3.4.15)
@@ -1858,19 +1858,19 @@ importers:
         version: 4.17.12
       '@vitejs/plugin-vue':
         specifier: 5.0.3
-        version: 5.0.3(vite@5.0.10)(vue@3.4.15)
+        version: 5.0.3(vite@5.0.12)(vue@3.4.15)
       rollup-plugin-node-externals:
-        specifier: 6.1.2
-        version: 6.1.2(rollup@4.9.6)
+        specifier: 7.0.0
+        version: 7.0.0(rollup@4.9.6)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
       vite:
-        specifier: 5.0.10
-        version: 5.0.10
+        specifier: 5.0.12
+        version: 5.0.12(@types/node@18.19.3)
       vite-plugin-dts:
         specifier: 3.7.2
-        version: 3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.10)
+        version: 3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.12)
 
   packages/tsconfig: {}
 
@@ -3767,6 +3767,7 @@ packages:
     cpu: [ppc64]
     os: [aix]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/aix-ppc64@0.19.12:
@@ -3801,6 +3802,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm64@0.19.12:
@@ -3835,6 +3837,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-arm@0.19.12:
@@ -3869,6 +3872,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/android-x64@0.19.12:
@@ -3903,6 +3907,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-arm64@0.19.12:
@@ -3937,6 +3942,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/darwin-x64@0.19.12:
@@ -3971,6 +3977,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-arm64@0.19.12:
@@ -4005,6 +4012,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/freebsd-x64@0.19.12:
@@ -4039,6 +4047,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm64@0.19.12:
@@ -4073,6 +4082,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-arm@0.19.12:
@@ -4107,6 +4117,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ia32@0.19.12:
@@ -4141,6 +4152,7 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-loong64@0.19.12:
@@ -4175,6 +4187,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-mips64el@0.19.12:
@@ -4209,6 +4222,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-ppc64@0.19.12:
@@ -4243,6 +4257,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-riscv64@0.19.12:
@@ -4277,6 +4292,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-s390x@0.19.12:
@@ -4311,6 +4327,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/linux-x64@0.19.12:
@@ -4345,6 +4362,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/netbsd-x64@0.19.12:
@@ -4379,6 +4397,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/openbsd-x64@0.19.12:
@@ -4413,6 +4432,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/sunos-x64@0.19.12:
@@ -4447,6 +4467,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-arm64@0.19.12:
@@ -4481,6 +4502,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-ia32@0.19.12:
@@ -4515,6 +4537,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@esbuild/win32-x64@0.19.12:
@@ -6480,8 +6503,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sinclair/typebox@0.32.9:
-    resolution: {integrity: sha512-6oeJJPTIb0y3cs713HmXmXSx3WRWgid74KICYL9blOhNFuAcAB18dDWfATgcgzynfpF5xDzHGxEVbDYYr6nvgg==}
+  /@sinclair/typebox@0.32.13:
+    resolution: {integrity: sha512-6gfhrgov2RWxPIlGyFcCVn1DejhmQvObIiBIx/Qx3FRnxlLS/RuoyDxK1hhhVU+S5+1Xmul32QALLErVfinyxw==}
     dev: false
 
   /@sindresorhus/is@4.6.0:
@@ -7782,17 +7805,6 @@ packages:
       vue: 3.4.15(typescript@5.3.3)
     dev: false
 
-  /@vitejs/plugin-vue@4.5.0(vite@4.5.2)(vue@3.4.15):
-    resolution: {integrity: sha512-a2WSpP8X8HTEww/U00bU4mX1QpLINNuz/2KMNpLsdu3BzOpak3AGI1CJYBTXcc4SPhaD0eNRUp7IyQK405L5dQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      vite: ^4.0.0 || ^5.0.0
-      vue: ^3.2.25
-    dependencies:
-      vite: 4.5.2
-      vue: 3.4.15(typescript@5.3.3)
-    dev: true
-
   /@vitejs/plugin-vue@4.6.2(vite@4.5.2)(vue@3.4.15):
     resolution: {integrity: sha512-kqf7SGFoG+80aZG6Pf+gsZIVvGSCKE98JbiWqcCV9cThtg91Jav0yvYFC9Zb+jKetNGF6ZKeoaxgZfND21fWKw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -7802,18 +7814,6 @@ packages:
     dependencies:
       vite: 4.5.2
       vue: 3.4.15(typescript@5.3.3)
-    dev: false
-
-  /@vitejs/plugin-vue@5.0.3(vite@5.0.10)(vue@3.4.15):
-    resolution: {integrity: sha512-b8S5dVS40rgHdDrw+DQi/xOM9ed+kSRZzfm1T74bMmBDCd8XO87NKlFYInzCtwvtWwXZvo1QxE2OSspTATWrbA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      vite: ^5.0.0
-      vue: ^3.2.25
-    dependencies:
-      vite: 5.0.10
-      vue: 3.4.15(typescript@5.3.3)
-    dev: true
 
   /@vitejs/plugin-vue@5.0.3(vite@5.0.12)(vue@3.4.15):
     resolution: {integrity: sha512-b8S5dVS40rgHdDrw+DQi/xOM9ed+kSRZzfm1T74bMmBDCd8XO87NKlFYInzCtwvtWwXZvo1QxE2OSspTATWrbA==}
@@ -7822,7 +7822,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.12(sass@1.70.0)
+      vite: 5.0.12(@types/node@18.19.3)
       vue: 3.4.15(typescript@5.3.3)
     dev: true
 
@@ -7999,7 +7999,7 @@ packages:
       muggle-string: 0.3.1
       path-browserify: 1.0.1
       typescript: 5.3.3
-      vue-template-compiler: 2.7.15
+      vue-template-compiler: 2.7.16
     dev: true
 
   /@vue/reactivity-transform@3.3.8:
@@ -10809,6 +10809,7 @@ packages:
       '@esbuild/win32-arm64': 0.19.10
       '@esbuild/win32-ia32': 0.19.10
       '@esbuild/win32-x64': 0.19.10
+    dev: false
 
   /esbuild@0.19.12:
     resolution: {integrity: sha512-aARqgq8roFBj054KvQr5f1sFu0D65G+miZRCuJyJ0G13Zwx7vRar5Zhn2tkQNzIXcBrNVsv/8stehpj+GAjgbg==}
@@ -17082,15 +17083,6 @@ packages:
       - supports-color
     dev: false
 
-  /rollup-plugin-node-externals@6.1.2(rollup@4.9.6):
-    resolution: {integrity: sha512-2TWan0u0/zHcgPrKpIPgKSY8OMqwDAYD380I0hxx7iUQw8mrN34DWwG9sQUMEo5Yy4xd6/5QEAySYgiKN9fdBQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      rollup: ^3.0.0 || ^4.0.0
-    dependencies:
-      rollup: 4.9.6
-    dev: true
-
   /rollup-plugin-node-externals@7.0.0(rollup@4.9.6):
     resolution: {integrity: sha512-EcPXBAP7S5Yk3JUe4njDeiRyAYquuC6AcbFUuEQdd5PrkXy0ysmMDMiG2cpR2tUQF0wdBfhMvUAetl3bGWPeww==}
     engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
@@ -19514,30 +19506,6 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.10):
-    resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      typescript: '*'
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-    dependencies:
-      '@microsoft/api-extractor': 7.39.0
-      '@rollup/pluginutils': 5.1.0(rollup@4.9.6)
-      '@vue/language-core': 1.8.27(typescript@5.3.3)
-      debug: 4.3.4
-      kolorist: 1.8.0
-      typescript: 5.3.3
-      vite: 5.0.10
-      vue-tsc: 1.8.27(typescript@5.3.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-    dev: true
-
   /vite-plugin-dts@3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.12):
     resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -19611,41 +19579,6 @@ packages:
       rollup: 3.29.4
     optionalDependencies:
       fsevents: 2.3.3
-
-  /vite@5.0.10:
-    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.19.10
-      postcss: 8.4.32
-      rollup: 4.9.6
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
 
   /vite@5.0.12(@types/node@18.19.10):
     resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
@@ -19771,7 +19704,7 @@ packages:
     dependencies:
       '@docsearch/css': 3.5.2
       '@docsearch/js': 3.5.2(@algolia/client-search@4.22.1)(search-insights@2.13.0)
-      '@vitejs/plugin-vue': 4.5.0(vite@4.5.2)(vue@3.4.15)
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2)(vue@3.4.15)
       '@vue/devtools-api': 6.5.1
       '@vueuse/core': 10.7.2(vue@3.4.15)
       '@vueuse/integrations': 10.7.0(focus-trap@7.5.4)(vue@3.4.15)
@@ -20122,8 +20055,8 @@ packages:
       '@vue/devtools-api': 6.5.1
       vue: 3.4.15(typescript@5.3.3)
 
-  /vue-template-compiler@2.7.15:
-    resolution: {integrity: sha512-yQxjxMptBL7UAog00O8sANud99C6wJF+7kgbcwqkvA38vCGF7HWE66w0ZFnS/kX5gSoJr/PQ4/oS3Ne2pW37Og==}
+  /vue-template-compiler@2.7.16:
+    resolution: {integrity: sha512-AYbUWAJHLGGQM7+cNTELw+KsOG9nl2CnSv467WobS5Cv9uk3wFcnr1Etsz2sEIHEZvw1U+o9mRlEO6QbZvUPGQ==}
     dependencies:
       de-indent: 1.0.2
       he: 1.2.0
