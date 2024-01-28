@@ -1043,8 +1043,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.2.12
-        version: 9.2.12
+        specifier: 9.2.13
+        version: 9.2.13
 
   packages/create-directus-project:
     dependencies:
@@ -8618,7 +8618,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.2
+      vitest: 1.2.2(@types/node@18.19.10)
     transitivePeerDependencies:
       - supports-color
     dev: true
