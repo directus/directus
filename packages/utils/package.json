@@ -55,7 +55,7 @@
 		"vitest": "1.2.2"
 	},
 	"peerDependencies": {
-		"vue": "3.3.13"
+		"vue": "3.4.15"
 	},
 	"peerDependenciesMeta": {
 		"vue": {
