@@ -886,7 +886,7 @@ importers:
         version: 3.0.1(eslint@8.56.0)
       eslint-plugin-prettier:
         specifier: npm:@paescuj/eslint-plugin-prettier@5.0.1-1
-        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.4)
+        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.0)
       eslint-plugin-react:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.56.0)
@@ -1079,8 +1079,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 18.19.3
-        version: 18.19.3
+        specifier: 18.19.10
+        version: 18.19.10
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8
@@ -1088,8 +1088,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2(vitest@1.2.2)
       dependency-cruiser:
-        specifier: 15.5.0
-        version: 15.5.0
+        specifier: 16.1.0
+        version: 16.1.0
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.3)
@@ -1098,7 +1098,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.3)
+        version: 1.2.2(@types/node@18.19.10)
 
   packages/data-driver-postgres:
     dependencies:
@@ -5970,7 +5970,7 @@ packages:
       '@otplib/plugin-thirty-two': 12.0.1
     dev: false
 
-  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.4):
+  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.0):
     resolution: {integrity: sha512-gc+FaHyaGEnlcjN9n/bjXxa8CRxmkZRZTHkclaePXNgHSMIqgucFukE+4N1PYnSza2CnRijLjpRo8Z6UiGmNUA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -5986,7 +5986,7 @@ packages:
     dependencies:
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0(eslint@8.56.0)
-      prettier: 3.2.4
+      prettier: 3.1.0
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.6
     dev: true
@@ -9043,11 +9043,19 @@ packages:
       acorn: 8.11.2
     dev: true
 
+  /acorn-jsx@5.3.2(acorn@8.11.3):
+    resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
+    peerDependencies:
+      acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
+    dependencies:
+      acorn: 8.11.3
+    dev: true
+
   /acorn-loose@8.4.0:
     resolution: {integrity: sha512-M0EUka6rb+QC4l9Z3T0nJEzNOO7JcoJlYMrBlyBCiFSXRyxjLKayd4TbQs2FDRWQU1h9FR7QVNHt+PEaoNL5rQ==}
     engines: {node: '>=0.4.0'}
     dependencies:
-      acorn: 8.11.2
+      acorn: 8.11.3
     dev: true
 
   /acorn-walk@8.3.0:
@@ -11075,6 +11083,39 @@ packages:
       teamcity-service-messages: 0.1.14
       tsconfig-paths-webpack-plugin: 4.1.0
       watskeburt: 2.0.2
+      wrap-ansi: 9.0.0
+    dev: true
+
+  /dependency-cruiser@16.1.0:
+    resolution: {integrity: sha512-gmuLNIi4ygkf9KLKZzCWc+og7uwFTkTPauT2ma764NtHQt3r4GoWqCR/lZK/kCfOpNOPU9mB0EM/7RmRL6BFXA==}
+    engines: {node: ^18.17||>=20}
+    hasBin: true
+    dependencies:
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
+      acorn-jsx-walk: 2.0.0
+      acorn-loose: 8.4.0
+      acorn-walk: 8.3.2
+      ajv: 8.12.0
+      chalk: 5.3.0
+      commander: 11.1.0
+      enhanced-resolve: 5.15.0
+      figures: 6.0.1
+      ignore: 5.3.0
+      indent-string: 5.0.0
+      interpret: 3.1.1
+      is-installed-globally: 1.0.0
+      json5: 2.2.3
+      lodash: 4.17.21
+      picomatch: 3.0.1
+      prompts: 2.4.2
+      rechoir: 0.8.0
+      safe-regex: 2.1.1
+      semver: 7.5.4
+      semver-try-require: 6.2.3
+      teamcity-service-messages: 0.1.14
+      tsconfig-paths-webpack-plugin: 4.1.0
+      watskeburt: 2.0.5
       wrap-ansi: 9.0.0
     dev: true
 
@@ -17128,12 +17169,6 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier@3.2.4:
-    resolution: {integrity: sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: true
-
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -18817,7 +18852,6 @@ packages:
       emoji-regex: 10.3.0
       get-east-asian-width: 1.2.0
       strip-ansi: 7.1.0
-    dev: false
 
   /string.prototype.matchall@4.0.10:
     resolution: {integrity: sha512-rGXbGmOEosIQi6Qva94HUjgPs9vKW+dkG7Y8Q5O2OYkWL6wFaTRZO8zM4mhP94uX55wgyrXzfS2aGtGzUL7EJQ==}
@@ -21061,6 +21095,12 @@ packages:
     hasBin: true
     dev: true
 
+  /watskeburt@2.0.5:
+    resolution: {integrity: sha512-mCxVT4o/U+nNxmYJ+Oei3qre4F28IBWR9c7RGS8aeAR7a7UY1y4ikTWcv+kaaybf1QXUANmB7XBHawHBcmg+kw==}
+    engines: {node: ^18||>=20}
+    hasBin: true
+    dev: true
+
   /wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
     dependencies:
@@ -21282,7 +21322,7 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       ansi-styles: 6.2.1
-      string-width: 7.0.0
+      string-width: 7.1.0
       strip-ansi: 7.1.0
     dev: true
 
