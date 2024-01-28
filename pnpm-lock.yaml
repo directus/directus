@@ -1439,15 +1439,15 @@ importers:
         specifier: 10.2.0
         version: 10.2.0
       rate-limiter-flexible:
-        specifier: 4.0.0
-        version: 4.0.0
+        specifier: 4.0.1
+        version: 4.0.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 18.19.3
-        version: 18.19.3
+        specifier: 18.19.10
+        version: 18.19.10
       '@vitest/coverage-v8':
         specifier: 1.2.2
         version: 1.2.2(vitest@1.2.2)
@@ -1459,7 +1459,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.3)
+        version: 1.2.2(@types/node@18.19.10)
 
   packages/pressure:
     dependencies:
@@ -6596,7 +6596,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.9.6)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -6622,7 +6622,6 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 3.29.4
-    dev: false
 
   /@rollup/pluginutils@5.1.0(rollup@4.9.6):
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
@@ -8474,7 +8473,7 @@ packages:
   /@unhead/addons@1.8.10:
     resolution: {integrity: sha512-nauBTgEgTJZoC1Eorrg2bWFPJVgJeAAaZzZntxYCZ0j+0a9+3mPwcwQI6H+LQkgXX0r8SablcdEAVbXtIj3t9g==}
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.9.6)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       '@unhead/schema': 1.8.10
       '@unhead/shared': 1.8.10
       magic-string: 0.30.5
@@ -8612,7 +8611,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.2
+      vitest: 1.2.2(@types/node@18.19.10)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9422,7 +9421,7 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@babel/parser': 7.23.6
-      '@rollup/pluginutils': 5.1.0(rollup@4.9.6)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
@@ -17292,10 +17291,6 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 
-  /rate-limiter-flexible@4.0.0:
-    resolution: {integrity: sha512-SkA18LEPqJJKHixi6E7tzBKTXbj9gu5wPyfTykPVRZR5JGSw0dMCjtZsjlfuabVY940pu28Wu87NZN4FhztnyQ==}
-    dev: false
-
   /rate-limiter-flexible@4.0.1:
     resolution: {integrity: sha512-2/dGHpDFpeA0+755oUkW+EKyklqLS9lu0go9pDsbhqQjZcxfRyJ6LA4JI0+HAdZ2bemD/oOjUeZQB2lCZqXQfQ==}
     dev: false
@@ -19925,7 +19920,7 @@ packages:
       '@antfu/utils': 0.7.7
       '@babel/generator': 7.23.6
       '@babel/parser': 7.23.6
-      '@rollup/pluginutils': 5.1.0(rollup@4.9.6)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
       unplugin: 1.6.0
