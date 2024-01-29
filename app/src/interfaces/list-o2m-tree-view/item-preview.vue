@@ -70,6 +70,8 @@ const editActive = ref(false);
 	.actions {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 		--v-icon-color-hover: var(--theme--form--field--input--foreground);
+		flex-shrink: 0;
+		margin-left: 8px;
 
 		.v-icon + .v-icon {
 			margin-left: 4px;
