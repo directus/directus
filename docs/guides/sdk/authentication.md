@@ -159,7 +159,7 @@ const client = createDirectus('http://directus.example.com')
 // set a long term token without refreshing logic
 client.setToken('TOKEN');
 
-// set custom credentials
+// set custom credentials to the storage
 storage.set({
 	access_token: 'token',
 	refresh_token: 'token',
