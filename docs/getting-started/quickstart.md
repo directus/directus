@@ -51,11 +51,13 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-You can initialize a new Directus project using the CLI command: `npm init directus-project@latest`.
+You can initialize a new Directus project using the CLI command: `npm init directus-project@latest <project-name>`.
 
-Follow prompts to configure your database and create your first admin user.
+Replace `<project-name>` with the name you want to use for the project directory.
 
-To start Directus locally, run `npx directus start`.
+Next, follow prompts to configure your database and create your first admin user.
+
+To start Directus locally, cd into your project directory and run `npx directus start`.
 
 Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
 case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
