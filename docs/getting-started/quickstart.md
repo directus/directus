@@ -65,7 +65,7 @@ readTime: 7 min read
    Replace `<project-name>` with the name you want to use for the project directory.
 
    ```shell
-   npm init directus-project@latest project-name
+   npm init directus-project@latest <project-name>
    ```
 
    Follow the prompts to configure your database and create your first admin user.
@@ -78,6 +78,8 @@ readTime: 7 min read
    cd <project-name>
    npx directus start
    ```
+
+<sub>Learn more about self-hosting Directus in our [Self-Hosted CLI Guide](/self-hosted/cli).</sub>
 
 :::danger Docker is Recommended
 
