@@ -42,12 +42,9 @@ export const convertFieldNodes = (
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
 			const columnIndex = indexGen.column.next().value;
-
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
-
 			const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
 			select.push(selectNode);
-
 			continue;
 		}
 
@@ -62,13 +59,9 @@ export const convertFieldNodes = (
 
 			if (abstractField.nesting.type === 'relational-single') {
 				const tableIndexRelational = indexGen.table.next().value;
-
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
-
 				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
-
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
-
 				joins.push(sqlJoinNode);
 				select.push(...nestedOutput.clauses.select);
 			}
@@ -78,7 +71,6 @@ export const convertFieldNodes = (
 
 		if (abstractField.type === 'nested-union-one') {
 			// @TODO convert node into a root query and a query in form of of a function which has the collection relation as parameters
-
 			continue;
 		}
 
@@ -91,24 +83,18 @@ export const convertFieldNodes = (
 			 */
 
 			const nestedManyResult = getNestedMany(abstractField, tableIndex);
-
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
-
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
-
 			continue;
 		}
 
 		if (abstractField.type === 'fn') {
 			const columnIndex = indexGen.column.next().value;
-
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
-
 			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
-
 			continue;
 		}
 	}
