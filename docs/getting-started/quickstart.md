@@ -57,7 +57,7 @@ Replace `<project-name>` with the name you want to use for the project directory
 
 Next, follow prompts to configure your database and create your first admin user.
 
-To start Directus locally, cd into your project directory and run `npx directus start`.
+To start Directus locally, `cd` into your project directory and run `npx directus start`.
 
 Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
 case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
