@@ -17,14 +17,18 @@ readTime: 7 min read
 
 == Directus Cloud
 
-Create and login to your [Directus Cloud account](https://directus.cloud).
+1. Create and login to your [Directus Cloud account](https://directus.cloud)
 
 The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud Project
 exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as desired.
 
-Create a new project - once started, it should take around 90 seconds for the Cloud Project to created. During this
-time, a link will be sent to the email associated with your Cloud Account. The email will contain your Project URL as
-well as an email and password to login. If you used GitHub to create your account, this will be your GitHub email.
+2. Create a new project
+
+Once started, it should take around 90 seconds for the Cloud Project to created. During this time, a link will be sent
+to the email associated with your Cloud Account. The email will contain your Project URL as well as an email and
+password to login. If you used GitHub to create your account, this will be your GitHub email.
+
+3. Access your new project
 
 Login to your new project using the URL in your email inbox or on your Directus Cloud Dashboard.
 
@@ -32,17 +36,21 @@ _Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/
 
 == Docker Installation
 
+1. Initialize and start a new Directus project
+
 You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
 Open up your terminal and run the following command:
 
-```
+```shell
 docker run \
 -p 8055:8055 \
 -e KEY=replace-with-random-value \
 -e SECRET=replace-with-random-value \
 directus/directus
 ```
+
+2. Access your new project
 
 The initial admin email address and password will be shown in the terminal. Directus should now be available at
 http://localhost:8055 or http://127.0.0.1:8055.
@@ -51,21 +59,32 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-You can initialize a new Directus project using the CLI command: `npm init directus-project@latest <project-name>`.
+1. Initialize a new Directus project using the CLI
 
 Replace `<project-name>` with the name you want to use for the project directory.
 
-Next, follow prompts to configure your database and create your first admin user.
+```shell
+npm init directus-project@latest project-name
+```
 
-To start Directus locally, `cd` into your project directory and run `npx directus start`.
+Follow the prompts to configure your database and create your first admin user.
 
-Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
-case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
+2. Start your new project
+
+Run the following commands to start the new project locally:
+
+```shell
+cd <project-name>
+npx directus start
+```
 
 :::danger Docker is Recommended
 
 While this method works and is maintained, it is not recommended. Docker removes environment-specific quirks that can
 lead to Directus not running properly in some contexts.
+
+Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
+case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
 
 :::
 
