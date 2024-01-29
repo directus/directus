@@ -203,9 +203,22 @@ The `useItems` composable is used to retrieve items in a collection and provides
 <script setup>
 import { useItems } from '@directus/extensions-sdk';
 
-const collectionRef = ref('collection_key')
+const collectionRef = ref('collection_key');
 
-const { getItems, items } = useItems(collectionRef);
+const query = {
+		fields: ref(['*']),
+		limit: ref(1),
+		sort: ref(null),
+		search: ref(null),
+		filter: ref(null),
+		page: ref(1),
+	}
+
+const { getItems, items } = useItems(collectionRef, query);
+
+query.search.value = 'search_value' // update query search
+
+query.limit.value = 10 // update query limit
 
 await getItems(); // fetch the items
 

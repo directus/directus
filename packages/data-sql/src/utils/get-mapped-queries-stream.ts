@@ -16,6 +16,7 @@ export function getMappedQueriesStream(
 	rootStream: ReadableStream<Record<string, unknown>>,
 	subQueries: SubQuery[],
 	aliasMapping: AliasMapping,
+	columnIndexToIdentifier: (columnIndex: number) => string,
 	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, unknown>>>,
 ): ReadableStream<Record<string, unknown>> {
 	return new ReadableStream({
@@ -23,13 +24,14 @@ export function getMappedQueriesStream(
 			for await (const rootRow of rootStream) {
 				const subResult = await Promise.all(
 					subQueries.map(async (subQuery) => {
-						const generatedSubQuery = subQuery(rootRow);
+						const generatedSubQuery = subQuery(rootRow, columnIndexToIdentifier);
 						const subStream = await queryDatabase(generatedSubQuery.rootQuery);
 
 						const mappedQueriesStream = getMappedQueriesStream(
 							subStream,
 							generatedSubQuery.subQueries,
 							generatedSubQuery.aliasMapping,
+							columnIndexToIdentifier,
 							queryDatabase,
 						);
 
@@ -37,7 +39,7 @@ export function getMappedQueriesStream(
 					}),
 				);
 
-				const result = mapResult(aliasMapping, rootRow, subResult);
+				const result = mapResult(aliasMapping, rootRow, subResult, columnIndexToIdentifier);
 
 				controller.enqueue(result);
 			}

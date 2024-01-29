@@ -129,7 +129,7 @@ function removeNode(ids: string[]) {
 	const id = ids.pop();
 
 	if (ids.length === 0) {
-		innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
+		innerValue.value = innerValue.value.filter((_node, index) => index !== Number(id));
 		return;
 	}
 

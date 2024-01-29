@@ -51,11 +51,14 @@ _Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-ho
 
 == NPM Installation
 
-You can initialize a new Directus project using the CLI command: `npm init directus-project`.
+You can initialize a new Directus project using the CLI command: `npm init directus-project@latest`.
 
 Follow prompts to configure your database and create your first admin user.
 
 To start Directus locally, run `npx directus start`.
+
+Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
+case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
 
 :::danger Docker is Recommended
 
@@ -131,7 +134,7 @@ of <span mi icon dngr>block</span> **No Access**, with full ability to reconfigu
 API return our Items, let's add some read permissions. For simplicity's sake, we'll do this on the Public Role, instead
 of creating a new Role.
 
-1. Navigate to **Settings Module > Roles & Permissions > Public**.
+1. Navigate to **Settings Module > Access Control > Public**.
 2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
    In our case, the Collection name is `articles`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.

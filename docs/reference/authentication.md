@@ -93,7 +93,7 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(authentication()).with(rest());
+const client = createDirectus('directus_project_url').with(authentication('json')).with(rest());
 
 // login using the authentication composable
 const result = await client.login(email, password);

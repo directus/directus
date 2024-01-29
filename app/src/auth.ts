@@ -129,6 +129,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		isRefreshing = false;
 		resumeQueue();
 	}
+
+	return;
 }
 
 export enum LogoutReason {

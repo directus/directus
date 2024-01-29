@@ -1,7 +1,7 @@
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { DefaultAddOptions, Options } from 'p-queue';
+import PQueue, { type DefaultAddOptions, type Options } from 'p-queue';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -63,7 +63,7 @@ export function resumeQueue() {
 	queue.start();
 }
 
-export async function replaceQueue(options?: Options<any, DefaultAddOptions>) {
+export async function replaceQueue(options?: Options<any, QueueAddOptions>) {
 	await queue.onIdle();
 	queue = new PQueue(options);
 }

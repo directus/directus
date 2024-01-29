@@ -13,7 +13,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	value: () => null,
+	value: null,
 	allowSelectAll: false,
 });
 
