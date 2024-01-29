@@ -156,7 +156,7 @@ const storage = new LocalStorage();
 const client = createDirectus('http://directus.example.com')
   .with(authentication('json', { storage }));
 
-// set a long term token without refreshing logic
+// set a long term or static token without expiry information
 client.setToken('TOKEN');
 
 // set custom credentials to the storage
