@@ -14,6 +14,7 @@ import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } fr
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
+import { useCollectionsStore } from './collections';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -75,6 +76,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	});
 
 	const { panels: panelTypes } = useExtensions();
+
+	const { systemCollections } = useCollectionsStore();
 
 	return {
 		dashboards,
@@ -231,17 +234,13 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		const gqlString = queryToGqlString(
 			Array.from(queries.values())
-				.filter(({ collection }) => {
-					return collection.startsWith('directus_') === false;
-				})
+				.filter(({ collection }) => systemCollections.includes(collection) === false)
 				.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest })),
 		);
 
 		const systemGqlString = queryToGqlString(
 			Array.from(queries.values())
-				.filter(({ collection }) => {
-					return collection.startsWith('directus_') === true;
-				})
+				.filter(({ collection }) => systemCollections.includes(collection))
 				.map(({ key, ...rest }) => ({
 					key: `query_${key}`,
 					...rest,
