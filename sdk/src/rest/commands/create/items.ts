@@ -1,3 +1,4 @@
+import { CoreCollections } from '../../../index.js';
 import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -25,7 +26,7 @@ export const createItems =
 	() => {
 		const _collection = String(collection);
 
-		if (_collection.startsWith('directus_')) {
+		if ((CoreCollections as readonly string[]).includes(_collection)) {
 			throw new Error('Cannot use createItems for core collections');
 		}
 
@@ -55,7 +56,7 @@ export const createItem =
 	() => {
 		const _collection = String(collection);
 
-		if (_collection.startsWith('directus_')) {
+		if ((CoreCollections as readonly string[]).includes(_collection)) {
 			throw new Error('Cannot use createItem for core collections');
 		}
 

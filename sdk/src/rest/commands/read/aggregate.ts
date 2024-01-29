@@ -1,4 +1,4 @@
-import type { AllCollections } from '../../../index.js';
+import { CoreCollections, type AllCollections } from '../../../index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
@@ -23,7 +23,7 @@ export const aggregate =
 		const collectionName = String(collection);
 		throwIfEmpty(collectionName, 'Collection cannot be empty');
 
-		const path = collectionName.startsWith('directus_')
+		const path = (CoreCollections as readonly string[]).includes(collectionName)
 			? `/${collectionName.substring(9)}`
 			: `/items/${collectionName}`;
 
