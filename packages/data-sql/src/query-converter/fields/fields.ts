@@ -60,7 +60,7 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			if (abstractField.nesting.type === 'relational-many') {
+			if (abstractField.nesting.type === 'relational-single') {
 				const tableIndexRelational = indexGen.table.next().value;
 
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);

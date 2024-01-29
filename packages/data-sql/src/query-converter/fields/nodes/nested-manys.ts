@@ -28,7 +28,7 @@ export interface NestedManyResult {
  * @returns A function to create a query with and the select part for the root query
  */
 export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tableIndex: number): NestedManyResult {
-	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
+	if (field.nesting.type !== 'relational-single') throw new Error('Nested o2a not yet implemented!');
 
 	const indexGen = createIndexGenerators();
 
