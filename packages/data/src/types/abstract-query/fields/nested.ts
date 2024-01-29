@@ -18,7 +18,6 @@ export interface AbstractQueryFieldNodeNestedSingleOne {
 
 	alias: string;
 
-
 	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedObjectMany;
 }
 
