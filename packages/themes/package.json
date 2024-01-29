@@ -36,15 +36,18 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
+		"@unhead/vue": "1.8.10",
 		"@vitejs/plugin-vue": "5.0.3",
+		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.0.0",
 		"typescript": "5.3.3",
 		"vite": "5.0.12",
-		"vite-plugin-dts": "3.7.2"
+		"vite-plugin-dts": "3.7.2",
+		"vue": "3.4.15"
 	},
 	"peerDependencies": {
-		"@unhead/vue": "1.8.9",
-		"pinia": "2.1.7",
-		"vue": "3.4.15"
+		"@unhead/vue": "1",
+		"pinia": "2",
+		"vue": "^3.4"
 	}
 }
