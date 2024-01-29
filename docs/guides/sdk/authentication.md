@@ -152,10 +152,19 @@ class LocalStorage {
   }
 }
 
+const storage = new LocalStorage();
 const client = createDirectus('http://directus.example.com')
-  .with(authentication('json', { storage: new LocalStorage() }));
+  .with(authentication('json', { storage }));
 
+// set a long term token without refreshing logic
 client.setToken('TOKEN');
+
+// set custom credentials
+storage.set({
+	access_token: 'token',
+	refresh_token: 'token',
+	expires_at: 123456789
+});
 ```
 
 Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store
