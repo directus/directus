@@ -101,7 +101,7 @@ for await (const item of subscription) {
 			/>
 			<Card
 				title="Data Model"
-				text="Structure and organize items in your collection, while also establishing relationships between them."
+				text="Structure and organize items, fields, and relationships in your collections."
 				url="/app/data-model"
 				icon="database"
 			/>

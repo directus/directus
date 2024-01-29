@@ -157,7 +157,7 @@ test('convert sort on nested item', () => {
 					field: externalColumnName,
 				},
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [foreignKeyColumnName],
 					},

@@ -4,6 +4,7 @@
 		"../../packages/constants",
 		"../../packages/errors",
 		"../../packages/extensions-sdk",
+		"../../packages/memory",
 		"../../packages/pressure",
 		"../../packages/random",
 		"../../sdk",
