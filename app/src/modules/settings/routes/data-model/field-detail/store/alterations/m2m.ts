@@ -1,6 +1,5 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { collectionExists } from '../../../utils/collection-exists';
