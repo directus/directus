@@ -5,7 +5,7 @@ vi.mock('./is-system-collection', () => {
 	const isSystemCollection = (collection: string) => {
 		if (collection === 'directus_users') return true;
 		return false;
-	}
+	};
 
 	return { isSystemCollection };
 });

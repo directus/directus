@@ -1,4 +1,4 @@
-import { CoreCollections } from "../../index.js";
+import { CoreCollections } from '../../index.js';
 
 /**
  *

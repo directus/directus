@@ -1,5 +1,4 @@
-import { collectionExists } from "./collection-exists";
-
+import { collectionExists } from './collection-exists';
 
 export function getAutomaticJunctionCollectionName(collectionA: string, field: string) {
 	let index = 0;

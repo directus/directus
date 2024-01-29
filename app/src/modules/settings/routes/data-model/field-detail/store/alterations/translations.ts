@@ -127,7 +127,6 @@ export function updateJunctionRelated(updates: StateUpdates, _state: State, { ge
 	set(updates, 'relations.m2o.field', `${relatedCollection}_${relatedCollectionPrimaryKeyField}`);
 }
 
-
 export function generateCollections(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
