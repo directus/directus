@@ -1,47 +1,67 @@
 import type { AbstractQueryFieldNode, AbstractQueryFieldNodeNestedSingleOne } from '@directus/data';
-import type { AbstractSqlQuerySelectJsonNode, Path } from '../../../index.js';
+import type { AbstractSqlQuerySelectJsonNode } from '../../../index.js';
 import type { NumberGenerator } from '../../utils/number-generator.js';
 
 export function convertJson(
 	jsonField: AbstractQueryFieldNodeNestedSingleOne,
 	tableIndex: number,
 	columnIndexGenerator: NumberGenerator,
-): AbstractSqlQuerySelectJsonNode {
-	const paths = createListFromTree(jsonField, []);
-	const pathsWithColumnIndex = enhanceWithColumnIndex(paths, columnIndexGenerator);
-
-	return {
-		type: 'json',
-		tableIndex,
-		paths: pathsWithColumnIndex,
-	};
+): AbstractSqlQuerySelectJsonNode[] {
+	const paths = createListFromTree(jsonField, [], '');
+	return createNodes(paths.paths, columnIndexGenerator, tableIndex, paths.jsonColName);
 }
 
-function createListFromTree(field: AbstractQueryFieldNode, current: string[]): string[][] {
-	const res: string[][] = [];
+let isFirstOccurrence = true;
+
+function createListFromTree(
+	field: AbstractQueryFieldNode,
+	current: string[],
+	jsonColName: string,
+): { paths: string[][]; jsonColName: string } {
+	const paths: string[][] = [];
 
 	if (field.type === 'primitive') {
 		current.push(field.field);
-		res.push(current);
-		return res;
+		paths.push(current);
+		return { paths, jsonColName };
 	}
 
 	if (field.type === 'nested-single-one') {
 		if (field.nesting.type === 'object-many') {
-			current.push(field.nesting.fieldName);
+			if (isFirstOccurrence) {
+				isFirstOccurrence = false;
+				jsonColName = field.nesting.fieldName;
+			} else {
+				current.push(field.nesting.fieldName);
+			}
 
 			for (const subfield of field.fields) {
-				res.push(...createListFromTree(subfield, [...current]));
+				const subRes = createListFromTree(subfield, [...current], jsonColName);
+				paths.push(...subRes.paths);
 			}
 		}
 	}
 
-	return res;
+	return { paths, jsonColName };
 }
 
-function enhanceWithColumnIndex(paths: string[][], columnIndexGenerator: NumberGenerator): Path[] {
-	return paths.map((path) => ({
-		path,
-		columnIndex: columnIndexGenerator.next().value,
-	}));
+function createNodes(
+	paths: string[][],
+	columnIndexGenerator: NumberGenerator,
+	tableIndex: number,
+	columnName: string,
+): AbstractSqlQuerySelectJsonNode[] {
+	return paths.map((path) => {
+		if (path.length === 0) {
+			throw new Error('Not a valid JSON path. Path must have at least one element.');
+		}
+
+		return {
+			type: 'json',
+			tableIndex,
+			path,
+			columnName,
+			columnIndex: columnIndexGenerator.next().value,
+		};
+	});
 }
