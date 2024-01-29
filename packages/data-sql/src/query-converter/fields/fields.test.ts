@@ -54,7 +54,6 @@ test('primitives only', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -116,7 +115,6 @@ test('primitive, fn', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -254,7 +252,6 @@ test('primitive, fn, m2o', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -341,7 +338,6 @@ test('primitive, o2m', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -452,11 +448,10 @@ test('primitive, json path', () => {
 				],
 			},
 		],
-		subQueries: [expect.any(Function)],
+		subQueries: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });

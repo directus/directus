@@ -5,6 +5,7 @@ import { createJoin } from './nodes/join.js';
 import { getNestedMany } from './nodes/nested-manys.js';
 import { createPrimitiveSelect } from './nodes/primitive-select.js';
 import { convertFieldFn } from './nodes/function.js';
+import { convertJson } from './nodes/json-select.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
@@ -64,6 +65,13 @@ export const convertFieldNodes = (
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				joins.push(sqlJoinNode);
 				select.push(...nestedOutput.clauses.select);
+			}
+
+			if (abstractField.nesting.type === 'object-many') {
+				const sqlJoinNode = convertJson(abstractField, tableIndex, indexGen.column);
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen);
+				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
+				select.push(...sqlJoinNode);
 			}
 
 			continue;
