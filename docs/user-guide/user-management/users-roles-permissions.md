@@ -110,9 +110,7 @@ It is common to have multiple, complex business rules in a project.
 
 ## How it Works in Directus
 
-<video title="How Users, Roles, & Permissions Work" autoplay playsinline muted loop controls>
-	<source src="https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/how-users-roles-and-permissions-work-20220909A.mp4" type="video/mp4" />
-</video>
+![A GIF showing how access control works in Directus](https://marketing.directus.app/assets/db5f4395-f0b9-40f6-a1ce-b5679e458c13.gif)
 
 While you have full reign to configure these using SQL, Directus also provides a complete system to configure and manage
 users, roles, and permissions without writing a single line of SQL. The process has three key steps.
@@ -140,13 +138,13 @@ optional. You may configure your own system as desired.
 ![Users in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-20220807A.webp)
 
 Within the Data Studio, users are managed within the [User Directory](/user-guide/user-management/user-directory).
-However, there are some controls available to assign users to roles in **Settings > Roles and Permissions**.
+However, there are some controls available to assign users to roles in **Settings > Access Control**.
 
 To learn more, please see our guide on [users](/user-guide/user-management/users).
 
 ## Directus Roles
 
-![Roles in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/roles-20220907A.webp)
+![Roles in the Directus Data Studio](https://marketing.directus.app/assets/24c33108-396a-46bf-97cf-396b8ffe7524.png)
 
 You can create as many roles as you need for your project. Directus also comes with built-in administrator and public
 roles, which cannot be deleted.
@@ -162,7 +160,7 @@ To learn more, see our guide on [roles](/user-guide/user-management/roles).
 
 ## Directus Permissions
 
-![Roles in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/permissions-20220907A.webp)
+![Permissions in the Directus Data Studio](https://marketing.directus.app/assets/55212af7-8c48-44f7-81fe-6ee4f00f1de2.png)
 
 Directus offers an extremely granular, yet easy to configure permissions system. When you
 [create a role](#create-a-role), all permissions are turned off by default, allowing you to explicitly grant permissions

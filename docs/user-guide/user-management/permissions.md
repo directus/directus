@@ -25,7 +25,7 @@ To configure permissions programmatically, see our API documentation on [permiss
 
 To configure a role's access permissions, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]** and scroll to **Permissions**.\
+1. Navigate to **Settings > Access Control > [Role]** and scroll to **Permissions**.\
    Each collection is a row. Its [CRUDS permissions](/user-guide/user-management/users-roles-permissions#directus-permissions)
    are in columns.
 2. Click the icon of the collection and permission type that you want to set and a tooltip will appear. If you'd like to
@@ -81,7 +81,7 @@ To configure custom access permissions for a role, follow these steps.
 
 To grant or restrict all CRUDS permissions to a collection at once, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]**.
+1. Navigate to **Settings > Access Control > [Role]**.
 2. Mouse over the desired collection's name and the following options will appear:
    - **All** — Click to enable all CRUDS permissions for a collection.
    - **None** — Click to restrict all CRUDS permissions for a collection.
@@ -96,7 +96,7 @@ This is only available when **App Access** is enabled when you
 [configure role details](/user-guide/user-management/roles#configure-role-details). If you made any custom
 configurations to system collections, these will be reverted. To reset system permissions, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]**.
+1. Navigate to **Settings > Access Control > [Role]**.
 2. At the bottom of **Permissions**, click **System Collections** to show system collections.
 3. Scroll to the bottom and choose to **Reset System Permissions to:**
    - **App Access Minimum** — Reconfigures permissions on system collections to the bare minimum that are required to
