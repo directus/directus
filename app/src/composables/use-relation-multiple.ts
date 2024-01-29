@@ -746,6 +746,6 @@ export function useRelationMultiple(
 		isItemSelected,
 		isLocalItem,
 		getItemEdits,
-		updateFetchedItems
+		updateFetchedItems,
 	};
 }
