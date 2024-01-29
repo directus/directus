@@ -2,7 +2,8 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint } from '@/utils/get-endpoint';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { Ref, computed, ref, watch } from 'vue';
 
 type UsableTemplateData = {

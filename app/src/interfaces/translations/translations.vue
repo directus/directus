@@ -11,11 +11,11 @@ import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@directus/utils';
 import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
+import { getEndpoint } from '@/utils/get-endpoint';
 
 const props = withDefaults(
 	defineProps<{
