@@ -7,7 +7,6 @@ import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
 import type { Field, Width } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { computed, ref, unref } from 'vue';

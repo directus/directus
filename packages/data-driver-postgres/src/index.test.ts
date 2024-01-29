@@ -127,7 +127,7 @@ test('nested m2o field', async () => {
 					},
 				],
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [foreignKeyColumn],
 					},
@@ -238,7 +238,7 @@ test('nested o2m field', async () => {
 					},
 				],
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [localRelationalColumn],
 					},

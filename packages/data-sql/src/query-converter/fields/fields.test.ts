@@ -155,7 +155,7 @@ test('primitive, fn, m2o', () => {
 				},
 			],
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
 					fields: [foreignKeyColumnName],
@@ -290,7 +290,7 @@ test('primitive, o2m', () => {
 			],
 			alias: externalAlias,
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
 					fields: [keyColumnName],
