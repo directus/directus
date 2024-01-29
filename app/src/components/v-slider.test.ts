@@ -18,7 +18,7 @@ test('modelValue prop', async () => {
 		},
 	});
 
-	expect(wrapper.get('input').element.value).toBe(20);
+	expect(wrapper.get('input').element.value).toBe('20');
 
 	await wrapper.get('input').setValue(30);
 

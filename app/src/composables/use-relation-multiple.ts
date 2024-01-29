@@ -7,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
-import { Ref, computed, ref, unref, watch } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
