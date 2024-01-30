@@ -68,7 +68,7 @@ router.get(
 
 		const payload = await list(query, options);
 
-		res.locals['payload'] = payload;
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,
@@ -89,7 +89,7 @@ router.get(
 
 		const payload = await describe(req.params['pk'], options);
 
-		res.locals['payload'] = payload;
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,
