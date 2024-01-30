@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
-import { describe, search, type SearchOptions } from '@directus/extensions-registry';
+import { describe, list, type DescribeOptions, type ListOptions, type ListQuery } from '@directus/extensions-registry';
 import { isIn } from '@directus/utils';
 import express from 'express';
 import { getExtensionManager } from '../extensions/index.js';
@@ -35,20 +35,20 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
-		const { text, limit, offset, type } = req.query;
+		const { search, limit, offset, type } = req.query;
 
-		const options: SearchOptions = {};
+		const query: ListQuery = {};
 
-		if (typeof text === 'string') {
-			options.text = text;
+		if (typeof search === 'string') {
+			query.search = search;
 		}
 
 		if (typeof limit === 'string') {
-			options.limit = Number(limit);
+			query.limit = Number(limit);
 		}
 
 		if (typeof offset === 'string') {
-			options.offset = Number(offset);
+			query.offset = Number(offset);
 		}
 
 		if (typeof type === 'string') {
@@ -56,10 +56,16 @@ router.get(
 				throw new ForbiddenError();
 			}
 
-			options.extensionType = type;
+			query.type = type;
 		}
 
-		const payload = await search(options);
+		const options: ListOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await list(query, options);
 
 		res.locals['payload'] = payload;
 		return next();
@@ -68,13 +74,19 @@ router.get(
 );
 
 router.get(
-	'/registry/*',
+	'/registry/:pk(${UUID_REGEX})',
 	asyncHandler(async (req, res, next) => {
-		if (typeof req.params[0] !== 'string') {
+		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}
 
-		const payload = await describe(req.params[0]);
+		const options: DescribeOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await describe(req.params['pk'], options);
 
 		res.locals['payload'] = payload;
 		return next();
