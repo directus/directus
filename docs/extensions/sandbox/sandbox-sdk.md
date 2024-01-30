@@ -1,5 +1,5 @@
 ---
-description: Learn about the permissions and functions available in Directus Secure Extensions
+description: Learn about the permissions and functions available in Directus Sandboxed Extensions
 contributors: Rijk van Zanten, Nils Twelker, Kevin Lewis, Esther Agbaje
 ---
 
