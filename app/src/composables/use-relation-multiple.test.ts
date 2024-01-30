@@ -48,6 +48,15 @@ vi.mock('@/utils/unexpected-error', () => {
 	};
 });
 
+vi.mock('../utils/is-system-collection', () => {
+	const isSystemCollection = (collection: string) => {
+		if (collection === 'directus_users') return true;
+		return false;
+	};
+
+	return { isSystemCollection };
+});
+
 const relationO2M: RelationO2M = {
 	relatedCollection: {
 		name: 'Worker',
