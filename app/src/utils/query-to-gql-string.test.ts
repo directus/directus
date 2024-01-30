@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { formatQuery } from '@/utils/query-to-gql-string';
 
@@ -18,6 +18,15 @@ beforeEach(() => {
 			},
 		}),
 	);
+});
+
+vi.mock('./is-system-collection', () => {
+	const isSystemCollection = (collection: string) => {
+		if (collection === 'directus_users') return true;
+		return false;
+	};
+
+	return { isSystemCollection };
 });
 
 describe('Empty query returns the primary key', () => {
