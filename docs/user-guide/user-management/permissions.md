@@ -19,7 +19,7 @@ To configure permissions programmatically, see our API documentation on [permiss
 
 ## Configure Permissions
 
-![GIF showing how to configure role permissions](https://marketing.directus.app/assets/d6eacb7e-7657-44fc-91a0-c3f21306b34a.gif)
+![How to configure role permissions](https://marketing.directus.app/assets/d6eacb7e-7657-44fc-91a0-c3f21306b34a.gif)
 
 To configure a role's access permissions, follow these steps.
 
@@ -49,7 +49,7 @@ Access**, permission configuration is disabled.
 
 ## Configure Custom Permissions
 
-![GIF showing how to configure custom role permissions](https://marketing.directus.app/assets/68e68b6c-a503-457f-8c9b-73d5b226639a.gif)
+![How to configure custom role permissions](https://marketing.directus.app/assets/68e68b6c-a503-457f-8c9b-73d5b226639a.gif)
 
 To configure custom access permissions for a role, follow these steps.
 
@@ -71,7 +71,7 @@ To configure custom access permissions for a role, follow these steps.
 
 ## Toggle All Collection Permissions
 
-![GIF showing how to toggle all collection permissions](https://marketing.directus.app/assets/9903d727-6d97-4a1b-84f8-3f6bdc10b73a.gif)
+![How to toggle all collection permissions](https://marketing.directus.app/assets/9903d727-6d97-4a1b-84f8-3f6bdc10b73a.gif)
 
 To grant or restrict all CRUDS permissions to a collection at once, follow these steps.
 
@@ -82,7 +82,7 @@ To grant or restrict all CRUDS permissions to a collection at once, follow these
 
 ## Reset System Permissions
 
-![GIF showing how to reset system permissions](https://marketing.directus.app/assets/7db0408a-a456-43e7-bfe4-6bb9aef2374d.gif)
+![How to reset system permissions](https://marketing.directus.app/assets/7db0408a-a456-43e7-bfe4-6bb9aef2374d.gif)
 
 This is only available when **App Access** is enabled when you
 [configure role details](/user-guide/user-management/roles#configure-role-details). If you made any custom

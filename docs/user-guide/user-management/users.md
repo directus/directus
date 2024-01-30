@@ -20,7 +20,7 @@ following sections will focus on.
 
 ## Invite a User
 
-![GIF showing how to invite a User](https://marketing.directus.app/assets/512793d0-be69-4ee6-9bc2-963e34f656a7.gif)
+![How to invite a User](https://marketing.directus.app/assets/512793d0-be69-4ee6-9bc2-963e34f656a7.gif)
 
 To invite people to become users via email and automatically assign them a role in the process, follow these steps.
 
@@ -37,7 +37,7 @@ Instead of comma-separated emails, you can also add new emails line-by-line.
 
 ## Create a User
 
-![GIF showing how to create a User](https://marketing.directus.app/assets/2e6c2a86-dbc1-46f8-b6bd-b08ac1d7d728.gif)
+![How to create a User](https://marketing.directus.app/assets/2e6c2a86-dbc1-46f8-b6bd-b08ac1d7d728.gif)
 
 To create a user and assign their role _(and other details)_ follow these steps.
 
@@ -48,7 +48,7 @@ To create a user and assign their role _(and other details)_ follow these steps.
 
 ## Assign Role to Existing User
 
-![GIF showing how to add an existing user](https://marketing.directus.app/assets/2e6c2a86-dbc1-46f8-b6bd-b08ac1d7d728.gif)
+![How to assign role to an existing user](https://marketing.directus.app/assets/2e6c2a86-dbc1-46f8-b6bd-b08ac1d7d728.gif)
 
 To assign a role to an existing user, follow these steps.
 
@@ -61,7 +61,7 @@ To assign a role to an existing user, follow these steps.
 
 ## Remove User's Role
 
-![GIF showing how to remove a user from a role](https://marketing.directus.app/assets/11408529-78a6-4037-a3b8-c1cf08603d50.gif)
+![How to remove a user from a role](https://marketing.directus.app/assets/11408529-78a6-4037-a3b8-c1cf08603d50.gif)
 
 To remove a user from a role, follow these steps.
 

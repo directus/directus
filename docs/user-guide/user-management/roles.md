@@ -16,14 +16,14 @@ To configure roles programmatically, see our API documentation on [roles](/refer
 
 ## View a Role
 
-![GIF showing how to view a role](https://marketing.directus.app/assets/167da47b-9eaa-465b-99d6-95a077a4ca8d.gif)
+![How to view a role](https://marketing.directus.app/assets/167da47b-9eaa-465b-99d6-95a077a4ca8d.gif)
 
 To view an existing role, navigate to **Settings > Access Control > [Role]**. Now you can see the role's permissions and
 other details.
 
 ## Create a Role
 
-![GIF showing how to create a role](https://marketing.directus.app/assets/7ce402ec-9559-46a1-bffc-caa9ed76bd58.gif)
+![How to create a role](https://marketing.directus.app/assets/7ce402ec-9559-46a1-bffc-caa9ed76bd58.gif)
 
 To create a role, follow these steps.
 
@@ -43,7 +43,7 @@ Next, you will likely need to [configure the role's details](#configure-role-det
 
 ## Configure Role Details
 
-![GIF showing how to configure role details](https://marketing.directus.app/assets/33827779-1ea8-4126-b62e-172b6a9d6616.gif)
+![How to configure role details](https://marketing.directus.app/assets/33827779-1ea8-4126-b62e-172b6a9d6616.gif)
 
 In addition to defining permissions, roles come with a number of other configuration options. To configure a role's
 details, follow these steps.
@@ -82,7 +82,7 @@ You can always [reconfigure permissions](/user-guide/user-management/permissions
 
 ## Delete a Role
 
-![GIF showing how to delete a role](https://marketing.directus.app/assets/47571f2e-b3e2-436f-a8e5-a92aea787607.gif)
+![How to delete a role](https://marketing.directus.app/assets/47571f2e-b3e2-436f-a8e5-a92aea787607.gif)
 
 To delete a role, follow these steps.
 

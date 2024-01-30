@@ -110,7 +110,7 @@ It is common to have multiple, complex business rules in a project.
 
 ## How it Works in Directus
 
-![A GIF showing how access control works in Directus](https://marketing.directus.app/assets/db5f4395-f0b9-40f6-a1ce-b5679e458c13.gif)
+![How access control works in Directus](https://marketing.directus.app/assets/db5f4395-f0b9-40f6-a1ce-b5679e458c13.gif)
 
 While you have full reign to configure these using SQL, Directus also provides a complete system to configure and manage
 users, roles, and permissions without writing a single line of SQL. The process has three key steps.
