@@ -4,6 +4,7 @@ import { EXTENSION_TYPES } from '@directus/extensions';
 import { describe, list, type DescribeOptions, type ListOptions, type ListQuery } from '@directus/extensions-registry';
 import { isIn } from '@directus/utils';
 import express from 'express';
+import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -74,7 +75,7 @@ router.get(
 );
 
 router.get(
-	'/registry/:pk(${UUID_REGEX})',
+	`/registry/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();

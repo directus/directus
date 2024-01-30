@@ -5,7 +5,7 @@ import type { ListQuery } from '../types/list-query.js';
 export const constructUrl = (query: ListQuery, options?: ListOptions) => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
 
-	const url = new URL('/packages', registry);
+	const url = new URL('/extensions', registry);
 
 	if (query.search) {
 		url.searchParams.set('search', query.search);
