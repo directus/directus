@@ -5,7 +5,7 @@ export const RegistryListResponse = z.array(
 	z.object({
 		id: z.string(),
 		name: z.string(),
-		description: z.string(),
+		description: z.union([z.null(), z.string()]),
 		downloads: z.number(),
 		verified: z.boolean(),
 		versions: z.array(
