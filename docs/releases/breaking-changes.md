@@ -15,7 +15,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version [NEXT]
 
-TODO add final breaking change note
+Add final breaking change note about changes to the SSO
 
 ## Version 10.8.3
 
