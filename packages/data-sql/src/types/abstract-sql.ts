@@ -42,13 +42,7 @@ export interface AbstractSqlQuery {
 export type SubQuery = (
 	rootRow: Record<string, unknown>,
 	columnIndexToIdentifier: (columnIndex: number) => string,
-) => {
-	rootQuery: AbstractSqlQuery;
-
-	subQueries: SubQuery[];
-
-	aliasMapping: AliasMapping;
-};
+) => ConverterResult;
 
 export type AliasMapping = (
 	| { type: 'nested'; alias: string; children: AliasMapping }
