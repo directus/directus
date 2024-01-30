@@ -1729,8 +1729,8 @@ importers:
         specifier: 3.501.0
         version: 3.501.0
       '@aws-sdk/lib-storage':
-        specifier: 3.501.0
-        version: 3.501.0(@aws-sdk/client-s3@3.501.0)
+        specifier: 3.502.0
+        version: 3.502.0(@aws-sdk/client-s3@3.501.0)
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -2777,8 +2777,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/lib-storage@3.501.0(@aws-sdk/client-s3@3.501.0):
-    resolution: {integrity: sha512-XZREd1O0S8AjM3RS85T2QCVJzXk+BSAGNOFvGP8t2al2Ti35O4+AvSHT75rmOGAZAsthtL2o9bt0h1VFnaIP+g==}
+  /@aws-sdk/lib-storage@3.502.0(@aws-sdk/client-s3@3.501.0):
+    resolution: {integrity: sha512-0wz5OoXtpfrNNUQnZPxKD0tqNfxeJbxNQBSZtGtCoCihBqmKE/Oui85ptrdLyrjjTc2b+Hxu7xfyGdU2ILWBYA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@aws-sdk/client-s3': ^3.0.0
@@ -2989,7 +2989,7 @@ packages:
     resolution: {integrity: sha512-rx/9uHI4inRbp2tw3Y4Ih4PNZkVj32h7WneSg3MVgVjAoVD5Zti9KhS5hkvsBxfgmQmg0AQbE+b1sy5WGAgntA==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 2.7.0
+      '@smithy/types': 2.9.1
       tslib: 2.6.2
     dev: false
 
@@ -6799,13 +6799,6 @@ packages:
       '@smithy/protocol-http': 3.1.1
       '@smithy/types': 2.9.1
       '@smithy/util-stream': 2.1.1
-      tslib: 2.6.2
-    dev: false
-
-  /@smithy/types@2.7.0:
-    resolution: {integrity: sha512-1OIFyhK+vOkMbu4aN2HZz/MomREkrAC/HqY5mlJMUJfGrPRwijJDTeiN8Rnj9zUaB8ogXAfIOtZrrgqZ4w7Wnw==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
       tslib: 2.6.2
     dev: false
 
