@@ -167,7 +167,6 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-	updateFetchedItems,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
@@ -364,9 +363,34 @@ const relatedPrimaryKeys = computed(() => {
 	return selection.value.map((item) => get(item, [junctionField, relatedPkField], null)).filter(Boolean);
 });
 
-async function batchRefresh() {
+function stageBatchEdits(edits: Record<string, any>) {
+	if (!relationInfo.value) return;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+
+
+	selection.value.forEach((item) => {
+		const junctionId = get(item, [junctionPkField], null);
+		const relatedId = get(item, [junctionField, relatedPkField], null);
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[junctionPkField]: junctionId,
+			[junctionField]: {
+				[relatedPkField]: relatedId,
+				...edits,
+			},
+		};
+
+		update(changes);
+	});
+
 	selection.value = [];
-	await updateFetchedItems();
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
@@ -646,7 +670,8 @@ function getLinkForItem(item: DisplayItem) {
 			v-model:active="batchEditActive"
 			:primary-keys="relatedPrimaryKeys"
 			:collection="relationInfo.relatedCollection.collection"
-			@refresh="batchRefresh"
+			stage-on-save
+			@input="stageBatchEdits"
 		/>
 	</div>
 </template>

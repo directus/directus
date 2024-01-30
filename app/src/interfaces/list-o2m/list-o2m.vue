@@ -14,7 +14,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter, PrimaryKey } from '@directus/types';
+import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
@@ -143,7 +143,6 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-	updateFetchedItems,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
@@ -316,11 +315,36 @@ function deleteItem(item: DisplayItem) {
 }
 
 const batchEditActive = ref(false);
-const selection = ref<PrimaryKey[]>([]);
+const selection = ref<DisplayItem[]>([]);
 
-async function batchRefresh() {
+const relatedPrimaryKeys = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	return selection.value.map((item) => get(item, relatedPkField, null)).filter(Boolean);
+});
+
+function stageBatchEdits(edits: Record<string, any>) {
+	if (!relationInfo.value) return;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	selection.value.forEach((item) => {
+		const relatedId = get(item, [relatedPkField], null);
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[relatedPkField]: relatedId,
+			...edits,
+		};
+
+		update(changes);
+	});
+
 	selection.value = [];
-	await updateFetchedItems();
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
@@ -408,7 +432,7 @@ function getLinkForItem(item: DisplayItem) {
 				</div>
 
 				<v-button
-					v-if="updateAllowed && selection.length > 0"
+					v-if="updateAllowed && relatedPrimaryKeys.length > 0"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
@@ -447,12 +471,12 @@ function getLinkForItem(item: DisplayItem) {
 				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
-				:show-manual-sort="allowDrag"
-				:manual-sort-key="relationInfo?.sortField"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:disabled="!updateAllowed"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				:show-select="updateAllowed ? 'multiple' : 'none'"
-				selection-use-keys
 				show-resize
 				@click:row="editRow"
 				@update:items="sortItems"
@@ -595,9 +619,10 @@ function getLinkForItem(item: DisplayItem) {
 
 		<drawer-batch
 			v-model:active="batchEditActive"
-			:primary-keys="selection"
+			:primary-keys="relatedPrimaryKeys"
 			:collection="relationInfo.relatedCollection.collection"
-			@refresh="batchRefresh"
+			stage-on-save
+			@input="stageBatchEdits"
 		/>
 	</div>
 </template>
