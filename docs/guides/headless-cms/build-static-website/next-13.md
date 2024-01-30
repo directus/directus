@@ -115,7 +115,7 @@ correlate with the URL for the page. For example `about` will later correlate to
 
 Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the
 Public role read access to the new collection. Create 3 items in the new collection -
-[here's some sample data](https://github.com/directus/examples/blob/main/website-next13/demo-data).
+[here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 Inside of `app`, create a new directory called `[slug]` with a file called `page.tsx`. This is a dynamic route, so a
 single file can be used for all of the top-level pages.
@@ -171,7 +171,7 @@ Create the following fields in your `posts` data model:
 In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
 Create 3 items in the posts collection -
-[here's some sample data](https://github.com/directus/examples/blob/main/website-next13/demo-data).
+[here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 ### Create Blog Post Listing
 

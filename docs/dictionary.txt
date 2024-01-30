@@ -103,6 +103,7 @@ Alibaba
 allowlist
 allowList
 alwaysdata
+AMI
 anonymized
 api
 API
