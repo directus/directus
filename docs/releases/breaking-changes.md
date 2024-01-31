@@ -17,16 +17,16 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Updated Exif Tags
 
-The library `exif-reader` which is used for Exif metadata extraction of images has been updated to v2. In this release,
-tag names have been aligned with the Exif standard. See https://github.com/devongovett/exif-reader/pull/30 for a
-complete list of updated tags.
+The library `exif-reader`, which is used for Exif metadata extraction of images, has been updated to v2. In this
+release, tag names have been updated to align with the Exif standard. See
+https://github.com/devongovett/exif-reader/pull/30 for a complete list of updated tags.
 
 This might be a breaking change if
 
 - a custom `FILE_METADATA_ALLOW_LIST` config is in place
-- Exif tags of images are consumed, for example via API
+- you rely on the generated Exif tags stored in Directus Files
 
-The updated Exif tags only applies to images which are uploaded after upgrading to this release.
+The updated Exif tags only apply to images which are uploaded after upgrading to this release.
 
 ### Updated Sorting in Schema Snapshots
 
