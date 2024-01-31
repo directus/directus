@@ -22,3 +22,5 @@ export const RegistryListResponse = z.array(
 		),
 	}),
 );
+
+export type RegistryListResponse = z.infer<typeof RegistryListResponse>;
