@@ -1,14 +1,17 @@
-name: 'CLA Assistant'
+name: CLA Assistant
+
 on:
   pull_request_target:
-    types: [opened, synchronize]
+    types:
+      - opened
+      - synchronize
 
 permissions:
   pull-requests: write
 
 jobs:
   check:
-    name: 'Check'
+    name: Check
     runs-on: ubuntu-latest
     steps:
       - id: check

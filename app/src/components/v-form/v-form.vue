@@ -380,7 +380,7 @@ function useRawEditor() {
 				<form-field
 					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-						(el: Element) => {
+						(el) => {
 							formFieldEls[fieldName] = el;
 						}
 					"
