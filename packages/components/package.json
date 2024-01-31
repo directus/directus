@@ -30,20 +30,24 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@histoire/plugin-vue": "0.17.8",
-		"@vitejs/plugin-vue": "4.6.2",
-		"@vitest/coverage-v8": "1.1.0",
-		"histoire": "0.17.8",
-		"rollup-plugin-node-externals": "6.1.2",
+		"@histoire/plugin-vue": "0.17.9",
+		"@vitejs/plugin-vue": "5.0.3",
+		"@vitest/coverage-v8": "1.2.2",
+		"histoire": "0.17.9",
+		"pinia": "2.1.7",
+		"rollup-plugin-node-externals": "7.0.0",
 		"typescript": "5.3.3",
-		"vite": "5.0.10",
-		"vite-plugin-dts": "3.7.0",
-		"vitest": "1.1.1"
+		"vite": "5.0.12",
+		"vite-plugin-dts": "3.7.2",
+		"vitest": "1.2.2",
+		"vue": "3.4.15",
+		"vue-i18n": "9.9.0",
+		"vue-router": "4.2.5"
 	},
 	"peerDependencies": {
-		"pinia": "2.1.7",
-		"vue": "3.3.13",
-		"vue-i18n": "9.2.2",
-		"vue-router": "4.2.5"
+		"pinia": "2",
+		"vue": "^3.4",
+		"vue-i18n": "9",
+		"vue-router": "4"
 	}
 }
