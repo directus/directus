@@ -1,6 +1,6 @@
 {
 	"extends": "@directus/tsconfig/node18-esm",
-	"include": ["src", "src/constants.ts"],
+	"include": ["src"],
 	"typedocOptions": {
 		"entryPoints": ["./src"]
 	}
