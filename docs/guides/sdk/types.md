@@ -6,7 +6,7 @@ description: Learn about all of the ways to manage types with the Directus SDK
 # Directus SDK Types
 
 The Directus SDK provides TypeScript types used for auto-completion and generating output item types, these can be quite
-complex and can be hard to work with. This guide will go over some approaches that can be taken for workine with these
+complex and can be hard to work with. This guide will go over some approaches that can be taken for working with these
 types and assumes you're working with the SDK in TypeScript 5+.
 
 ## Setting up the a Schema
@@ -39,7 +39,7 @@ interface MySchema {
 ::: tip
 
 For the most reliable results the root schema types should be kept as pure as possible, meaning no unions
-(`CollectionA | null`), no optional types (`optional_collection?: CollectionA[]`) and preferrably no inline relational
+(`CollectionA | null`), no optional types (`optional_collection?: CollectionA[]`) and preferably no inline relational
 types (types nested directly on the root schema) however an exception can be made here for extending core collections.
 
 :::
@@ -249,7 +249,7 @@ type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
 ### Debugging generated output types
 
 The SDK provides some utility generic types to help debug issues. The `Identity<>` generic type can be used to try and
-resolve generics to their results. This is however not a silver bullit and you may need to reduce the type for this to
+resolve generics to their results. This is however not a silver bullet and you may need to reduce the type for this to
 work.
 
 ```ts
@@ -309,7 +309,7 @@ const results2 = await directusClient.request(readItems("collection_a", {
 }));
 ```
 
-::: tip Alias unsuported
+::: tip Alias unsupported
 
 At this time `alias` has not been typed yet for use in other query parameters like `deep`.
 
