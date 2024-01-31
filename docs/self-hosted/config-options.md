@@ -654,9 +654,9 @@ STORAGE_AWS_BUCKET="my-files"
 When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
-| Variable                   | Description                                                                                           | Default Value                                                                 |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+| Variable                   | Description                                                                                           | Default Value                                                                             |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings |
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
@@ -925,8 +925,8 @@ By default, extensions are not cached. The input data type for this environment 
 [`CACHE_TTL`](#cache).
 
 <sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
-extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
-and then loaded from there.
+extensions from a storage location instead. Under the hood, they are synced into a local directory within
+[`TEMP_PATH`](#general) and then loaded from there.
 
 ## Messenger
 

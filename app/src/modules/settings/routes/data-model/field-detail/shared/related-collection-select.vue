@@ -19,7 +19,10 @@ const collectionExists = computed(() => {
 });
 
 const availableCollections = computed(() => {
-	return orderBy(collectionsStore.databaseCollections, ['sort', 'collection'], ['asc']);
+	return orderBy(
+		collectionsStore.databaseCollections.filter((collection) => collection.meta),
+		['meta.sort', 'collection'],
+	);
 });
 
 const systemCollections = collectionsStore.crudSafeSystemCollections;

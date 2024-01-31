@@ -1,11 +1,10 @@
-import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test } from 'vitest';
-import { Router } from 'vue-router';
-
 import { Focus } from '@/__utils__/focus';
 import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
-import { GlobalMountOptions } from '@/__utils__/types';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import { mount } from '@vue/test-utils';
+import { beforeEach, expect, test } from 'vitest';
+import { Router } from 'vue-router';
 import VButton from './v-button.vue';
 
 let router: Router;
