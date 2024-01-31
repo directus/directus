@@ -22,7 +22,7 @@ describe('Type extraction', () => {
 	test('Uses cast flag if exists', () => {
 		vi.mocked(getCastFlag).mockReturnValue('string');
 
-		cast('key', 'string:value');
+		cast('string:value', 'key');
 
 		expect(getCastFlag).toHaveBeenCalledWith('string:value');
 		expect(toString).toHaveBeenCalledWith('value');
@@ -39,7 +39,7 @@ describe('Type extraction', () => {
 		vi.mocked(toNumber).mockReturnValue(1);
 		vi.mocked(toArray).mockReturnValue(['string:hey', 'number:1']);
 
-		const res = cast('key', 'array:string:hey,number:1');
+		const res = cast('array:string:hey,number:1', 'key');
 
 		expect(getCastFlag).toHaveBeenNthCalledWith(1, 'array:string:hey,number:1');
 		expect(getCastFlag).toHaveBeenCalledWith('string:hey');
@@ -54,7 +54,7 @@ describe('Type extraction', () => {
 		vi.mocked(getCastFlag).mockReturnValue(null);
 		vi.mocked(getTypeFromMap).mockReturnValue('string');
 
-		cast('key', 'value');
+		cast('value', 'key');
 
 		expect(getTypeFromMap).toHaveBeenCalledWith('key');
 		expect(toString).toHaveBeenCalledWith('value');
@@ -65,7 +65,7 @@ describe('Type extraction', () => {
 		vi.mocked(getTypeFromMap).mockReturnValue(null);
 		vi.mocked(guessType).mockReturnValue('string');
 
-		cast('key', 'value');
+		cast('value', 'key');
 
 		expect(guessType).toHaveBeenCalledWith('value');
 		expect(toString).toHaveBeenCalledWith('value');
@@ -77,26 +77,26 @@ describe('Casting', () => {
 		vi.mocked(getCastFlag).mockReturnValue('string');
 
 		vi.mocked(toString).mockReturnValue('cast-value');
-		expect(cast('key', 'value')).toBe('cast-value');
+		expect(cast('value')).toBe('cast-value', 'key');
 	});
 
 	test('Uses toNumber for number types', () => {
 		vi.mocked(getCastFlag).mockReturnValue('number');
 
 		vi.mocked(toNumber).mockReturnValue(123);
-		expect(cast('key', 'value')).toBe(123);
+		expect(cast('value')).toBe(123, 'key');
 	});
 
 	test('Uses toBoolean for number types', () => {
 		vi.mocked(getCastFlag).mockReturnValue('boolean');
 
 		vi.mocked(toBoolean).mockReturnValue(false);
-		expect(cast('key', 'value')).toBe(false);
+		expect(cast('value')).toBe(false, 'key');
 	});
 
 	test('Uses RegExp for regex types', () => {
 		vi.mocked(getCastFlag).mockReturnValue('regex');
-		expect(cast('key', 'value')).toBeInstanceOf(RegExp);
+		expect(cast('value')).toBeInstanceOf(RegExp, 'key');
 	});
 
 	test('Uses toArray for array types', () => {
@@ -109,13 +109,13 @@ describe('Casting', () => {
 		vi.mocked(toNumber).mockImplementation((v) => v);
 		vi.mocked(toArray).mockReturnValue([1, 2, 3]);
 
-		expect(cast('key', 'array:value')).toEqual([1, 2, 3]);
+		expect(cast('array:value')).toEqual([1, 2, 3], 'key');
 	});
 
 	test('Uses tryJson for json types', () => {
 		vi.mocked(getCastFlag).mockReturnValue('json');
 
 		vi.mocked(tryJson).mockReturnValue('cast-value');
-		expect(cast('key', 'value')).toBe('cast-value');
+		expect(cast('value')).toBe('cast-value', 'key');
 	});
 });
