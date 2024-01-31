@@ -29,10 +29,10 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.3",
+		"@types/node": "18.19.10",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.2.2",
-		"dependency-cruiser": "15.5.0",
+		"dependency-cruiser": "16.1.0",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
 		"vitest": "1.2.2"
