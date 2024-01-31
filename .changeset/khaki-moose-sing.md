@@ -2,4 +2,4 @@
 '@directus/env': minor
 ---
 
-remove `environment syntax prefix` before casting and cast each element when the env value is an array.
+Fixed an issue that would prevent prefix-based casted values in environment variables not to be extracted properly.
