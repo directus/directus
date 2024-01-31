@@ -33,8 +33,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			collections.value.filter((collection) => {
 				return collection.collection.startsWith('directus_') === true;
 			}),
-			['collection'],
-			['asc'],
+			'collection',
 		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
 	);
 

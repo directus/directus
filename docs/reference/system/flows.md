@@ -22,7 +22,7 @@ Icon displayed in the Admin App for the flow.
 `color` **string**\
 Color of the icon displayed in the Admin App for the flow.
 
-`note` **text**\
+`description` **text**\
 Short description displayed in the Admin App.
 
 `status` **string**\
@@ -52,7 +52,7 @@ UUID of the operation connected to the trigger in the flow.
 	"name": "My Flow",
 	"icon": "bolt",
 	"color": "#112233",
-	"note": "Note for my flow",
+	"description": "Description for my flow",
 	"status": "active",
 	"trigger": "manual",
 	"accountability": "$trigger",

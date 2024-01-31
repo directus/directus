@@ -13,6 +13,29 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.9.0
+
+### Updated Exif Tags
+
+The library `exif-reader`, which is used for Exif metadata extraction of images, has been updated to v2. In this
+release, tag names have been updated to align with the Exif standard. See
+https://github.com/devongovett/exif-reader/pull/30 for a complete list of updated tags.
+
+This might be a breaking change if
+
+- a custom `FILE_METADATA_ALLOW_LIST` config is in place
+- you rely on the generated Exif tags stored in Directus Files
+
+The updated Exif tags only apply to images which are uploaded after upgrading to this release.
+
+### Updated Sorting in Schema Snapshots
+
+The sort order of fields and relations inside schema snapshots has been changed to their original creation order. This
+is to increase consistency of resulting snapshots artifacts.
+
+While this is not a breaking change, you are advised to regenerate the snapshot after the version update of Directus,
+provided you are tracking the snapshot in a version control system.
+
 ## Version 10.8.3
 
 ### Updated GraphQL Content Version Usage
@@ -83,10 +106,9 @@ The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline wi
 ### Replaced Extensions List Endpoints
 
 In previous releases, it was possible to `GET /extensions/:type` to retrieve a list of enabled extensions for a given
-type, with no specific permissions required.
+type.
 
 This has been replaced with a `GET /extensions` endpoint that returns all extensions along with their type and status.
-This endpoint requires admin authentication.
 
 ## Version 10.6.2
 

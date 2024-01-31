@@ -51,12 +51,12 @@ const selectItems = computed(() => {
 		return item;
 	});
 
-	const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+	const recommendedItems: FancySelectItem[] = [];
 
 	const recommendedList = recommended.map((key) => interfaceItems.find((item) => item.value === key));
 
 	if (recommendedList !== undefined) {
-		recommendedItems.push(...recommendedList.filter((i) => i));
+		recommendedItems.push(...recommendedList.filter((item): item is FancySelectItem => !!item));
 	}
 
 	if (interfaceItems.length >= 5 && recommended.length > 0) {
@@ -79,7 +79,7 @@ const customOptionsFields = computed(() => {
 		return selectedInterface.value?.options(fieldDetailStore);
 	}
 
-	return null;
+	return undefined;
 });
 
 const options = computed({

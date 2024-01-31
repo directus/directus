@@ -33,13 +33,13 @@ export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 
 		if (relations.length !== 1) return undefined;
 
-		const relation = relations[0];
+		const relation = relations[0] as Relation;
 
 		return {
-			relation: relation,
+			relation,
 			relatedCollection: collectionsStore.getCollection(relation.collection),
 			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.collection),
-			reverseJunctionField: fieldsStore.getField(relation.collection, relation.meta?.many_field as string),
+			reverseJunctionField: fieldsStore.getField(relation.collection, relation.meta?.many_field),
 			sortField: relation.meta?.sort_field ?? undefined,
 			type: 'o2m',
 		} as RelationO2M;

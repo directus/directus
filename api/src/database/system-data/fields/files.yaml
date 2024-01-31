@@ -46,6 +46,22 @@ fields:
     width: half
     readonly: true
 
+  - field: focal_point_divider
+    interface: presentation-divider
+    options:
+      icon: image_search
+      title: $t:field_options.directus_files.focal_point_divider
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: focal_point_x
+    width: half
+
+  - field: focal_point_y
+    width: half
+
   - field: storage_divider
     interface: presentation-divider
     options:

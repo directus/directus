@@ -9,15 +9,15 @@ on:
       - .github/workflows/sync-dockerhub-readme.yml
 
 jobs:
-  sync-dockerhub-readme:
-    name: Sync Readme to Docker Hub
+  sync:
+    name: Sync
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Sync Readme to Docker Hub
-        uses: peter-evans/dockerhub-description@v3
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
