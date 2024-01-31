@@ -30,12 +30,12 @@ export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 
 		if (relations.length === 0) return undefined;
 
-		const relation = relations[0];
+		const relation = relations[0] as Relation;
 
 		return {
-			relation: relation,
-			relatedCollection: collectionsStore.getCollection(relation.related_collection as string),
-			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection as string),
+			relation,
+			relatedCollection: collectionsStore.getCollection(relation.related_collection),
+			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection),
 			type: 'm2o',
 		} as RelationM2O;
 	});

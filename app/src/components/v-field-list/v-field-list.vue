@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { useFieldTree } from '@/composables/use-field-tree';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
@@ -76,7 +76,7 @@ const addAll = () => {
 	emit('add', unref(allFields));
 };
 
-function filter(field: Field, parent?: FieldNode): boolean {
+function filter(field: Field): boolean {
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
@@ -84,7 +84,9 @@ function filter(field: Field, parent?: FieldNode): boolean {
 		return false;
 	}
 
-	if (!search.value || isNil(parent) === false) return true;
+	if (!search.value) {
+		return true;
+	}
 
 	const children = isNil(field.schema?.foreign_key_table)
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
@@ -93,10 +95,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {
-		return (
-			field.field.toLowerCase().includes(search.value.toLowerCase()) ||
-			field.name.toLowerCase().includes(search.value.toLowerCase())
-		);
+		return field.name.toLowerCase().includes(search.value.toLowerCase());
 	}
 }
 </script>

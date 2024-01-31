@@ -16,7 +16,7 @@ test('Mount component', () => {
 });
 
 test('type prop', () => {
-	const types = ['input', 'input-tall', 'block-list-item', 'block-list-item-dense', 'text', 'list-item-icon'];
+	const types = ['input', 'input-tall', 'block-list-item', 'block-list-item-dense', 'text', 'list-item-icon'] as const;
 
 	for (const type of types) {
 		const wrapper = mount(VSkeletonLoader, {

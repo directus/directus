@@ -651,7 +651,7 @@ STORAGE_AWS_BUCKET="my-files"
 
 ### Metadata
 
-When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
 | Variable                   | Description                                                                                           | Default Value                                                                             |
@@ -925,8 +925,8 @@ By default, extensions are not cached. The input data type for this environment 
 [`CACHE_TTL`](#cache).
 
 <sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
-extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
-and then loaded from there.
+extensions from a storage location instead. Under the hood, they are synced into a local directory within
+[`TEMP_PATH`](#general) and then loaded from there.
 
 ## Messenger
 

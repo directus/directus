@@ -286,7 +286,7 @@ export class FilesService extends ItemsService {
 								fullMetadata.exif = Photo;
 							}
 						} catch (err) {
-							logger.warn(`Couldn't extract EXIF metadata from file`);
+							logger.warn(`Couldn't extract Exif metadata from file`);
 							logger.warn(err);
 						}
 					}

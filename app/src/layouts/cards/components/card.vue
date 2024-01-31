@@ -73,7 +73,7 @@ const selectionIcon = computed(() => {
 });
 
 function toggleSelection() {
-	if (!props.item) return null;
+	if (!props.item) return;
 
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
@@ -113,6 +113,7 @@ function handleClick() {
 						:src="imageInfo?.source"
 						:alt="item?.title"
 						role="presentation"
+						@error="imgError = true"
 					/>
 					<v-icon v-else large :name="icon" />
 				</template>

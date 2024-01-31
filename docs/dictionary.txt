@@ -103,6 +103,7 @@ Alibaba
 allowlist
 allowList
 alwaysdata
+AMI
 anonymized
 api
 API
@@ -196,7 +197,7 @@ Entrypoint
 env
 ENV
 ESM
-EXIF
+Exif
 fallbacks
 falsy
 FavIcon
