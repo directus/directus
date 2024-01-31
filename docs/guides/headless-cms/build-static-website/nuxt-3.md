@@ -140,8 +140,8 @@ if (!page.value) throw createError({
 ```
 
 Go to http://localhost:3000/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
-single item with that slug is retrieved, and the page should show your data. `readOne()` only checks against your `slug`
-Primary ID Field.
+single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
+`slug` Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
 [`v-html` should only be used for trusted content](https://vuejs.org/api/built-in-directives.html#v-html)._

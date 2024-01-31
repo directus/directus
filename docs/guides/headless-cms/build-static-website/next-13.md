@@ -64,6 +64,21 @@ const directus = createDirectus('https://directus.example.com').with(rest());
 export default directus;
 ```
 
+::: tip Next.js Caching
+
+Next.js extends the native fetch API with a `force-cache` configuration by default. This means you may sometimes run
+into scenarios where Next.js returns stale data. To fix this, update the `rest()` composable as follows:
+
+```js
+const directus = createDirectus('https://directus.example.com').with(
+  rest({
+    onRequest: (options) => ({ ...options, cache: 'no-store' }),
+  })
+);
+```
+
+:::
+
 Ensure your Project URL is correct when initializing the Directus JavaScript SDK.
 
 ## Using Global Metadata and Settings
