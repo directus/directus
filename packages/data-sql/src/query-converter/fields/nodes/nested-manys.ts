@@ -5,11 +5,11 @@ import type {
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
 	SubQuery,
-} from '../../types/index.js';
-import { createIndexGenerators, type IndexGenerators } from '../utils/create-index-generators.js';
-import { convertModifiers } from '../modifiers/modifiers.js';
-import { createPrimitiveSelect } from './create-primitive-select.js';
-import { convertFieldNodes } from './fields.js';
+} from '../../../types/index.js';
+import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
+import { convertModifiers } from '../../modifiers/modifiers.js';
+import { createPrimitiveSelect } from './primitive-select.js';
+import { convertFieldNodes } from '../fields.js';
 
 export interface NestedManyResult {
 	/** Function to generate a sub query */
@@ -28,7 +28,7 @@ export interface NestedManyResult {
  * @returns A function to create a query with and the select part for the root query
  */
 export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tableIndex: number): NestedManyResult {
-	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
+	if (field.nesting.type !== 'relational-single') throw new Error('Nested o2a not yet implemented!');
 
 	const indexGen = createIndexGenerators();
 

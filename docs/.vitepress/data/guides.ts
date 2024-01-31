@@ -48,7 +48,10 @@ export const sections = {
 			},
 			{
 				title: 'From the Blog',
-				items: [{ display: 'Build a Website With SvelteKit', path: '/blog/getting-started-directus-sveltekit' }],
+				items: [
+					{ display: 'Build a Website With SvelteKit', path: '/blog/getting-started-directus-sveltekit' },
+					{ display: 'Build a Website With Astro', path: '/blog/getting-started-directus-astro' },
+				],
 			},
 		],
 	},

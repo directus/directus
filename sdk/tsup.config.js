@@ -1,7 +1,7 @@
-import { defineConfig } from 'tsup';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'tsup';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -23,12 +23,5 @@ export default defineConfig(() => ({
 	bundle: env === 'production',
 	watch: env === 'development',
 	target: 'es2020',
-	entry: [
-		'src/index.ts',
-		// composables
-		'src/auth/index.ts',
-		'src/graphql/index.ts',
-		'src/realtime/index.ts',
-		'src/rest/index.ts',
-	],
+	entry: ['src/index.ts'],
 }));

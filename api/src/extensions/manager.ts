@@ -27,8 +27,9 @@ import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
-import { clone } from 'lodash-es';
+import { clone, debounce } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
+import os from 'node:os';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -225,16 +226,21 @@ export class ExtensionManager {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	public reload(): void {
+		if (this.reloadQueue.size > 0) {
+			// The pending job in the queue will already handle the additional changes
+			return;
+		}
+
 		const logger = useLogger();
 
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
-				logger.info('Reloading extensions');
-
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
 				await this.load();
+
+				logger.info('Extensions reloaded');
 
 				const added = this.extensions.filter(
 					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path),
@@ -313,14 +319,26 @@ export class ExtensionManager {
 		this.watcher = chokidar.watch(
 			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
 			{
-				ignoreInitial: true,
+				ignoreInitial: true, // dotdirs are watched by default and frequently found in 'node_modules'
+				ignored: `${extensionDirUrl}/**/node_modules/**`,
+				// on macOS dotdirs in linked extensions are watched too
+				followSymlinks: os.platform() === 'darwin' ? false : true,
 			},
 		);
 
 		this.watcher
-			.on('add', () => this.reload())
-			.on('change', () => this.reload())
-			.on('unlink', () => this.reload());
+			.on(
+				'add',
+				debounce(() => this.reload(), 500),
+			)
+			.on(
+				'change',
+				debounce(() => this.reload(), 650),
+			)
+			.on(
+				'unlink',
+				debounce(() => this.reload(), 2000),
+			);
 	}
 
 	/**

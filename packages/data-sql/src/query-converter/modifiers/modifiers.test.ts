@@ -81,7 +81,7 @@ test('Convert nested, primitive filter', () => {
 						field: externalColumnName,
 					},
 					nesting: {
-						type: 'relational-many',
+						type: 'relational-single',
 						local: {
 							fields: [foreignKeyColumnName],
 						},
@@ -173,7 +173,7 @@ test('Convert nested sort', () => {
 						field: externalColumnName,
 					},
 					nesting: {
-						type: 'relational-many',
+						type: 'relational-single',
 						local: {
 							fields: [foreignKeyColumnName],
 						},
