@@ -13,7 +13,7 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version 10.x.y
+## Version 10.9.0
 
 ### Updated Exif Tags
 
