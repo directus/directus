@@ -19,7 +19,6 @@ import emitter from '../emitter.js';
 import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { collectOnboarding } from '../utils/onboarding.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
 import { SettingsService } from './settings.js';
@@ -247,8 +246,6 @@ export class AuthenticationService {
 		}
 
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
-
-		collectOnboarding(user.id).catch(() => {});
 
 		emitStatus('success');
 
