@@ -28,3 +28,5 @@ export const RegistryDescribeResponse = z.object({
 		}),
 	),
 });
+
+export type RegistryDescribeResponse = z.infer<typeof RegistryDescribeResponse>;
