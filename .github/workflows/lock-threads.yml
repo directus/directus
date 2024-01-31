@@ -5,6 +5,7 @@ on:
     - cron: '0 * * * *'
     # Reduce to daily execution once initial backlog has been processed
     # - cron: '30 2 * * *'
+  workflow_dispatch:
 
 permissions:
   issues: write
@@ -18,3 +19,4 @@ jobs:
       - uses: dessant/lock-threads@v5
         with:
           issue-inactive-days: 60
+          log-output: true
