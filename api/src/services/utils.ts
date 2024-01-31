@@ -144,7 +144,7 @@ export class UtilsService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 	}
 

@@ -20,11 +20,11 @@
 
 	&.inverted {
 		--tooltip-foreground-color: var(--theme--foreground);
-		--tooltip-background-color: var(--background-subdued);
+		--tooltip-background-color: var(--theme--background-subdued);
 	}
 
 	&.monospace {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	&.visible {

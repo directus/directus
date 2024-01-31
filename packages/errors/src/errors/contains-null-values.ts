@@ -11,5 +11,5 @@ export const messageConstructor = ({ collection, field }: ContainsNullValuesErro
 export const ContainsNullValuesError = createError<ContainsNullValuesErrorExtensions>(
 	ErrorCode.ContainsNullValues,
 	messageConstructor,
-	400
+	400,
 );

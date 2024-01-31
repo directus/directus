@@ -10,7 +10,7 @@ withDefaults(
 	}>(),
 	{
 		icon: 'box',
-	}
+	},
 );
 
 defineEmits<{

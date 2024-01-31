@@ -44,7 +44,7 @@ const app = express();
 app.use(
 	handlePressure({
 		maxEventLoopUtilization: 0.8,
-	})
+	}),
 );
 ```
 

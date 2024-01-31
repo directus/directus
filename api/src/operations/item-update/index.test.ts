@@ -36,19 +36,19 @@ describe('Operations / Item Update', () => {
 	])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, permissions } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
 			testCollection,
-			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
+			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
 		);
 	});
 
 	test('should return null when payload is not defined', async () => {
 		const result = await config.handler(
 			{ collection: testCollection } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(result).toBe(null);
@@ -62,7 +62,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, expect.anything());
@@ -75,7 +75,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, {
@@ -88,7 +88,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, {
@@ -99,7 +99,7 @@ describe('Operations / Item Update', () => {
 	test.each([1, [1]])('should call updateOne when key is $payload', async (key) => {
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
@@ -112,7 +112,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: true });
@@ -123,7 +123,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: key, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: false });
@@ -132,7 +132,7 @@ describe('Operations / Item Update', () => {
 	test('should call updateMany when key is an array with more than one item', async () => {
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: [1, 2, 3] } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
@@ -145,7 +145,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: keys, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: true });
@@ -156,7 +156,7 @@ describe('Operations / Item Update', () => {
 
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: keys, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(vi.mocked(ItemsService).prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: false });

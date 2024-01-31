@@ -24,5 +24,5 @@ export const messageConstructor = ({ collection, field }: NotNullViolationErrorE
 export const NotNullViolationError = createError<NotNullViolationErrorExtensions>(
 	ErrorCode.NotNullViolation,
 	messageConstructor,
-	400
+	400,
 );

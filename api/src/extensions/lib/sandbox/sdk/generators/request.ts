@@ -10,7 +10,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 		method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 		body?: Record<string, any> | string;
 		headers?: Record<string, string>;
-	}>
+	}>,
 ) => Promise<{
 	status: number;
 	statusText: string;

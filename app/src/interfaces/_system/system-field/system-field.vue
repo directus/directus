@@ -19,7 +19,7 @@ const props = withDefaults(
 	{
 		typeAllowList: () => [],
 		allowForeignKeys: true,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -41,7 +41,7 @@ const fields = computed(() => {
 
 // Reset value whenever the chosen collection changes
 watch(collection, (newCol, oldCol) => {
-	if (oldCol !== null && newCol !== oldCol) {
+	if (oldCol && newCol !== oldCol) {
 		emit('input', null);
 	}
 });
@@ -59,7 +59,7 @@ const selectItems = computed(() =>
 			value: field.field,
 			disabled,
 		};
-	})
+	}),
 );
 </script>
 

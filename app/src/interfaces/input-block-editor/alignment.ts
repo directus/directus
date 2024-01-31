@@ -65,7 +65,7 @@ export class Alignment implements BlockTune {
 		this.wrapper = document.createElement('div');
 
 		this.wrapper.classList.add(
-			this.alignmentOptions.find((align) => align.name === this.data.alignment)?.css_class as string
+			this.alignmentOptions.find((align) => align.name === this.data.alignment)?.css_class as string,
 		);
 
 		this.wrapper.append(blockContent);

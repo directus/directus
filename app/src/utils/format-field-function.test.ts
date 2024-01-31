@@ -30,7 +30,7 @@ beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
-		})
+		}),
 	);
 });
 

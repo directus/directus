@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "10.7.2",
+	"version": "10.8.3",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -47,7 +47,8 @@
 	],
 	"type": "module",
 	"exports": {
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./version": "./version.js"
 	},
 	"bin": {
 		"directus": "cli.js"

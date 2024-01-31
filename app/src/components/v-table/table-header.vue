@@ -2,40 +2,41 @@
 import { useEventListener } from '@/composables/use-event-listener';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 
-interface Props {
-	headers: Header[];
-	sort: Sort;
-	reordering: boolean;
-	allowHeaderReorder: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	someItemsSelected?: boolean;
-	allItemsSelected?: boolean;
-	fixed?: boolean;
-	mustSort?: boolean;
-	hasItemAppendSlot?: boolean;
-	manualSortKey?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	someItemsSelected: false,
-	allItemsSelected: false,
-	fixed: false,
-	mustSort: false,
-	hasItemAppendSlot: false,
-	manualSortKey: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: Header[];
+		sort: Sort;
+		reordering: boolean;
+		allowHeaderReorder: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		someItemsSelected?: boolean;
+		allItemsSelected?: boolean;
+		fixed?: boolean;
+		mustSort?: boolean;
+		hasItemAppendSlot?: boolean;
+		manualSortKey?: string;
+	}>(),
+	{
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		someItemsSelected: false,
+		allItemsSelected: false,
+		fixed: false,
+		mustSort: false,
+		hasItemAppendSlot: false,
+		manualSortKey: undefined,
+	},
+);
 
 const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
 const { t } = useI18n();
@@ -175,7 +176,6 @@ function toggleManualSort() {
 	<thead class="table-header" :class="{ resizing, reordering }">
 		<draggable
 			v-model="headersWritable"
-			force-fallback
 			:class="{ fixed }"
 			item-key="value"
 			tag="tr"
@@ -185,6 +185,7 @@ function toggleManualSort() {
 			animation="150"
 			ghost-class="header-order-ghost"
 			swap-threshold="0.5"
+			v-bind="{ 'force-fallback': true }"
 			@start="$emit('update:reordering', true)"
 			@end="$emit('update:reordering', false)"
 		>
@@ -278,7 +279,7 @@ function toggleManualSort() {
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--v-table-background-color, var(--theme--background-page));
+		background-color: var(--v-table-background-color, var(--theme--background));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select,
@@ -441,7 +442,7 @@ function toggleManualSort() {
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
-	border: var(--theme--background-page) 6px solid;
+	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;

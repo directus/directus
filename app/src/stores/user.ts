@@ -28,7 +28,7 @@ export const useUserStore = defineStore({
 			return userName(this.currentUser);
 		},
 		isAdmin(): boolean {
-			return this.currentUser?.role.admin_access === true || false;
+			return this.currentUser?.role?.admin_access === true || false;
 		},
 	},
 	actions: {

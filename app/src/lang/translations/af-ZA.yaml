@@ -25,7 +25,7 @@ application: Toepassing
 default_provider: Verstek
 method: Metode
 published: Gepubliseer
-draft: Draft
+draft: Konsep
 archived: Geargiveer
 modules: Modules
 module_bar: Modulebalk

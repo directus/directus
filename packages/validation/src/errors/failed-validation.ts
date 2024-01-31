@@ -95,5 +95,5 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 export const FailedValidationError = createError<FailedValidationErrorExtensions>(
 	'FAILED_VALIDATION',
 	messageConstructor,
-	400
+	400,
 );

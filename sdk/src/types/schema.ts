@@ -66,7 +66,7 @@ export type RemoveRelationships<Schema extends object, Item> = {
 export type MergeCoreCollection<
 	Schema extends object,
 	Collection extends keyof Schema | string,
-	BuiltinCollection
+	BuiltinCollection,
 > = Collection extends keyof Schema
 	? UnpackList<Schema[Collection]> extends infer Item
 		? {
@@ -83,8 +83,8 @@ export type CompleteSchema<Schema extends object> = CoreSchema<Schema> extends i
 			[Collection in keyof Schema | keyof Core]: Collection extends keyof Core
 				? Core[Collection]
 				: Collection extends keyof Schema
-				? Schema[Collection]
-				: never;
+				  ? Schema[Collection]
+				  : never;
 	  }
 	: never;
 
@@ -98,12 +98,12 @@ export type AllCollections<Schema extends object> = RegularCollections<Schema> |
  */
 export type GetCollection<
 	Schema extends object,
-	CollectionName extends AllCollections<Schema>
+	CollectionName extends AllCollections<Schema>,
 > = CollectionName extends keyof CoreSchema<Schema>
 	? CoreSchema<Schema>[CollectionName]
 	: CollectionName extends keyof Schema
-	? Schema[CollectionName]
-	: never;
+	  ? Schema[CollectionName]
+	  : never;
 
 /**
  * Helper to extract a collection name

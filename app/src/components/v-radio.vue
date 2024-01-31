@@ -104,9 +104,9 @@ function emitValue(): void {
 	&.block {
 		position: relative;
 		width: 100%;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		padding: calc(14px - 2 * var(--theme--border-width));
-		border: var(--theme--border-width) solid var(--background-subdued);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 
 		&::before {
@@ -115,7 +115,7 @@ function emitValue(): void {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}

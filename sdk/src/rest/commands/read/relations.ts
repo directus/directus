@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 
 export type ReadRelationOutput<
 	Schema extends object,
-	Item extends object = DirectusRelation<Schema>
+	Item extends object = DirectusRelation<Schema>,
 > = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
@@ -28,7 +28,7 @@ export const readRelations =
  */
 export const readRelationByCollection =
 	<Schema extends object>(
-		collection: DirectusRelation<Schema>['collection']
+		collection: DirectusRelation<Schema>['collection'],
 	): RestCommand<ReadRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations/${collection}`,
@@ -46,7 +46,7 @@ export const readRelationByCollection =
 export const readRelation =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
 		collection: DirectusRelation<Schema>['collection'],
-		field: DirectusRelation<Schema>['field']
+		field: DirectusRelation<Schema>['field'],
 	): RestCommand<ReadRelationOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

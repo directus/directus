@@ -11,7 +11,7 @@ const props = withDefaults(
 	}>(),
 	{
 		display: 'both',
-	}
+	},
 );
 
 const src = computed(() => {

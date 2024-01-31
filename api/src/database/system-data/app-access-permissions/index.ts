@@ -20,5 +20,5 @@ const permissions = requireYAML(path.resolve(__dirname, './app-access-permission
 
 export const schemaPermissions: Permission[] = schemaPermissionsRaw.map((row) => merge({}, defaults, row));
 export const appAccessMinimalPermissions: Permission[] = [...schemaPermissions, ...permissions].map((row) =>
-	merge({}, defaults, row)
+	merge({}, defaults, row),
 );

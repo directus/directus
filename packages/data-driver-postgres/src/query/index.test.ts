@@ -1,91 +1,100 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { convertToActualStatement } from './index.js';
 
-let sample: {
-	clauses: AbstractSqlClauses;
-};
+let sample: AbstractSqlClauses;
 
-let firstSelectTable: string;
-let firstSelectColumn: string;
-let secondSelectTable: string;
-let secondSelectColumn: string;
+let rootTableName: string;
+let rootTableIndex: number;
+let rootSelectColumn1Name: string;
+let rootSelectColumn1Index: number;
+let rootSelectTable1Index: number;
+let rootSelectColumn2Name: string;
+let rootSelectColumn2Index: number;
+let baseStatement: string;
 
 beforeEach(() => {
-	firstSelectTable = randomIdentifier();
-	firstSelectColumn = randomIdentifier();
-	secondSelectTable = randomIdentifier();
-	secondSelectColumn = randomIdentifier();
+	rootTableName = randomIdentifier();
+	rootTableIndex = randomInteger(0, 100);
+	rootSelectColumn1Name = randomIdentifier();
+	rootSelectColumn1Index = randomInteger(0, 100);
+	rootSelectTable1Index = randomInteger(0, 100);
+	rootSelectColumn2Name = randomIdentifier();
+	rootSelectColumn2Index = randomInteger(0, 100);
 
 	sample = {
-		clauses: {
-			select: [
-				{ type: 'primitive', column: firstSelectColumn, table: firstSelectTable },
-				{ type: 'primitive', column: secondSelectColumn, table: secondSelectTable },
-			],
-			from: randomIdentifier(),
+		select: [
+			{
+				type: 'primitive',
+				tableIndex: rootTableIndex,
+				columnName: rootSelectColumn1Name,
+				columnIndex: rootSelectColumn1Index,
+			},
+			{
+				type: 'primitive',
+				tableIndex: rootSelectTable1Index,
+				columnName: rootSelectColumn2Name,
+				columnIndex: rootSelectColumn2Index,
+			},
+		],
+		from: {
+			tableName: rootTableName,
+			tableIndex: rootTableIndex,
 		},
 	};
+
+	baseStatement = `SELECT "t${rootTableIndex}"."${rootSelectColumn1Name}" AS "c${rootSelectColumn1Index}", "t${rootSelectTable1Index}"."${rootSelectColumn2Name}" AS "c${rootSelectColumn2Index}" FROM "${rootTableName}" AS "t${rootTableIndex}"`;
 });
 
 test('basic statement', () => {
-	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}";`
-	);
+	expect(convertToActualStatement(sample)).toEqual(`${baseStatement};`);
 });
 
 test('statement with a limit', () => {
-	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
-
-	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1;`
-	);
+	sample.limit = { type: 'value', parameterIndex: 0 };
+	expect(convertToActualStatement(sample)).toEqual(`${baseStatement} LIMIT $1;`);
 });
 
 test('statement with limit and offset', () => {
-	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
-	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
-
-	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`
-	);
+	sample.limit = { type: 'value', parameterIndex: 0 };
+	sample.offset = { type: 'value', parameterIndex: 1 };
+	expect(convertToActualStatement(sample)).toEqual(`${baseStatement} LIMIT $1 OFFSET $2;`);
 });
 
 test('statement with order', () => {
 	const orderField = randomIdentifier();
-	const table = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
 
-	sample.clauses.order = [
+	sample.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				column: orderField,
-				table: table,
+				columnName: orderField,
+				tableIndex,
 			},
 			direction: 'ASC',
 		},
 	];
 
-	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`
-	);
+	expect(convertToActualStatement(sample)).toEqual(`${baseStatement} ORDER BY "t${tableIndex}"."${orderField}" ASC;`);
 });
 
 test('statement with all possible local modifiers', () => {
-	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
-	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
+	sample.limit = { type: 'value', parameterIndex: 0 };
+	sample.offset = { type: 'value', parameterIndex: 1 };
 
-	const firstConditionTable = randomIdentifier();
+	const firstConditionTableIndex = randomInteger(0, 100);
 	const firstConditionColumn = randomIdentifier();
 	const firstConditionParameterIndex = 2;
-	const secondConditionTable = randomIdentifier();
+	const secondConditionTableIndex = randomInteger(0, 100);
 	const secondConditionColumn = randomIdentifier();
 	const secondConditionParameterIndex = 3;
 	const orderField = randomIdentifier();
+	const sortTableIndex = randomInteger(0, 100);
 
-	sample.clauses.where = {
+	sample.where = {
 		type: 'logical',
 		operator: 'and',
 		negate: false,
@@ -96,8 +105,8 @@ test('statement with all possible local modifiers', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: firstConditionTable,
-						column: firstConditionColumn,
+						tableIndex: firstConditionTableIndex,
+						columnName: firstConditionColumn,
 					},
 					operation: 'gt',
 					compareTo: {
@@ -113,8 +122,8 @@ test('statement with all possible local modifiers', () => {
 					type: 'condition-number',
 					target: {
 						type: 'primitive',
-						table: secondConditionTable,
-						column: secondConditionColumn,
+						tableIndex: secondConditionTableIndex,
+						columnName: secondConditionColumn,
 					},
 					operation: 'lt',
 					compareTo: {
@@ -127,102 +136,82 @@ test('statement with all possible local modifiers', () => {
 		],
 	};
 
-	const sortTable = randomIdentifier();
-
-	sample.clauses.order = [
+	sample.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				column: orderField,
-				table: sortTable,
+				columnName: orderField,
+				tableIndex: sortTableIndex,
 			},
 			direction: 'ASC',
 		},
 	];
 
-	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
-			sample.clauses.from
-		}" WHERE "${firstConditionTable}"."${firstConditionColumn}" > $${
+	expect(convertToActualStatement(sample)).toEqual(
+		`${baseStatement} WHERE "t${firstConditionTableIndex}"."${firstConditionColumn}" > $${
 			firstConditionParameterIndex + 1
-		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
+		} AND "t${secondConditionTableIndex}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
-		} ORDER BY "${sortTable}"."${orderField}" ASC LIMIT $1 OFFSET $2;`
+		} ORDER BY "t${sortTableIndex}"."${orderField}" ASC LIMIT $1 OFFSET $2;`,
 	);
 });
 
 test('statement with all filter on foreign field', () => {
-	const foreignCollection = randomIdentifier();
-	const targetField = randomIdentifier();
+	const foreignTable = randomIdentifier();
+	const foreignTableIndex = randomInteger(0, 100);
+	const foreignColumn = randomIdentifier();
 	const leftHandIdentifierField = randomIdentifier();
-	const joinAlias = randomIdentifier();
-	const firstField = randomIdentifier();
-	const secondField = randomIdentifier();
-	const rootCollection = randomIdentifier();
+	const rootCollectionIndex = randomInteger(0, 100);
 	const parameterIndex = 0;
 
-	const clauses: AbstractSqlClauses = {
-		select: [
-			{
-				type: 'primitive',
-				table: rootCollection,
-				column: firstField,
-			},
-			{
-				type: 'primitive',
-				table: rootCollection,
-				column: secondField,
-			},
-		],
-		from: rootCollection,
-		joins: [
-			{
-				type: 'join',
-				table: foreignCollection,
-				on: {
-					type: 'condition',
-					condition: {
-						type: 'condition-field',
-						target: {
-							type: 'primitive',
-							table: foreignCollection,
-							column: targetField,
-						},
-						operation: 'eq',
-						compareTo: {
-							type: 'primitive',
-							table: rootCollection,
-							column: leftHandIdentifierField,
-						},
+	sample.joins = [
+		{
+			type: 'join',
+			tableName: foreignTable,
+			tableIndex: foreignTableIndex,
+			on: {
+				type: 'condition',
+				condition: {
+					type: 'condition-field',
+					target: {
+						type: 'primitive',
+						tableIndex: foreignTableIndex,
+						columnName: foreignColumn,
 					},
-					negate: false,
+					operation: 'eq',
+					compareTo: {
+						type: 'primitive',
+						tableIndex: rootCollectionIndex,
+						columnName: leftHandIdentifierField,
+					},
 				},
-				as: joinAlias,
+				negate: false,
 			},
-		],
-		where: {
-			type: 'condition',
-			negate: false,
-			condition: {
-				type: 'condition-string',
-				target: {
-					type: 'primitive',
-					table: foreignCollection,
-					column: targetField,
-				},
-				operation: 'starts_with',
-				compareTo: {
-					type: 'value',
-					parameterIndex,
-				},
+		},
+	];
+
+	sample.where = {
+		type: 'condition',
+		negate: false,
+		condition: {
+			type: 'condition-string',
+			target: {
+				type: 'primitive',
+				tableIndex: foreignTableIndex,
+				columnName: foreignColumn,
+			},
+			operation: 'starts_with',
+			compareTo: {
+				type: 'value',
+				parameterIndex,
 			},
 		},
 	};
 
-	expect(convertToActualStatement(clauses)).toEqual(
-		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
+	expect(convertToActualStatement(sample)).toEqual(
+		`${baseStatement} LEFT JOIN "${foreignTable}" AS "t${foreignTableIndex}" ON "t${foreignTableIndex}"."${foreignColumn}" = "t${rootCollectionIndex}"."${leftHandIdentifierField}" WHERE "t${foreignTableIndex}"."${foreignColumn}" LIKE $${
 			parameterIndex + 1
-		}||'%';`
+		}||'%';`,
 	);
 });

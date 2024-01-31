@@ -5,7 +5,6 @@ export interface ModuleConfig {
 	id: string;
 	name: string;
 	icon: string;
-	color?: string;
 
 	routes: RouteRecordRaw[];
 	hidden?: boolean;

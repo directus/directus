@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreatePresetOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusPreset<Schema>
+	Item extends object = DirectusPreset<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreatePresetOutput<
 export const createPresets =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		items: Partial<DirectusPreset<Schema>>[],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/presets`,
@@ -39,7 +39,7 @@ export const createPresets =
 export const createPreset =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		item: Partial<DirectusPreset<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/presets`,

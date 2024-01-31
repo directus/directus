@@ -6,28 +6,29 @@ import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 
-interface Props {
-	disabled?: boolean;
-	modelValue?: string | null;
-	nullable?: boolean;
-	collection?: string | null;
-	depth?: number;
-	placeholder?: string | null;
-	inject?: {
-		fields: Field[];
-		relations: Relation[];
-	} | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	disabled: false,
-	modelValue: null,
-	nullable: true,
-	collection: null,
-	depth: undefined,
-	placeholder: null,
-	inject: null,
-});
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+		modelValue?: string | null;
+		nullable?: boolean;
+		collection?: string | null;
+		depth?: number;
+		placeholder?: string | null;
+		inject?: {
+			fields: Field[];
+			relations: Relation[];
+		} | null;
+	}>(),
+	{
+		disabled: false,
+		modelValue: null,
+		nullable: true,
+		collection: null,
+		depth: undefined,
+		placeholder: null,
+		inject: null,
+	},
+);
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -117,7 +118,7 @@ function onSelect() {
 		for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
 			const child = contentEl.value.children[i];
 
-			if (child.classList.contains('text')) {
+			if (child?.classList.contains('text')) {
 				textSpan = child;
 			}
 		}
@@ -299,10 +300,10 @@ function setContent() {
 	display: block;
 	flex-grow: 1;
 	height: 100%;
-	padding: var(--input-padding) 0;
+	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {

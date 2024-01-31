@@ -44,9 +44,9 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 	return flatten(
 		validatePayload(validationRules, updatedItem).map((error) =>
 			error.details.map(
-				(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions
-			)
-		)
+				(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
+			),
+		),
 	).map((error) => {
 		const errorField = fields.find((field) => field.field === error.field);
 		return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };

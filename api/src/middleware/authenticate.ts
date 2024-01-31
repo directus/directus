@@ -37,7 +37,7 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 			database,
 			schema: null,
 			accountability: null,
-		}
+		},
 	);
 
 	if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {

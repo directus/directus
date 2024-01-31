@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'NestedDraggable',
-};
-</script>
-
 <script setup lang="ts">
 import {
 	ChangesItem,
@@ -63,10 +57,10 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
-		filter: () => null,
+		filter: null,
 		root: false,
 		modelValue: undefined,
-	}
+	},
 );
 
 const { t } = useI18n();
@@ -96,12 +90,8 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } = useRelationMultiple(
-	value,
-	query,
-	relationInfo,
-	primaryKey
-);
+const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
+	useRelationMultiple(value, query, relationInfo, primaryKey);
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
@@ -116,12 +106,13 @@ const dragOptions = {
 	group: 'description',
 	disabled: false,
 	ghostClass: 'ghost',
+	forceFallback: true,
 };
 
 const filteredDisplayItems = computed(() => {
 	return displayItems.value.filter(
 		(item) =>
-			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined)
+			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined),
 	);
 });
 
@@ -196,24 +187,31 @@ function stageEdits(item: Record<string, any>) {
 </script>
 
 <template>
+	<v-skeleton-loader v-if="loading" type="block-list-item" />
+
+	<template v-else-if="root && filteredDisplayItems.length === 0">
+		<v-notice>
+			{{ t('no_items') }}
+		</v-notice>
+	</template>
+
 	<draggable
 		v-bind="dragOptions"
 		class="drag-area"
 		:class="{ root, drag }"
-		tag="ul"
+		tag="v-list"
 		:model-value="filteredDisplayItems"
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
-		force-fallback
 		@start="drag = true"
 		@end="drag = false"
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
+			<v-list-item class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
 					:edits="getItemEdits(element)"
@@ -244,7 +242,7 @@ function stageEdits(item: Record<string, any>) {
 					:items-moved="itemsMoved"
 					@update:model-value="updateModelValue($event, index)"
 				/>
-			</li>
+			</v-list-item>
 		</template>
 	</draggable>
 
@@ -285,25 +283,39 @@ function stageEdits(item: Record<string, any>) {
 		margin-left: 0;
 		padding: 0;
 
+		.v-skeleton-loader {
+			margin: 12px 0px 12px auto;
+			width: calc(100% - 24px);
+		}
+
 		&:empty {
 			min-height: 0;
 		}
+	}
+
+	&.v-list {
+		overflow: hidden;
 	}
 }
 
 .row {
 	.preview {
 		padding: 12px;
-		background-color: var(--card-face-color);
-		border-radius: var(--theme--border-radius);
-		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
 		cursor: grab;
-		transition: var(--fast) var(--transition);
-		transition-property: box-shadow, background-color;
+		border-style: solid;
+		background-color: var(--theme--background);
+		border: var(--theme--border-width) solid var(--theme--border-color);
+		border-radius: var(--theme--border-radius);
 
 		& + .drag-area {
+			padding-bottom: 0px;
 			padding-top: 12px;
 		}
+	}
+
+	&.v-list-item {
+		display: block;
+		--v-list-item-padding: 0;
 	}
 
 	&:not(.draggable) .preview {
@@ -313,7 +325,6 @@ function stageEdits(item: Record<string, any>) {
 
 .ghost .preview {
 	background-color: var(--theme--primary-background);
-	box-shadow: 0 !important;
 }
 
 .actions {

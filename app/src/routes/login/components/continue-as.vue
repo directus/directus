@@ -40,8 +40,8 @@ async function fetchUser() {
 
 		name.value = userName(response.data.data);
 		lastPage.value = response.data.data.last_page;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

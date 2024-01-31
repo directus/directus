@@ -26,7 +26,7 @@ test('should fail on invalid hash', () => {
 	const snapshot = { hash: 'xyz' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-		"Provided hash does not match the current instance's schema hash"
+		"Provided hash does not match the current instance's schema hash",
 	);
 });
 
@@ -61,7 +61,7 @@ describe('should throw accurate error', () => {
 		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as Collection] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create collection "test" but it already exists'
+			'Provided diff is trying to create collection "test" but it already exists',
 		);
 	});
 
@@ -71,7 +71,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete collection "test" but it does not exist'
+			'Provided diff is trying to delete collection "test" but it does not exist',
 		);
 	});
 
@@ -83,7 +83,7 @@ describe('should throw accurate error', () => {
 		const snapshot = baseSnapshot({ fields: [{ collection: 'test', field: 'test' } as SnapshotField] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create field "test.test" but it already exists'
+			'Provided diff is trying to create field "test.test" but it already exists',
 		);
 	});
 
@@ -93,7 +93,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete field "test.test" but it does not exist'
+			'Provided diff is trying to delete field "test.test" but it does not exist',
 		);
 	});
 
@@ -114,7 +114,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create relation "test.test-> relation" but it already exists'
+			'Provided diff is trying to create relation "test.test-> relation" but it already exists',
 		);
 	});
 
@@ -131,7 +131,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete relation "test.test-> relation" but it does not exist'
+			'Provided diff is trying to delete relation "test.test-> relation" but it does not exist',
 		);
 	});
 });

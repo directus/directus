@@ -42,7 +42,7 @@ vi.mock('@/api', () => {
 
 vi.mock('@/utils/unexpected-error', () => {
 	return {
-		unexpectedError: (error: any) => {
+		unexpectedError: (error: unknown) => {
 			throw error;
 		},
 	};
@@ -90,7 +90,6 @@ const workerData: Record<string, any>[] = [
 	{ id: 4, name: 'test4', facility: 1 },
 ];
 
-// eslint-disable-next-line vue/one-component-per-file
 const TestComponent = defineComponent({
 	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
 	emits: ['update:value'],
@@ -419,7 +418,6 @@ const m2aData: Record<string, any>[] = [
 	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 },
 ];
 
-// eslint-disable-next-line vue/one-component-per-file
 const TestComponentM2A = defineComponent({
 	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
 	emits: ['update:value'],
@@ -472,7 +470,7 @@ describe('test m2a relation', () => {
 		wrapper.vm.update(
 			{ id: 1, item: { id: 1 }, collection: 'text', sort: 2 },
 			{ id: 2, item: { id: 2 }, collection: 'text', sort: 3 },
-			{ id: 3, item: { id: 1 }, collection: 'code', sort: 1 }
+			{ id: 3, item: { id: 1 }, collection: 'code', sort: 1 },
 		);
 
 		await flushPromises();

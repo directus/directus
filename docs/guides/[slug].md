@@ -3,7 +3,7 @@ type: 'guides-index'
 ---
 
 <script setup>
-import GuidesSection from '../.vitepress/components/guides/GuidesSection.vue'
+import GuidesSection from '@/components/guides/GuidesSection.vue'
 </script>
 
 <h1>{{ $params.title }}</h1>

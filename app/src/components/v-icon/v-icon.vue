@@ -9,42 +9,43 @@ import { components } from './custom-icons';
 import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
 
-interface Props {
-	/** Which type of icon to display */
-	name: string;
-	/** Removes the outline style if enabled */
-	filled?: boolean;
-	/** Makes the icon very small */
-	sup?: boolean;
-	/** Displays the icon more to the left */
-	left?: boolean;
-	/** Displays the icon more to the right */
-	right?: boolean;
-	/** Disables the icon */
-	disabled?: boolean;
-	/** If it should render inside a button */
-	clickable?: boolean;
-	/** What color for the icon to use */
-	color?: string;
-	/** Makes the icon smaller */
-	xSmall?: boolean;
-	/** Makes the icon small */
-	small?: boolean;
-	/** Makes the icon large */
-	large?: boolean;
-	/**	Makes the icon larger */
-	xLarge?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	filled: false,
-	sup: false,
-	left: false,
-	right: false,
-	disabled: false,
-	clickable: false,
-	color: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		/** Which type of icon to display */
+		name: string;
+		/** Removes the outline style if enabled */
+		filled?: boolean;
+		/** Makes the icon very small */
+		sup?: boolean;
+		/** Displays the icon more to the left */
+		left?: boolean;
+		/** Displays the icon more to the right */
+		right?: boolean;
+		/** Disables the icon */
+		disabled?: boolean;
+		/** If it should render inside a button */
+		clickable?: boolean;
+		/** What color for the icon to use */
+		color?: string;
+		/** Makes the icon smaller */
+		xSmall?: boolean;
+		/** Makes the icon small */
+		small?: boolean;
+		/** Makes the icon large */
+		large?: boolean;
+		/**	Makes the icon larger */
+		xLarge?: boolean;
+	}>(),
+	{
+		filled: false,
+		sup: false,
+		left: false,
+		right: false,
+		disabled: false,
+		clickable: false,
+		color: undefined,
+	},
+);
 
 const emit = defineEmits(['click']);
 
@@ -122,14 +123,22 @@ function emitClick(event: MouseEvent) {
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
 		font-feature-settings: 'liga';
-		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+		font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24;
 
 		&::after {
 			content: attr(data-icon);
 		}
 
 		&.filled {
-			font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+			font-variation-settings:
+				'FILL' 1,
+				'wght' 400,
+				'GRAD' 0,
+				'opsz' 24;
 		}
 	}
 

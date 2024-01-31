@@ -12,7 +12,7 @@ withDefaults(
 	{
 		color: 'normal',
 		icon: 'info',
-	}
+	},
 );
 </script>
 

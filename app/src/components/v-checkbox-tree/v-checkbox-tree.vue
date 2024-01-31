@@ -1,46 +1,41 @@
-<script lang="ts">
-export default {
-	name: 'VCheckboxTree',
-};
-</script>
-
 <script setup lang="ts">
 import { remove as removeDiacritics } from 'diacritics';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
-interface Props {
-	/** The choices that will be rendered as checkboxes */
-	choices?: Record<string, any>[];
-	/** Which choices should be shown as selected, depending on their value */
-	modelValue?: (string | number)[];
-	valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-	/** Will highlight every text that matches the given search */
-	search?: string | null;
-	/** Which key in choices is used to display the text */
-	itemText?: string;
-	/** Which key in choices is used to model the active state */
-	itemValue?: string;
-	/** Which key in choices is used to render children */
-	itemChildren?: string;
-	/** Disables any interaction */
-	disabled?: boolean;
-	/** Show only the selected choices */
-	showSelectionOnly?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	choices: () => [],
-	modelValue: () => [],
-	valueCombining: 'all',
-	search: null,
-	itemText: 'text',
-	itemValue: 'value',
-	itemChildren: 'children',
-	disabled: false,
-	showSelectionOnly: false,
-});
+const props = withDefaults(
+	defineProps<{
+		/** The choices that will be rendered as checkboxes */
+		choices?: Record<string, any>[];
+		/** Which choices should be shown as selected, depending on their value */
+		modelValue?: (string | number)[];
+		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+		/** Will highlight every text that matches the given search */
+		search?: string | null;
+		/** Which key in choices is used to display the text */
+		itemText?: string;
+		/** Which key in choices is used to model the active state */
+		itemValue?: string;
+		/** Which key in choices is used to render children */
+		itemChildren?: string;
+		/** Disables any interaction */
+		disabled?: boolean;
+		/** Show only the selected choices */
+		showSelectionOnly?: boolean;
+	}>(),
+	{
+		choices: () => [],
+		modelValue: () => [],
+		valueCombining: 'all',
+		search: null,
+		itemText: 'text',
+		itemValue: 'value',
+		itemChildren: 'children',
+		disabled: false,
+		showSelectionOnly: false,
+	},
+);
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
@@ -69,14 +64,14 @@ const { visibleChildrenValues } = useVisibleChildren(
 	itemValue,
 	itemChildren,
 	fakeParentValue,
-	fakeValue
+	fakeValue,
 );
 
 let showAllSelection: (string | number)[] = [];
 const manualOpenSelection = ref<(string | number)[]>([]);
 
 const searchOpenSelection = computed(() =>
-	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : []
+	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : [],
 );
 
 const openSelection = computed({

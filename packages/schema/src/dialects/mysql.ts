@@ -99,7 +99,7 @@ export default class MySQL implements SchemaInspector {
 				T.TABLE_TYPE = 'BASE TABLE' AND
 				C.TABLE_SCHEMA = ?;
 			`,
-			[this.knex.client.database()]
+			[this.knex.client.database()],
 		);
 
 		const overview: SchemaOverview = {};
@@ -259,7 +259,7 @@ export default class MySQL implements SchemaInspector {
 				'fk.CONSTRAINT_NAME',
 				'rc.UPDATE_RULE',
 				'rc.DELETE_RULE',
-				'rc.MATCH_OPTION'
+				'rc.MATCH_OPTION',
 			)
 			.from('INFORMATION_SCHEMA.COLUMNS as c')
 			.leftJoin('INFORMATION_SCHEMA.KEY_COLUMN_USAGE as fk', function () {
@@ -352,7 +352,7 @@ export default class MySQL implements SchemaInspector {
 		 WHERE
 			rc.CONSTRAINT_SCHEMA = ?;
 	  `,
-			[this.knex.client.database()]
+			[this.knex.client.database()],
 		);
 
 		// Mapping casts "RowDataPacket" object from mysql to plain JS object

@@ -40,8 +40,8 @@ export default async function init(): Promise<void> {
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
 			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
-				question({ client: dbClient, filepath: rootPath })
-			)
+				question({ client: dbClient, filepath: rootPath }),
+			),
 		);
 
 		const db = createDBConnection(dbClient, credentials!);

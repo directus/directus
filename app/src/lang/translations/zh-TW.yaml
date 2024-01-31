@@ -583,7 +583,6 @@ errors:
   VALUE_OUT_OF_RANGE: 內容值超出範圍
   INVALID_FOREIGN_KEY: 外部鍵值錯誤
   UNKNOWN: 未預期的錯誤
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 驗證錯誤
   SERVICE_UNAVAILABLE: 服務暫時不可用
   UNSUPPORTED_MEDIA_TYPE: 不支援的媒體類型
   UNEXPECTED_RESPONSE: 非預期的伺服器回應
@@ -710,7 +709,6 @@ layout_options: 頁面配置選項
 rows: 行
 columns: 欄位
 collection_setup: 集合設定
-optional_system_fields: 選用系統欄位
 value_unique: 值必須是唯一的
 all_activity: 所有活動
 create_item: 建立項目
@@ -1793,6 +1791,8 @@ displays:
     icon: 圖示
     border: 框線
     border_label: 顯示框線
+    mask: 已遮罩
+    mask_label: 隱藏真實值
     text: 文字
     text_placeholder: 選填值覆蓋...
   formatted-json-value:

@@ -102,18 +102,6 @@ function setValueAt(index: number, newVal: any) {
 	newArray[index] = newVal;
 	value.value = newArray;
 }
-
-function setListValue(index: number, newVal: any) {
-	if (typeof newVal === 'string' && newVal.includes(',')) {
-		const parts = newVal.split(',');
-
-		for (let i = 0; i < parts.length; i++) {
-			setValueAt(index + i, parts[i]);
-		}
-	} else {
-		setValueAt(index, newVal);
-	}
-}
 </script>
 
 <template>
@@ -122,7 +110,7 @@ function setListValue(index: number, newVal: any) {
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
+			:value="value"
 			@input="value = $event"
 		/>
 	</template>
@@ -148,7 +136,7 @@ function setListValue(index: number, newVal: any) {
 			is="interface-input"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
+			:value="value"
 			@input="value = $event"
 		/>
 	</template>
@@ -165,7 +153,7 @@ function setListValue(index: number, newVal: any) {
 				:value="val"
 				:focus="false"
 				:choices="choices"
-				@input="setListValue(index, $event)"
+				@input="setValueAt(index, $event)"
 			/>
 		</div>
 	</div>

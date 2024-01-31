@@ -25,14 +25,12 @@ withDefaults(defineProps<Props>(), {
 
 		--v-card-min-width         [none]
 		--v-card-padding           [16px]
-		--v-card-background-color  [var(--background-subdued)]
+		--v-card-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */
 
 .v-card {
-	--input-height: 60px;
-	--input-padding: 16px; /* (60 - 4 - 24) / 2 */
-	--form-vertical-gap: 52px;
+	--theme--form--row-gap: 52px;
 
 	min-width: var(--v-card-min-width, none);
 	max-width: 400px;
@@ -43,7 +41,7 @@ withDefaults(defineProps<Props>(), {
 	/* Page Content Spacing */
 	font-size: 15px;
 	line-height: 24px;
-	background-color: var(--v-card-background-color, var(--background-subdued));
+	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {
@@ -55,7 +53,7 @@ withDefaults(defineProps<Props>(), {
 		cursor: not-allowed;
 		pointer-events: none;
 
-		& > * {
+		& :deep(> *) {
 			opacity: 0.4;
 		}
 	}

@@ -59,6 +59,7 @@ extension_display: Pokaż
 extension_layout: Układ
 extension_module: Moduł
 extension_panel: Panel
+extension_theme: Motyw
 extension_hook: Hook
 extension_endpoint: Punkt końcowy
 extension_operation: Operacja
@@ -673,7 +674,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
   INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
-  GRAPHQL_VALIDATION_EXCEPTION: Wyjątek sprawdzania poprawności grafiki
   SERVICE_UNAVAILABLE: Serwis niedostępny
   UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
   UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
@@ -686,7 +686,6 @@ security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
-create_default: Utwórz domyślne
 edit_bookmark: Edytuj zakładkę
 edit_personal_bookmark: Edytuj Osobistą Zakładkę
 edit_role_bookmark: Edytuj zakładkę roli
@@ -808,7 +807,6 @@ layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
 collection_setup: Ustawienia kolekcji
-optional_system_fields: Opcjonalne pola systemu
 value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
 create_item: Utwórz element
@@ -1029,7 +1027,6 @@ no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
 settings_permissions: Kontrola dostępu
 settings_project: Ustawienia
-settings_theming: Motywy
 settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_presets: Zakładki
@@ -1071,7 +1068,6 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Szczegóły pliku** — Formularz do zarządzania metadanymi plików, edycji oryginalnego zasobu i aktualizacji ustawień dostępu.
 page_help_settings_project: "**Ustawienia** — Ogólne opcje konfiguracji Twojego projektu."
-page_help_settings_theming: "**Motywy** — opcje motywu Twojego projektu."
 page_help_settings_extensions: '**Rozszerzenia** — Rozszerzenia zainstalowane w Twoim projekcie.'
 page_help_settings_datamodel_collections: >-
   **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
@@ -1974,6 +1970,8 @@ displays:
     icon: Ikona
     border: Krawędź
     border_label: Pokaż obramowanie
+    mask: Zamaskowany
+    mask_label: Ukryj rzeczywistą wartość
     text: Tekst
     text_placeholder: Opcjonalna wartość nadpisana...
   formatted-json-value:

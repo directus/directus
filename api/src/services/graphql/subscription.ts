@@ -1,5 +1,5 @@
 import { EventEmitter, on } from 'events';
-import { getMessenger } from '../../messenger.js';
+import { useBus } from '../../bus/index.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
@@ -11,7 +11,7 @@ import type { WebSocketEvent } from '../../websocket/messages.js';
 const messages = createPubSub(new EventEmitter());
 
 export function bindPubSub() {
-	const messenger = getMessenger();
+	const messenger = useBus();
 
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
 		messages.publish(`${message['collection']}_mutated`, message);
@@ -120,11 +120,14 @@ function parseFields(service: GraphQLService, request: GraphQLResolveInfo) {
 
 function parseArguments(request: GraphQLResolveInfo) {
 	const args = request.fieldNodes[0]?.arguments ?? [];
-	return args.reduce((result, current) => {
-		if ('value' in current.value && typeof current.value.value === 'string') {
-			result[current.name.value] = current.value.value;
-		}
+	return args.reduce(
+		(result, current) => {
+			if ('value' in current.value && typeof current.value.value === 'string') {
+				result[current.name.value] = current.value.value;
+			}
 
-		return result;
-	}, {} as Record<string, string>);
+			return result;
+		},
+		{} as Record<string, string>,
+	);
 }

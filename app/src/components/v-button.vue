@@ -190,7 +190,7 @@ async function onClick(event: MouseEvent) {
 		--v-button-background-color           [var(--theme--primary)]
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
 		--v-button-background-color-active    [var(--theme--primary)]
-		--v-button-background-color-disabled  [var(--theme--background)]
+		--v-button-background-color-disabled  [var(--theme--background-normal)]
 		--v-button-font-size                  [16px]
 		--v-button-font-weight                [600]
 		--v-button-line-height                [22px]
@@ -234,14 +234,14 @@ async function onClick(event: MouseEvent) {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
-	--v-button-background-color: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
 	--v-button-background-color-hover: var(--theme--background-accent);
 	--v-button-background-color-active: var(--theme--background-accent);
 }
 
 .secondary.rounded {
-	--v-button-background-color: var(--theme--background);
-	--v-button-background-color-active: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
+	--v-button-background-color-active: var(--theme--background-normal);
 	--v-button-background-color-hover: var(--theme--background-accent);
 }
 
@@ -315,8 +315,8 @@ async function onClick(event: MouseEvent) {
 
 .button:disabled {
 	color: var(--v-button-color-disabled, var(--theme--foreground-subdued));
-	background-color: var(--v-button-background-color-disabled, var(--theme--background));
-	border: var(--theme--border-width) solid var(--v-button-background-color-disabled, var(--theme--background));
+	background-color: var(--v-button-background-color-disabled, var(--theme--background-normal));
+	border: var(--theme--border-width) solid var(--v-button-background-color-disabled, var(--theme--background-normal));
 	cursor: not-allowed;
 }
 
@@ -353,7 +353,6 @@ async function onClick(event: MouseEvent) {
 .x-small {
 	--v-button-height: 28px;
 	--v-button-font-size: 12px;
-	--v-button-font-weight: 600;
 	--v-button-min-width: 60px;
 
 	padding: 0 12px;

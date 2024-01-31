@@ -3,7 +3,7 @@ import type { Reference } from 'isolated-vm';
 import { setTimeout } from 'node:timers/promises';
 
 export function sleepGenerator(
-	requestedScopes: ExtensionSandboxRequestedScopes
+	requestedScopes: ExtensionSandboxRequestedScopes,
 ): (milliseconds: Reference<number>) => Promise<void> {
 	return async (milliseconds) => {
 		if (requestedScopes.sleep === undefined) throw new Error('No permission to access "sleep"');

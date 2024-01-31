@@ -13,7 +13,7 @@ export interface InterfaceConfig {
 		| DeepPartial<Field>[]
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
 		| ((
-				ctx: ExtensionOptionsContext
+				ctx: ExtensionOptionsContext,
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
 		| ComponentOptions
 		| null;

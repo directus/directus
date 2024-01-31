@@ -34,7 +34,7 @@ function getConfigFileContent(configFileName: string) {
 test.each(
 	['interface', 'endpoint', 'operation'].map((extensionType, index) => {
 		return { extensionType, configFileName: `extension.config.${JAVASCRIPT_FILE_EXTS[index]}` };
-	})
+	}),
 )(
 	`create and build new $extensionType extension with $configFileName config file`,
 	async ({ extensionType, configFileName }) => {
@@ -69,5 +69,5 @@ test.each(
 		}
 	},
 	// Bump up timeout duration as the build process can take slightly longer to complete
-	30_000
+	30_000,
 );

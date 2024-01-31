@@ -81,7 +81,7 @@ describe('getAccountabilityForRole', async () => {
 				accountability: null,
 				schema: {} as any,
 				database: db as any,
-			})
+			}),
 		).rejects.toThrow('Configured role "456-789" isn\'t a valid role ID or doesn\'t exist.');
 	});
 });

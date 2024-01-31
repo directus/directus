@@ -55,7 +55,7 @@ beforeEach(() => {
 
 				return [];
 			},
-		})
+		}),
 	);
 });
 
@@ -68,7 +68,7 @@ test('Required fields', () => {
 			role: [1, 2],
 		},
 		fields as Field[],
-		true
+		true,
 	);
 
 	expect(result.length).toEqual(0);
@@ -81,7 +81,7 @@ test('Required fields', () => {
 			role: [],
 		},
 		fields as Field[],
-		true
+		true,
 	);
 
 	expect(result.length).toEqual(1);

@@ -276,9 +276,9 @@ function onLinkClick(to: string) {
 	.v-list-item {
 		&.block {
 			height: unset;
-			min-height: var(--input-height);
+			min-height: var(--theme--form--field--input--height);
 			flex-flow: wrap;
-			padding: 16px var(--input-padding) 16px var(--input-padding);
+			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
 
 			&.dense {
 				min-height: 44px;

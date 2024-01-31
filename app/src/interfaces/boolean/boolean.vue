@@ -17,7 +17,7 @@ withDefaults(
 		iconOff: 'check_box_outline_blank',
 		colorOn: 'var(--theme--primary)',
 		colorOff: 'var(--theme--form--field--input--foreground-subdued)',
-	}
+	},
 );
 
 defineEmits<{

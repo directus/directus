@@ -15,7 +15,7 @@ beforeEach(() => {
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
 
@@ -98,8 +98,8 @@ describe('Actions', () => {
 
 			expect(fieldDetailStore.relations.m2o).toEqual(
 				mockedRelations.find(
-					(relation) => relation.collection === mockedField.collection && relation.field === mockedField.field
-				)
+					(relation) => relation.collection === mockedField.collection && relation.field === mockedField.field,
+				),
 			);
 		});
 	});

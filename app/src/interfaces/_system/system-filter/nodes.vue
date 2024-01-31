@@ -87,7 +87,7 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	set(newVal) {
 		emit(
 			'update:filter',
-			newVal.map((val) => val.node)
+			newVal.map((val) => val.node),
 		);
 	},
 });
@@ -279,7 +279,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		:group="{ name: 'g1' }"
 		:item-key="getIndex"
 		:swap-threshold="0.3"
-		force-fallback
+		v-bind="{ 'force-fallback': true }"
 		@change="$emit('change')"
 	>
 		<template #item="{ element, index }">
@@ -343,7 +343,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							<span class="text">
 								{{
 									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
-										'interfaces.filter.of_the_following'
+										'interfaces.filter.of_the_following',
 									)}`
 								}}
 							</span>
@@ -384,7 +384,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
@@ -437,7 +437,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.raw-field-names {
 		.plain-name,
 		.name {
-			font-family: var(--theme--font-family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 
@@ -455,7 +455,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			z-index: -1;
 			width: calc(100% + 8px);
 			height: 100%;
-			background-color: var(--theme--background);
+			background-color: var(--theme--background-normal);
 			border-radius: 6px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -513,7 +513,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		.delete {
 			right: 8px;
 			left: unset;
-			background-color: var(--theme--background-page);
+			background-color: var(--theme--background);
 		}
 	}
 }

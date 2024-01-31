@@ -593,7 +593,6 @@ errors:
   VALUE_OUT_OF_RANGE: بەها لە دەرەوەی سنوری دیاریکراوە
   INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
   UNKNOWN: هەڵەی پێشبینی نەکراو
-  GRAPHQL_VALIDATION_EXCEPTION: جیاکاری سەلماندنی GraphQL
   SERVICE_UNAVAILABLE: خزمەتگوزاری بەردەست نییە
   UNSUPPORTED_MEDIA_TYPE: جۆری میدیای پشتگیری نەکراو
   UNEXPECTED_RESPONSE: وەڵامێکی چاوەڕواننەکراو
@@ -720,7 +719,6 @@ layout_options: بژاردەکانی نەخشە
 rows: ڕیزەکان
 columns: ستونەکان
 collection_setup: دامەزراندنی کۆمەڵە
-optional_system_fields: خانە بژاردەکانی سیستەم
 value_unique: بەها پێویستە بێ هاوتا بێت
 all_activity: سەرجەم کردارەکان
 create_item: دروستکردنی مادە
@@ -1813,6 +1811,8 @@ displays:
     icon: ئایکۆن
     border: سنور
     border_label: سنور نیشانبدە
+    mask: دامامککراو
+    mask_label: بەها ڕاستەقینەکە بشارەوە
     text: نوسین
     text_placeholder: بەهای ئارەزوومەندانەی سەرپێچی...
   formatted-json-value:

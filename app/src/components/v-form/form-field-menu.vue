@@ -25,7 +25,7 @@ const props = withDefaults(
 		modelValue: null,
 		initialValue: null,
 		disabledOptions: () => [],
-	}
+	},
 );
 
 defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
@@ -65,11 +65,11 @@ const localDisabledOptions = computed(() => {
 
 const showDivider = computed(() => {
 	const upperOptions = (['edit-raw', 'view-raw', 'copy-raw', 'paste-raw'] as MenuOptions[]).some(
-		(option) => !localDisabledOptions.value.has(option)
+		(option) => !localDisabledOptions.value.has(option),
 	);
 
 	const lowerOptions = (['reset-to-default', 'undo-changes', 'clear-value'] as MenuOptions[]).some(
-		(option) => !localDisabledOptions.value.has(option)
+		(option) => !localDisabledOptions.value.has(option),
 	);
 
 	return upperOptions && lowerOptions;
@@ -78,8 +78,8 @@ const showDivider = computed(() => {
 const relational = computed(
 	() =>
 		props.field.meta?.special?.find((type) =>
-			['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type)
-		) !== undefined
+			['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type),
+		) !== undefined,
 );
 </script>
 

@@ -4,6 +4,10 @@ readTime: 10 min read
 pageClass: page-reference
 ---
 
+<script setup lang="ts">
+import { data as packages } from '@/data/packages.data.js';
+</script>
+
 # Accessing Files
 
 > Every file managed by the platform is uploaded to the configured storage adapter, and its associated metadata is
@@ -234,6 +238,12 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 </template>
 </SnippetToggler>
 
+### Focal Points
+
+Directus will crop assets when requested with a `width` or `height` query parameter. By default, images are cropped
+around the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping
+will center around these coordinates.
+
 ## The File Object
 
 `id` **uuid**\
@@ -270,13 +280,22 @@ Who updated the file last. Many-to-one to [users](/reference/system/users).
 Size of the file in bytes.
 
 `width` **number**\
-If the file is a(n) image/video, it's the width in px.
+If the file is a(n) image/video, it's the width in px.\
+This property is only auto-extracted for images.
 
 `height` **number**\
-If the file is a(n) image/video, it's the height in px.
+If the file is a(n) image/video, it's the height in px.\
+This property is only auto-extracted for images.
+
+`focal_point_x` **number**\
+If the file is an image, cropping will center around this point.
+
+`focal_point_y` **number**\
+If the file is an image, cropping will center around this point.
 
 `duration` **number**\
-If the file contains audio/video, it's the duration in milliseconds.
+If the file contains audio/video, it's the duration in milliseconds.\
+This property is not auto-extracted.
 
 `description` **string**\
 Description of the file.
@@ -288,7 +307,7 @@ Location of the file.
 Tags for the file.
 
 `metadata` **object**\
-Any additional metadata Directus was able to scrape from the file. For images, this includes EXIF, IPTC, and ICC information.
+Any additional metadata Directus was able to scrape from the file. For images, this includes Exif, IPTC, and ICC information.
 
 ```json
 {
@@ -306,6 +325,8 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"filesize": 3442252,
 	"width": 3456,
 	"height": 5184,
+	"focal_point_x": null,
+	"focal_point_y": null,
 	"duration": null,
 	"description": null,
 	"location": null,
@@ -594,21 +615,67 @@ Not supported by GraphQL
 </template>
 <template #sdk>
 
+#### Web
+
+::: code-group
+
+```js-vue [index.js]
+import { createDirectus, rest, uploadFiles } from 'https://unpkg.com/@directus/sdk@{{ packages['@directus/sdk'].version.major }}';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const form = document.getElementById('upload-file');
+
+if (form) {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const result = await client.request(uploadFiles(formData));
+
+    form.reset();
+  });
+}
+```
+
+```html [index.html]
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <form id="upload-file">
+      <input type="text" name="title" placeholder="Title..." />
+      <input type="file" name="file" />
+      <button type="submit">Upload</button>
+    </form>
+    <script src="/index.js" type="module"></script>
+  </body>
+</html>
+```
+
+:::
+
+#### Node.js
+
 ```js
 import { createDirectus, rest, uploadFiles } from '@directus/sdk';
 import { readFileSync } from 'node:fs';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const title = 'example';
-const file = new Blob([readFileSync('example.txt')]);
+const title = 'Example';
+const file = new Blob([readFileSync('example.txt')], { type: 'text/plain' });
+const fileName = 'example.txt';
 
 const formData = new FormData();
 formData.append('title', title);
-formData.append('file', file);
+formData.append('file', file, fileName);
 
 const result = await client.request(uploadFiles(formData));
 ```
+
+[Learn more about `FormData` ->](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
 
 </template>
 </SnippetToggler>

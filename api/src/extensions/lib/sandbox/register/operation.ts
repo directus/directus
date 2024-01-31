@@ -11,7 +11,7 @@ export function registerOperationGenerator() {
 
 	const registerOperation = (
 		id: Reference<string>,
-		cb: Reference<(data: Record<string, unknown>) => unknown | Promise<unknown> | void>
+		cb: Reference<(data: Record<string, unknown>) => unknown | Promise<unknown> | void>,
 	) => {
 		if (id.typeof !== 'string') throw new TypeError('Operation config id has to be of type string');
 		if (cb.typeof !== 'function') throw new TypeError('Operation config handler has to be of type function');

@@ -8,5 +8,5 @@ interface GraphQLValidationErrorExtensions {
 export const GraphQLValidationError = createError<GraphQLValidationErrorExtensions>(
 	'GRAPHQL_VALIDATION',
 	'GraphQL validation error.',
-	400
+	400,
 );

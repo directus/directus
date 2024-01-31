@@ -3,7 +3,7 @@ description: A guide on how to build custom Panels in Directus.
 readTime: 3 min read
 ---
 
-# Custom Panels <small></small>
+# Custom Panels
 
 > Panels are modular units of data visualization that exist within the
 > [Insights module](/user-guide/insights/dashboards). Each panel exists within a Dashboard and can be positioned and
@@ -143,5 +143,5 @@ Learn how to build panels with our official guides:
 <GuidesListExtensions type="Panels" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

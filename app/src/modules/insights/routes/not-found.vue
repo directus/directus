@@ -11,7 +11,7 @@ const { t } = useI18n();
 			<insights-navigation />
 		</template>
 
-		<div v-if="!currentDashboard" class="not-found">
+		<div class="not-found">
 			<v-info :title="t('page_not_found')" icon="not_interested">
 				{{ t('page_not_found_body') }}
 			</v-info>

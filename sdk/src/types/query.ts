@@ -64,7 +64,7 @@ export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends i
 	  }[keyof FlatItem]
 	: never;
 
-export type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 
 /**
  * Alias object

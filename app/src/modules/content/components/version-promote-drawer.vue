@@ -18,6 +18,7 @@ type Comparison = {
 interface Props {
 	active: boolean;
 	currentVersion: ContentVersion;
+	deleteVersionsAllowed: boolean;
 }
 
 const { t } = useI18n();
@@ -26,7 +27,7 @@ const fieldsStore = useFieldsStore();
 
 const props = defineProps<Props>();
 
-const { active, currentVersion } = toRefs(props);
+const { active, currentVersion, deleteVersionsAllowed } = toRefs(props);
 
 const selectedFields = ref<string[]>([]);
 
@@ -36,7 +37,7 @@ const loading = ref(false);
 
 const { tabs, currentTab } = useTab();
 
-const { confirmDeleteOnPromoteDialogActive, promoting, promote } = usePromoteDialog();
+const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const emit = defineEmits<{
 	cancel: [];
@@ -44,7 +45,7 @@ const emit = defineEmits<{
 }>();
 
 const currentVersionDisplayName = computed(() =>
-	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name
+	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
 );
 
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
@@ -85,7 +86,7 @@ watch(
 	(value) => {
 		if (value) getComparison();
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function addField(field: string) {
@@ -109,8 +110,8 @@ async function getComparison() {
 		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
 
 		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -120,7 +121,15 @@ function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
 	const promoting = ref(false);
 
-	return { confirmDeleteOnPromoteDialogActive, promoting, promote };
+	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
+
+	function onPromoteClick() {
+		if (deleteVersionsAllowed.value) {
+			confirmDeleteOnPromoteDialogActive.value = true;
+		} else {
+			promote(false);
+		}
+	}
 
 	async function promote(deleteOnPromote: boolean) {
 		promoting.value = true;
@@ -130,14 +139,14 @@ function usePromoteDialog() {
 				`/versions/${unref(currentVersion).id}/promote`,
 				unref(selectedFields).length > 0
 					? { mainHash: unref(mainHash), fields: unref(selectedFields) }
-					: { mainHash: unref(mainHash) }
+					: { mainHash: unref(mainHash) },
 			);
 
 			confirmDeleteOnPromoteDialogActive.value = false;
 
 			emit('promote', deleteOnPromote);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			promoting.value = false;
 		}
@@ -184,7 +193,7 @@ function useTab() {
 				<v-notice v-if="isOutdated" type="warning" class="field full">
 					{{ t('outdated_notice') }}
 				</v-notice>
-				<v-notice v-else type="info" class="field full">
+				<v-notice v-else class="field full">
 					{{ t('promote_notice') }}
 				</v-notice>
 				<div v-for="field in comparedFields" :key="field.field" class="field full">
@@ -243,7 +252,8 @@ function useTab() {
 				:disabled="selectedFields.length === 0"
 				icon
 				rounded
-				@click="confirmDeleteOnPromoteDialogActive = true"
+				:loading="promoting"
+				@click="onPromoteClick"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -271,7 +281,7 @@ function useTab() {
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 
 	.field-content {

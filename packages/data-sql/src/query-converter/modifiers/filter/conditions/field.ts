@@ -1,15 +1,16 @@
 import type { ConditionFieldNode } from '@directus/data';
-import type { FilterResult } from '../filter.js';
-import { convertTarget } from './utils.js';
+import type { IndexGenerators } from '../../../utils/create-index-generators.js';
+import { convertTarget } from '../../target.js';
+import type { FilterResult } from '../utils.js';
 
 export function convertFieldCondition(
 	node: ConditionFieldNode,
-	collection: string,
-	generator: Generator<number, number, number>,
-	negate: boolean
+	tableIndex: number,
+	indexGen: IndexGenerators,
+	negate: boolean,
 ): FilterResult {
-	const { value: value1, joins: joins1 } = convertTarget(node.target, collection, generator);
-	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, collection, generator);
+	const { value: value1, joins: joins1 } = convertTarget(node.target, tableIndex, indexGen);
+	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, tableIndex, indexGen);
 
 	return {
 		clauses: {

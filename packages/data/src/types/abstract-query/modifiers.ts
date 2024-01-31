@@ -1,3 +1,4 @@
+import type { AtLeastOneElement } from '../misc.js';
 import type { AbstractQueryFilterNode } from './modifiers/filters.js';
 import type { AbstractQueryNodeLimit } from './modifiers/limit.js';
 import type { AbstractQueryNodeOffset } from './modifiers/offset.js';
@@ -9,6 +10,6 @@ import type { AbstractQueryNodeSort } from './modifiers/sort.js';
 export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
-	sort?: AbstractQueryNodeSort[];
+	sort?: AtLeastOneElement<AbstractQueryNodeSort>;
 	filter?: AbstractQueryFilterNode;
 }

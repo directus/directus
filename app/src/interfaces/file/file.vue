@@ -124,8 +124,8 @@ function useURLImport() {
 			activeDialog.value = null;
 			url.value = '';
 			update(file.value?.id);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -289,7 +289,7 @@ function useURLImport() {
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	img {

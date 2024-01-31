@@ -33,7 +33,7 @@ const activeTab = ref(props.tabs[0]);
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .tab-buttons {
 	display: flex;
 	justify-content: center;
@@ -41,31 +41,42 @@ const activeTab = ref(props.tabs[0]);
 	margin-inline: auto;
 	padding: 12px;
 	box-shadow: 0 5px 10px 0 rgba(23, 41, 64, 0.1);
-	border-radius: 8px;
+	border-radius: 2em;
 	width: 100%;
-}
 
-.tab-buttons button {
-	color: var(--vp-c-text-1);
-	cursor: pointer;
-	border: none;
-	font-size: 18px;
-	font-weight: bold;
-	width: 100%;
-	padding: 12px;
-}
+	button {
+		color: var(--vp-c-text-2);
+		cursor: pointer;
+		border: none;
+		font-size: 18px;
+		font-weight: bold;
+		width: 100%;
+		padding: 12px;
 
-.tab-buttons button.active {
-	background: var(--vp-c-purple-dimm-3);
-	border-radius: 6px;
-	width: 100%;
+		&:hover {
+			color: var(--vp-c-text-1);
+		}
+
+		&.active {
+			background: var(--vp-c-brand-darkest);
+			color: white;
+			border-radius: 10em;
+			width: 100%;
+		}
+	}
 }
 
 .tab-content {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 24px;
-	padding-top: 60px;
+	padding-top: 30px;
+}
+
+@media only screen and (max-width: 1200px) {
+	.tab-content {
+		grid-template-columns: 1fr 1fr;
+	}
 }
 
 @media only screen and (max-width: 768px) {

@@ -23,8 +23,8 @@ export type Info = {
 		project_color: string | null;
 		default_language: string | null;
 		default_appearance: 'light' | 'dark' | 'auto';
-		default_theme_light: string;
-		default_theme_dark: string;
+		default_theme_light: string | null;
+		default_theme_dark: string | null;
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
@@ -43,6 +43,7 @@ export type Info = {
 		default: number;
 		max: number;
 	};
+	version?: string;
 };
 
 export type Auth = {
@@ -83,6 +84,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.version = serverInfoResponse.data.data?.version;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

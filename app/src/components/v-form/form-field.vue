@@ -12,32 +12,33 @@ import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
 import type { FormField } from './types';
 
-interface Props {
-	field: FormField;
-	batchMode?: boolean;
-	batchActive?: boolean;
-	disabled?: boolean;
-	modelValue?: any;
-	initialValue?: any;
-	primaryKey?: string | number;
-	loading?: boolean;
-	validationError?: ValidationError;
-	autofocus?: boolean;
-	badge?: string;
-	rawEditorEnabled?: boolean;
-	rawEditorActive?: boolean;
-	disabledMenuOptions?: MenuOptions[];
-	direction?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: undefined,
-	initialValue: undefined,
-	primaryKey: undefined,
-	validationError: undefined,
-	badge: undefined,
-	direction: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		batchMode?: boolean;
+		batchActive?: boolean;
+		disabled?: boolean;
+		modelValue?: any;
+		initialValue?: any;
+		primaryKey?: string | number;
+		loading?: boolean;
+		validationError?: ValidationError;
+		autofocus?: boolean;
+		badge?: string;
+		rawEditorEnabled?: boolean;
+		rawEditorActive?: boolean;
+		disabledMenuOptions?: MenuOptions[];
+		direction?: string;
+	}>(),
+	{
+		modelValue: undefined,
+		initialValue: undefined,
+		primaryKey: undefined,
+		validationError: undefined,
+		badge: undefined,
+		direction: undefined,
+	},
+);
 
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
@@ -120,7 +121,7 @@ function useComputedValues() {
 	const internalValue = ref<any>(getInternalValue());
 
 	const isEdited = computed(
-		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
+		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false,
 	);
 
 	watch(
@@ -131,7 +132,7 @@ function useComputedValues() {
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}
-		}
+		},
 	);
 
 	return { internalValue, isEdited, defaultValue };
@@ -146,7 +147,7 @@ function useComputedValues() {
 
 <template>
 	<div class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
+		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -205,7 +206,7 @@ function useComputedValues() {
 			@set-raw-value="onRawValueSubmit"
 		/>
 
-		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
+		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
 		<small v-if="validationError" class="validation-error selectable">
 			<template v-if="field.meta?.validation_message">

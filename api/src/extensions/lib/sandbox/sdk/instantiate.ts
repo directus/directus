@@ -15,7 +15,7 @@ import { wrap } from './utils/wrap.js';
  */
 export async function instantiateSandboxSdk(
 	isolate: Isolate,
-	requestedScopes: ExtensionSandboxRequestedScopes
+	requestedScopes: ExtensionSandboxRequestedScopes,
 ): Promise<Module> {
 	const apiContext = await isolate.createContext();
 
@@ -31,7 +31,7 @@ export async function instantiateSandboxSdk(
 	await apiContext.evalClosure(
 		handlerCode,
 		sdk.map(({ generator, async }) => (async ? wrap(generator(requestedScopes)) : generator(requestedScopes))),
-		{ filename: '<extensions-sdk>', arguments: { reference: true } }
+		{ filename: '<extensions-sdk>', arguments: { reference: true } },
 	);
 
 	const exportCode = sdk.map(({ name }) => `export const ${name} = sdk.${name};`).join('\n');

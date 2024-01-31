@@ -26,8 +26,8 @@ async function fetchCounts() {
 
 		bookmarksCount.value = response.data.meta.filter_count as number;
 		presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

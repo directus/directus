@@ -85,7 +85,7 @@ function trimIfEnabled() {
 
 	Available Variables:
 
-		--v-textarea-font-family  [var(--theme--font-family-sans-serif)]
+		--v-textarea-font-family  [var(--theme--fonts--sans--font-family)]
 
 */
 
@@ -108,7 +108,7 @@ function trimIfEnabled() {
 	}
 
 	&.expand-on-focus {
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		transition: height var(--medium) var(--transition);
 
 		.append,
@@ -151,10 +151,10 @@ function trimIfEnabled() {
 		display: block;
 		flex-grow: 1;
 		width: 100%;
-		height: var(--input-height);
-		padding: var(--input-padding);
+		height: var(--theme--form--field--input--height);
+		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);
-		font-family: var(--v-textarea-font-family, var(--theme--font-family-sans-serif));
+		font-family: var(--v-textarea-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: 0;
 		resize: none;
@@ -166,7 +166,7 @@ function trimIfEnabled() {
 
 	&.disabled textarea {
 		color: var(--theme--foreground-subdued);
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 	}
 }
 </style>

@@ -47,17 +47,17 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
 		allowDuplicates: false,
 		junctionFieldLocation: 'bottom',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -111,7 +111,7 @@ const fields = computed(() => {
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.junctionCollection.collection
+			relationInfo.value.junctionCollection.collection,
 		);
 	}
 
@@ -175,7 +175,7 @@ const showingCount = computed(() => {
 		totalItemCount.value,
 		page.value,
 		limit.value,
-		!!(search.value || searchFilter.value)
+		!!(search.value || searchFilter.value),
 	);
 });
 
@@ -221,7 +221,7 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const spacings = {
@@ -233,7 +233,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -362,7 +362,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
@@ -516,11 +516,11 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">

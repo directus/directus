@@ -59,6 +59,7 @@ extension_display: Mostra
 extension_layout: Layout
 extension_module: Modulo
 extension_panel: Pannello
+extension_theme: Tema
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operazione
@@ -68,6 +69,7 @@ extension_displays: Visualizzazioni
 extension_layouts: Layout
 extension_modules: Moduli
 extension_panels: Pannelli
+extension_themes: Temi
 extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
@@ -309,6 +311,9 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
+theme_directus_default: Predefinito
+theme_directus_minimal: Minimalista
+theme_directus_colormatch: Corrispondenza colore
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -325,7 +330,7 @@ click_to_manage_translated_fields: >-
 fields_group: Gruppo campi
 no_collections_found: Nessuna raccolta trovata.
 new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
-search_collection: Cerca nella raccolta...
+search_collection: Cerca raccolta...
 search_field: Campo di ricerca...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
@@ -674,7 +679,6 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
-  GRAPHQL_VALIDATION_EXCEPTION: Eccezione di validazione GraphQL
   SERVICE_UNAVAILABLE: Servizio non disponibile
   UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
   UNEXPECTED_RESPONSE: Risposta inattesa
@@ -687,7 +691,6 @@ security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
-create_default: Crea predefinito
 edit_bookmark: Modifica Segnalibro
 edit_personal_bookmark: Modifica segnalibro personale
 edit_role_bookmark: Modifica segnalibro del ruolo
@@ -809,7 +812,7 @@ layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
-optional_system_fields: Campi di Sistema Opzionali
+optional_system_fields: Campi opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
@@ -1016,7 +1019,7 @@ deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 theme: Tema
 select_a_theme: Seleziona un tema
-appearance_global: Progetto Predefinito
+default_sync_with_project: Predefinito (Sincronizza con il progetto)
 appearance_auto: Automatico (Sincronizza con il Sistema)
 appearance_light: Chiaro
 appearance_dark: Tema scuro
@@ -1033,7 +1036,7 @@ no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Controllo Accessi
 settings_project: Impostazioni
-settings_theming: Temi
+settings_appearance: Aspetto
 settings_webhooks: Webhooks
 settings_flows: Flussi
 settings_presets: Segnalibri
@@ -1075,7 +1078,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
 page_help_settings_project: "**Impostazioni** — Opzioni di configurazione globale del tuo progetto."
-page_help_settings_theming: "**Temi** — Opzioni del tema del tuo progetto."
+page_help_settings_appearance: "**Aspetto** — Opzioni relative ad aspetto e temi del progetto."
 page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
@@ -1221,6 +1224,9 @@ fields:
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
     email_notifications: Notifiche email
+    appearance: Aspetto
+    theme_light: Tema chiaro
+    theme_dark: Tema scuro
     theme_light_overrides: Personalizzazione del tema chiaro
     theme_dark_overrides: Personalizzazione del tema scuro
   directus_settings:
@@ -1251,6 +1257,9 @@ fields:
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
     theming: Impostazioni predefinite dei temi
+    default_appearance: Aspetto predefinito
+    default_theme_light: Tema chiaro predefinito
+    default_theme_dark: Tema scuro predefinito
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e archiviazione
@@ -1546,7 +1555,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1979,6 +1987,8 @@ displays:
     icon: Icona
     border: Bordo
     border_label: Mostra bordo
+    mask: Nascosto
+    mask_label: Nascondi il valore reale
     text: Text
     text_placeholder: Testo opzionale ridefinito...
   formatted-json-value:

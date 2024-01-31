@@ -588,7 +588,6 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   INVALID_FOREIGN_KEY: Clau forana invàlida
   UNKNOWN: Error inesperat
-  GRAPHQL_VALIDATION_EXCEPTION: Excepció de validació de GraphQL
   SERVICE_UNAVAILABLE: Servei no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
   UNEXPECTED_RESPONSE: Resposta inesperada
@@ -715,7 +714,6 @@ layout_options: Opcions de presentació
 rows: Files
 columns: Columnes
 collection_setup: Configuració de la col·lecció
-optional_system_fields: Camps del sistema opcionals
 value_unique: El valor ha de ser únic
 all_activity: Tota l'activitat
 create_item: Crea un element
@@ -1654,6 +1652,8 @@ displays:
     suffix: Sufix
     color: Color
     icon: Icona
+    mask: Enmascarat
+    mask_label: Amaga el valor real
     text: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat

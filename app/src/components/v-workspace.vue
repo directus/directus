@@ -21,7 +21,14 @@ const props = withDefaults(defineProps<Props>(), {
 	resizable: true,
 });
 
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
+defineEmits<{
+	update: [value: { edits: Event; id: AppTile['id'] }];
+	move: [value: AppTile['id']];
+	delete: [value: AppTile['id']];
+	duplicate: [value: AppTile];
+	edit: [value: AppTile];
+	preview: [value: AppTile];
+}>();
 
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
@@ -38,7 +45,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ x: 0, width: 0 }
+		{ x: 0, width: 0 },
 	);
 
 	const furthestTileY = props.tiles.reduce(
@@ -50,7 +57,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ y: 0, height: 0 }
+		{ y: 0, height: 0 },
 	);
 
 	if (props.editMode === true) {

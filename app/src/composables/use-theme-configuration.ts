@@ -10,7 +10,7 @@ export const useThemeConfiguration = () => {
 	const userStore = useUserStore();
 
 	const browserAppearance = ref<'dark' | 'light'>(
-		window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+		window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
 	);
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
@@ -52,17 +52,17 @@ export const useThemeConfiguration = () => {
 	const darkMode = computed(() => appearance.value === 'dark');
 
 	const themeLight = computed(
-		() => userSettings.value?.theme_light ?? systemSettings.value?.default_theme_light ?? null
+		() => userSettings.value?.theme_light ?? systemSettings.value?.default_theme_light ?? null,
 	);
 
 	const themeDark = computed(() => userSettings.value?.theme_dark ?? systemSettings.value?.default_theme_dark ?? null);
 
 	const themeLightOverrides = computed(() =>
-		merge({}, userSettings.value?.theme_light_overrides, systemSettings.value?.theme_light_overrides)
+		merge({}, userSettings.value?.theme_light_overrides, systemSettings.value?.theme_light_overrides),
 	);
 
 	const themeDarkOverrides = computed(() =>
-		merge({}, userSettings.value?.theme_dark_overrides, systemSettings.value?.theme_dark_overrides)
+		merge({}, userSettings.value?.theme_dark_overrides, systemSettings.value?.theme_dark_overrides),
 	);
 
 	return { darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides };

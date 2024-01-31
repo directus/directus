@@ -1,7 +1,7 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_1280_146)">
         <g filter="url(#filter0_d_1280_146)">
-            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--theme--background)" class="glow" />
             <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
                 stroke-width="2" />
         </g>
@@ -12,10 +12,10 @@
             fill="var(--theme--primary-subdued)" />
         <path
             d="M56.2145 30.4532C50.5639 34.1227 45.9317 39.1601 42.7479 45.098C39.564 51.0358 37.9316 57.6817 38.0022 64.4189L54.0013 64.2513C53.959 60.209 54.9384 56.2215 56.8487 52.6588C58.759 49.0961 61.5383 46.0736 64.9287 43.8719L56.2145 30.4532Z"
-            fill="color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 25%)" />
+            fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
         <path
             d="M118 64C118 57.2624 116.298 50.634 113.052 44.7299C109.806 38.8257 105.122 33.8371 99.4331 30.2269L90.8598 43.7361C94.2731 45.9022 97.0839 48.8954 99.0314 52.4379C100.979 55.9804 102 59.9575 102 64H118Z"
-            fill="color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 75%)" />
+            fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
         <circle cx="78" cy="54" r="2" fill="var(--theme--primary)" />
         <path
             d="M83.8408 28.42C83.9837 27.8866 84.5321 27.57 85.0655 27.7129V27.7129C85.599 27.8559 85.9156 28.4042 85.7726 28.9377L79.0433 54.0517C78.9004 54.5852 78.3521 54.9018 77.8186 54.7588V54.7588C77.2851 54.6159 76.9686 54.0676 77.1115 53.5341L83.8408 28.42Z"

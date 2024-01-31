@@ -18,7 +18,7 @@ function resolve(path: string, scope: any) {
 
 export function renderStringTemplate(
 	template: Ref<string | null> | string,
-	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
+	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>,
 ): StringTemplate {
 	const values = unref(item);
 
@@ -54,7 +54,7 @@ export function renderPlainStringTemplate(template: string, item?: Record<string
 export function renderDisplayStringTemplate(
 	collection: string,
 	template: string,
-	item: Record<string, any>
+	item: Record<string, any>,
 ): string | null {
 	const fieldsStore = useFieldsStore();
 
@@ -73,7 +73,7 @@ export function renderDisplayStringTemplate(
 
 		const display = useExtension(
 			'display',
-			computed(() => fieldsUsed[key]?.meta?.display ?? null)
+			computed(() => fieldsUsed[key]?.meta?.display ?? null),
 		);
 
 		if (value !== undefined && value !== null) {
@@ -86,7 +86,7 @@ export function renderDisplayStringTemplate(
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
 					  })
-					: value
+					: value,
 			);
 		} else {
 			set(parsedItem, key, value);

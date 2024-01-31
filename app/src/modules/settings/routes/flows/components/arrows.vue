@@ -19,7 +19,7 @@ const props = withDefaults(
 		editMode: false,
 		hoveredPanel: undefined,
 		subdued: false,
-	}
+	},
 );
 
 const startOffset = 2;
@@ -142,8 +142,8 @@ const arrows = computed(() => {
 					{ x: x + startOffset, y },
 					{ x: centerX, y },
 					{ x: centerX, y: toY },
-					{ x: toX - endOffset, y: toY }
-				)
+					{ x: toX - endOffset, y: toY },
+				),
 			);
 		}
 
@@ -156,8 +156,8 @@ const arrows = computed(() => {
 				{ x: x + offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: toY },
-				{ x: toX - endOffset, y: toY }
-			)
+				{ x: toX - endOffset, y: toY },
+			),
 		);
 	}
 
@@ -233,7 +233,7 @@ const arrows = computed(() => {
 					point.x >= (panel.x - 2) * 20 &&
 					point.x <= (panel.x - 1 + PANEL_WIDTH) * 20 &&
 					point.y >= (panel.y - 1) * 20 &&
-					point.y <= (panel.y - 1 + PANEL_HEIGHT) * 20
+					point.y <= (panel.y - 1 + PANEL_HEIGHT) * 20,
 			) !== -1
 		);
 	}

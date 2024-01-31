@@ -25,7 +25,7 @@ const props = withDefaults(
 	}>(),
 	{
 		crop: true,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -225,7 +225,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -252,7 +252,7 @@ img {
 	justify-content: center;
 	height: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	padding: 32px;
 
 	.v-icon {
@@ -378,7 +378,7 @@ img {
 }
 
 .fallback {
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	display: flex;
 	align-items: center;
 	justify-content: center;

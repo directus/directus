@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateFolderOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusFolder<Schema>
+	Item extends object = DirectusFolder<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,7 +21,7 @@ export const updateFolders =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
 		item: Partial<DirectusFolder<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
@@ -46,7 +46,7 @@ export const updateFolder =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
 		item: Partial<DirectusFolder<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');

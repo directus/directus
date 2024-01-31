@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Panel } from '@directus/types';
-import { computed, ref, reactive, StyleValue } from 'vue';
+import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
+import { StyleValue, computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export type AppTile = {
@@ -338,11 +338,12 @@ function useDragDrop() {
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--theme--background-page);
-	border: 1px solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 1px var(--theme--border-color-subdued);
+	background-color: var(--theme--background);
+	border: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--border-color-subdued);
 	z-index: 1;
-	transition: border var(--fast) var(--transition);
+	transition: var(--fast) var(--transition);
+	transition-property: border, box-shadow;
 
 	&:hover {
 		z-index: 3;
@@ -351,19 +352,19 @@ function useDragDrop() {
 	&.editing {
 		&.draggable {
 			border-color: var(--theme--form--field--input--border-color);
-			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color);
 			cursor: move;
 		}
 
 		&.draggable:hover {
 			border-color: var(--theme--form--field--input--border-color-hover);
-			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color-hover);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color-hover);
 		}
 
 		&.dragging {
 			z-index: 3 !important;
 			border-color: var(--theme--form--field--input--border-color-focus);
-			box-shadow: 0 0 0 1px var(--theme--primary);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
 		}
 
 		&.dragging .resize-details {
@@ -385,19 +386,21 @@ function useDragDrop() {
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 12px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
 	border-top-right-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-top-left-radius: var(--theme--border-radius);
-	backdrop-filter: blur(3px);
-	background-color: rgba(var(--background-page-rgb), 0.5);
+	background-color: var(--theme--background);
 	opacity: 0;
-	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+	transition:
+		opacity var(--fast) var(--transition),
+		color var(--fast) var(--transition);
 	pointer-events: none;
 }
+
 .tile-content {
 	position: relative;
 	display: flex;
@@ -435,7 +438,7 @@ function useDragDrop() {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 }
 
@@ -468,8 +471,7 @@ function useDragDrop() {
 	border-top-right-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-bottom-left-radius: var(--theme--border-radius);
-	backdrop-filter: blur(3px);
-	background-color: rgba(var(--background-page-rgb), 0.5);
+	background-color: var(--theme--background);
 }
 
 .resize-handlers div {

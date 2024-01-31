@@ -608,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora de alcance
   INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Exceção de Validação GraphQL
   SERVICE_UNAVAILABLE: Serviço indisponível
   UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
   UNEXPECTED_RESPONSE: Resposta inesperada
@@ -737,7 +736,6 @@ layout_options: Opções de Layout
 rows: Linhas
 columns: Colunas
 collection_setup: Configurando coleção
-optional_system_fields: Campos de sistema opcionais
 value_unique: O valor deve ser único
 all_activity: Todas as atividades
 create_item: Criar item
@@ -1829,6 +1827,8 @@ displays:
     icon: Ícone
     border: Borda
     border_label: Mostrar bordas
+    mask: Mascarado
+    mask_label: Ocultar o valor real
     text: Texto
     text_placeholder: Substituição de valor opcional...
   formatted-json-value:

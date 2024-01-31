@@ -653,7 +653,6 @@ layout_options: Paigutuse Valikud
 rows: Read
 columns: Veerud
 collection_setup: Andmekogu seadistus
-optional_system_fields: Valikulised süsteemsed väljad
 value_unique: Väärtus peab olema unikaalne
 all_activity: Kõik tegevused
 create_item: Loo kirje
@@ -1354,6 +1353,8 @@ displays:
     suffix: Järelliide
     color: Värv
     icon: Ikoon
+    mask: Maskeeritud
+    mask_label: Peida algne väärtus
     text: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena

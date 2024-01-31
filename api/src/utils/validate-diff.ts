@@ -26,7 +26,7 @@ const applyJoiSchema = Joi.object({
 				Joi.object({
 					collection: Joi.string().required(),
 					diff: Joi.array().items(deepDiffSchema).required(),
-				})
+				}),
 			)
 			.required(),
 		fields: Joi.array()
@@ -35,7 +35,7 @@ const applyJoiSchema = Joi.object({
 					collection: Joi.string().required(),
 					field: Joi.string().required(),
 					diff: Joi.array().items(deepDiffSchema).required(),
-				})
+				}),
 			)
 			.required(),
 		relations: Joi.array()
@@ -45,7 +45,7 @@ const applyJoiSchema = Joi.object({
 					field: Joi.string().required(),
 					related_collection: Joi.string().allow(null),
 					diff: Joi.array().items(deepDiffSchema).required(),
-				})
+				}),
 			)
 			.required(),
 	}).required(),
@@ -77,7 +77,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 
 		if (diffCollection.diff[0]?.kind === DiffKind.NEW) {
 			const existingCollection = currentSnapshotWithHash.collections.find(
-				(c) => c.collection === diffCollection.collection
+				(c) => c.collection === diffCollection.collection,
 			);
 
 			if (existingCollection) {
@@ -87,7 +87,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		} else if (diffCollection.diff[0]?.kind === DiffKind.DELETE) {
 			const existingCollection = currentSnapshotWithHash.collections.find(
-				(c) => c.collection === diffCollection.collection
+				(c) => c.collection === diffCollection.collection,
 			);
 
 			if (!existingCollection) {
@@ -103,7 +103,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 
 		if (diffField.diff[0]?.kind === DiffKind.NEW) {
 			const existingField = currentSnapshotWithHash.fields.find(
-				(f) => f.collection === diffField.collection && f.field === diffField.field
+				(f) => f.collection === diffField.collection && f.field === diffField.field,
 			);
 
 			if (existingField) {
@@ -113,7 +113,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		} else if (diffField.diff[0]?.kind === DiffKind.DELETE) {
 			const existingField = currentSnapshotWithHash.fields.find(
-				(f) => f.collection === diffField.collection && f.field === diffField.field
+				(f) => f.collection === diffField.collection && f.field === diffField.field,
 			);
 
 			if (!existingField) {
@@ -130,7 +130,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 
 		if (diffRelation.diff[0]?.kind === DiffKind.NEW) {
 			const existingRelation = currentSnapshotWithHash.relations.find(
-				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
+				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field,
 			);
 
 			if (existingRelation) {
@@ -140,7 +140,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		} else if (diffRelation.diff[0]?.kind === DiffKind.DELETE) {
 			const existingRelation = currentSnapshotWithHash.relations.find(
-				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
+				(r) => r.collection === diffRelation.collection && r.field === diffRelation.field,
 			);
 
 			if (!existingRelation) {

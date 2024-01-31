@@ -1,9 +1,11 @@
+import { useEnv } from '@directus/env';
+import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { File, BusboyFileStream } from '@directus/types';
+import type { BusboyFileStream, File } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
-import exif from 'exif-reader';
+import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import type { IccProfile } from 'icc';
 import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
@@ -17,14 +19,15 @@ import sharp from 'sharp';
 import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
@@ -40,7 +43,7 @@ export class FilesService extends ItemsService {
 		stream: BusboyFileStream | Readable,
 		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
@@ -94,9 +97,8 @@ export class FilesService extends ItemsService {
 
 		// Used to clean up if something goes wrong
 		const cleanUp = async () => {
-
 			try {
-				if (isReplacement === true ){
+				if (isReplacement === true) {
 					// If this is a replacement that failed, we need to delete the temp file
 					await disk.delete(tempFilenameDisk);
 				} else {
@@ -107,9 +109,8 @@ export class FilesService extends ItemsService {
 					// delete the final file
 					await disk.delete(payload.filename_disk!);
 				}
-
 			} catch (err: any) {
-				if (isReplacement === true ){
+				if (isReplacement === true) {
 					logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
 				} else {
 					logger.warn(`Couldn't delete file ${payload.filename_disk}`);
@@ -177,7 +178,8 @@ export class FilesService extends ItemsService {
 				payload.metadata = metadata;
 			}
 
-			// Note that if this is a replace file upload, the below properities are fetched and included in the payload above in the `existingFile` variable...so this will ONLY set the values if they're not already set
+			// Note that if this is a replace file upload, the below properties are fetched and included in the payload above
+			// in the `existingFile` variable... so this will ONLY set the values if they're not already set
 
 			if (!payload.description && description) {
 				payload.description = description;
@@ -213,7 +215,7 @@ export class FilesService extends ItemsService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		}
 
@@ -223,7 +225,10 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
+	async getMetadata(
+		stream: Readable,
+		allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
+	): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
@@ -245,11 +250,11 @@ export class FilesService extends ItemsService {
 
 					// Backward-compatible layout as it used to be with 'exifr'
 					const fullMetadata: {
-						ifd0?: Record<string, unknown>;
-						ifd1?: Record<string, unknown>;
-						exif?: Record<string, unknown>;
-						gps?: Record<string, unknown>;
-						interop?: Record<string, unknown>;
+						ifd0?: Partial<ImageTags>;
+						ifd1?: Partial<ImageTags>;
+						exif?: Partial<PhotoTags>;
+						gps?: Partial<GPSInfoTags>;
+						interop?: Partial<IopTags>;
 						icc?: IccProfile;
 						iptc?: Record<string, unknown>;
 						xmp?: Record<string, unknown>;
@@ -257,23 +262,31 @@ export class FilesService extends ItemsService {
 
 					if (sharpMetadata.exif) {
 						try {
-							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+							const { Image, ThumbnailTags, Iop, GPSInfo, Photo } = (exif as unknown as typeof exif.default)(
+								sharpMetadata.exif,
+							);
 
-							if (image) {
-								fullMetadata.ifd0 = image;
+							if (Image) {
+								fullMetadata.ifd0 = Image;
 							}
 
-							if (thumbnail) {
-								fullMetadata.ifd1 = thumbnail;
+							if (ThumbnailTags) {
+								fullMetadata.ifd1 = ThumbnailTags;
 							}
 
-							if (interoperability) {
-								fullMetadata.interop = interoperability;
+							if (Iop) {
+								fullMetadata.interop = Iop;
 							}
 
-							Object.assign(fullMetadata, rest);
+							if (GPSInfo) {
+								fullMetadata.gps = GPSInfo;
+							}
+
+							if (Photo) {
+								fullMetadata.exif = Photo;
+							}
 						} catch (err) {
-							logger.warn(`Couldn't extract EXIF metadata from file`);
+							logger.warn(`Couldn't extract Exif metadata from file`);
 							logger.warn(err);
 						}
 					}
@@ -334,7 +347,7 @@ export class FilesService extends ItemsService {
 					}
 
 					resolve(metadata);
-				})
+				}),
 			);
 		});
 	}
@@ -344,7 +357,7 @@ export class FilesService extends ItemsService {
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
 		const fileCreatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
+			(permission) => permission.collection === 'directus_files' && permission.action === 'create',
 		);
 
 		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
@@ -373,7 +386,7 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'])[0],
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(body || {}),

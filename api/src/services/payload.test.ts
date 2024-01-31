@@ -199,7 +199,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: '0000-00-00 00:00:00.000',
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([
@@ -220,7 +220,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: '1980-12-08 00:11:22.333',
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([
@@ -241,7 +241,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: new Date(1666555444333),
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([

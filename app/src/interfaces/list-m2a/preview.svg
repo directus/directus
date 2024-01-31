@@ -1,15 +1,15 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18.4443" y="9" width="120" height="22" rx="6" fill="var(--theme--background-page)" />
+	<rect x="18.4443" y="9" width="120" height="22" rx="6" fill="var(--theme--background)" />
 	<rect x="19.4443" y="10" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-opacity="0.25"
 		stroke-width="2" />
 	<rect x="46" y="17" width="10" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
 	<rect x="60" y="17" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
 	<path opacity="0.5" d="M38 18H28V19.2691H38V18ZM28 21.7778H38V20.5087H28V21.7778Z" fill="var(--theme--primary)" />
-	<rect x="18" y="65" width="120" height="22" rx="6" fill="var(--theme--background-page)" />
+	<rect x="18" y="65" width="120" height="22" rx="6" fill="var(--theme--background)" />
 	<rect x="19" y="66" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-opacity="0.25" stroke-width="2" />
 	<rect x="46" y="73" width="60" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
 	<path opacity="0.5" d="M38 74H28V75.2691H38V74ZM28 77.7778H38V76.5087H28V77.7778Z" fill="var(--theme--primary)" />
-	<rect x="18" y="37" width="120" height="22" rx="6" fill="var(--theme--background-page)" class="glow" />
+	<rect x="18" y="37" width="120" height="22" rx="6" fill="var(--theme--background)" class="glow" />
 	<rect x="19" y="38" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
 	<rect x="46" y="45" width="30" height="6" rx="2" fill="var(--theme--primary)" />
 	<rect x="80" y="45" width="10" height="6" rx="2" fill="var(--theme--primary)" />

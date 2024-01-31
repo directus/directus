@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "11.0.0",
+	"version": "11.0.1",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -35,11 +35,11 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"knex": "2.4.2"
+		"knex": "3.1.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2"
+		"tsup": "8.0.1",
+		"typescript": "5.3.3"
 	}
 }

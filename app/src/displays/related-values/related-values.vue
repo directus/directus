@@ -118,7 +118,7 @@ function getLinkForItem(item: any) {
 		z-index: 1;
 		width: calc(100% + 12px);
 		height: calc(100% + 12px);
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);

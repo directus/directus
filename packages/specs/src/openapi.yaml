@@ -21,8 +21,8 @@ tags:
     description: Image typed files can be dynamically resized and transformed to fit any need.
   - name: Authentication
     description:
-      All events that happen within Directus are tracked and stored in the activities collection. This gives you full
-      accountability over everything that happens.
+      All data within the platform is private by default. The public role can be configured to expose data without
+      authentication, or you can pass an access token to the API to access private data.
   - name: Presets
     description:
       Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
@@ -76,6 +76,10 @@ tags:
     x-collection: directus_roles
   - name: Schema
     description: Retrieve and update the schema of an instance.
+    x-authentication: admin
+    x-schemas:
+      - Schema
+      - Diff
   - name: Server
     description:
       Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and
@@ -88,6 +92,12 @@ tags:
     x-collection: directus_users
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
+    x-authentication: user
+    x-schemas:
+      - Files
+      - Folders
+      - Users
+      - Roles
   - name: Versions
     description:
       Enables users to create unpublished copies of an item, modify them independently from the main version, and

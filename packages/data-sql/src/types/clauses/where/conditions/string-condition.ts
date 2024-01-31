@@ -1,6 +1,5 @@
 import type { ValueNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQueryTargetNode } from '../../common/target.js';
 
 /**
  * Condition to filter rows where a string column value contains, starts with, ends with, or is equal to another given string.
@@ -9,7 +8,7 @@ export interface SqlConditionStringNode {
 	type: 'condition-string';
 
 	/* The column in question. */
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	target: AbstractSqlQueryTargetNode;
 
 	/* The valid operators for a comparison against strings. */
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';

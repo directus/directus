@@ -1,7 +1,7 @@
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from './index.js';
+import type { AbstractSqlQueryTargetNode } from './common/target.js';
 
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	orderBy: AbstractSqlQueryTargetNode;
 	direction: 'ASC' | 'DESC';
 }

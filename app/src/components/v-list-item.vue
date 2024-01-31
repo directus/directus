@@ -137,7 +137,7 @@ function onClick(event: PointerEvent) {
 
 	Available Variables:
 
-		--v-list-item-padding                  [0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px))]
+		--v-list-item-padding                  [0 8px 0 calc(8px + var(--v-list-item-indent, 0px))]
 		--v-list-item-margin                   [2px 0]
 		--v-list-item-min-height               [32px]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
@@ -146,9 +146,9 @@ function onClick(event: PointerEvent) {
 		--v-list-item-color                    [var(--v-list-color, var(--theme--foreground))]
 		--v-list-item-color-hover              [var(--v-list-color-hover, var(--theme--foreground))]
 		--v-list-item-color-active             [var(--v-list-color-active, var(--theme--foreground))]
-		--v-list-item-background-color         [var(--v-list-background-color, var(--theme--background))]
-		--v-list-item-background-color-hover   [var(--v-list-background-color-hover, var(--theme--background))]
-		--v-list-item-background-color-active  [var(--v-list-background-color-active, var(--theme--background))]
+		--v-list-item-background-color         [var(--v-list-background-color, var(--theme--background-normal))]
+		--v-list-item-background-color-hover   [var(--v-list-background-color-hover, var(--theme--background-normal))]
+		--v-list-item-background-color-active  [var(--v-list-background-color-active, var(--theme--background-normal))]
 
 */
 
@@ -166,10 +166,7 @@ function onClick(event: PointerEvent) {
 	min-height: var(--v-list-item-min-height, 32px);
 	max-height: auto;
 	margin: var(--v-list-item-margin, 2px 0);
-	padding: var(
-		--v-list-item-padding,
-		0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px))
-	);
+	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-decoration: none;
@@ -184,7 +181,7 @@ function onClick(event: PointerEvent) {
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px dashed var(--theme--form--field--input--border-color);
+			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
 		}
@@ -197,11 +194,10 @@ function onClick(event: PointerEvent) {
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-hover,
-				var(--v-list-background-color-hover, var(--theme--background))
+				var(--v-list-background-color-hover, var(--theme--background-normal))
 			);
 
 			&.active {
@@ -211,27 +207,28 @@ function onClick(event: PointerEvent) {
 				);
 				background-color: var(
 					--v-list-item-background-color-active-hover,
-					var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)))
+					var(
+						--v-list-item-background-color-hover,
+						var(--v-list-background-color-hover, var(--theme--background-normal))
+					)
 				);
 			}
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-active,
-				var(--v-list-background-color-active, var(--theme--background))
+				var(--v-list-background-color-active, var(--theme--background-normal))
 			);
 		}
 	}
 
 	&:not(.dense).active {
-		--v-list-item-icon-color: var(--v-list-item-icon-color-active);
 		color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 		background-color: var(
 			--v-list-item-background-color-active,
-			var(--v-list-background-color-active, var(--theme--background))
+			var(--v-list-background-color-active, var(--theme--background-normal))
 		);
 	}
 
@@ -255,18 +252,20 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--theme--border-color-subdued);
-		--v-list-item-background-color: var(--theme--background-page);
-		--v-list-item-background-color-hover: var(--card-face-color);
-		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
+
+		--v-list-item-padding: var(--theme--form--field--input--padding);
 
 		position: relative;
 		display: flex;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		margin: 0;
-		padding: 8px var(--input-padding);
-		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--background)));
-		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
+		background-color: var(
+			--v-list-item-background-color,
+			var(--v-list-background-color, var(--theme--form--field--input--background))
+		);
+		border: var(--theme--border-width) solid
+			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -289,7 +288,7 @@ function onClick(event: PointerEvent) {
 		&.clickable:hover {
 			background-color: var(
 				--v-list-item-background-color-hover,
-				var(--v-list-background-color-hover, var(--theme--background))
+				var(--v-list-background-color-hover, var(--theme--form--field--input--background))
 			);
 			border: var(--theme--border-width) solid
 				var(--v-list-item-border-color-hover, var(--theme--form--field--input--border-color-hover));
@@ -324,7 +323,7 @@ function onClick(event: PointerEvent) {
 				--v-list-item-border-radius: 4px;
 
 				margin: 2px 0;
-				padding: 0 var(--input-padding);
+				padding: 0 8px;
 
 				&:first-child {
 					margin-top: 0;

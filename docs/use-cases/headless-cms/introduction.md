@@ -7,10 +7,10 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-A Headless CMS provides a way of managing content for websites, mobile apps, and other digital applications. It
-separates the content from the presentation layer, allowing developers to create the frontend of a website or app with
-whatever technology they choose. With a Headless CMS, content can be created and managed in one place, and allows any
-number of applications built upon that data.
+A [Headless CMS](https://directus.io/solutions/headless-cms) provides a way of managing content for websites, mobile
+apps, and other digital applications. It separates the content from the presentation layer, allowing developers to
+create the frontend of a website or app with whatever technology they choose. With a Headless CMS, content can be
+created and managed in one place, and allows any number of applications built upon that data.
 
 Learn more about [Headless CMS Concepts](/use-cases/headless-cms/concepts).
 

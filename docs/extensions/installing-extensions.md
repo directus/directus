@@ -4,7 +4,7 @@ description: Discover how to install extensions to your Directus instance.
 ---
 
 <script setup lang="ts">
-import { data as directus } from '../.vitepress/data/directus.data.js';
+import { data as packages } from '@/data/packages.data.js';
 </script>
 
 # Installing Extensions
@@ -25,7 +25,7 @@ install an existing public extension as well as your own published extension. Be
 Open the `docker-compose.yml` file of your project and replace the `image` option with a `build` section:
 
 ```yaml-vue
-image: directus/directus:{{ directus.version.major }}.x.y // [!code --]
+image: directus/directus:{{ packages.directus.version.major }}.x.y // [!code --]
 build: // [!code ++]
   context: ./ // [!code ++]
 ```
@@ -37,7 +37,7 @@ This allows you to build a customized Docker Image with the added extensions.
 At the root of your project, create a `Dockerfile` if one doesn't already exist and add the following:
 
 ```Dockerfile-vue
-FROM directus/directus:{{ directus.version.major }}.x.y
+FROM directus/directus:{{ packages.directus.version.major }}.x.y
 
 USER root
 RUN corepack enable
@@ -104,6 +104,13 @@ extensions/
     package.json
   ...
 ```
+
+:::info Directory Name Prefix
+
+When installing extensions locally via the extensions folder, extensions are only recognized and loaded when placed in a
+folder prefixed with `directus-extension-`.
+
+:::
 
 **3. Update Docker Compose File**
 

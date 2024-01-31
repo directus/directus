@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadTranslationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusTranslation<Schema>
+	Item extends object = DirectusTranslation<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadTranslationOutput<
  */
 export const readTranslations =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/translations`,
@@ -34,7 +34,7 @@ export const readTranslations =
 export const readTranslation =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

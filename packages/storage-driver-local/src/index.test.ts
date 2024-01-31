@@ -316,7 +316,7 @@ describe('#listGenerator', () => {
 				for (const mockFile of mockFiles) {
 					yield { name: mockFile, isFile: () => true, isDirectory: () => false };
 				}
-			})() as unknown as Dir
+			})() as unknown as Dir,
 		);
 
 		vi.mocked(join).mockImplementation((_, filepath) => filepath);
@@ -350,7 +350,7 @@ describe('#listGenerator', () => {
 				for (const mockFile of mockFiles) {
 					yield { name: `/right-prefix/${mockFile}`, isFile: () => true, isDirectory: () => false };
 				}
-			})() as unknown as Dir
+			})() as unknown as Dir,
 		);
 
 		vi.mocked(join).mockImplementation((_, filepath) => filepath);
@@ -389,14 +389,14 @@ describe('#listGenerator', () => {
 		vi.mocked(opendir).mockResolvedValueOnce(
 			(function* () {
 				yield { name: mockDirectory, isFile: () => false, isDirectory: () => true };
-			})() as unknown as Dir
+			})() as unknown as Dir,
 		);
 
 		// Nested second call
 		vi.mocked(opendir).mockResolvedValueOnce(
 			(function* () {
 				yield { name: mockFile, isFile: () => true, isDirectory: () => false };
-			})() as unknown as Dir
+			})() as unknown as Dir,
 		);
 
 		const iterator = driver['listGenerator']('');

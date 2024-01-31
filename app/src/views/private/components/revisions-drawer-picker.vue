@@ -47,7 +47,7 @@ watch(
 
 		options.value = newOptions;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const selectedOption = computed(() => {

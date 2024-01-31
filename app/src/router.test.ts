@@ -49,7 +49,7 @@ beforeEach(async () => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
-		})
+		}),
 	);
 
 	const importedRouter = await import('./router');

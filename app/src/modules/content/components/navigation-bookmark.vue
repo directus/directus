@@ -63,8 +63,8 @@ function useEditBookmark() {
 			});
 
 			editActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			editSaving.value = false;
 		}
@@ -100,8 +100,8 @@ function useDeleteBookmark() {
 			if (navigateTo) {
 				router.replace(navigateTo);
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleteSaving.value = false;
 		}

@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadShareOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusShare<Schema>
+	Item extends object = DirectusShare<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadShareOutput<
  */
 export const readShares =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/shares`,
@@ -34,7 +34,7 @@ export const readShares =
 export const readShare =
 	<Schema extends object, TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadShareOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

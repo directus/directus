@@ -145,7 +145,7 @@ export default defineDisplay({
 					schema: {
 						default_value: 'round',
 					},
-				}
+				},
 			);
 		}
 

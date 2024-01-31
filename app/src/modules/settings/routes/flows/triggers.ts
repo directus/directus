@@ -10,7 +10,7 @@ export type Trigger = {
 	description: string;
 	overview: (
 		options: Record<string, any>,
-		{ flow }: { flow: FlowRaw }
+		{ flow }: { flow: FlowRaw },
 	) => { text: string; label: string; copyable?: boolean }[];
 	options: DeepPartial<Field>[] | ((options: Record<string, any>) => DeepPartial<Field>[]);
 };
@@ -103,7 +103,7 @@ export function getTriggers() {
 							readonly:
 								!scope ||
 								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
-									(t) => scope?.includes(t) === false
+									(t) => scope?.includes(t) === false,
 								),
 							options: {
 								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,
@@ -149,7 +149,7 @@ export function getTriggers() {
 							readonly:
 								!scope ||
 								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
-									(t) => scope?.includes(t) === false
+									(t) => scope?.includes(t) === false,
 								),
 							options: {
 								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,

@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateFileOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusFile<Schema>
+	Item extends object = DirectusFile<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreateFileOutput<
 export const uploadFiles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		data: FormData,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: '/files',
@@ -42,7 +42,7 @@ export const importFile =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		url: string,
 		data: Partial<DirectusFile<Schema>> = {},
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: '/files/import',

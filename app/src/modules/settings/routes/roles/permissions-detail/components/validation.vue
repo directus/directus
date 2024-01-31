@@ -35,7 +35,7 @@ const fields = computed(() => [
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('validation_for_role', {
 					action: t(permission.action).toLowerCase(),

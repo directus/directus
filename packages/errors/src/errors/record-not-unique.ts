@@ -24,5 +24,5 @@ export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorEx
 export const RecordNotUniqueError = createError<RecordNotUniqueErrorExtensions>(
 	ErrorCode.RecordNotUnique,
 	messageConstructor,
-	400
+	400,
 );

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUpdated, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -16,17 +16,21 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] }
+	{
+		focus: true,
+		choices: () => [],
+	},
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
+	input: [value: string | number | Record<string, unknown> | boolean | null];
 }>();
 
-const inputEl = ref<HTMLElement>();
 const { t } = useI18n();
-
 const dateTimeMenu = ref();
+const inputEl = ref<HTMLInputElement | null>(null);
+const isInputValid = ref(true);
+const inputBorderColor = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -37,10 +41,6 @@ const displayValue = computed(() => {
 	}
 
 	return props.value;
-});
-
-const width = computed(() => {
-	return (props.value?.toString().length || 2) + 1 + 'ch';
 });
 
 const inputPattern = computed(() => {
@@ -62,21 +62,45 @@ onMounted(() => {
 	if (props.focus) inputEl.value?.focus();
 });
 
-function emitValue(val: string) {
-	if (val === '') {
-		return emit('input', null);
+/*
+ * Because there's currently (2024-01-09) no way to uniquely identify filters
+ * we run into rendering issues when dragging and reordering input-groups/input-components.
+ * By listening for the DOM changes via `onUpdated` we can keep this component updated
+ * without having a `key` for each input-group in nodes.
+ */
+onUpdated(() => onEffect(props.value));
+
+watch(
+	() => props.value,
+	(value) => onEffect(value),
+	{ immediate: true },
+);
+
+function isValueValid(value: any): boolean {
+	if (value === '' || typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
+		return true;
 	}
 
 	if (
-		typeof val === 'string' &&
-		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
-			/^{{\s*?\S+?\s*?}}$/.test(val))
+		typeof value === 'string' &&
+		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
+			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		return emit('input', val);
+		return true;
 	}
 
-	if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-		return emit('input', val);
+	return false;
+}
+
+function onEffect(value: typeof props.value) {
+	isInputValid.value = isValueValid(value);
+}
+
+function onInput(value: string | null) {
+	isInputValid.value = isValueValid(value);
+
+	if (isInputValid.value) {
+		emit('input', value === '' ? null : value);
 	}
 }
 </script>
@@ -93,12 +117,12 @@ function emitValue(val: string) {
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
+		v-input-auto-width
 		type="text"
 		:pattern="inputPattern"
 		:value="value"
-		:style="{ width }"
 		placeholder="--"
-		@input="emitValue(($event.target as HTMLInputElement).value)"
+		@input="onInput(($event.target as HTMLInputElement).value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
@@ -108,17 +132,16 @@ function emitValue(val: string) {
 		:placeholder="t('select')"
 		allow-other
 		group-selectable
-		@update:model-value="emitValue($event)"
+		@update:model-value="onInput($event)"
 	/>
 	<template v-else-if="is === 'interface-datetime'">
 		<input
 			ref="inputEl"
+			v-input-auto-width
 			type="text"
-			:pattern="inputPattern"
 			:value="value"
-			:style="{ width }"
 			placeholder="--"
-			@input="emitValue(($event.target as HTMLInputElement).value)"
+			@input="onInput(($event.target as HTMLInputElement).value)"
 		/>
 		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
@@ -128,7 +151,7 @@ function emitValue(val: string) {
 				<v-date-picker
 					:type="type"
 					:model-value="value"
-					@update:model-value="emitValue"
+					@update:model-value="onInput"
 					@close="dateTimeMenu?.deactivate"
 				/>
 			</div>
@@ -146,7 +169,7 @@ function emitValue(val: string) {
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="onInput($event)" />
 		</div>
 	</v-menu>
 </template>
@@ -156,7 +179,7 @@ function emitValue(val: string) {
 	display: flex;
 	justify-content: center;
 	color: var(--theme--primary);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
@@ -187,15 +210,17 @@ function emitValue(val: string) {
 
 input {
 	color: var(--theme--primary);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	line-height: 1em;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--form--field--input--background);
 	border: none;
+	max-width: 40ch;
+	box-shadow: 0 4px 0 -2px v-bind(inputBorderColor);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 

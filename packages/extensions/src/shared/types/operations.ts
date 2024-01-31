@@ -9,7 +9,7 @@ export type OperationContext = ApiExtensionContext & {
 
 export type OperationHandler<Options = Record<string, unknown>> = (
 	options: Options,
-	context: OperationContext
+	context: OperationContext,
 ) => unknown | Promise<unknown> | void;
 
 export interface OperationAppConfig {
@@ -21,7 +21,7 @@ export interface OperationAppConfig {
 	overview:
 		| ((
 				options: Record<string, any>,
-				{ flow }: { flow: FlowRaw }
+				{ flow }: { flow: FlowRaw },
 		  ) => { label: string; text: string; copyable?: boolean }[])
 		| ComponentOptions
 		| null;

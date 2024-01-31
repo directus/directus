@@ -10,7 +10,7 @@ const props = withDefaults(
 		includeSystem?: boolean;
 		includeSingleton?: boolean;
 	}>(),
-	{ includeSingleton: true }
+	{ includeSingleton: true },
 );
 
 defineEmits<{

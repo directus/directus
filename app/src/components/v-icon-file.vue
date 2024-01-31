@@ -20,7 +20,7 @@ defineProps<Props>();
 	Available Variables:
 
 		--v-icon-file-color             [var(--theme--primary)]
-		--v-icon-file-background-color  [var(--theme--background)]
+		--v-icon-file-background-color  [var(--theme--background-normal)]
 
 */
 
@@ -45,7 +45,7 @@ defineProps<Props>();
 
 	&.right {
 		.label {
-			background-color: var(--v-icon-file-background-color, var(--theme--background));
+			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
 			left: calc(100% - 12px - 3ch);
 			text-align: left;
 			transform: none;

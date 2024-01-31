@@ -55,8 +55,8 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 			});
 
 			displayItems.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

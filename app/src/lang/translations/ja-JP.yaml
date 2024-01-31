@@ -27,6 +27,7 @@ method: 方法
 published: 公開済み
 draft: 下書き
 archived: アーカイブ済み
+extensions: 拡張機能
 modules: モジュール
 module_bar: モジュールバー
 logs: ログ
@@ -35,6 +36,7 @@ tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
 location: 場所
+collection_names_are_case_sensitive: コレクション名は大文字と小文字を区別します
 condition_rules: 条件ルール
 input: 入力
 maps: 地図
@@ -52,10 +54,24 @@ or: または
 init: 初期化
 dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の {n} 件のみ表示しています。
 modifier: 修飾子
+extension_interface: インターフェース
 extension_display: ディスプレイ
 extension_layout: レイアウト
+extension_module: モジュール
+extension_panel: パネル
+extension_theme: テーマ
 extension_hook: フック
+extension_endpoint: エンドポイント
+extension_bundle: バンドル
+extension_interfaces: インターフェース
+extension_layouts: レイアウト
 extension_modules: モジュール
+extension_panels: パネル
+extension_themes: テーマ
+extension_hooks: フック
+extension_endpoints: エンドポイント
+enable: 有効
+disable: 無効
 custom: カスタム
 hook: フック
 fill_width: 幅埋め
@@ -84,6 +100,10 @@ create_user: ユーザーの作成
 message: メッセージ
 delete_panel: パネルを削除
 create_webhook: Webhookの作成
+create_custom_translation: カスタム翻訳を作成
+edit_custom_translation: カスタム翻訳を編集
+no_custom_translations: カスタム翻訳はありません
+no_custom_translations_copy: まだカスタム翻訳はありません。
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
@@ -99,6 +119,21 @@ rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
 prefix: 接頭辞
 suffix: 接尾辞
+version: バージョン
+version_key: バージョンキー
+version_name: バージョン名
+main_version: メイン
+switch_version: バージョンを切り替える
+switch_version_copy: '「{version}」バージョンに切り替えてもよろしいですか？保存されていない変更は失われます。'
+create_version: バージョンを作成
+compare_version: バージョンを比較
+save_version: バージョンを保存
+promote_version: バージョンを反映
+promote_version_disabled: 変更なし
+promote_version_drawer_title: '{version} をメインに反映'
+promote_version_changes: 差分
+promote_version_preview: プレビュー
+delete_version: バージョンを削除
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
@@ -145,6 +180,14 @@ validationError:
   required: 必須項目です
   unique: 他と重複しない値である必要があります
   regex: 値のフォーマットが正しくありません
+  starts_with: 値は {substring} から始めなければなりません
+  istarts_with: 値は {substring} から始めなければなりません
+  nstarts_with: 値は {substring} で始めることはできません
+  nistarts_with: 値は {substring} で始めることはできません
+  ends_with: 値は {substring} で終わらなければなりません
+  iends_with: 値は {substring} で終わらなければなりません
+  nends_with: 値は {substring} で終わらせることはできません
+  niends_with: 値は {substring} で終わらせることはできません
 all_access: すべてのアクセス
 no_access: アクセスなし
 use_custom: カスタムを使う
@@ -243,6 +286,8 @@ geometry.Point: ポイント
 geometry.LineString: 単一線分
 geometry.Polygon: ポリゴン
 geometry.MultiPoint: マルチポイント
+theme_light: ライトモード
+theme_dark: ダークモード
 not_available_for_type: このタイプでは利用できません
 create_translations: 翻訳を作成
 auto_refresh: 自動更新
@@ -627,7 +672,10 @@ make_collection_hidden: コレクションを非表示
 make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
+start_end_of_count_items: '{start}-{end} / {count} のアイテム'
+start_end_of_count_filtered_items: '{start}-{end} / {count} のフィルタ済みアイテム'
 one_item: '1 つのアイテム'
+one_filtered_item: 'フィルターされた項目'
 visible_collections: 表示中のコレクション
 hidden_collections: 非表示のコレクション
 show_hidden_collections: 非表示コレクションを表示
@@ -678,6 +726,7 @@ operators:
   nempty: 空でない
   all: 含まれるキー
   has: 含まれるいくつかのキー
+  regex: 正規表現にマッチ
 custom_validation_message: カスタムバリデーションメッセージ
 loading: 読み込み中...
 drop_to_upload: ドロップしてアップロード
@@ -692,11 +741,11 @@ upload_pending: アップロード待ち
 drag_file_here: ここにファイルをドラッグ & ドロップ
 click_to_browse: クリックしてローカルフォルダを参照
 interface_options: インターフェースオプション
+display_options: 表示オプション
 layout_options: レイアウト設定
 rows: 行
 columns: 列
 collection_setup: コレクションの作成
-optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成
@@ -1332,6 +1381,8 @@ interfaces:
     crop_label: 必要に応じて画像を切り抜き
   system-display:
     display: ディスプレイ
+  system-display-options:
+    display-options: 表示オプション
   select-dropdown-m2o:
     display_template: テンプレートを表示
   input-rich-text-md:
@@ -1340,6 +1391,7 @@ interfaces:
     zoom: 拡大
   list:
     sort: 並べ替え
+    display_group: 表示オプション
   tags:
     tags: タグ
   input:
@@ -1392,6 +1444,7 @@ displays:
     icon: アイコン
     border: 区切り線
     border_label: 区切り線を表示
+    mask: マスク
     text: テキスト
   icon:
     icon: アイコン
@@ -1444,7 +1497,17 @@ layouts:
     tags: カードのタグ
     user: カードのユーザー
     advanced: 詳細設定
+x_axis: X 軸
+y_axis: Y軸
+show_x_only: X軸のみ表示
+show_y_only: Y軸のみ表示
+show_data_label: データラベルを表示
 both: 両方
+show_axis_labels: 軸のラベルを表示
+function: 関数
+half_circle: 半円
+full_circle: 円
+stroke_width: 線の幅
 panels:
   label:
     name: ラベル
@@ -1460,6 +1523,8 @@ operations:
     subject: 件名
   request:
     url: URL
+    url_placeholder: https://example.com/example
+    value_placeholder: Bearer eyJhbGciOi...
   trigger:
     flows: フロー
     flow: フロー

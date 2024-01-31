@@ -68,9 +68,9 @@ The source code is located in `/app/src` and the below folders are inside there.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
-use to enrich your extensions or when developing locally. These components can be used in any of the "app extensions",
-including Interfaces, Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library](https://components.directus.io) that you can use to enrich
+your extensions or when developing locally. These components can be used in any of the "app extensions", including
+Interfaces, Displays, Modules, Layouts, and Panels.
 
 :::
 
@@ -87,6 +87,7 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/data](https://github.com/directus/directus/tree/main/packages/data)                                           | Data abstraction for Directus                                                                                                                                         |
 | [@directus/errors](/packages/@directus/errors/)                                                                          | Utility functions to help creating and checking against Directus errors                                                                                               |
 | [@directus/extensions-sdk](/packages/@directus/extensions-sdk/)                                                          | A toolkit to develop extensions to extend Directus                                                                                                                    |
+| [@directus/memory](/packages/@directus/memory/)                                                                          | Memory / Redis abstraction for Directus                                                                                                                               |
 | [@directus/pressure](/packages/@directus/pressure/)                                                                      | Pressure based rate limiter                                                                                                                                           |
 | [@directus/random](/packages/@directus/random/)                                                                          | Set of random-utilities for use in tests                                                                                                                              |
 | [@directus/release-notes-generator](https://github.com/directus/directus/tree/main/packages/release-notes-generator)     | Package that generates release notes for Directus monorepo                                                                                                            |

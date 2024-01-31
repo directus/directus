@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_versions
 properties:
   id:
     description: Primary key of the Content Version.

@@ -21,7 +21,7 @@ const file = toRef(props, 'file');
 const imgError = ref(false);
 
 const src = computed(
-	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`
+	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`,
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {
@@ -73,7 +73,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {
@@ -96,7 +96,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 
 	.image,
 	.video {
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 	}
 
@@ -119,7 +119,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 	}
 
 	.fallback {
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		display: flex;
 		align-items: center;
 		justify-content: center;

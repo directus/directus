@@ -6,7 +6,6 @@ import RouterPass from '@/utils/router-passthrough';
 import { Collection } from '@directus/types';
 import { defineModule } from '@directus/extensions';
 import { isNil, orderBy } from 'lodash';
-import { ref } from 'vue';
 import { LocationQuery, NavigationGuard } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
 import CollectionOrItem from './routes/collection-or-item.vue';
@@ -63,7 +62,7 @@ export default defineModule({
 			component: NoCollections,
 			beforeEnter() {
 				const collectionsStore = useCollectionsStore();
-				const { activeGroups } = useNavigation(ref(null));
+				const { activeGroups } = useNavigation();
 
 				if (collectionsStore.visibleCollections.length === 0) return;
 
@@ -71,7 +70,7 @@ export default defineModule({
 					collectionsStore.visibleCollections.filter((collection) => {
 						return isNil(collection?.meta?.group);
 					}),
-					['meta.sort', 'collection']
+					['meta.sort', 'collection'],
 				);
 
 				const { data } = useLocalStorage('last-accessed-collection');
@@ -105,7 +104,7 @@ export default defineModule({
 							collectionsStore.visibleCollections.filter((childCollection) => {
 								return collection.collection === childCollection.meta?.group;
 							}),
-							['meta.sort', 'collection']
+							['meta.sort', 'collection'],
 						);
 
 						const first = findFirst(children);

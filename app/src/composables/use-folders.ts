@@ -78,8 +78,8 @@ export function useFolders(rootFolder?: Ref<string | undefined>, local?: Ref<boo
 
 			folders.value = response;
 			globalNestedFolders.value = nestFolders(response as FolderRaw[]);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

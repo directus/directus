@@ -705,7 +705,6 @@ layout_options: Layout alternativ
 rows: Rader
 columns: Kolumner
 collection_setup: Konfiguration av kollektion
-optional_system_fields: Valfria systemfält
 value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
@@ -1637,6 +1636,8 @@ displays:
     color: Färg
     background: Bakgrund
     icon: Ikon
+    mask: Maskerad
+    mask_label: Dölj det verkliga värdet
     text: Text
   formatted-json-value:
     formatted-json-value: Formaterat JSON-värde

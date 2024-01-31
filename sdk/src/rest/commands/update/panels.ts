@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdatePanelOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusPanel<Schema>
+	Item extends object = DirectusPanel<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,7 +21,7 @@ export const updatePanels =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		keys: DirectusPanel<Schema>['id'][],
 		item: Partial<DirectusPanel<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
@@ -46,7 +46,7 @@ export const updatePanel =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		key: DirectusPanel<Schema>['id'],
 		item: Partial<DirectusPanel<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');

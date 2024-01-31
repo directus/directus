@@ -59,7 +59,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -82,7 +82,7 @@ const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
 				type: 'module',
 				id: module.id,
 				enabled: false,
-			})
+			}),
 		);
 });
 
@@ -95,7 +95,7 @@ const valuesWithData = computed<PreviewValue[]>({
 		return valueToPreview([
 			...(props.value ?? MODULE_BAR_DEFAULT),
 			...availableModulesAsBarModule.value.filter(
-				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
+				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false,
 			),
 		]);
 	},
@@ -192,7 +192,7 @@ function save() {
 	} else {
 		emit(
 			'input',
-			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val))
+			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val)),
 		);
 	}
 
@@ -203,7 +203,7 @@ function save() {
 function remove(id: string) {
 	emit(
 		'input',
-		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
+		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id),
 	);
 }
 </script>
@@ -213,11 +213,11 @@ function remove(id: string) {
 		<v-list class="list">
 			<draggable
 				v-model="valuesWithData"
-				force-fallback
 				:set-data="hideDragImage"
 				item-key="id"
 				handle=".drag-handle"
 				:animation="150"
+				v-bind="{ 'force-fallback': true }"
 			>
 				<template #item="{ element }">
 					<v-list-item
@@ -268,29 +268,25 @@ function remove(id: string) {
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .icon {
 	margin: 0 12px;
 }
 
-.v-list-item.enabled {
-	--v-list-item-border-color: var(--theme--form--field--input--border-color-focus);
-	--v-list-item-color: var(--theme--primary-accent);
-	--v-list-item-background-color: var(--theme--primary-background);
-	--v-list-item-border-color-hover: var(--theme--primary-accent);
-	--v-list-item-color-hover: var(--theme--primary-accent);
-	--v-list-item-background-color-hover: var(--theme--primary-background);
-	--v-icon-color: var(--theme--primary);
-	--v-icon-color-hover: var(--theme--form--field--input--foreground);
+.system-modules {
+	--v-list-item-color: var(--theme--form--field--input--foreground-subdued);
+
+	.enabled {
+		--v-list-item-color: var(--theme--form--field--input--foreground);
+	}
+}
+
+.drag-handle {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .to {
-	color: var(--theme--form--field--input--foreground-subdued);
-	font-family: var(--theme--font-family-monospace);
-}
-
-.enabled .to {
-	color: var(--theme--primary-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .drawer-content {

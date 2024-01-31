@@ -4,7 +4,10 @@ export class ButtonControl {
 	active: boolean;
 	element: HTMLElement;
 	groupElement?: HTMLElement;
-	constructor(private className: string, private callback: (...args: any) => any) {
+	constructor(
+		private className: string,
+		private callback: (...args: any) => any,
+	) {
 		this.element = document.createElement('button');
 		this.element.className = this.className;
 		this.element.onpointerdown = callback;

@@ -29,7 +29,7 @@ export default definePanel({
 
 		if (options && options.collection && options.field) {
 			const field = fieldsStore.getField(options.collection, options.field);
-			fieldIsANumber = ['integer', 'bigInteger', 'float', 'decimal'].includes(field.type);
+			if (field) fieldIsANumber = ['integer', 'bigInteger', 'float', 'decimal'].includes(field.type);
 		}
 
 		return [

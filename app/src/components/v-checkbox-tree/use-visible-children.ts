@@ -10,7 +10,7 @@ export function useVisibleChildren(
 	itemValue: Ref<string>,
 	itemChildren: Ref<string>,
 	parentValue: Ref<string | number | null>,
-	value: Ref<string | number>
+	value: Ref<string | number>,
 ) {
 	const visibleChildrenValues = computed(() => {
 		let options = children.value || [];
@@ -30,7 +30,7 @@ export function useVisibleChildren(
 					modelValue.value.includes(child[itemValue.value]) ||
 					childrenHaveValueMatch(child[itemChildren.value]) ||
 					(parentValue.value && modelValue.value.includes(parentValue.value)) ||
-					modelValue.value.includes(value.value)
+					modelValue.value.includes(value.value),
 			);
 		}
 
@@ -49,7 +49,7 @@ export function useVisibleChildren(
 			if (!children) return false;
 			return children.some(
 				(child) =>
-					modelValue.value.includes(child[itemValue.value]) || childrenHaveValueMatch(child[itemChildren.value])
+					modelValue.value.includes(child[itemValue.value]) || childrenHaveValueMatch(child[itemChildren.value]),
 			);
 		}
 	});

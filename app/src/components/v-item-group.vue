@@ -37,7 +37,7 @@ useGroupableParent(
 		max: max,
 		mandatory: mandatory,
 	},
-	props.scope
+	props.scope,
 );
 </script>
 

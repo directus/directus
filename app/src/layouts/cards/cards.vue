@@ -1,18 +1,15 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field, Filter, Item } from '@directus/types';
 import { Ref, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
+
+defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
 	defineProps<{
@@ -49,7 +46,7 @@ const props = withDefaults(
 	}>(),
 	{
 		showSelect: 'multiple',
-	}
+	},
 );
 
 const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
@@ -65,12 +62,12 @@ const mainElement = inject<Ref<Element | undefined>>('main-element');
 
 const layoutElement = ref<HTMLElement>();
 
-const { width } = useElementSize(layoutElement);
+const { width: innerWidth } = useElementSize(layoutElement);
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
-	props.limit
+	props.limit,
 );
 
 if (limitWritable.value !== selectedSize) {
@@ -79,11 +76,11 @@ if (limitWritable.value !== selectedSize) {
 
 watch(
 	() => props.page,
-	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' }),
 );
 
-watch(width, () => {
-	emit('update:width', width.value);
+watch(innerWidth, (value) => {
+	emit('update:width', value);
 });
 </script>
 

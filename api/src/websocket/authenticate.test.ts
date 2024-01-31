@@ -92,7 +92,7 @@ describe('authenticateConnection', () => {
 			authenticateConnection({
 				type: 'auth',
 				access_token: 'expired',
-			} as WebSocketAuthMessage)
+			} as WebSocketAuthMessage),
 		).rejects.toThrow('Authentication failed.');
 	});
 
@@ -101,7 +101,7 @@ describe('authenticateConnection', () => {
 			authenticateConnection({
 				type: 'auth',
 				access_token: '',
-			} as WebSocketAuthMessage)
+			} as WebSocketAuthMessage),
 		).rejects.toThrow('Authentication failed.');
 	});
 });

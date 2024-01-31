@@ -50,7 +50,7 @@ const repeaterValue = computed({
 				}
 
 				return expandedField;
-			})
+			}),
 		);
 	},
 });

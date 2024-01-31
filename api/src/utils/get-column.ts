@@ -29,7 +29,7 @@ export function getColumn(
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
-	options?: GetColumnOptions
+	options?: GetColumnOptions,
 ): Knex.Raw {
 	const fn = getFunctions(knex, schema);
 

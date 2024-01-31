@@ -5,17 +5,17 @@
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
+	columnIndexToIdentifier,
 	convertQuery,
-	getExpander,
-	makeSubQueriesAndMergeWithRoot,
+	getMappedQueriesStream,
 	type AbstractSqlQuery,
 	type ParameterizedSqlStatement,
 } from '@directus/data-sql';
+import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import pg from 'pg';
-import { convertToActualStatement } from './query/index.js';
 import QueryStream from 'pg-query-stream';
-import { Readable } from 'node:stream';
+import { convertToActualStatement } from './query/index.js';
 import { convertParameters } from './query/parameters.js';
 
 export interface DataDriverPostgresConfig {
@@ -48,7 +48,7 @@ export default class DataDriverPostgres implements DataDriver {
 	 */
 	async getDataFromSource(
 		pool: pg.Pool,
-		sql: ParameterizedSqlStatement
+		sql: ParameterizedSqlStatement,
 	): Promise<ReadableStream<Record<string, unknown>>> | never {
 		try {
 			const poolClient = await pool.connect();
@@ -74,22 +74,23 @@ export default class DataDriverPostgres implements DataDriver {
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
+
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
-		const ormExpander = getExpander(abstractSql.aliasMapping);
-		return stream.pipeThrough(ormExpander);
+
+		return stream;
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
-		const abstractSql = convertQuery(query);
+		const converterResult = convertQuery(query);
 
-		const rootStream = await this.queryDatabase(abstractSql);
+		const rootStream = await this.queryDatabase(converterResult.rootQuery);
 
-		if (abstractSql.nestedManys.length === 0) {
-			return rootStream;
-		}
-
-		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, (query) =>
-			this.queryDatabase(query)
+		return getMappedQueriesStream(
+			rootStream,
+			converterResult.subQueries,
+			converterResult.aliasMapping,
+			columnIndexToIdentifier,
+			(query) => this.queryDatabase(query),
 		);
 	}
 }

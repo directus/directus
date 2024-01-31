@@ -34,6 +34,8 @@ vi.mock('node:path');
 vi.mock('node:crypto');
 vi.mock('undici');
 
+const { join: joinActual } = await vi.importActual<typeof import('node:path')>('node:path');
+
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
 	path: {
@@ -233,7 +235,7 @@ describe('#toFormUrlEncoded', () => {
 		mockProps = Array.from(Array(3), () => randAlphaNumeric({ length: randNumber({ min: 2, max: 15 }) }).join('')) as [
 			string,
 			string,
-			string
+			string,
 		];
 
 		mockValues = randWord({ length: 3 }) as [string, string, string];
@@ -265,8 +267,8 @@ describe('#toFormUrlEncoded', () => {
 					[mockProps[1]]: mockValues[1],
 					[mockProps[2]]: mockValues[2],
 				},
-				{ sort: true }
-			)
+				{ sort: true },
+			),
 		).toBe(`${mockProps[2]}=${mockValues[2]}&${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}`);
 	});
 });
@@ -551,7 +553,7 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET' }
+			{ method: 'GET' },
 		);
 	});
 
@@ -560,7 +562,7 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-` } }
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-` } },
 		);
 	});
 
@@ -569,7 +571,7 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=-${sample.range.end}` } }
+			{ method: 'GET', headers: { Range: `bytes=-${sample.range.end}` } },
 		);
 	});
 
@@ -578,7 +580,7 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-${sample.range.end}` } }
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-${sample.range.end}` } },
 		);
 	});
 
@@ -630,7 +632,7 @@ describe('#stat', () => {
 			status: 200,
 		};
 
-		vi.mocked(join).mockRestore();
+		vi.mocked(join).mockImplementation(joinActual);
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 	});
@@ -684,7 +686,7 @@ describe('#stat', () => {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
 				body: sample.formUrlEncoded,
-			}
+			},
 		);
 	});
 
@@ -798,7 +800,7 @@ describe('#move', () => {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
 				body: sample.formUrlEncoded,
-			}
+			},
 		);
 	});
 
@@ -1084,7 +1086,7 @@ describe('#uploadChunk', () => {
 					'X-Unique-Upload-Id': sample.timestamp,
 					'Content-Range': `bytes ${input.bytesOffset}-${input.bytesOffset + input.blob.size - 1}/${input.bytesTotal}`,
 				},
-			}
+			},
 		);
 	});
 
@@ -1126,7 +1128,7 @@ describe('#uploadChunk', () => {
 
 describe('#delete', () => {
 	beforeEach(async () => {
-		vi.mocked(join).mockRestore();
+		vi.mocked(join).mockImplementation(joinActual);
 
 		await driver.delete(sample.path.input);
 	});
@@ -1169,7 +1171,7 @@ describe('#delete', () => {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
-			}
+			},
 		);
 	});
 });
@@ -1222,7 +1224,7 @@ describe('#list', () => {
 				headers: {
 					Authorization: sample.basicAuth,
 				},
-			}
+			},
 		);
 	});
 
@@ -1260,7 +1262,7 @@ describe('#list', () => {
 				headers: {
 					Authorization: sample.basicAuth,
 				},
-			}
+			},
 		);
 	});
 

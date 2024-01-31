@@ -27,7 +27,7 @@ const props = withDefaults(
 		icon: 'box',
 		modelValue: () => [],
 		to: '',
-	}
+	},
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -73,12 +73,12 @@ const selectionIcon = computed(() => {
 });
 
 function toggleSelection() {
-	if (!props.item) return null;
+	if (!props.item) return;
 
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
 			'update:modelValue',
-			props.modelValue.filter((key) => key !== props.item?.[props.itemKey])
+			props.modelValue.filter((key) => key !== props.item?.[props.itemKey]),
 		);
 	} else {
 		emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
@@ -113,6 +113,7 @@ function handleClick() {
 						:src="imageInfo?.source"
 						:alt="item?.title"
 						role="presentation"
+						@error="imgError = true"
 					/>
 					<v-icon v-else large :name="icon" />
 				</template>
@@ -145,7 +146,7 @@ function handleClick() {
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
@@ -220,7 +221,7 @@ function handleClick() {
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -237,7 +238,9 @@ function handleClick() {
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		transition:
+			opacity var(--fast) var(--transition),
+			color var(--fast) var(--transition);
 
 		&:hover {
 			opacity: 1 !important;

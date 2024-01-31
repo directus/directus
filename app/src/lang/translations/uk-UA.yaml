@@ -595,7 +595,6 @@ errors:
   VALUE_OUT_OF_RANGE: Значення є поза діапазоном
   INVALID_FOREIGN_KEY: Невірний зовнішній ключ
   UNKNOWN: Неочікувана помилка
-  GRAPHQL_VALIDATION_EXCEPTION: Виключення валідації GraphQL
   SERVICE_UNAVAILABLE: Сервіс недоступний
   UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
   UNEXPECTED_RESPONSE: Неочікувана відповідь
@@ -722,7 +721,6 @@ layout_options: Налаштування зовнішнього вигляду
 rows: Рядки
 columns: Колонки
 collection_setup: Налаштування колекції
-optional_system_fields: Необов'язкові поля системи
 value_unique: Значення повинно бути унікальним
 all_activity: Уся діяльність
 create_item: Створити об'єкт
@@ -1815,6 +1813,8 @@ displays:
     icon: Іконка
     border: Межа
     border_label: Показати межу
+    mask: Масковано
+    mask_label: Приховати справжнє значення
     text: Текст
     text_placeholder: Необов'язкове перевизначення значення...
   formatted-json-value:

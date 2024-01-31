@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 import type { Snapshot } from '../../../types/index.js';
 import { DiffKind } from '../../../types/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
@@ -14,6 +14,8 @@ import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
+	const logger = useLogger();
+
 	const filename = path.resolve(process.cwd(), snapshotPath);
 
 	const database = getDatabase();
@@ -54,93 +56,95 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 		const promptForChanges = !dryRun && options?.yes !== true;
 
 		if (dryRun || promptForChanges) {
-			let message = '';
+			const sections = [];
 
 			if (snapshotDiff.collections.length > 0) {
-				message += chalk.black.underline.bold('Collections:');
+				const lines = [chalk.underline.bold('Collections:')];
 
 				for (const { collection, diff } of snapshotDiff.collections) {
 					if (diff[0]?.kind === DiffKind.EDIT) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
-								const path = change.path!.slice(1).join('.');
-								message += `\n    - Set ${path} to ${change.rhs}`;
+								const path = formatPath(change.path!);
+								lines.push(`    - Set ${path} to ${change.rhs}`);
 							}
 						}
 					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						message += `\n  - ${chalk.red('Delete')} ${collection}`;
+						lines.push(`  - ${chalk.red('Delete')} ${collection}`);
 					} else if (diff[0]?.kind === DiffKind.NEW) {
-						message += `\n  - ${chalk.green('Create')} ${collection}`;
+						lines.push(`  - ${chalk.green('Create')} ${collection}`);
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}`);
 					}
 				}
+
+				sections.push(lines.join('\n'));
 			}
 
 			if (snapshotDiff.fields.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Fields:');
+				const lines = [chalk.underline.bold('Fields:')];
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
 					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0]!)) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
 
 						for (const change of diff) {
-							const path = change.path!.slice(1).join('.');
+							const path = formatPath(change.path!);
 
 							if (change.kind === DiffKind.EDIT) {
-								message += `\n    - Set ${path} to ${change.rhs}`;
+								lines.push(`    - Set ${path} to ${change.rhs}`);
 							} else if (change.kind === DiffKind.DELETE) {
-								message += `\n    - Remove ${path}`;
+								lines.push(`    - Remove ${path}`);
 							} else if (change.kind === DiffKind.NEW) {
-								message += `\n    - Add ${path} and set it to ${change.rhs}`;
+								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
 							}
 						}
 					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}`);
 					} else if (diff[0]?.kind === DiffKind.NEW) {
-						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
 					}
 				}
+
+				sections.push(lines.join('\n'));
 			}
 
 			if (snapshotDiff.relations.length > 0) {
-				message += '\n\n' + chalk.black.underline.bold('Relations:');
+				const lines = [chalk.underline.bold('Relations:')];
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
+					const relatedCollection = formatRelatedCollection(related_collection);
+
 					if (diff[0]?.kind === DiffKind.EDIT) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
 
 						for (const change of diff) {
 							if (change.kind === DiffKind.EDIT) {
-								const path = change.path!.slice(1).join('.');
-								message += `\n    - Set ${path} to ${change.rhs}`;
+								const path = formatPath(change.path!);
+								lines.push(`    - Set ${path} to ${change.rhs}`);
 							}
 						}
 					} else if (diff[0]?.kind === DiffKind.DELETE) {
-						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.red('Delete')} ${collection}.${field}${relatedCollection}`);
 					} else if (diff[0]?.kind === DiffKind.NEW) {
-						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
+						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}${relatedCollection}`);
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
-						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
-					} else {
-						continue;
-					}
-
-					// Related collection doesn't exist for a2o relationship types
-					if (related_collection) {
-						message += `-> ${related_collection}`;
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}${relatedCollection}`);
 					}
 				}
+
+				sections.push(lines.join('\n'));
 			}
 
-			message = 'The following changes will be applied:\n\n' + chalk.black(message);
+			const message = 'The following changes will be applied:\n\n' + sections.join('\n\n');
 
 			if (dryRun) {
-				logger.info(message);
+				// eslint-disable-next-line no-console
+				console.log(message);
 				process.exit(0);
 			}
 
@@ -168,4 +172,21 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 		database.destroy();
 		process.exit(1);
 	}
+}
+
+function formatPath(path: any[]): string {
+	if (path.length === 1) {
+		return path.toString();
+	}
+
+	return path.slice(1).join('.');
+}
+
+function formatRelatedCollection(relatedCollection: string | null): string {
+	// Related collection doesn't exist for a2o relationship types
+	if (relatedCollection) {
+		return ` → ${relatedCollection}`;
+	}
+
+	return '';
 }

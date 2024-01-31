@@ -1,6 +1,7 @@
-import type { AbstractQueryNodeSort } from '@directus/data';
+import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQueryOrderNode } from '../../types/index.js';
-import { convertTarget } from './filter/conditions/utils.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
+import { convertTarget } from './target.js';
 
 export type SortConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'order' | 'joins'>>;
@@ -11,9 +12,9 @@ export type SortConversionResult = {
  * @returns the converted sort nodes
  */
 export const convertSort = (
-	abstractSorts: AbstractQueryNodeSort[],
-	collection: string,
-	idxGenerator: Generator<number, number, number>
+	abstractSorts: AtLeastOneElement<AbstractQueryNodeSort>,
+	tableIndex: number,
+	indexGen: IndexGenerators,
 ): SortConversionResult => {
 	const result: SortConversionResult = {
 		clauses: {
@@ -23,7 +24,7 @@ export const convertSort = (
 	};
 
 	abstractSorts.forEach((abstractSort) => {
-		const targetConversionResult = convertTarget(abstractSort.target, collection, idxGenerator);
+		const targetConversionResult = convertTarget(abstractSort.target, tableIndex, indexGen);
 
 		const orderBy: AbstractSqlQueryOrderNode = {
 			type: 'order',

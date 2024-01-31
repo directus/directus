@@ -4,7 +4,7 @@ export function formatCollectionItemsCount(
 	totalItems: number,
 	currentPage: number,
 	perPage: number,
-	isFiltered = false
+	isFiltered = false,
 ) {
 	const { t, n } = useI18n();
 

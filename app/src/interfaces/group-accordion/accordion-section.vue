@@ -24,7 +24,7 @@ const props = withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -198,6 +198,6 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .fields {
-	margin: var(--form-vertical-gap) 0;
+	margin: var(--theme--form--row-gap) 0;
 }
 </style>

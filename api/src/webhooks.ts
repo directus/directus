@@ -1,8 +1,8 @@
 import type { ActionHandler } from '@directus/types';
+import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import logger from './logger.js';
-import { getMessenger } from './messenger.js';
+import { useLogger } from './logger.js';
 import { getAxios } from './request/index.js';
 import { WebhooksService } from './services/webhooks.js';
 import type { Webhook, WebhookHeader } from './types/index.js';
@@ -13,11 +13,15 @@ let registered: { event: string; handler: ActionHandler }[] = [];
 
 const reloadQueue = new JobQueue();
 
+interface WebhooksMessage {
+	type: 'reload';
+}
+
 export async function init(): Promise<void> {
 	await register();
-	const messenger = getMessenger();
+	const messenger = useBus();
 
-	messenger.subscribe('webhooks', (event) => {
+	messenger.subscribe<WebhooksMessage>('webhooks', (event) => {
 		if (event['type'] === 'reload') {
 			reloadQueue.enqueue(async () => {
 				await reload();
@@ -55,6 +59,8 @@ export function unregister(): void {
 }
 
 function createHandler(webhook: Webhook, event: string): ActionHandler {
+	const logger = useLogger();
+
 	return async (meta, context) => {
 		if (webhook.collections.includes(meta['collection']) === false) return;
 		const axios = await getAxios();

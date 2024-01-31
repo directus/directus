@@ -10,7 +10,7 @@ export async function uploadFiles(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		folder?: string;
-	}
+	},
 ): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
@@ -25,8 +25,8 @@ export async function uploadFiles(
 							progressForFiles[index] = percentage;
 							progressHandler(progressForFiles);
 						},
-					})
-				)
+					}),
+				),
 			)
 		).filter((v) => v);
 
@@ -37,7 +37,9 @@ export async function uploadFiles(
 		}
 
 		return uploadedFiles;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
+
+	return;
 }

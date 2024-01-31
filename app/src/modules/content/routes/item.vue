@@ -9,6 +9,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -18,6 +19,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
@@ -41,6 +43,8 @@ const { t, te } = useI18n();
 const router = useRouter();
 
 const form = ref<HTMLElement>();
+
+const { hasPermission } = usePermissionsStore();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -84,7 +88,7 @@ const {
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const isSavable = computed(() => {
-	if (saveAllowed.value === false) return false;
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
 	if (hasEdits.value === true) return true;
 
 	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
@@ -147,7 +151,7 @@ useShortcut(
 			saveVersionAction('stay');
 		}
 	},
-	form
+	form,
 );
 
 useShortcut(
@@ -159,7 +163,7 @@ useShortcut(
 			saveVersionAction('quit');
 		}
 	},
-	form
+	form,
 );
 
 const {
@@ -173,11 +177,33 @@ const {
 	revisionsAllowed,
 } = usePermissions(collection, item, isNew);
 
+const isFormDisabled = computed(() => {
+	if (isNew.value) return false;
+	if (updateAllowed.value) return false;
+	const updateVersionsAllowed = hasPermission('directus_versions', 'update');
+	if (currentVersion.value !== null && updateVersionsAllowed) return false;
+	return true;
+});
+
+const actualPrimaryKey = computed(() => {
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+	}
+
+	return props.primaryKey;
+});
+
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+	}
 
 	return props.primaryKey;
 });
@@ -236,7 +262,7 @@ watch(
 		popupWindow = window.open(
 			targetUrl,
 			'live-preview',
-			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes',
 		);
 
 		if (popupWindow) {
@@ -250,7 +276,7 @@ watch(
 			}, 1000);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function toggleSplitView() {
@@ -505,6 +531,7 @@ function revert(values: Record<string, any>) {
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:update-allowed="updateAllowed"
 				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
@@ -665,7 +692,7 @@ function revert(values: Record<string, any>) {
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
-			:disabled="isNew ? false : updateAllowed === false"
+			:disabled="isFormDisabled"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
@@ -694,12 +721,12 @@ function revert(values: Record<string, any>) {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-drawer-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
@@ -707,19 +734,19 @@ function revert(values: Record<string, any>) {
 				<comments-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 				/>
 				<shares-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
 					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:has-edits="hasEdits"
 					@refresh="refresh"
 				/>
@@ -735,7 +762,7 @@ function revert(values: Record<string, any>) {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-disabled: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
 }

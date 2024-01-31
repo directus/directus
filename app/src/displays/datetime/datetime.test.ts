@@ -1,13 +1,13 @@
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
+import Datetime from './datetime.vue';
 
-const global = {
+const global: GlobalMountOptions = {
 	plugins: [i18n],
 };
-
-import Datetime from './datetime.vue';
 
 beforeAll(() => {
 	vi.useFakeTimers();

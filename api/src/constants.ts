@@ -1,7 +1,9 @@
+import { useEnv } from '@directus/env';
 import type { CookieOptions } from 'express';
-import env from './env.js';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
+
+const env = useEnv();
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -36,7 +38,7 @@ export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	},
 ];
 
-export const ASSET_TRANSFORM_QUERY_KEYS: Array<keyof TransformationParams> = [
+export const ASSET_TRANSFORM_QUERY_KEYS = [
 	'key',
 	'transforms',
 	'width',
@@ -45,7 +47,9 @@ export const ASSET_TRANSFORM_QUERY_KEYS: Array<keyof TransformationParams> = [
 	'fit',
 	'quality',
 	'withoutEnlargement',
-];
+	'focal_point_x',
+	'focal_point_y',
+] as const satisfies Readonly<(keyof TransformationParams)[]>;
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
@@ -61,13 +65,13 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
 	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
 	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
-export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
 
 /** Formats from which transformation is supported */
 export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];

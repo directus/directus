@@ -27,8 +27,8 @@ type UsablePreset = {
 
 export function usePreset(
 	collection: Ref<string>,
-	bookmark: Ref<number | null> = ref(null),
-	temporary = false
+	bookmark = ref<number | null>(null),
+	temporary = false,
 ): UsablePreset {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
@@ -185,7 +185,7 @@ export function usePreset(
 				search: null,
 				refresh_interval: null,
 			},
-			true
+			true,
 		);
 	}
 

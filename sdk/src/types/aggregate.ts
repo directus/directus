@@ -66,7 +66,7 @@ export type AggregationOptions<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
 	Fields = Collection extends keyof Schema ? keyof UnpackList<GetCollection<Schema, Collection>> : string,
-	Item = Collection extends keyof Schema ? UnpackList<GetCollection<Schema, Collection>> : object
+	Item = Collection extends keyof Schema ? UnpackList<GetCollection<Schema, Collection>> : object,
 > = {
 	aggregate: AggregateRecord<Fields>;
 	groupBy?: (Fields | GroupByFields<Schema, Item>)[];
@@ -79,7 +79,7 @@ export type AggregationOptions<
 export type AggregationOutput<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
-	Options extends AggregationOptions<Schema, Collection>
+	Options extends AggregationOptions<Schema, Collection>,
 > = ((Options['groupBy'] extends string[]
 	? UnpackList<GetCollection<Schema, Collection>> extends infer Item
 		? Item extends object
@@ -106,10 +106,10 @@ export type AggregationOutput<
 						: { [SubField in Field]: AggregationTypes[Func]['output'] }[Field];
 			  }
 			: Options['aggregate'][Func] extends string
-			? Options['aggregate'][Func] extends '*'
-				? AggregationTypes[Func]['output']
-				: { [SubField in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }[Options['aggregate'][Func]]
-			: never
+			  ? Options['aggregate'][Func] extends '*'
+					? AggregationTypes[Func]['output']
+					: { [SubField in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }[Options['aggregate'][Func]]
+			  : never
 		: never;
 })[];
 
@@ -130,5 +130,5 @@ type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 		? FieldMap[Field]
 		: never
 	: Field extends string
-	? Field
-	: never;
+	  ? Field
+	  : never;

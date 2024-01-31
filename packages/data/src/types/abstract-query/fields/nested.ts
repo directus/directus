@@ -1,40 +1,50 @@
-import type { AbstractQueryModifiers } from '../modifiers.js';
-import type { AbstractQueryFieldNode, AbstractQueryFieldNodeTarget } from '../fields.js';
 import type {
-	AbstractQueryFieldNodeNestedRelationalMany,
-	AbstractQueryFieldNodeNestedRelationalOne,
-} from './nested/relational.js';
+	AbstractQueryFieldNodeNestedSingleRelational,
+	AbstractQueryFieldNodeNestedUnionRelational,
+} from '../common/nested/relational.js';
+import type { AbstractQueryFieldNode } from '../fields.js';
+import type { AbstractQueryModifiers } from '../modifiers.js';
 
-export interface AbstractQueryFieldNodeNestedOne {
-	type: 'nested-one';
+export interface AbstractQueryFieldNodeNestedSingleOne {
+	type: 'nested-single-one';
 
 	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
-	alias?: string; // make mandatory
 
-	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+	alias: string;
+
+	nesting: AbstractQueryFieldNodeNestedSingleRelational;
 }
 
-export interface AbstractQueryFieldNodeNestedTarget {
-	type: 'nested-one-target';
+export interface AbstractQueryFieldNodeNestedUnionOne {
+	type: 'nested-union-one';
 
-	/* From the related collection the user can pick primitives, apply a function or add another nested node */
-	field: AbstractQueryFieldNodeTarget;
+	alias: string;
 
-	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+	nesting: AbstractQueryFieldNodeNestedUnionRelational;
 }
 
-export interface AbstractQueryFieldNodeNestedMany {
-	type: 'nested-many';
+export interface AbstractQueryFieldNodeNestedSingleMany {
+	type: 'nested-single-many';
 
 	/* From the related collection the user can pick primitives, apply a function or add another nested node */
 	fields: AbstractQueryFieldNode[];
 
-	/** need to be mandatory for queries which have a nested-many relation to the same collection as the root */
-	alias?: string;
+	alias: string;
 
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
-	modifiers?: AbstractQueryModifiers;
+	modifiers: AbstractQueryModifiers;
 
-	meta: AbstractQueryFieldNodeNestedRelationalMany; // AbstractQueryFieldNodeNestedObjectMany | AbstractQueryFieldNodeNestedJsonMany
+	nesting: AbstractQueryFieldNodeNestedSingleRelational;
+}
+
+export interface AbstractQueryFieldNodeNestedUnionMany {
+	type: 'nested-union-many';
+
+	alias: string;
+
+	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
+	modifiers: AbstractQueryModifiers;
+
+	nesting: AbstractQueryFieldNodeNestedUnionRelational;
 }

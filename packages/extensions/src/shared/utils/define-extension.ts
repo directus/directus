@@ -19,7 +19,7 @@ export function defineDisplay<T extends DisplayConfig>(config: T): T {
 }
 
 export function defineLayout<Options = any, Query = any>(
-	config: LayoutConfig<Options, Query>
+	config: LayoutConfig<Options, Query>,
 ): LayoutConfig<Options, Query> {
 	return config;
 }
@@ -45,7 +45,7 @@ export function defineOperationApp<T extends OperationAppConfig>(config: T): T {
 }
 
 export function defineOperationApi<Options = Record<string, unknown>>(
-	config: OperationApiConfig<Options>
+	config: OperationApiConfig<Options>,
 ): OperationApiConfig<Options> {
 	return config;
 }

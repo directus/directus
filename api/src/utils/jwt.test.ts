@@ -34,7 +34,7 @@ const InvalidTokenCases = {
 Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 	test(`Throws InvalidTokenError - ${title}`, () => {
 		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenError);
-	})
+	}),
 );
 
 test(`Throws ServiceUnavailableError for unexpected error from jsonwebtoken`, () => {

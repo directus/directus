@@ -59,10 +59,13 @@ extension_display: Отображение
 extension_layout: Макет
 extension_module: Модуль
 extension_panel: Панель
+extension_theme: Тема
 extension_hook: Хук
+extension_operation: Действие
 extension_displays: Отображения
 extension_modules: Модули
 extension_panels: Панели
+extension_hooks: Хуки
 enable: Включить
 custom: Пользовательский
 hook: Хук
@@ -114,6 +117,7 @@ suffix: Суффикс
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
+main_version: Основная
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
 create_version: Создать Версию
@@ -509,6 +513,7 @@ generated_uuid: Сгенерированный UUID
 manual_string: Введённая вручную строка
 save_and_create_new: Сохранить и создать новый
 save_and_stay: Сохранить и остаться
+save_and_quit: Сохранить и выйти
 save_as_copy: Сохранить и копировать
 add_existing: Добавить существующий
 creating_items: Создание элементов
@@ -637,7 +642,6 @@ errors:
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   INVALID_FOREIGN_KEY: Недействительный внешний ключ
   UNKNOWN: Неожиданная ошибка
-  GRAPHQL_VALIDATION_EXCEPTION: Ошибка проверки GraphQL
   SERVICE_UNAVAILABLE: Сервис недоступен
   UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
   UNEXPECTED_RESPONSE: Неожиданный ответ
@@ -771,7 +775,6 @@ layout_options: Параметры макета
 rows: Записи
 columns: Колонки
 collection_setup: Настройки коллекции
-optional_system_fields: Необязательные системные поля
 value_unique: Значение должно быть уникальным
 all_activity: История всех действий
 create_item: Создать элемент
@@ -974,6 +977,9 @@ choices: Варианты
 choices_option_configured_incorrectly: Варианты настроены неправильно
 deselect: Снять выделение
 deselect_all: Снять всё выделение
+theme: Тема
+default_sync_with_project: По умолчанию (Синхронизация с проектом)
+appearance_auto: Автоматически (Синхронизировать с системой)
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь
@@ -985,7 +991,9 @@ editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных вариантов
 settings_data_model: Модель данных
+settings_permissions: Контроль доступа
 settings_project: Настройки
+settings_appearance: Внешний вид
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_presets: Закладки
@@ -1055,6 +1063,7 @@ batch_delete_confirm: >-
   Никаких элементов не выбрано | Вы уверены, что хотите удалить этот элемент? Это действие не может быть отменено. | Вы уверены, что хотите удалить эти элементы {count}? Это действие не может быть отменено.
 cancel: Отмена
 no_upscale: Не масштабировать изображения
+no_extensions: Нет расширений
 collection: Коллекция
 collections: Коллекции
 content: Контент
@@ -1164,6 +1173,7 @@ fields:
     last_page: Последняя страница
     last_access: Последний доступ
     email_notifications: Уведомления по e-mail
+    appearance: Внешний вид
     theme_light_overrides: Настройка Светлой Темы
     theme_dark_overrides: Настройка Тёмной Темы
   directus_settings:
@@ -1895,6 +1905,8 @@ displays:
     icon: Иконка
     border: Граница
     border_label: Показать границу
+    mask: С маской
+    mask_label: Скрыть настоящее значение
     text: Текст
     text_placeholder: Замещение необязательного значения...
   formatted-json-value:
@@ -2128,6 +2140,7 @@ operations:
     payload: Содержимое
     query: Запрос
   json-web-token:
+    operation: Действие
     payload: Содержимое
     token: Ключ доступа
     options: Параметры
@@ -2177,17 +2190,25 @@ operations:
     parallel: Параллельно
     cache: Кэш
 standard: Стандартный
+scientific: Научный
 compact: Компактный
+currency: Валюта
 style: Стиль
 fonts:
   thin: Тонкий
   normal: Нормальный
   medium: Средний
+  semi_bold: Полужирный
   bold: Жирный
   black: Чёрный
   italic: Наклонный
+  small: Маленький
+  large: Большой
   auto: Авто
+center: По центру
+justify: По ширине
 text_align: Выравнивание Текста
 font_weight: Толщина Шрифта
 font_style: Стиль Шрифта
 font_size: Размер Шрифта
+percent: Процент

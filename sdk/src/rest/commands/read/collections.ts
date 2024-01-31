@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 
 export type ReadCollectionOutput<
 	Schema extends object,
-	Item extends object = DirectusCollection<Schema>
+	Item extends object = DirectusCollection<Schema>,
 > = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
@@ -27,7 +27,7 @@ export const readCollections =
  */
 export const readCollection =
 	<Schema extends object>(
-		collection: DirectusCollection<Schema>['collection']
+		collection: DirectusCollection<Schema>['collection'],
 	): RestCommand<ReadCollectionOutput<Schema>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

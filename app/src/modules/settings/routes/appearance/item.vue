@@ -21,7 +21,7 @@ const serverStore = useServerStore();
 const { fields: allFields } = useCollection('directus_settings');
 
 const fields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'theming_group' || field.field === 'theming_group')
+	unref(allFields).filter((field) => field.meta?.group === 'theming_group' || field.field === 'theming_group'),
 );
 
 const initialValues = ref(clone(settingsStore.settings));

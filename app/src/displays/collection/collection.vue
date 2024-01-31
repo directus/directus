@@ -10,7 +10,7 @@ const props = withDefaults(
 	{
 		value: null,
 		icon: false,
-	}
+	},
 );
 
 const collection = toRefs(props).value;

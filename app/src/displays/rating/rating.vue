@@ -82,7 +82,7 @@ const ratingPercentage = computed(() => ({
 			left: 0;
 			z-index: 1;
 			display: inline-flex;
-			color: var(--theme--background);
+			color: var(--theme--background-normal);
 		}
 	}
 }

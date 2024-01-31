@@ -85,7 +85,7 @@ watch(
 			displayValue.value = localizedFormat(newValue, format);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 let refreshInterval: number | null = null;

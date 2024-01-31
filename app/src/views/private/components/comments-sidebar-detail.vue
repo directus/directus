@@ -3,10 +3,11 @@ import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
-import type { User } from '@directus/types';
+import type { PrimaryKey, User } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
-import { ref } from 'vue';
+import { Ref, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
@@ -20,24 +21,46 @@ type ActivityByDateDisplay = ActivityByDate & {
 
 const props = defineProps<{
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 }>();
 
 const { t } = useI18n();
 
-const { activity, loading, refresh, count, userPreviews } = useActivity(props.collection, props.primaryKey);
+const { collection, primaryKey } = toRefs(props);
 
-function useActivity(collection: string, primaryKey: string | number) {
+const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
+	useActivity(collection, primaryKey);
+
+onMounted(() => {
+	getActivityCount();
+});
+
+function onToggle(open: boolean) {
+	if (open && activity.value === null) getActivity();
+}
+
+function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	const regex = /\s@[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/gm;
 	const activity = ref<ActivityByDateDisplay[] | null>(null);
-	const count = ref(0);
+	const activityCount = ref(0);
 	const error = ref(null);
 	const loading = ref(false);
+	const loadingCount = ref(false);
 	const userPreviews = ref<Record<string, any>>({});
 
-	getActivity();
+	watch([collection, primaryKey], () => refresh());
 
-	return { activity, error, loading, refresh, count, userPreviews };
+	return {
+		activity,
+		getActivity,
+		error,
+		loading,
+		refresh,
+		activityCount,
+		getActivityCount,
+		loadingCount,
+		userPreviews,
+	};
 
 	async function getActivity() {
 		error.value = null;
@@ -46,8 +69,8 @@ function useActivity(collection: string, primaryKey: string | number) {
 		try {
 			const response = await api.get(`/activity`, {
 				params: {
-					'filter[collection][_eq]': collection,
-					'filter[item][_eq]': primaryKey,
+					'filter[collection][_eq]': collection.value,
+					'filter[item][_eq]': primaryKey.value,
 					'filter[action][_eq]': 'comment',
 					sort: '-id', // directus_activity has auto increment and is therefore in chronological order
 					fields: [
@@ -65,14 +88,12 @@ function useActivity(collection: string, primaryKey: string | number) {
 				},
 			});
 
-			count.value = response.data.data.length;
-
 			userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
 			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
 				const display = (comment.comment as string).replace(
 					regex,
-					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`
+					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`,
 				);
 
 				return {
@@ -120,7 +141,48 @@ function useActivity(collection: string, primaryKey: string | number) {
 		}
 	}
 
+	async function getActivityCount() {
+		error.value = null;
+		loadingCount.value = true;
+
+		try {
+			const response = await api.get(`/activity`, {
+				params: {
+					filter: {
+						_and: [
+							{
+								collection: {
+									_eq: collection.value,
+								},
+							},
+							{
+								item: {
+									_eq: primaryKey.value,
+								},
+							},
+							{
+								action: {
+									_eq: 'comment',
+								},
+							},
+						],
+					},
+					aggregate: {
+						count: 'id',
+					},
+				},
+			});
+
+			activityCount.value = Number(response.data.data[0].count.id);
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loadingCount.value = false;
+		}
+	}
+
 	async function refresh() {
+		await getActivityCount();
 		await getActivity();
 	}
 }
@@ -158,7 +220,12 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 </script>
 
 <template>
-	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
+	<sidebar-detail
+		:title="t('comments')"
+		icon="chat_bubble_outline"
+		:badge="!loadingCount && activityCount > 0 ? abbreviateNumber(activityCount) : null"
+		@toggle="onToggle"
+	>
 		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
 		<v-progress-linear v-if="loading" indeterminate />
@@ -196,8 +263,8 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	margin-bottom: 2px;
 	padding-top: 4px;
 	padding-bottom: 4px;
-	background-color: var(--theme--background);
-	box-shadow: 0 0 4px 2px var(--theme--background);
+	background-color: var(--theme--background-normal);
+	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 

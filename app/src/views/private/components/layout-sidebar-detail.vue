@@ -1,32 +1,33 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
-import { useSync } from '@directus/composables';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue?: string;
-	}>(),
-	{
-		modelValue: 'tabular',
-	}
-);
+const props = defineProps<{
+	modelValue: string | null;
+}>();
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', value: string): void;
+	'update:modelValue': [value: string];
 }>();
 
 const { t } = useI18n();
 
 const { layouts } = useExtensions();
 
-const selectedLayout = useExtension('layout', props.modelValue);
+const layout = computed({
+	get() {
+		return props.modelValue ?? 'tabular';
+	},
+	set(value) {
+		emit('update:modelValue', value);
+	},
+});
+
+const selectedLayout = useExtension('layout', layout);
 const fallbackLayout = useExtension('layout', 'tabular');
 const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.value);
-
-const layout = useSync(props, 'modelValue', emit);
 </script>
 
 <template>
@@ -50,7 +51,7 @@ const layout = useSync(props, 'modelValue', emit);
 @import '@/styles/mixins/form-grid';
 
 :deep(.layout-options) {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	margin-bottom: 4px;
 

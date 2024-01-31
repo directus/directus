@@ -40,13 +40,13 @@ export function useRelationM2M(collection: Ref<string>, field: Ref<string>) {
 			(relation) =>
 				relation.related_collection === collection.value &&
 				relation.meta?.one_field === field.value &&
-				relation.meta.junction_field
+				relation.meta.junction_field,
 		);
 
 		if (!junction) return undefined;
 
 		const relation = relations.find(
-			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
+			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
 		);
 
 		if (!relation) return undefined;

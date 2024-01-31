@@ -40,13 +40,13 @@ function onClick() {
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 14px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {
 		color: var(--theme--foreground);
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 	}
 
 	&.disabled {

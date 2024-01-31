@@ -34,7 +34,11 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 
-const emit = defineEmits(['update:active', 'click', 'close']);
+const emit = defineEmits<{
+	'update:active': [active: boolean];
+	click: [event: MouseEvent];
+	close: [event: MouseEvent];
+}>();
 
 const internalLocalActive = ref(true);
 
@@ -85,12 +89,13 @@ function onCloseClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-chip-color                   [var(--theme--foreground)]
-		--v-chip-background-color        [var(--theme--background)]
+		--v-chip-background-color        [var(--theme--background-normal)]
 		--v-chip-color-hover             [var(--white)]
 		--v-chip-background-color-hover  [var(--theme--primary-accent)]
 		--v-chip-close-color             [var(--theme--danger)]
 		--v-chip-close-color-disabled    [var(--theme--primary)]
 		--v-chip-close-color-hover       [var(--theme--primary-accent)]
+		--v-chip-padding                 [0 8px]
 
 */
 
@@ -98,12 +103,12 @@ function onCloseClick(event: MouseEvent) {
 	display: inline-flex;
 	align-items: center;
 	height: 36px;
-	padding: 0 8px;
+	padding: var(--v-chip-padding, 0 8px);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
 	line-height: 22px;
-	background-color: var(--v-chip-background-color, var(--theme--background));
-	border: var(--theme--border-width) solid var(--v-chip-background-color, var(--theme--background));
+	background-color: var(--v-chip-background-color, var(--theme--background-normal));
+	border: var(--theme--border-width) solid var(--v-chip-background-color, var(--theme--background-normal));
 	border-radius: 16px;
 
 	&.clickable:hover {
@@ -119,40 +124,40 @@ function onCloseClick(event: MouseEvent) {
 
 	&.disabled {
 		color: var(--v-chip-color, var(--theme--foreground));
-		background-color: var(--v-chip-background-color, var(--theme--background));
-		border-color: var(--v-chip-background-color, var(--theme--background));
+		background-color: var(--v-chip-background-color, var(--theme--background-normal));
+		border-color: var(--v-chip-background-color, var(--theme--background-normal));
 
 		&.clickable:hover {
 			color: var(--v-chip-color, var(--theme--foreground));
-			background-color: var(--v-chip-background-color, var(--theme--background));
-			border-color: var(--v-chip-background-color, var(--theme--background));
+			background-color: var(--v-chip-background-color, var(--theme--background-normal));
+			border-color: var(--v-chip-background-color, var(--theme--background-normal));
 		}
 	}
 
 	&.x-small {
 		height: 20px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 4px);
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
 		height: 24px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 8px);
 		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
 		height: 44px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
 		height: 48px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 18px;
 		border-radius: 24px;
 	}
@@ -179,7 +184,7 @@ function onCloseClick(event: MouseEvent) {
 			border-radius: 10px;
 
 			.close {
-				--v-icon-color: var(--v-chip-background-color, var(--theme--background));
+				--v-icon-color: var(--v-chip-background-color, var(--theme--background-normal));
 			}
 
 			&.disabled {

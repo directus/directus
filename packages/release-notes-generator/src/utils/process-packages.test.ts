@@ -82,7 +82,7 @@ test('should fail with manually defined version when not in prerelease mode', as
 	vi.stubEnv('DIRECTUS_VERSION', '2.0.0-beta.0');
 
 	expect(() => processPackages()).rejects.toThrow(
-		`Main version is a prerelease but changesets isn't in prerelease mode`
+		`Main version is a prerelease but changesets isn't in prerelease mode`,
 	);
 });
 

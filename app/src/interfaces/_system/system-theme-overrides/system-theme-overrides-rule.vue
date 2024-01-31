@@ -18,12 +18,17 @@ const onInput = (event: Event) => {
 };
 
 const swatchValue = computed(() => {
-	let value = props.value ?? props.defaultValue;
+	const value = props.value ?? props.defaultValue;
 
 	if (typeof value !== 'string') return null;
 
 	if (value.startsWith('var(--')) {
-		value = cssVar(value.slice(4, -1));
+		// A var function that resolves to a color should be rendered directly.
+		const result = cssVar(value.slice(4, -1));
+
+		if (!result.startsWith('#')) {
+			return null;
+		}
 	}
 
 	return value;
@@ -33,6 +38,15 @@ const showSwatch = computed(() => {
 	if (!swatchValue.value) return false;
 
 	try {
+		if (swatchValue.value.startsWith('var(--') || swatchValue.value.startsWith('color-mix(')) {
+			/*
+			 * var and color-mix are not supported by the color lib.
+			 * We assume var has been validated by this point and can be directly rendered.
+			 * By rendering the function directly we ensure reactivity for realtime changes.
+			 */
+			return true;
+		}
+
 		Color(swatchValue.value);
 		return true;
 	} catch {
@@ -55,7 +69,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 .rule {
 	display: flex;
 	align-items: center;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	transition: color var(--fast) var(--transition);
 
 	&.has-value {

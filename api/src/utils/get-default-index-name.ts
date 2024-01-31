@@ -11,7 +11,7 @@ import { getSimpleHash } from '@directus/utils';
 export function getDefaultIndexName(
 	type: 'unique' | 'foreign' | 'index',
 	collection: string,
-	fields: string | string[]
+	fields: string | string[],
 ): string {
 	if (!Array.isArray(fields)) fields = fields ? [fields] : [];
 	const table = collection.replace(/\.|-/g, '_');

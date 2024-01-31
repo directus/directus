@@ -7,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
-import { Ref, computed, ref, unref, watch } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -35,7 +35,7 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number>
+	itemId: Ref<string | number>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -116,33 +116,36 @@ export function useRelationMultiple(
 				: relation.value.junctionPrimaryKeyField.field;
 
 		const items: DisplayItem[] = fetchedItems.value.map((item: Record<string, any>) => {
-			const editsIndex = _value.value.update.findIndex(
-				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
-			);
+			let edits;
 
-			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
+			for (const [index, value] of _value.value.update.entries()) {
+				if (typeof value === 'object' && value[targetPKField] === item[targetPKField]) {
+					edits = { index, value };
+					break;
+				}
+			}
 
 			let updatedItem: Record<string, any> = cloneDeep(item);
 
-			if (editsIndex !== -1) {
-				const edits = unref(_value.value.update[editsIndex]);
-
+			if (edits) {
 				updatedItem = {
 					...updatedItem,
-					...edits,
+					...edits.value,
 				};
 
 				if (relation.value?.type === 'm2m' || relation.value?.type === 'm2a') {
 					updatedItem[relation.value.junctionField.field] = {
 						...cloneDeep(item)[relation.value.junctionField.field],
-						...edits[relation.value.junctionField.field],
+						...edits.value[relation.value.junctionField.field],
 					};
 				}
 
 				updatedItem.$type = 'updated';
-				updatedItem.$index = editsIndex;
-				updatedItem.$edits = editsIndex;
+				updatedItem.$index = edits.index;
+				updatedItem.$edits = edits.index;
 			}
+
+			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
 			if (deleteIndex !== -1) {
 				merge(updatedItem, { $type: 'deleted', $index: deleteIndex });
@@ -175,6 +178,8 @@ export function useRelationMultiple(
 						);
 					}
 				}
+
+				return;
 			});
 
 			if (!fetchedItem) return edit;
@@ -365,8 +370,8 @@ export function useRelationMultiple(
 
 				fetchedItems.value = response.data.data;
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -389,7 +394,7 @@ export function useRelationMultiple(
 
 			updateItemCount();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	async function updateItemCount() {
@@ -447,12 +452,12 @@ export function useRelationMultiple(
 
 			if (relation.value?.type === 'o2m') {
 				return _value.value.update
-					.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
+					.map((item, index) => ({ ...item, $index: index, $type: 'updated' }) as DisplayItem)
 					.filter(isItemSelected);
 			}
 
 			return _value.value.create
-				.map((item, index) => ({ ...item, $index: index, $type: 'created' } as DisplayItem))
+				.map((item, index) => ({ ...item, $index: index, $type: 'created' }) as DisplayItem)
 				.filter(isItemSelected);
 		});
 
@@ -468,7 +473,7 @@ export function useRelationMultiple(
 					loadSelectedDisplay();
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
@@ -485,6 +490,8 @@ export function useRelationMultiple(
 					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
 				}
 			}
+
+			return;
 		}
 
 		function isItemSelected(item: DisplayItem) {
@@ -540,7 +547,7 @@ export function useRelationMultiple(
 
 					if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
 					return acc;
-				}, [])
+				}, []),
 			);
 
 			fields.add(relation.relatedPrimaryKeyField.field);
@@ -571,13 +578,16 @@ export function useRelationMultiple(
 
 			const collectionField = relation.collectionField.field;
 
-			const selectGrouped = selectedOnPage.value.reduce((acc, item) => {
-				const collection = item[collectionField];
-				if (!(collection in acc)) acc[collection] = [];
-				acc[collection].push(item);
+			const selectGrouped = selectedOnPage.value.reduce(
+				(acc, item) => {
+					const collection = item[collectionField];
+					if (!(collection in acc)) acc[collection] = [];
+					acc[collection]?.push(item);
 
-				return acc;
-			}, {} as Record<string, DisplayItem[]>);
+					return acc;
+				},
+				{} as Record<string, DisplayItem[]>,
+			);
 
 			const responses = await Promise.all(
 				Object.entries(selectGrouped).map(([collection, items]) => {
@@ -589,7 +599,7 @@ export function useRelationMultiple(
 
 							if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
 							return acc;
-						}, [])
+						}, []),
 					);
 
 					fields.add(pkField);
@@ -604,19 +614,22 @@ export function useRelationMultiple(
 							},
 						},
 					});
-				})
+				}),
 			);
 
-			fetchedSelectItems.value = responses.reduce((acc, item, index) => {
-				acc.push(
-					...item.map((item: Record<string, any>) => ({
-						[relation.collectionField.field]: Object.keys(selectGrouped)[index],
-						[relation.junctionField.field]: item,
-					}))
-				);
+			fetchedSelectItems.value = responses.reduce(
+				(acc, item, index) => {
+					acc.push(
+						...item.map((item: Record<string, any>) => ({
+							[relation.collectionField.field]: Object.keys(selectGrouped)[index],
+							[relation.junctionField.field]: item,
+						})),
+					);
 
-				return acc;
-			}, [] as Record<string, any>[]);
+					return acc;
+				},
+				[] as Record<string, any>[],
+			);
 		}
 	}
 

@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_fields
 properties:
   collection:
     description: Unique name of the collection this field is in.

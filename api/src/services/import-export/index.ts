@@ -1,3 +1,10 @@
+import { useEnv } from '@directus/env';
+import {
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
@@ -13,14 +20,7 @@ import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import {
-	ForbiddenError,
-	InvalidPayloadError,
-	ServiceUnavailableError,
-	UnsupportedMediaTypeError,
-} from '@directus/errors';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';
 import { Url } from '../../utils/url.js';
@@ -29,6 +29,9 @@ import { FilesService } from '../files.js';
 import { ItemsService } from '../items.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -47,11 +50,11 @@ export class ImportService {
 		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'create'
+			(permission) => permission.collection === collection && permission.action === 'create',
 		);
 
 		const updatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'update'
+			(permission) => permission.collection === collection && permission.action === 'update',
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
@@ -210,7 +213,7 @@ export class ExportService {
 		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
-		}
+		},
 	) {
 		const { createTmpFile } = await import('@directus/utils/node');
 		const tmpFile = await createTmpFile().catch(() => null);
@@ -254,14 +257,14 @@ export class ExportService {
 				const count = query.limit && query.limit > -1 ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
-				const batchesRequired = Math.ceil(count / env['EXPORT_BATCH_SIZE']);
+				const batchesRequired = Math.ceil(count / (env['EXPORT_BATCH_SIZE'] as number));
 
 				let readCount = 0;
 
 				for (let batch = 0; batch < batchesRequired; batch++) {
-					let limit = env['EXPORT_BATCH_SIZE'];
+					let limit = env['EXPORT_BATCH_SIZE'] as number;
 
-					if (requestedLimit > 0 && env['EXPORT_BATCH_SIZE'] > requestedLimit - readCount) {
+					if (requestedLimit > 0 && (env['EXPORT_BATCH_SIZE'] as number) > requestedLimit - readCount) {
 						limit = requestedLimit - readCount;
 					}
 
@@ -269,7 +272,7 @@ export class ExportService {
 						...query,
 						sort,
 						limit,
-						offset: batch * env['EXPORT_BATCH_SIZE'],
+						offset: batch * (env['EXPORT_BATCH_SIZE'] as number),
 					});
 
 					readCount += result.length;
@@ -280,7 +283,7 @@ export class ExportService {
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
-							})
+							}),
 						);
 					}
 				}
@@ -291,7 +294,7 @@ export class ExportService {
 				schema: this.schema,
 			});
 
-			const storage: string = toArray(env['STORAGE_LOCATIONS'])[0];
+			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
 			const title = `export-${collection}-${getDateFormatted()}`;
 			const filename = `${title}.${format}`;
@@ -320,7 +323,7 @@ export class ExportService {
 					fields: ['first_name', 'last_name', 'email'],
 				});
 
-				const href = new Url(env['PUBLIC_URL']).addPath('admin', 'files', savedFile).toString();
+				const href = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'files', savedFile).toString();
 
 				const message = `
 Hello ${userName(user)},
@@ -367,7 +370,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
-		}
+		},
 	): string {
 		if (format === 'json') {
 			let string = JSON.stringify(input || null, null, '\t');

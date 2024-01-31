@@ -24,5 +24,5 @@ export const messageConstructor = ({ collection, field }: InvalidForeignKeyError
 export const InvalidForeignKeyError = createError<InvalidForeignKeyErrorExtensions>(
 	ErrorCode.InvalidForeignKey,
 	messageConstructor,
-	400
+	400,
 );

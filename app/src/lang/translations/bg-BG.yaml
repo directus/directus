@@ -593,7 +593,6 @@ errors:
   VALUE_OUT_OF_RANGE: Стойността е извън границите
   INVALID_FOREIGN_KEY: Невалиден външен ключ
   UNKNOWN: Неочаквана грешка
-  GRAPHQL_VALIDATION_EXCEPTION: Изключение при валидацията в GraphQL
   SERVICE_UNAVAILABLE: Услугата е недостъпна
   UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
   UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
@@ -720,7 +719,6 @@ layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
 collection_setup: Настройване
-optional_system_fields: Заготовки с полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
@@ -1813,6 +1811,8 @@ displays:
     icon: Икона
     border: Рамка
     border_label: Показване на рамката
+    mask: Маскиране
+    mask_label: Скриване на истинската стойност
     text: Текст
     text_placeholder: Заместващ текст...
   formatted-json-value:

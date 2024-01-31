@@ -107,6 +107,31 @@ rename_folder: Mapnaam wijzigen
 delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
+keep: Behouden
+version: Versie
+version_key: Versie sleutel
+version_name: Versienaam
+main_version: Hoofd
+switch_version: Versie wisselen
+switch_version_copy: Weet u zeker dat u wilt overschakelen naar de "{version}" versie? Niet-opgeslagen wijzigingen gaan verloren.
+create_version: Versie aanmaken
+rename_version: Versie hernoemen
+compare_version: Versies vergelijken
+save_version: Versie opslaan
+promote_version: Versie promoveren
+promote_version_disabled: Geen wijzigingen
+promote_version_drawer_title: Promoveer {version} naar Hoofd
+promote_version_changes: Veranderingen
+promote_version_preview: Voorvertoning
+outdated_notice: >-
+  Het hoofditem is bijgewerkt sinds deze versie is gemaakt. Controleer alle onderstaande veldwaarden en bevestig welke versie moet worden gebruikt wanneer deze versie wordt gepromoot in het hoofditem.
+promote_notice: >-
+  Controleer alle onderstaande veldwaarden en bevestig welke versie moet worden gebruikt als deze versie wordt gepromoot in het hoofditem.
+delete_version: Versie verwijderen
+delete_version_copy: >-
+  Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+delete_on_promote_copy: >-
+  Wil je de "{version}" versie verwijderen of behouden na het promoten?
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
@@ -128,6 +153,7 @@ archive_confirm_count: >-
   Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
 reset_system_permissions_to: 'Systeemrechten resetten naar:'
 reset_system_permissions_copy: Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
+the_following_are_minimum_permissions: De volgende minimale machtigingen worden automatisch toegepast wanneer "App toegang" is ingeschakeld. Indien nodig kunt u extra machtigingen toekennen, maar het is niet mogelijk de machtigingen te verlagen tot onder dit niveau.
 app_access_minimum: Minimale apptoegang
 recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
@@ -151,6 +177,7 @@ validationError:
   nnull: Waarde kan niet "null" zijn
   required: Waarde is vereist
   unique: Waarde moet uniek zijn
+  email: Waarde moet een geldig e-mailadres zijn
   regex: Waarde heeft niet de juiste vorm
   starts_with: Waarde moet beginnen met {substring}
   istarts_with: Waarde moet beginnen met {substring}
@@ -186,6 +213,7 @@ permissions_for_role: 'Items die de rol "{role}" kan {action}.'
 fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
 presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
+presets_field_warning: 'Relationele voorinstellingen voor veld "{field}" moeten worden geconfigureerd met de "gedetailleerde" syntaxis.'
 presentation_and_aliases: Presentatie & Aliasen
 revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
@@ -264,6 +292,9 @@ geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiVeelhoek
+theme_auto: Automatisch (gebaseerd op systeem)
+theme_light: Lichtmodus
+theme_dark: Donkere Modus
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -346,6 +377,7 @@ clear_items: Verwijder Items
 reset_to_default: Herstel naar Standaard
 undo_changes: Ongedaan maken
 notifications: Notificaties
+archive_all: Alles archiveren
 show_all_activity: Alle activiteiten tonen
 page_not_found: Pagina niet gevonden
 page_not_found_body: Deze pagina of item bestaat niet of is recentelijk verwijderd.
@@ -358,6 +390,7 @@ revision_delta_created: Aangemaakt
 revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
 revision_delta_deleted: Verwijderd
+revision_delta_version_saved: 'Versie opslaan (1 veld bijgewerkt) | Versie opslaan ({count} velden bijgewerkte)'
 revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
@@ -468,6 +501,7 @@ import_from_url: Importeer bestand van URL
 replace_from_device: Vervang bestand met nieuwe upload
 replace_from_library: Vervang bestand met bestaande
 replace_from_url: Vervang bestand via een URL import
+no_image_selected: Geen afbeelding geselecteerd
 no_file_selected: Geen bestand geselecteerd
 download_file: Download bestand
 open_file_in_tab: Openen in nieuw tabblad
@@ -475,6 +509,10 @@ start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
 exporting_limited_items_in_collection: '{count} van {total} items in {collection} worden geëxporteerd.'
+exporting_no_items_to_export: Geen items om te exporteren. Pas de exportconfiguratie aan en/of voeg items toe aan de collectie.
+exporting_download_hint: Zodra het {format} bestand is aangemaakt, wordt het gedownload naar je apparaat.
+exporting_library_hint: Zodra het {format} bestand is aangemaakt, wordt het opgeslagen in de bestandsbibliotheek.
+exporting_library_hint_forced: Deze export moet in batches worden verwerkt. Eenmaal voltooid, wordt het {format}-bestand opgeslagen in de Bestandsbibliotheek.
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -618,7 +656,6 @@ errors:
   VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
   INVALID_FOREIGN_KEY: Ongeldige Foreign Key
   UNKNOWN: Onverwachte fout
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL validatie fout
   SERVICE_UNAVAILABLE: Dienst onbeschikbaar
   UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
   UNEXPECTED_RESPONSE: Onverwachte resultaat
@@ -750,7 +787,6 @@ layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
 collection_setup: Collectie setup
-optional_system_fields: Optionele systeemvelden
 value_unique: Waarde moet uniek zijn
 all_activity: Alle activiteiten
 create_item: Item aanmaken
@@ -1613,6 +1649,8 @@ displays:
     icon: Icoon
     border: Rand
     border_label: Rand tonen
+    mask: Gemaskeerd
+    mask_label: Verberg de werkelijke waarde
     text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde

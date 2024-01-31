@@ -6,6 +6,8 @@ import { computed } from 'vue';
 type Choice = {
 	value: string | number;
 	text: string;
+	icon?: string;
+	color?: string;
 	foreground: string | null;
 	background: string | null;
 };
@@ -21,7 +23,7 @@ const props = withDefaults(
 	{
 		format: true,
 		choices: () => [],
-	}
+	},
 );
 
 const items = computed(() => {
@@ -52,14 +54,16 @@ const items = computed(() => {
 				value: item,
 				text: itemStringValue,
 				foreground: 'var(--theme--foreground)',
-				background: 'var(--theme--background)',
+				background: 'var(--theme--background-normal)',
 			};
 		} else {
 			return {
 				value: item,
 				text: choice.text || itemStringValue,
+				icon: choice.icon,
+				color: choice.color,
 				foreground: choice.foreground || 'var(--theme--foreground)',
-				background: choice.background || 'var(--theme--background)',
+				background: choice.background || 'var(--theme--background-normal)',
 			};
 		}
 	});
@@ -79,12 +83,20 @@ const items = computed(() => {
 				small
 				disabled
 				label
+				:class="{ 'has-icon': !!item.icon || !!item.color }"
 			>
+				<v-icon v-if="item.icon" :name="item.icon" :color="item.color" left small />
+				<display-color v-else-if="item.color" class="inline-dot" :value="item.color" />
 				{{ item.text }}
 			</v-chip>
 		</template>
 		<template v-else>
-			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
+			<display-color
+				v-for="item in items"
+				:key="item.value"
+				v-tooltip="item.text"
+				:value="item.color ?? item.background"
+			/>
 		</template>
 	</div>
 </template>
@@ -94,7 +106,21 @@ const items = computed(() => {
 	display: inline-flex;
 }
 
+.has-icon {
+	--v-chip-padding: 0 8px 0 4px;
+}
+
 .v-chip + .v-chip {
 	margin-left: 4px;
+}
+
+.v-icon {
+	flex-shrink: 0;
+	vertical-align: -3px;
+}
+
+.inline-dot {
+	padding: 0 4px;
+	margin-right: 4px;
 }
 </style>

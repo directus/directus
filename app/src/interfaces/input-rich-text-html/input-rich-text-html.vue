@@ -71,7 +71,7 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -98,7 +98,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	{
 		storageAssetTransform,
 		storageAssetPresets,
-	}
+	},
 );
 
 const {
@@ -148,7 +148,7 @@ watch(
 				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
 			}
 		}
-	}
+	},
 );
 
 const editorOptions = computed(() => {
@@ -164,7 +164,7 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage')
+				.replace(/^image$/g, 'customImage'),
 		)
 		.join(' ');
 

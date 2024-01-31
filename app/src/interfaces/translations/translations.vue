@@ -11,11 +11,11 @@ import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getEndpoint } from '@directus/utils';
 import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
-import { getEndpoint } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -25,20 +25,22 @@ const props = withDefaults(
 		languageField?: string | null;
 		languageDirectionField?: string | null;
 		defaultLanguage?: string | null;
+		defaultOpenSplitView?: boolean;
 		userLanguage?: boolean;
 		value: (number | string | Record<string, any>)[] | Record<string, any>;
 		autofocus?: boolean;
 		disabled?: boolean;
 	}>(),
 	{
-		languageField: () => null,
-		languageDirectionField: () => 'direction',
+		languageField: null,
+		languageDirectionField: 'direction',
 		value: () => [],
 		autofocus: false,
 		disabled: false,
-		defaultLanguage: () => null,
+		defaultLanguage: null,
+		defaultOpenSplitView: false,
 		userLanguage: false,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -59,7 +61,7 @@ const permissionsStore = usePermissionsStore();
 
 const { width } = useWindowSize();
 
-const splitView = ref(false);
+const splitView = ref(props.defaultOpenSplitView);
 const firstLang = ref<string>();
 const secondLang = ref<string>();
 
@@ -67,7 +69,7 @@ watch(splitView, (splitViewEnabled) => {
 	const lang = languageOptions.value;
 
 	if (splitViewEnabled && secondLang.value === firstLang.value) {
-		secondLang.value = lang[0].value === firstLang.value ? lang[1].value : lang[0].value;
+		secondLang.value = lang[0]?.value === firstLang.value ? lang[1]?.value : lang[0]?.value;
 	}
 });
 
@@ -88,7 +90,7 @@ const { create, update, displayItems, loading, fetchedItems, getItemEdits } = us
 	value,
 	query,
 	relationInfo,
-	primaryKey
+	primaryKey,
 );
 
 const firstItem = computed(() => {
@@ -175,7 +177,7 @@ function useLanguages() {
 		if (!langField) return [];
 
 		const writableFields = fields.value.filter(
-			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false,
 		);
 
 		const totalFields = writableFields.length;
@@ -218,6 +220,7 @@ function useLanguages() {
 		}
 
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+		const sortField = relationInfo.value.relatedCollection.meta?.sort_field;
 
 		fields.add(pkField);
 
@@ -229,9 +232,9 @@ function useLanguages() {
 				{
 					params: {
 						fields: Array.from(fields),
-						sort: props.languageField ?? pkField,
+						sort: sortField ?? props.languageField ?? pkField,
 					},
-				}
+				},
 			);
 
 			if (!firstLang.value) {
@@ -243,8 +246,8 @@ function useLanguages() {
 			if (!secondLang.value) {
 				secondLang.value = languages.value[1]?.[pkField];
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -257,11 +260,11 @@ const createAllowed = computed(() => junctionPerms.value.create);
 const updateAllowed = computed(() => junctionPerms.value.update);
 
 const firstItemNew = computed(
-	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const secondItemNew = computed(
-	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const firstChangesAllowed = computed(() => {
@@ -286,7 +289,7 @@ const firstFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		firstItemNew.value ? 'create' : 'update'
+		firstItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;
@@ -313,7 +316,7 @@ const secondFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		secondItemNew.value ? 'create' : 'update'
+		secondItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;
@@ -411,7 +414,7 @@ const secondFields = computed(() => {
 	@include form-grid;
 
 	.v-form {
-		--form-vertical-gap: 32px;
+		--theme--form--row-gap: 32px;
 		--v-chip-color: var(--theme--primary);
 		--v-chip-background-color: var(--theme--primary-background);
 
@@ -439,7 +442,7 @@ const secondFields = computed(() => {
 	.primary,
 	.secondary {
 		.v-divider {
-			margin-top: var(--form-vertical-gap);
+			margin-top: var(--theme--form--row-gap);
 		}
 	}
 }

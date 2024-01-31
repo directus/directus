@@ -149,6 +149,8 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			}
 		}
 	}
+
+	return;
 };
 
 let trackTimeout: number | null = null;

@@ -96,10 +96,10 @@ code {
 	padding: 2px 4px;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--theme--font-family-monospace), monospace;
+	font-family: var(--theme--fonts--monospace--font-family), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -108,9 +108,9 @@ pre {
 	overflow: auto;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--theme--font-family-monospace), monospace;
+	font-family: var(--theme--fonts--monospace--font-family), monospace;
 	line-height: 24px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 

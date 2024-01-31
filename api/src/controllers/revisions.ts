@@ -44,7 +44,7 @@ router.get(
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

@@ -37,7 +37,7 @@ export default function useImage(
 	options: {
 		storageAssetTransform: Ref<string>;
 		storageAssetPresets: Ref<SettingsStorageAssetPreset[]>;
-	}
+	},
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
@@ -47,14 +47,14 @@ export default function useImage(
 		() => imageSelection.value?.transformationKey,
 		(newKey) => {
 			selectedPreset.value = options.storageAssetPresets.value.find(
-				(preset: SettingsStorageAssetPreset) => preset.key === newKey
+				(preset: SettingsStorageAssetPreset) => preset.key === newKey,
 			);
 
 			if (selectedPreset.value) {
 				imageSelection.value!.width = selectedPreset.value.width ?? undefined;
 				imageSelection.value!.height = selectedPreset.value.height ?? undefined;
 			}
-		}
+		},
 	);
 
 	const imageButton = {
@@ -79,7 +79,7 @@ export default function useImage(
 
 				if (transformationKey) {
 					selectedPreset.value = options.storageAssetPresets.value.find(
-						(preset: SettingsStorageAssetPreset) => preset.key === transformationKey
+						(preset: SettingsStorageAssetPreset) => preset.key === transformationKey,
 					);
 				}
 

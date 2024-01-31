@@ -602,7 +602,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
   INVALID_FOREIGN_KEY: Neplatný cizí klíč
   UNKNOWN: Neočekávaná chyba
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba není dostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ média
   UNEXPECTED_RESPONSE: Neočekávaná odpověď
@@ -725,7 +724,6 @@ layout_options: Možnosti rozvržení
 rows: Řádky
 columns: Sloupce
 collection_setup: Nastavení kolekce
-optional_system_fields: Volitelná systémová pole
 value_unique: Hodnota musí být unikátní
 all_activity: Všechna aktivita
 create_item: Vytvořit položku
@@ -1791,6 +1789,8 @@ displays:
     icon: Ikona
     border: Ohraničení
     border_label: Zobrazit ohraničení
+    mask: Maskovaná
+    mask_label: Skrýt skutečnou hodnotu
     text: Text
     text_placeholder: Volitelné přetížení hodnoty...
   formatted-json-value:

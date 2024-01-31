@@ -24,7 +24,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 				database: getDatabase(),
 				schema: req.schema,
 				accountability: req.accountability ?? null,
-			}
+			},
 		);
 
 		if (hooksResult) {

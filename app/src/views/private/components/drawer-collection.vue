@@ -20,7 +20,7 @@ const props = withDefaults(
 	}>(),
 	{
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -94,7 +94,7 @@ function useSelection() {
 		() => props.active,
 		() => {
 			localSelection.value = null;
-		}
+		},
 	);
 
 	return { internalSelection, onSelect };
@@ -108,7 +108,7 @@ function useSelection() {
 		if (props.multiple === true) {
 			localSelection.value = newSelection;
 		} else {
-			localSelection.value = [newSelection[newSelection.length - 1]];
+			localSelection.value = [newSelection[newSelection.length - 1] as string | number];
 		}
 	}
 }
@@ -134,7 +134,7 @@ function useActions() {
 		v-model:selection="layoutSelection"
 		v-model:layout-options="localOptions"
 		v-model:layout-query="localQuery"
-		:filter="mergeFilters(presetFilter, filter)"
+		:filter="mergeFilters(presetFilter, filter ?? null)"
 		:filter-user="presetFilter"
 		:filter-system="filter"
 		:search="search"

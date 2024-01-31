@@ -25,10 +25,10 @@ const collections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.meta
+				(collection) => collection.collection.startsWith('directus_') === false && collection.meta,
 			),
-			['meta.sort', 'collection']
-		)
+			['meta.sort', 'collection'],
+		),
 	);
 });
 
@@ -46,7 +46,7 @@ export type CollectionTree = {
 
 function findVisibilityChild(
 	collection: string,
-	tree: CollectionTree[] = visibilityTree.value
+	tree: CollectionTree[] = visibilityTree.value,
 ): CollectionTree | undefined {
 	return tree.find((child) => child.collection === collection);
 }
@@ -97,10 +97,10 @@ const tableCollections = computed(() => {
 		sortBy(
 			collectionsStore.collections.filter(
 				(collection) =>
-					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema
+					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema,
 			),
-			['meta.sort', 'collection']
-		)
+			['meta.sort', 'collection'],
+		),
 	);
 });
 
@@ -110,19 +110,19 @@ const systemCollections = computed(() => {
 			collectionsStore.collections
 				.filter((collection) => collection.collection.startsWith('directus_') === true)
 				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection'
-		)
+			'collection',
+		),
 	);
 });
 
 async function onSort(updates: Collection[], removeGroup = false) {
 	const updatesWithSortValue = updates.map((collection, index) =>
-		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
+		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } }),
 	);
 
 	collectionsStore.collections = collectionsStore.collections.map((collection) => {
 		const updatedValues = updatesWithSortValue.find(
-			(updatedCollection) => updatedCollection.collection === collection.collection
+			(updatedCollection) => updatedCollection.collection === collection.collection,
 		);
 
 		return updatedValues ? merge({}, collection, updatedValues) : collection;
@@ -136,10 +136,10 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					collection: collection.collection,
 					meta: { sort: collection.meta.sort, group: collection.meta.group },
 				};
-			})
+			}),
 		);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 </script>
@@ -150,7 +150,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="list_alt" />
+				<v-icon name="database" />
 			</v-button>
 		</template>
 
@@ -199,13 +199,13 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 			<v-list v-else class="draggable-list">
 				<draggable
-					force-fallback
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
 					:swap-threshold="0.3"
 					class="root-drag-container"
 					item-key="collection"
 					handle=".drag-handle"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="onSort($event, true)"
 				>
 					<template #item="{ element }">

@@ -14,7 +14,7 @@ export function sortByExternalOrder<T, O extends T[K][], K extends keyof T>(orde
 
 export function sortByObjectValues<T, O extends Record<any, T[K]>, K extends keyof T>(
 	object: O,
-	key: K
+	key: K,
 ): (a: T, b: T) => number {
 	const order = Object.values(object);
 	return (a, b) => order.indexOf(a[key]) - order.indexOf(b[key]);

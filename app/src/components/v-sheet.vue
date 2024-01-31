@@ -9,9 +9,9 @@
 
 	Available Variables:
 
-		--v-sheet-background-color  [var(--background-subdued)]
+		--v-sheet-background-color  [var(--theme--form--field--input--background-subdued)]
 		--v-sheet-height            [auto]
-		--v-sheet-min-height        [var(--input-height)]
+		--v-sheet-min-height        [var(--theme--form--field--input--height)]
 		--v-sheet-max-height        [none]
 		--v-sheet-width             [auto]
 		--v-sheet-min-width         [none]
@@ -25,11 +25,11 @@
 	min-width: var(--v-sheet-min-width, none);
 	max-width: var(--v-sheet-max-width, none);
 	height: var(--v-sheet-height, auto);
-	min-height: var(--v-sheet-min-height, var(--input-height));
+	min-height: var(--v-sheet-min-height, var(--theme--form--field--input--height));
 	max-height: var(--v-sheet-max-height, none);
 	padding: var(--v-sheet-padding, 8px);
 	overflow: auto;
-	background-color: var(--v-sheet-background-color, var(--background-subdued));
+	background-color: var(--v-sheet-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 }
 </style>

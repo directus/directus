@@ -36,19 +36,19 @@ describe('Operations / Item Delete', () => {
 	])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, permissions } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService).toHaveBeenCalledWith(
 			testCollection,
-			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
+			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
 		);
 	});
 
 	test('should have fallback when query is not defined', async () => {
 		await config.handler(
 			{ collection: testCollection } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith({}, expect.anything());
@@ -57,7 +57,7 @@ describe('Operations / Item Delete', () => {
 	test.each([undefined, []])('should call deleteByQuery with correct query when key is $payload', async (key) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith(testQuery, expect.anything());
@@ -68,7 +68,7 @@ describe('Operations / Item Delete', () => {
 	test('should emit events for deleteByQuery when true', async () => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith(testQuery, { emitEvents: true });
@@ -77,7 +77,7 @@ describe('Operations / Item Delete', () => {
 	test.each([undefined, false])('should not emit events for deleteByQuery when %s', async (emitEvents) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).toHaveBeenCalledWith(testQuery, { emitEvents: false });
@@ -86,7 +86,7 @@ describe('Operations / Item Delete', () => {
 	test.each([1, [1]])('should call deleteOne when key is $payload', async (key) => {
 		await config.handler(
 			{ collection: testCollection, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe('Operations / Item Delete', () => {
 
 		await config.handler(
 			{ collection: testCollection, key, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteOne).toHaveBeenCalledWith(key, { emitEvents: true });
@@ -110,7 +110,7 @@ describe('Operations / Item Delete', () => {
 
 		await config.handler(
 			{ collection: testCollection, key, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteOne).toHaveBeenCalledWith(key, { emitEvents: false });
@@ -119,7 +119,7 @@ describe('Operations / Item Delete', () => {
 	test('should call deleteMany when key is an array with more than one item', async () => {
 		await config.handler(
 			{ collection: testCollection, key: [1, 2, 3] } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteByQuery).not.toHaveBeenCalled();
@@ -132,7 +132,7 @@ describe('Operations / Item Delete', () => {
 
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith(keys, { emitEvents: true });
@@ -143,7 +143,7 @@ describe('Operations / Item Delete', () => {
 
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith(keys, { emitEvents: false });

@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { InterfaceConfig } from '@directus/types';
+import type { InterfaceConfig } from '@directus/extensions';
 import { sortBy } from 'lodash';
+import { App } from 'vue';
 
 export function getInternalInterfaces(): InterfaceConfig[] {
 	const interfaces = import.meta.glob<InterfaceConfig>(['./*/index.ts', './_system/*/index.ts'], {

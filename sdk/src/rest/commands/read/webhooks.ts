@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadWebhookOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusWebhook<Schema>
+	Item extends object = DirectusWebhook<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadWebhookOutput<
  */
 export const readWebhooks =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/webhooks`,
@@ -34,7 +34,7 @@ export const readWebhooks =
 export const readWebhook =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		key: DirectusWebhook<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

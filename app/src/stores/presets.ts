@@ -131,7 +131,7 @@ export const usePresetsStore = defineStore({
 					(preset) => preset.user === null && preset.role === null,
 					(preset) => preset.user === null && preset.role !== null,
 					'bookmark',
-				]
+				],
 			);
 		},
 	},

@@ -632,7 +632,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
   INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
   UNKNOWN: Gabim i papritur
-  GRAPHQL_VALIDATION_EXCEPTION: Përjashtim Validimi GraphQL
   SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
   UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
   UNEXPECTED_RESPONSE: Përgjigje e papritur
@@ -766,7 +765,6 @@ layout_options: Opsionet e Faqosjes
 rows: Rreshta
 columns: Kolona
 collection_setup: Setup i Koleksionit
-optional_system_fields: Fushat Opsionale të Sistemit
 value_unique: Vlera duhet të jetë unike
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
@@ -1906,6 +1904,8 @@ displays:
     icon: Ikonë
     border: Kornizë
     border_label: Shfaq kufirin
+    mask: I maskuar
+    mask_label: Fshih vlerën e vërtetë
     text: Tekst
     text_placeholder: Kalim i vlerës opsionale...
   formatted-json-value:

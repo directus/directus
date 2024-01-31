@@ -7,7 +7,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import SingleRelation from './single-relation.vue';
 import MultipleRelation from './multiple-relation.vue';
 
-interface Props {
+const props = defineProps<{
 	field: string;
 	collection: string;
 	multiple: boolean;
@@ -16,10 +16,11 @@ interface Props {
 	limit: number;
 	dashboard: string;
 	showHeader?: boolean;
-}
+}>();
+
+defineEmits(['input']);
+
 const { t } = useI18n();
-const props = withDefaults(defineProps<Props>(), {});
-/*const emit = */ defineEmits(['input']);
 
 const insightsStore = useInsightsStore();
 
@@ -37,7 +38,7 @@ const value = computed({
 
 const selectModalOpen = ref(false);
 
-function onSelection(data: (number | string)[]) {
+function onSelection(data: (number | string)[] | null) {
 	selectModalOpen.value = false;
 
 	if (!Array.isArray(data) || data.length === 0) {

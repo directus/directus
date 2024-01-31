@@ -51,7 +51,7 @@ const hasValue = computed(() => {
 					<system-theme-overrides-group
 						v-if="isPlainObject(ruleValue)"
 						:group="ruleKey === '$root' ? undefined : ruleKey"
-						:rules="(ruleValue as Record<string, unknown>)"
+						:rules="ruleValue as Record<string, unknown>"
 						:value="ruleKey === '$root' ? value : (value?.[ruleKey] as Record<string, unknown> | undefined)"
 						:set="set"
 						:path="ruleKey === '$root' ? path : [...path, ruleKey]"
@@ -62,8 +62,8 @@ const hasValue = computed(() => {
 						:rule="ruleKey"
 						type="color"
 						:set="set"
-						:default-value="(ruleValue as string | number)"
-						:value="(value?.[ruleKey] as string | number | undefined)"
+						:default-value="ruleValue"
+						:value="value?.[ruleKey]"
 						:path="[...path, ruleKey]"
 					/>
 				</template>
@@ -83,7 +83,7 @@ const hasValue = computed(() => {
 }
 
 .group-toggle {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;
@@ -107,7 +107,7 @@ const hasValue = computed(() => {
 	}
 
 	&:hover {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 

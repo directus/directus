@@ -1,8 +1,32 @@
-import { expect, test, vi } from 'vitest';
-import { updateCheck } from './index.js';
 import stripAnsi from 'strip-ansi';
+import { afterEach, beforeEach, expect, test, vi, type MockInstance } from 'vitest';
+import { updateCheck } from './index.js';
 
-vi.mock('got', () => {
+vi.mock('./cache.js');
+
+const axiosMock = vi.hoisted(() => ({
+	get: vi.fn(),
+}));
+
+vi.mock('axios', () => ({
+	default: {
+		create: () => ({
+			get: axiosMock.get,
+		}),
+	},
+}));
+
+let consoleMock: MockInstance;
+
+beforeEach(() => {
+	consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+test('Print banner if update is available', async () => {
 	const manifest = {
 		'dist-tags': { latest: '10.6.1' },
 		versions: {
@@ -17,11 +41,9 @@ vi.mock('got', () => {
 		},
 	};
 
-	return { default: () => ({ json: () => manifest }) };
-});
-
-test('#updateCheck', async () => {
-	const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+	axiosMock.get.mockResolvedValue({
+		data: manifest,
+	});
 
 	const currentVersion = '10.5.0';
 	await updateCheck(currentVersion);
@@ -48,4 +70,15 @@ test('#updateCheck', async () => {
 		   ╰───────────────────────────────────────────────────╯
 		"
 	`);
+});
+
+test('Do not fail on empty response', async () => {
+	axiosMock.get.mockResolvedValue({
+		data: null,
+	});
+
+	const currentVersion = '10.5.0';
+	await updateCheck(currentVersion);
+
+	expect(consoleMock).not.toHaveBeenCalled();
 });

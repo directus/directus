@@ -11,5 +11,5 @@ export const messageConstructor = ({ service, reason }: ServiceUnavailableErrorE
 export const ServiceUnavailableError = createError<ServiceUnavailableErrorExtensions>(
 	ErrorCode.ServiceUnavailable,
 	messageConstructor,
-	503
+	503,
 );

@@ -42,11 +42,11 @@ export class RolesService extends ItemsService {
 		}
 
 		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
-			(user) => user.id
+			(user) => user.id,
 		);
 
 		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
-			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true
+			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true,
 		);
 
 		const usersThatAreAdded = Array.isArray(users) ? users : users.create;
@@ -105,7 +105,7 @@ export class RolesService extends ItemsService {
 	override async updateMany(
 		keys: PrimaryKey[],
 		data: Record<string, any>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
@@ -163,14 +163,14 @@ export class RolesService extends ItemsService {
 				{
 					filter: { role: { _in: keys } },
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await presetsService.deleteByQuery(
 				{
 					filter: { role: { _in: keys } },
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await usersService.updateByQuery(
@@ -181,7 +181,7 @@ export class RolesService extends ItemsService {
 					status: 'suspended',
 					role: null,
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await itemsService.deleteMany(keys, opts);

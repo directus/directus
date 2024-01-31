@@ -14,5 +14,5 @@ export const messageConstructor = (extensions: HitRateLimitErrorExtensions) => {
 export const HitRateLimitError = createError<HitRateLimitErrorExtensions>(
 	ErrorCode.RequestsExceeded,
 	messageConstructor,
-	429
+	429,
 );

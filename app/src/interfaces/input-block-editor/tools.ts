@@ -25,7 +25,7 @@ export type UploaderConfig = {
 export default function getTools(
 	uploaderConfig: UploaderConfig,
 	selection: Array<string>,
-	haveFilesAccess: boolean
+	haveFilesAccess: boolean,
 ): Record<string, object> {
 	const tools: Record<string, any> = {};
 	const fileRequiresTools = ['attaches', 'image'];

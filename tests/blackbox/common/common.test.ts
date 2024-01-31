@@ -385,7 +385,7 @@ describe('Common', () => {
 						}),
 					});
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -423,7 +423,7 @@ describe('Common', () => {
 						schema: expect.anything(),
 					});
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -471,7 +471,7 @@ describe('Common', () => {
 						schema: expect.anything(),
 					});
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -519,7 +519,7 @@ describe('Common', () => {
 						schema: null,
 					});
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -551,10 +551,10 @@ describe('Common', () => {
 						expect.objectContaining({
 							id: createdItem.id,
 							sample_field: 'sample_value',
-						})
+						}),
 					);
 				},
-				30000
+				30000,
 			);
 		});
 
@@ -586,10 +586,10 @@ describe('Common', () => {
 							id: createdItem.id,
 							sample_field: 'sample_value',
 							m2o_field: expect.any(Number),
-						})
+						}),
 					);
 				},
-				30000
+				30000,
 			);
 		});
 
@@ -625,10 +625,10 @@ describe('Common', () => {
 							id: createdItem.id,
 							sample_field: 'sample_value',
 							o2m_field: [expect.any(Number)],
-						})
+						}),
 					);
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -660,7 +660,7 @@ describe('Common', () => {
 						expect(child.field).not.toEqual(fieldName);
 					}
 				},
-				30000
+				30000,
 			);
 		});
 
@@ -690,7 +690,7 @@ describe('Common', () => {
 						expect(child.field).not.toEqual(fieldName);
 					}
 				},
-				30000
+				30000,
 			);
 		});
 
@@ -720,7 +720,7 @@ describe('Common', () => {
 						expect(child.field).not.toEqual(fieldName);
 					}
 				},
-				30000
+				30000,
 			);
 		});
 
@@ -750,7 +750,7 @@ describe('Common', () => {
 						expect(child.field).not.toEqual(fieldName);
 					}
 				},
-				30000
+				30000,
 			);
 		});
 	});
@@ -779,7 +779,7 @@ describe('Common', () => {
 						expect(child.collection).not.toEqual(collectionName);
 					}
 				},
-				30000
+				30000,
 			);
 		});
 	});

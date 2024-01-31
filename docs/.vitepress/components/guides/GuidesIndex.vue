@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { data } from '../../data/guides.data.js';
+import { gettingStarted, sections } from '@/data/guides.js';
 import GuidesSection from './GuidesSection.vue';
 </script>
 
@@ -14,12 +14,12 @@ import GuidesSection from './GuidesSection.vue';
 	<div class="box">
 		<h2>Getting Started</h2>
 		<ul>
-			<li v-for="item in data.guides.gettingStarted" :key="item.path">
+			<li v-for="item in gettingStarted" :key="item.path">
 				<a :href="item.path">{{ item.display }}</a>
 			</li>
 		</ul>
 	</div>
-	<section v-for="section in data.guides.sections" :key="section.indexPath">
+	<section v-for="[name, section] in Object.entries(sections)" :key="name">
 		<h2>{{ section.title }}</h2>
 		<GuidesSection :section="section" />
 	</section>

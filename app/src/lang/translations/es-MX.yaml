@@ -59,6 +59,7 @@ extension_display: Mostrar
 extension_layout: Diseño
 extension_module: Módulo
 extension_panel: Panel
+extension_theme: Tema
 extension_hook: Gancho
 extension_endpoint: Endpoint
 extension_operation: Operación
@@ -538,6 +539,7 @@ generated_uuid: UUID Generado
 manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
+save_and_quit: Guardar y salir
 save_as_copy: Guardar como Copia
 add_existing: Añadir existente
 creating_items: Creando elementos
@@ -547,8 +549,11 @@ enable_select_button: Habilitar el botón Seleccionar
 allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
+expand: Expandir
+collapse: Contraer
 select_item: Seleccionar elemento
 no_items: Sin elementos
+search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -628,6 +633,7 @@ bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser e
 bookmark_doesnt_exist_cta: Regresar a Colección
 select_an_item: Seleccionar un elemento...
 edit: Editar
+edit_item: Editando elemento
 enabled: Activado
 disable_tfa: Desactivar 2FA
 admin_disable_tfa_text: '¿Está seguro que desea desactivar 2FA para este usuario?'
@@ -664,7 +670,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
   SERVICE_UNAVAILABLE: Servicio no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
   UNEXPECTED_RESPONSE: Respuesta inesperada
@@ -672,6 +677,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Rango invalido
   METHOD_NOT_ALLOWED: Método no permitido
   REQUESTS_EXCEEDED: Límite de sugerencias alcanzado
+  CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -761,8 +767,12 @@ operators:
   icontains: Contiene (insensible)
   starts_with: Comienza con
   nstarts_with: No comienza con
+  istarts_with: Inicia con (insensible)
+  nistarts_with: No inicia con (insensible)
   ends_with: Termina con
   nends_with: No termina con
+  iends_with: Termina con (insensible)
+  niends_with: No termina con (insensible)
   between: Está Entre
   nbetween: No está Entre
   empty: Está vacío
@@ -792,7 +802,6 @@ layout_options: Opciones de Diseño
 rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
-optional_system_fields: Campos Opcionales del Sistema
 value_unique: El valor tiene que ser único
 all_activity: Toda la Actividad
 create_item: Crear elemento
@@ -995,6 +1004,10 @@ choices: Opciones
 choices_option_configured_incorrectly: Opciones configuradas incorrectamente
 deselect: Quitar selección
 deselect_all: Deseleccionar Todo
+theme: Tema
+select_a_theme: Seleccionar un tema
+appearance_light: Claro
+appearance_dark: Oscuro
 other: Otro...
 adding_user: Añadiendo usuario
 unknown_user: Usuario Desconocido
@@ -1006,12 +1019,15 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
+settings_permissions: Control de acceso
 settings_project: Ajustes
+settings_appearance: Apariencia
 settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_presets: Marcadores
 settings_translations: Traducciones
 one_or_more_options_are_missing: Falta una o más opciones
+configure_field_key_to_continue: Configurar clave de campo para continuar
 scope: Alcance
 actions: Acciones
 select: Seleccionar...
@@ -1102,6 +1118,7 @@ directus_collection:
   directus_shares: Rastrear elementos compartidos externamente
   directus_users: Usuarios del sistema para la plataforma
   directus_webhooks: Configuración de peticiones HTTP basadas en eventos
+  directus_translations: Traducciones personalizadas
 fields:
   directus_activity:
     item: Llave primaria del elemento
@@ -1181,6 +1198,7 @@ fields:
     last_page: Última página
     last_access: Último acceso
     email_notifications: Notificaciones por email
+    appearance: Apariencia
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1898,6 +1916,8 @@ displays:
     icon: Ícono
     border: Borde
     border_label: Mostrar borde
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
     text: Texto
     text_placeholder: Sobrescribir valor opcional...
   formatted-json-value:

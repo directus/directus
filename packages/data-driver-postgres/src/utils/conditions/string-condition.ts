@@ -1,8 +1,10 @@
-import type { SqlConditionStringNode } from '@directus/data-sql';
+import { tableIndexToIdentifier, type SqlConditionStringNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
 
 export const stringCondition = (condition: SqlConditionStringNode, negate: boolean): string => {
-	const column = wrapColumn(condition.target.table, condition.target.column);
+	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
+
+	const column = wrapColumn(tableAlias, condition.target.columnName);
 	const compareValue = `$${condition.compareTo.parameterIndex + 1}`;
 
 	if (condition.operation === 'eq') {

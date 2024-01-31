@@ -12,7 +12,7 @@ export interface DirectusErrorConstructor<Extensions = void> {
 export const createError = <Extensions = void>(
 	code: string,
 	message: string | ((extensions: Extensions) => string),
-	status = 500
+	status = 500,
 ): DirectusErrorConstructor<Extensions> => {
 	return class extends Error implements DirectusError<Extensions> {
 		override name = 'DirectusError';

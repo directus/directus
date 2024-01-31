@@ -22,7 +22,7 @@ export const defaults = <T extends object>(
 				Exclude<{ [K in keyof T]: T[K] extends Exclude<T[keyof T], undefined> ? K : never }[keyof T], undefined>
 			>
 		>
-	>
+	>,
 ): Required<T> => {
 	const input = Object.fromEntries(Object.entries(obj).filter(([_key, value]) => value !== undefined));
 

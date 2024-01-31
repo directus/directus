@@ -7,7 +7,7 @@ import { ReadableStream } from 'node:stream/web';
  * @returns all the data from a stream
  */
 export async function readToEnd(
-	readableStream: ReadableStream<Record<string, unknown>>
+	readableStream: ReadableStream<Record<string, unknown>>,
 ): Promise<Record<string, unknown>[]> {
 	const actualResult: Record<string, unknown>[] = [];
 

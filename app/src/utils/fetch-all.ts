@@ -5,7 +5,7 @@ import { cloneDeep, set } from 'lodash';
 export const fetchAll = async <T = unknown>(
 	url: Parameters<(typeof api)['get']>[0],
 	config: Parameters<(typeof api)['get']>[1] = {},
-	limit = Infinity
+	limit = Infinity,
 ): Promise<T[]> => {
 	let page = 1;
 	let hasMore = true;

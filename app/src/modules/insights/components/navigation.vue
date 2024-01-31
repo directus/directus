@@ -15,7 +15,7 @@ const navItems = computed(() =>
 		color: dashboard.color,
 		name: dashboard.name,
 		to: `/insights/${dashboard.id}`,
-	}))
+	})),
 );
 </script>
 

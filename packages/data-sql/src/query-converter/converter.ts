@@ -5,11 +5,10 @@
  * @module
  */
 import type { AbstractQuery } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery } from '../types/index.js';
-import type { ParameterTypes } from '../types/parameterized-statement.js';
-import { parameterIndexGenerator } from './param-index-generator.js';
+import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';
+import { createIndexGenerators } from './utils/create-index-generators.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -19,26 +18,30 @@ import { convertModifiers } from './modifiers/modifiers.js';
  * @param abstractQuery the abstract query to convert
  * @returns the abstract sql query
  */
-export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
-	const idGen = parameterIndexGenerator();
+export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	const parameters: ParameterTypes[] = [];
+	const subQueries: SubQuery[] = [];
+
+	const indexGen = createIndexGenerators();
+
+	const tableIndex = indexGen.table.next().value;
 
 	let clauses: AbstractSqlClauses;
-	let aliasMapping: AbstractSqlQuery['aliasMapping'];
-	let nestedManys: AbstractSqlQuery['nestedManys'];
+	let aliasMapping: AliasMapping;
 
 	try {
-		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
-		clauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
+		const from = { tableName: abstractQuery.collection, tableIndex };
+		const convertedFieldNodes = convertFieldNodes(abstractQuery.fields, tableIndex, indexGen);
+		clauses = { ...convertedFieldNodes.clauses, from };
 		parameters.push(...convertedFieldNodes.parameters);
 		aliasMapping = convertedFieldNodes.aliasMapping;
-		nestedManys = convertedFieldNodes.nestedManys;
+		subQueries.push(...convertedFieldNodes.subQueries);
 	} catch (error: any) {
 		throw new Error(`Failed to convert query fields: ${error.message}`);
 	}
 
 	try {
-		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
+		const convertedModifiers = convertModifiers(abstractQuery.modifiers, tableIndex, indexGen);
 		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
 		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
 		parameters.push(...convertedModifiers.parameters);
@@ -47,9 +50,11 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 	}
 
 	return {
-		clauses,
-		parameters,
+		rootQuery: {
+			clauses,
+			parameters,
+		},
+		subQueries,
 		aliasMapping,
-		nestedManys,
 	};
 };

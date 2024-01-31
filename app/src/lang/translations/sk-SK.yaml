@@ -59,6 +59,7 @@ extension_display: Zobrazenie
 extension_layout: Rozloženie
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Téma
 extension_hook: Hák
 extension_endpoint: Koncový bod
 extension_operation: Operácia
@@ -68,10 +69,14 @@ extension_displays: Displeje
 extension_layouts: Rozloženia
 extension_modules: Moduly
 extension_panels: Panely
+extension_themes: Témy
 extension_hooks: Háky
 extension_endpoints: Koncové body
 extension_operations: Operácie
 extension_bundles: Balíky
+extension_reload_required: Treba obnoviť stránku
+extension_reload_required_copy: Aby sa prejavili zmeny alebo vyplo rozšírenie, treba obnoviť stránku.
+extension_reload_now: Obnoviť teraz
 enable: Zapnúť
 disable: Vypnúť
 custom: Vlastné
@@ -309,6 +314,8 @@ geometry.MultiPolygon: MultiPolygon
 theme_auto: Automaticky (podľa systému)
 theme_light: Svetlý režim
 theme_dark: Tmavý režim
+theme_directus_default: Directus predvolené
+theme_directus_minimal: Directus minimum
 not_available_for_type: Nedostupné pre tento typ
 create_translations: Vytvoriť preklady
 auto_refresh: Auto obnovenie
@@ -638,6 +645,8 @@ select_an_item: Vyberte položku...
 edit: Upraviť
 edit_item: Upraviť položku
 enabled: Zapnuté
+enabled_dev: Zapnuté (dev)
+enabled_dev_tooltip: Rozšírenia sa nedajú vypnúť v dev režime
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
@@ -674,7 +683,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
   INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
   UNKNOWN: Neočakávaná chyba
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba je nedostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
   UNEXPECTED_RESPONSE: Neočakávaná odpoveď
@@ -687,7 +695,6 @@ security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
 create_bookmark: Vytvoriť záložku
-create_default: Vytvoriť predvolené
 edit_bookmark: Upraviť záložku
 edit_personal_bookmark: Upraviť osobnú záložku
 edit_role_bookmark: Upraviť záložku role
@@ -809,7 +816,7 @@ layout_options: Možnosti rozloženia
 rows: Riadky
 columns: Stĺpce
 collection_setup: Nastavenia zbierky
-optional_system_fields: Voliteľné systémové polia
+optional_system_fields: Voliteľné polia
 value_unique: Hodnota musí byť unikátna
 all_activity: Všetky aktivity
 create_item: Vytvoriť položku
@@ -1016,7 +1023,10 @@ deselect: Odznačiť
 deselect_all: Odznačiť všetko
 theme: Téma
 select_a_theme: Vybrať tému
+default_sync_with_project: Predvolené (Synchronizované s projektom)
+appearance_auto: Automatické (Synchronizované so systémom)
 appearance_light: Tenké
+appearance_dark: Tmavé
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
@@ -1030,7 +1040,7 @@ no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
 settings_permissions: Riadenie prístupu
 settings_project: Nastavenia
-settings_theming: Témy
+settings_appearance: Vzhľad
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Záložky
@@ -1072,7 +1082,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
 page_help_settings_project: "**Nastavenia** — Globálne nastavenia vášho projektu."
-page_help_settings_theming: "**Témy** - Nastavenia tém vášho projektu."
+page_help_settings_appearance: "**Vzhľad** — Vzhľad vášho projektu a možnosti tém."
 page_help_settings_extensions: '**Rozšírenia** - Rozšírenia nainštalované vo vašom projekte.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
@@ -1218,6 +1228,9 @@ fields:
     last_page: Posledná strana
     last_access: Posledný prístup
     email_notifications: E-mailové upozornenia
+    appearance: Vzhľad
+    theme_light: Svetlá téma
+    theme_dark: Tmavá téme
     theme_light_overrides: Úpravy svetlej témy
     theme_dark_overrides: Úpravy tmavej témy
   directus_settings:
@@ -1248,6 +1261,9 @@ fields:
     public_background: Verejné pozadie
     public_note: Verejná poznámka
     theming: Predvolená téma
+    default_appearance: Predvolený vzhľad
+    default_theme_light: Predvolená svetlá téma
+    default_theme_dark: Predvolená tmavá téma
     auth_password_policy: Politika prihlasovacieho hesla
     auth_login_attempts: Počet pokusov o prihlásenie
     files_and_thumbnails: Súbory a úložisko
@@ -1973,6 +1989,8 @@ displays:
     icon: Ikona
     border: Okraj
     border_label: Zobraziť okraj
+    mask: Maskované
+    mask_label: Skryť skutočné hodnoty
     text: Text
     text_placeholder: Voliteľné preťaženie hodnoty...
   formatted-json-value:

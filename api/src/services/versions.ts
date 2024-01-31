@@ -87,7 +87,7 @@ export class VersionsService extends ItemsService {
 	async verifyHash(
 		collection: string,
 		item: PrimaryKey,
-		hash: string
+		hash: string,
 	): Promise<{ outdated: boolean; mainHash: string }> {
 		const mainItem = await this.getMainItem(collection, item);
 
@@ -230,14 +230,16 @@ export class VersionsService extends ItemsService {
 			schema: this.schema,
 		});
 
+		const { item, collection } = version;
+
 		const activity = await activityService.createOne({
 			action: Action.VERSION_SAVE,
 			user: this.accountability?.user ?? null,
-			collection: version['collection'],
+			collection,
 			ip: this.accountability?.ip ?? null,
 			user_agent: this.accountability?.userAgent ?? null,
 			origin: this.accountability?.origin ?? null,
-			item: version['item'],
+			item,
 		});
 
 		const revisionDelta = await payloadService.prepareDelta(data);
@@ -245,15 +247,15 @@ export class VersionsService extends ItemsService {
 		await revisionsService.createOne({
 			activity,
 			version: key,
-			collection: version['collection'],
-			item: version['item'],
+			collection,
+			item,
 			data: revisionDelta,
 			delta: revisionDelta,
 		});
 
 		const { cache } = getCache();
 
-		if (shouldClearCache(cache, undefined, version['collection'])) {
+		if (shouldClearCache(cache, undefined, collection)) {
 			cache.clear();
 		}
 
@@ -297,7 +299,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
@@ -314,7 +316,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		return updatedItemKey;

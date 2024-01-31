@@ -24,7 +24,7 @@ export class MetaService {
 				if (metaVal === 'total_count') return this.totalCount(collection);
 				if (metaVal === 'filter_count') return this.filterCount(collection, query);
 				return undefined;
-			})
+			}),
 		);
 
 		return results.reduce((metaObject: Record<string, any>, value, index) => {

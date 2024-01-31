@@ -148,7 +148,7 @@ export async function processPackages(): Promise<{
 		packageName: string,
 		dependentsMap = getDependentsMap(),
 		dependents: string[] = [],
-		visited = new Set<string>()
+		visited = new Set<string>(),
 	) {
 		if (visited.has(packageName)) return dependents;
 		visited.add(packageName);

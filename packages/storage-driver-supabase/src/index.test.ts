@@ -312,7 +312,7 @@ describe('#read', () => {
 		vi.mocked(fetch).mockReturnValue({ status: 200, body: undefined } as unknown as Promise<Response>);
 
 		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
-			new Error(`No stream returned for file "${sample.path.input}"`)
+			new Error(`No stream returned for file "${sample.path.input}"`),
 		);
 	});
 

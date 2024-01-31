@@ -11,7 +11,7 @@ import type { RestCommand } from '../../types.js';
 export const authenticateShare =
 	<Schema extends object>(
 		share: string,
-		password: string
+		password: string,
 	): RestCommand<
 		{
 			access_token: string;
@@ -51,7 +51,7 @@ export const inviteShare =
  */
 export const readShareInfo =
 	<Schema extends object>(
-		id: string
+		id: string,
 	): RestCommand<
 		{
 			id: string;

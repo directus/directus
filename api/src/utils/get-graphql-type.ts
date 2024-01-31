@@ -9,7 +9,7 @@ import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',
-	special: string[]
+	special: string[],
 ): GraphQLScalarType | GraphQLList<GraphQLType> {
 	if (special.includes('conceal')) {
 		return GraphQLHash;

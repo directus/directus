@@ -69,11 +69,11 @@ const canInviteUsers = computed(() => {
 	if (isAdmin) return true;
 
 	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
 	);
 
 	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
 	);
 
 	return !!usersCreatePermission && !!rolesReadPermission;
@@ -182,20 +182,14 @@ function discardAndLeave() {
 
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
-		<div class="roles">
-			<v-notice v-if="adminEnabled" type="info">
+		<div v-if="!loading" class="roles">
+			<v-notice v-if="adminEnabled">
 				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
-			<v-form
-				v-model="edits"
-				collection="directus_roles"
-				:primary-key="primaryKey"
-				:loading="loading"
-				:initial-values="item"
-			/>
+			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
 		</div>
 
 		<template #sidebar>

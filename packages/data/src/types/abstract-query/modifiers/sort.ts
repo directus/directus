@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeTarget } from '../fields.js';
+import type { AbstractQueryTarget } from './target.js';
 
 /**
  * Specifies the order of the result, f.e. for a primitive field.
@@ -36,5 +36,5 @@ export interface AbstractQueryNodeSort {
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target: AbstractQueryFieldNodeTarget;
+	target: AbstractQueryTarget;
 }

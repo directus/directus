@@ -16,7 +16,7 @@ const vendors = (process.env['TEST_DB']?.split(',').map((v) => v.trim()) as Vend
 
 if (vendors.length > 1 && process.env['TEST_LOCAL']) {
 	throw new Error(
-		`You can't test multiple databases simultaneously when using the locally running instance of Directus.`
+		`You can't test multiple databases simultaneously when using the locally running instance of Directus.`,
 	);
 }
 

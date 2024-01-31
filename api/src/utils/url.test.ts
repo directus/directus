@@ -8,7 +8,7 @@ describe('relative URL handling', () => {
 
 	test('parse and serialize a relative path preserving path and hash components', () => {
 		expect(new Url('/sample-path?sample_var=sample_value#sample_hash').toString()).toStrictEqual(
-			'/sample-path?sample_var=sample_value#sample_hash'
+			'/sample-path?sample_var=sample_value#sample_hash',
 		);
 	});
 });
@@ -20,7 +20,7 @@ describe('empty scheme handling', () => {
 
 	test('parse and serialize a relative path preserving path and hash components', () => {
 		expect(new Url('//example.com:1234/sample-path?sample_var=sample_value#sample_hash').toString()).toStrictEqual(
-			'//example.com:1234/sample-path?sample_var=sample_value#sample_hash'
+			'//example.com:1234/sample-path?sample_var=sample_value#sample_hash',
 		);
 	});
 });
@@ -40,19 +40,19 @@ describe('query parameter handling', () => {
 
 	test('serialize an url without query', () => {
 		expect(new Url('https://example.com:1234/sample-path').toString()).toStrictEqual(
-			'https://example.com:1234/sample-path'
+			'https://example.com:1234/sample-path',
 		);
 	});
 
 	test('merge existing query params', () => {
 		expect(new Url(SAMPLE_URL).setQuery('new_query_pram', 'new_query_value').toString()).toStrictEqual(
-			'https://example.com:1234/sample-path?sample_param=sample_value&new_query_pram=new_query_value'
+			'https://example.com:1234/sample-path?sample_param=sample_value&new_query_pram=new_query_value',
 		);
 	});
 
 	test('replace existing query params instead of adding with the same key', () => {
 		expect(new Url(SAMPLE_URL).setQuery('sample_param', 'new_value').toString()).toStrictEqual(
-			'https://example.com:1234/sample-path?sample_param=new_value'
+			'https://example.com:1234/sample-path?sample_param=new_value',
 		);
 	});
 
@@ -63,14 +63,14 @@ describe('query parameter handling', () => {
 				.setQuery('encoding_optional', `*-.`)
 				.setQuery('non_ascii', `çÁâÑ清ゆ`)
 				.setQuery('key that needs encoding!', `sample`)
-				.toString()
+				.toString(),
 		).toStrictEqual(
 			'https://example.com:1234/sample-path' +
 				'?sample_param=sample_value' +
 				'&ascii=+%2C%3B%3A%21%3F%27%28%29%2F%26%2B%3D%24%40' +
 				'&encoding_optional=*-.' +
 				'&non_ascii=%C3%A7%C3%81%C3%A2%C3%91%E6%B8%85%E3%82%86' +
-				'&key+that+needs+encoding%21=sample'
+				'&key+that+needs+encoding%21=sample',
 		);
 	});
 });

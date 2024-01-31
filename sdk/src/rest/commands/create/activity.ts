@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateActivityOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusActivity<Schema>
+	Item extends object = DirectusActivity<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreateActivityOutput<
 export const createComment =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		item: Partial<DirectusActivity<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateActivityOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/activity/comment`,

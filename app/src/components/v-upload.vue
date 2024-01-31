@@ -80,7 +80,7 @@ function useUpload() {
 
 				uploadedFiles && emit('input', uploadedFiles);
 			} else {
-				const uploadedFile = await uploadFile(Array.from(files)[0], {
+				const uploadedFile = await uploadFile(Array.from(files)[0] as File, {
 					onProgressChange: (percentage) => {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
@@ -91,8 +91,8 @@ function useUpload() {
 
 				uploadedFile && emit('input', uploadedFile);
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 			emit('input', null);
 		} finally {
 			uploading.value = false;
@@ -215,8 +215,8 @@ function useURLImport() {
 
 			activeDialog.value = null;
 			url.value = '';
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -330,7 +330,7 @@ function openFileBrowser() {
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
-	border: 2px dashed var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;

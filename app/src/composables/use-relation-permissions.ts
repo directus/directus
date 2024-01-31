@@ -83,7 +83,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 
 	const createAllowed = computed(() => {
 		return Object.fromEntries(
-			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.create && junctionPerms.value.create])
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.create && junctionPerms.value.create]),
 		);
 	});
 
@@ -91,7 +91,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 
 	const updateAllowed = computed(() => {
 		return Object.fromEntries(
-			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update])
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update]),
 		);
 	});
 
@@ -101,7 +101,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 		}
 
 		return Object.fromEntries(
-			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update])
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update]),
 		);
 	});
 

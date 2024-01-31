@@ -257,7 +257,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
 
 	const existsJunctionRelated = relationsStore.relations.find(
-		(relation) => relation.collection === junctionCollection && relation.field === junctionRelated
+		(relation) => relation.collection === junctionCollection && relation.field === junctionRelated,
 	);
 
 	if (existsJunctionRelated) {

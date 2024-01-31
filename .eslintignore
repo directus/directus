@@ -1,7 +1,6 @@
 dist/
 /packages/extensions-sdk/templates/
 /api/extensions/
-!/app/.storybook/
 !/docs/.vitepress/
 !/docs/.typedocs/
 /docs/.vitepress/cache/
@@ -9,4 +8,13 @@ dist/
 *.yml
 *.yaml
 *.md
+*.txt
 *.json
+*.scss
+*.css
+*.svg
+*.png
+*.liquid
+*.html
+Dockerfile
+license

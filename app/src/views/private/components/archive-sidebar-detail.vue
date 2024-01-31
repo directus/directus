@@ -66,7 +66,7 @@ watch(selectedItem, () => {
 @import '@/styles/mixins/form-grid';
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

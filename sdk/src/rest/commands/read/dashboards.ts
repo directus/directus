@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadDashboardOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusDashboard<Schema>
+	Item extends object = DirectusDashboard<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadDashboardOutput<
  */
 export const readDashboards =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/dashboards`,
@@ -34,7 +34,7 @@ export const readDashboards =
 export const readDashboard =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		key: DirectusDashboard<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

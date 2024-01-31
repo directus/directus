@@ -21,5 +21,5 @@ export interface AbstractQuery {
 	fields: AbstractQueryFieldNode[];
 
 	/** Optional attributes to perform a fine granular query */
-	modifiers?: AbstractQueryModifiers;
+	modifiers: AbstractQueryModifiers;
 }

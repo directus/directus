@@ -378,7 +378,7 @@ under the closing `script` tag:
             margin: 0 auto 3px;
             width: 42px;
             height: 42px;
-            border: 2px solid transparent;
+            border: var(--theme--border-width) solid transparent;
             border-radius: 50%;
             padding: 7px;
             background: var(--background-input);
@@ -406,7 +406,7 @@ under the closing `script` tag:
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--theme--form--field--input--border-color);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
         &:hover {
             border-color: var(--theme--form--field--input--border-color-hover);
@@ -417,7 +417,7 @@ under the closing `script` tag:
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--theme--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}
@@ -705,7 +705,7 @@ export default {
             margin: 0 auto 3px;
             width: 42px;
             height: 42px;
-            border: 2px solid transparent;
+            border: var(--theme--border-width) solid transparent;
             border-radius: 50%;
             padding: 7px;
             background: var(--background-input);
@@ -733,7 +733,7 @@ export default {
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--theme--form--field--input--border-color);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
         &:hover {
             border-color: var(--theme--form--field--input--border-color-hover);
@@ -744,7 +744,7 @@ export default {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--theme--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}

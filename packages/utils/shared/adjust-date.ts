@@ -35,7 +35,7 @@ export function adjustDate(date: Date, adjustment: string): Date | undefined {
 
 	const match =
 		/^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|months?|mth|mo|years?|yrs?|y)?$/i.exec(
-			adjustment
+			adjustment,
 		);
 
 	if (!match || !match[1]) {

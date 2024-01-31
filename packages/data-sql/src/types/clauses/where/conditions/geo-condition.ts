@@ -1,6 +1,5 @@
 import type { ValueNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQueryTargetNode } from '../../common/target.js';
 
 /**
  * Used to retrieve a set of data, where the column in question stores a geographic value which intersects with another given geographic value.
@@ -12,7 +11,7 @@ export interface SqlConditionGeoNode {
 	type: 'condition-geo';
 
 	/* The column in question */
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	target: AbstractSqlQueryTargetNode;
 
 	/**
 	 * The operation to apply. Get only those rows where the targeting column

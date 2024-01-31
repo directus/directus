@@ -23,7 +23,7 @@ const props = withDefaults(
 	{
 		operation: undefined,
 		existingOperationKeys: undefined,
-	}
+	},
 );
 
 const emit = defineEmits(['save', 'cancel']);
@@ -42,7 +42,7 @@ const isOperationKeyUnique = computed(
 	() =>
 		saving.value ||
 		operationKey.value === null ||
-		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value))
+		!(props.operation?.key !== operationKey.value && props.existingOperationKeys?.includes(operationKey.value)),
 );
 
 const saveDisabled = computed(() => {
@@ -59,7 +59,7 @@ watch(
 		operationKey.value = operation.key;
 		operationName.value = operation.name;
 	},
-	{ immediate: true, deep: true }
+	{ immediate: true, deep: true },
 );
 
 watch(operationType, () => {
@@ -81,7 +81,7 @@ watch(
 			});
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const selectedOperation = useExtension('operation', operationType);
@@ -91,19 +91,19 @@ const generatedName = computed(() => (selectedOperation.value ? selectedOperatio
 const generatedKey = computed(() =>
 	selectedOperation.value
 		? slugify(selectedOperation.value?.id + '_' + generateSuffix(), { separator: '_' })
-		: t('operation_key')
+		: t('operation_key'),
 );
 
 const { operations } = useExtensions();
 
-const displayOperations = computed(() => {
-	return operations.value.map((operation) => ({
+const displayOperations = computed(() =>
+	operations.value.map((operation) => ({
 		value: operation.id,
 		icon: operation.icon,
 		text: operation.name,
 		description: operation.description,
-	}));
-});
+	})),
+);
 
 const operationOptions = computed(() => {
 	if (typeof selectedOperation.value?.options === 'function') {

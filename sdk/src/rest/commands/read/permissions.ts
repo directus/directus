@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadPermissionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusPermission<Schema>
+	Item extends object = DirectusPermission<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadPermissionOutput<
  */
 export const readPermissions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/permissions`,
@@ -34,7 +34,7 @@ export const readPermissions =
 export const readPermission =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

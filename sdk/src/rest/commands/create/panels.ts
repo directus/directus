@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreatePanelOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusPanel<Schema>
+	Item extends object = DirectusPanel<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreatePanelOutput<
 export const createPanels =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		items: Partial<DirectusPanel<Schema>>[],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/panels`,
@@ -39,7 +39,7 @@ export const createPanels =
 export const createPanel =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		item: Partial<DirectusPanel<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreatePanelOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/panels`,

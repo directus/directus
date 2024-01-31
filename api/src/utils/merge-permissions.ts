@@ -1,5 +1,5 @@
 import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
-import { flatten, intersection, isEmpty, merge, omit } from 'lodash-es';
+import { flatten, intersection, isEqual, merge, omit } from 'lodash-es';
 
 export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);
@@ -19,7 +19,7 @@ export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permiss
 export function mergePermission(
 	strategy: 'and' | 'or',
 	currentPerm: Permission,
-	newPerm: Permission
+	newPerm: Permission,
 ): Omit<Permission, 'id' | 'system'> {
 	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
 
@@ -37,12 +37,14 @@ export function mergePermission(
 				],
 			} as LogicalFilterAND | LogicalFilterOR;
 		} else if (currentPerm.permissions) {
-			permissions = {
-				[logicalKey]:
-					strategy === 'or'
-						? [currentPerm.permissions, newPerm.permissions].filter((p) => !isEmpty(p))
-						: [currentPerm.permissions, newPerm.permissions],
-			} as LogicalFilterAND | LogicalFilterOR;
+			// Empty {} supersedes other permissions in _OR merge
+			if (strategy === 'or' && (isEqual(currentPerm.permissions, {}) || isEqual(newPerm.permissions, {}))) {
+				permissions = {};
+			} else {
+				permissions = {
+					[logicalKey]: [currentPerm.permissions, newPerm.permissions],
+				} as LogicalFilterAND | LogicalFilterOR;
+			}
 		} else {
 			permissions = {
 				[logicalKey]: [newPerm.permissions],
@@ -59,12 +61,14 @@ export function mergePermission(
 				],
 			} as LogicalFilterAND | LogicalFilterOR;
 		} else if (currentPerm.validation) {
-			validation = {
-				[logicalKey]:
-					strategy === 'or'
-						? [currentPerm.validation, newPerm.validation].filter((p) => !isEmpty(p))
-						: [currentPerm.validation, newPerm.validation],
-			} as LogicalFilterAND | LogicalFilterOR;
+			// Empty {} supersedes other validations in _OR merge
+			if (strategy === 'or' && (isEqual(currentPerm.validation, {}) || isEqual(newPerm.validation, {}))) {
+				validation = {};
+			} else {
+				validation = {
+					[logicalKey]: [currentPerm.validation, newPerm.validation],
+				} as LogicalFilterAND | LogicalFilterOR;
+			}
 		} else {
 			validation = {
 				[logicalKey]: [newPerm.validation],
@@ -96,6 +100,6 @@ export function mergePermission(
 			fields,
 			presets,
 		},
-		['id', 'system']
+		['id', 'system'],
 	);
 }

@@ -59,7 +59,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		onSetup: (buttonApi: any) => {
 			const onVideoNodeSelect = (eventApi: any) => {
 				buttonApi.setActive(
-					eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object')
+					eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object'),
 				);
 			};
 

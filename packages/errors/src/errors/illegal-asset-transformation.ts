@@ -7,5 +7,5 @@ export interface IllegalAssetTransformationErrorExtensions {
 export const IllegalAssetTransformationError = createError<IllegalAssetTransformationErrorExtensions>(
 	ErrorCode.IllegalAssetTransformation,
 	'Illegal asset transformation.',
-	400
+	400,
 );

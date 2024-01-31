@@ -44,7 +44,7 @@ useGroupableParent(
 		mandatory,
 		multiple,
 	},
-	props.scope
+	props.scope,
 );
 </script>
 
@@ -69,8 +69,8 @@ useGroupableParent(
 		--v-list-color-hover              [var(--theme--foreground-accent)]
 		--v-list-color-active             [var(--theme--foreground-accent)]
 		--v-list-background-color         [transparent]
-		--v-list-background-color-hover   [var(--theme--background)]
-		--v-list-background-color-active  [var(--theme--background)]
+		--v-list-background-color-hover   [var(--theme--background-normal)]
+		--v-list-background-color-active  [var(--theme--background-normal)]
 
 */
 

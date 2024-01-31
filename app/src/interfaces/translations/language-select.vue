@@ -9,7 +9,7 @@ const props = withDefaults(
 	}>(),
 	{
 		items: () => [],
-	}
+	},
 );
 
 defineEmits(['update:modelValue']);
@@ -58,8 +58,8 @@ const displayValue = computed(() => {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	color: var(--theme--primary);
 	text-align: left;
 	background-color: var(--theme--primary-background);
@@ -120,7 +120,7 @@ const displayValue = computed(() => {
 		}
 
 		&:hover {
-			background-color: var(--theme--background);
+			background-color: var(--theme--background-normal);
 		}
 
 		.dot {

@@ -55,18 +55,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
-				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map'
+				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map',
 			);
 		});
 
 		watch(
 			geometryFields,
 			(fields) => {
-				if (!geometryField.value && fields.length > 0) {
+				if (!geometryField.value && fields[0]) {
 					geometryField.value = fields[0].field;
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {

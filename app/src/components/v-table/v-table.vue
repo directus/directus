@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '@/lang/';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
@@ -18,49 +18,50 @@ const HeaderDefaults: Header = {
 	description: null,
 };
 
-interface Props {
-	headers: HeaderRaw[];
-	items: Item[];
-	itemKey?: string;
-	sort?: Sort | null;
-	mustSort?: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	manualSortKey?: string;
-	allowHeaderReorder?: boolean;
-	modelValue?: any[];
-	fixedHeader?: boolean;
-	loading?: boolean;
-	loadingText?: string;
-	noItemsText?: string;
-	rowHeight?: number;
-	selectionUseKeys?: boolean;
-	inline?: boolean;
-	disabled?: boolean;
-	clickable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemKey: 'id',
-	sort: undefined,
-	mustSort: false,
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	manualSortKey: undefined,
-	allowHeaderReorder: false,
-	modelValue: () => [],
-	fixedHeader: false,
-	loading: false,
-	loadingText: i18n.global.t('loading'),
-	noItemsText: i18n.global.t('no_items'),
-	rowHeight: 48,
-	selectionUseKeys: false,
-	inline: false,
-	disabled: false,
-	clickable: true,
-});
+const props = withDefaults(
+	defineProps<{
+		headers: HeaderRaw[];
+		items: Item[];
+		itemKey?: string;
+		sort?: Sort | null;
+		mustSort?: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		manualSortKey?: string;
+		allowHeaderReorder?: boolean;
+		modelValue?: any[];
+		fixedHeader?: boolean;
+		loading?: boolean;
+		loadingText?: string;
+		noItemsText?: string;
+		rowHeight?: number;
+		selectionUseKeys?: boolean;
+		inline?: boolean;
+		disabled?: boolean;
+		clickable?: boolean;
+	}>(),
+	{
+		itemKey: 'id',
+		sort: undefined,
+		mustSort: false,
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		manualSortKey: undefined,
+		allowHeaderReorder: false,
+		modelValue: () => [],
+		fixedHeader: false,
+		loading: false,
+		loadingText: i18n.global.t('loading'),
+		noItemsText: i18n.global.t('no_items'),
+		rowHeight: 48,
+		selectionUseKeys: false,
+		inline: false,
+		disabled: false,
+		clickable: true,
+	},
+);
 
 const emit = defineEmits([
 	'click:row',
@@ -106,7 +107,7 @@ const internalHeaders = computed({
 				});
 
 				return pick(header, keysThatAreNotAtDefaultValue);
-			})
+			}),
 		);
 	},
 });
@@ -118,7 +119,7 @@ const internalSort = computed<Sort>(
 		props.sort ?? {
 			by: null,
 			desc: false,
-		}
+		},
 );
 
 const reordering = ref<boolean>(false);
@@ -208,9 +209,7 @@ function onItemSelected(event: ItemSelectEvent) {
 }
 
 function getSelectedState(item: Item) {
-	const selectedKeys = props.selectionUseKeys
-		? props.modelValue
-		: props.modelValue.map((item: any) => item[props.itemKey]);
+	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
 
 	return selectedKeys.includes(item[props.itemKey]);
 }
@@ -222,7 +221,7 @@ function onToggleSelectAll(value: boolean) {
 		if (props.selectionUseKeys) {
 			emit(
 				'update:modelValue',
-				clone(props.items).map((item) => item[props.itemKey])
+				clone(props.items).map((item) => item[props.itemKey]),
 			);
 		} else {
 			emit('update:modelValue', clone(props.items));
@@ -301,12 +300,12 @@ function updateSort(newSort: Sort) {
 			<draggable
 				v-else
 				v-model="internalItems"
-				force-fallback
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				v-bind="{ 'force-fallback': true }"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
@@ -417,7 +416,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .loading table {
@@ -463,7 +462,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -473,6 +472,6 @@ table :deep(.sortable-ghost .cell) {
 
 .disabled {
 	--v-table-color: var(--theme--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-background-color: var(--theme--background-subdued);
 }
 </style>

@@ -16,7 +16,7 @@ const props = withDefaults(
 	}>(),
 	{
 		type: 'info',
-	}
+	},
 );
 
 const notificationsStore = useNotificationsStore();

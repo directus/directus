@@ -19,8 +19,8 @@ describe('#registerLocation', () => {
 			manager.registerLocation('test-driver', {
 				driver: 's3',
 				options: {},
-			})
-		).toThrowErrorMatchingInlineSnapshot('"Driver \\"s3\\" isn\'t registered."');
+			}),
+		).toThrowErrorMatchingInlineSnapshot(`[Error: Driver "s3" isn't registered.]`);
 	});
 
 	test('Instantiates driver instance with passed config', () => {
@@ -65,7 +65,7 @@ describe('#location', () => {
 		const manager = new StorageManager();
 
 		expect(() => manager.location('missing')).toThrowErrorMatchingInlineSnapshot(
-			'"Location \\"missing\\" doesn\'t exist."'
+			`[Error: Location "missing" doesn't exist.]`,
 		);
 	});
 

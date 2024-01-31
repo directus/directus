@@ -15,7 +15,7 @@ test('Returns object for relational fields', () => {
 				meta: {
 					special: [special],
 				},
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
@@ -30,7 +30,7 @@ test('Returns number for numeric fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('number');
 	}
 });
@@ -45,7 +45,7 @@ test('Returns string for string fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('string');
 	}
 });
@@ -60,7 +60,7 @@ test('Returns boolean for boolean fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('boolean');
 	}
 });
@@ -75,7 +75,7 @@ test('Returns string for datetime fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('string');
 	}
 });
@@ -90,7 +90,7 @@ test('Returns object for json and csv fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
@@ -105,7 +105,7 @@ test('Returns object for geometry fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
@@ -120,7 +120,7 @@ test('Returns undefined as fallback', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('undefined');
 	}
 });

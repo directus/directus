@@ -30,7 +30,7 @@ watch(
 			data.value = newParams.collection;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
 

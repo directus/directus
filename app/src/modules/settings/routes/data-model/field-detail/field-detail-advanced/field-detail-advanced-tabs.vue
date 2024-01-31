@@ -58,7 +58,7 @@ const tabs = computed(() => {
 					text: t('translations'),
 					value: 'relationship',
 				},
-			]
+			],
 		);
 	}
 

@@ -9,7 +9,7 @@ declare global {
 }
 
 export function useElementSize<T extends Element>(
-	target: T | Ref<T> | Ref<undefined>
+	target: T | Ref<T> | Ref<undefined>,
 ): {
 	width: Ref<number>;
 	height: Ref<number>;

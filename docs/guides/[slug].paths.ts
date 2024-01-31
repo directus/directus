@@ -1,11 +1,10 @@
-import guidesData from '../.vitepress/data/guides.data.js';
+import { sections } from '../.vitepress/data/guides.js';
 
 export default {
-	async paths() {
-		const { guides } = await guidesData.load();
-		return guides.sections.map((section) => ({
+	paths() {
+		return Object.entries(sections).map(([name, section]) => ({
 			params: {
-				slug: section.indexPath,
+				slug: name,
 				...section,
 			},
 		}));

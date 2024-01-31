@@ -40,7 +40,7 @@ export default defineOperationApi<Options>({
 					const batchResults = await Promise.all(
 						batch.map((payload) => {
 							return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
-						})
+						}),
 					);
 
 					result.push(...batchResults);
@@ -53,7 +53,7 @@ export default defineOperationApi<Options>({
 				return await Promise.all(
 					payloadObject.map((payload) => {
 						return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
-					})
+					}),
 				);
 			}
 		}

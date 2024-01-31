@@ -1,5 +1,6 @@
 export {
 	useApi,
+	useSdk,
 	useCollection,
 	useExtensions,
 	useFilterFields,
@@ -19,4 +20,5 @@ export {
 	defineOperationApp,
 	definePanel,
 } from '@directus/extensions';
+export { defineTheme } from '@directus/themes';
 export { getFieldsFromTemplate, getRelationType } from '@directus/utils';

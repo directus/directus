@@ -45,15 +45,15 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -87,7 +87,7 @@ const fields = computed(() => {
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.relatedCollection.collection
+			relationInfo.value.relatedCollection.collection,
 		);
 	}
 
@@ -153,7 +153,7 @@ const showingCount = computed(() => {
 		totalItemCount.value,
 		page.value,
 		limit.value,
-		!!(search.value || searchFilter.value)
+		!!(search.value || searchFilter.value),
 	);
 });
 
@@ -199,7 +199,7 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const spacings = {
@@ -211,7 +211,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -327,7 +327,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
@@ -477,11 +477,11 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
@@ -588,6 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
+				background: var(--theme--background);
 				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
@@ -645,6 +646,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {

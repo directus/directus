@@ -7,7 +7,7 @@ export function isAllowed(
 	collection: string,
 	action: Permission['action'],
 	value: Record<string, any> | null,
-	strict = false
+	strict = false,
 ): boolean {
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
@@ -17,7 +17,7 @@ export function isAllowed(
 	const permissions = permissionsStore.permissions;
 
 	const permissionInfo = permissions.find(
-		(permission) => permission.action === action && permission.collection === collection
+		(permission) => permission.action === action && permission.collection === collection,
 	);
 
 	if (!permissionInfo) return false;

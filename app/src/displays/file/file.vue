@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: null,
-	}
+	},
 );
 
 const previewEl = ref<Element>();
@@ -67,7 +67,7 @@ img {
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 

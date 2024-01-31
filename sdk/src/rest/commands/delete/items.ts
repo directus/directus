@@ -16,7 +16,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteItems =
 	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		keysOrQuery: string[] | number[] | TQuery
+		keysOrQuery: string[] | number[] | TQuery,
 	): RestCommand<void, Schema> =>
 	() => {
 		let payload: Record<string, any> = {};
@@ -53,7 +53,7 @@ export const deleteItems =
 export const deleteItem =
 	<Schema extends object, Collection extends keyof Schema>(
 		collection: Collection,
-		key: string | number
+		key: string | number,
 	): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');

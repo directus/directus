@@ -85,7 +85,7 @@ export class FieldsService {
 			...column,
 			default_value: getDefaultValue(
 				column,
-				fields.find((field) => field.collection === column.table && field.field === column.name)
+				fields.find((field) => field.collection === column.table && field.field === column.name),
 			),
 		}));
 
@@ -148,7 +148,7 @@ export class FieldsService {
 		const knownCollections = Object.keys(this.schema.collections);
 
 		const result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
-			knownCollections.includes(field.collection)
+			knownCollections.includes(field.collection),
 		);
 
 		// Filter the result so we only return the fields you have read access to
@@ -250,7 +250,7 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -263,7 +263,7 @@ export class FieldsService {
 			const exists =
 				field.field in this.schema.collections[collection]!.fields ||
 				isNil(
-					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
+					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
 				) === false;
 
 			// Check if field already exists, either as a column, or as a row in directus_fields
@@ -297,7 +297,7 @@ export class FieldsService {
 						database: trx,
 						schema: this.schema,
 						accountability: this.accountability,
-					}
+					},
 				);
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
@@ -325,7 +325,7 @@ export class FieldsService {
 							collection: collection,
 							field: hookAdjustedField.field,
 						},
-						{ emitEvents: false }
+						{ emitEvents: false },
 					);
 				}
 
@@ -393,7 +393,7 @@ export class FieldsService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 
 			const record = field.meta
@@ -412,15 +412,21 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
+				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
+					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+				}
+
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
 				const columnToCompare =
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
-						await this.knex.schema.alterTable(collection, (table) => {
-							if (!hookAdjustedField.schema) return;
-							this.addColumnToTable(table, field, existingColumn);
+						await this.knex.transaction(async (trx) => {
+							await trx.schema.alterTable(collection, async (table) => {
+								if (!hookAdjustedField.schema) return;
+								this.addColumnToTable(table, field, existingColumn);
+							});
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err);
@@ -437,7 +443,7 @@ export class FieldsService {
 							collection: collection,
 							field: hookAdjustedField.field,
 						},
-						{ emitEvents: false }
+						{ emitEvents: false },
 					);
 				} else {
 					await this.itemsService.createOne(
@@ -446,7 +452,7 @@ export class FieldsService {
 							collection: collection,
 							field: hookAdjustedField.field,
 						},
-						{ emitEvents: false }
+						{ emitEvents: false },
 					);
 				}
 			}
@@ -515,7 +521,7 @@ export class FieldsService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 
 			await this.knex.transaction(async (trx) => {

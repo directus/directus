@@ -72,7 +72,7 @@ export const usePermissionsStore = defineStore({
 					(permission) =>
 						permission.action === action &&
 						permission.collection === collection &&
-						permission.role === userStore.currentUser?.role?.id
+						permission.role === userStore.currentUser?.role?.id,
 				) || null
 			);
 		},

@@ -9,5 +9,5 @@ export const messageConstructor = ({ reason }: InvalidQueryErrorExtensions) => `
 export const InvalidQueryError = createError<InvalidQueryErrorExtensions>(
 	ErrorCode.InvalidQuery,
 	messageConstructor,
-	400
+	400,
 );

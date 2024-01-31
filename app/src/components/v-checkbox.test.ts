@@ -1,9 +1,8 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
-import VCheckbox from './v-checkbox.vue';
+import { expect, test } from 'vitest';
 import { h } from 'vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
+import VCheckbox from './v-checkbox.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
@@ -34,7 +33,7 @@ test('modelValue prop', async () => {
 
 	await wrapper.get('.checkbox').trigger('click');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([false]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([false]);
 });
 
 test('value prop', async () => {
@@ -50,7 +49,7 @@ test('value prop', async () => {
 
 	await wrapper.get('.checkbox').trigger('click');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([['test2']]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([['test2']]);
 });
 
 test('label prop', async () => {
@@ -74,7 +73,7 @@ test('customValue prop', async () => {
 
 	wrapper.find('input').setValue('my custom value');
 
-	expect(wrapper.emitted()['update:value'][0]).toEqual(['my custom value']);
+	expect(wrapper.emitted()['update:value']?.[0]).toEqual(['my custom value']);
 });
 
 test('disabled prop', async () => {

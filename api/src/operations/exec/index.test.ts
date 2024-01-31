@@ -21,7 +21,7 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('Array buffer allocation failed');
 });
 
@@ -43,7 +43,7 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 250,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('Script execution timed out.');
 
 	await expect(
@@ -53,7 +53,7 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 250,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('Script execution timed out.');
 });
 
@@ -69,7 +69,7 @@ test('Rejects when cjs modules are used', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('require is not defined');
 });
 
@@ -85,7 +85,7 @@ test('Rejects when esm modules are used', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('Cannot use import statement outside a module [<isolated-vm>:2:3]');
 });
 
@@ -101,7 +101,7 @@ test('Rejects when code contains syntax errors', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('Unexpected end of input [<isolated-vm>:3:2]');
 });
 
@@ -119,7 +119,7 @@ test('Rejects when code does something illegal', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('a is not defined');
 });
 
@@ -135,7 +135,7 @@ test("Rejects when code doesn't return valid function", async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('module.exports is not a function');
 });
 
@@ -153,7 +153,7 @@ test('Rejects when returned function throws', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('yup, this failed');
 });
 
@@ -171,7 +171,7 @@ test('Resolves when synchronous function is valid', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).resolves.toEqual({ result: 'Hello, I ran synchronously' });
 });
 
@@ -189,7 +189,7 @@ test('Resolves when asynchronous function is valid', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
 });
 
@@ -207,7 +207,7 @@ test('Rejects when wrong unit is passed to max memory config', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 'thisShouldFail',
 				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('`memoryLimit` must be a number');
 });
 
@@ -225,6 +225,6 @@ test('Rejects when wrong unit is passed to timeout config', async () => {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
 				FLOWS_RUN_SCRIPT_TIMEOUT: 'thisShouldFail',
 			},
-		} as any)
+		} as any),
 	).rejects.toThrow('`timeout` must be a 32-bit number');
 });

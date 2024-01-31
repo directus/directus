@@ -31,7 +31,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		pathParts: string[],
 		parentCollection: string = collection,
 		parentFields?: string,
-		addNestedPkField?: string
+		addNestedPkField?: string,
 	): ColPathResult {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
@@ -93,7 +93,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 				remainingParts,
 				parent,
 				`${parentFields ? parentFields + '.' : ''}${pathParts[0]}`,
-				addNestedPkField
+				addNestedPkField,
 			);
 		}
 

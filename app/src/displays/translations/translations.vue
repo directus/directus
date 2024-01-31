@@ -61,7 +61,7 @@ const writableFields = computed(() => {
 	const junctionFields = fieldsStore.getFieldsForCollection(relationInfo.value.junctionCollection.collection);
 
 	return junctionFields.filter(
-		(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+		(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false,
 	);
 });
 

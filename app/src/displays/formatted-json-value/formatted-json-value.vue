@@ -11,7 +11,7 @@ const props = withDefaults(
 	{
 		value: null,
 		format: null,
-	}
+	},
 );
 
 const { t } = useI18n();

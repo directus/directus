@@ -8,7 +8,7 @@ export async function getAccountabilityForRole(
 		accountability: null | Accountability;
 		schema: SchemaOverview;
 		database: Knex;
-	}
+	},
 ): Promise<Accountability> {
 	let generatedAccountability: Accountability | null = context.accountability;
 

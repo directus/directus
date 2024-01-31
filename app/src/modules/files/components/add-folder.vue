@@ -36,8 +36,8 @@ async function addFolder() {
 		newFolderName.value = null;
 
 		router.push({ path: `/files/folders/${newFolder.data.data.id}` });
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}

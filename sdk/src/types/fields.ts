@@ -87,14 +87,14 @@ export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
 export type FieldsWildcard<Item extends object, Fields> = unknown extends Fields
 	? keyof Item
 	: UnpackList<Fields> extends infer Field
-	? Field extends undefined
-		? keyof Item
-		: Field extends '*'
-		? keyof Item
-		: Field extends string
-		? Field
-		: never
-	: never;
+	  ? Field extends undefined
+			? keyof Item
+			: Field extends '*'
+			  ? keyof Item
+			  : Field extends string
+			    ? Field
+			    : never
+	  : never;
 
 /**
  * Returns the relational fields from the fields list

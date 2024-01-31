@@ -99,7 +99,7 @@
 .cropper-center::after {
 	position: absolute;
 	display: block;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	content: ' ';
 }
 

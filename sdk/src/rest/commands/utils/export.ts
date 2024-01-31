@@ -13,7 +13,7 @@ export const utilsExport =
 		collection: Collection,
 		format: FileFormat,
 		query: TQuery,
-		file: Partial<DirectusFile<Schema>>
+		file: Partial<DirectusFile<Schema>>,
 	): RestCommand<void, Schema> =>
 	() => ({
 		method: 'POST',

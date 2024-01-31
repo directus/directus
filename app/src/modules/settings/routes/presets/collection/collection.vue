@@ -92,7 +92,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value
+			(permission) => permission.action === 'update' && permission.collection === collection.value,
 		);
 
 		return !!updatePermissions;
@@ -103,7 +103,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value
+			(permission) => permission.action === 'delete' && permission.collection === collection.value,
 		);
 
 		return !!deletePermissions;
@@ -114,7 +114,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value
+			(permission) => permission.action === 'create' && permission.collection === collection.value,
 		);
 
 		return !!createPermissions;

@@ -11,6 +11,7 @@ import VersionPromoteDrawer from './version-promote-drawer.vue';
 interface Props {
 	collection: string;
 	primaryKey: string | number;
+	updateAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersion | null;
 	versions: ContentVersion[] | null;
@@ -103,8 +104,8 @@ function useCreateDialog() {
 			emit('add', version);
 
 			closeCreateDialog();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			creating.value = false;
 		}
@@ -145,8 +146,8 @@ function useRenameDialog() {
 			emit('update', updates);
 
 			closeRenameDialog();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			updating.value = false;
 		}
@@ -183,8 +184,8 @@ function useDelete() {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
 			emit('delete');
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleting.value = false;
 		}
@@ -259,7 +260,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
+					<v-list-item v-if="updateAllowed" clickable @click="isVersionPromoteDrawerOpen = true">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -278,6 +279,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			v-if="currentVersion !== null"
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
+			:delete-versions-allowed="deleteVersionsAllowed"
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>
@@ -406,7 +408,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--form-vertical-gap: 8px;
+	--theme--form--row-gap: 8px;
 
 	@include form-grid;
 }
@@ -426,7 +428,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	display: flex;
 	margin-left: 16px;
 	padding: 2px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	color: var(--theme--foreground);
 	border-radius: 24px;
 

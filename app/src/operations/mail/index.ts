@@ -112,14 +112,14 @@ export default defineOperationApp({
 								url: 'example.com',
 							},
 							null,
-							2
+							2,
 						),
 						template: JSON.stringify(
 							{
 								url: 'example.com',
 							},
 							null,
-							2
+							2,
 						),
 					},
 				},

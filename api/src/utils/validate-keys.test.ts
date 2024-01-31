@@ -90,7 +90,7 @@ describe('validate keys', () => {
 
 		it('Throws an error when provided with an array containing an invalid uuid key', () => {
 			expect(() =>
-				validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'fakeuuid-62d9-434d-a7c7-878c8376782e', uuid()])
+				validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'fakeuuid-62d9-434d-a7c7-878c8376782e', uuid()]),
 			).toThrowError();
 
 			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'invalid', uuid()])).toThrowError();

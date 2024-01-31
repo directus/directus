@@ -20,7 +20,7 @@ export async function requestGraphQL(
 	isSystemCollection: boolean,
 	token: string | null,
 	jsonQuery: any,
-	options?: { variables?: any; cookies?: string[] }
+	options?: { variables?: any; cookies?: string[] },
 ): Promise<Response> {
 	const req = request(host)
 		.post(isSystemCollection ? '/graphql/system' : '/graphql')
@@ -41,7 +41,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 
 	const conn = new WebSocket(
 		`ws://${parsedHost}/${config?.path ?? 'websocket'}${config?.queryString ? `?${config.queryString}` : ''}`,
-		config?.client
+		config?.client,
 	);
 
 	let connectionAuthCompleted = false;
@@ -54,7 +54,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		state: WebSocket['readyState'],
 		options?: {
 			waitTimeout?: number;
-		}
+		},
 	) => {
 		const startMs = Date.now();
 
@@ -106,7 +106,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			targetState?: WebSocket['readyState'];
 			uid?: WebSocketUID | undefined;
 			startIndex?: number;
-		}
+		},
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		let startMessageIndex: number;
@@ -144,8 +144,8 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
 									targetMessages.length - startMessageIndex
-								}/${messageCount})`
-							)
+								}/${messageCount})`,
+							),
 						);
 					}
 				}, 5);
@@ -168,7 +168,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		options?: {
 			uid?: WebSocketUID;
 			callback?: () => void;
-		}
+		},
 	) => {
 		await waitForState(WebSocket.OPEN);
 		conn.send(JSON.stringify(message), options?.callback);
@@ -297,7 +297,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		state: WebSocket['readyState'],
 		options?: {
 			waitTimeout?: number;
-		}
+		},
 	) => {
 		const startMs = Date.now();
 
@@ -346,7 +346,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			targetState?: WebSocket['readyState'];
 			uid?: WebSocketUID;
 			startIndex?: number;
-		}
+		},
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		let startMessageIndex: number;
@@ -384,8 +384,8 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
 									targetMessages.length - startMessageIndex
-								}/${messageCount})`
-							)
+								}/${messageCount})`,
+							),
 						);
 					}
 				}, 5);
@@ -427,7 +427,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 				complete: () => {
 					return;
 				},
-			}
+			},
 		);
 
 		if (options.uid) {

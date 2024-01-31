@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { HeaderRaw } from '@/components/v-table/types';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
@@ -13,9 +7,12 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field, Filter, Item } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+defineOptions({ inheritAttrs: false });
 
 interface Props {
 	collection: string;
@@ -78,7 +75,7 @@ const table = ref<ComponentPublicInstance>();
 
 watch(
 	() => props.page,
-	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' }),
 );
 
 useShortcut(
@@ -86,7 +83,7 @@ useShortcut(
 	() => {
 		props.selectAll();
 	},
-	table
+	table,
 );
 
 const permissionsStore = usePermissionsStore();
@@ -95,7 +92,7 @@ const userStore = useUserStore();
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
-	props.limit
+	props.limit,
 );
 
 if (limitWritable.value !== selectedSize) {
