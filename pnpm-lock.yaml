@@ -7487,7 +7487,7 @@ packages:
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 4.0.1
       istanbul-reports: 3.1.6
-      magic-string: 0.30.5
+      magic-string: 0.30.6
       magicast: 0.3.3
       picocolors: 1.0.0
       std-env: 3.7.0
@@ -7556,7 +7556,7 @@ packages:
   /@vitest/snapshot@1.1.1:
     resolution: {integrity: sha512-WnMHjv4VdHLbFGgCdVVvyRkRPnOKN75JJg+LLTdr6ah7YnL75W+7CTIMdzPEPzaDxA8r5yvSVlc1d8lH3yE28w==}
     dependencies:
-      magic-string: 0.30.5
+      magic-string: 0.30.6
       pathe: 1.1.2
       pretty-format: 29.7.0
     dev: true
@@ -19005,7 +19005,7 @@ packages:
       debug: 4.3.4
       execa: 8.0.1
       local-pkg: 0.5.0
-      magic-string: 0.30.5
+      magic-string: 0.30.6
       pathe: 1.1.2
       picocolors: 1.0.0
       std-env: 3.7.0

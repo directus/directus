@@ -39,7 +39,7 @@ const pageCount = computed(() => Math.round(filterCount.value / perPage));
 watchEffect(async () => {
 	const { data } = await api.get('/extensions/registry', {
 		params: {
-			text: search.value,
+			search: search.value,
 			limit: perPage,
 			offset: (page.value - 1) * perPage,
 			type: type.value,
