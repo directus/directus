@@ -1829,16 +1829,16 @@ importers:
         version: link:../types
       '@modyfi/vite-plugin-yaml':
         specifier: 1.1.0
-        version: 1.1.0(vite@5.0.10)
+        version: 1.1.0(vite@5.0.12)
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
       vite:
         specifier: ^5.0.8
-        version: 5.0.10(sass@1.69.5)
+        version: 5.0.12(sass@1.70.0)
       vite-plugin-dts:
         specifier: 3.7.0
-        version: 3.7.0(typescript@5.3.3)(vite@5.0.10)
+        version: 3.7.0(typescript@5.3.3)(vite@5.0.12)
 
   packages/themes:
     dependencies:
@@ -5510,7 +5510,7 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
-  /@modyfi/vite-plugin-yaml@1.1.0(vite@5.0.10):
+  /@modyfi/vite-plugin-yaml@1.1.0(vite@5.0.12):
     resolution: {integrity: sha512-L26xfzkSo1yamODCAtk/ipVlL6OEw2bcJ92zunyHu8zxi7+meV0zefA9xscRMDCsMY8xL3C3wi3DhMiPxcbxbw==}
     peerDependencies:
       vite: ^3.2.7 || ^4.0.5 || ^5.0.5
@@ -5518,7 +5518,7 @@ packages:
       '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
-      vite: 5.0.10(sass@1.69.5)
+      vite: 5.0.12(sass@1.70.0)
     transitivePeerDependencies:
       - rollup
     dev: true
@@ -7154,6 +7154,7 @@ packages:
 
   /@types/caseless@0.12.5:
     resolution: {integrity: sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==}
+    requiresBuild: true
     dev: false
 
   /@types/chroma-js@2.4.3:
@@ -7598,6 +7599,7 @@ packages:
 
   /@types/tough-cookie@4.0.5:
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
+    requiresBuild: true
     dev: false
 
   /@types/trusted-types@2.0.7:
@@ -11342,6 +11344,7 @@ packages:
   /form-data@2.5.1:
     resolution: {integrity: sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==}
     engines: {node: '>= 0.12'}
+    requiresBuild: true
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -19038,6 +19041,30 @@ packages:
       - terser
     dev: true
 
+  /vite-plugin-dts@3.7.0(typescript@5.3.3)(vite@5.0.12):
+    resolution: {integrity: sha512-np1uPaYzu98AtPReB8zkMnbjwcNHOABsLhqVOf81b3ol9b5M2wPcAVs8oqPnOpr6Us+7yDXVauwkxsk5+ldmRA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      typescript: '*'
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      '@microsoft/api-extractor': 7.39.0
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
+      '@vue/language-core': 1.8.27(typescript@5.3.3)
+      debug: 4.3.4
+      kolorist: 1.8.0
+      typescript: 5.3.3
+      vite: 5.0.12(sass@1.70.0)
+      vue-tsc: 1.8.27(typescript@5.3.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+    dev: true
+
   /vite-plugin-dts@3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.12):
     resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -19055,30 +19082,6 @@ packages:
       kolorist: 1.8.0
       typescript: 5.3.3
       vite: 5.0.12(sass@1.70.0)
-      vue-tsc: 1.8.27(typescript@5.3.3)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-    dev: true
-
-  /vite-plugin-dts@3.7.0(typescript@5.3.3)(vite@5.0.10):
-    resolution: {integrity: sha512-np1uPaYzu98AtPReB8zkMnbjwcNHOABsLhqVOf81b3ol9b5M2wPcAVs8oqPnOpr6Us+7yDXVauwkxsk5+ldmRA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      typescript: '*'
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-    dependencies:
-      '@microsoft/api-extractor': 7.39.0
-      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
-      '@vue/language-core': 1.8.27(typescript@5.3.3)
-      debug: 4.3.4
-      kolorist: 1.8.0
-      typescript: 5.3.3
-      vite: 5.0.10(sass@1.69.5)
       vue-tsc: 1.8.27(typescript@5.3.3)
     transitivePeerDependencies:
       - '@types/node'
