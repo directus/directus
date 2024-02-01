@@ -55,7 +55,7 @@ processFields(versionFields);
 processFields(extensionFields);
 
 function processFields(systemFields: Record<string, any>) {
-	const { fields, table } = systemFields as { fields: FieldMeta[]; table: string; };
+	const { fields, table } = systemFields as { fields: FieldMeta[]; table: string };
 
 	fields.forEach((field, index) => {
 		const systemField: FieldMeta = {

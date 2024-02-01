@@ -26,9 +26,7 @@ const regularCollections = computed(() => orderBy(collectionsStore.databaseColle
 
 const systemCollections = computed(() =>
 	orderBy(
-		collectionsStore.collections.filter(
-			(collection) => isSystemCollection(collection.collection) === true,
-		),
+		collectionsStore.collections.filter((collection) => isSystemCollection(collection.collection) === true),
 		'name',
 	),
 );

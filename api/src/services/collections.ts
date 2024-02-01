@@ -13,12 +13,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
-import type {
-	AbstractServiceOptions,
-	ActionEventParams,
-	Collection,
-	MutationOptions,
-} from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { FieldsService } from './fields.js';

@@ -1,6 +1,6 @@
 {
-  "name": "@directus/system-data",
-  "version": "0.0.0",
+	"name": "@directus/system-data",
+	"version": "0.0.0",
 	"description": "Definitions and types for Directus system collections",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -11,21 +11,23 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Tim de Heiden <tim@directus.io>",
-  "type": "module",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"files": ["dist"],
-  "scripts": {
-    "build": "tsc && vite build"
-  },
-  "devDependencies": {
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc && vite build"
+	},
+	"devDependencies": {
 		"@directus/types": "workspace:*",
-    "@modyfi/vite-plugin-yaml": "1.1.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8",
-    "vite-plugin-dts": "3.7.0"
-  }
+		"@modyfi/vite-plugin-yaml": "1.1.0",
+		"typescript": "^5.2.2",
+		"vite": "^5.0.8",
+		"vite-plugin-dts": "3.7.0"
+	}
 }
