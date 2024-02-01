@@ -33,3 +33,4 @@ export * from './pluralize.js';
 export * from './to-array.js';
 export * from './to-boolean.js';
 export * from './validate-payload.js';
+export * from './get-endpoint.js';
