@@ -5,27 +5,24 @@ description: Learn about all of the ways to manage types with the Directus SDK
 
 # Directus SDK Types
 
-The Directus SDK provides TypeScript types used for auto-completion and generating output item types, these can be quite
-complex and can be hard to work with. This guide will go over some approaches that can be taken for working with these
-types and assumes you're working with the SDK in TypeScript 5+.
+The Directus SDK provides TypeScript types used for auto-completion and generating output item types, but these can be
+complex to work with. This guide will cover some approaches to more easily work with these types.
 
-## Setting up the a Schema
+This guide assumes you're working with the Directus SDK and using TypeScript 5 or later.
 
-The schema entails a couple of things:
+## Setting Up a Schema
 
-- A root schema type (the type that is provided to the SDK client)
-- Adding custom fields on core collections
-- A defined type for each available collection and field
+A schema contains a root schema type, custom fields on core collections, and a defined type for each available
+collection and field.
 
 ### The root Schema type
 
-This type should contain **all collections available** including junction collections for many-to-many and many-to-any
-relations because this type is used as lookup table to determine what the relations are.
+The root schema type is the type provided to the SDK client. It should contain **all available collections**, including
+junction collections for many-to-many and many-to-any relations. This type is used by the SDK as a lookup table to
+determine what relations exist.
 
-By defining a collection as an array this is considered a regular collection with multiple records, if left away a
-singular type is considered to be a singleton.
-
-For example:
+If a collection if defined as an array, it is considered a regular collection with multiple items. If not defined as an
+array, but instead as a single type, the collection is considered to be a singleton.
 
 ```ts
 interface MySchema {
@@ -36,22 +33,21 @@ interface MySchema {
 }
 ```
 
-::: tip
+::: tip Improving Results
 
-For the most reliable results the root schema types should be kept as pure as possible, meaning no unions
-(`CollectionA | null`), no optional types (`optional_collection?: CollectionA[]`) and preferably no inline relational
-types (types nested directly on the root schema) however an exception can be made here for extending core collections.
+For the most reliable results, the root schema types should be kept as pure as possible. This means avoiding unions
+(`CollectionA | null`), optional types (`optional_collection?: CollectionA[]`), and preferably inline relational types
+(types nested directly on the root schema) except when adding custom fields to core collections.
 
 :::
 
-#### Custom fields on Core Collections
+## Custom Fields on Core Collections
 
-To define custom fields on the core collections that are shipped with the SDK you can add a type containing only these
-custom fields to be applied.
+Core collections are provided and required in every Directus project, and are prefixed with `directus_`. Directus
+projects can add additional fields to these collections, but should also be included in the schema when initializing the
+Directus SDK.
 
-Extending core collections should always be a singular type.
-
-For example:
+To define custom fields on the core collections, add a type containing only your custom fields as a singular type.
 
 ```ts
 interface MySchema {
@@ -62,26 +58,28 @@ interface MySchema {
 	// extend the provided DirectusUser type // [!code ++]
 	directus_users: CustomUser; // [!code ++]
 }
-
-interface CustomUser {
-	custom_field: string;
-}
+// [!code ++]
+interface CustomUser { // [!code ++]
+	custom_field: string; // [!code ++]
+} // [!code ++]
 ```
 
-::: tip Typing bug
+::: tip 🪲 Core Collections Typing Bug
 
-there is currently an unsolved bug where when using directus core collections. To work around this you'll need to add a
-`directus_` prefixed item to the root type.
+There is currently an [unsolved bug](https://github.com/directus/directus/issues/19815) when using Directus core
+collections. If you need to include types for core collections, you will need to add an item to the root type starting
+with `directus_` for any other core collections to be correctly typed.
 
-Reference: https://github.com/directus/directus/issues/19815
+When [this bug](https://github.com/directus/directus/issues/19815) is resolved, you may need to remove this temporary
+fix.
 
 :::
 
-### Field types
+### Collection Field Types
 
 Most Directus field types will map to one of the TypeScript primitive types (`string`, `number`, `boolean`). There are
 some exceptions to this where literal types are used to distinguish between primitives in order to add extra
-functionality to the auto-completion types.
+functionality.
 
 ```ts
 interface CollectionA {
@@ -93,7 +91,7 @@ interface CollectionA {
 
 There are currently 3 literal types that can be applied. The first 2 are both used to apply the `count(field)`
 [array function](/reference/query.html#array-functions) in the `filter`/`field` auto-complete suggestions, these are the
-`'json'` and `'csv'` string literal type. There is also the `'datetime'` string literal type which is used to apply all
+`'json'` and `'csv'` string literal types. The `'datetime'` string literal type which is used to apply all
 [datetime functions](/reference/query.html#datetime-functions) in the `filter`/`field` auto-complete suggestions.
 
 ```ts
@@ -114,16 +112,16 @@ In the output types these string literals will get resolved to their appropriate
 - `'datetime'` resolves to `string`
 - `'json'` resolves to [`JsonValue`](https://github.com/directus/directus/blob/main/sdk/src/types/output.ts#L105)
 
-::: tip Types to avoid
+::: tip Types to Avoid
 
 Some types should be avoided in the Schema as they may not play well with the type logic: `any` or `any[]`, empty type
 `{}`, `never` or `void`.
 
 :::
 
-### Adding relational fields
+### Adding Relational Fields
 
-For regular relations without junction collections you define a relation using a union of the primary key type and the
+For regular relations without junction collections, define a relation using a union of the primary key type and the
 related object.
 
 ```ts
@@ -142,7 +140,7 @@ interface CollectionB { // [!code ++]
 } // [!code ++]
 ```
 
-#### Many to One
+**Many to One**
 
 ```ts
 interface CollectionB {
@@ -151,7 +149,7 @@ interface CollectionB {
 }
 ```
 
-#### One to Many
+**One to Many**
 
 ```ts
 interface CollectionB {
@@ -161,12 +159,12 @@ interface CollectionB {
 }
 ```
 
-### Adding relations with junction collections
+### Working with Junction Collections
 
-For relations that rely on a junction collection you will need to define the junction collection on the root schema and
-refer to this new type similar to the one to many relation above.
+For relations that rely on a junction collection, define the junction collection on the root schema and refer to this
+new type similar to the one to many relation above.
 
-#### Many to Many
+**Many to Many**
 
 ```ts
 interface MySchema {
@@ -181,7 +179,7 @@ interface MySchema {
 	directus_users: CustomUser;
 }
 
-// Many-to-Many junction table // [!code ++]
+// many-to-many junction table // [!code ++]
 interface CollectionBA_Many { // [!code ++]
 	id: number; // [!code ++]
 	collection_b_id: string | CollectionB; // [!code ++]
@@ -196,7 +194,7 @@ interface CollectionB {
 }
 ```
 
-#### Many to Any
+**Many to Any**
 
 ```ts
 interface MySchema {
@@ -207,13 +205,13 @@ interface MySchema {
 	collection_c: CollectionC;
 	// many-to-many junction collection
 	collection_b_a_m2m: CollectionBA_Many[];
-	// many-to-many junction collection // [!code ++]
+	// many-to-any junction collection // [!code ++]
 	collection_b_a_m2a: CollectionBA_Any[]; // [!code ++]
 	// extend the provided DirectusUser type
 	directus_users: CustomUser;
 }
 
-// Many-to-Any junction table // [!code ++]
+// many-to-any junction table // [!code ++]
 interface CollectionBA_Any { // [!code ++]
 	id: number; // [!code ++]
 	collection_b_id: string | CollectionB; // [!code ++]
@@ -230,7 +228,7 @@ interface CollectionB {
 }
 ```
 
-## Working with the generated output types
+## Working with Generated Output
 
 ```ts
 async function getCollectionA() {
@@ -241,16 +239,15 @@ async function getCollectionA() {
   )
 }
 
-type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
-// ^ this is your generated type that can be used in the component
+// generated type that can be used in the component
 // resolves to { "id": number } in this example
+type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
 ```
 
-### Debugging generated output types
+### Debugging
 
 The SDK provides some utility generic types to help debug issues. The `Identity<>` generic type can be used to try and
-resolve generics to their results. This is however not a silver bullet and you may need to reduce the type for this to
-work.
+resolve generics to their results. This may not always work, and you may need to reduce the type.
 
 ```ts
 // the output type from the previous example
@@ -259,21 +256,21 @@ type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
 // when hovering over this type it may look unreadable like:
 //  Merge<MapFlatFields<object & CollectionA, "id", MappedFunctionFields<MySchema, object & CollectionA>>, {}, MapFlatFields<...>, {}>[]
 
+// should resolve to { id: number; }
 type ResolvedType = Identity< GeneratedType[0] >;
-// ^ should resolve to { id: number; }
 ```
 
-## Working with input Query types
+## Working with input Query Types
 
-For the output types to work properly the `fields` list needs to be static so the types can read the fields that were
+For the output types to work properly, the `fields` list needs to be static so the types can read the fields that were
 selected in the query.
 
 ```ts
+// this does not work and resolves to string[], losing all information about the fields themselves
 const fields = ["id", "status"];
-// ^ does not work! this resolves to string[] losing all information about the fields themselves
 
+// correctly resolves to readonly ["id", "status"]
 const fields = ["id", "status"] as const;
-// This correctly resolves to readonly ["id", "status"]
 ```
 
 Complete example:
@@ -309,8 +306,8 @@ const results2 = await directusClient.request(readItems("collection_a", {
 }));
 ```
 
-::: tip Alias unsupported
+::: tip Alias Unsupported
 
-At this time `alias` has not been typed yet for use in other query parameters like `deep`.
+At this time, `alias` has not been typed yet for use in other query parameters like `deep`.
 
 :::
