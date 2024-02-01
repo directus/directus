@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
 import ExtensionReadme from './components/extension-readme.vue';
+import ExtensionMetadata from './components/extension-metadata.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -52,7 +53,8 @@ const navigateBack = () => router.push('/settings/marketplace');
 		<div class="drawer-item-content">
 			<template v-if="extension">
 				<ExtensionBanner :extension="extension" />
-				<ExtensionReadme :readme="extension.readme" />
+				<ExtensionMetadata :extension="extension" />
+				<ExtensionReadme v-if="extension.readme" :readme="extension.readme" />
 			</template>
 
 			<v-progress-circular v-else-if="loading" indeterminate />
