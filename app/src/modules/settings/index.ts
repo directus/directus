@@ -13,6 +13,7 @@ import Extensions from './routes/extensions/extensions.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowsOverview from './routes/flows/overview.vue';
+import MarketplaceRegistry from './routes/marketplace/registry.vue';
 import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
@@ -228,6 +229,10 @@ export default defineModule({
 		{
 			path: 'extensions',
 			component: Extensions,
+		},
+		{
+			path: 'marketplace',
+			component: MarketplaceRegistry,
 		},
 		{
 			path: 'translations',
