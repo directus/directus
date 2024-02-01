@@ -3,6 +3,7 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
 import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -26,7 +27,7 @@ const regularCollections = computed(() => orderBy(collectionsStore.databaseColle
 const systemCollections = computed(() =>
 	orderBy(
 		collectionsStore.collections.filter(
-			(collection) => collectionsStore.systemCollections.includes(collection.collection) === true,
+			(collection) => isSystemCollection(collection.collection) === true,
 		),
 		'name',
 	),
@@ -101,7 +102,7 @@ function useReset() {
 		resetting.value = true;
 
 		const toBeDeleted = permissions.value
-			.filter((permission) => collectionsStore.systemCollections.includes(permission.collection))
+			.filter((permission) => isSystemCollection(permission.collection))
 			.map((permission) => permission.id);
 
 		try {

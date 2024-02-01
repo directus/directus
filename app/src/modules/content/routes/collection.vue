@@ -22,7 +22,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
-import { useCollectionsStore } from '@/stores/collections';
+import { isSystemCollection } from '@directus/system-data';
 
 type Item = {
 	[field: string]: any;
@@ -40,7 +40,6 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const permissionsStore = usePermissionsStore();
-const { systemCollections } = useCollectionsStore();
 const layoutRef = ref();
 
 const { collection } = toRefs(props);
@@ -349,7 +348,7 @@ function usePermissions() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<content-not-found v-if="!currentCollection || systemCollections.includes(collection)" />
+		<content-not-found v-if="!currentCollection || isSystemCollection(collection)" />
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"

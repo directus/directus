@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
+import { isSystemCollection } from '@directus/system-data';
 
 const props = defineProps<{
 	collection: string;
@@ -82,7 +83,7 @@ function discardAndLeave() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="collectionsStore.systemCollections.includes(collection) === false"
+						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="t('delete_collection')"
 						rounded
 						icon
@@ -142,7 +143,7 @@ function discardAndLeave() {
 				:loading="loading"
 				:initial-values="item?.meta"
 				:primary-key="collection"
-				:disabled="collectionsStore.systemCollections.includes(collection)"
+				:disabled="isSystemCollection(collection)"
 			/>
 		</div>
 

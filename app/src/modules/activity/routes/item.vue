@@ -2,9 +2,9 @@
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
-import { useCollectionsStore } from '@/stores/collections';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
+import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -32,8 +32,6 @@ const props = defineProps<{
 
 const { t, te } = useI18n();
 
-const { systemCollections } = useCollectionsStore();
-
 const router = useRouter();
 
 const isOpen = useDialogRoute();
@@ -43,7 +41,7 @@ const loading = ref(false);
 const error = ref<any>(null);
 
 const openItemLink = computed(() => {
-	if (!item.value || systemCollections.includes(item.value.collection) || item.value.action === 'delete') return;
+	if (!item.value || isSystemCollection(item.value.collection) || item.value.action === 'delete') return;
 
 	return getItemRoute(item.value.collection, item.value.item);
 });

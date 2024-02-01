@@ -6,6 +6,7 @@ import { fetchAll } from '@/utils/fetch-all';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { Panel } from '@directus/extensions';
+import { isSystemCollection } from '@directus/system-data';
 import type { Item } from '@directus/types';
 import { applyOptionsData, getSimpleHash, toArray } from '@directus/utils';
 import { AxiosResponse } from 'axios';
@@ -14,7 +15,6 @@ import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } fr
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
-import { useCollectionsStore } from './collections';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -76,8 +76,6 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	});
 
 	const { panels: panelTypes } = useExtensions();
-
-	const { systemCollections } = useCollectionsStore();
 
 	return {
 		dashboards,
@@ -234,13 +232,13 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		const gqlString = queryToGqlString(
 			Array.from(queries.values())
-				.filter(({ collection }) => systemCollections.includes(collection) === false)
+				.filter(({ collection }) => isSystemCollection(collection) === false)
 				.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest })),
 		);
 
 		const systemGqlString = queryToGqlString(
 			Array.from(queries.values())
-				.filter(({ collection }) => systemCollections.includes(collection))
+				.filter(({ collection }) => isSystemCollection(collection))
 				.map(({ key, ...rest }) => ({
 					key: `query_${key}`,
 					...rest,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -30,7 +31,7 @@ const collections = computed(() => {
 
 	if (!props.includeSystem) {
 		collections = collections.filter(
-			(collection) => collectionsStore.systemCollections.includes(collection.collection) === false,
+			(collection) => isSystemCollection(collection.collection) === false,
 		);
 	}
 
