@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.504.0",
-		"@aws-sdk/lib-storage": "3.501.0",
+		"@aws-sdk/lib-storage": "3.504.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@smithy/node-http-handler": "2.3.1"
