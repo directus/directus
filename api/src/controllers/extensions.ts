@@ -1,6 +1,10 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { EXTENSION_TYPES } from '@directus/extensions';
+import { describe, list, type DescribeOptions, type ListOptions, type ListQuery } from '@directus/extensions-registry';
+import { isIn } from '@directus/utils';
 import express from 'express';
+import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -24,6 +28,68 @@ router.get(
 
 		const extensions = await service.readAll();
 		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/registry',
+	asyncHandler(async (req, res, next) => {
+		const { search, limit, offset, type } = req.query;
+
+		const query: ListQuery = {};
+
+		if (typeof search === 'string') {
+			query.search = search;
+		}
+
+		if (typeof limit === 'string') {
+			query.limit = Number(limit);
+		}
+
+		if (typeof offset === 'string') {
+			query.offset = Number(offset);
+		}
+
+		if (typeof type === 'string') {
+			if (isIn(type, EXTENSION_TYPES) === false) {
+				throw new ForbiddenError();
+			}
+
+			query.type = type;
+		}
+
+		const options: ListOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await list(query, options);
+
+		res.locals['payload'] = { data: payload };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	`/registry/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res, next) => {
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const options: DescribeOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await describe(req.params['pk'], options);
+
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,

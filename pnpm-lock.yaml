@@ -56,6 +56,9 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../packages/extensions
+      '@directus/extensions-registry':
+        specifier: workspace:*
+        version: link:../packages/extensions-registry
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -1322,6 +1325,52 @@ importers:
       vue-router:
         specifier: 4.2.5
         version: 4.2.5(vue@3.4.15)
+
+  packages/extensions-registry:
+    dependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
+      '@directus/extensions':
+        specifier: workspace:*
+        version: link:../extensions
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      ky:
+        specifier: 1.2.0
+        version: 1.2.0
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
+      validate-npm-package-name:
+        specifier: 5.0.0
+        version: 5.0.0
+      zod:
+        specifier: 3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/lodash-es':
+        specifier: 4.17.12
+        version: 4.17.12
+      '@types/validate-npm-package-name':
+        specifier: 4.0.2
+        version: 4.0.2
+      '@vitest/coverage-v8':
+        specifier: 1.1.0
+        version: 1.1.0(vitest@1.1.1)
+      tsup:
+        specifier: 8.0.1
+        version: 8.0.1(typescript@5.3.3)
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vitest:
+        specifier: 1.1.1
+        version: 1.1.1
 
   packages/extensions-sdk:
     dependencies:
@@ -7205,6 +7254,10 @@ packages:
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
     dev: true
 
+  /@types/validate-npm-package-name@4.0.2:
+    resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
+    dev: true
+
   /@types/web-bluetooth@0.0.20:
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
 
@@ -7422,6 +7475,29 @@ packages:
       vue: 3.4.15(typescript@5.3.3)
     dev: true
 
+  /@vitest/coverage-v8@1.1.0(vitest@1.1.1):
+    resolution: {integrity: sha512-kHQRk70vTdXAyQY2C0vKOHPyQD/R6IUzcGdO4vCuyr4alE5Yg1+Sk2jSdjlIrTTXdcNEs+ReWVM09mmSFJpzyQ==}
+    peerDependencies:
+      vitest: ^1.0.0
+    dependencies:
+      '@ampproject/remapping': 2.2.1
+      '@bcoe/v8-coverage': 0.2.3
+      debug: 4.3.4
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-lib-source-maps: 4.0.1
+      istanbul-reports: 3.1.6
+      magic-string: 0.30.5
+      magicast: 0.3.3
+      picocolors: 1.0.0
+      std-env: 3.7.0
+      test-exclude: 6.0.0
+      v8-to-istanbul: 9.2.0
+      vitest: 1.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@vitest/coverage-v8@1.2.2(vitest@1.2.2):
     resolution: {integrity: sha512-IHyKnDz18SFclIEEAHb9Y4Uxx0sPKC2VO1kdDCs1BF6Ip4S8rQprs971zIsooLUn7Afs71GRxWMWpkCGZpRMhw==}
     peerDependencies:
@@ -7445,12 +7521,28 @@ packages:
       - supports-color
     dev: true
 
+  /@vitest/expect@1.1.1:
+    resolution: {integrity: sha512-Qpw01C2Hyb3085jBkOJLQ7HRX0Ncnh2qV4p+xWmmhcIUlMykUF69zsnZ1vPmAjZpomw9+5tWEGOQ0GTfR8U+kA==}
+    dependencies:
+      '@vitest/spy': 1.1.1
+      '@vitest/utils': 1.1.1
+      chai: 4.4.1
+    dev: true
+
   /@vitest/expect@1.2.2:
     resolution: {integrity: sha512-3jpcdPAD7LwHUUiT2pZTj2U82I2Tcgg2oVPvKxhn6mDI2On6tfvPQTjAI4628GUGDZrCm4Zna9iQHm5cEexOAg==}
     dependencies:
       '@vitest/spy': 1.2.2
       '@vitest/utils': 1.2.2
       chai: 4.4.1
+    dev: true
+
+  /@vitest/runner@1.1.1:
+    resolution: {integrity: sha512-8HokyJo1SnSi3uPFKfWm/Oq1qDwLC4QDcVsqpXIXwsRPAg3gIDh8EbZ1ri8cmQkBxdOu62aOF9B4xcqJhvt4xQ==}
+    dependencies:
+      '@vitest/utils': 1.1.1
+      p-limit: 5.0.0
+      pathe: 1.1.2
     dev: true
 
   /@vitest/runner@1.2.2:
@@ -7461,6 +7553,14 @@ packages:
       pathe: 1.1.2
     dev: true
 
+  /@vitest/snapshot@1.1.1:
+    resolution: {integrity: sha512-WnMHjv4VdHLbFGgCdVVvyRkRPnOKN75JJg+LLTdr6ah7YnL75W+7CTIMdzPEPzaDxA8r5yvSVlc1d8lH3yE28w==}
+    dependencies:
+      magic-string: 0.30.5
+      pathe: 1.1.2
+      pretty-format: 29.7.0
+    dev: true
+
   /@vitest/snapshot@1.2.2:
     resolution: {integrity: sha512-SmGY4saEw1+bwE1th6S/cZmPxz/Q4JWsl7LvbQIky2tKE35US4gd0Mjzqfr84/4OD0tikGWaWdMja/nWL5NIPA==}
     dependencies:
@@ -7469,10 +7569,24 @@ packages:
       pretty-format: 29.7.0
     dev: true
 
+  /@vitest/spy@1.1.1:
+    resolution: {integrity: sha512-hDU2KkOTfFp4WFFPWwHFauddwcKuGQ7gF6Un/ZZkCogoAiTMN7/7YKvUDbywPZZ754iCQGjdUmXN3t4k0jm1IQ==}
+    dependencies:
+      tinyspy: 2.2.0
+    dev: true
+
   /@vitest/spy@1.2.2:
     resolution: {integrity: sha512-k9Gcahssw8d7X3pSLq3e3XEu/0L78mUkCjivUqCQeXJm9clfXR/Td8+AP+VC1O6fKPIDLcHDTAmBOINVuv6+7g==}
     dependencies:
       tinyspy: 2.2.0
+    dev: true
+
+  /@vitest/utils@1.1.1:
+    resolution: {integrity: sha512-E9LedH093vST/JuBSyHLFMpxJKW3dLhe/flUSPFedoyj4wKiFX7Jm8gYLtOIiin59dgrssfmFv0BJ1u8P/LC/A==}
+    dependencies:
+      diff-sequences: 29.6.3
+      loupe: 2.3.7
+      pretty-format: 29.7.0
     dev: true
 
   /@vitest/utils@1.2.2:
@@ -12717,6 +12831,11 @@ packages:
   /kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
     dev: true
+
+  /ky@1.2.0:
+    resolution: {integrity: sha512-dnPW+T78MuJ9tLAiF/apJV7bP7RRRCARXQxsCmsWiKLXqGtMBOgDVOFRYzCAfNe/OrRyFyor5ESgvvC+QWEqOA==}
+    engines: {node: '>=18'}
+    dev: false
 
   /launch-editor@2.6.1:
     resolution: {integrity: sha512-eB/uXmFVpY4zezmGp5XtU21kwo7GBbKB+EQ+UZeWtGb9yAM5xt/Evk+lYH3eRNAtId+ej4u7TYPFZ07w4s7rRw==}
@@ -18459,6 +18578,13 @@ packages:
       builtins: 5.0.1
     dev: false
 
+  /validate-npm-package-name@5.0.0:
+    resolution: {integrity: sha512-YuKoXDAhBYxY7SfOKxHBDoSyENFeW5VvIIQp2TGQuit8gpK6MnWaQelBKxso72DoxTZfZdcP3W90LqpSkgPzLQ==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    dependencies:
+      builtins: 5.0.1
+    dev: false
+
   /validator@13.11.0:
     resolution: {integrity: sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==}
     engines: {node: '>= 0.10'}
@@ -18565,6 +18691,27 @@ packages:
       cac: 6.7.14
       debug: 4.3.4
       mlly: 1.5.0
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      vite: 5.0.12(sass@1.70.0)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /vite-node@1.1.1:
+    resolution: {integrity: sha512-2bGE5w4jvym5v8llF6Gu1oBrmImoNSs4WmRVcavnG2me6+8UQntTqLiAMFyiAobp+ZXhj5ZFhI7SmLiFr/jrow==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
       vite: 5.0.12(sass@1.70.0)
@@ -18820,6 +18967,62 @@ packages:
       - terser
       - typescript
       - universal-cookie
+    dev: true
+
+  /vitest@1.1.1:
+    resolution: {integrity: sha512-Ry2qs4UOu/KjpXVfOCfQkTnwSXYGrqTbBZxw6reIYEFjSy1QUARRg5pxiI5BEXy+kBVntxUYNMlq4Co+2vD3fQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@types/node': ^18.0.0 || >=20.0.0
+      '@vitest/browser': ^1.0.0
+      '@vitest/ui': ^1.0.0
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@types/node':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@vitest/expect': 1.1.1
+      '@vitest/runner': 1.1.1
+      '@vitest/snapshot': 1.1.1
+      '@vitest/spy': 1.1.1
+      '@vitest/utils': 1.1.1
+      acorn-walk: 8.3.2
+      cac: 6.7.14
+      chai: 4.4.1
+      debug: 4.3.4
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.5
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      std-env: 3.7.0
+      strip-literal: 1.3.0
+      tinybench: 2.6.0
+      tinypool: 0.8.2
+      vite: 5.0.12(sass@1.70.0)
+      vite-node: 1.1.1
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
     dev: true
 
   /vitest@1.2.2(@types/node@18.19.10):
