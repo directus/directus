@@ -50,10 +50,11 @@ test('primitives only', () => {
 			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
+		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen);
+	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -111,10 +112,11 @@ test('primitive, fn', () => {
 			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
+		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen);
+	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -248,10 +250,11 @@ test('primitive, fn, m2o', () => {
 			},
 		],
 		subQueries: [],
+		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen);
+	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -334,10 +337,11 @@ test('primitive, o2m', () => {
 			},
 		],
 		subQueries: [expect.any(Function)],
+		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen);
+	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -357,38 +361,38 @@ test('primitive, json path', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: columnName,
-			alias: columnAlias,
+			field: 'columnName',
+			alias: 'columnAlias',
 		},
 		{
 			type: 'nested-single-one',
 			nesting: {
 				type: 'object-many',
-				fieldName: jsonColumnName,
+				fieldName: 'jsonColumnName',
 			},
 			fields: [
 				{
 					type: 'primitive',
-					field: attribute1,
-					alias: attribute1Alias,
+					field: 'attribute1',
+					alias: 'attribute1Alias',
 				},
 				{
 					type: 'nested-single-one',
 					nesting: {
 						type: 'object-many',
-						fieldName: attribute2,
+						fieldName: 'attribute2',
 					},
 					fields: [
 						{
 							type: 'primitive',
-							field: attribute3,
-							alias: attribute3Alias,
+							field: 'attribute3',
+							alias: 'attribute3Alias',
 						},
 					],
-					alias: attribute2Alias,
+					alias: 'attribute2Alias',
 				},
 			],
-			alias: jsonValueAlias,
+			alias: 'jsonValueAlias',
 		},
 	];
 
@@ -398,21 +402,21 @@ test('primitive, json path', () => {
 				{
 					type: 'primitive',
 					tableIndex,
-					columnName,
+					columnName: 'columnName',
 					columnIndex: 0,
 				},
 				{
 					type: 'json',
 					tableIndex,
-					columnName: jsonColumnName,
-					path: [attribute1],
+					columnName: 'jsonColumnName',
+					path: ['attribute1'],
 					columnIndex: 1,
 				},
 				{
 					type: 'json',
 					tableIndex,
-					columnName: jsonColumnName,
-					path: [attribute2, attribute3],
+					columnName: 'jsonColumnName',
+					path: ['attribute2', 'attribute3'],
 					columnIndex: 2,
 				},
 			],
@@ -422,25 +426,25 @@ test('primitive, json path', () => {
 		aliasMapping: [
 			{
 				type: 'root',
-				alias: columnAlias,
+				alias: 'columnAlias',
 				columnIndex: 0,
 			},
 			{
 				type: 'nested',
-				alias: jsonValueAlias,
+				alias: 'jsonValueAlias',
 				children: [
 					{
 						type: 'root',
-						alias: attribute1Alias,
+						alias: 'attribute1Alias',
 						columnIndex: 1,
 					},
 					{
 						type: 'nested',
-						alias: attribute2Alias,
+						alias: 'attribute2Alias',
 						children: [
 							{
 								type: 'root',
-								alias: attribute3Alias,
+								alias: 'attribute3Alias',
 								columnIndex: 2,
 							},
 						],
@@ -449,9 +453,10 @@ test('primitive, json path', () => {
 			},
 		],
 		subQueries: [],
+		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen);
+	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
 	expect(result).toStrictEqual(expectedResult);
 });

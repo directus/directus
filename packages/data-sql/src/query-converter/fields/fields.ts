@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
-import type { IndexGenerators } from '../utils/create-index-generators.js';
+import { type IndexGenerators } from '../utils/create-index-generators.js';
 import { createJoin } from './nodes/join.js';
 import { getNestedMany } from './nodes/nested-manys.js';
 import { createPrimitiveSelect } from './nodes/primitive-select.js';
@@ -12,6 +12,7 @@ export type FieldConversionResult = {
 	parameters: ParameterTypes[];
 	aliasMapping: AliasMapping;
 	subQueries: SubQuery[];
+	currentJsonPath: string[];
 };
 
 /**
@@ -33,6 +34,10 @@ export const convertFieldNodes = (
 	abstractFields: AbstractQueryFieldNode[],
 	tableIndex: number,
 	indexGen: IndexGenerators,
+	currentJsonPath: string[] = [],
+	jsonColumnName: string | null,
+	isJsonContext: boolean,
+	isRootOfJson: boolean,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
@@ -43,9 +48,21 @@ export const convertFieldNodes = (
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
 			const columnIndex = indexGen.column.next().value;
+
+			let newNode = null;
+
+			if (isRootOfJson) {
+				currentJsonPath = [...currentJsonPath, abstractField.field];
+				newNode = convertJson(currentJsonPath, tableIndex, jsonColumnName, columnIndex);
+				// reached the end of a json path, so reset it
+				currentJsonPath = [];
+				isJsonContext = false;
+			} else {
+				newNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
+			}
+
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
-			const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
-			select.push(selectNode);
+			select.push(newNode);
 			continue;
 		}
 
@@ -61,17 +78,42 @@ export const convertFieldNodes = (
 			if (abstractField.nesting.type === 'relational-single') {
 				const tableIndexRelational = indexGen.table.next().value;
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
-				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
+
+				const nestedOutput = convertFieldNodes(
+					abstractField.fields,
+					tableIndexRelational,
+					indexGen,
+					currentJsonPath,
+					jsonColumnName,
+					false,
+					false,
+				);
+
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				joins.push(sqlJoinNode);
 				select.push(...nestedOutput.clauses.select);
 			}
 
 			if (abstractField.nesting.type === 'object-many') {
-				const sqlJoinNode = convertJson(abstractField, tableIndex, indexGen.column);
-				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen);
+				if (!isJsonContext && !isRootOfJson) {
+					isJsonContext = true;
+					jsonColumnName = abstractField.nesting.fieldName;
+				} else {
+					currentJsonPath.push(abstractField.nesting.fieldName);
+				}
+
+				const nestedOutput = convertFieldNodes(
+					abstractField.fields,
+					tableIndex,
+					indexGen,
+					currentJsonPath,
+					jsonColumnName,
+					true,
+					true,
+				);
+
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
-				select.push(...sqlJoinNode);
+				select.push(...nestedOutput.clauses.select);
 			}
 
 			continue;
@@ -112,5 +154,6 @@ export const convertFieldNodes = (
 		subQueries,
 		parameters,
 		aliasMapping,
+		currentJsonPath,
 	};
 };
