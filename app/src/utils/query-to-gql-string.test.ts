@@ -20,15 +20,6 @@ beforeEach(() => {
 	);
 });
 
-vi.mock('./is-system-collection', () => {
-	const isSystemCollection = (collection: string) => {
-		if (collection === 'directus_users') return true;
-		return false;
-	};
-
-	return { isSystemCollection };
-});
-
 describe('Empty query returns the primary key', () => {
 	test.each([true, false])(`System collection: %o`, (isSystemCollection) => {
 		const query: Query = {};

@@ -1,16 +1,6 @@
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('./is-system-collection', () => {
-	const isSystemCollection = (collection: string) => {
-		if (collection === 'directus_users') return true;
-		if (collection === 'directus_settings') return true;
-		return false;
-	};
-
-	return { isSystemCollection };
-});
-
 describe('getSystemCollectionRoute', () => {
 	it('Returns an empty string when collection is not a system collection', () => {
 		const collection = 'some_collection';
