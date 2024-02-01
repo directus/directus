@@ -95,8 +95,8 @@ hit save.
 
 ![A form named "Global" has two inputs - a title and a description, each filled with some text.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/next-global-config.webp)
 
-By default, new collections are not accessible to the public. Navigate to Settings -> Roles & Permissions -> Public and
-give Read access to the Global collection.
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give
+Read access to the Global collection.
 
 Inside of the `app` directory, create a new file called `page.tsx`.
 
@@ -128,8 +128,8 @@ that it expects, but do not yet exist - these can be safely ignored for now.
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will
 correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the
-Public role read access to the new collection. Create 3 items in the new collection -
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public
+role read access to the new collection. Create 3 items in the new collection -
 [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 Inside of `app`, create a new directory called `[slug]` with a file called `page.tsx`. This is a dynamic route, so a
@@ -183,7 +183,7 @@ Create the following fields in your `posts` data model:
 - a datetime selection field called `publish_date` - set the type to 'date'
 - a many-to-one relational field called `author` with the related collection set to `authors`
 
-In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
 Create 3 items in the posts collection -
 [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
