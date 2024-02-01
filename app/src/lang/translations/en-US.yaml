@@ -79,6 +79,7 @@ extension_bundles: Bundles
 extension_reload_required: Page Reload Required
 extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
 extension_reload_now: Reload now
+published_relative: Published {relativeTime}
 enable: Enable
 disable: Disable
 custom: Custom

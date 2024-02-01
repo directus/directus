@@ -2,12 +2,12 @@
 import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { iconMap } from '../constants/icons';
-import ExtensionItemOptions from './extension-item-options.vue';
 import { ExtensionStatus } from '../types';
+import ExtensionItemOptions from './extension-item-options.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -28,7 +28,7 @@ const devMode = import.meta.env.DEV;
 const changingEnabledState = ref(false);
 
 const type = computed(() => props.extension.schema?.type);
-const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
+const icon = computed(() => (type.value ? extensionTypeIconMap[type.value] : 'warning'));
 const isLocked = computed(() => devMode && isOrHasAppExtension.value);
 
 const isPartialEnabled = computed(() => {
