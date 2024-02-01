@@ -140,7 +140,7 @@ interface CollectionB { // [!code ++]
 } // [!code ++]
 ```
 
-**Many to One**
+#### Many to One
 
 ```ts
 interface CollectionB {
@@ -149,7 +149,7 @@ interface CollectionB {
 }
 ```
 
-**One to Many**
+#### One to Many
 
 ```ts
 interface CollectionB {
@@ -164,7 +164,7 @@ interface CollectionB {
 For relations that rely on a junction collection, define the junction collection on the root schema and refer to this
 new type similar to the one to many relation above.
 
-**Many to Many**
+#### Many to Many
 
 ```ts
 interface MySchema {
@@ -194,7 +194,7 @@ interface CollectionB {
 }
 ```
 
-**Many to Any**
+#### Many to Any
 
 ```ts
 interface MySchema {
