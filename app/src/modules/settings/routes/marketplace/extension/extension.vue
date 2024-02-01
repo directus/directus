@@ -5,7 +5,8 @@ import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
-import  ExtensionBanner  from './components/extension-banner.vue';
+import ExtensionBanner from './components/extension-banner.vue';
+import ExtensionReadme from './components/extension-readme.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -49,11 +50,9 @@ const navigateBack = () => router.push('/settings/marketplace');
 		</template>
 
 		<div class="drawer-item-content">
-
 			<template v-if="extension">
 				<ExtensionBanner :extension="extension" />
-
-				<div v-md="extension.readme" class="readme" />
+				<ExtensionReadme :readme="extension.readme" />
 			</template>
 
 			<v-progress-circular v-else-if="loading" indeterminate />
