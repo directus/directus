@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useDialogRoute } from '@/composables/use-dialog-route';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 
 const props = defineProps<{
 	extensionId: string;
 }>();
 
-const isOpen = useDialogRoute();
 const router = useRouter();
 const { t } = useI18n();
 
@@ -33,28 +32,42 @@ watchEffect(async () => {
 	}
 });
 
-const close = () => {
-	router.push('/settings/marketplace');
-};
+const navigateBack = () => router.push('/settings/marketplace');
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="extension?.name ?? t('loading')" @cancel="close">
+	<private-view :title="extension?.name ?? t('loading')">
+		<template v-if="extension" #headline>{{ t(`extension_${extension.type}`) }}</template>
+
+		<template #title-outer:prepend>
+			<v-button v-tooltip.bottom="t('back')" class="header-icon" rounded icon secondary exact @click="navigateBack">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
 		<div class="drawer-item-content">
 			<template v-if="extension">
-				<div v-md="extension.readme" />
+				<div v-md="extension.readme" class="readme" />
 			</template>
 
 			<v-progress-circular v-else-if="loading" indeterminate />
 
 			<v-error v-else :error="error" />
 		</div>
-	</v-drawer>
+	</private-view>
 </template>
 
 <style scoped lang="scss">
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+}
+
+.readme {
+	max-width: 600px;
 }
 </style>
