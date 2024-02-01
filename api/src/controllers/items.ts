@@ -9,7 +9,7 @@ import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { isSystemCollection } from '../utils/is-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const router = express.Router();
 

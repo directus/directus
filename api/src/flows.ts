@@ -23,7 +23,7 @@ import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { getSystemCollections } from './utils/get-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 let flowManager: FlowManager | undefined;
 
@@ -138,7 +138,6 @@ class FlowManager {
 
 	private async load(): Promise<void> {
 		const logger = useLogger();
-		const systemCollections = getSystemCollections();
 
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
@@ -161,7 +160,7 @@ class FlowManager {
 								if (!flow.options?.['collections']) return [];
 
 								return toArray(flow.options['collections']).map((collection: string) => {
-									if (systemCollections.includes(collection)) {
+									if (isSystemCollection(collection)) {
 										const action = scope.split('.')[1];
 										return collection.substring(9) + '.' + action;
 									}

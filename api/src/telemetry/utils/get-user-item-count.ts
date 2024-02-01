@@ -1,7 +1,7 @@
 import { type Knex } from 'knex';
 import { getSchema } from '../../utils/get-schema.js';
 import { getItemCount } from './get-item-count.js';
-import { getSystemCollections } from '../../utils/get-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 export interface UserItemCount {
 	collections: number;
@@ -19,10 +19,8 @@ export const sum = (acc: number, val: number) => (acc += val);
 export const getUserItemCount = async (db: Knex): Promise<UserItemCount> => {
 	const schema = await getSchema({ database: db });
 
-	const systemCollections = getSystemCollections();
-
 	const userCollections = Object.keys(schema.collections).filter(
-		(collection) => systemCollections.includes(collection) === false,
+		(collection) => isSystemCollection(collection) === false,
 	);
 
 	const counts = await getItemCount(db, userCollections);

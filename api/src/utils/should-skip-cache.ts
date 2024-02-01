@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import url from 'url';
 import { Url } from './url.js';
-import { getEndpoint } from './get-endpoint.js';
+import { getEndpoint } from '@directus/utils';
 
 /**
  * Whether to skip caching for the current request

@@ -3,7 +3,7 @@ import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { fetchAll } from '@/utils/fetch-all';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
 import { toArray } from '@directus/utils';

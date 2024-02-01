@@ -1,6 +1,6 @@
 import api from '@/api';
 import { RelationM2O } from '@/composables/use-relation-m2o';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { ref, Ref, watch } from 'vue';

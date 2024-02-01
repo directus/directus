@@ -5,7 +5,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { useApi } from '@directus/composables';
 import { computed, Ref, ref, watch } from 'vue';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 export default function useDisplayItems(collection: Ref<string>, template: Ref<string>, ids: Ref<(string | number)[]>) {
 	const collectionsStore = useCollectionsStore();

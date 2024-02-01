@@ -4,7 +4,7 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{

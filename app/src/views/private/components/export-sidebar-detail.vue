@@ -2,7 +2,7 @@
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';

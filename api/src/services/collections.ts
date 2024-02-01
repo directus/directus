@@ -12,25 +12,24 @@ import { ALIAS_TYPES } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
 	Collection,
-	CollectionMeta,
 	MutationOptions,
 } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
 
 export type RawCollection = {
 	collection: string;
 	fields?: RawField[];
 	schema?: Partial<Table> | null;
-	meta?: Partial<CollectionMeta> | null;
+	meta?: Partial<BaseCollectionMeta> | null;
 };
 
 export class CollectionsService {
@@ -284,7 +283,7 @@ export class CollectionsService {
 
 		let meta = (await collectionItemsService.readByQuery({
 			limit: -1,
-		})) as CollectionMeta[];
+		})) as BaseCollectionMeta[];
 
 		meta.push(...systemCollectionRows);
 

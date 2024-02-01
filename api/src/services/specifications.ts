@@ -19,7 +19,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
-import { isSystemCollection } from '../utils/is-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 

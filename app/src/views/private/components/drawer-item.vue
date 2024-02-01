@@ -3,11 +3,11 @@ import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useCollectionsStore } from '@/stores/collections';
+import { isSystemCollection } from '@directus/system-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
@@ -196,8 +196,6 @@ function useItem() {
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
 
-	const { systemCollections } = useCollectionsStore();
-
 	watch(
 		() => props.active,
 		(isActive) => {
@@ -231,7 +229,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(props.collection);
 
-		const endpoint = systemCollections.includes(props.collection)
+		const endpoint = isSystemCollection(props.collection)
 			? `${baseEndpoint}/${props.primaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
 
@@ -261,7 +259,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(collection);
 
-		const endpoint = systemCollections.includes(collection)
+		const endpoint = isSystemCollection(collection)
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 

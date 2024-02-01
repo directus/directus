@@ -80,7 +80,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-import { isSystemCollection } from '../../utils/is-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 

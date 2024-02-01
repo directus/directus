@@ -1,4 +1,4 @@
-import { isSystemCollection } from './is-system-collection';
+import { isSystemCollection } from '@directus/system-data';
 
 const accessibleSystemCollections = {
 	directus_users: { route: '/users' },

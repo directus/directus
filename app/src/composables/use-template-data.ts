@@ -1,8 +1,8 @@
 import api from '@/api';
-import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { isSystemCollection } from '@directus/system-data';
+import { getEndpoint } from '@directus/utils';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { Ref, computed, ref, watch } from 'vue';
 
@@ -21,8 +21,6 @@ export function useTemplateData(
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);
-
-	const { systemCollections } = useCollectionsStore();
 
 	const fields = computed(() => {
 		const _template = template?.value || collection.value?.meta?.display_template;
@@ -57,7 +55,7 @@ export function useTemplateData(
 		if (isSingleton.value) {
 			endpoint = baseEndpoint;
 		} else {
-			endpoint = systemCollections.includes(collection.value.collection)
+			endpoint = isSystemCollection(collection.value.collection)
 				? `${baseEndpoint}/${primaryKey.value}`
 				: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
 		}

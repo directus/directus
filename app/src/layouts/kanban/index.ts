@@ -13,7 +13,7 @@ import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',

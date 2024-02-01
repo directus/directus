@@ -12,7 +12,7 @@ import { cloneDeep, get, has, isEmpty, orderBy, set } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();

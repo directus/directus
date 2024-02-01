@@ -13,7 +13,7 @@ import BasicImportSidebarDetail from '@/views/private/components/basic-import-si
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getPublicURL } from '@/utils/get-root-path';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 const { t } = useI18n();
 

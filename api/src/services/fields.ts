@@ -12,7 +12,7 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemFieldRows } from '../database/system-data/fields/index.js';
+import { systemFieldRows } from '@directus/system-data';
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';

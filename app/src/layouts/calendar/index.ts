@@ -25,7 +25,7 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { LayoutOptions } from './types';
-import { getEndpoint } from '@/utils/get-endpoint';
+import { getEndpoint } from '@directus/utils';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',

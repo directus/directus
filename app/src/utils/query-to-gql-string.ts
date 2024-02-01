@@ -4,7 +4,7 @@ import { parseJSON, toArray } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { isEmpty, pick, set, omitBy, isUndefined, transform } from 'lodash';
 import { extractFieldFromFunction } from './extract-field-from-function';
-import { isSystemCollection } from './is-system-collection';
+import { isSystemCollection } from '@directus/system-data';
 
 type QueryInfo = { collection: string; key: string; query: Query };
 

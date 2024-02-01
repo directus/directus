@@ -1,7 +1,7 @@
 import type { PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';

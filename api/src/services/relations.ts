@@ -8,7 +8,6 @@ import { clearSystemCache, getCache } from '../cache.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemRelationRows } from '../database/system-data/relations/index.js';
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -17,6 +16,7 @@ import { getSchema } from '../utils/get-schema.js';
 import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
+import { systemRelationRows } from '@directus/system-data';
 
 export class RelationsService {
 	knex: Knex;

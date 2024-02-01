@@ -3,8 +3,8 @@
  */
 
 import type { RequestHandler } from 'express';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { ForbiddenError } from '@directus/errors';
+import { systemCollectionRows } from '@directus/system-data';
 import asyncHandler from '../utils/async-handler.js';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {

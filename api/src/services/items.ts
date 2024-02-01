@@ -24,7 +24,7 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
-import { isSystemCollection } from '../utils/is-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 

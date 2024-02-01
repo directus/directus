@@ -29,7 +29,7 @@ import { FilesService } from '../files.js';
 import { ItemsService } from '../items.js';
 import { NotificationsService } from '../notifications.js';
 import { UsersService } from '../users.js';
-import { isSystemCollection } from '../../utils/is-system-collections.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 const logger = useLogger();
