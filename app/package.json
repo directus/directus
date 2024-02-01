@@ -41,6 +41,7 @@
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/sdk": "workspace:*",
+		"@directus/system-data": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@editorjs/attaches": "1.3.0",
 		"@editorjs/checklist": "1.6.0",

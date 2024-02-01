@@ -12,38 +12,32 @@ import { isEqual, isNil, omit, orderBy } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
+import { isSystemCollection } from '@directus/system-data';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const collections = ref<Collection[]>([]);
 
-	const systemCollections = computed(() =>
-		collections.value.filter(({ meta }) => meta?.system).map(({ collection }) => collection),
-	);
-
 	const visibleCollections = computed(() =>
 		collections.value
-			.filter(({ collection }) => systemCollections.value.includes(collection) === false)
+			.filter(({ collection }) => isSystemCollection(collection) === false)
 			.filter((collection) => collection.meta && collection.meta?.hidden !== true),
 	);
 
 	const allCollections = computed(() =>
-		collections.value.filter(({ collection }) => systemCollections.value.includes(collection) === false),
+		collections.value.filter(({ collection }) => isSystemCollection(collection) === false),
 	);
 
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
 
 	const crudSafeSystemCollections = computed(() =>
 		orderBy(
-			collections.value.filter((collection) => {
-				return systemCollections.value.includes(collection.collection) === true;
-			}),
+			collections.value.filter((collection) => isSystemCollection(collection.collection)),
 			'collection',
 		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
 	);
 
 	return {
 		collections,
-		systemCollections,
 		visibleCollections,
 		allCollections,
 		databaseCollections,
