@@ -7,13 +7,12 @@ import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { User } from '@directus/types';
-import { getRelationType, moveInArray } from '@directus/utils';
+import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
-import { getEndpoint } from '@directus/utils';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',

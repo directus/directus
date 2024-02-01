@@ -11,7 +11,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
-import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -25,7 +25,6 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { LayoutOptions } from './types';
-import { getEndpoint } from '@directus/utils';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',

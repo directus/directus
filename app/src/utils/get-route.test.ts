@@ -1,5 +1,5 @@
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('getSystemCollectionRoute', () => {
 	it('Returns an empty string when collection is not a system collection', () => {

@@ -2,8 +2,7 @@ import api from '@/api';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isSystemCollection } from '@directus/system-data';
-import { getEndpoint } from '@directus/utils';
-import { getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Ref, computed, ref, watch } from 'vue';
 
 type UsableTemplateData = {

@@ -12,8 +12,8 @@ import DashboardDialog from '../components/dashboard-dialog.vue';
 import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getPublicURL } from '@/utils/get-root-path';
 import { getEndpoint } from '@directus/utils';
+import { getPublicURL } from '@/utils/get-root-path';
 
 const { t } = useI18n();
 

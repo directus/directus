@@ -3,11 +3,10 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint } from '@directus/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
-import { getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
