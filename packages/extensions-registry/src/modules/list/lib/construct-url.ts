@@ -15,5 +15,13 @@ export const constructUrl = (query: ListQuery, options?: ListOptions) => {
 		url.searchParams.set('type', query.type);
 	}
 
+	if (query.limit) {
+		url.searchParams.set('limit', String(query.limit));
+	}
+
+	if (query.offset) {
+		url.searchParams.set('offset', String(query.offset));
+	}
+
 	return url;
 };
