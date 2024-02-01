@@ -24,6 +24,7 @@ import type { AbstractServiceOptions, Transformation, TransformationSet } from '
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { FilesService } from './files.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -32,10 +33,12 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
+	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
+		this.filesService = new FilesService(options);
 		this.authorizationService = new AuthorizationService(options);
 	}
 
@@ -66,7 +69,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File | undefined;
 
 		if (!file) throw new ForbiddenError();
 

@@ -27,16 +27,16 @@
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",
 		"@pnpm/find-workspace-packages": "6.0.9",
-		"@pnpm/workspace.pkgs-graph": "2.0.12",
+		"@pnpm/workspace.pkgs-graph": "2.0.14",
 		"semver": "7.5.4"
 	},
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.3",
+		"@types/node": "18.19.12",
 		"@types/semver": "7.5.6",
-		"@vitest/coverage-v8": "1.1.0",
+		"@vitest/coverage-v8": "1.2.2",
 		"typescript": "5.3.3",
-		"vitest": "1.1.1"
+		"vitest": "1.2.2"
 	}
 }

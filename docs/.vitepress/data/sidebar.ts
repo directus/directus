@@ -355,7 +355,7 @@ function sidebarDeveloperReference() {
 							],
 						},
 						{
-							text: 'Secure Extensions',
+							text: 'Sandboxed Extensions',
 							collapsed: true,
 							items: [
 								{
