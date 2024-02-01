@@ -7,6 +7,7 @@ import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
+import DrawerExtension from './components/drawer-extension.vue';
 
 const { t } = useI18n();
 
@@ -105,6 +106,8 @@ watchEffect(async () => {
 			</v-list>
 
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+
+			<router-view />
 		</div>
 	</private-view>
 </template>
