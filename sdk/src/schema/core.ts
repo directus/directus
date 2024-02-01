@@ -19,29 +19,6 @@ import type { DirectusUser } from './user.js';
 import type { DirectusVersion } from './version.js';
 import type { DirectusWebhook } from './webhook.js';
 
-export const CoreCollections = [
-	'directus_activity',
-	'directus_collections',
-	'directus_dashboards',
-	'directus_extensions',
-	'directus_fields',
-	'directus_files',
-	'directus_flows',
-	'directus_folders',
-	'directus_notifications',
-	'directus_operations',
-	'directus_panels',
-	'directus_permissions',
-	'directus_presets',
-	'directus_relations',
-	'directus_roles',
-	'directus_settings',
-	'directus_shares',
-	'directus_users',
-	'directus_versions',
-	'directus_webhooks',
-] as const;
-
 export interface CoreSchema<Schema extends object = object> {
 	directus_activity: DirectusActivity<Schema>[];
 	directus_collections: DirectusCollection<Schema>[];

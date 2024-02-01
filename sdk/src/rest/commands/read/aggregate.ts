@@ -1,7 +1,8 @@
-import { CoreCollections, type AllCollections } from '../../../index.js';
+import { type AllCollections } from '../../../index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
+import { isSystemCollection } from '@directus/system-data';
 
 /**
  * Aggregate allow you to perform calculations on a set of values, returning a single result.
@@ -23,7 +24,7 @@ export const aggregate =
 		const collectionName = String(collection);
 		throwIfEmpty(collectionName, 'Collection cannot be empty');
 
-		const path = (CoreCollections as readonly string[]).includes(collectionName)
+		const path = isSystemCollection(collectionName)
 			? `/${collectionName.substring(9)}`
 			: `/items/${collectionName}`;
 
