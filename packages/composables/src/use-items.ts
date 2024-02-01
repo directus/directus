@@ -1,5 +1,5 @@
 import type { Item, Query } from '@directus/types';
-import { moveInArray } from '@directus/utils';
+import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
@@ -304,12 +304,4 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			}
 		}
 	}
-}
-
-function getEndpoint(collection: string): string {
-	if (collection.startsWith('directus_')) {
-		return `/${collection.substring(9)}`;
-	}
-
-	return `/items/${collection}`;
 }
