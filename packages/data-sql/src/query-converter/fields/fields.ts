@@ -37,7 +37,7 @@ export const convertFieldNodes = (
 	currentJsonPath: string[] = [],
 	jsonColumnName: string | null,
 	isJsonContext: boolean,
-	isRootOfJson: boolean,
+	isLeafOfJson: boolean,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
@@ -51,7 +51,7 @@ export const convertFieldNodes = (
 
 			let newNode = null;
 
-			if (isRootOfJson) {
+			if (isLeafOfJson) {
 				currentJsonPath = [...currentJsonPath, abstractField.field];
 				newNode = convertJson(currentJsonPath, tableIndex, jsonColumnName, columnIndex);
 				// reached the end of a json path, so reset it
@@ -95,7 +95,7 @@ export const convertFieldNodes = (
 			}
 
 			if (abstractField.nesting.type === 'object-many') {
-				if (!isJsonContext && !isRootOfJson) {
+				if (!isJsonContext && !isLeafOfJson) {
 					isJsonContext = true;
 					jsonColumnName = abstractField.nesting.fieldName;
 				} else {
