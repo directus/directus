@@ -3,12 +3,12 @@ import { RegistryDescribeResponse } from '@directus/extensions-registry';
 import ExtensionMetadataMetric from './extension-metadata-metric.vue';
 
 defineProps<{
-	extension: RegistryDescribeResponse
+	extension: RegistryDescribeResponse;
 }>();
 </script>
 
 <template>
-	<div>
+	<v-list>
 		<ExtensionMetadataMetric icon="info">v1.0.32</ExtensionMetadataMetric>
-	</div>
+	</v-list>
 </template>
