@@ -38,8 +38,8 @@ export class AssetsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.filesService = new FilesService(options);
 		this.authorizationService = new AuthorizationService(options);
+		this.filesService = new FilesService({ ...options, accountability: undefined });
 	}
 
 	async getAsset(
