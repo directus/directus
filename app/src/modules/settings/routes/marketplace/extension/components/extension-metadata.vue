@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { RegistryDescribeResponse } from '@directus/extensions-registry';
-import ExtensionMetadataMetric from './extension-metadata-metric.vue';
+import { computed } from 'vue';
 import ExtensionMetadataCompatibility from './extension-metadata-compatibility.vue';
-import { useI18n } from 'vue-i18n';
-import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
+import ExtensionMetadataDate from './extension-metadata-date.vue';
+import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
+import ExtensionMetadataVersion from './extension-metadata-version.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse;
 }>();
-
-const { t } = useI18n();
 
 const latestVersion = computed(() => props.extension.versions.at(0)!);
 </script>
@@ -18,16 +16,8 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 <template>
 	<v-list>
 		<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
-		<ExtensionMetadataMetric icon="info">v{{ latestVersion.version }}</ExtensionMetadataMetric>
-		<ExtensionMetadataMetric icon="save_alt">{{ t('n_downloads', extension.downloads) }}</ExtensionMetadataMetric>
-		<ExtensionMetadataMetric icon="event">
-			{{
-				t('last_updated_relative', {
-					relativeTime: localizedFormatDistanceStrict(new Date(latestVersion.publish_date), new Date(), {
-						addSuffix: true,
-					}),
-				})
-			}}
-		</ExtensionMetadataMetric>
+		<ExtensionMetadataVersion :version="latestVersion.version" />
+		<ExtensionMetadataDownloads :downloads="extension.downloads" />
+		<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
 	</v-list>
 </template>
