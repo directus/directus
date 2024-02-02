@@ -5,6 +5,7 @@ import ExtensionMetadataCompatibility from './extension-metadata-compatibility.v
 import ExtensionMetadataDate from './extension-metadata-date.vue';
 import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import ExtensionMetadataSize from './extension-metadata-size.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse;
@@ -19,5 +20,6 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 		<ExtensionMetadataVersion :version="latestVersion.version" />
 		<ExtensionMetadataDownloads :downloads="extension.downloads" />
 		<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
+		<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 	</v-list>
 </template>
