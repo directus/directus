@@ -81,6 +81,8 @@ extension_reload_required_copy: A page reload is required to see the changes aft
 extension_reload_now: Reload now
 published_relative: Published {relativeTime}
 compatible_with_your_project: Compatible with your Project
+last_updated_relative: Last updated {relativeTime}
+n_downloads: '{n} Downloads'
 not_compatible_with_your_project: Incompatible with your Project
 enable: Enable
 disable: Disable
