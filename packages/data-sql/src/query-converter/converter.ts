@@ -31,7 +31,7 @@ export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 
 	try {
 		const from = { tableName: abstractQuery.collection, tableIndex };
-		const convertedFieldNodes = convertFieldNodes(abstractQuery.fields, tableIndex, indexGen);
+		const convertedFieldNodes = convertFieldNodes(abstractQuery.fields, tableIndex, indexGen, [], null, false, false);
 		clauses = { ...convertedFieldNodes.clauses, from };
 		parameters.push(...convertedFieldNodes.parameters);
 		aliasMapping = convertedFieldNodes.aliasMapping;
