@@ -26,7 +26,7 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 
 		<template #subtitle>
 			<p class="meta">
-				{{ newestVersion.version }} •
+				v{{ newestVersion.version }} •
 				{{
 					t('published_relative', {
 						relativeTime: localizedFormatDistanceStrict(new Date(newestVersion.publish_date), new Date(), {
