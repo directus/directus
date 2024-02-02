@@ -356,58 +356,62 @@ test('primitive, json path', () => {
 	const attribute2Alias = randomIdentifier();
 	const attribute3 = randomIdentifier();
 	const attribute3Alias = randomIdentifier();
+	const attribute4 = randomIdentifier();
+	const attribute4Alias = randomIdentifier();
+	const attribute5 = randomIdentifier();
+	const attribute5Alias = randomIdentifier();
 	const jsonValueAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: 'columnName',
-			alias: 'columnAlias',
+			field: columnName,
+			alias: columnAlias,
 		},
 		{
 			type: 'nested-single-one',
 			nesting: {
 				type: 'object-many',
-				fieldName: 'jsonColumnName',
+				fieldName: jsonColumnName,
 			},
 			fields: [
 				{
 					type: 'primitive',
-					field: 'attribute1',
-					alias: 'attribute1Alias',
+					field: attribute1,
+					alias: attribute1Alias,
 				},
 				{
 					type: 'nested-single-one',
 					nesting: {
 						type: 'object-many',
-						fieldName: 'attribute2',
+						fieldName: attribute2,
 					},
 					fields: [
 						{
 							type: 'primitive',
-							field: 'attribute3',
-							alias: 'attribute3Alias',
+							field: attribute3,
+							alias: attribute3Alias,
 						},
 						{
 							type: 'nested-single-one',
 							nesting: {
 								type: 'object-many',
-								fieldName: 'attribute4',
+								fieldName: attribute4,
 							},
 							fields: [
 								{
 									type: 'primitive',
-									field: 'attribute5',
-									alias: 'attribute5Alias',
+									field: attribute5,
+									alias: attribute5Alias,
 								},
 							],
-							alias: 'attribute4Alias',
+							alias: attribute4Alias,
 						},
 					],
-					alias: 'attribute2Alias',
+					alias: attribute2Alias,
 				},
 			],
-			alias: 'jsonValueAlias',
+			alias: jsonValueAlias,
 		},
 	];
 
@@ -417,28 +421,28 @@ test('primitive, json path', () => {
 				{
 					type: 'primitive',
 					tableIndex,
-					columnName: 'columnName',
+					columnName: columnName,
 					columnIndex: 0,
 				},
 				{
 					type: 'json',
 					tableIndex,
-					columnName: 'jsonColumnName',
-					path: ['attribute1'],
+					columnName: jsonColumnName,
+					path: [attribute1],
 					columnIndex: 1,
 				},
 				{
 					type: 'json',
 					tableIndex,
-					columnName: 'jsonColumnName',
-					path: ['attribute2', 'attribute3'],
+					columnName: jsonColumnName,
+					path: [attribute2, attribute3],
 					columnIndex: 2,
 				},
 				{
 					type: 'json',
 					tableIndex,
-					columnName: 'jsonColumnName',
-					path: ['attribute2', 'attribute4', 'attribute5'],
+					columnName: jsonColumnName,
+					path: [attribute2, attribute4, attribute5],
 					columnIndex: 3,
 				},
 			],
@@ -448,34 +452,34 @@ test('primitive, json path', () => {
 		aliasMapping: [
 			{
 				type: 'root',
-				alias: 'columnAlias',
+				alias: columnAlias,
 				columnIndex: 0,
 			},
 			{
 				type: 'nested',
-				alias: 'jsonValueAlias',
+				alias: jsonValueAlias,
 				children: [
 					{
 						type: 'root',
-						alias: 'attribute1Alias',
+						alias: attribute1Alias,
 						columnIndex: 1,
 					},
 					{
 						type: 'nested',
-						alias: 'attribute2Alias',
+						alias: attribute2Alias,
 						children: [
 							{
 								type: 'root',
-								alias: 'attribute3Alias',
+								alias: attribute3Alias,
 								columnIndex: 2,
 							},
 							{
 								type: 'nested',
-								alias: 'attribute4Alias',
+								alias: attribute4Alias,
 								children: [
 									{
 										type: 'root',
-										alias: 'attribute5Alias',
+										alias: attribute5Alias,
 										columnIndex: 3,
 									},
 								],
