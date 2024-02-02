@@ -388,6 +388,21 @@ test('primitive, json path', () => {
 							field: 'attribute3',
 							alias: 'attribute3Alias',
 						},
+						{
+							type: 'nested-single-one',
+							nesting: {
+								type: 'object-many',
+								fieldName: 'attribute4',
+							},
+							fields: [
+								{
+									type: 'primitive',
+									field: 'attribute5',
+									alias: 'attribute5Alias',
+								},
+							],
+							alias: 'attribute4Alias',
+						},
 					],
 					alias: 'attribute2Alias',
 				},
@@ -419,6 +434,13 @@ test('primitive, json path', () => {
 					path: ['attribute2', 'attribute3'],
 					columnIndex: 2,
 				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: 'jsonColumnName',
+					path: ['attribute2', 'attribute4', 'attribute5'],
+					columnIndex: 3,
+				},
 			],
 			joins: [],
 		},
@@ -446,6 +468,17 @@ test('primitive, json path', () => {
 								type: 'root',
 								alias: 'attribute3Alias',
 								columnIndex: 2,
+							},
+							{
+								type: 'nested',
+								alias: 'attribute4Alias',
+								children: [
+									{
+										type: 'root',
+										alias: 'attribute5Alias',
+										columnIndex: 3,
+									},
+								],
 							},
 						],
 					},

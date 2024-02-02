@@ -52,10 +52,8 @@ export const convertFieldNodes = (
 			let newNode = null;
 
 			if (isLeafOfJson) {
-				currentJsonPath = [...currentJsonPath, abstractField.field];
-				newNode = convertJson(currentJsonPath, tableIndex, jsonColumnName, columnIndex);
-				// reached the end of a json path, so reset it
-				currentJsonPath = [];
+				const newJsonPath = [...currentJsonPath, abstractField.field];
+				newNode = convertJson(newJsonPath, tableIndex, jsonColumnName, columnIndex);
 				isJsonContext = false;
 			} else {
 				newNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
@@ -99,7 +97,8 @@ export const convertFieldNodes = (
 					isJsonContext = true;
 					jsonColumnName = abstractField.nesting.fieldName;
 				} else {
-					currentJsonPath.push(abstractField.nesting.fieldName);
+					currentJsonPath = [...currentJsonPath, abstractField.nesting.fieldName];
+					// currentJsonPath.push(abstractField.nesting.fieldName);
 				}
 
 				const nestedOutput = convertFieldNodes(
