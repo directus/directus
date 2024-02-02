@@ -83,6 +83,7 @@ published_relative: Published {relativeTime}
 compatible_with_your_project: Compatible with your Project
 last_updated_relative: Last updated {relativeTime}
 n_files: '{n} Files'
+verified: Verified
 n_downloads: '{n} Downloads'
 not_compatible_with_your_project: Incompatible with your Project
 enable: Enable

@@ -4,9 +4,14 @@ import ExtensionMetadataMetric from './extension-metadata-metric.vue';
 
 const { t } = useI18n();
 
-defineProps<{ username: string }>();
+defineProps<{ username: string; verified: boolean }>();
 </script>
 
 <template>
-	<ExtensionMetadataMetric icon="face">{{ username }}</ExtensionMetadataMetric>
+	<ExtensionMetadataMetric icon="face">
+		<span>
+			{{ username }}
+			<v-icon v-if="verified" v-tooltip="t('verified')" name="verified" small />
+		</span>
+	</ExtensionMetadataMetric>
 </template>
