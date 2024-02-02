@@ -28,6 +28,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Module Bar
@@ -78,6 +79,16 @@ extension_bundles: Bundles
 extension_reload_required: Page Reload Required
 extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
 extension_reload_now: Reload now
+published_relative: Published {relativeTime}
+compatible_with_your_project: Compatible with your Project
+last_updated_relative: Last updated {relativeTime}
+n_files: '{n} Files'
+verified: Verified
+homepage: Homepage
+repository: Repository
+report_an_issue: Report an Issue
+n_downloads: '{n} Downloads'
+not_compatible_with_your_project: Incompatible with your Project
 enable: Enable
 disable: Disable
 custom: Custom

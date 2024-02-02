@@ -8,6 +8,7 @@ export const RegistryDescribeResponse = z.object({
 	downloads: z.number(),
 	verified: z.boolean(),
 	readme: z.union([z.null(), z.string()]),
+	type: z.enum(EXTENSION_TYPES),
 	versions: z.array(
 		z.object({
 			id: z.string(),

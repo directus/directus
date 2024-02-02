@@ -68,7 +68,7 @@ router.get(
 
 		const payload = await list(query, options);
 
-		res.locals['payload'] = { data: payload };
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond,

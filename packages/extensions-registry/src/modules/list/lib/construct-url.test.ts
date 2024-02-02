@@ -40,3 +40,19 @@ test('Sets type query parameter if option is set', () => {
 	const urlWithSearch = constructUrl({ type: 'interface' });
 	expect(urlWithSearch.searchParams.get('type')).toBe('interface');
 });
+
+test('Sets limit query parameter if option is set', () => {
+	const url = constructUrl({});
+	expect(url.searchParams.get('limit')).toBeNull();
+
+	const urlWithSearch = constructUrl({ limit: 50 });
+	expect(urlWithSearch.searchParams.get('limit')).toBe('50');
+});
+
+test('Sets offset query parameter if option is set', () => {
+	const url = constructUrl({});
+	expect(url.searchParams.get('offset')).toBeNull();
+
+	const urlWithSearch = constructUrl({ offset: 50 });
+	expect(urlWithSearch.searchParams.get('offset')).toBe('50');
+});
