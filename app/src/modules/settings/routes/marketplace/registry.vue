@@ -7,7 +7,6 @@ import type { RegistryListResponse } from '@directus/extensions-registry';
 import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
 const { t } = useI18n();
@@ -35,12 +34,6 @@ const showingCount = computed(() => {
 });
 
 const extensions = ref<RegistryListResponse['data']>([]);
-
-const route = useRoute();
-
-const extensionDetail = computed(
-	() => extensions.value.find((extension) => extension.id === route.params['extensionId']) ?? null,
-);
 
 const pageCount = computed(() => Math.round(filterCount.value / perPage));
 
@@ -101,7 +94,13 @@ watchEffect(async () => {
 			</div>
 
 			<v-list>
-				<v-list-item v-for="extension in extensions" :key="extension.id" block clickable :to="`/settings/marketplace/${extension.id}`">
+				<v-list-item
+					v-for="extension in extensions"
+					:key="extension.id"
+					block
+					clickable
+					:to="`/settings/marketplace/${extension.id}`"
+				>
 					<v-list-item-icon>
 						<div class="icon"><v-icon name="storefront" /></div>
 					</v-list-item-icon>
