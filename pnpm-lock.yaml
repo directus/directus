@@ -520,6 +520,9 @@ importers:
       '@directus/extensions-registry':
         specifier: workspace:*
         version: link:../packages/extensions-registry
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@directus/composables':
         specifier: workspace:*
@@ -698,6 +701,9 @@ importers:
       '@types/qrcode':
         specifier: 1.5.5
         version: 1.5.5
+      '@types/semver':
+        specifier: 7.5.6
+        version: 7.5.6
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8

@@ -89,6 +89,7 @@
 		"@types/mapbox__mapbox-gl-draw": "1.4.6",
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.7",
 		"@types/qrcode": "1.5.5",
+		"@types/semver": "7.5.6",
 		"@types/wellknown": "0.5.8",
 		"@unhead/addons": "1.8.10",
 		"@unhead/vue": "1.8.10",
@@ -142,6 +143,7 @@
 		"wellknown": "0.5.0"
 	},
 	"dependencies": {
-		"@directus/extensions-registry": "workspace:*"
+		"@directus/extensions-registry": "workspace:*",
+		"semver": "7.5.4"
 	}
 }

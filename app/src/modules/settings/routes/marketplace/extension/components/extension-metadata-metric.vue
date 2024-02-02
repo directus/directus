@@ -19,10 +19,12 @@ withDefaults(
 
 <style scoped lang="scss">
 .primary {
-	color: var(--theme--primary);
+	--v-list-color: var(--theme--primary);
+	--v-list-item-icon-color: var(--theme--primary);
 }
 
 .subdued {
 	--v-list-color: var(--theme--foreground-subdued);
+	--v-list-item-icon-color: var(--theme--foreground-subdued);
 }
 </style>
