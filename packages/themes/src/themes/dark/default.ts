@@ -276,5 +276,21 @@ export default defineTheme({
 				boxShadow: '0px 0px 6px 0px rgb(0, 0, 0, 0.2)',
 			},
 		},
+
+		banner: {
+			background: '#0e1c2f',
+			foreground: '#ffffff',
+			foregroundSubdued: '#a2b5cd',
+			padding: '40px',
+			borderRadius: '20px',
+			avatar: {
+				borderRadius: '50%',
+				foreground: 'var(--theme--primary)',
+				background: '#ffffff',
+			},
+			art: {
+				foreground: '#2e3a4d',
+			},
+		},
 	},
 });
