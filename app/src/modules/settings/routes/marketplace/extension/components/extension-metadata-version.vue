@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ExtensionMetadataMetric from './extension-metadata-metric.vue';
+import ExtensionMetadataItem from './extension-metadata-item.vue';
 
 defineProps<{ version: string }>();
 </script>
 
 <template>
-	<ExtensionMetadataMetric icon="info">v{{ version }}</ExtensionMetadataMetric>
+	<ExtensionMetadataItem icon="info">v{{ version }}</ExtensionMetadataItem>
 </template>

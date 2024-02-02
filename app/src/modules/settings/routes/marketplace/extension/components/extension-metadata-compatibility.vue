@@ -3,7 +3,7 @@ import { useServerStore } from '@/stores/server';
 import { satisfies } from 'semver';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ExtensionMetadataMetric from './extension-metadata-metric.vue';
+import ExtensionMetadataItem from './extension-metadata-item.vue';
 
 const props = defineProps<{
 	hostVersion: string;
@@ -21,5 +21,5 @@ const label = computed(() =>
 </script>
 
 <template>
-	<ExtensionMetadataMetric :icon="icon" color="primary">{{ label }}</ExtensionMetadataMetric>
+	<ExtensionMetadataItem :icon="icon" color="primary">{{ label }}</ExtensionMetadataItem>
 </template>
