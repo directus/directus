@@ -258,7 +258,7 @@ function onClick(event: PointerEvent) {
 
 		position: relative;
 		display: flex;
-		height: var(--theme--form--field--input--height);
+		min-height: var(--theme--form--field--input--height);
 		margin: 0;
 		background-color: var(
 			--v-list-item-background-color,
