@@ -8,8 +8,8 @@ import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../components/navigation.vue';
-import TypeFilter from './components/type-filter.vue';
 import ExtensionListItem from './components/extension-list-item.vue';
+import TypeFilter from './components/type-filter.vue';
 
 const { t } = useI18n();
 
@@ -97,7 +97,7 @@ watchEffect(async () => {
 				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
 
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" />
 
 			<router-view />
 		</div>
@@ -151,5 +151,9 @@ watchEffect(async () => {
 
 .filter {
 	margin-block: 40px;
+}
+
+.pagination {
+	margin-block-start: 20px;
 }
 </style>
