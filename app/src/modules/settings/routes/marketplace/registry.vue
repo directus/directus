@@ -62,6 +62,10 @@ watchEffect(async () => {
 			</v-button>
 		</template>
 
+		<template #title-outer:append>
+			<v-chip class="beta" outlined small>Beta</v-chip>
+		</template>
+
 		<template #actions:prepend>
 			<transition name="fade">
 				<span v-if="filterCount" class="item-count">
@@ -171,5 +175,11 @@ watchEffect(async () => {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.beta {
+	--v-chip-color: var(--theme--primary);
+	--v-chip-background-color: var(--theme--primary-subdued);
+	margin-left: 10px;
 }
 </style>
