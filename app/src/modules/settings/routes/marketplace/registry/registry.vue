@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import SearchInput from '@/views/private/components/search-input.vue';
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { debounce } from 'lodash';
@@ -11,7 +10,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import ExtensionListItem from './components/extension-list-item.vue';
 import TypeFilter from './components/type-filter.vue';
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 
 const liveSearch = ref<string | null>(null);
 
@@ -32,7 +31,25 @@ watch(search, (newSearch, oldSearch) => newSearch !== oldSearch && (page.value =
 const filterCount = ref(0);
 
 const showingCount = computed(() => {
-	return formatCollectionItemsCount(filterCount.value, page.value, perPage, !!search.value);
+	const opts = {
+		start: n((+page.value - 1) * perPage + 1),
+		end: n(Math.min(page.value * perPage, filterCount.value || 0)),
+		count: n(filterCount.value || 0),
+	};
+
+	if (search.value) {
+		if (filterCount.value === 1) {
+			return t('one_filtered_item');
+		}
+
+		return t('start_end_of_count_filtered_items', opts);
+	}
+
+	if (filterCount.value > perPage) {
+		return t('start_end_of_count_items', opts);
+	}
+
+	return t('item_count', { count: filterCount.value });
 });
 
 const extensions = ref<RegistryListResponse['data']>([]);
