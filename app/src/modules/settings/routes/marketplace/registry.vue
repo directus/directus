@@ -8,6 +8,7 @@ import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
+import VBanner from '@/components/v-banner.vue';
 
 const { t } = useI18n();
 
@@ -87,6 +88,7 @@ watchEffect(async () => {
 		</template>
 
 		<div class="page-container">
+			<VBanner icon="storefront">Marketplace</VBanner>
 			<div class="buttons">
 				<button @click="type = undefined">All</button>
 				<button
