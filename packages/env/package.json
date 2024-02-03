@@ -28,7 +28,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.10",
+		"@types/node": "18.19.12",
 		"@vitest/coverage-v8": "1.2.2",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",
