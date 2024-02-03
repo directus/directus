@@ -20,7 +20,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 		<v-list-item-content>
 			<div class="name">{{ extension.name }}</div>
 			<div class="author">
-				{{ latestVersion.publisher.username }}
+				{{ latestVersion.publisher.github_name ?? latestVersion.publisher.username }}
 				<v-icon v-if="latestVersion.publisher.verified" name="verified" x-small />
 			</div>
 			<div class="description">{{ extension.description }}</div>
