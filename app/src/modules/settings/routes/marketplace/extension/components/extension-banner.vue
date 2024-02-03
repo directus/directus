@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import VBanner from '@/components/v-banner.vue';
 import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import VBanner from '@/components/v-banner.vue';
 
 const { t } = useI18n();
 
 const props = defineProps<{
-	extension: RegistryDescribeResponse;
+	extension: RegistryDescribeResponse['data'];
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);

@@ -27,6 +27,8 @@ export const RegistryDescribeResponse = z.object({
 					id: z.string(),
 					username: z.string(),
 					verified: z.boolean(),
+					github_name: z.string().nullable(),
+					github_avatar_url: z.string().nullable(),
 				}),
 			}),
 		),

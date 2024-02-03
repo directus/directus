@@ -11,7 +11,7 @@ import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
 
 const props = defineProps<{
-	extension: RegistryDescribeResponse;
+	extension: RegistryDescribeResponse['data'];
 }>();
 
 const { t } = useI18n();
@@ -28,6 +28,8 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
 					:username="latestVersion.publisher.username"
+					:github-name="latestVersion.publisher.github_name"
+               :github-avatar-url="latestVersion.publisher.github_avatar_url"
 				/>
 				<ExtensionMetadataVersion :version="latestVersion.version" />
 				<ExtensionMetadataDownloads :downloads="extension.downloads" />

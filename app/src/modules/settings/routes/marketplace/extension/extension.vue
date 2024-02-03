@@ -6,8 +6,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionReadme from './components/extension-readme.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
+import ExtensionReadme from './components/extension-readme.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -18,7 +18,7 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
-const extension = ref<RegistryDescribeResponse>();
+const extension = ref<RegistryDescribeResponse['data']>();
 
 watchEffect(async () => {
 	if (!props.extensionId) return;
