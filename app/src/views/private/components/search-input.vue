@@ -173,7 +173,7 @@ function emitValue() {
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((40px + var(--theme--border-width) * 2) / 2);
+	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
 	transition:
 		width var(--slow) var(--transition),
 		border-bottom-left-radius var(--fast) var(--transition),
@@ -200,7 +200,7 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 8px;
+		margin: 0 9px; // visually center in closed filter
 		margin-right: 4px;
 	}
 
@@ -237,6 +237,7 @@ function emitValue() {
 		border: none;
 		border-radius: 0;
 		flex-grow: 1;
+		opacity: 0;
 
 		&::placeholder {
 			color: var(--theme--foreground-subdued);
@@ -245,10 +246,14 @@ function emitValue() {
 
 	&.active {
 		width: 300px;
-		border-color: var(--theme--form--field--input--border-color);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		.icon-empty {
 			display: block;
+		}
+
+		input {
+			opacity: 1;
 		}
 	}
 
