@@ -50,7 +50,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 			<settings-navigation />
 		</template>
 
-		<div class="drawer-item-content">
+		<div class="extension-content">
 			<template v-if="extension">
 				<div class="container">
 					<div class="grid">
@@ -69,7 +69,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 </template>
 
 <style scoped lang="scss">
-.drawer-item-content {
+.extension-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 	max-width: 1200px;

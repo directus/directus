@@ -4,6 +4,7 @@ withDefaults(
 		icon: string;
 		color?: 'primary' | 'subdued';
 		href?: string;
+		to?: string;
 	}>(),
 	{
 		color: 'subdued',
@@ -12,10 +13,11 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item block :class="color" :clickable="!!href" :href="href">
+	<v-list-item block :class="color" :clickable="!!href || !!to" :href="href" :to="to">
 		<v-list-item-icon><v-icon :name="icon" /></v-list-item-icon>
 		<v-list-item-content><slot /></v-list-item-content>
 		<v-list-item-hint v-if="href"><v-icon name="open_in_new" /></v-list-item-hint>
+		<v-list-item-hint v-if="to"><v-icon name="arrow_right_alt" /></v-list-item-hint>
 	</v-list-item>
 </template>
 

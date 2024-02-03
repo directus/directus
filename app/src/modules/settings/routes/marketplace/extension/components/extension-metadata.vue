@@ -25,6 +25,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 			<div class="grid">
 				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataAuthor
+					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
 					:username="latestVersion.publisher.username"
 				/>
