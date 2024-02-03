@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 
 const props = defineProps<{
-	authorId: string;
+	accountId: string;
 }>();
 
 const router = useRouter();
@@ -15,16 +15,16 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
-const author = ref<RegistryDescribeResponse>();
+const account = ref<RegistryDescribeResponse>();
 
 watchEffect(async () => {
-	if (!props.authorId) return;
+	if (!props.accountId) return;
 
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/extensions/registry/authors/${props.authorId}`);
-		author.value = response.data.data;
+		const response = await api.get(`/extensions/registry/account/${props.accountId}`);
+		account.value = response.data.data;
 	} catch (err) {
 		error.value = err;
 	} finally {
@@ -56,8 +56,8 @@ const navigateBack = () => {
 			<settings-navigation />
 		</template>
 
-		<div class="author-content">
-			<template v-if="author">
+		<div class="account-content">
+			<template v-if="account">
 				<div class="container">
 					<div class="grid"></div>
 				</div>
@@ -70,4 +70,43 @@ const navigateBack = () => {
 	</private-view>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.account-content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
+	max-width: 1200px;
+	width: 100%;
+}
+
+.container {
+	container-type: inline-size;
+	container-name: item;
+}
+
+.grid {
+	display: grid;
+	gap: 40px;
+	grid-template-areas: 'banner' 'metadata' 'readme';
+
+	.banner {
+		grid-area: banner;
+	}
+
+	.readme {
+		grid-area: readme;
+		min-width: 0;
+	}
+
+	.metadata {
+		grid-area: metadata;
+	}
+
+	@container item (width > 800px) {
+		grid-template-columns: 1fr 320px;
+		grid-template-areas:
+			'banner banner'
+			'readme metadata';
+	}
+}
+</style>
+

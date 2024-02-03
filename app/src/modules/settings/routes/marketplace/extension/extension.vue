@@ -26,7 +26,7 @@ watchEffect(async () => {
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/extensions/registry/${props.extensionId}`);
+		const response = await api.get(`/extensions/registry/extension/${props.extensionId}`);
 		extension.value = response.data.data;
 	} catch (err) {
 		error.value = err;

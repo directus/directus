@@ -15,6 +15,7 @@ import FlowsDetail from './routes/flows/flow.vue';
 import FlowsOverview from './routes/flows/overview.vue';
 import MarketplaceExtension from './routes/marketplace/extension/extension.vue';
 import MarketplaceRegistry from './routes/marketplace/registry/registry.vue';
+import MarketplaceAccount from './routes/marketplace/account/account.vue';
 import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
@@ -242,8 +243,14 @@ export default defineModule({
 					component: MarketplaceRegistry,
 				},
 				{
+					name: 'marketplace-account',
+					path: 'account/:accountId',
+					component: MarketplaceAccount,
+					props: true,
+				},
+				{
 					name: 'marketplace-extension',
-					path: ':extensionId',
+					path: 'extension/:extensionId',
 					component: MarketplaceExtension,
 					props: true,
 				},

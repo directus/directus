@@ -14,7 +14,7 @@ defineProps<{
 </script>
 
 <template>
-	<ExtensionMetadataItem icon="face" :to="`/marketplace/author/${id}`">
+	<ExtensionMetadataItem icon="face" :to="`/settings/marketplace/account/${id}`">
 		<template v-if="githubAvatarUrl" #icon>
 			<img :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		</template>

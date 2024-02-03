@@ -3,6 +3,6 @@ import type { AuthorOptions } from '../types/author-options.js';
 
 export const constructUrl = (id: string, options?: AuthorOptions) => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
-	const url = new URL(`/authors/${id}`, registry);
+	const url = new URL(`/accounts/${id}`, registry);
 	return url;
 };

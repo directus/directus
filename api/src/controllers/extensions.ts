@@ -5,6 +5,7 @@ import {
 	account,
 	describe,
 	list,
+	type AccountOptions,
 	type DescribeOptions,
 	type ListOptions,
 	type ListQuery,
@@ -88,7 +89,7 @@ router.get(
 			throw new ForbiddenError();
 		}
 
-		const options: DescribeOptions = {};
+		const options: AccountOptions = {};
 
 		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
 			options.registry = env['MARKETPLACE_REGISTRY'];
@@ -99,10 +100,11 @@ router.get(
 		res.locals['payload'] = payload;
 		return next();
 	}),
+	respond,
 );
 
 router.get(
-	`/registry/:pk(${UUID_REGEX})`,
+	`/registry/extension/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
