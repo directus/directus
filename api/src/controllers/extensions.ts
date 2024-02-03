@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
-import { describe, list, type DescribeOptions, type ListOptions, type ListQuery } from '@directus/extensions-registry';
+import { describe, list, type DescribeOptions, type ListOptions, type ListQuery, account } from '@directus/extensions-registry';
 import { isIn } from '@directus/utils';
 import express from 'express';
 import { UUID_REGEX } from '../constants.js';
@@ -75,6 +75,26 @@ router.get(
 );
 
 router.get(
+	`/registry/author/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res, next) => {
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const options: DescribeOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await author(req.params['pk'], options);
+
+		res.locals['payload'] = payload;
+		return next();
+	}),
+);
+
+router.get(
 	`/registry/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		if (typeof req.params['pk'] !== 'string') {
@@ -89,7 +109,7 @@ router.get(
 
 		const payload = await describe(req.params['pk'], options);
 
-		res.locals['payload'] = { data: payload };
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond,
