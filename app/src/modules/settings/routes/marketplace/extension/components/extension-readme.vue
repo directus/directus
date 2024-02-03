@@ -10,8 +10,6 @@ defineProps<{
 
 <style scoped lang="scss">
 .readme {
-	max-width: 600px;
-
 	:deep() {
 		@import '@/styles/markdown';
 	}
