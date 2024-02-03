@@ -52,9 +52,13 @@ const navigateBack = () => router.push('/settings/marketplace');
 
 		<div class="drawer-item-content">
 			<template v-if="extension">
-				<ExtensionBanner :extension="extension" />
-				<ExtensionMetadata :extension="extension" />
-				<ExtensionReadme v-if="extension.readme" :readme="extension.readme" />
+				<div class="container">
+					<div class="grid">
+						<ExtensionBanner class="banner" :extension="extension" />
+						<ExtensionMetadata class="metadata" :extension="extension" />
+						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" />
+					</div>
+				</div>
 			</template>
 
 			<v-progress-circular v-else-if="loading" indeterminate />
@@ -68,9 +72,38 @@ const navigateBack = () => router.push('/settings/marketplace');
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	max-width: 1200px;
+	width: 100%;
 }
 
-.readme {
-	max-width: 600px;
+.container {
+	container-type: inline-size;
+	container-name: item;
+}
+
+.grid {
+	display: grid;
+	gap: 40px;
+	grid-template-areas: 'banner' 'metadata' 'readme';
+
+	.banner {
+		grid-area: banner;
+	}
+
+	.readme {
+		grid-area: readme;
+		min-width: 0;
+	}
+
+	.metadata {
+		grid-area: metadata;
+	}
+
+	@container item (width > 800px) {
+		grid-template-columns: 1fr 320px;
+		grid-template-areas:
+			'banner banner'
+			'readme metadata';
+	}
 }
 </style>
