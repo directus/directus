@@ -20,24 +20,45 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 </script>
 
 <template>
-	<v-list>
-		<ExtensionMetadataAuthor
-			:verified="latestVersion.publisher.verified"
-			:username="latestVersion.publisher.username"
-		/>
-		<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
-		<ExtensionMetadataVersion :version="latestVersion.version" />
-		<ExtensionMetadataDownloads :downloads="extension.downloads" />
-		<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
-		<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
-		<ExtensionMetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
-			{{ t('homepage') }}
-		</ExtensionMetadataItem>
-		<ExtensionMetadataItem v-if="latestVersion.url_repository" icon="commit" :href="latestVersion.url_repository">
-			{{ t('repository') }}
-		</ExtensionMetadataItem>
-		<ExtensionMetadataItem v-if="latestVersion.url_bugs" icon="bug_report" :href="latestVersion.url_bugs">
-			{{ t('report_an_issue') }}
-		</ExtensionMetadataItem>
-	</v-list>
+	<div class="metadata">
+		<v-list class="list">
+			<div class="grid">
+				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
+				<ExtensionMetadataAuthor
+					:verified="latestVersion.publisher.verified"
+					:username="latestVersion.publisher.username"
+				/>
+				<ExtensionMetadataVersion :version="latestVersion.version" />
+				<ExtensionMetadataDownloads :downloads="extension.downloads" />
+				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
+				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
+				<ExtensionMetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
+					{{ t('homepage') }}
+				</ExtensionMetadataItem>
+				<ExtensionMetadataItem v-if="latestVersion.url_repository" icon="commit" :href="latestVersion.url_repository">
+					{{ t('repository') }}
+				</ExtensionMetadataItem>
+				<ExtensionMetadataItem v-if="latestVersion.url_bugs" icon="bug_report" :href="latestVersion.url_bugs">
+					{{ t('report_an_issue') }}
+				</ExtensionMetadataItem>
+			</div>
+		</v-list>
+	</div>
 </template>
+
+<style scoped>
+.metadata {
+	container-type: inline-size;
+	container-name: metadata;
+}
+
+.grid {
+	@container metadata (width > 580px) {
+		--v-list-item-margin: 0;
+
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 10px;
+	}
+}
+</style>

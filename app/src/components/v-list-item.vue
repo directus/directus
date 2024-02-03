@@ -303,7 +303,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-top: 8px;
+			margin-top: var(--v-list-item-margin, 8px);
 		}
 
 		&.dense {
@@ -311,7 +311,7 @@ function onClick(event: PointerEvent) {
 			padding: 4px 8px;
 
 			& + & {
-				margin-top: 4px;
+				margin-top: var(--v-list-item-margin, 4px);
 			}
 		}
 	}
