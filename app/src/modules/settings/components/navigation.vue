@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
 
-const links: { icon: string; name: string; to?: string; href?: string }[][] = [
+const links: { icon: string; name: string; to?: string; href?: string; chip?: string }[][] = [
 	[
 		{
 			icon: 'database',
@@ -56,6 +56,7 @@ const links: { icon: string; name: string; to?: string; href?: string }[][] = [
 			icon: 'storefront',
 			name: t('marketplace'),
 			to: '/settings/marketplace',
+			chip: t('beta'),
 		},
 		{
 			icon: 'category',
@@ -84,7 +85,10 @@ const links: { icon: string; name: string; to?: string; href?: string }[][] = [
 			<v-list-item v-for="item in group" :key="item.to ?? item.href" :to="item.to" :href="item.href">
 				<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="item.name" />
+					<span class="label">
+						<v-text-overflow class="label" :text="item.name" />
+						<v-chip v-if="item.chip" class="chip" outlined x-small>{{ item.chip }}</v-chip>
+					</span>
 				</v-list-item-content>
 			</v-list-item>
 
@@ -117,5 +121,16 @@ const links: { icon: string; name: string; to?: string; href?: string }[][] = [
 
 .version:hover :deep(.v-text-overflow) {
 	color: var(--theme--foreground-accent);
+}
+
+.label {
+	display: flex;
+	align-items: center;
+}
+
+.chip {
+	--v-chip-color: var(--theme--primary);
+	--v-chip-background-color: var(--theme--primary-subdued);
+	margin-inline-start: auto;
 }
 </style>
