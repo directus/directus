@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBanner from '@/components/v-banner.vue';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { EXTENSION_TYPES } from '@directus/extensions';
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import VBanner from '@/components/v-banner.vue';
+import SettingsNavigation from '../../../components/navigation.vue';
+import TypeFilter from './components/type-filter.vue';
 
 const { t } = useI18n();
 
@@ -24,7 +24,7 @@ watch(
 const perPage = 6;
 const search = ref<string | null>(null);
 const page = ref(1);
-const type = ref<string>();
+const type = ref<string | null>(null);
 
 watch(search, (newSearch, oldSearch) => newSearch !== oldSearch && (page.value = 1));
 
@@ -89,17 +89,8 @@ watchEffect(async () => {
 
 		<div class="page-container">
 			<VBanner icon="storefront">Marketplace</VBanner>
-			<div class="buttons">
-				<button @click="type = undefined">All</button>
-				<button
-					v-for="extType in EXTENSION_TYPES"
-					:key="extType"
-					:class="{ active: type === extType }"
-					@click="type = extType"
-				>
-					{{ extType }}
-				</button>
-			</div>
+
+			<TypeFilter v-model="type" class="filter" />
 
 			<v-list>
 				<v-list-item
@@ -139,22 +130,8 @@ watchEffect(async () => {
 	padding-top: 0;
 }
 
-.group-divider {
-	margin-bottom: 12px;
-}
-
 .extension-group + .extension-group {
 	margin-top: 24px;
-}
-
-/** @TODO improve by a lot */
-.buttons {
-	display: flex;
-	gap: 1em;
-
-	& .active {
-		color: var(--theme--primary);
-	}
 }
 
 .item-count {
@@ -183,5 +160,9 @@ watchEffect(async () => {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
 	margin-left: 10px;
+}
+
+.filter {
+	margin-block: 40px;
 }
 </style>
