@@ -12,6 +12,7 @@ export const RegistryListResponse = z.object({
 			description: z.union([z.null(), z.string()]),
 			downloads: z.number(),
 			verified: z.boolean(),
+			type: z.enum(EXTENSION_TYPES),
 			versions: z.array(
 				z.object({
 					version: z.string(),

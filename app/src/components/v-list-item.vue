@@ -254,8 +254,7 @@ function onClick(event: PointerEvent) {
 	&.block {
 		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
-		--v-list-item-padding: var(--theme--form--field--input--padding);
-
+		padding: var(--v-list-item-padding, var(--theme--form--field--input--padding));
 		position: relative;
 		display: flex;
 		min-height: var(--theme--form--field--input--height);

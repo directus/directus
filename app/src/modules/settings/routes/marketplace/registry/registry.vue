@@ -9,6 +9,7 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../components/navigation.vue';
 import TypeFilter from './components/type-filter.vue';
+import ExtensionListItem from './components/extension-list-item.vue';
 
 const { t } = useI18n();
 
@@ -93,21 +94,7 @@ watchEffect(async () => {
 			<TypeFilter v-model="type" class="filter" />
 
 			<v-list>
-				<v-list-item
-					v-for="extension in extensions"
-					:key="extension.id"
-					block
-					clickable
-					:to="`/settings/marketplace/${extension.id}`"
-				>
-					<v-list-item-icon>
-						<div class="icon"><v-icon name="storefront" /></div>
-					</v-list-item-icon>
-					<v-list-item-content>
-						<p>{{ extension.name }}</p>
-						<p>{{ extension.description }}</p>
-					</v-list-item-content>
-				</v-list-item>
+				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
 
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
