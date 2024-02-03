@@ -11,7 +11,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 const { t } = useI18n();
 
-const liveSearch = ref('');
+const liveSearch = ref<string | null>(null);
 
 watch(
 	liveSearch,
@@ -21,11 +21,11 @@ watch(
 );
 
 const perPage = 6;
-const search = ref('');
+const search = ref<string | null>(null);
 const page = ref(1);
 const type = ref<string>();
 
-watch(search, ([newSearch, oldSearch]) => newSearch !== oldSearch && (page.value = 1));
+watch(search, (newSearch, oldSearch) => newSearch !== oldSearch && (page.value = 1));
 
 const filterCount = ref(0);
 
@@ -62,13 +62,15 @@ watchEffect(async () => {
 			</v-button>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<transition name="fade">
 				<span v-if="filterCount" class="item-count">
 					{{ showingCount }}
 				</span>
 			</transition>
+		</template>
 
+		<template #actions>
 			<search-input v-model="liveSearch" :show-filter="false" />
 		</template>
 
