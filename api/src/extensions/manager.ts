@@ -34,6 +34,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
+import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
@@ -49,6 +50,8 @@ import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
 import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
+import { getInstallationManager } from './lib/installation/index.js';
+import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
@@ -139,6 +142,19 @@ export class ExtensionManager {
 	private watcher: FSWatcher | null = null;
 
 	/**
+	 * installation manager responsible for installing extensions from registries
+	 */
+
+	private installationManager: InstallationManager = getInstallationManager();
+
+	private messenger = useBus();
+
+	/**
+	 * channel to publish on registering extension from external registry
+	 */
+	private extensionInstalledChannel = `extension.registry.installed`;
+
+	/**
 	 * Load and register all extensions
 	 *
 	 * @param {ExtensionManagerOptions} options - Extension manager configuration options
@@ -172,6 +188,20 @@ export class ExtensionManager {
 		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions(this.extensions);
 		}
+
+		this.messenger.subscribe(this.extensionInstalledChannel, () => {
+			this.reload();
+		});
+	}
+
+	/**
+	 * Installs an external extension from registry
+	 */
+	public async install(versionId: string): Promise<void> {
+		await this.installationManager.install(versionId);
+
+		// Publish a message so other instances can reload extensions.
+		await this.messenger.publish(this.extensionInstalledChannel, {});
 	}
 
 	/**

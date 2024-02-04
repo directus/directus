@@ -338,6 +338,9 @@ importers:
       stream-json:
         specifier: 1.8.0
         version: 1.8.0
+      tar:
+        specifier: 6.2.0
+        version: 6.2.0
       tinypool:
         specifier: 0.8.2
         version: 0.8.2
@@ -484,6 +487,9 @@ importers:
       '@types/stream-json':
         specifier: 1.7.7
         version: 1.7.7
+      '@types/tar':
+        specifier: 6.1.10
+        version: 6.1.10
       '@types/uuid':
         specifier: 9.0.8
         version: 9.0.8
@@ -7601,6 +7607,13 @@ packages:
       '@types/superagent': 8.1.3
     dev: true
 
+  /@types/tar@6.1.10:
+    resolution: {integrity: sha512-60ZO+W0tRKJ3ggdzJKp75xKVlNogKYMqGvr2bMH/+k3T0BagfYTnbmVDFMJB1BFttz6yRgP5MDGP27eh7brrqw==}
+    dependencies:
+      '@types/node': 18.19.12
+      minipass: 4.2.8
+    dev: true
+
   /@types/tern@0.23.9:
     resolution: {integrity: sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==}
     dependencies:
@@ -14245,9 +14258,13 @@ packages:
   /minipass@3.3.6:
     resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
     engines: {node: '>=8'}
-    requiresBuild: true
     dependencies:
       yallist: 4.0.0
+
+  /minipass@4.2.8:
+    resolution: {integrity: sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==}
+    engines: {node: '>=8'}
+    dev: true
 
   /minipass@5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}

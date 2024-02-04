@@ -123,6 +123,23 @@ router.get(
 		const payload = await describe(req.params['pk'], options);
 
 		res.locals['payload'] = payload;
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/registry/install/',
+	asyncHandler(async (req, _res, next) => {
+		const { version } = req.body;
+
+		if (!version) {
+			throw new ForbiddenError();
+		}
+
+		const extensionManager = getExtensionManager();
+		await extensionManager.install(version);
 		return next();
 	}),
 	respond,
