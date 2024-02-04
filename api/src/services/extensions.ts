@@ -94,6 +94,12 @@ export class ExtensionsService {
 		return result;
 	}
 
+	async deleteOne(bundle: string | null, name: string) {
+		const key = this.getKey(bundle, name);
+		await this.extensionsItemService.deleteOne(key);
+		await this.extensionsManager.uninstall(key);
+	}
+
 	private getKey(bundle: string | null, name: string) {
 		return bundle ? `${bundle}/${name}` : name;
 	}

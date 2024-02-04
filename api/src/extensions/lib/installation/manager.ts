@@ -3,7 +3,7 @@ import { ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
-import { move } from 'fs-extra';
+import { move, rmdir } from 'fs-extra';
 import { mkdir, readFile, rm } from 'node:fs/promises';
 import { Readable } from 'node:stream';
 import Queue from 'p-queue';
@@ -97,6 +97,24 @@ export class InstallationManager {
 			);
 		} finally {
 			await rm(tempDir, { recursive: true });
+		}
+	}
+
+	async uninstall(key: string) {
+		if (env['EXTENSIONS_LOCATION']) {
+			const storage = await getStorage();
+			const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+
+			const queue = new Queue({ concurrency: 1000 });
+
+			for await (const filepath of remoteDisk.list(key)) {
+				queue.add(() => remoteDisk.delete(filepath));
+			}
+
+			await queue.onIdle();
+		} else {
+			const path = join(this.extensionPath, key);
+			await rmdir(path);
 		}
 	}
 }

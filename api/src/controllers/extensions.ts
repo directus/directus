@@ -182,6 +182,42 @@ router.patch(
 	respond,
 );
 
+router.delete(
+	'/:bundleOrName/:name?',
+	asyncHandler(async (req, res, next) => {
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const bundle = req.params['name'] ? req.params['bundleOrName'] : null;
+		const name = req.params['name'] ? req.params['name'] : req.params['bundleOrName'];
+
+		if (bundle === undefined || !name) {
+			throw new ForbiddenError();
+		}
+
+		try {
+			await service.deleteOne(bundle, name);
+		} catch (error) {
+			let finalError = error;
+
+			if (error instanceof ExtensionReadError) {
+				finalError = error.originalError;
+
+				if (isDirectusError(finalError, ErrorCode.Forbidden)) {
+					return next();
+				}
+			}
+
+			throw finalError;
+		}
+
+		return next();
+	}),
+	respond,
+);
+
 router.get(
 	'/sources/:chunk',
 	asyncHandler(async (req, res) => {
