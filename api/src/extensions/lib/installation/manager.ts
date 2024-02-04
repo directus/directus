@@ -100,20 +100,20 @@ export class InstallationManager {
 		}
 	}
 
-	async uninstall(key: string) {
+	async uninstall(folder: string) {
 		if (env['EXTENSIONS_LOCATION']) {
 			const storage = await getStorage();
 			const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 			const queue = new Queue({ concurrency: 1000 });
 
-			for await (const filepath of remoteDisk.list(key)) {
+			for await (const filepath of remoteDisk.list(folder)) {
 				queue.add(() => remoteDisk.delete(filepath));
 			}
 
 			await queue.onIdle();
 		} else {
-			const path = join(this.extensionPath, key);
+			const path = join(this.extensionPath, folder);
 			await rmdir(path);
 		}
 	}

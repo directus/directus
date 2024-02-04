@@ -80,10 +80,7 @@ async function toggleExtensionStatus(enabled: boolean) {
 	const status = !enabled;
 
 	try {
-		const endpoint = props.extension.bundle
-			? `/extensions/${props.extension.bundle}/${props.extension.name}`
-			: `/extensions/${props.extension.name}`;
-
+		const endpoint = `/extensions/${props.extension.id}`;
 		await api.patch(endpoint, { meta: { enabled: status } });
 	} finally {
 		changingEnabledState.value = false;
@@ -97,7 +94,7 @@ async function toggleExtensionStatus(enabled: boolean) {
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
 			<span class="monospace">
-				{{ extension.name }}
+				{{ extension.schema!.name }}
 				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
 			</span>
 		</v-list-item-content>
