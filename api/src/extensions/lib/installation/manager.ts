@@ -65,9 +65,9 @@ export class InstallationManager {
 
 				const queue = new Queue({ concurrency: 1000 });
 
-				for await (const filepath of tmpStorage.list()) {
+				for await (const filepath of tmpStorage.list('package')) {
 					const readStream = await tmpStorage.read(filepath);
-					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath);
+					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath.substring('package/'.length));
 					queue.add(() => remoteDisk.write(remotePath, readStream));
 				}
 
