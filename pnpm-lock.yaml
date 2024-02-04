@@ -487,9 +487,6 @@ importers:
       '@types/stream-json':
         specifier: 1.7.7
         version: 1.7.7
-      '@types/supertest':
-        specifier: 2.0.16
-        version: 2.0.16
       '@types/tar':
         specifier: 6.1.10
         version: 6.1.10
@@ -7603,12 +7600,6 @@ packages:
       '@types/node': 18.19.12
     dev: true
 
-  /@types/supertest@2.0.16:
-    resolution: {integrity: sha512-6c2ogktZ06tr2ENoZivgm7YnprnhYE4ZoXGMY+oA7IuAf17M8FWvujXZGmxLv8y0PTyts4x5A+erSwVUFA8XSg==}
-    dependencies:
-      '@types/superagent': 8.1.3
-    dev: true
-
   /@types/supertest@6.0.2:
     resolution: {integrity: sha512-137ypx2lk/wTQbW6An6safu9hXmajAifU/s7szAHLN/FeIm5w7yR0Wkl9fdJMRSHwOn4HLAI0DaB2TOORuhPDg==}
     dependencies:
@@ -7619,7 +7610,7 @@ packages:
   /@types/tar@6.1.10:
     resolution: {integrity: sha512-60ZO+W0tRKJ3ggdzJKp75xKVlNogKYMqGvr2bMH/+k3T0BagfYTnbmVDFMJB1BFttz6yRgP5MDGP27eh7brrqw==}
     dependencies:
-      '@types/node': 18.19.10
+      '@types/node': 18.19.12
       minipass: 4.2.8
     dev: true
 

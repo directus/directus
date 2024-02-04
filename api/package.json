@@ -208,7 +208,6 @@
 		"@types/qs": "6.9.11",
 		"@types/sanitize-html": "2.9.5",
 		"@types/stream-json": "1.7.7",
-		"@types/supertest": "2.0.16",
 		"@types/tar": "6.1.10",
 		"@types/uuid": "9.0.8",
 		"@types/uuid-validate": "0.0.3",
