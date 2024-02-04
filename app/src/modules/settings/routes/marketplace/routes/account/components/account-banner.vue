@@ -15,9 +15,9 @@ defineProps<{
 
 		<h2 class="name">{{ account.github_name ?? account.username }}</h2>
 
-		<template #subtitle>
+		<template v-if="account.github_bio" #subtitle>
 			<p class="meta">
-				<a :href="`https://npmjs.org/~${account.username}`">@{{ account.username }}</a>
+				{{ account.github_bio }}
 			</p>
 		</template>
 	</VBanner>

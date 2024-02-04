@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import AccountBanner from './components/account-banner.vue';
+import AccountMetadata from './components/account-metadata.vue';
 
 const props = defineProps<{
 	accountId: string;
@@ -62,6 +63,7 @@ const navigateBack = () => {
 				<div class="container">
 					<div class="grid">
 						<AccountBanner class="banner" :account="account" />
+						<AccountMetadata class="metadata" :account="account" />
 						<!-- <ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
 						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" /> -->

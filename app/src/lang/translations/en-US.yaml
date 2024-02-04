@@ -87,6 +87,8 @@ verified: Verified
 homepage: Homepage
 repository: Repository
 report_an_issue: Report an Issue
+website: Website
+github: GitHub
 beta: Beta
 n_downloads: '{n} Downloads'
 not_compatible_with_your_project: Incompatible with your Project

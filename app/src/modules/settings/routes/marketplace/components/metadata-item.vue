@@ -5,6 +5,7 @@ withDefaults(
 		color?: 'primary' | 'subdued';
 		href?: string;
 		to?: string;
+		monospace?: boolean;
 	}>(),
 	{
 		color: 'subdued',
@@ -17,7 +18,7 @@ withDefaults(
 		<v-list-item-icon>
 			<slot name="icon"><v-icon :name="icon" /></slot>
 		</v-list-item-icon>
-		<v-list-item-content><slot /></v-list-item-content>
+		<v-list-item-content :class="{ monospace }"><slot /></v-list-item-content>
 		<v-list-item-hint v-if="href"><v-icon name="open_in_new" /></v-list-item-hint>
 		<v-list-item-hint v-if="to"><v-icon name="arrow_right_alt" /></v-list-item-hint>
 	</v-list-item>
@@ -32,5 +33,10 @@ withDefaults(
 .subdued {
 	--v-list-color: var(--theme--foreground-subdued);
 	--v-list-item-icon-color: var(--theme--foreground-subdued);
+}
+
+.monospace {
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
+	font-weight: var(--theme--fonts--monospace--font-weight);
 }
 </style>
