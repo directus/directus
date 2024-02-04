@@ -90,7 +90,7 @@ export async function getExtensions(extensionList: ExtensionList, local: boolean
 }
 
 export async function resolveFsExtensions(root: string): Promise<Map<string, Extension>> {
-	if (!await fse.exists(root)) return new Map();
+	if (!(await fse.exists(root))) return new Map();
 
 	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
