@@ -80,10 +80,14 @@ export class ExtensionManager {
 	 */
 	private isLoaded = false;
 
-	/**
-	 * All extensions that are loaded within the current process
-	 */
-	private extensions: Extension[] = [];
+	// folder:Extension
+	private localExtensions: Map<string, Extension> = new Map();
+
+	// versionId:Extension
+	private registryExtensions: Map<string, Extension> = new Map();
+
+	// name:Extension
+	private moduleExtensions: Map<string, Extension> = new Map();
 
 	/**
 	 * Settings for the extensions that are loaded within the current process
@@ -154,6 +158,23 @@ export class ExtensionManager {
 	 */
 	private extensionInstalledChannel = `extension.registry.installed`;
 
+	public get extensions() {
+		return [...this.localExtensions.values(), ...this.registryExtensions.values(), ...this.moduleExtensions.values()];
+	}
+
+	public getExtension(source: string, folder: string) {
+		switch (source) {
+			case 'module':
+				return this.moduleExtensions.get(folder);
+			case 'registry':
+				return this.registryExtensions.get(folder);
+			case 'local':
+				return this.localExtensions.get(folder);
+		}
+
+		return undefined;
+	}
+
 	/**
 	 * Load and register all extensions
 	 *
@@ -186,7 +207,7 @@ export class ExtensionManager {
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions(this.extensions);
+			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
 		}
 
 		this.messenger.subscribe(this.extensionInstalledChannel, () => {
@@ -221,16 +242,18 @@ export class ExtensionManager {
 		}
 
 		try {
-			this.extensions = await getExtensions();
-			this.extensionsSettings = await getExtensionsSettings(this.extensions);
+			const { local, registry, module } = await getExtensions();
+
+			this.localExtensions = local;
+			this.registryExtensions = registry;
+			this.moduleExtensions = module;
+
+			this.extensionsSettings = await getExtensionsSettings({ local, registry, module });
 		} catch (error) {
 			this.handleExtensionError({ error, reason: `Couldn't load extensions` });
 		}
 
-		await this.registerHooks();
-		await this.registerEndpoints();
-		await this.registerOperations();
-		await this.registerBundles();
+		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
 			this.appExtensionsBundle = await this.generateExtensionBundle();
@@ -330,13 +353,6 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * Allow reading the installed extensions
-	 */
-	public getExtensions() {
-		return this.extensions;
-	}
-
-	/**
 	 * Start the chokidar watcher for extensions on the local filesystem
 	 */
 	private initializeWatcher(): void {
@@ -422,7 +438,10 @@ export class ExtensionManager {
 			replacement: path,
 		}));
 
-		const entrypoint = generateExtensionsEntrypoint(this.extensions, this.extensionsSettings);
+		const entrypoint = generateExtensionsEntrypoint(
+			{ module: this.moduleExtensions, registry: this.registryExtensions, local: this.localExtensions },
+			this.extensionsSettings,
+		);
 
 		try {
 			const bundle = await rollup({
@@ -510,83 +529,191 @@ export class ExtensionManager {
 		});
 	}
 
-	/**
-	 * Import the hook module code for all hook extensions, and register them individually through
-	 * registerHook
-	 */
-	private async registerHooks(): Promise<void> {
-		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
+	private async registerApiExtensions(): Promise<void> {
+		const sources = {
+			module: this.moduleExtensions,
+			registry: this.registryExtensions,
+			local: this.localExtensions,
+		} as const;
 
-		for (const hook of hooks) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === hook.name) ?? { enabled: false };
+		await Promise.all(
+			Object.entries(sources).map(async ([source, extensions]) => {
+				await Promise.all(
+					Array.from(extensions.entries()).map(async ([folder, extension]) => {
+						const { id, enabled } = this.extensionsSettings.find(
+							(settings) => settings.source === source && settings.folder === folder,
+						) ?? { enabled: false };
 
-			if (!enabled) continue;
+						if (!enabled) return;
 
-			try {
-				if (hook.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(hook);
-				} else {
-					const hookPath = path.resolve(hook.path, hook.entrypoint);
+						switch (extension.type) {
+							case 'hook':
+								await this.registerHookExtension(extension);
+								break;
+							case 'endpoint':
+								await this.registerEndpointExtension(extension);
+								break;
+							case 'operation':
+								await this.registerOperationExtension(extension);
+								break;
+							case 'bundle':
+								await this.registerBundleExtension(extension, source as 'module' | 'registry' | 'local', id);
+								break;
+							default:
+								return;
+						}
+					}),
+				);
+			}),
+		);
+	}
 
-					const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
-						fresh: true,
-					});
+	private async registerHookExtension(hook: ApiExtension) {
+		try {
+			if (hook.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(hook);
+			} else {
+				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-					const config = getModuleDefault(hookInstance);
+				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+					fresh: true,
+				});
 
-					const unregisterFunctions = this.registerHook(config, hook.name);
+				const config = getModuleDefault(hookInstance);
 
-					this.unregisterFunctionMap.set(hook.name, async () => {
-						await Promise.all(unregisterFunctions.map((fn) => fn()));
+				const unregisterFunctions = this.registerHook(config, hook.name);
 
-						deleteFromRequireCache(hookPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register hook "${hook.name}"` });
+				this.unregisterFunctionMap.set(hook.name, async () => {
+					await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+					deleteFromRequireCache(hookPath);
+				});
 			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register hook "${hook.name}"` });
 		}
 	}
 
-	/**
-	 * Import the endpoint module code for all endpoint extensions, and register them individually through
-	 * registerEndpoint
-	 */
-	private async registerEndpoints(): Promise<void> {
-		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
+	private async registerEndpointExtension(endpoint: ApiExtension) {
+		try {
+			if (endpoint.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(endpoint);
+			} else {
+				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-		for (const endpoint of endpoints) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === endpoint.name) ?? { enabled: false };
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+					endpointPath,
+					import.meta.url,
+					{
+						fresh: true,
+					},
+				);
 
-			if (!enabled) continue;
+				const config = getModuleDefault(endpointInstance);
 
-			try {
-				if (endpoint.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(endpoint);
-				} else {
-					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				const unregister = this.registerEndpoint(config, endpoint.name);
 
-					const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
-						endpointPath,
-						import.meta.url,
-						{
-							fresh: true,
-						},
-					);
+				this.unregisterFunctionMap.set(endpoint.name, async () => {
+					await unregister();
 
-					const config = getModuleDefault(endpointInstance);
-
-					const unregister = this.registerEndpoint(config, endpoint.name);
-
-					this.unregisterFunctionMap.set(endpoint.name, async () => {
-						await unregister();
-
-						deleteFromRequireCache(endpointPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register endpoint "${endpoint.name}"` });
+					deleteFromRequireCache(endpointPath);
+				});
 			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register endpoint "${endpoint.name}"` });
+		}
+	}
+
+	private async registerOperationExtension(operation: HybridExtension) {
+		try {
+			if (operation.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(operation);
+			} else {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+					operationPath,
+					import.meta.url,
+					{
+						fresh: true,
+					},
+				);
+
+				const config = getModuleDefault(operationInstance);
+
+				const unregister = this.registerOperation(config);
+
+				this.unregisterFunctionMap.set(operation.name, async () => {
+					await unregister();
+
+					deleteFromRequireCache(operationPath);
+				});
+			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register operation "${operation.name}"` });
+		}
+	}
+
+	private async registerBundleExtension(
+		bundle: BundleExtension,
+		source: 'local' | 'registry' | 'module',
+		bundleId: string,
+	) {
+		const extensionEnabled = (extensionName: string) => {
+			const settings = this.extensionsSettings.find(
+				(settings) => settings.source === source && settings.folder === extensionName && settings.bundle === bundleId,
+			);
+
+			if (!settings) return false;
+			return settings.enabled;
+		};
+
+		try {
+			const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+
+			const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+				bundlePath,
+				import.meta.url,
+				{
+					fresh: true,
+				},
+			);
+
+			const configs = getModuleDefault(bundleInstances);
+
+			const unregisterFunctions: PromiseCallback[] = [];
+
+			for (const { config, name } of configs.hooks) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregisters = this.registerHook(config, name);
+
+				unregisterFunctions.push(...unregisters);
+			}
+
+			for (const { config, name } of configs.endpoints) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregister = this.registerEndpoint(config, name);
+
+				unregisterFunctions.push(unregister);
+			}
+
+			for (const { config, name } of configs.operations) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregister = this.registerOperation(config);
+
+				unregisterFunctions.push(unregister);
+			}
+
+			this.unregisterFunctionMap.set(bundle.name, async () => {
+				await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+				deleteFromRequireCache(bundlePath);
+			});
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register bundle "${bundle.name}"` });
 		}
 	}
 
@@ -594,7 +721,7 @@ export class ExtensionManager {
 	 * Import the operation module code for all operation extensions, and register them individually through
 	 * registerOperation
 	 */
-	private async registerOperations(): Promise<void> {
+	private async registerInternalOperations(): Promise<void> {
 		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
 
 		for (const operation of internalOperations) {
@@ -605,108 +732,6 @@ export class ExtensionManager {
 			const config = getModuleDefault(operationInstance);
 
 			this.registerOperation(config);
-		}
-
-		const operations = this.extensions.filter(
-			(extension): extension is HybridExtension => extension.type === 'operation',
-		);
-
-		for (const operation of operations) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === operation.name) ?? { enabled: false };
-
-			if (!enabled) continue;
-
-			try {
-				if (operation.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(operation);
-				} else {
-					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
-
-					const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
-						operationPath,
-						import.meta.url,
-						{
-							fresh: true,
-						},
-					);
-
-					const config = getModuleDefault(operationInstance);
-
-					const unregister = this.registerOperation(config);
-
-					this.unregisterFunctionMap.set(operation.name, async () => {
-						await unregister();
-
-						deleteFromRequireCache(operationPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register operation "${operation.name}"` });
-			}
-		}
-	}
-
-	/**
-	 * Import the module code for all hook, endpoint, and operation extensions registered within a
-	 * bundle, and register them with their respective registration function
-	 */
-	private async registerBundles(): Promise<void> {
-		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
-
-		const extensionEnabled = (extensionName: string) => {
-			const settings = this.extensionsSettings.find(({ name }) => name === extensionName);
-			if (!settings) return false;
-			return settings.enabled;
-		};
-
-		for (const bundle of bundles) {
-			try {
-				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
-					bundlePath,
-					import.meta.url,
-					{
-						fresh: true,
-					},
-				);
-
-				const configs = getModuleDefault(bundleInstances);
-
-				const unregisterFunctions: PromiseCallback[] = [];
-
-				for (const { config, name } of configs.hooks) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregisters = this.registerHook(config, name);
-
-					unregisterFunctions.push(...unregisters);
-				}
-
-				for (const { config, name } of configs.endpoints) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregister = this.registerEndpoint(config, name);
-
-					unregisterFunctions.push(unregister);
-				}
-
-				for (const { config, name } of configs.operations) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregister = this.registerOperation(config);
-
-					unregisterFunctions.push(unregister);
-				}
-
-				this.unregisterFunctionMap.set(bundle.name, async () => {
-					await Promise.all(unregisterFunctions.map((fn) => fn()));
-
-					deleteFromRequireCache(bundlePath);
-				});
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register bundle "${bundle.name}"` });
-			}
 		}
 	}
 

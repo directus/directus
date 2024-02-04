@@ -1,9 +1,5 @@
 import { APP_SHARED_DEPS } from '@directus/extensions';
-import {
-	generateExtensionsEntrypoint,
-	resolveLocalExtensions,
-	resolvePackageExtensions,
-} from '@directus/extensions/node';
+import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
@@ -137,8 +133,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const localExtensions = extensionsPathExists ? await resolveLocalExtensions(EXTENSIONS_PATH) : [];
-		const packageExtensions = await resolvePackageExtensions(API_PATH);
+		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : [];
+		const packageExtensions = await resolveModuleExtensions(API_PATH);
+
+		const registryExtensions = extensionsPathExists
+			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, 'registry'))
+			: [];
 
 		/*
 		 * @TODO
@@ -146,7 +146,7 @@ function directusExtensions() {
 		 * always been the case. Is this a bug?
 		 * @see /api/src/extensions/lib/get-extensions.ts
 		 */
-		const extensions = [...localExtensions, ...packageExtensions];
+		const extensions = [...localExtensions, ...packageExtensions, ...registryExtensions];
 
 		// default to enabled for app extension in developer mode
 		const extensionSettings = extensions.flatMap((extension) =>

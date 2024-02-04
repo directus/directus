@@ -5,8 +5,8 @@ import type { ExtensionSettings } from './settings.js';
  * The API output structure used when engaging with the /extensions endpoints
  */
 export interface ApiOutput {
-	name: string;
+	id: string;
 	bundle: string | null;
 	schema: Partial<Extension> | null;
-	meta: Omit<ExtensionSettings, 'name'>;
+	meta: ExtensionSettings;
 }
