@@ -89,6 +89,7 @@
 		"@types/mapbox__mapbox-gl-draw": "1.4.6",
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.7",
 		"@types/qrcode": "1.5.5",
+		"@types/semver": "7.5.6",
 		"@types/wellknown": "0.5.8",
 		"@unhead/addons": "1.8.10",
 		"@unhead/vue": "1.8.10",
@@ -135,10 +136,14 @@
 		"vite": "5.0.12",
 		"vitest": "1.2.2",
 		"vue": "3.4.15",
-		"vue-i18n": "9.9.0",
+		"vue-i18n": "9.9.1",
 		"vue-router": "4.2.5",
 		"vue-tsc": "1.8.27",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
+	},
+	"dependencies": {
+		"@directus/extensions-registry": "workspace:*",
+		"semver": "7.5.4"
 	}
 }

@@ -1,14 +1,26 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { EXTENSION_TYPES } from '@directus/extensions';
+import {
+	account,
+	describe,
+	list,
+	type AccountOptions,
+	type DescribeOptions,
+	type ListOptions,
+	type ListQuery,
+} from '@directus/extensions-registry';
+import { isIn } from '@directus/utils';
 import express from 'express';
+import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
+import { AuthorizationService } from '../services/authorization.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { AuthorizationService } from '../services/authorization.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -25,6 +37,94 @@ router.get(
 
 		const extensions = await service.readAll();
 		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/registry',
+	asyncHandler(async (req, res, next) => {
+		const { search, limit, offset, type, by } = req.query;
+
+		const query: ListQuery = {};
+
+		if (typeof search === 'string') {
+			query.search = search;
+		}
+
+		if (typeof limit === 'string') {
+			query.limit = Number(limit);
+		}
+
+		if (typeof offset === 'string') {
+			query.offset = Number(offset);
+		}
+
+		if (typeof by === 'string') {
+			query.by = by;
+		}
+
+		if (typeof type === 'string') {
+			if (isIn(type, EXTENSION_TYPES) === false) {
+				throw new ForbiddenError();
+			}
+
+			query.type = type;
+		}
+
+		const options: ListOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await list(query, options);
+
+		res.locals['payload'] = payload;
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	`/registry/account/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res, next) => {
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const options: AccountOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await account(req.params['pk'], options);
+
+		res.locals['payload'] = payload;
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	`/registry/extension/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res, next) => {
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const options: DescribeOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await describe(req.params['pk'], options);
+
+		res.locals['payload'] = payload;
+
 		return next();
 	}),
 	respond,
@@ -50,7 +150,6 @@ router.post(
 
 		const extensionManager = getExtensionManager();
 		await extensionManager.install(name, version, registry as string);
-
 		return next();
 	}),
 	respond,
