@@ -15,12 +15,12 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 </script>
 
 <template>
-	<v-list-item class="extension-list-item" block clickable :to="`/settings/marketplace/${extension.id}`">
+	<v-list-item class="extension-list-item" block clickable :to="`/settings/marketplace/extension/${extension.id}`">
 		<div class="icon"><v-icon :name="icon" /></div>
 		<v-list-item-content>
 			<div class="name">{{ extension.name }}</div>
 			<div class="author">
-				{{ latestVersion.publisher.username }}
+				{{ latestVersion.publisher.github_name ?? latestVersion.publisher.username }}
 				<v-icon v-if="latestVersion.publisher.verified" name="verified" x-small />
 			</div>
 			<div class="description">{{ extension.description }}</div>

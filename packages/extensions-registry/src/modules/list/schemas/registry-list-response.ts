@@ -22,6 +22,7 @@ export const RegistryListResponse = z.object({
 					publisher: z.object({
 						username: z.string(),
 						verified: z.boolean(),
+						github_name: z.string().nullable(),
 					}),
 				}),
 			),

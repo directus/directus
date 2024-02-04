@@ -23,5 +23,9 @@ export const constructUrl = (query: ListQuery, options?: ListOptions) => {
 		url.searchParams.set('offset', String(query.offset));
 	}
 
+	if (query.by) {
+		url.searchParams.set('by', query.by);
+	}
+
 	return url;
 };

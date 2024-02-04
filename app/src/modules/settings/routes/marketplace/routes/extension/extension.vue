@@ -4,10 +4,10 @@ import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
+import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionReadme from './components/extension-readme.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
+import ExtensionReadme from './components/extension-readme.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -18,7 +18,7 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
-const extension = ref<RegistryDescribeResponse>();
+const extension = ref<RegistryDescribeResponse['data']>();
 
 watchEffect(async () => {
 	if (!props.extensionId) return;
@@ -26,7 +26,7 @@ watchEffect(async () => {
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/extensions/registry/${props.extensionId}`);
+		const response = await api.get(`/extensions/registry/extension/${props.extensionId}`);
 		extension.value = response.data.data;
 	} catch (err) {
 		error.value = err;
@@ -50,7 +50,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 			<settings-navigation />
 		</template>
 
-		<div class="drawer-item-content">
+		<div class="extension-content">
 			<template v-if="extension">
 				<div class="container">
 					<div class="grid">
@@ -69,7 +69,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 </template>
 
 <style scoped lang="scss">
-.drawer-item-content {
+.extension-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 	max-width: 1200px;

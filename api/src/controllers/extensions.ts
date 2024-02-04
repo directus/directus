@@ -1,7 +1,15 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
-import { describe, list, type DescribeOptions, type ListOptions, type ListQuery } from '@directus/extensions-registry';
+import {
+	account,
+	describe,
+	list,
+	type AccountOptions,
+	type DescribeOptions,
+	type ListOptions,
+	type ListQuery,
+} from '@directus/extensions-registry';
 import { isIn } from '@directus/utils';
 import express from 'express';
 import { UUID_REGEX } from '../constants.js';
@@ -36,7 +44,7 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
-		const { search, limit, offset, type } = req.query;
+		const { search, limit, offset, type, by } = req.query;
 
 		const query: ListQuery = {};
 
@@ -50,6 +58,10 @@ router.get(
 
 		if (typeof offset === 'string') {
 			query.offset = Number(offset);
+		}
+
+		if (typeof by === 'string') {
+			query.by = by;
 		}
 
 		if (typeof type === 'string') {
@@ -75,7 +87,28 @@ router.get(
 );
 
 router.get(
-	`/registry/:pk(${UUID_REGEX})`,
+	`/registry/account/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, res, next) => {
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const options: AccountOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const payload = await account(req.params['pk'], options);
+
+		res.locals['payload'] = payload;
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	`/registry/extension/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
@@ -89,7 +122,7 @@ router.get(
 
 		const payload = await describe(req.params['pk'], options);
 
-		res.locals['payload'] = { data: payload };
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond,

@@ -6,8 +6,8 @@ import type { RegistryListResponse } from '@directus/extensions-registry';
 import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../../components/navigation.vue';
-import ExtensionListItem from './components/extension-list-item.vue';
+import SettingsNavigation from '../../../../components/navigation.vue';
+import ExtensionListItem from '../../components/extension-list-item.vue';
 import TypeFilter from './components/type-filter.vue';
 
 const { t, n } = useI18n();
