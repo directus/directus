@@ -72,14 +72,25 @@ export class InstallationManager {
 
 				for await (const filepath of this.driverLocal.list(prefix)) {
 					const readStream = await this.driverLocal.read(filepath);
-					const remotePath = join(env['EXTENSIONS_PATH'] as string, name, filepath.split(prefix)[1]!);
+					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath.split(prefix)[1]!);
 					queue.add(() => remoteDisk.write(remotePath, readStream));
 				}
 
 				await queue.onIdle();
+			} else {
+				// No custom location, so save to regular local extensions folder
+				const dest = join(this.extensionPath, versionId);
+				await move(join(tempDir, 'package'), dest, { overwrite: true });
 			}
+		} catch (err) {
+			logger.warn(err);
+
+			throw new ServiceUnavailableError(
+				{ service: 'marketplace', reason: 'Could not download and extract the extension' },
+				{ cause: err },
+			);
 		} finally {
-			//just remove the package directory
+			// Remove the temporary dir no matter what
 			await rm(tempDir, { recursive: true });
 		}
 	}
