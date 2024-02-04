@@ -16,7 +16,6 @@ import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { AuthorizationService } from '../services/authorization.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
@@ -131,25 +130,16 @@ router.get(
 );
 
 router.post(
-	'/:name/:version?',
+	`/install/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, _res, next) => {
-		const { name, version } = req.params;
-		const { registry } = req.query;
+		const { pk } = req.params;
 
-		if (!name) {
+		if (!pk) {
 			throw new ForbiddenError();
 		}
 
-		const authorizationService = new AuthorizationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		//make sure the user can create extensions
-		authorizationService.validatePayload('create', 'directus_extensions', { name, enabled: true });
-
 		const extensionManager = getExtensionManager();
-		await extensionManager.install(name, version, registry as string);
+		await extensionManager.install(pk);
 		return next();
 	}),
 	respond,

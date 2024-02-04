@@ -34,6 +34,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
+import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
@@ -49,14 +50,13 @@ import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
 import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
+import { getInstallationManager } from './lib/installation/index.js';
+import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
-import type { InstallationManager } from './lib/installation/manager.js';
-import { getInstallationManager } from './lib/installation/index.js';
-import { useBus } from '../bus/index.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -195,12 +195,12 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * installs an external extension from registry
+	 * Installs an external extension from registry
 	 */
+	public async install(versionId: string): Promise<void> {
+		await this.installationManager.install(versionId);
 
-	public async install(name: string, version?: string, registry?: string): Promise<void> {
-		await this.installationManager.install(name, version, registry);
-		//publish the message so that instances can reload extensions.
+		// Publish a message so other instances can reload extensions.
 		await this.messenger.publish(this.extensionInstalledChannel, {});
 	}
 
