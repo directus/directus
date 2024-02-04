@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
 		if (!bundleParent) continue;
 
 		await knex('directus_extensions')
-			.update({ bundle: idMap.get(bundleParent) })
+			.update({ bundle: idMap.get(bundleParent), name: name.substring(bundleParent.length + 1) })
 			.where({ name });
 	}
 
@@ -38,10 +38,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().primary().notNullable();
 		table.string('source', 255).alter().notNullable().defaultTo('local');
 		table.renameColumn('name', 'folder');
-	});
-
-	await knex.schema.alterTable('directus_extensions', (table) => {
-		table.string('folder', 255).nullable().alter();
 	});
 }
 

@@ -89,12 +89,21 @@ export async function getExtensions(extensionList: ExtensionList, local: boolean
 	return extensions;
 }
 
-export async function resolveFsExtensions(root: string): Promise<Extension[]> {
+export async function resolveFsExtensions(root: string): Promise<Map<string, Extension>> {
+	if (!await fse.exists(root)) return new Map();
+
 	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
 	const extensionList: ExtensionList = extensionFolders.map((folder) => [folder, join(root, folder)]);
+	const extensions = await getExtensions(extensionList, false);
 
-	return getExtensions(extensionList, false);
+	const map = new Map();
+
+	for (const [index, extension] of extensions.entries()) {
+		map.set(extensionFolders[index]!, extension);
+	}
+
+	return map;
 }
 
 const isExtension = (pkgName: string) => {
@@ -102,7 +111,7 @@ const isExtension = (pkgName: string) => {
 	return regex.test(pkgName);
 };
 
-export async function resolveModuleExtensions(root: string): Promise<Extension[]> {
+export async function resolveModuleExtensions(root: string): Promise<Map<string, Extension>> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
@@ -116,6 +125,13 @@ export async function resolveModuleExtensions(root: string): Promise<Extension[]
 	const extensionNames = dependencyNames.filter((name) => isExtension(name));
 
 	const extensionList: ExtensionList = extensionNames.map((pkgName) => [pkgName, resolvePackage(pkgName, root)]);
+	const extensions = await getExtensions(extensionList, true);
 
-	return getExtensions(extensionList, true);
+	const map = new Map();
+
+	for (const [index, extension] of extensions.entries()) {
+		map.set(extensionNames[index]!, extension);
+	}
+
+	return map;
 }

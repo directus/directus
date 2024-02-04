@@ -1,9 +1,8 @@
-import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
+import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import type { ApiOutput, ExtensionSettings } from '@directus/extensions';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
-import { omit, pick } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
@@ -39,21 +38,29 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
-		const installedExtensions = this.extensionsManager.getExtensions();
-		const configuredExtensions = await this.extensionsItemService.readByQuery({ limit: -1 });
+		const meta = await this.extensionsItemService.readByQuery({ limit: -1 });
 
-		return this.stitch(installedExtensions, configuredExtensions);
+		return meta.map(
+			(settings) =>
+				<ApiOutput>{
+					id: settings.id,
+					bundle: settings.bundle,
+					meta: settings,
+					schema: this.extensionsManager.getExtension(settings.source, settings.folder) ?? null,
+				},
+		);
 	}
 
-	async readOne(id: string) {
-		const schema = this.extensionsManager.getExtensions().find((extension) => extension.id === id);
+	async readOne(id: string): Promise<ApiOutput> {
 		const meta = await this.extensionsItemService.readOne(id);
+		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;
 
-		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
-
-		if (stitched) return stitched;
-
-		throw new ForbiddenError();
+		return {
+			id: meta.id,
+			bundle: meta.bundle,
+			schema,
+			meta,
+		};
 	}
 
 	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
@@ -79,7 +86,7 @@ export class ExtensionsService {
 			}
 
 			if ('enabled' in data.meta) {
-				await service.checkBundleAndSyncStatus(trx, extension);
+				await service.checkBundleAndSyncStatus(trx, id, extension);
 			}
 
 			return extension;
@@ -99,18 +106,18 @@ export class ExtensionsService {
 	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
 	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private async checkBundleAndSyncStatus(trx: Knex, extension: ApiOutput) {
-		if (extension.bundle === null) {
-			if (extension.schema?.type === 'bundle') {
-				await trx('directus_extensions')
-					.update({ enabled: extension.meta.enabled })
-					.where('name', 'LIKE', this.getKey(extension.name, '%'));
-			}
+	private async checkBundleAndSyncStatus(trx: Knex, bundleId: string, extension: ApiOutput) {
+		if (extension.bundle === null && extension.schema?.type === 'bundle') {
+			// If extension is the parent bundle, set it and all nested extensions to enabled
+			await trx('directus_extensions')
+				.update({ enabled: extension.meta.enabled })
+				.where({ bundle: bundleId })
+				.orWhere({ id: bundleId });
 
 			return;
 		}
 
-		const parent = await this.readOne(null, extension.bundle);
+		const parent = await this.readOne(bundleId);
 
 		if (parent.schema?.type !== 'bundle') {
 			return;
@@ -122,81 +129,15 @@ export class ExtensionsService {
 			});
 		}
 
-		const child = await trx('directus_extensions')
-			.where('name', 'LIKE', this.getKey(extension.bundle, '%'))
+		const hasEnabledChildren = !!(await trx('directus_extensions')
+			.where({ bundle: bundleId })
 			.where({ enabled: true })
-			.first();
+			.first());
 
-		if (!child && parent.meta.enabled) {
-			await trx('directus_extensions').update({ enabled: false }).where({ name: parent.name });
-		} else if (child && !parent.meta.enabled) {
-			await trx('directus_extensions').update({ enabled: true }).where({ name: parent.name });
+		if (hasEnabledChildren) {
+			await trx('directus_extensions').update({ enabled: true }).where({ id: bundleId });
+		} else {
+			await trx('directus_extensions').update({ enabled: false }).where({ id: bundleId });
 		}
-	}
-
-	/**
-	 * Combine the settings stored in the database with the information available from the installed
-	 * extensions into the standardized extensions api output
-	 */
-	private stitch(installed: Extension[], configured: ExtensionSettings[]): ApiOutput[] {
-		/**
-		 * On startup, the extensions manager will automatically create the rows for installed
-		 * extensions that don't have configured settings yet, so there should always be equal or more
-		 * settings rows than installed extensions.
-		 */
-
-		return configured.map((meta) => {
-			let bundleName: string | null = null;
-			let name = meta.name;
-
-			if (name.includes('/')) {
-				const parts = name.split('/');
-
-				// NPM packages can have an optional organization scope in the format
-				// `@<org>/<package>`. This is limited to a single `/`.
-				//
-				// `foo` -> extension
-				// `foo/bar` -> bundle
-				// `@rijk/foo` -> extension
-				// `@rijk/foo/bar -> bundle
-
-				const hasOrg = parts.at(0)!.startsWith('@');
-
-				if (hasOrg && parts.length > 2) {
-					name = parts.pop() as string;
-					bundleName = parts.join('/');
-				} else if (hasOrg === false) {
-					[bundleName, name] = parts as [string, string];
-				}
-			}
-
-			let schema;
-
-			if (bundleName) {
-				const bundle = installed.find((extension) => extension.name === bundleName);
-
-				if (bundle && 'entries' in bundle) {
-					const entry = bundle.entries.find((entry) => entry.name === name) ?? null;
-
-					if (entry) {
-						schema = {
-							type: entry.type,
-							local: bundle.local,
-						};
-					}
-				} else {
-					schema = null;
-				}
-			} else {
-				schema = installed.find((extension) => extension.name === name) ?? null;
-			}
-
-			return {
-				name,
-				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local', 'version', 'partial') : null,
-				meta: omit(meta, 'name'),
-			};
-		});
 	}
 }
