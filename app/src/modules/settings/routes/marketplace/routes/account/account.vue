@@ -4,13 +4,10 @@ import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionMetadata from './components/extension-metadata.vue';
-import ExtensionReadme from './components/extension-readme.vue';
+import SettingsNavigation from '../../../../components/navigation.vue';
 
 const props = defineProps<{
-	extensionId: string;
+	accountId: string;
 }>();
 
 const router = useRouter();
@@ -18,16 +15,16 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
-const extension = ref<RegistryDescribeResponse['data']>();
+const account = ref<RegistryDescribeResponse>();
 
 watchEffect(async () => {
-	if (!props.extensionId) return;
+	if (!props.accountId) return;
 
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/extensions/registry/extension/${props.extensionId}`);
-		extension.value = response.data.data;
+		const response = await api.get(`/extensions/registry/account/${props.accountId}`);
+		account.value = response.data.data;
 	} catch (err) {
 		error.value = err;
 	} finally {
@@ -35,7 +32,16 @@ watchEffect(async () => {
 	}
 });
 
-const navigateBack = () => router.push('/settings/marketplace');
+const navigateBack = () => {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push('/settings/marketplace');
+};
 </script>
 
 <template>
@@ -50,13 +56,13 @@ const navigateBack = () => router.push('/settings/marketplace');
 			<settings-navigation />
 		</template>
 
-		<div class="extension-content">
-			<template v-if="extension">
+		<div class="account-content">
+			<template v-if="account">
 				<div class="container">
 					<div class="grid">
-						<ExtensionBanner class="banner" :extension="extension" />
+						<!-- <ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
-						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" />
+						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" /> -->
 					</div>
 				</div>
 			</template>
@@ -69,7 +75,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 </template>
 
 <style scoped lang="scss">
-.extension-content {
+.account-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 	max-width: 1200px;
@@ -107,3 +113,4 @@ const navigateBack = () => router.push('/settings/marketplace');
 	}
 }
 </style>
+

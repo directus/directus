@@ -3,7 +3,7 @@ import { useServerStore } from '@/stores/server';
 import { satisfies } from 'semver';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ExtensionMetadataItem from './extension-metadata-item.vue';
+import MetadataItem from '../../../components/metadata-item.vue';
 
 const props = defineProps<{
 	hostVersion: string;
@@ -21,5 +21,5 @@ const label = computed(() =>
 </script>
 
 <template>
-	<ExtensionMetadataItem :icon="icon" color="primary">{{ label }}</ExtensionMetadataItem>
+	<MetadataItem :icon="icon" color="primary">{{ label }}</MetadataItem>
 </template>

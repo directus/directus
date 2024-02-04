@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import ExtensionMetadataItem from './extension-metadata-item.vue';
+import MetadataItem from '../../../components/metadata-item.vue';
 
 const { t } = useI18n();
 
@@ -14,7 +14,7 @@ defineProps<{
 </script>
 
 <template>
-	<ExtensionMetadataItem icon="face" :to="`/settings/marketplace/account/${id}`">
+	<MetadataItem icon="face" :to="`/settings/marketplace/account/${id}`">
 		<template v-if="githubAvatarUrl" #icon>
 			<img :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		</template>
@@ -22,7 +22,7 @@ defineProps<{
 			{{ githubName ?? username }}
 			<v-icon v-if="verified" v-tooltip="t('verified')" name="verified" small />
 		</span>
-	</ExtensionMetadataItem>
+	</MetadataItem>
 </template>
 
 <style scoped>
