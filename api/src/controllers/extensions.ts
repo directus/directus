@@ -130,16 +130,16 @@ router.get(
 );
 
 router.post(
-	`/install/:pk(${UUID_REGEX})`,
+	'/registry/install/',
 	asyncHandler(async (req, _res, next) => {
-		const { pk } = req.params;
+		const { version } = req.body;
 
-		if (!pk) {
+		if (!version) {
 			throw new ForbiddenError();
 		}
 
 		const extensionManager = getExtensionManager();
-		await extensionManager.install(pk);
+		await extensionManager.install(version);
 		return next();
 	}),
 	respond,
