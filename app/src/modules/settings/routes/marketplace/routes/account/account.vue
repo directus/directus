@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { RegistryDescribeResponse } from '@directus/extensions-registry';
+import type { RegistryAccountResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
+import AccountBanner from './components/account-banner.vue';
 
 const props = defineProps<{
 	accountId: string;
@@ -15,7 +16,7 @@ const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
-const account = ref<RegistryDescribeResponse>();
+const account = ref<RegistryAccountResponse['data']>();
 
 watchEffect(async () => {
 	if (!props.accountId) return;
@@ -60,6 +61,7 @@ const navigateBack = () => {
 			<template v-if="account">
 				<div class="container">
 					<div class="grid">
+						<AccountBanner class="banner" :account="account" />
 						<!-- <ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
 						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" /> -->

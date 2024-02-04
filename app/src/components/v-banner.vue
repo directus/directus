@@ -7,7 +7,7 @@ defineProps<{
 <template>
 	<div class="v-banner">
 		<div class="avatar">
-			<v-icon :name="icon" large />
+			<slot name="avatar"><v-icon :name="icon" large /></slot>
 		</div>
 
 		<div class="content">
@@ -173,6 +173,8 @@ defineProps<{
 		flex-shrink: 0;
 		width: 120px;
 		height: 120px;
+		position: relative;
+		overflow: hidden;
 		align-items: center;
 		justify-content: center;
 		border-radius: var(--theme--banner--avatar--border-radius);

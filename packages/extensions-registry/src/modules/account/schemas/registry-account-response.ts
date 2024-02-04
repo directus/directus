@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const RegistryAuthorResponse = z.object({
+export const RegistryAccountResponse = z.object({
 	data: z.object({
 		id: z.string(),
 		username: z.string(),
@@ -14,3 +14,5 @@ export const RegistryAuthorResponse = z.object({
 		github_bio: z.string().nullable(),
 	}),
 });
+
+export type RegistryAccountResponse = z.infer<typeof RegistryAccountResponse>;
