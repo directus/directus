@@ -438,7 +438,10 @@ export class ExtensionManager {
 			replacement: path,
 		}));
 
-		const entrypoint = generateExtensionsEntrypoint({ module: this.moduleExtensions, registry: this.registryExtensions, local: this.localExtensions }, this.extensionsSettings);
+		const entrypoint = generateExtensionsEntrypoint(
+			{ module: this.moduleExtensions, registry: this.registryExtensions, local: this.localExtensions },
+			this.extensionsSettings,
+		);
 
 		try {
 			const bundle = await rollup({
