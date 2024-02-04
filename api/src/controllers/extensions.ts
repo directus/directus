@@ -179,6 +179,27 @@ router.patch(
 	respond,
 );
 
+router.delete(
+	`/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, _res, next) => {
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const pk = req.params['pk'];
+
+		if (!pk || typeof pk !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		await service.deleteOne(pk);
+
+		return next();
+	}),
+	respond,
+);
+
 router.get(
 	'/sources/:chunk',
 	asyncHandler(async (req, res) => {

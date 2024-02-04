@@ -97,6 +97,19 @@ export class ExtensionsService {
 		return result;
 	}
 
+	async deleteOne(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall extensions that were not installed from the marketplace registry',
+			});
+		}
+
+		await this.extensionsItemService.deleteOne(id);
+		await this.extensionsManager.uninstall(settings.folder);
+	}
+
 	/**
 	 * Sync a bundles enabled status
 	 *  - If the extension or extensions parent is not a bundle changes are skipped

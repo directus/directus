@@ -156,7 +156,7 @@ export class ExtensionManager {
 	/**
 	 * channel to publish on registering extension from external registry
 	 */
-	private extensionInstalledChannel = `extension.registry.installed`;
+	private reloadChannel = `extensions.reload`;
 
 	public get extensions() {
 		return [...this.localExtensions.values(), ...this.registryExtensions.values(), ...this.moduleExtensions.values()];
@@ -210,7 +210,7 @@ export class ExtensionManager {
 			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
 		}
 
-		this.messenger.subscribe(this.extensionInstalledChannel, () => {
+		this.messenger.subscribe(this.reloadChannel, () => {
 			this.reload();
 		});
 	}
@@ -221,8 +221,16 @@ export class ExtensionManager {
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
 
-		// Publish a message so other instances can reload extensions.
-		await this.messenger.publish(this.extensionInstalledChannel, {});
+		// Publish a message so all instances will reload extensions. Note: this will also reload the
+		// current instance, as it's subscribed to the same channel
+		await this.messenger.publish(this.reloadChannel, {});
+	}
+
+	public async uninstall(folder: string) {
+		await this.installationManager.uninstall(folder);
+		// Publish a message so all instances will reload extensions. Note: this will also reload the
+		// current instance, as it's subscribed to the same channel
+		await this.messenger.publish(this.reloadChannel, {});
 	}
 
 	/**
