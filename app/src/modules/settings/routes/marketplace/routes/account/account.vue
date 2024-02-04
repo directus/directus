@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { RegistryAccountResponse } from '@directus/extensions-registry';
-import { ref, watchEffect } from 'vue';
+import type { RegistryAccountResponse, RegistryListResponse } from '@directus/extensions-registry';
+import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import AccountBanner from './components/account-banner.vue';
 import AccountMetadata from './components/account-metadata.vue';
+import ExtensionListItem from '../../components/extension-list-item.vue';
 
 const props = defineProps<{
 	accountId: string;
@@ -32,6 +33,25 @@ watchEffect(async () => {
 	} finally {
 		loading.value = false;
 	}
+});
+
+const perPage = 6;
+const page = ref(1);
+const extensions = ref<RegistryListResponse['data']>([]);
+const filterCount = ref(0);
+const pageCount = computed(() => Math.round(filterCount.value / perPage));
+
+watchEffect(async () => {
+	const { data } = await api.get('/extensions/registry', {
+		params: {
+			limit: perPage,
+			offset: (page.value - 1) * perPage,
+			by: props.accountId,
+		},
+	});
+
+	filterCount.value = data.meta.filter_count;
+	extensions.value = data.data;
 });
 
 const navigateBack = () => {
@@ -64,9 +84,17 @@ const navigateBack = () => {
 					<div class="grid">
 						<AccountBanner class="banner" :account="account" />
 						<AccountMetadata class="metadata" :account="account" />
-						<!-- <ExtensionBanner class="banner" :extension="extension" />
-						<ExtensionMetadata class="metadata" :extension="extension" />
-						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" /> -->
+						<v-list>
+							<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
+						</v-list>
+
+						<v-pagination
+							v-if="pageCount > 1"
+							v-model="page"
+							class="pagination"
+							:length="pageCount"
+							:total-visible="5"
+						/>
 					</div>
 				</div>
 			</template>
@@ -117,4 +145,3 @@ const navigateBack = () => {
 	}
 }
 </style>
-

@@ -5,4 +5,5 @@ export interface ListQuery {
 	search?: string;
 	limit?: number;
 	offset?: number;
+	by?: string;
 }

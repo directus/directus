@@ -44,7 +44,7 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
-		const { search, limit, offset, type } = req.query;
+		const { search, limit, offset, type, by } = req.query;
 
 		const query: ListQuery = {};
 
@@ -58,6 +58,10 @@ router.get(
 
 		if (typeof offset === 'string') {
 			query.offset = Number(offset);
+		}
+
+		if (typeof by === 'string') {
+			query.by = by;
 		}
 
 		if (typeof type === 'string') {
