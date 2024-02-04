@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, ServiceUnavailableError } from '@directus/errors';
+import { ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
@@ -21,29 +21,26 @@ export class InstallationManager {
 
 	async install(versionId: string) {
 		const logger = useLogger();
-
 		const tempDir = join(env['TEMP_PATH'] as string, 'marketplace', versionId);
-
 		const tmpStorage = new DriverLocal({ root: tempDir });
 
-		await mkdir(tempDir, { recursive: true });
-
-		const options: DownloadOptions = {};
-
-		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
-			options.registry = env['MARKETPLACE_REGISTRY'];
-		}
-
-		const tarReadableStream = await download(versionId, options);
-
-		if (!tarReadableStream) {
-			throw new ForbiddenError();
-		}
-
-		const tarStream = Readable.fromWeb(tarReadableStream as ReadableStream);
-		const tarPath = join(tempDir, `bin.tar.tgz`);
-
 		try {
+			await mkdir(tempDir, { recursive: true });
+
+			const options: DownloadOptions = {};
+
+			if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+				options.registry = env['MARKETPLACE_REGISTRY'];
+			}
+
+			const tarReadableStream = await download(versionId, options);
+
+			if (!tarReadableStream) {
+				throw new Error(`No readable stream returned from download`);
+			}
+
+			const tarStream = Readable.fromWeb(tarReadableStream as ReadableStream);
+			const tarPath = join(tempDir, `bin.tar.tgz`);
 			await tmpStorage.write('bin.tar.tgz', tarStream);
 
 			/**
@@ -75,7 +72,13 @@ export class InstallationManager {
 
 				for await (const filepath of tmpStorage.list(extractedPath)) {
 					const readStream = await tmpStorage.read(filepath);
-					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath.split(extractedPath)[1]!);
+
+					const remotePath = join(
+						env['EXTENSIONS_PATH'] as string,
+						versionId,
+						filepath.substring(extractedPath.length),
+					);
+
 					queue.add(() => remoteDisk.write(remotePath, readStream));
 				}
 
