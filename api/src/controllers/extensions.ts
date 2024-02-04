@@ -180,35 +180,20 @@ router.patch(
 );
 
 router.delete(
-	'/:bundleOrName/:name?',
-	asyncHandler(async (req, res, next) => {
+	`/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, _res, next) => {
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const bundle = req.params['name'] ? req.params['bundleOrName'] : null;
-		const name = req.params['name'] ? req.params['name'] : req.params['bundleOrName'];
+		const pk = req.params['pk'];
 
-		if (bundle === undefined || !name) {
+		if (!pk || typeof pk !== 'string') {
 			throw new ForbiddenError();
 		}
 
-		try {
-			await service.deleteOne(bundle, name);
-		} catch (error) {
-			let finalError = error;
-
-			if (error instanceof ExtensionReadError) {
-				finalError = error.originalError;
-
-				if (isDirectusError(finalError, ErrorCode.Forbidden)) {
-					return next();
-				}
-			}
-
-			throw finalError;
-		}
+		await service.deleteOne(pk);
 
 		return next();
 	}),

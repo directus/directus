@@ -107,7 +107,7 @@ export class ExtensionsService {
 		}
 
 		await this.extensionsItemService.deleteOne(id);
-		await this.extensionsManager.uninstall(id);
+		await this.extensionsManager.uninstall(settings.folder);
 	}
 
 	/**

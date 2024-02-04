@@ -3,7 +3,7 @@ import { ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
-import { move, rmdir } from 'fs-extra';
+import { move, remove } from 'fs-extra';
 import { mkdir, readFile, rm } from 'node:fs/promises';
 import { Readable } from 'node:stream';
 import Queue from 'p-queue';
@@ -75,6 +75,7 @@ export class InstallationManager {
 
 					const remotePath = join(
 						env['EXTENSIONS_PATH'] as string,
+						'.registry',
 						versionId,
 						filepath.substring(extractedPath.length),
 					);
@@ -85,7 +86,7 @@ export class InstallationManager {
 				await queue.onIdle();
 			} else {
 				// No custom location, so save to regular local extensions folder
-				const dest = join(this.extensionPath, versionId);
+				const dest = join(this.extensionPath, '.registry', versionId);
 				await move(join(tempDir, extractedPath), dest, { overwrite: true });
 			}
 		} catch (err) {
@@ -107,14 +108,16 @@ export class InstallationManager {
 
 			const queue = new Queue({ concurrency: 1000 });
 
-			for await (const filepath of remoteDisk.list(folder)) {
+			const prefix = join(env['EXTENSIONS_PATH'] as string, '.registry', folder);
+
+			for await (const filepath of remoteDisk.list(prefix)) {
 				queue.add(() => remoteDisk.delete(filepath));
 			}
 
 			await queue.onIdle();
 		} else {
-			const path = join(this.extensionPath, folder);
-			await rmdir(path);
+			const path = join(this.extensionPath, '.registry', folder);
+			await remove(path);
 		}
 	}
 }

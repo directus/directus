@@ -226,8 +226,8 @@ export class ExtensionManager {
 		await this.messenger.publish(this.reloadChannel, {});
 	}
 
-	public async uninstall(versionId: string) {
-		await this.installationManager.uninstall(versionId);
+	public async uninstall(folder: string) {
+		await this.installationManager.uninstall(folder);
 		// Publish a message so all instances will reload extensions. Note: this will also reload the
 		// current instance, as it's subscribed to the same channel
 		await this.messenger.publish(this.reloadChannel, {});
