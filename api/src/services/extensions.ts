@@ -45,11 +45,9 @@ export class ExtensionsService {
 		return this.stitch(installedExtensions, configuredExtensions);
 	}
 
-	async readOne(bundle: string | null, name: string) {
-		const key = this.getKey(bundle, name);
-
-		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === (bundle ?? name));
-		const meta = await this.extensionsItemService.readOne(key);
+	async readOne(id: string) {
+		const schema = this.extensionsManager.getExtensions().find((extension) => extension.id === id);
+		const meta = await this.extensionsItemService.readOne(id);
 
 		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
 
@@ -58,7 +56,7 @@ export class ExtensionsService {
 		throw new ForbiddenError();
 	}
 
-	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
+	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
 		const result = await this.knex.transaction(async (trx) => {
 			if (!isObject(data.meta)) {
 				throw new InvalidPayloadError({ reason: `"meta" is required` });
@@ -70,14 +68,12 @@ export class ExtensionsService {
 				schema: this.schema,
 			});
 
-			const key = this.getKey(bundle, name);
-
-			await service.extensionsItemService.updateOne(key, data.meta);
+			await service.extensionsItemService.updateOne(id, data.meta);
 
 			let extension;
 
 			try {
-				extension = await service.readOne(bundle, name);
+				extension = await service.readOne(id);
 			} catch (error) {
 				throw new ExtensionReadError(error);
 			}
@@ -92,10 +88,6 @@ export class ExtensionsService {
 		this.extensionsManager.reload();
 
 		return result;
-	}
-
-	private getKey(bundle: string | null, name: string) {
-		return bundle ? `${bundle}/${name}` : name;
 	}
 
 	/**

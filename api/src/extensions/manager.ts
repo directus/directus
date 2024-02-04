@@ -80,10 +80,9 @@ export class ExtensionManager {
 	 */
 	private isLoaded = false;
 
-	/**
-	 * All extensions that are loaded within the current process
-	 */
-	private extensions: Extension[] = [];
+	private localExtensions: Extension[] = [];
+	private registryExtensions: Extension[] = [];
+	private moduleExtensions: Extension[] = [];
 
 	/**
 	 * Settings for the extensions that are loaded within the current process
@@ -154,6 +153,10 @@ export class ExtensionManager {
 	 */
 	private extensionInstalledChannel = `extension.registry.installed`;
 
+	public get extensions() {
+		return [...this.localExtensions, ...this.registryExtensions, ...this.moduleExtensions];
+	}
+
 	/**
 	 * Load and register all extensions
 	 *
@@ -180,13 +183,17 @@ export class ExtensionManager {
 		if (!this.isLoaded) {
 			await this.load();
 
-			if (this.extensions.length > 0) {
-				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
+			if (this.extensions.size > 0) {
+				logger.info(
+					`Loaded extensions: ${Array.from(this.extensions.values())
+						.map((ext) => ext.name)
+						.join(', ')}`,
+				);
 			}
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions(this.extensions);
+			this.updateWatchedExtensions(Array.from(this.extensions.values()));
 		}
 
 		this.messenger.subscribe(this.extensionInstalledChannel, () => {
@@ -221,7 +228,12 @@ export class ExtensionManager {
 		}
 
 		try {
-			this.extensions = await getExtensions();
+			const { local, registry, module } = await getExtensions();
+
+			this.localExtensions = local;
+			this.registryExtensions = registry;
+			this.moduleExtensions = module;
+
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
 		} catch (error) {
 			this.handleExtensionError({ error, reason: `Couldn't load extensions` });

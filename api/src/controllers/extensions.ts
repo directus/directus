@@ -146,22 +146,19 @@ router.post(
 );
 
 router.patch(
-	'/:bundleOrName/:name?',
+	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const bundle = req.params['name'] ? req.params['bundleOrName'] : null;
-		const name = req.params['name'] ? req.params['name'] : req.params['bundleOrName'];
-
-		if (bundle === undefined || !name) {
+		if (!req.params['pk']) {
 			throw new ForbiddenError();
 		}
 
 		try {
-			const result = await service.updateOne(bundle, name, req.body);
+			const result = await service.updateOne(req.params['pk'], req.body);
 			res.locals['payload'] = { data: result || null };
 		} catch (error) {
 			let finalError = error;

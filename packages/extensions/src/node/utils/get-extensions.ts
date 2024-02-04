@@ -89,8 +89,8 @@ export async function getExtensions(extensionList: ExtensionList, local: boolean
 	return extensions;
 }
 
-export async function resolveLocalExtensions(root: string): Promise<Extension[]> {
-	const extensionFolders = await listFolders(root);
+export async function resolveFsExtensions(root: string): Promise<Extension[]> {
+	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
 	const extensionList: ExtensionList = extensionFolders.map((folder) => [folder, join(root, folder)]);
 
@@ -102,7 +102,7 @@ const isExtension = (pkgName: string) => {
 	return regex.test(pkgName);
 };
 
-export async function resolvePackageExtensions(root: string): Promise<Extension[]> {
+export async function resolveModuleExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
