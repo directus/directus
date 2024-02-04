@@ -1,58 +1,54 @@
 import { useEnv } from '@directus/env';
-import axios from 'axios';
-import tar from 'tar';
+import { ForbiddenError } from '@directus/errors';
+import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
+import { download, type DownloadOptions } from '@directus/extensions-registry';
+import DriverLocal from '@directus/storage-driver-local';
+import { move } from 'fs-extra';
+import { createWriteStream } from 'node:fs';
+import { mkdir, readFile, rm } from 'node:fs/promises';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
 import { join } from 'path';
+import type { ReadableStream } from 'stream/web';
+import tar from 'tar';
+import { useLogger } from '../../../logger.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
-import { mkdir, rm, readFile } from 'node:fs/promises';
-import { pipeline } from 'node:stream/promises';
-import DriverLocal from '@directus/storage-driver-local';
-import { createWriteStream } from 'node:fs';
-import { move } from 'fs-extra';
-import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
-
-const registryMap: Record<string, string> = {
-	npm: 'https://registry.npmjs.org',
-	yarn: 'https://registry.yarnpkg.com',
-	github: 'https://npm.pkg.github.com',
-};
+import { ServiceUnavailableError } from '@directus/errors';
 
 const env = useEnv();
 
 export class InstallationManager {
 	extensionPath = getExtensionsPath();
 	driverLocal: DriverLocal = new DriverLocal({ root: this.extensionPath });
-	async install(name: string, version?: string, registry?: string) {
-		version ??= 'latest';
-		const registryUrl = registryMap[registry || (env['EXTENSIONS_REGISTRY'] as string)];
-		const packageUrl = `${registryUrl}/${name}/${version}`;
-		const token = env['EXTENSIONS_REGISTRY_TOKEN'];
+	async install(versionId: string) {
+		const logger = useLogger();
 
-		const headers = {
-			...(token ? { Authorization: `Bearer ${token}` } : {}),
-		};
-
-		const packageInfo = await axios.get(packageUrl, {
-			headers,
-		});
-
-		const downloadPath = join('directus_install_temp', name);
+		const downloadPath = join('directus_install_temp', versionId);
 
 		//temp dir inside extension folder to download and extract the tar
 		const tempDir = join(this.extensionPath, downloadPath);
 		await mkdir(tempDir, { recursive: true });
 
-		const tarStream = await axios.get(packageInfo.data.dist.tarball, {
-			headers,
-			responseEncoding: 'binary',
-			responseType: 'stream',
-		});
+		const options: DownloadOptions = {};
+
+		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			options.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const tarReadableStream = await download(versionId, options);
+
+		if (!tarReadableStream) {
+			throw new ForbiddenError();
+		}
+
+		const tarStream = Readable.fromWeb(tarReadableStream as ReadableStream);
 
 		try {
 			const tarPath = join(tempDir, `bin.tar.tgz`);
 			const writeStream = createWriteStream(tarPath, { encoding: 'binary' });
-			await pipeline(tarStream.data, writeStream);
+			await pipeline(tarStream, writeStream);
 
 			await tar.extract({
 				file: tarPath,
@@ -62,20 +58,12 @@ export class InstallationManager {
 			const packageFile = JSON.parse(await readFile(join(tempDir, 'package', 'package.json'), { encoding: 'utf-8' }));
 			const extensionManifest = ExtensionManifest.parse(packageFile);
 
-			if (!extensionManifest.name) {
-				throw new Error(`Extension name not found in package.json`);
-			}
-
 			if (!extensionManifest[EXTENSION_PKG_KEY]?.type) {
 				throw new Error(`Extension type not found in package.json`);
 			}
 
-			if (!env['EXTENSIONS_LOCATION']) {
-				//no locations configurred hence just move the extracted tar to extension folder
-				const dest = join(this.extensionPath, name);
-				await move(join(tempDir, 'package'), dest, { overwrite: true });
-			} else {
-				//upload the temp dir into configurred extension location
+			if (env['EXTENSIONS_LOCATION']) {
+				// Upload the extension into the configured extensions location
 				const storage = await getStorage();
 				const remoteDisk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 				const prefix = join(downloadPath, 'package');
