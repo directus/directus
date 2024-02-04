@@ -39,12 +39,19 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('source', 255).alter().notNullable().defaultTo('local');
 		table.renameColumn('name', 'folder');
 	});
+
+	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.string('folder', 255).nullable().alter();
+	});
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumns('id', 'source', 'bundle');
 		table.renameColumn('folder', 'name');
+	});
+
+	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.string('name', 255).primary().alter();
 	});
 }
