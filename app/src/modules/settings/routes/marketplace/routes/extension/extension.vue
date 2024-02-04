@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
+import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
 import ExtensionReadme from './components/extension-readme.vue';
 
@@ -48,6 +49,10 @@ const navigateBack = () => router.push('/settings/marketplace');
 
 		<template #navigation>
 			<settings-navigation />
+		</template>
+
+		<template #sidebar>
+			<extension-info-sidebar-detail />
 		</template>
 
 		<div class="extension-content">

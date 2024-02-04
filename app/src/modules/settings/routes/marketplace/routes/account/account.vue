@@ -8,6 +8,7 @@ import SettingsNavigation from '../../../../components/navigation.vue';
 import AccountBanner from './components/account-banner.vue';
 import AccountMetadata from './components/account-metadata.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
+import AccountInfoSidebarDetail from './components/account-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	accountId: string;
@@ -76,6 +77,10 @@ const navigateBack = () => {
 
 		<template #navigation>
 			<settings-navigation />
+		</template>
+
+		<template #sidebar>
+			<account-info-sidebar-detail />
 		</template>
 
 		<div class="account-content">

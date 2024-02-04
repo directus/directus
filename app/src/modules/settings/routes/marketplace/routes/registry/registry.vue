@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
 import TypeFilter from './components/type-filter.vue';
+import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
 
 const { t, n } = useI18n();
 
@@ -102,7 +103,7 @@ watchEffect(async () => {
 		</template>
 
 		<template #sidebar>
-			<!-- <extensions-info-sidebar-detail /> -->
+			<registry-info-sidebar-detail />
 		</template>
 
 		<div class="page-container">

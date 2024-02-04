@@ -1147,6 +1147,9 @@ page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
 page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
 page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
+page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
+page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
