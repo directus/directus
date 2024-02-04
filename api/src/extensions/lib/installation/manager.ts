@@ -46,12 +46,20 @@ export class InstallationManager {
 		try {
 			await tmpStorage.write('bin.tar.tgz', tarStream);
 
+			/**
+			 * NPM modules that are packed are always tarballed in a folder called "package"
+			 */
+			const extractedPath = 'package';
+
 			await tar.extract({
 				file: tarPath,
 				cwd: tempDir,
 			});
 
-			const packageFile = JSON.parse(await readFile(join(tempDir, 'package', 'package.json'), { encoding: 'utf-8' }));
+			const packageFile = JSON.parse(
+				await readFile(join(tempDir, extractedPath, 'package.json'), { encoding: 'utf-8' }),
+			);
+
 			const extensionManifest = await ExtensionManifest.parseAsync(packageFile);
 
 			if (!extensionManifest[EXTENSION_PKG_KEY]?.type) {
@@ -65,9 +73,9 @@ export class InstallationManager {
 
 				const queue = new Queue({ concurrency: 1000 });
 
-				for await (const filepath of tmpStorage.list('package')) {
+				for await (const filepath of tmpStorage.list(extractedPath)) {
 					const readStream = await tmpStorage.read(filepath);
-					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath.substring('package/'.length));
+					const remotePath = join(env['EXTENSIONS_PATH'] as string, versionId, filepath.split(extractedPath)[1]!);
 					queue.add(() => remoteDisk.write(remotePath, readStream));
 				}
 
@@ -75,7 +83,7 @@ export class InstallationManager {
 			} else {
 				// No custom location, so save to regular local extensions folder
 				const dest = join(this.extensionPath, versionId);
-				await move(join(tempDir, 'package'), dest, { overwrite: true });
+				await move(join(tempDir, extractedPath), dest, { overwrite: true });
 			}
 		} catch (err) {
 			logger.warn(err);
