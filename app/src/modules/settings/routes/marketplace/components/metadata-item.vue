@@ -2,7 +2,7 @@
 withDefaults(
 	defineProps<{
 		icon: string;
-		color?: 'primary' | 'subdued';
+		color?: 'primary' | 'subdued' | 'foreground' | 'warning';
 		href?: string;
 		to?: string;
 		monospace?: boolean;
@@ -28,6 +28,11 @@ withDefaults(
 .primary {
 	--v-list-color: var(--theme--primary);
 	--v-list-item-icon-color: var(--theme--primary);
+}
+
+.foreground {
+	--v-list-color: var(--theme--foreground);
+	--v-list-item-icon-color: var(--theme--foreground);
 }
 
 .subdued {

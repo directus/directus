@@ -76,6 +76,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 <style scoped lang="scss">
 .extension-content {
 	padding: var(--content-padding);
+	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);
 	max-width: 1200px;
 	width: 100%;
@@ -97,7 +98,6 @@ const navigateBack = () => router.push('/settings/marketplace');
 
 	.readme {
 		grid-area: readme;
-		min-width: 0;
 	}
 
 	.metadata {
@@ -105,7 +105,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 	}
 
 	@container item (width > 800px) {
-		grid-template-columns: 1fr 320px;
+		grid-template-columns: minmax(0, 1fr) 320px;
 		grid-template-areas:
 			'banner banner'
 			'readme metadata';

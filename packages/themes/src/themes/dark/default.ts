@@ -280,7 +280,7 @@ export default defineTheme({
 		banner: {
 			background: '#0e1c2f',
 			padding: '40px',
-			borderRadius: '20px',
+			borderRadius: 'var(--theme--border-radius)',
 
 			avatar: {
 				borderRadius: '50%',
