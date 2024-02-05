@@ -14,6 +14,7 @@ export const sections = {
 				items: [
 					{ display: 'SDK Quickstart', path: '/guides/sdk/getting-started' },
 					{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
+					{ display: 'SDK Types', path: '/guides/sdk/types' },
 				],
 			},
 			{
