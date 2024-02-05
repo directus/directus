@@ -27,7 +27,7 @@ export const createEnv = (): Env => {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
 			}
 		} else {
-			output[key] = cast(key, value);
+			output[key] = cast(value, key);
 		}
 	}
 
