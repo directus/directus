@@ -26,7 +26,7 @@ const extensionsStore = useExtensionsStore();
 
 const devMode = import.meta.env.DEV;
 
-const changingEnabledState = ref(false);
+const saving = ref(false);
 
 const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? extensionTypeIconMap[type.value] : 'warning'));
@@ -76,15 +76,27 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 const toggleState = async () => {
-	changingEnabledState.value = true;
+	saving.value = true;
 
 	try {
 		await extensionsStore.toggleState(props.extension.id);
 	} catch (err) {
 		unexpectedError(err);
+	} finally {
+		saving.value = false;
 	}
+};
 
-	changingEnabledState.value = false;
+const uninstall = async () => {
+	saving.value = true;
+
+	try {
+		await extensionsStore.uninstall(props.extension.id);
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
 };
 </script>
 
@@ -98,11 +110,12 @@ const toggleState = async () => {
 			</span>
 		</v-list-item-content>
 
-		<v-progress-circular v-if="changingEnabledState" indeterminate />
+		<v-progress-circular v-if="saving" indeterminate />
 
 		<v-chip class="state" :class="state.status" small>
 			{{ state.text }}
 		</v-chip>
+
 		<extension-item-options
 			class="options"
 			:type="type"
@@ -110,6 +123,7 @@ const toggleState = async () => {
 			:disable-locked="disableLocked"
 			:uninstall-locked="uninstallLocked"
 			@toggle-status="toggleState"
+			@uninstall="uninstall"
 		/>
 	</v-list-item>
 

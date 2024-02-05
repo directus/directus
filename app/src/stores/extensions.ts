@@ -90,7 +90,12 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await refresh();
 	};
 
+	const uninstall = async (extensionId: string) => {
+		await api.delete(`/extensions/${extensionId}`);
+		await refresh();
+	};
+
 	refresh(false);
 
-	return { extensions, loading, error, refresh, toggleState, install };
+	return { extensions, loading, error, refresh, toggleState, install, uninstall };
 });
