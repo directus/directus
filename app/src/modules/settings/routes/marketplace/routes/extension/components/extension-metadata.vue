@@ -9,6 +9,7 @@ import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import MetadataItem from '../../../components/metadata-item.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import ExtensionInstall from './extension-install.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -23,7 +24,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 	<div class="metadata">
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
+				<ExtensionInstall class="install-button" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
@@ -31,6 +32,10 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:github-name="latestVersion.publisher.github_name"
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
 				/>
+			</div>
+			<v-divider />
+			<div class="grid">
+				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataVersion :version="latestVersion.version" />
 				<ExtensionMetadataDownloads :downloads="extension.downloads" />
 				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
@@ -63,5 +68,9 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 10px;
 	}
+}
+
+.install-button {
+	margin-bottom: 8px;
 }
 </style>
