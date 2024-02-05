@@ -36,10 +36,13 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('admin users', () => {
-	beforeEach(() => {
-		const userStore = mockedStore(useUserStore());
-		userStore.isAdmin = true;
+const sharedTests = () => {
+	it('should be disallowed if no collection is given', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref(null) } as any);
+
+		const result = isSortAllowed(null);
+
+		expect(result.value).toBe(false);
 	});
 
 	it('should be disallowed if collection has no sort field', () => {
@@ -49,6 +52,15 @@ describe('admin users', () => {
 
 		expect(result.value).toBe(false);
 	});
+};
+
+describe('admin users', () => {
+	beforeEach(() => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+	});
+
+	sharedTests();
 
 	it('should be allowed for admin if collection has sort field', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { sort_field: sample.sortField } }) } as any);
@@ -64,6 +76,8 @@ describe('non-admin users', () => {
 		const userStore = mockedStore(useUserStore());
 		userStore.isAdmin = false;
 	});
+
+	sharedTests();
 
 	it('should be disallowed if collection has no sort field', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({}) } as any);

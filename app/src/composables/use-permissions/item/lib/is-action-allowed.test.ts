@@ -2,7 +2,7 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { randomIdentifier } from '@directus/random';
-import { ItemPermissions, Permission } from '@directus/types';
+import { ItemPermissions, Permission, PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -52,6 +52,26 @@ afterEach(() => {
 
 const actions = ['update', 'delete', 'share'] as const;
 
+const sharedTests = (action: (typeof actions)[number]) => {
+	it('should be disallowed if no collection is given', () => {
+		const isNew = false;
+
+		const result = isActionAllowed(null, isNew, fetchedItemPermissions, action);
+
+		expect(result.value).toBe(false);
+		expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+	});
+
+	it('should be disallowed if item is new', () => {
+		const isNew = true;
+
+		const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
+
+		expect(result.value).toBe(false);
+		expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+	});
+};
+
 describe('admin users', () => {
 	beforeEach(() => {
 		const userStore = mockedStore(useUserStore());
@@ -59,14 +79,7 @@ describe('admin users', () => {
 	});
 
 	describe.each(actions)('%s', (action) => {
-		it('should be disallowed if item is new', () => {
-			const isNew = true;
-
-			const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
-
-			expect(result.value).toBe(false);
-			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
-		});
+		sharedTests(action);
 
 		it('should be allowed if item is not new', () => {
 			const isNew = false;
@@ -86,6 +99,8 @@ describe('non-admin users', () => {
 	});
 
 	describe.each(actions)('%s', (action) => {
+		sharedTests(action);
+
 		it('should be disallowed if item is new', () => {
 			const isNew = true;
 

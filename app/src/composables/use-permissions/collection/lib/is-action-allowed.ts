@@ -5,5 +5,11 @@ import { Collection } from '../../types';
 export const isActionAllowed = (collection: Collection, action: 'create' | 'read' | 'update' | 'delete') => {
 	const { hasPermission } = usePermissionsStore();
 
-	return computed(() => hasPermission(unref(collection), action));
+	return computed(() => {
+		const collectionValue = unref(collection);
+
+		if (!collectionValue) return false;
+
+		return hasPermission(collectionValue, action);
+	});
 };

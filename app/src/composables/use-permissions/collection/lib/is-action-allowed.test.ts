@@ -29,6 +29,12 @@ afterEach(() => {
 const actions = ['create', 'read', 'update', 'delete'] as const;
 
 describe.each(actions)('%s', (testAction) => {
+	it('should be disallowed if no collection is given', () => {
+		const result = isActionAllowed(null, testAction);
+
+		expect(result.value).toBe(false);
+	});
+
 	it('should be disallowed if user has no permission', () => {
 		const permissionsStore = mockedStore(usePermissionsStore());
 

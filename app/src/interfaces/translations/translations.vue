@@ -266,11 +266,19 @@ const secondItemNew = computed(() => !!(relationInfo.value && secondItemPrimaryK
 
 const {
 	itemPermissions: { saveAllowed: firstSaveAllowed, fields: firstFields },
-} = usePermissions(relationInfo.value.junctionCollection.collection, firstItemPrimaryKey, firstItemNew);
+} = usePermissions(
+	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
+	firstItemPrimaryKey,
+	firstItemNew,
+);
 
 const {
 	itemPermissions: { saveAllowed: secondSaveAllowed, fields: secondFields },
-} = usePermissions(relationInfo.value.junctionCollection.collection, secondItemPrimaryKey, secondItemNew);
+} = usePermissions(
+	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
+	secondItemPrimaryKey,
+	secondItemNew,
+);
 </script>
 
 <template>

@@ -69,7 +69,28 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
+const sharedTests = () => {
+	it('should return no fields if no collection is given', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref(null) } as any);
+
+		const isNew = false;
+
+		const fetchedItemPermissions = ref();
+
+		const fields = getFields(null, isNew, fetchedItemPermissions);
+
+		expect(fields.value.length).toEqual(0);
+	});
+};
+
 describe('admin users', () => {
+	beforeEach(() => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+	});
+
+	sharedTests();
+
 	it('should return all fields', () => {
 		const userStore = mockedStore(useUserStore());
 		userStore.isAdmin = true;
@@ -95,6 +116,8 @@ describe('non-admin users', () => {
 
 		fetchedItemPermissions = ref({} as ItemPermissions);
 	});
+
+	sharedTests();
 
 	it('should return all fields with full fields read permission', () => {
 		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields), info: ref({}) } as any);

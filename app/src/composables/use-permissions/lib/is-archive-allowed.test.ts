@@ -36,13 +36,18 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('admin users', () => {
-	beforeEach(() => {
-		const userStore = mockedStore(useUserStore());
-		userStore.isAdmin = true;
+const sharedTests = () => {
+	it('should be disallowed if no collection is given', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref(null) } as any);
+
+		const updateAllowed = true;
+
+		const result = isArchiveAllowed(null, ref(updateAllowed));
+
+		expect(result.value).toBe(false);
 	});
 
-	it('should be disallowed for %s if collection has no archive field', () => {
+	it('should be disallowed if collection has no archive field', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({}) } as any);
 
 		const updateAllowed = true;
@@ -51,6 +56,15 @@ describe('admin users', () => {
 
 		expect(result.value).toBe(false);
 	});
+};
+
+describe('admin users', () => {
+	beforeEach(() => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+	});
+
+	sharedTests();
 
 	it('should be allowed for admin if collection has archive field', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
@@ -68,6 +82,8 @@ describe('non-admin users', () => {
 		const userStore = mockedStore(useUserStore());
 		userStore.isAdmin = false;
 	});
+
+	sharedTests();
 
 	it('should be disallowed if user has no permission', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);

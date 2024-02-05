@@ -3,20 +3,24 @@ import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { Ref, computed, unref } from 'vue';
+import { Ref, computed, ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 
 export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermissions: Ref<ItemPermissions>) {
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
-	const { fields: rawFields, info: collectionInfo } = useCollection(collection);
+	const { fields: rawFields, info: collectionInfo } = useCollection(ref(collection));
 
 	return computed(() => {
+		const collectionValue = unref(collection);
+
+		if (!collectionValue) return [];
+
 		if (userStore.isAdmin) return rawFields.value;
 
 		let fields = cloneDeep(rawFields.value);
 
-		const readableFields = getPermission(unref(collection), 'read')?.fields;
+		const readableFields = getPermission(collectionValue, 'read')?.fields;
 
 		// remove fields without read permissions so they don't show up in the DOM
 		if (readableFields && !readableFields.includes('*')) {
@@ -25,7 +29,7 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		const permission = collectionInfo.value?.meta?.singleton
 			? fetchedItemPermissions.value.update
-			: getPermission(unref(collection), unref(isNew) ? 'create' : 'update');
+			: getPermission(collectionValue, unref(isNew) ? 'create' : 'update');
 
 		if (!permission?.fields?.includes('*')) {
 			for (const field of fields) {

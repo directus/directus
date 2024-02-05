@@ -15,11 +15,15 @@ export const isActionAllowed = (
 	const { getPermission } = usePermissionsStore();
 
 	const localPermissions = computed(() => {
+		const collectionValue = unref(collection);
+
+		if (!collectionValue) return false;
+
 		if (unref(isNew)) return false;
 
 		if (userStore.isAdmin) return true;
 
-		const permission = getPermission(unref(collection), action);
+		const permission = getPermission(collectionValue, action);
 		if (!permission) return false;
 
 		if (isFullPermission(permission)) return true;
