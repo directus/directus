@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useFieldsPermissions } from '@/composables/use-permissions/fields';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -13,7 +13,7 @@ import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { Ref, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -62,7 +62,7 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelation
 const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
-const { collection } = toRefs(props);
+const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
@@ -101,13 +101,15 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: relatedCollectionFields } = useFieldsPermissions(
-	relatedCollection as any,
+const { fields: fieldsWithPermissions } = useItemPermissions(
+	collection,
+	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: fieldsWithPermissions } = useFieldsPermissions(
-	collection,
+const { fields: relatedCollectionFields } = useItemPermissions(
+	relatedCollection as Ref<string>,
+	relatedPrimaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 

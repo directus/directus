@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useItemPermissions } from '@/composables/use-permissions/item';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { Share } from '@directus/types';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -18,7 +18,7 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const { updateAllowed, deleteAllowed } = useItemPermissions('directus_shares', props.share.id);
+const { updateAllowed, deleteAllowed } = useItemPermissions('directus_shares', props.share.id, false);
 
 const usesLeft = computed(() => {
 	if (props.share.max_uses === null) return null;

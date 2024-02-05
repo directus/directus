@@ -1,9 +1,9 @@
-import { ref, unref } from 'vue';
-import { computedAsync } from '@vueuse/core';
-import { ItemPermissions } from '@directus/types';
-import { Collection, PrimaryKey } from '../types';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { ItemPermissions } from '@directus/types';
+import { computedAsync } from '@vueuse/core';
+import { ref, unref } from 'vue';
+import { Collection, PrimaryKey } from '../../types';
 
 const defaultPermissions: ItemPermissions = {
 	update: {
@@ -19,20 +19,24 @@ const defaultPermissions: ItemPermissions = {
 
 export const fetchItemPermissions = (collection: Collection, primaryKey: PrimaryKey) => {
 	const loading = ref(false);
+	const refreshKey = ref(0);
 
 	const fetchedItemPermissions = computedAsync(
 		async () => {
+			refreshKey.value;
+
 			const pk = unref(primaryKey);
 
-			if (!pk) return defaultPermissions;
-
 			try {
-				const response = await api.get<{ data: ItemPermissions }>(`/permissions/me/${unref(collection)}/${pk}`);
+				const response = await api.get<{ data: ItemPermissions }>(
+					`/permissions/me/${unref(collection)}${pk !== null ? `/${pk}` : ''}`,
+				);
+
 				return response.data.data;
 			} catch (error) {
 				unexpectedError(error);
 
-				// Be optimistic in case of errors to not block UI operations
+				// Optimistic in case of errors to not block UI
 				return {
 					update: {
 						access: true,
@@ -50,5 +54,7 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 		{ lazy: true, evaluating: loading },
 	);
 
-	return { loading, fetchedItemPermissions };
+	const refresh = () => refreshKey.value++;
+
+	return { loading, refresh, fetchedItemPermissions };
 };

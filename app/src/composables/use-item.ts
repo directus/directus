@@ -16,12 +16,13 @@ import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { useFieldsPermissions } from './use-permissions/fields';
+import { UsablePermissions, usePermissions } from './use-permissions';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
 	hasEdits: Ref<boolean>;
 	item: Ref<T | null>;
+	permissions: UsablePermissions;
 	error: Ref<any>;
 	loading: Ref<boolean>;
 	saving: Ref<boolean>;
@@ -47,7 +48,7 @@ export function useItem<T extends Record<string, any>>(
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
-	const loading = ref(false);
+	const loadingItem = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
@@ -66,7 +67,10 @@ export function useItem<T extends Record<string, any>>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields: fieldsWithPermissions } = useFieldsPermissions(collection, isNew);
+	const permissions = usePermissions(collection, primaryKey, isNew);
+	const fieldsWithPermissions = permissions.itemPermissions.fields;
+
+	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
@@ -86,6 +90,7 @@ export function useItem<T extends Record<string, any>>(
 		edits,
 		hasEdits,
 		item,
+		permissions,
 		error,
 		loading,
 		saving,
@@ -103,7 +108,7 @@ export function useItem<T extends Record<string, any>>(
 	};
 
 	async function getItem() {
-		loading.value = true;
+		loadingItem.value = true;
 		error.value = null;
 
 		try {
@@ -112,7 +117,7 @@ export function useItem<T extends Record<string, any>>(
 		} catch (err: any) {
 			error.value = err;
 		} finally {
-			loading.value = false;
+			loadingItem.value = false;
 		}
 	}
 
@@ -440,7 +445,7 @@ export function useItem<T extends Record<string, any>>(
 	function refresh() {
 		error.value = null;
 		validationErrors.value = [];
-		loading.value = false;
+		loadingItem.value = false;
 		saving.value = false;
 		deleting.value = false;
 		archiving.value = false;
@@ -448,6 +453,7 @@ export function useItem<T extends Record<string, any>>(
 		item.value = null;
 
 		refreshItem();
+		permissions.itemPermissions.refresh();
 	}
 
 	function refreshItem() {

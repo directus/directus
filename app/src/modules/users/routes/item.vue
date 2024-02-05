@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
@@ -47,8 +46,9 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
-	loading: loadingItem,
+	loading,
 	save,
 	remove,
 	deleting,
@@ -67,6 +67,11 @@ const {
 		  }
 		: undefined,
 );
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, fields },
+} = permissions;
 
 const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
@@ -87,19 +92,6 @@ const confirmArchive = ref(false);
 const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
 
 const avatarError = ref(null);
-
-const {
-	loading: loadingPermissions,
-	createAllowed,
-	deleteAllowed,
-	archiveAllowed,
-	saveAllowed,
-	updateAllowed,
-	revisionsAllowed,
-	fields,
-} = usePermissions('directus_users', primaryKey, isNew);
-
-const loading = computed(() => loadingItem.value || loadingPermissions.value);
 
 const title = computed(() => {
 	if (loading.value === true) return t('loading');

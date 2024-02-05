@@ -1,26 +1,24 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
-import { Ref, computed, unref } from 'vue';
-import { Collection } from '../types';
-import { isFieldAllowed } from '../utils/is-field-allowed';
+import { computed, unref } from 'vue';
+import { Collection } from '../../types';
+import { isFieldAllowed } from '../../utils/is-field-allowed';
 
-export const isArchiveAllowed = (collection: Collection, updateAllowed: Ref<boolean>) => {
+export const isSortAllowed = (collection: Collection) => {
 	const { info: collectionInfo } = useCollection(collection);
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
 
 	return computed(() => {
-		const archiveField = collectionInfo.value?.meta?.archive_field;
-		if (!archiveField) return false;
+		const sortField = collectionInfo.value?.meta?.sort_field;
+		if (!sortField) return false;
 
 		if (userStore.isAdmin) return true;
 
 		const permission = getPermission(unref(collection), 'update');
 		if (!permission) return false;
 
-		if (!isFieldAllowed(permission, archiveField)) return false;
-
-		return updateAllowed.value;
+		return isFieldAllowed(permission, sortField);
 	});
 };

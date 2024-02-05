@@ -3,6 +3,7 @@ import type {
 	Accountability,
 	DeepPartial,
 	Filter,
+	ItemPermissions,
 	Permission,
 	PermissionsAction,
 	SchemaOverview,
@@ -10,9 +11,9 @@ import type {
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
-import type { ItemPermissionsAccess } from '../types/permissions.js';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { PermissionsService } from './index.js';
 
 vi.mock('../database/index.js', () => ({
@@ -41,8 +42,16 @@ describe('Services / PermissionsService', () => {
 		const permissionCheckField = 'title';
 		const permissionCheck = randomIdentifier();
 
-		const schema: DeepPartial<SchemaOverview> = {
+		const baseSchema: DeepPartial<SchemaOverview> = {
 			collections: {
+				directus_permissions: {
+					primary: 'id',
+					fields: {
+						role: { type: 'string', special: [] },
+						collection: { type: 'string', special: [] },
+						action: { type: 'string', special: [] },
+					},
+				},
 				[collection]: {
 					collection: collection,
 					primary: primaryKeyField,
@@ -55,8 +64,6 @@ describe('Services / PermissionsService', () => {
 			relations: [],
 		};
 
-		const actions: PermissionsAction[] = ['update', 'delete', 'share'];
-
 		const permissionPreset: Omit<Permission, 'action'> = {
 			role: null,
 			collection,
@@ -66,8 +73,13 @@ describe('Services / PermissionsService', () => {
 			fields: ['*'],
 		};
 
-		const noAccess: ItemPermissionsAccess = { update: false, delete: false, share: false };
-		const fullAccess: ItemPermissionsAccess = { update: true, delete: true, share: true };
+		const noAccess: ItemPermissions = {
+			update: { access: false },
+			delete: { access: false },
+			share: { access: false },
+		};
+
+		const fullAccess: ItemPermissions = { update: { access: true }, delete: { access: true }, share: { access: true } };
 
 		const users = {
 			public: { user: null, role: null },
@@ -76,26 +88,28 @@ describe('Services / PermissionsService', () => {
 
 		type Scenario = [
 			scenario: string,
-			{ accountability: Accountability; access: ItemPermissionsAccess; selectCount: number },
+			{ accountability: Accountability; itemPermissions: ItemPermissions; selectCount: number },
 		];
 
 		const adminScenario: Scenario = [
 			'admin',
 			{
 				accountability: { user: randomUUID(), role: randomUUID(), admin: true },
-				access: fullAccess,
+				itemPermissions: fullAccess,
 				selectCount: 0,
 			},
 		];
 
+		const actions: PermissionsAction[] = ['update', 'delete', 'share'];
+
 		const userScenarios: Scenario[] = Object.entries(users).flatMap(([user, accountability]) => {
 			return [
-				[`${user} without permissions`, { accountability, access: noAccess, selectCount: 0 }],
+				[`${user} without permissions`, { accountability, itemPermissions: noAccess, selectCount: 0 }],
 				...(actions.map((action) => [
 					`${user} with ${action} permission`,
 					{
 						accountability: { ...accountability, permissions: [{ ...permissionPreset, action }] },
-						access: actions.reduce((a, v) => ({ ...a, [v]: v === action }), {}),
+						itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
 						selectCount: 1,
 					},
 				]) as Scenario[]),
@@ -106,7 +120,7 @@ describe('Services / PermissionsService', () => {
 							...accountability,
 							permissions: actions.map((action) => ({ ...permissionPreset, action })),
 						},
-						access: fullAccess,
+						itemPermissions: fullAccess,
 						selectCount: 3,
 					},
 				],
@@ -130,104 +144,237 @@ describe('Services / PermissionsService', () => {
 								},
 							],
 						},
-						access: actions.reduce((a, v) => ({ ...a, [v]: v === action }), {}),
+						itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
 						selectCount: 1,
 					},
 				]) as Scenario[],
 		);
 
-		describe('non-existing', () => {
-			const scenarios = [
-				// full access for admin
-				adminScenario,
-				// no access for all other users
-				...([...userScenarios, ...userConditionalScenarios].map(([scenario, config]) => [
-					scenario,
-					{ ...config, access: noAccess },
-				]) as Scenario[]),
-			];
+		const collectionTypes = ['collection', 'singleton'];
 
-			describe.each(scenarios)('%s', (_, { accountability, access }) => {
-				test('collection', async () => {
-					const service = new PermissionsService({
-						knex: db,
-						schema: { collections: {}, relations: [] },
-						accountability,
+		describe.each(collectionTypes)('%s', (collectionType) => {
+			const schema = cloneDeep(baseSchema) as SchemaOverview;
+			if (collectionType === 'singleton') schema.collections[collection]!.singleton = true;
+
+			describe('non-existing', () => {
+				const scenarios = [
+					// full access for admin
+					adminScenario,
+					// no access for all other users
+					...([...userScenarios, ...userConditionalScenarios].map(([scenario, config]) => [
+						scenario,
+						{ ...config, itemPermissions: noAccess },
+					]) as Scenario[]),
+				];
+
+				describe.each(scenarios)('%s', (_, { accountability, itemPermissions }) => {
+					test('collection', async () => {
+						const service = new PermissionsService({
+							knex: db,
+							schema: { collections: {}, relations: [] },
+							accountability,
+						});
+
+						const result = await service.getItemPermissions(
+							collection,
+							collectionType === 'collection' ? String(primaryKey) : undefined,
+						);
+
+						expect(result).toEqual(itemPermissions);
 					});
 
-					const result = await service.getItemPermissions(collection, String(primaryKey));
+					test('item', async () => {
+						const service = new PermissionsService({
+							knex: db,
+							schema,
+							accountability,
+						});
 
-					expect(result).toMatchObject({ access });
+						tracker.on.select(collection).response([]);
+
+						const result = await service.getItemPermissions(
+							collection,
+							collectionType === 'collection' ? String(primaryKey) : undefined,
+						);
+
+						expect(result).toEqual(itemPermissions);
+					});
+				});
+			});
+
+			describe('existing item', () => {
+				beforeEach(() => {
+					if (collectionType === 'singleton') {
+						const checkSingletonStatement = `select "${collection}"."${primaryKeyField}" from "${collection}"`;
+
+						tracker.on.select(checkSingletonStatement).responseOnce([{ [primaryKeyField]: primaryKey }]);
+					}
 				});
 
-				test('item', async () => {
-					const service = new PermissionsService({
-						knex: db,
-						schema: schema as SchemaOverview,
-						accountability,
+				test.each([adminScenario, ...userScenarios])(
+					'%s',
+					async (_, { accountability, itemPermissions, selectCount }) => {
+						const service = new PermissionsService({
+							knex: db,
+							schema,
+							accountability,
+						});
+
+						const checkPermissionStatement =
+							collectionType === 'collection'
+								? `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}" where ("${collection}"."${primaryKeyField}" = ?)`
+								: `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}"`;
+
+						tracker.on.select(checkPermissionStatement).response([{ [primaryKeyField]: primaryKey }]);
+
+						const result = await service.getItemPermissions(
+							collection,
+							collectionType === 'collection' ? String(primaryKey) : undefined,
+						);
+
+						expect(tracker.history.all).toHaveLength(
+							collectionType === 'singleton' && !accountability.admin ? selectCount + 1 : selectCount,
+						);
+
+						expect(result).toEqual(itemPermissions);
+					},
+				);
+
+				describe.each(userConditionalScenarios)('%s', (_, { accountability, itemPermissions, selectCount }) => {
+					const checkPermissionStatement =
+						collectionType === 'collection'
+							? `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}" where ("${collection}"."${primaryKeyField}" = ? and ("${collection}"."${permissionCheckField}" = ?))`
+							: `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}" where (("${collection}"."${permissionCheckField}" = ?))`;
+
+					test('matching condition', async () => {
+						const service = new PermissionsService({
+							knex: db,
+							schema,
+							accountability,
+						});
+
+						tracker.on
+							.select(checkPermissionStatement)
+							.response([{ [primaryKeyField]: primaryKey, [permissionCheckField]: permissionCheck }]);
+
+						const result = await service.getItemPermissions(
+							collection,
+							collectionType === 'collection' ? String(primaryKey) : undefined,
+						);
+
+						expect(tracker.history.all).toHaveLength(collectionType === 'singleton' ? selectCount + 1 : selectCount);
+						expect(result).toEqual(itemPermissions);
 					});
 
-					tracker.on.select(collection).response([]);
+					test('non-matching condition', async () => {
+						const service = new PermissionsService({
+							knex: db,
+							schema,
+							accountability,
+						});
 
-					const result = await service.getItemPermissions(collection, String(primaryKey));
+						tracker.on.select(new RegExp(checkPermissionStatement)).response([]);
 
-					expect(result).toMatchObject({ access });
+						const result = await service.getItemPermissions(
+							collection,
+							collectionType === 'collection' ? String(primaryKey) : undefined,
+						);
+
+						expect(tracker.history.all).toContainEqual(
+							expect.objectContaining({ sql: expect.stringContaining(checkPermissionStatement) }),
+						);
+
+						expect(result).toEqual(noAccess);
+					});
 				});
 			});
 		});
 
-		describe('existing item', () => {
-			test.each([adminScenario, ...userScenarios])('%s', async (_, { accountability, access, selectCount }) => {
+		describe('singleton', () => {
+			const schema = cloneDeep(baseSchema) as SchemaOverview;
+			schema.collections[collection]!.singleton = true;
+
+			const permissionReadAccess = { ...permissionPreset, collection: 'directus_permissions', action: 'read' };
+
+			test('use create permission if singleton does not exist', async () => {
+				const permissions = [{ ...permissionPreset, action: 'create' }, permissionReadAccess] as Permission[];
+
 				const service = new PermissionsService({
 					knex: db,
-					schema: schema as SchemaOverview,
-					accountability,
+					schema,
+					accountability: {
+						...users.user,
+						permissions,
+					},
 				});
 
-				tracker.on
-					.select(
-						`select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}" where ("${collection}"."${primaryKeyField}" = ?)`,
-					)
-					.response([{ [primaryKeyField]: primaryKey }]);
+				tracker.on.select(collection).response([]);
 
-				const result = await service.getItemPermissions(collection, String(primaryKey));
+				tracker.on.select('directus_permissions').response(permissions);
 
-				expect(tracker.history.select).toHaveLength(selectCount);
-				expect(result).toMatchObject({ access });
+				const result = await service.getItemPermissions(collection);
+
+				expect(result.update).toEqual({
+					access: true,
+					presets: permissionPreset.presets,
+					fields: permissionPreset.fields,
+				});
 			});
 
-			describe.each(userConditionalScenarios)('%s', (_, { accountability, access, selectCount }) => {
-				const sql = `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}" where ("${collection}"."${primaryKeyField}" = ? and ("${collection}"."${permissionCheckField}" = ?)) order by "${collection}"."${primaryKeyField}" asc limit ?`;
+			test('use update permission if singleton exists', async () => {
+				const permissions = [{ ...permissionPreset, action: 'update' }, permissionReadAccess] as Permission[];
 
-				test('matching condition', async () => {
-					const service = new PermissionsService({
-						knex: db,
-						schema: schema as SchemaOverview,
-						accountability,
-					});
-
-					tracker.on.select(sql).response([{ [primaryKeyField]: primaryKey, [permissionCheckField]: permissionCheck }]);
-
-					const result = await service.getItemPermissions(collection, String(primaryKey));
-
-					expect(tracker.history.select).toHaveLength(selectCount);
-					expect(result).toMatchObject({ access });
+				const service = new PermissionsService({
+					knex: db,
+					schema,
+					accountability: {
+						...users.user,
+						permissions,
+					},
 				});
 
-				test('non-matching condition', async () => {
-					const service = new PermissionsService({
-						knex: db,
-						schema: schema as SchemaOverview,
-						accountability,
-					});
+				const checkSingletonStatement = `select "${collection}"."${primaryKeyField}" from "${collection}"`;
+				tracker.on.select(checkSingletonStatement).responseOnce([{ [primaryKeyField]: primaryKey }]);
 
-					tracker.on.select(sql).response([]);
+				const checkPermissionStatement = `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}"`;
 
-					const result = await service.getItemPermissions(collection, String(primaryKey));
+				tracker.on.select(checkPermissionStatement).response([{ [primaryKeyField]: primaryKey }]);
 
-					expect(tracker.history.select).toContainEqual(expect.objectContaining({ sql }));
-					expect(result).toMatchObject({ access: noAccess });
+				tracker.on.select('directus_permissions').response(permissions);
+
+				const result = await service.getItemPermissions(collection);
+
+				expect(result.update).toEqual({
+					access: true,
+					presets: permissionPreset.presets,
+					fields: permissionPreset.fields,
 				});
+			});
+
+			test('requires permissions on directus_permissions to return presets and fields', async () => {
+				const permissions = [{ ...permissionPreset, action: 'update' }] as Permission[];
+
+				const service = new PermissionsService({
+					knex: db,
+					schema,
+					accountability: {
+						...users.user,
+						permissions,
+					},
+				});
+
+				const checkSingletonStatement = `select "${collection}"."${primaryKeyField}" from "${collection}"`;
+				tracker.on.select(checkSingletonStatement).responseOnce([{ [primaryKeyField]: primaryKey }]);
+
+				const checkPermissionStatement = `select "${collection}"."${primaryKeyField}", "${collection}"."${permissionCheckField}" from "${collection}"`;
+
+				tracker.on.select(checkPermissionStatement).response([{ [primaryKeyField]: primaryKey }]);
+
+				tracker.on.select('directus_permissions').response(permissions);
+
+				const result = await service.getItemPermissions(collection);
+
+				expect(result.update).toEqual({ access: true });
 			});
 		});
 	});

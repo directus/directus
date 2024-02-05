@@ -2,7 +2,6 @@
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
@@ -40,8 +39,9 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
-	loading: loadingItem,
+	loading,
 	save,
 	remove,
 	deleting,
@@ -49,6 +49,11 @@ const {
 	refresh,
 	validationErrors,
 } = useItem<File>(ref('directus_files'), primaryKey);
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, fields },
+} = permissions;
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
@@ -81,18 +86,6 @@ const to = computed(() => {
 const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 useShortcut('meta+s', saveAndStay, form);
-
-const {
-	loading: loadingPermissions,
-	createAllowed,
-	updateAllowed,
-	deleteAllowed,
-	saveAllowed,
-	revisionsAllowed,
-	fields,
-} = usePermissions('directus_files', primaryKey, isNew);
-
-const loading = computed(() => loadingItem.value || loadingPermissions.value);
 
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);

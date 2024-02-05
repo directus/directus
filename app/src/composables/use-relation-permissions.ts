@@ -9,6 +9,8 @@ import { RelationO2M } from './use-relation-o2m';
 
 type Permissions = Record<PermissionsAction, boolean>;
 
+// TODO Move to usePermissions
+
 export function useRelationPermissionsM2O(info: Ref<RelationM2O | undefined>) {
 	const relatedPerms = computed(() => getPermsForCollection(info.value?.relatedCollection.collection));
 	const createAllowed = computed(() => relatedPerms.value?.create);

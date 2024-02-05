@@ -1,33 +1,34 @@
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ref } from 'vue';
-
+import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
-import { randomIdentifier, randomUUID } from '@directus/random';
-import { Permission, User } from '@directus/types';
+import { randomIdentifier } from '@directus/random';
+import { Permission } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
+import { isFieldAllowed } from '../utils/is-field-allowed';
 import { isArchiveAllowed } from './is-archive-allowed';
 
 vi.mock('@directus/composables');
+vi.mock('../../utils/is-field-allowed');
 
 let sample: {
-	user: { id: string };
-	role: { id: string };
+	collection: string;
+	archiveField: string;
 };
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
-			stubActions: false,
 		}),
 	);
 
 	sample = {
-		user: { id: randomUUID() },
-		role: { id: randomUUID() },
+		collection: randomIdentifier(),
+		archiveField: randomIdentifier(),
 	};
 });
 
@@ -35,93 +36,94 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-const collection = randomIdentifier();
-const archiveField = randomIdentifier();
+describe('admin users', () => {
+	beforeEach(() => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+	});
 
-const permissions = {
-	all: {
-		fields: ['*'],
-	},
-	field: {
-		fields: [archiveField],
-	},
-	none: {
-		fields: [],
-	},
-};
+	it('should be disallowed for %s if collection has no archive field', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({}) } as any);
 
-const cases: [
-	string,
-	{
-		admin: boolean;
-		permission: Pick<Permission, 'fields'> | null;
-		updateAllowed: boolean;
-		archiveField: string | null;
-		expected: boolean;
-	},
-][] = [
-	[
-		'disallowed for admin user when collection has no archive field',
-		{ admin: true, permission: null, updateAllowed: true, archiveField: null, expected: false },
-	],
-	[
-		'disallowed for non-admin user when collection has no archive field',
-		{ admin: false, permission: permissions.all, updateAllowed: true, archiveField: null, expected: false },
-	],
-	['allowed for admin user', { admin: true, permission: null, updateAllowed: true, archiveField, expected: true }],
-	[
-		'allowed for non-admin user with all field permission',
-		{ admin: false, permission: permissions.all, updateAllowed: true, archiveField, expected: true },
-	],
-	[
-		'disallowed for non-admin user with no item-based update permission',
-		{ admin: false, permission: permissions.all, updateAllowed: false, archiveField, expected: false },
-	],
-	[
-		'allowed for non-admin user with field permission',
-		{ admin: false, permission: permissions.field, updateAllowed: true, archiveField, expected: true },
-	],
-	[
-		'disallowed for non-admin user with no field permission',
-		{ admin: false, permission: permissions.none, updateAllowed: true, archiveField, expected: false },
-	],
-	[
-		'disallowed for non-admin user with no permission',
-		{ admin: false, permission: null, updateAllowed: true, archiveField, expected: false },
-	],
-];
+		const updateAllowed = true;
 
-test.each(cases)('%s', (_, { admin, permission, archiveField, updateAllowed, expected }) => {
-	vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: archiveField } }) } as any);
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
 
-	const mockUser = {
-		id: sample.user.id,
-		role: {
-			id: sample.role.id,
-			admin_access: admin,
-		},
-	} as User;
+		expect(result.value).toBe(false);
+	});
 
-	const userStore = useUserStore();
-	userStore.currentUser = mockUser;
+	it('should be allowed for admin if collection has archive field', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
 
-	const permissionsStore = usePermissionsStore();
+		const updateAllowed = true;
 
-	permissionsStore.permissions = permission
-		? [
-				{
-					role: sample.role.id,
-					collection,
-					action: 'update',
-					permissions: null,
-					validation: null,
-					presets: null,
-					...permission,
-				},
-		  ]
-		: [];
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
 
-	const result = isArchiveAllowed(collection, ref(updateAllowed));
+		expect(result.value).toBe(true);
+	});
+});
 
-	expect(result.value).toBe(expected);
+describe('non-admin users', () => {
+	beforeEach(() => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = false;
+	});
+
+	it('should be disallowed if user has no permission', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+		permissionsStore.getPermission.mockReturnValue(null);
+
+		const updateAllowed = true;
+
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+
+		expect(result.value).toBe(false);
+	});
+
+	it('should be disallowed if user has no field permission', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+		permissionsStore.getPermission.mockReturnValue({} as Permission);
+
+		vi.mocked(isFieldAllowed).mockReturnValue(false);
+
+		const updateAllowed = true;
+
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+
+		expect(result.value).toBe(false);
+	});
+
+	it('should be disallowed if user has no update permission', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+		permissionsStore.getPermission.mockReturnValue({} as Permission);
+
+		vi.mocked(isFieldAllowed).mockReturnValue(true);
+
+		const updateAllowed = false;
+
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+
+		expect(result.value).toBe(false);
+	});
+
+	it('should be allowed if user has update permission', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { archive_field: sample.archiveField } }) } as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+		permissionsStore.getPermission.mockReturnValue({} as Permission);
+
+		vi.mocked(isFieldAllowed).mockReturnValue(true);
+
+		const updateAllowed = true;
+
+		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+
+		expect(result.value).toBe(true);
+	});
 });

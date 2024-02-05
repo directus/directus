@@ -1,9 +1,8 @@
-import type { PermissionsAction, Query } from '@directus/types';
+import type { ItemPermissions, PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
-import type { ItemPermissions, ItemPermissionsAccess } from '../types/permissions.js';
 import { filterItems } from '../utils/filter-items.js';
 import { AuthorizationService } from './authorization.js';
 import type { QueryOptions } from './items.js';
@@ -146,28 +145,42 @@ export class PermissionsService extends ItemsService {
 		return res;
 	}
 
-	async getItemPermissions(collection: string, primaryKey: string): Promise<ItemPermissions> {
-		/*
-		 * TODO: Decide whether it makes sense to early return here.
-		 * - Might be good in order to save resources since this endpoint is public
-		 * - But need to make sure that this doesn't easily reveal info about the existence of a collection (response time)
-		 */
-		// if (this.accountability?.admin === true) {
-		// 	return { access: { update: true, delete: true, share: true } };
-		// }
-		// try {
-		// 	const primaryKeyField = this.schema.collections[collection]?.primary;
-		// 	if (!primaryKeyField) throw new Error();
-		// 	validateKeys(this.schema, collection, primaryKeyField, primaryKey);
-		// } catch {
-		// 	return { access };
-		// }
+	async getItemPermissions(collection: string, primaryKey?: string): Promise<ItemPermissions> {
+		if (this.accountability?.admin)
+			return {
+				update: { access: true },
+				delete: { access: true },
+				share: { access: true },
+			};
 
-		const access: ItemPermissionsAccess = {
-			update: false,
-			delete: false,
-			share: false,
+		const itemPermissions: ItemPermissions = {
+			update: { access: false },
+			delete: { access: false },
+			share: { access: false },
 		};
+
+		let updateAction: 'update' | 'create' = 'update';
+
+		const schema = this.schema.collections[collection];
+
+		if (schema?.singleton) {
+			const itemsService = new ItemsService(collection, {
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			const query: Query = {
+				fields: [schema.primary],
+				limit: 1,
+			};
+
+			try {
+				const result = await itemsService.readByQuery(query);
+				if (!result[0]) updateAction = 'create';
+			} catch {
+				updateAction = 'create';
+			}
+		}
 
 		const authorizationService = new AuthorizationService({
 			knex: this.knex,
@@ -176,14 +189,42 @@ export class PermissionsService extends ItemsService {
 		});
 
 		await Promise.all(
-			Object.keys(access).map((action) =>
-				authorizationService
-					.checkAccess(action as PermissionsAction, collection, primaryKey)
-					.then(() => (access[action as keyof ItemPermissionsAccess] = true))
-					.catch(() => {}),
-			),
+			Object.keys(itemPermissions).map((key) => {
+				const action = key as keyof ItemPermissions;
+				const checkAction = action === 'update' ? updateAction : action;
+
+				return authorizationService
+					.checkAccess(checkAction, collection, primaryKey)
+					.then(() => (itemPermissions[action].access = true))
+					.catch(() => {});
+			}),
 		);
 
-		return { access };
+		if (schema?.singleton && itemPermissions.update.access) {
+			const query: Query = {
+				filter: {
+					_and: [
+						...(this.accountability?.role ? [{ role: { _eq: this.accountability.role } }] : []),
+						{ collection: { _eq: collection } },
+						{ action: { _eq: updateAction } },
+					],
+				},
+				fields: ['presets', 'fields'],
+			};
+
+			try {
+				const result = await this.readByQuery(query);
+				const permission = result[0];
+
+				if (permission) {
+					itemPermissions.update.presets = permission['presets'];
+					itemPermissions.update.fields = permission['fields'];
+				}
+			} catch {
+				// No permission
+			}
+		}
+
+		return itemPermissions;
 	}
 }

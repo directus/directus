@@ -1,6 +1,5 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -9,7 +8,6 @@ import { PermissionsService } from '../services/permissions.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import type { ItemPermissions } from '@directus/types';
 
 const router = express.Router();
 
@@ -207,7 +205,7 @@ router.delete(
 );
 
 router.get(
-	'/me/:collection/:pk',
+	'/me/:collection/:pk?',
 	asyncHandler(async (req, res, next) => {
 		const { collection, pk } = req.params;
 
@@ -216,21 +214,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const { access } = await service.getItemPermissions(collection!, pk!);
+		const itemPermissions = await service.getItemPermissions(collection!, pk);
 
-		const permissions: ItemPermissions = {
-			update: {
-				access: access.update,
-			},
-			delete: {
-				access: access.delete,
-			},
-			share: {
-				access: access.share,
-			},
-		};
-
-		res.locals['payload'] = { data: permissions };
+		res.locals['payload'] = { data: itemPermissions };
 
 		return next();
 	}),
