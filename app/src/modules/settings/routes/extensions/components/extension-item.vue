@@ -115,7 +115,7 @@ const toggleState = async () => {
 	</v-list-item>
 
 	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
-		<extension-item v-for="item in children" :key="item.id" :extension="item" @refresh="$emit('refresh', $event)" />
+		<extension-item v-for="item in children" :key="item.id" :extension="item" />
 	</v-list>
 </template>
 
