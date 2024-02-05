@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import api from '@/api';
+import VNotice from '@/components/v-notice.vue';
+import { useReloadGuard } from '@/composables/use-reload-guard';
+import { useExtensionsStore } from '@/stores/extensions';
 import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
 import { groupBy } from 'lodash';
+import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
-import VNotice from '@/components/v-notice.vue';
-import { useReloadGuard } from '@/composables/use-reload-guard';
 
 const { t } = useI18n();
 
-const error = ref();
-const loading = ref(false);
-const extensions = ref<ApiOutput[]>([]);
+const extensionsStore = useExtensionsStore();
+const { extensions, loading } = storeToRefs(extensionsStore);
+
 const needsReload = ref(false);
 
-const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
-const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
+const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
+const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
 const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
 const { confirmLeave, leaveTo } = useReloadGuard(needsReload);
@@ -30,21 +31,6 @@ const leavePage = () => {
 	needsReload.value = false;
 	// navigate to new page using a full page reload
 	document.location.href = leaveTo.value ?? currentPageLink();
-};
-
-const fetchExtensions = async () => {
-	loading.value = true;
-
-	try {
-		const response = await api.get<{ data: ApiOutput[] }>('/extensions');
-
-		// Only render extensions that are both installed _and_ configured
-		extensions.value = response.data.data.filter((extension) => extension?.schema?.type !== undefined);
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
 };
 
 const isBrowserExtension = (type: string) => {
@@ -60,7 +46,7 @@ const refreshExtensions = async ({
 	extension: ApiOutput;
 	children: ApiOutput[];
 }) => {
-	await fetchExtensions();
+	await extensionsStore.refresh();
 
 	if (!extension.schema?.type) {
 		return;
@@ -90,8 +76,6 @@ const refreshExtensions = async ({
 		return;
 	}
 };
-
-fetchExtensions();
 </script>
 
 <template>
@@ -122,15 +106,13 @@ fetchExtensions();
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type as ExtensionType" />
+					<extension-group-divider class="group-divider" :type="(type as ExtensionType)" />
 
 					<v-list>
-						<template v-for="extension in list" :key="extension.name">
+						<template v-for="ext in list" :key="ext.name">
 							<extension-item
-								:extension="extension"
-								:children="
-									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
-								"
+								:extension="ext"
+								:children="ext.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === ext.id) : []"
 								@refresh="refreshExtensions"
 							/>
 						</template>
