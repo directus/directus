@@ -25,7 +25,7 @@ const install = async () => {
 	installing.value = true;
 
 	try {
-		// await extensionsStore.install(props.versionId);
+		await extensionsStore.install(props.versionId);
 	} catch (err) {
 		unexpectedError(err);
 	}

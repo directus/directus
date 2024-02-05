@@ -24,7 +24,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 	<div class="metadata">
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionInstall class="install-button" :version-id="latestVersion.id" />
+				<ExtensionInstall class="install" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
@@ -33,7 +33,9 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
 				/>
 			</div>
-			<v-divider />
+		</v-list>
+		<v-divider class="divider" />
+		<v-list class="list">
 			<div class="grid">
 				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataVersion :version="latestVersion.version" />
@@ -70,7 +72,11 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 	}
 }
 
-.install-button {
+.install {
 	margin-bottom: 8px;
+}
+
+.divider {
+	margin: 16px 0;
 }
 </style>
