@@ -1,7 +1,8 @@
 import { useEnv } from '@directus/env';
+import { exists } from 'fs-extra';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -40,6 +41,13 @@ export const syncExtensions = async (): Promise<void> => {
 		return new Promise((resolve) => {
 			messenger.subscribe(message, () => resolve());
 		});
+	}
+
+	if (await exists(extensionsPath)) {
+		// In case the FS still contains the cached extensions from a previous invocation. We have to
+		// clear them out to ensure the remote extensions folder remains the source of truth for all
+		// extensions that are loaded.
+		await rm(extensionsPath, { recursive: true, force: true });
 	}
 
 	// Ensure that the local extensions cache path exists
