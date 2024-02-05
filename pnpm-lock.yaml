@@ -461,8 +461,8 @@ importers:
         specifier: 18.19.12
         version: 18.19.12
       '@types/node-schedule':
-        specifier: 2.1.5
-        version: 2.1.5
+        specifier: 2.1.6
+        version: 2.1.6
       '@types/nodemailer':
         specifier: 6.4.14
         version: 6.4.14
@@ -7398,8 +7398,8 @@ packages:
       '@types/node': 18.19.12
       form-data: 4.0.0
 
-  /@types/node-schedule@2.1.5:
-    resolution: {integrity: sha512-bN0MiplDBUxNMmlEi4iykjLYD7+Ze3DEevzliCn8WYuDwYSPj/5XFh8wZw+YXPLpLxiNWlIONYiQ67g/vowSMA==}
+  /@types/node-schedule@2.1.6:
+    resolution: {integrity: sha512-6AlZSUiNTdaVmH5jXYxX9YgmF1zfOlbjUqw0EllTBmZCnN1R5RR/m/u3No1OiWR05bnQ4jM4/+w4FcGvkAtnKQ==}
     dependencies:
       '@types/node': 18.19.12
     dev: true
