@@ -11,6 +11,8 @@ export interface SnackbarRaw {
 	loading?: boolean;
 	dialog?: boolean;
 	error?: Error;
+	dismissText?: string;
+	dismissAction?: () => void | Promise<void>;
 }
 
 export interface Snackbar extends SnackbarRaw {
