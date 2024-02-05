@@ -31,6 +31,7 @@ import { clone, debounce } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname } from 'node:path';
+import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
@@ -220,17 +221,20 @@ export class ExtensionManager {
 	 */
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
-
-		// Publish a message so all instances will reload extensions. Note: this will also reload the
-		// current instance, as it's subscribed to the same channel
 		await this.messenger.publish(this.reloadChannel, {});
+
+		// This is an incredibly dirty hack to work around the fact that we currently don't have a
+		// reliable way to wait for the listening containers to be done reloading
+		await setTimeout(1000);
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
-		// Publish a message so all instances will reload extensions. Note: this will also reload the
-		// current instance, as it's subscribed to the same channel
 		await this.messenger.publish(this.reloadChannel, {});
+
+		// This is an incredibly dirty hack to work around the fact that we currently don't have a
+		// reliable way to wait for the listening containers to be done reloading
+		await setTimeout(1000);
 	}
 
 	/**
