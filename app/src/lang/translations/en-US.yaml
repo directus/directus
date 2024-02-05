@@ -1165,7 +1165,12 @@ no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
 install_extension: Install Extension
+uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
+uninstall: Uninstall
 installed: Installed
+source_registry: Marketplace
+source_local: Local
+source_module: Node Module
 collection: Collection
 collections: Collections
 content: Content

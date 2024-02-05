@@ -30,7 +30,8 @@ const changingEnabledState = ref(false);
 
 const type = computed(() => props.extension.schema?.type);
 const icon = computed(() => (type.value ? extensionTypeIconMap[type.value] : 'warning'));
-const isLocked = computed(() => devMode && isOrHasAppExtension.value);
+const disableLocked = computed(() => devMode && isOrHasAppExtension.value);
+const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
 
 const isPartialEnabled = computed(() => {
 	if (props.extension.schema?.type !== 'bundle') {
@@ -98,18 +99,16 @@ const toggleState = async () => {
 		</v-list-item-content>
 
 		<v-progress-circular v-if="changingEnabledState" indeterminate />
-		<v-chip v-if="isLocked" v-tooltip.top="t('enabled_dev_tooltip')" class="state" :class="state.status" small>
-			{{ state.text }}
-			<v-icon name="lock" right small />
-		</v-chip>
-		<v-chip v-else class="state" :class="state.status" small>
+
+		<v-chip class="state" :class="state.status" small>
 			{{ state.text }}
 		</v-chip>
 		<extension-item-options
-			v-if="!isLocked"
 			class="options"
 			:type="type"
 			:status="state.status"
+			:disable-locked="disableLocked"
+			:uninstall-locked="uninstallLocked"
 			@toggle-status="toggleState"
 		/>
 	</v-list-item>
