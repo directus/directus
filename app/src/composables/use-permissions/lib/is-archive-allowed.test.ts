@@ -12,7 +12,7 @@ import { isFieldAllowed } from '../utils/is-field-allowed';
 import { isArchiveAllowed } from './is-archive-allowed';
 
 vi.mock('@directus/composables');
-vi.mock('../../utils/is-field-allowed');
+vi.mock('../utils/is-field-allowed');
 
 let sample: {
 	collection: string;
