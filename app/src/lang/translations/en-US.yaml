@@ -1164,6 +1164,8 @@ cancel: Cancel
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
+install_extension: Install Extension
+installed: Installed
 collection: Collection
 collections: Collections
 content: Content
