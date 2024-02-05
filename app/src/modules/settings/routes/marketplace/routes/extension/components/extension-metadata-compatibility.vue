@@ -21,5 +21,5 @@ const label = computed(() =>
 </script>
 
 <template>
-	<MetadataItem :icon="icon" color="primary">{{ label }}</MetadataItem>
+	<MetadataItem :icon="icon" :color="isCompatible ? 'primary' : 'warning'">{{ label }}</MetadataItem>
 </template>

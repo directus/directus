@@ -35,6 +35,11 @@ withDefaults(
 	--v-list-item-icon-color: var(--theme--foreground-subdued);
 }
 
+.warning {
+	--v-list-color: var(--theme--warning);
+	--v-list-item-icon-color: var(--theme--warning);
+}
+
 .monospace {
 	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 	font-weight: var(--theme--fonts--monospace--font-weight);
