@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
+import { useExtensionsStore } from '@/stores/extensions';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -19,9 +20,9 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ refresh: [data: { enabled: boolean; extension: ApiOutput; children: ApiOutput[] }] }>();
-
 const { t } = useI18n();
+
+const extensionsStore = useExtensionsStore();
 
 const devMode = import.meta.env.DEV;
 
@@ -73,20 +74,17 @@ function isAppExtension(type?: ExtensionType) {
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 }
 
-async function toggleExtensionStatus(enabled: boolean) {
-	if (changingEnabledState.value === true) return;
-
+const toggleState = async () => {
 	changingEnabledState.value = true;
-	const status = !enabled;
 
 	try {
-		const endpoint = `/extensions/${props.extension.id}`;
-		await api.patch(endpoint, { meta: { enabled: status } });
-	} finally {
-		changingEnabledState.value = false;
-		emit('refresh', { enabled: status, extension: props.extension, children: props.children });
+		await extensionsStore.toggleState(props.extension.id);
+	} catch (err) {
+		unexpectedError(err);
 	}
-}
+
+	changingEnabledState.value = false;
+};
 </script>
 
 <template>
@@ -112,17 +110,12 @@ async function toggleExtensionStatus(enabled: boolean) {
 			class="options"
 			:type="type"
 			:status="state.status"
-			@toggle-status="toggleExtensionStatus"
+			@toggle-status="toggleState"
 		/>
 	</v-list-item>
 
 	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
-		<extension-item
-			v-for="item in children"
-			:key="item.bundle + '__' + item.name"
-			:extension="item"
-			@refresh="$emit('refresh', $event)"
-		/>
+		<extension-item v-for="item in children" :key="item.id" :extension="item" @refresh="$emit('refresh', $event)" />
 	</v-list>
 </template>
 
