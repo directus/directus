@@ -66,3 +66,47 @@ test('With a count', () => {
 	const expected = `SELECT COUNT("t${tableIndex}"."*") AS "c${columnIndex}"`;
 	expect(res).toStrictEqual(expected);
 });
+
+test('With json', () => {
+	const tableName = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
+	const attribute1 = randomIdentifier();
+	const attribute2 = randomIdentifier();
+	const attribute3 = randomIdentifier();
+
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				tableIndex,
+				columnName: columnName,
+				columnIndex: 0,
+			},
+			{
+				type: 'json',
+				tableIndex,
+				columnName: jsonColumnName,
+				path: [attribute1],
+				columnIndex: 1,
+			},
+			{
+				type: 'json',
+				tableIndex,
+				columnName: jsonColumnName,
+				path: [attribute2, attribute3],
+				columnIndex: 2,
+			},
+		],
+		from: {
+			tableName,
+			tableIndex,
+		},
+	};
+
+	const res = select(sample);
+	const expected = `SELECT "t${tableIndex}.${columnName}" AS "c${columnIndex}" , "t${tableIndex}.${jsonColumnName}"->>'${attribute1}' AS c1 , "t${tableIndex}.${jsonColumnName}"->>'${attribute2}.${attribute3}' AS "c2"`;
+	expect(res).toStrictEqual(expected);
+});
