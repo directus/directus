@@ -28,7 +28,7 @@ export type MergeOptional<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknow
  * Fallback never to unknown
  */
 export type NeverToUnknown<T> = IfNever<T, unknown>;
-export type IfNever<T, Y> = [T] extends [never] ? Y : T;
+export type IfNever<T, Y, N = T> = [T] extends [never] ? Y : N;
 
 /**
  * Test for any
@@ -37,6 +37,9 @@ export type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 export type IsAny<T> = IfAny<T, true, never>;
 
 export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
+export type IsDateTime<T, Y, N> = T extends 'datetime' ? Y : N;
+export type IsNumber<T, Y, N> = T extends number ? Y : N;
+export type IsString<T, Y, N> = T extends string ? Y : N;
 
 export type NestedPartial<Item extends object> = {
 	[Key in keyof Item]?: NonNullable<Item[Key]> extends infer NestedItem
