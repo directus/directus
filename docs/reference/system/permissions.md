@@ -823,7 +823,7 @@ const result = await client.request(deletePermissions(['56', '57']));
 
 ## Check Permissions for a Specific Item
 
-Check if the current user has Update, Delete and Share permissions on a specific item.
+Check the current user's permissions on a specific item.
 
 ### Request
 
