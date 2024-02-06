@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { ItemPermissions, PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
@@ -146,6 +147,8 @@ export class PermissionsService extends ItemsService {
 	}
 
 	async getItemPermissions(collection: string, primaryKey?: string): Promise<ItemPermissions> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
 		if (this.accountability?.admin)
 			return {
 				update: { access: true },

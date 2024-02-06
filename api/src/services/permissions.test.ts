@@ -81,11 +81,6 @@ describe('Services / PermissionsService', () => {
 
 		const fullAccess: ItemPermissions = { update: { access: true }, delete: { access: true }, share: { access: true } };
 
-		const users = {
-			public: { user: null, role: null },
-			user: { user: randomUUID(), role: randomUUID() },
-		} as const satisfies Record<string, Accountability>;
-
 		type Scenario = [
 			scenario: string,
 			{ accountability: Accountability; itemPermissions: ItemPermissions; selectCount: number },
@@ -100,55 +95,64 @@ describe('Services / PermissionsService', () => {
 			},
 		];
 
+		const user = { user: randomUUID(), role: randomUUID() } as Accountability;
+
 		const actions: PermissionsAction[] = ['update', 'delete', 'share'];
 
-		const userScenarios: Scenario[] = Object.entries(users).flatMap(([user, accountability]) => {
-			return [
-				[`${user} without permissions`, { accountability, itemPermissions: noAccess, selectCount: 0 }],
-				...(actions.map((action) => [
-					`${user} with ${action} permission`,
-					{
-						accountability: { ...accountability, permissions: [{ ...permissionPreset, action }] },
-						itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
-						selectCount: 1,
+		const userScenarios: Scenario[] = [
+			[`user without permissions`, { accountability: user, itemPermissions: noAccess, selectCount: 0 }],
+			...(actions.map((action) => [
+				`user with ${action} permission`,
+				{
+					accountability: { ...user, permissions: [{ ...permissionPreset, action }] },
+					itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
+					selectCount: 1,
+				},
+			]) as Scenario[]),
+			[
+				`user with full permissions`,
+				{
+					accountability: {
+						...user,
+						permissions: actions.map((action) => ({ ...permissionPreset, action })),
 					},
-				]) as Scenario[]),
-				[
-					`${user} with full permissions`,
-					{
-						accountability: {
-							...accountability,
-							permissions: actions.map((action) => ({ ...permissionPreset, action })),
-						},
-						itemPermissions: fullAccess,
-						selectCount: 3,
-					},
-				],
-			];
-		});
+					itemPermissions: fullAccess,
+					selectCount: 3,
+				},
+			],
+		];
 
-		const userConditionalScenarios: Scenario[] = Object.entries(users).flatMap(
-			([user, accountability]) =>
-				actions.map((action) => [
-					`${user} with conditional ${action} permission`,
-					{
-						accountability: {
-							...accountability,
-							permissions: [
-								{
-									...permissionPreset,
-									action,
-									permissions: {
-										_and: [{ [permissionCheckField]: { _eq: permissionCheck } }],
-									} as Filter,
-								},
-							],
+		const userConditionalScenarios = actions.map((action) => [
+			`user with conditional ${action} permission`,
+			{
+				accountability: {
+					...user,
+					permissions: [
+						{
+							...permissionPreset,
+							action,
+							permissions: {
+								_and: [{ [permissionCheckField]: { _eq: permissionCheck } }],
+							} as Filter,
 						},
-						itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
-						selectCount: 1,
-					},
-				]) as Scenario[],
-		);
+					],
+				},
+				itemPermissions: actions.reduce((a, v) => ({ ...a, [v]: { access: v === action } }), {}),
+				selectCount: 1,
+			},
+		]) as Scenario[];
+
+		test('requires authentication', async () => {
+			const service = new PermissionsService({
+				knex: db,
+				schema: baseSchema as SchemaOverview,
+				accountability: { user: null, role: null },
+			});
+
+			const promise = service.getItemPermissions(collection, String(primaryKey));
+
+			await expect(promise).rejects.toThrow(`You don't have permission to access this.`);
+		});
 
 		const collectionTypes = ['collection', 'singleton'];
 
@@ -303,7 +307,7 @@ describe('Services / PermissionsService', () => {
 					knex: db,
 					schema,
 					accountability: {
-						...users.user,
+						...user,
 						permissions,
 					},
 				});
@@ -328,7 +332,7 @@ describe('Services / PermissionsService', () => {
 					knex: db,
 					schema,
 					accountability: {
-						...users.user,
+						...user,
 						permissions,
 					},
 				});
@@ -358,7 +362,7 @@ describe('Services / PermissionsService', () => {
 					knex: db,
 					schema,
 					accountability: {
-						...users.user,
+						...user,
 						permissions,
 					},
 				});
