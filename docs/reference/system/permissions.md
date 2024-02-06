@@ -859,17 +859,17 @@ const result = await client.request(readItemPermissions(collection_name));
 
 ```json
 {
-  "data": {
-     "update": {
-       "access": boolean
-    },
-     "delete": {
-       "access": boolean
-    },
-     "share": {
-       "access": boolean
-    }
-  }
+	"data": {
+		"update": {
+			"access": boolean
+		},
+		"delete": {
+			"access": boolean
+		},
+		"share": {
+			"access": boolean
+		}
+	}
 }
 ```
 
@@ -878,19 +878,19 @@ For a Singleton where update access is given, the `presets` and `fields` propert
 
 ```json
 {
-  "data": {
-     "update": {
-       "access": true,
-	   "presets": permission_presets,
-	   "fields": permission_fields
-    },
-     "delete": {
-       "access": boolean
-    },
-     "share": {
-       "access": boolean
-    }
-  }
+	"data": {
+		"update": {
+			"access": true,
+			"presets": permission_presets,
+			"fields": permission_fields
+		},
+		"delete": {
+			"access": boolean
+		},
+		"share": {
+			"access": boolean
+		}
+	}
 }
 ```
 
@@ -910,17 +910,17 @@ existence of an item, use the [Get Items](/reference/items.html#get-items) endpo
 
 ```json
 {
-  "data": {
-     "update": {
-       "access": true
-    },
-     "delete": {
-       "access": false
-    },
-     "share": {
-       "access": false
-    }
-  }
+	"data": {
+		"update": {
+			"access": true
+		},
+		"delete": {
+			"access": false
+		},
+		"share": {
+			"access": false
+		}
+	}
 }
 ```
 
@@ -928,19 +928,19 @@ existence of an item, use the [Get Items](/reference/items.html#get-items) endpo
 
 ```json
 {
-  "data": {
-     "update": {
-       "access": true,
-	   "presets": {},
-	   "fields": ["*"]
-    },
-     "delete": {
-       "access": false
-    },
-     "share": {
-       "access": false
-    }
-  }
+	"data": {
+		"update": {
+			"access": true,
+			"presets": {},
+			"fields": ["*"]
+		},
+		"delete": {
+			"access": false
+		},
+		"share": {
+			"access": false
+		}
+	}
 }
 ```
 
