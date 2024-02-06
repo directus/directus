@@ -132,6 +132,10 @@ router.get(
 router.post(
 	'/registry/install/',
 	asyncHandler(async (req, _res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const { version } = req.body;
 
 		if (!version) {
@@ -148,6 +152,10 @@ router.post(
 router.patch(
 	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -182,6 +190,10 @@ router.patch(
 router.delete(
 	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, _res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
