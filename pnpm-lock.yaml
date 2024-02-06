@@ -207,8 +207,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       inquirer:
-        specifier: 9.2.13
-        version: 9.2.13
+        specifier: 9.2.14
+        version: 9.2.14
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
@@ -1039,8 +1039,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.2.13
-        version: 9.2.13
+        specifier: 9.2.14
+        version: 9.2.14
 
   packages/create-directus-project:
     dependencies:
@@ -1380,8 +1380,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       inquirer:
-        specifier: 9.2.13
-        version: 9.2.13
+        specifier: 9.2.14
+        version: 9.2.14
       ora:
         specifier: 6.3.1
         version: 6.3.1
@@ -11899,9 +11899,9 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /inquirer@9.2.13:
-    resolution: {integrity: sha512-mUlJNemjYioZgaZXqEFlQ0z9GD8/o+pavIF3JyhzWLX4Xa9M1wioGMCxQEFmps70un9lrah2WaBl3kSRVcoV3g==}
-    engines: {node: '>=14.18.0'}
+  /inquirer@9.2.14:
+    resolution: {integrity: sha512-4ByIMt677Iz5AvjyKrDpzaepIyMewNvDcvwpVVRZNmy9dLakVoVgdCHZXbK1SlVJra1db0JZ6XkJyHsanpdrdQ==}
+    engines: {node: '>=18'}
     dependencies:
       '@ljharb/through': 2.3.12
       ansi-escapes: 4.3.2
