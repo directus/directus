@@ -105,7 +105,7 @@ const uninstall = async () => {
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
 			<span class="monospace">
-				{{ extension.schema!.name }}
+				{{ extension.schema?.name ?? extension.meta.folder }}
 				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
 			</span>
 		</v-list-item-content>
