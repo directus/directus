@@ -133,28 +133,35 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : [];
-		const packageExtensions = await resolveModuleExtensions(API_PATH);
+		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map();
+		const moduleExtensions = await resolveModuleExtensions(API_PATH);
 
 		const registryExtensions = extensionsPathExists
 			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
-			: [];
+			: new Map();
 
-		/*
-		 * @TODO
-		 * These aren't deduplicated, whereas the production ones are. This has seemingly
-		 * always been the case. Is this a bug?
-		 * @see /api/src/extensions/lib/get-extensions.ts
-		 */
-		const extensions = [...localExtensions, ...packageExtensions, ...registryExtensions];
+		const mockSetting = (source, folder, extension) => {
+			return extension.type === 'bundle'
+				? extension.entries.map((entry) => ({ source, folder: entry.name, enabled: true }))
+				: { source, folder: folder, enabled: true };
+		};
 
 		// default to enabled for app extension in developer mode
-		const extensionSettings = extensions.flatMap((extension) =>
-			extension.type === 'bundle'
-				? extension.entries.map((entry) => ({ name: `${extension.name}/${entry.name}`, enabled: true }))
-				: { name: extension.name, enabled: true },
-		);
+		const extensionSettings = [
+			...Array.from(localExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('local', folder, extension),
+			),
+			...Array.from(moduleExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('module', folder, extension),
+			),
+			...Array.from(registryExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('registry', folder, extension),
+			),
+		];
 
-		extensionsEntrypoint = generateExtensionsEntrypoint(extensions, extensionSettings);
+		extensionsEntrypoint = generateExtensionsEntrypoint(
+			{ module: moduleExtensions, local: localExtensions, registry: registryExtensions },
+			extensionSettings,
+		);
 	}
 }
