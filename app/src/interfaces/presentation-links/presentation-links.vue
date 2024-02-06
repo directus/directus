@@ -27,8 +27,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const { collection, primaryKey } = toRefs(props);
-
 const query = computed(() => {
 	const fields = new Set();
 
@@ -41,7 +39,8 @@ const query = computed(() => {
 	} as Query;
 });
 
-const { item } = useItem(collection, primaryKey, query);
+const { collection, primaryKey } = toRefs(props);
+const item = primaryKey.value ? useItem(collection, primaryKey, query).item : ref(null);
 const { fields } = useCollection(collection);
 
 const fullItem = computed(() => {
