@@ -133,6 +133,7 @@ watchEffect(async () => {
 .page-container {
 	padding: var(--content-padding);
 	padding-top: 0;
+	max-width: 1200px;
 }
 
 .extension-group + .extension-group {
