@@ -20,11 +20,11 @@ import { UsablePermissions, usePermissions } from './use-permissions';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
-	hasEdits: Ref<boolean>;
+	hasEdits: ComputedRef<boolean>;
 	item: Ref<T | null>;
 	permissions: UsablePermissions;
 	error: Ref<any>;
-	loading: Ref<boolean>;
+	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
 	save: () => Promise<any>;

@@ -7,7 +7,7 @@ import { Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { isFieldAllowed } from '../utils/is-field-allowed';
 import { isArchiveAllowed } from './is-archive-allowed';
 
@@ -42,7 +42,10 @@ const sharedTests = () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(null, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			null,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(false);
 	});
@@ -52,7 +55,10 @@ const sharedTests = () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(false);
 	});
@@ -71,7 +77,10 @@ describe('admin users', () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(true);
 	});
@@ -93,7 +102,10 @@ describe('non-admin users', () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(false);
 	});
@@ -108,7 +120,10 @@ describe('non-admin users', () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(false);
 	});
@@ -123,7 +138,10 @@ describe('non-admin users', () => {
 
 		const updateAllowed = false;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(false);
 	});
@@ -138,7 +156,10 @@ describe('non-admin users', () => {
 
 		const updateAllowed = true;
 
-		const result = isArchiveAllowed(sample.collection, ref(updateAllowed));
+		const result = isArchiveAllowed(
+			sample.collection,
+			computed(() => updateAllowed),
+		);
 
 		expect(result.value).toBe(true);
 	});

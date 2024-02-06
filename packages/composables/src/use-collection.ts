@@ -1,17 +1,17 @@
 import type { AppCollection, Field } from '@directus/types';
-import type { Ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { computed, ref } from 'vue';
 import { useStores } from './use-system.js';
 
 export type UsableCollection = {
-	info: Ref<AppCollection | null>;
-	fields: Ref<Field[]>;
-	defaults: Ref<Record<string, any>>;
-	primaryKeyField: Ref<Field | null>;
-	userCreatedField: Ref<Field | null>;
-	sortField: Ref<string | null>;
-	isSingleton: Ref<boolean>;
-	accountabilityScope: Ref<'all' | 'activity' | null>;
+	info: ComputedRef<AppCollection | null>;
+	fields: ComputedRef<Field[]>;
+	defaults: ComputedRef<Record<string, any>>;
+	primaryKeyField: ComputedRef<Field | null>;
+	userCreatedField: ComputedRef<Field | null>;
+	sortField: ComputedRef<string | null>;
+	isSingleton: ComputedRef<boolean>;
+	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
 };
 
 export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {

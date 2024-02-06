@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-import { computed, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref } from 'vue';
 import { isSaveAllowed } from './is-save-allowed';
 
 const createAllowedSpy = vi.fn();
-let createAllowed: Ref<boolean>;
+let createAllowed: ComputedRef<boolean>;
 const updateAllowedSpy = vi.fn();
-let updateAllowed: Ref<boolean>;
+let updateAllowed: ComputedRef<boolean>;
 
 beforeEach(() => {
 	createAllowed = computed(() => {
