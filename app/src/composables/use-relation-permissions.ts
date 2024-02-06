@@ -37,6 +37,7 @@ export function useRelationPermissionsO2M(info: Ref<RelationO2M | undefined>) {
 
 export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 	const relatedPermissions = useCollectionPermissions(computed(() => info.value?.relatedCollection.collection ?? null));
+
 	const junctionPermissions = useCollectionPermissions(
 		computed(() => info.value?.junctionCollection.collection ?? null),
 	);

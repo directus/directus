@@ -2,7 +2,7 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { randomIdentifier } from '@directus/random';
-import { ItemPermissions, Permission, PermissionsAction } from '@directus/types';
+import { ItemPermissions, Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

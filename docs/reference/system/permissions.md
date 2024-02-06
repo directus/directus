@@ -874,7 +874,7 @@ const result = await client.request(readItemPermissions(collection_name));
 ```
 
 For a Singleton where update access is given, the `presets` and `fields` properties from the corresponding
-[update permission](#the-permission-object) are additionaly returned:
+[update permission](#the-permission-object) are additionally returned:
 
 ```json
 {
