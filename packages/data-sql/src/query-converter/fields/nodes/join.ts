@@ -1,12 +1,12 @@
-import type { AbstractQueryFieldNodeNestedRelationalMany, AtLeastOneElement } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedSingleRelational, AtLeastOneElement } from '@directus/data';
 import type {
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
 	AbstractSqlQueryLogicalNode,
-} from '../../types/index.js';
+} from '../../../types/index.js';
 
 export const createJoin = (
-	relationalField: AbstractQueryFieldNodeNestedRelationalMany,
+	relationalField: AbstractQueryFieldNodeNestedSingleRelational,
 	tableIndex: number,
 	tableIndexRelational: number,
 ): AbstractSqlQueryJoinNode => {

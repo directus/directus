@@ -91,7 +91,7 @@ test('convert nested target', () => {
 			field: externalColumnName,
 		},
 		nesting: {
-			type: 'relational-many',
+			type: 'relational-single',
 			local: {
 				fields: [foreignKeyColumnName],
 			},

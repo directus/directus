@@ -28,7 +28,7 @@ let processConfig: Record<string, string>;
 let fileConfig: Record<string, unknown>;
 
 beforeEach(() => {
-	vi.mocked(cast).mockImplementation((_key, value) => value);
+	vi.mocked(cast).mockImplementation((value) => value);
 
 	processConfig = { PROCESS: 'test-process' };
 	fileConfig = { FILE: 'test-file' };
@@ -132,7 +132,7 @@ test('Throws error if file could not be read', () => {
 });
 
 test('Casts regular values', () => {
-	vi.mocked(cast).mockImplementation((_key, value) => `cast-${value}`);
+	vi.mocked(cast).mockImplementation((value) => `cast-${value}`);
 
 	const env = createEnv();
 

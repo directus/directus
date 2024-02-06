@@ -5,7 +5,6 @@ import { useLocalStorage } from '../composables/useLocalStorage';
 const props = defineProps<{
 	choices: string[];
 	group?: string;
-	alwaysDark?: boolean;
 	maintainHeight?: boolean;
 }>();
 
@@ -48,8 +47,8 @@ const changeSelected = async (choice: string, el: HTMLElement) => {
 </script>
 
 <template>
-	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
-		<div class="snippet-toggler-header">
+	<div class="snippet-toggler">
+		<div class="header">
 			<div class="buttons">
 				<button
 					v-for="choice in choices"
@@ -67,99 +66,119 @@ const changeSelected = async (choice: string, el: HTMLElement) => {
 			<template v-for="choice in choices" :key="choice">
 				<div
 					v-if="maintainHeight || choice === selected"
-					:class="{ content: maintainHeight, active: maintainHeight && choice === selected }"
+					:class="['content', { 'maintain-height': maintainHeight, active: maintainHeight && choice === selected }]"
 				>
-					<slot :name="choice.toLowerCase()"></slot>
+					<slot :name="choice.toLowerCase().split(' ').join('-')"></slot>
 				</div>
 			</template>
 		</div>
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .snippet-toggler {
 	--snippet-toggler-border-color: var(--vp-c-gray-light-4);
+	--snippet-toggler-button-color: var(--vp-c-gray);
+	--snippet-toggler-button-active-color: var(--vp-c-black);
 }
 
-html.dark .snippet-toggler,
-.snippet-toggler.dark {
+html.dark .snippet-toggler {
 	--snippet-toggler-border-color: transparent;
+	--snippet-toggler-button-color: var(--vp-c-gray-light-2);
+	--snippet-toggler-button-active-color: var(--vp-c-gray-light-4);
 }
 
 .snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	border: 1px solid var(--snippet-toggler-border-color);
-}
 
-.snippet-toggler-header {
-	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
-	color: var(--vp-c-gray-light-2);
-	border-bottom: 1px solid var(--snippet-toggler-border-color);
-	height: 40px;
-	display: flex;
-	align-items: center;
-	padding: 24px;
-}
+	.header {
+		background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
+		color: var(--vp-c-gray-light-2);
+		border-bottom: 1px solid var(--snippet-toggler-border-color);
+		height: 40px;
+		display: flex;
+		align-items: center;
+		padding: 24px;
 
-.buttons {
-	display: flex;
-	gap: 0.5em;
-}
+		.buttons {
+			display: flex;
+			gap: 0.5em;
 
-.button {
-	padding: 0.25em 0.75em;
-	color: var(--vp-c-gray);
-}
+			.button {
+				padding: 0.25em 0.75em;
+				color: var(--snippet-toggler-button-color);
 
-.button.active {
-	color: var(--vp-c-black);
-	background: var(--vp-c-mute);
-	border-radius: var(--rounded-lg);
-}
+				&.active {
+					color: var(--snippet-toggler-button-active-color);
+					background: var(--vp-c-mute);
+					border-radius: var(--rounded-lg);
+				}
+			}
+		}
+	}
 
-html.dark .snippet-toggler .button,
-.snippet-toggler.dark .button {
-	color: var(--vp-c-gray-light-2);
-}
+	.content-area {
+		scrollbar-width: thin;
+		overflow-y: auto;
+		tab-size: 2;
+		display: grid;
+		grid-template-columns: 100%;
 
-html.dark .snippet-toggler .button.active,
-.snippet-toggler.dark .button.active {
-	color: var(--vp-c-gray-light-4);
-}
+		:deep(.lang) {
+			display: none;
+		}
+	}
 
-.snippet-toggler .content-area :deep(.lang) {
-	display: none;
-}
+	.content {
+		--padding-y: 24px;
+		--padding-x: 8px;
 
-.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
-	display: block;
+		padding-top: var(--padding-x);
+		padding-bottom: var(--padding-x);
+
+		&:not(.maintain-height) {
+			padding-inline: var(--padding-y);
+		}
+
+		&.maintain-height {
+			overflow: hidden;
+			grid-row-start: 1;
+			grid-column-start: 1;
+			visibility: hidden;
+			width: 0;
+			mask-image: linear-gradient(
+					to right,
+					transparent,
+					black var(--padding-y),
+					black calc(100% - var(--padding-y)),
+					transparent
+				),
+				linear-gradient(
+					to top,
+					black,
+					black calc(2 * var(--padding-x)),
+					transparent calc(2 * var(--padding-x)),
+					transparent
+				);
+
+			&.active {
+				visibility: visible;
+				width: 100%;
+				overflow: auto;
+			}
+
+			:deep(.line) {
+				padding-inline: var(--padding-y);
+			}
+		}
+	}
 }
 
 @media (min-width: 640px) {
 	.snippet-toggler {
 		border-radius: 12px;
 	}
-}
-
-.content-area {
-	padding-inline: 24px;
-	padding-top: 8px;
-	padding-bottom: 8px;
-	scrollbar-width: none;
-	overflow-y: auto;
-	tab-size: 2;
-	display: grid;
-	grid-template-columns: 100%;
-}
-
-.content {
-	visibility: hidden;
-	grid-row-start: 1;
-	grid-column-start: 1;
-}
-
-.content.active {
-	visibility: visible;
 }
 </style>

@@ -1,5 +1,5 @@
 .paddingBox {
-	padding: 0 32px;
+	padding: 0 106px;
 }
 
 .sectionContainer {
@@ -12,7 +12,7 @@
 }
 
 .sectionPaddingHero {
-	padding-block: 108px;
+	padding-block: 64px;
 }
 
 .sectionPaddingMd {
@@ -23,25 +23,17 @@
 	padding-block: 120px;
 }
 
+.sectionNoPaddingTop {
+	padding-block-start: 0;
+}
+
+.sectionNoPaddingBottom {
+	padding-block-end: 0;
+}
+
 .hero {
-	background: var(--vp-docs-section-bg);
-	color: white;
 	position: relative;
 	overflow: hidden;
-}
-
-.heroPattern {
-	position: absolute;
-	top: 40%;
-	left: 50%;
-	translate: -50% -50%;
-	pointer-events: none;
-}
-
-.heroPattern svg {
-	width: 1600px;
-	height: 1000px;
-	opacity: 0.5;
 }
 
 .heroContent {
@@ -49,7 +41,7 @@
 }
 
 .heroContent h1 {
-	font-size: 60px;
+	font-size: 48px;
 	font-weight: 700;
 	line-height: 1;
 	margin: 20px 0;
@@ -61,17 +53,15 @@
 }
 
 .heroButtons {
-	margin: 48px 0;
+	margin: 24px 0;
 }
 
 .heroToggler {
 	border-radius: 12px;
 	width: 100%;
 	max-width: 590px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	box-shadow: 0 0 100px 24px rgba(255, 255, 255, 0.3);
 	backdrop-filter: blur(4px);
-	margin-left: 20px;
+	margin-left: 4em;
 }
 
 .heroToggler :global(.snippet-toggler .content-area .copy) {
@@ -115,6 +105,9 @@
 .m60 {
 	margin: 60px 0;
 }
+.mb60 {
+	margin-bottom: 60px;
+}
 
 .grid2 {
 	display: grid;
@@ -149,6 +142,26 @@
 	max-width: 420px;
 }
 
+.image {
+	width: 100%;
+	border-radius: 8px;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+}
+
+.frameworks img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center center;
+	transition: scale 150ms ease-out;
+	border-radius: 8px;
+}
+
+.frameworks .image:hover img {
+	scale: 1.05;
+}
+
 @media only screen and (min-width: 768px) {
 	.headerSelfHosted {
 		align-self: center;
@@ -160,9 +173,21 @@
 	}
 }
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1400px) {
 	.heroToggler {
 		display: none;
+	}
+}
+
+@media only screen and (max-width: 1200px) {
+	.paddingBox {
+		padding-inline: 64px;
+	}
+	.sectionPaddingHero {
+		padding-block-end: 0;
+	}
+	.heroButtons {
+		margin-block-start: 0;
 	}
 	.grid4 {
 		grid-template-columns: 1fr 1fr;
@@ -170,6 +195,9 @@
 }
 
 @media only screen and (max-width: 768px) {
+	.paddingBox {
+		padding: 0 32px;
+	}
 	.hero {
 		min-height: unset;
 	}
