@@ -301,13 +301,6 @@ time: Hora
 timestamp: Registro de tiempo
 uuid: UUID
 hash: Código criptográfico
-geometry: Geometría (All)
-geometry.Point: Punto
-geometry.LineString: CadenaDe Lineas
-geometry.Polygon: Polígono
-geometry.MultiPoint: MultiPunto
-geometry.MultiLineString: Geometría. Línea_Múltiple
-geometry.MultiPolygon: Geometría. Polígono_Múltiple
 not_available_for_type: No habilitado para este Tipo
 create_translations: Crear traducción
 auto_refresh: Actualizar automáticamente
@@ -1328,7 +1321,6 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP permitidas, dejar vacío para permitir todos...
     fields:
       icon_name: Ícono
       name_name: Nombre
@@ -1904,6 +1896,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto
+  hash:
+    hash: Código criptográfico
   icon:
     icon: Ícono
     description: Presentar un ícono

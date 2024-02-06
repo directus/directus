@@ -20,3 +20,8 @@ test('Returns null if key does not exist', () => {
 	const res = getTypeFromMap('non-existing');
 	expect(res).toBe(null);
 });
+
+test('Returns null if key is undefined', () => {
+	const res = getTypeFromMap(undefined);
+	expect(res).toBe(null);
+});
