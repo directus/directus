@@ -58,7 +58,13 @@ const actions = computed(() => {
 				</v-list-item>
 				<template v-if="bundleEntry === false">
 					<v-divider />
-					<v-list-item v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null" :disabled="uninstallLocked" class="uninstall" clickable @click="$emit('uninstall')">
+					<v-list-item
+						v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null"
+						:disabled="uninstallLocked"
+						class="uninstall"
+						clickable
+						@click="$emit('uninstall')"
+					>
 						<v-list-item-icon>
 							<v-icon name="delete" />
 						</v-list-item-icon>

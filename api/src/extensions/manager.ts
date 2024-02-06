@@ -224,13 +224,13 @@ export class ExtensionManager {
 	 */
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
-		await this.reload()
+		await this.reload();
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
-		await this.reload()
+		await this.reload();
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
