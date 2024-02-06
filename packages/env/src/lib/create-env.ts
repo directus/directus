@@ -27,7 +27,7 @@ export const createEnv = (): Env => {
 			}
 		}
 
-		output[key] = cast(key, value);
+		output[key] = cast(value, key);
 	}
 
 	return { ...DEFAULTS, ...output };
