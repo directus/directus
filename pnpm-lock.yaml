@@ -761,8 +761,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       happy-dom:
-        specifier: 13.3.1
-        version: 13.3.1
+        specifier: 13.3.8
+        version: 13.3.8
       histoire:
         specifier: 0.17.9
         version: 0.17.9(sass@1.70.0)(vite@5.0.12)
@@ -825,7 +825,7 @@ importers:
         version: 5.0.12(sass@1.70.0)
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
       vue:
         specifier: 3.4.15
         version: 3.4.15(typescript@5.3.3)
@@ -955,7 +955,7 @@ importers:
         version: 3.7.2(rollup@4.9.6)(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
       vue:
         specifier: 3.4.15
         version: 3.4.15(typescript@5.3.3)
@@ -1013,7 +1013,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
       vue:
         specifier: 3.4.15
         version: 3.4.15(typescript@5.3.3)
@@ -1251,7 +1251,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/extensions:
     dependencies:
@@ -1418,7 +1418,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/memory:
     dependencies:
@@ -1483,7 +1483,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/random:
     devDependencies:
@@ -1625,7 +1625,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1659,7 +1659,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1690,7 +1690,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1755,7 +1755,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1789,7 +1789,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   packages/stores:
     dependencies:
@@ -2037,7 +2037,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   sdk:
     devDependencies:
@@ -2055,7 +2055,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
 
   tests/blackbox:
     devDependencies:
@@ -2136,7 +2136,7 @@ importers:
         version: 4.3.1(typescript@5.3.3)
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(happy-dom@13.3.1)(sass@1.70.0)
+        version: 1.2.2(happy-dom@13.3.8)(sass@1.70.0)
       ws:
         specifier: 8.16.0
         version: 8.16.0
@@ -11483,8 +11483,8 @@ packages:
       - supports-color
     dev: false
 
-  /happy-dom@13.3.1:
-    resolution: {integrity: sha512-KIlztn+nRWstprUyI3Wzy1UJrg72uOaoo4SaBLNrV6xrn2Rq86eQruKOL7ZyDhkfou3nEZX6rgRYtvsqwMInvQ==}
+  /happy-dom@13.3.8:
+    resolution: {integrity: sha512-RAbq4oYfJNkVan1m1F3jfA4YEyRY0/ASoNvZsNJbuX85jIypidmsz9jQZD7Tqz0VXA2MhAGfcsh5oshwmwNYSg==}
     engines: {node: '>=16.0.0'}
     dependencies:
       entities: 4.5.0
@@ -18924,7 +18924,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.2.2(happy-dom@13.3.1)(sass@1.70.0):
+  /vitest@1.2.2(happy-dom@13.3.8)(sass@1.70.0):
     resolution: {integrity: sha512-d5Ouvrnms3GD9USIK36KG8OZ5bEvKEkITFtnGv56HFaSlbItJuYr7hv2Lkn903+AvRAgSixiamozUVfORUekjw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -18959,7 +18959,7 @@ packages:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      happy-dom: 13.3.1
+      happy-dom: 13.3.8
       local-pkg: 0.5.0
       magic-string: 0.30.6
       pathe: 1.1.2
