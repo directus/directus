@@ -6,10 +6,10 @@ export type Item = Record<string, any>;
 
 export type PrimaryKey = string | number;
 
-export type Alterations<T extends Item = Item, PK extends keyof T | never = never> = {
+export type Alterations<T extends Item = Item, K extends keyof T | undefined = undefined> = {
 	create: Partial<T>[];
-	update: (PK extends keyof T ? Partial<T> & Pick<T, PK> : Partial<T>)[];
-	delete: (PK extends keyof T ? T[PK] : PrimaryKey)[];
+	update: (K extends keyof T ? Partial<T> & Pick<T, K> : Partial<T>)[];
+	delete: (K extends keyof T ? T[K] : PrimaryKey)[];
 };
 
 export type MutationOptions = {
