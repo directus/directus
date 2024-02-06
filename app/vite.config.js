@@ -137,7 +137,7 @@ function directusExtensions() {
 		const packageExtensions = await resolveModuleExtensions(API_PATH);
 
 		const registryExtensions = extensionsPathExists
-			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, 'registry'))
+			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
 			: [];
 
 		/*
