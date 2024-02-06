@@ -124,7 +124,7 @@
 		"micromustache": "8.0.3",
 		"mime": "4.0.1",
 		"mitt": "3.0.1",
-		"nanoid": "5.0.4",
+		"nanoid": "5.0.5",
 		"p-queue": "8.0.1",
 		"pinia": "2.1.7",
 		"pretty-ms": "9.0.0",
