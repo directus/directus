@@ -10,14 +10,6 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const workLink = computed(() => {
-	if (props.account.github_company && props.account.github_company.startsWith('@')) {
-		return 'https://github.com/' + props.account.github_company.substring(1);
-	}
-
-	return undefined;
-});
-
 const githubLink = computed(() => {
 	if (props.account.github_username) {
 		return 'https://github.com/' + props.account.github_username;
@@ -36,7 +28,7 @@ const npmLink = computed(() => {
 		<div v-if="account.github_bio" class="about">
 			<p class="type-label">{{ t('about') }}</p>
 			<p>{{ account.github_bio }}</p>
-         <v-divider class="divider" />
+			<v-divider class="divider" />
 		</div>
 		<v-list class="list">
 			<div class="grid">
@@ -69,10 +61,10 @@ const npmLink = computed(() => {
 }
 
 .about {
-   padding: 0 8px;
+	padding: 0 8px;
 
-   .divider {
-      margin: 16px 0;
-   }
+	.divider {
+		margin: 16px 0;
+	}
 }
 </style>
