@@ -149,12 +149,13 @@ export class PermissionsService extends ItemsService {
 	async getItemPermissions(collection: string, primaryKey?: string): Promise<ItemPermissions> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		if (this.accountability?.admin)
+		if (this.accountability?.admin) {
 			return {
 				update: { access: true },
 				delete: { access: true },
 				share: { access: true },
 			};
+		}
 
 		const itemPermissions: ItemPermissions = {
 			update: { access: false },
