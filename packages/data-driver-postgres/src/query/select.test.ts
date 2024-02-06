@@ -70,7 +70,6 @@ test('With a count', () => {
 test('With json', () => {
 	const tableName = randomIdentifier();
 	const tableIndex = randomInteger(0, 100);
-	const columnIndex = randomInteger(0, 100);
 	const columnName = randomIdentifier();
 	const jsonColumnName = randomIdentifier();
 	const attribute1 = randomIdentifier();
@@ -107,6 +106,6 @@ test('With json', () => {
 	};
 
 	const res = select(sample);
-	const expected = `SELECT "t${tableIndex}.${columnName}" AS "c${columnIndex}" , "t${tableIndex}.${jsonColumnName}"->>'${attribute1}' AS c1 , "t${tableIndex}.${jsonColumnName}"->>'${attribute2}.${attribute3}' AS "c2"`;
+	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> "${attribute1}" AS "c1", "t${tableIndex}"."${jsonColumnName}" -> "${attribute2}" ->> "${attribute3}" AS "c2"`;
 	expect(res).toStrictEqual(expected);
 });
