@@ -825,14 +825,12 @@ const result = await client.request(deletePermissions(['56', '57']));
 
 Check if the current user has Update, Delete and Share permissions on a specific item.
 
-Not intended to check for the existence of an item.
-
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`GET /permissions/me/:collection/:id`
+`GET /permissions/me/:collection/:id?`
 
 </template>
 <template #graphql>
@@ -843,11 +841,15 @@ N/A
 <template #sdk>
 
 ```js
-import { createDirectus, rest, checkPermissions } from '@directus/sdk';
+import { createDirectus, rest, readItemPermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(checkPermissions(collection_name, item_id));
+// collection item
+const result = await client.request(readItemPermissions(collection_name, item_id));
+
+// singleton
+const result = await client.request(readItemPermissions(collection_name));
 ```
 
 </template>
@@ -870,6 +872,34 @@ const result = await client.request(checkPermissions(collection_name, item_id));
   }
 }
 ```
+
+For a Singleton where update access is given, the `presets` and `fields` properties from the corresponding
+[update permission](#the-permission-object) are additionaly returned:
+
+```json
+{
+  "data": {
+     "update": {
+       "access": true,
+	   "presets": permission_presets,
+	   "fields": permission_fields
+    },
+     "delete": {
+       "access": boolean
+    },
+     "share": {
+       "access": boolean
+    }
+  }
+}
+```
+
+::: tip Non-existing Collection / Item
+
+The response structure is maintained in any case, even if the collection or item does not exist. To check for the
+existence of an item, use the [Get Items](/reference/items.html#get-items) endpoint instead.
+
+:::
 
 ##### Example
 
@@ -894,6 +924,26 @@ const result = await client.request(checkPermissions(collection_name, item_id));
 }
 ```
 
+`GET /permissions/me/about`
+
+```json
+{
+  "data": {
+     "update": {
+       "access": true,
+	   "presets": {},
+	   "fields": ["*"]
+    },
+     "delete": {
+       "access": false
+    },
+     "share": {
+       "access": false
+    }
+  }
+}
+```
+
 </template>
 <template #graphql>
 
@@ -903,11 +953,15 @@ N/A
 <template #sdk>
 
 ```js
-import { createDirectus, rest, checkPermissions } from '@directus/sdk';
+import { createDirectus, rest, readItemPermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(checkPermissions('articles', '15'));
+// collection item
+const result = await client.request(readItemPermissions('articles', '15'));
+
+// singleton
+const result = await client.request(readItemPermissions('about'));
 ```
 
 </template>
