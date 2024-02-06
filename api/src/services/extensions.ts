@@ -1,5 +1,5 @@
 import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type { ApiOutput, ExtensionSettings } from '@directus/extensions';
+import type { ApiOutput, BundleExtension, ExtensionSettings } from '@directus/extensions';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -38,17 +38,40 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
-		const meta = await this.extensionsItemService.readByQuery({ limit: -1 });
+		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
 
-		return meta.map(
-			(settings) =>
-				<ApiOutput>{
-					id: settings.id,
-					bundle: settings.bundle,
-					meta: settings,
-					schema: this.extensionsManager.getExtension(settings.source, settings.folder) ?? null,
-				},
-		);
+		const regular = settings.filter(({ bundle }) => bundle === null);
+		const bundled = settings.filter(({ bundle }) => bundle !== null);
+
+		const output: ApiOutput[] = [];
+
+		for (const meta of regular) {
+			output.push({
+				id: meta.id,
+				bundle: meta.bundle,
+				meta: meta,
+				schema: this.extensionsManager.getExtension(meta.source, meta.folder) ?? null,
+			});
+		}
+
+		for (const meta of bundled) {
+			const parentBundle = output.find((ext) => ext.id === meta.bundle);
+
+			if (!parentBundle) continue;
+
+			const schema = (parentBundle.schema as BundleExtension).entries.find((entry) => entry.name === meta.folder);
+
+			if (!schema) continue;
+
+			output.push({
+				id: meta.id,
+				bundle: meta.bundle,
+				meta: meta,
+				schema: schema,
+			});
+		}
+
+		return output;
 	}
 
 	async readOne(id: string): Promise<ApiOutput> {

@@ -81,10 +81,21 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		const endpoint = `/extensions/${id}`;
 
 		await api.patch(endpoint, { meta: { enabled: !current } });
+
+		await refresh();
+	};
+
+	const install = async (versionId: string) => {
+		await api.post('/extensions/registry/install', { version: versionId });
+		await refresh();
+	};
+
+	const uninstall = async (extensionId: string) => {
+		await api.delete(`/extensions/${extensionId}`);
 		await refresh();
 	};
 
 	refresh(false);
 
-	return { extensions, loading, error, refresh, toggleState };
+	return { extensions, loading, error, refresh, toggleState, install, uninstall };
 });

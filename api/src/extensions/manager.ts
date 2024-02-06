@@ -20,14 +20,14 @@ import type {
 	ScheduleHandler,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
-import { getNodeEnv, pathToRelativeUrl } from '@directus/utils/node';
+import { getNodeEnv, pathToRelativeUrl, processId } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
-import { clone, debounce } from 'lodash-es';
+import { clone, debounce, isPlainObject } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname } from 'node:path';
@@ -158,6 +158,8 @@ export class ExtensionManager {
 	 */
 	private reloadChannel = `extensions.reload`;
 
+	private processId = processId();
+
 	public get extensions() {
 		return [...this.localExtensions.values(), ...this.registryExtensions.values(), ...this.moduleExtensions.values()];
 	}
@@ -210,7 +212,9 @@ export class ExtensionManager {
 			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
 		}
 
-		this.messenger.subscribe(this.reloadChannel, () => {
+		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
+			// Ignore requests for reloading that were published by the current process
+			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
 			this.reload();
 		});
 	}
@@ -220,17 +224,14 @@ export class ExtensionManager {
 	 */
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
-
-		// Publish a message so all instances will reload extensions. Note: this will also reload the
-		// current instance, as it's subscribed to the same channel
-		await this.messenger.publish(this.reloadChannel, {});
+		await this.reload();
+		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
-		// Publish a message so all instances will reload extensions. Note: this will also reload the
-		// current instance, as it's subscribed to the same channel
-		await this.messenger.publish(this.reloadChannel, {});
+		await this.reload();
+		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
 	/**
@@ -286,13 +287,21 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(): void {
+	public reload(): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
-			return;
+			return Promise.resolve();
 		}
 
 		const logger = useLogger();
+
+		let resolve: (val?: unknown) => void;
+		let reject: (val?: unknown) => void;
+
+		const promise = new Promise((res, rej) => {
+			resolve = res;
+			reject = rej;
+		});
 
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
@@ -323,10 +332,15 @@ export class ExtensionManager {
 				if (removedExtensions.length > 0) {
 					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 				}
+
+				resolve();
 			} else {
 				logger.warn('Extensions have to be loaded before they can be reloaded');
+				reject(new Error('Extensions have to be loaded before they can be reloaded'));
 			}
 		});
+
+		return promise;
 	}
 
 	/**

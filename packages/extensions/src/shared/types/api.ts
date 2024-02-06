@@ -1,4 +1,4 @@
-import type { Extension } from './extension-types.js';
+import type { BundleExtensionEntry, Extension } from './extension-types.js';
 import type { ExtensionSettings } from './settings.js';
 
 /**
@@ -7,6 +7,6 @@ import type { ExtensionSettings } from './settings.js';
 export interface ApiOutput {
 	id: string;
 	bundle: string | null;
-	schema: Partial<Extension> | null;
+	schema: Partial<Extension> | BundleExtensionEntry | null;
 	meta: ExtensionSettings;
 }

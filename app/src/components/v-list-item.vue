@@ -266,7 +266,8 @@ function onClick(event: PointerEvent) {
 		border: var(--theme--border-width) solid
 			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, border-color;
 
 		:slotted(.drag-handle) {
 			cursor: grab;
