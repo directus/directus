@@ -14,6 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		extension: ApiOutput;
 		children?: ApiOutput[];
+		bundleEntry?: boolean;
 	}>(),
 	{
 		children: () => [],
@@ -110,7 +111,9 @@ const uninstall = async () => {
 			</span>
 		</v-list-item-content>
 
-		<v-progress-circular v-if="saving" indeterminate />
+		<span v-if="saving" class="spinner">
+			<v-progress-circular indeterminate small />
+		</span>
 
 		<v-chip class="state" :class="state.status" small>
 			{{ state.text }}
@@ -122,13 +125,14 @@ const uninstall = async () => {
 			:status="state.status"
 			:disable-locked="disableLocked"
 			:uninstall-locked="uninstallLocked"
+			:bundle-entry="bundleEntry"
 			@toggle-status="toggleState"
 			@uninstall="uninstall"
 		/>
 	</v-list-item>
 
 	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
-		<extension-item v-for="item in children" :key="item.id" :extension="item" />
+		<extension-item v-for="item in children" :key="item.id" :extension="item" bundle-entry />
 	</v-list>
 </template>
 
@@ -170,5 +174,9 @@ const uninstall = async () => {
 		--v-chip-color: var(--theme--warning);
 		--v-chip-background-color: var(--theme--warning-background);
 	}
+}
+
+.spinner {
+	margin-right: 8px;
 }
 </style>

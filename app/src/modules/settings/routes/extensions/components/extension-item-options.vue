@@ -9,6 +9,7 @@ const props = defineProps<{
 	type?: ExtensionType;
 	disableLocked?: boolean;
 	uninstallLocked?: boolean;
+	bundleEntry?: boolean;
 }>();
 
 defineEmits<{ toggleStatus: [enabled: boolean]; uninstall: [] }>();
@@ -55,15 +56,17 @@ const actions = computed(() => {
 						{{ action.text }}
 					</v-list-item-content>
 				</v-list-item>
-				<v-divider />
-				<v-list-item v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null" :disabled="uninstallLocked" class="uninstall" clickable @click="$emit('uninstall')">
-					<v-list-item-icon>
-						<v-icon name="delete" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('uninstall') }}
-					</v-list-item-content>
-				</v-list-item>
+				<template v-if="bundleEntry === false">
+					<v-divider />
+					<v-list-item v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null" :disabled="uninstallLocked" class="uninstall" clickable @click="$emit('uninstall')">
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('uninstall') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 	</div>
