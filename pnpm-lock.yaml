@@ -264,8 +264,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       node-machine-id:
         specifier: 1.1.12
         version: 1.1.12
@@ -797,8 +797,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
       p-queue:
         specifier: 8.0.1
         version: 8.0.1
@@ -981,8 +981,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       nanoid:
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.5
+        version: 5.0.5
     devDependencies:
       '@directus/extensions':
         specifier: workspace:*
@@ -13898,8 +13898,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /nanoid@5.0.4:
-    resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
+  /nanoid@5.0.5:
+    resolution: {integrity: sha512-/Veqm+QKsyMY3kqi4faWplnY1u+VuKO3dD2binyPIybP31DRO29bPF+1mszgLnrR2KqSLceFLBNw0zmvDzN1QQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
