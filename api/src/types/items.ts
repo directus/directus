@@ -1,8 +1,3 @@
-/**
- * I know this looks a little silly, but it allows us to explicitly differentiate between when we're
- * expecting an item vs any other generic object.
- */
-
 import type { DirectusError } from '@directus/errors';
 import type { EventContext } from '@directus/types';
 import type { MutationTracker } from '../services/items.js';
@@ -11,14 +6,10 @@ export type Item = Record<string, any>;
 
 export type PrimaryKey = string | number;
 
-export type Alterations = {
-	create: {
-		[key: string]: any;
-	}[];
-	update: {
-		[key: string]: any;
-	}[];
-	delete: (number | string)[];
+export type Alterations<T extends Item = Item, PK extends keyof T | never = never> = {
+	create: Partial<T>[];
+	update: (PK extends keyof T ? Partial<T> & Pick<T, PK> : Partial<T>)[];
+	delete: (PK extends keyof T ? T[PK] : PrimaryKey)[];
 };
 
 export type MutationOptions = {

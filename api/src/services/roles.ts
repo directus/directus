@@ -1,6 +1,6 @@
-import type { Query } from '@directus/types';
 import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
-import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { Query, User } from '@directus/types';
+import type { AbstractServiceOptions, Alterations, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
 import { PresetsService } from './presets.js';
@@ -27,41 +27,116 @@ export class RolesService extends ItemsService {
 		}
 	}
 
-	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
+	private async checkForOtherAdminUsers(
+		key: PrimaryKey,
+		users: Alterations<User, 'id'> | (string | Partial<User>)[],
+	): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
 		if (!role) throw new ForbiddenError();
 
-		// The users that will now be in this new non-admin role
-		let userKeys: PrimaryKey[] = [];
-
-		if (Array.isArray(users)) {
-			userKeys = users.map((user) => (typeof user === 'string' ? user : user['id'])).filter((id) => id);
-		} else {
-			userKeys = users.update.map((user) => user['id']).filter((id) => id);
-		}
-
-		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
+		const usersBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id,
 		);
 
-		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
-			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true,
-		);
+		const usersAdded: (Partial<User> & Pick<User, 'id'>)[] = [];
+		const usersUpdated: (Partial<User> & Pick<User, 'id'>)[] = [];
+		const usersCreated: Partial<User>[] = [];
+		const usersRemoved: string[] = [];
 
-		const usersThatAreAdded = Array.isArray(users) ? users : users.create;
+		if (Array.isArray(users)) {
+			const usersKept: string[] = [];
 
-		// If the role the users are moved to is an admin-role, and there's at least 1 (new) admin
-		// user, we don't have to check for other admin
-		// users
-		if ((role.admin_access === true || role.admin_access === 1) && usersThatAreAdded.length > 0) return;
+			for (const user of users) {
+				if (typeof user === 'string') {
+					if (usersBefore.includes(user)) {
+						usersKept.push(user);
+					} else {
+						usersAdded.push({ id: user });
+					}
+				} else if (user.id) {
+					if (usersBefore.includes(user.id)) {
+						usersKept.push(user.id);
+						usersUpdated.push(user as Partial<User> & Pick<User, 'id'>);
+					} else {
+						usersAdded.push(user as Partial<User> & Pick<User, 'id'>);
+					}
+				} else {
+					usersCreated.push(user);
+				}
+			}
+
+			usersRemoved.push(...usersBefore.filter((user) => !usersKept.includes(user)));
+		} else {
+			for (const user of users.update) {
+				if (usersBefore.includes(user['id'])) {
+					usersUpdated.push(user);
+				} else {
+					usersAdded.push(user);
+				}
+			}
+
+			usersCreated.push(...users.create);
+			usersRemoved.push(...users.delete);
+		}
+
+		if (role.admin_access === false || role.admin_access === 0) {
+			// Admin users might have moved in from other role, thus becoming non-admin
+			if (usersAdded.length > 0) {
+				const otherAdminUsers = await this.knex
+					.count('*', { as: 'count' })
+					.from('directus_users')
+					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+					.whereNotIn('directus_users.id', usersAdded)
+					.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
+					.first();
+
+				const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+				if (otherAdminUsersCount === 0) {
+					throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
+				}
+			}
+
+			return;
+		}
+
+		// Only added or created new users
+		if (usersUpdated.length === 0 && usersRemoved.length === 0) return;
+
+		// Active admin user(s) about to be created
+		if (usersCreated.some((user) => !('status' in user) || user.status === 'active')) return;
+
+		const usersDeactivated = [...usersAdded, ...usersUpdated]
+			.filter((user) => 'status' in user && user.status !== 'active')
+			.map((user) => user.id);
+
+		const usersAddedNonDeactivated = usersAdded
+			.filter((user) => !usersDeactivated.includes(user.id))
+			.map((user) => user.id);
+
+		// Active user(s) about to become admin
+		if (
+			usersAddedNonDeactivated.length > 0 &&
+			+(
+				(
+					await this.knex
+						.count('*', { as: 'count' })
+						.from('directus_users')
+						.whereIn('id', usersAddedNonDeactivated)
+						.andWhere({ status: 'active' })
+						.first()
+				)?.count || 0
+			) > 0
+		)
+			return;
 
 		const otherAdminUsers = await this.knex
 			.count('*', { as: 'count' })
 			.from('directus_users')
-			.whereNotIn('directus_users.id', [...userKeys, ...usersThatAreRemoved])
-			.andWhere({ 'directus_roles.admin_access': true })
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.whereNotIn('directus_users.id', [...usersDeactivated, ...usersRemoved])
+			.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 			.first();
 
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
