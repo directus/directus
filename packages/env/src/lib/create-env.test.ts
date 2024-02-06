@@ -59,25 +59,16 @@ test('Reads file configuration from config path', () => {
 	expect(readConfigurationFromFile).toHaveBeenCalledWith('./test/config/path');
 });
 
-test('Skips environment variables that are not Directus configuration flags', () => {
-	vi.mocked(isDirectusVariable).mockImplementation((key) => {
-		return key === 'PROCESS';
-	});
-
-	const env = createEnv();
-
-	expect(env).toEqual({
-		PROCESS: 'test-process',
-		DEFAULT: 'test-default',
-	});
-});
-
 test('Reads value from file if key is a file key', () => {
 	vi.mocked(readConfigurationFromFile).mockReturnValue({
 		TEST_FILE: './test/path',
 	});
 
 	vi.mocked(isFileKey).mockImplementation((key) => {
+		return key === 'TEST_FILE';
+	});
+
+	vi.mocked(isDirectusVariable).mockImplementation((key) => {
 		return key === 'TEST_FILE';
 	});
 
@@ -96,12 +87,36 @@ test('Reads value from file if key is a file key', () => {
 	});
 });
 
+test('Passthrough file variables that are not Directus configuration flags', () => {
+	vi.mocked(readConfigurationFromFile).mockReturnValue({
+		TEST_FILE: './test/path',
+	});
+
+	vi.mocked(isDirectusVariable).mockImplementation(() => {
+		return false;
+	});
+
+	const env = createEnv();
+
+	expect(readFileSync).not.toHaveBeenCalled();
+
+	expect(env).toEqual({
+		PROCESS: 'test-process',
+		DEFAULT: 'test-default',
+		TEST_FILE: './test/path',
+	});
+});
+
 test('Throws error if file could not be read', () => {
 	vi.mocked(readConfigurationFromFile).mockReturnValue({
 		TEST_FILE: './test/path',
 	});
 
 	vi.mocked(isFileKey).mockImplementation((key) => {
+		return key === 'TEST_FILE';
+	});
+
+	vi.mocked(isDirectusVariable).mockImplementation((key) => {
 		return key === 'TEST_FILE';
 	});
 
