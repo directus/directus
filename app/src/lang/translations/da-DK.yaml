@@ -251,13 +251,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry: Geometri (Alle)
-geometry.Point: Punkt
-geometry.LineString: Linjestring
-geometry.Polygon: Polygon
-geometry.MultiPoint: Multipunkt
-geometry.MultiLineString: Stræng med linjeskift
-geometry.MultiPolygon: Multipolygon
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret oversættelser
 auto_refresh: Opdater automatisk
@@ -1240,7 +1233,6 @@ field_options:
   directus_roles:
     name: Det unikke navn for denne rolle...
     description: En beskrivelse af denne rolle...
-    ip_access: Tilføj tilladte IP-adresser, efterlad blank for at tillade alle...
     fields:
       icon_name: Ikon
       name_name: Navn
@@ -1809,6 +1801,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
     description: Vis et ikon

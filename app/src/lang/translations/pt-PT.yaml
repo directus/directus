@@ -938,6 +938,8 @@ displays:
     suffix: Sufixo
     color: Cor
     text: Texto
+  hash:
+    hash: Hash
   image:
     circle: Círculo
   labels:
