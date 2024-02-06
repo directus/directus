@@ -31,6 +31,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:username="latestVersion.publisher.username"
 					:github-name="latestVersion.publisher.github_name"
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
+					class="author"
 				/>
 			</div>
 		</v-list>
@@ -63,20 +64,28 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 }
 
 .grid {
+	.install {
+		margin-bottom: 16px !important;
+	}
+
 	@container metadata (width > 580px) {
 		--v-list-item-margin: 0;
 
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 10px;
-	}
-}
+		gap: 4px 16px;
 
-.install {
-	margin-bottom: 8px;
+		.install {
+			margin-bottom: 0 !important;
+		}
+	}
 }
 
 .divider {
 	margin: 16px 0;
+}
+
+.author {
+	margin-block-start: 8px;
 }
 </style>

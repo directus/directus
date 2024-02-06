@@ -33,6 +33,11 @@ const npmLink = computed(() => {
 
 <template>
 	<div class="metadata">
+		<div v-if="account.github_bio" class="about">
+			<p class="type-label">{{ t('about') }}</p>
+			<p>{{ account.github_bio }}</p>
+         <v-divider class="divider" />
+		</div>
 		<v-list class="list">
 			<div class="grid">
 				<MetadataItem v-if="account.username" icon="npm" :href="npmLink" monospace>{{ account.username }}</MetadataItem>
@@ -41,12 +46,6 @@ const npmLink = computed(() => {
 				</MetadataItem>
 				<MetadataItem v-if="account.github_blog" icon="link" :href="account.github_blog">
 					{{ t('website') }}
-				</MetadataItem>
-				<MetadataItem v-if="account.github_location" icon="location_on">
-					{{ account.github_location }}
-				</MetadataItem>
-				<MetadataItem v-if="account.github_company" icon="work" :href="workLink">
-					{{ account.github_company }}
 				</MetadataItem>
 			</div>
 		</v-list>
@@ -67,5 +66,13 @@ const npmLink = computed(() => {
 		grid-template-columns: repeat(2, 1fr);
 		gap: 10px;
 	}
+}
+
+.about {
+   padding: 0 8px;
+
+   .divider {
+      margin: 16px 0;
+   }
 }
 </style>

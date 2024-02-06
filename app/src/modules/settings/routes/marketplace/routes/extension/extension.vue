@@ -91,6 +91,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 	display: grid;
 	gap: 40px;
 	grid-template-areas: 'banner' 'metadata' 'readme';
+	grid-template-columns: minmax(0, 1fr);
 
 	.banner {
 		grid-area: banner;

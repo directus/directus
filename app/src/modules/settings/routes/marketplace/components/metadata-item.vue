@@ -14,13 +14,11 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item block :class="color" :clickable="!!href || !!to" :href="href" :to="to">
+	<v-list-item :class="color" :clickable="!!href || !!to" :href="href" :to="to">
 		<v-list-item-icon>
-			<slot name="icon"><v-icon :name="icon" /></slot>
+			<slot name="icon"><v-icon :name="icon" small /></slot>
 		</v-list-item-icon>
 		<v-list-item-content :class="{ monospace }"><slot /></v-list-item-content>
-		<v-list-item-hint v-if="href"><v-icon name="open_in_new" /></v-list-item-hint>
-		<v-list-item-hint v-if="to"><v-icon name="arrow_right_alt" /></v-list-item-hint>
 	</v-list-item>
 </template>
 
