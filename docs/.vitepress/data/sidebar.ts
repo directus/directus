@@ -714,31 +714,27 @@ function typeDocSidebarFormat(item: DefaultTheme.SidebarItem) {
 }
 
 async function sidebarDirectusPlus() {
-	try {
-		const data = await client.request(
-			readItems('dplus_docs_sections', {
-				fields: ['*', { articles: ['title', 'slug'] }],
-				filter: {
-					articles: {
-						status: { _eq: 'published' },
-					},
+	const sections = await client.request(
+		readItems('dplus_docs_sections', {
+			fields: ['*', { articles: ['title', 'slug'] }],
+			filter: {
+				articles: {
+					status: { _eq: 'published' },
 				},
-			}),
-		);
+			},
+		}),
+	);
 
-		const sidebar = data.map((section) => {
-			return {
-				text: section.title,
-				collapsed: section.slug === 'overview' ? false : true,
-				items: section.articles.map((article) => ({
-					text: article.title,
-					link: `/plus/${article.slug}`,
-				})),
-			};
-		});
+	const sidebar = sections.map((section) => {
+		return {
+			text: section.title,
+			collapsed: section.slug === 'overview' ? false : true,
+			items: section.articles.map((article) => ({
+				text: article.title,
+				link: `/plus/${article.slug}`,
+			})),
+		};
+	});
 
-		return sidebar;
-	} catch (error) {
-		throw new Error(error);
-	}
+	return sidebar;
 }
