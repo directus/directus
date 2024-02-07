@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { useItem } from '@/composables/use-item';
-import { useCollection } from '@directus/composables';
-import { RELATIONAL_TYPES } from '@directus/constants';
-import { Query } from '@directus/types';
+import { useTemplateData } from '@/composables/use-template-data';
 import { getFieldsFromTemplate } from '@directus/utils';
-import { omit } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 
@@ -13,6 +9,11 @@ type Link = {
 	label: string;
 	type: string;
 	url?: string;
+};
+
+type ParsedLink = Omit<Link, 'url'> & {
+	to?: string;
+	href?: string;
 };
 
 type Props = {
@@ -27,52 +28,91 @@ const props = withDefaults(defineProps<Props>(), {
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const query = computed(() => {
-	const fields = new Set();
+// const query = computed(() => {
+// 	const fields = new Set();
 
-	props.links.forEach((link) => {
-		getFieldsFromTemplate(link.url ?? '').forEach((field) => fields.add(field));
-	});
+// 	props.links.forEach((link) => {
+// 		getFieldsFromTemplate(link.url ?? '').forEach((field) => fields.add(field));
+// 	});
 
-	return {
-		fields: Array.from(fields),
-	} as Query;
-});
+// 	return {
+// 		fields: Array.from(fields),
+// 	} as Query;
+// });
 
 const { collection, primaryKey } = toRefs(props);
-const item = primaryKey.value ? useItem(collection, primaryKey, query).item : ref(null);
-const { fields } = useCollection(collection);
+// const item = primaryKey.value ? useItem(collection, primaryKey, query).item : ref(null);
+// const { fields } = useCollection(collection);
 
-const fullItem = computed(() => {
-	const itemValue = item.value ?? {};
+// const fullItem = computed(() => {
+// 	const itemValue = item.value ?? {};
 
-	for (const field of fields.value) {
-		if (
-			field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special as (typeof RELATIONAL_TYPES)[number]))
-		) {
-			continue;
-		}
+// 	for (const field of fields.value) {
+// 		if (
+// 			field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special as (typeof RELATIONAL_TYPES)[number]))
+// 		) {
+// 			continue;
+// 		}
 
-		itemValue[field.field] = values.value[field.field];
-	}
+// 		itemValue[field.field] = values.value[field.field];
+// 	}
 
-	return itemValue;
-});
+// 	return itemValue;
+// });
 
-const linksParsed = computed(() => {
+// const linksParsed = computed(() => {
+// 	return props.links.map((link) => {
+// 		const parsedLink = omit<Record<string, any>>(link, ['url']);
+// 		const linkValue = render(link.url ?? '', fullItem.value ?? {});
+
+// 		if (linkValue.startsWith('/')) {
+// 			parsedLink.to = linkValue;
+// 		} else {
+// 			parsedLink.href = linkValue;
+// 		}
+
+// 		return parsedLink;
+// 	});
+// });
+
+const templateData = computed(() => {
 	return props.links.map((link) => {
-		const parsedLink = omit<Record<string, any>>(link, ['url']);
-		const linkValue = render(link.url ?? '', fullItem.value ?? {});
-
-		if (linkValue.startsWith('/')) {
-			parsedLink.to = linkValue;
-		} else {
-			parsedLink.href = linkValue;
-		}
-
-		return parsedLink;
+		const { templateData } = useTemplateData(collection, primaryKey, ref(link.url));
+		return templateData.value;
 	});
 });
+
+const linksParsed = computed(
+	() =>
+		props.links?.map((link) => {
+			// Resolve related fields for interpolation
+			const relatedValues = {};
+
+			if (link.url && primaryKey.value) {
+				const relationsToResolve = getFieldsFromTemplate(link.url)
+					// filter out any duplicates
+					.filter((value, index, array) => array.indexOf(value) === index)
+					// filter out non-relations, since they should be included in the values already
+					.filter((value) => value.includes('.'));
+
+				// TODO: fetch the relational fields and put them into relatedValues
+			}
+
+			const scope = { ...relatedValues, ...values.value };
+			const interpolatedUrl = link.url ? render(link.url, scope) : '';
+
+			// Preserving previous behaviour
+			const isInternalLink = interpolatedUrl?.startsWith('/');
+
+			return {
+				icon: link.icon,
+				type: link.type,
+				label: link.label,
+				to: isInternalLink ? interpolatedUrl : undefined,
+				href: isInternalLink ? undefined : interpolatedUrl,
+			} satisfies ParsedLink;
+		}),
+);
 </script>
 
 <template>
