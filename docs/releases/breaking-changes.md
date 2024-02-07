@@ -26,30 +26,6 @@ Exif tags stored in Directus Files to not change name.
 
 The updated Exif tags only apply to images which are uploaded after upgrading to this release.
 
-::: details Migration/Mitigation
-
-This change updates the following file metadata property names:
-
-::: code-group
-
-```md [Before]
-- image
-- thumbnail
-- exif
-- gps
-- interoperability
-```
-
-```md [After]
-- Image
-- Thumbnail
-- Photo
-- GPSInfo
-- Iop
-```
-
-:::
-
 ### Dropped Support for SDK Scoped Entrypoints
 
 You can no longer import parts of the SDK through scoped entrypoints to prevent issues with TypeScript based libraries
