@@ -177,8 +177,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       exif-reader:
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.1
+        version: 2.0.1
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -10612,8 +10612,8 @@ packages:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
-  /exif-reader@2.0.0:
-    resolution: {integrity: sha512-/c4JW2Kb4/MdmUJyMKTXhNG524q0pCA1DDCEb2aawd9j2i2+bc+mKGKKyO4z2glRTKW93Ks4BWCgmKeEyKiUeA==}
+  /exif-reader@2.0.1:
+    resolution: {integrity: sha512-gCQ/86RiAWSjeSlalj1G99IC6XnxbwkvB91HLqhh8somj/YBtC/2xuplvyjDjlfO7NsmYREPPElu/Syuy/H52g==}
     dev: false
 
   /expand-template@2.0.3:
