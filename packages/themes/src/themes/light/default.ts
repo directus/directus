@@ -5,16 +5,16 @@ export default defineTheme({
 	name: '$t:theme_directus_default',
 	appearance: 'light',
 	rules: {
-		borderRadius: '6px',
-		borderWidth: '2px',
+		borderRadius: '12px',
+		borderWidth: '1px',
 
 		foreground: '#4f5464',
 		foregroundAccent: '#172940',
 		foregroundSubdued: '#a2b5cd',
 
-		background: '#fff',
+		background: '#F0F4F9',
 		backgroundNormal: '#f0f4f9',
-		backgroundAccent: '#e4eaf1',
+		backgroundAccent: '#F0F4F9',
 		backgroundSubdued: '#f7fafc',
 
 		borderColor: '#e4eaf1',
@@ -48,8 +48,8 @@ export default defineTheme({
 
 		fonts: {
 			display: {
-				fontFamily: '"Inter", system-ui',
-				fontWeight: '700',
+				fontFamily: '"Poppins", system-ui',
+				fontWeight: '500',
 			},
 			sans: {
 				fontFamily: '"Inter", system-ui',
@@ -66,16 +66,16 @@ export default defineTheme({
 		},
 
 		navigation: {
-			background: 'var(--theme--background-normal)',
+			background: '#ffffff',
 			backgroundAccent: 'var(--theme--background-accent)',
 
-			borderColor: 'transparent',
-			borderWidth: '0px',
+			borderColor: '#d4dae3',
+			borderWidth: '1px',
 
 			project: {
-				borderColor: 'transparent',
-				borderWidth: '0px',
-				background: 'var(--theme--navigation--background-accent)',
+				background: '#ffffff',
+				borderColor: '#d4dae3',
+				borderWidth: '1px',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
@@ -121,9 +121,9 @@ export default defineTheme({
 		},
 
 		header: {
-			background: 'var(--theme--background)',
-			borderColor: 'transparent',
-			borderWidth: '0px',
+			background: '#fff',
+			borderColor: '#d4dae3',
+			borderWidth: '1px',
 			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
@@ -147,7 +147,7 @@ export default defineTheme({
 					fontWeight: '600',
 				},
 				input: {
-					background: 'var(--theme--background)',
+					background: '#ffffff',
 					backgroundSubdued: 'var(--theme--background-subdued)',
 
 					foreground: 'var(--theme--foreground)',
@@ -161,18 +161,18 @@ export default defineTheme({
 					boxShadowHover: 'none',
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
-					height: '60px',
-					padding: '16px',
+					height: '52px',
+					padding: '13px',
 				},
 			},
 		},
 
 		sidebar: {
-			background: 'var(--theme--background-normal)',
+			background: '#ffffff',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
-			borderColor: 'transparent',
-			borderWidth: '0px',
+			borderColor: '#d4dae3',
+			borderWidth: '1px',
 
 			section: {
 				toggle: {
@@ -186,7 +186,7 @@ export default defineTheme({
 					foregroundHover: 'var(--theme--sidebar--section--toggle--foreground)',
 					foregroundActive: 'var(--theme--sidebar--section--toggle--foreground)',
 
-					background: 'var(--theme--background-accent)',
+					background: 'transparent',
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
