@@ -1,7 +1,12 @@
-import { columnIndexToIdentifier, tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
+import {
+	columnIndexToIdentifier,
+	tableIndexToIdentifier,
+	type AbstractSqlClauses,
+	type AbstractSqlQuerySelectJsonNode,
+} from '@directus/data-sql';
 import { applySelectFunction } from '../utils/functions.js';
 import { wrapColumn } from '../utils/wrap-column.js';
-import { json } from './json.js';
+import { escapeIdentifier } from '../utils/escape-identifier.js';
 
 /**
  * Generates the `SELECT x, y` part of a SQL statement.
@@ -31,3 +36,10 @@ export const select = ({ select }: AbstractSqlClauses): string => {
 
 	return `SELECT ${escapedColumns.join(', ')}`;
 };
+
+export function json(node: AbstractSqlQuerySelectJsonNode): string {
+	const tableAlias = tableIndexToIdentifier(node.tableIndex);
+	const columnAlias = columnIndexToIdentifier(node.columnIndex);
+	const column = `${escapeIdentifier(tableAlias)}.${escapeIdentifier(node.columnName)}`;
+	return `${column} -> ${node.path.map((i) => `$${i + 1}`).join(` ->> `)} AS ${escapeIdentifier(columnAlias)}`;
+}

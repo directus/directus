@@ -3,5 +3,7 @@ export interface AbstractSqlQuerySelectJsonNode {
 	tableIndex: number;
 	columnName: string;
 	columnIndex: number;
-	path: string[];
+
+	/* The index of the value in the list of parameter */
+	path: number[];
 }

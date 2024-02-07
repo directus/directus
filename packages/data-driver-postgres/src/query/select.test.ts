@@ -1,6 +1,6 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
+import type { AbstractSqlClauses, AbstractSqlQuerySelectJsonNode } from '@directus/data-sql';
 import { expect, test } from 'vitest';
-import { select } from './select.js';
+import { json, select } from './select.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 test('With multiple provided fields', () => {
@@ -67,14 +67,28 @@ test('With a count', () => {
 	expect(res).toStrictEqual(expected);
 });
 
+test('Convert json node to array syntax', () => {
+	const tableIndex = randomInteger(0, 100);
+	const jsonColumnName = randomIdentifier();
+	const columnIndex = randomInteger(0, 100);
+
+	const sample: AbstractSqlQuerySelectJsonNode = {
+		type: 'json',
+		tableIndex,
+		columnName: jsonColumnName,
+		path: [0, 1],
+		columnIndex,
+	};
+
+	const expected = `"t${tableIndex}"."${jsonColumnName}" -> $1 ->> $2 AS "c${columnIndex}"`;
+	expect(json(sample)).toBe(expected);
+});
+
 test('With json', () => {
 	const tableName = randomIdentifier();
 	const tableIndex = randomInteger(0, 100);
 	const columnName = randomIdentifier();
 	const jsonColumnName = randomIdentifier();
-	const attribute1 = randomIdentifier();
-	const attribute2 = randomIdentifier();
-	const attribute3 = randomIdentifier();
 
 	const sample: AbstractSqlClauses = {
 		select: [
@@ -88,14 +102,14 @@ test('With json', () => {
 				type: 'json',
 				tableIndex,
 				columnName: jsonColumnName,
-				path: [attribute1],
+				path: [0],
 				columnIndex: 1,
 			},
 			{
 				type: 'json',
 				tableIndex,
 				columnName: jsonColumnName,
-				path: [attribute2, attribute3],
+				path: [1, 2],
 				columnIndex: 2,
 			},
 		],
@@ -106,6 +120,6 @@ test('With json', () => {
 	};
 
 	const res = select(sample);
-	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> "${attribute1}" AS "c1", "t${tableIndex}"."${jsonColumnName}" -> "${attribute2}" ->> "${attribute3}" AS "c2"`;
+	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> $1 AS "c1", "t${tableIndex}"."${jsonColumnName}" -> $2 ->> $3 AS "c2"`;
 	expect(res).toStrictEqual(expected);
 });

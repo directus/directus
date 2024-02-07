@@ -38,10 +38,10 @@ export const convertFieldNodes = (
 	jsonColumnName: string | null,
 	isJsonContext: boolean,
 	isLeafOfJson: boolean,
+	parameters: ParameterTypes[] = [],
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
-	const parameters: ParameterTypes[] = [];
 	const aliasMapping: AliasMapping = [];
 	const subQueries: SubQuery[] = [];
 
@@ -53,7 +53,9 @@ export const convertFieldNodes = (
 
 			if (isLeafOfJson) {
 				const newJsonPath = [...currentJsonPath, abstractField.field];
-				newNode = convertJson(newJsonPath, tableIndex, jsonColumnName, columnIndex);
+				const jsonConversion = convertJson(newJsonPath, tableIndex, jsonColumnName, columnIndex, indexGen.parameter);
+				newNode = jsonConversion.jsonNode;
+				parameters.push(...jsonConversion.parameter);
 				isJsonContext = false;
 			} else {
 				newNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
@@ -85,6 +87,7 @@ export const convertFieldNodes = (
 					jsonColumnName,
 					false,
 					false,
+					parameters,
 				);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
@@ -98,7 +101,6 @@ export const convertFieldNodes = (
 					jsonColumnName = abstractField.nesting.fieldName;
 				} else {
 					currentJsonPath = [...currentJsonPath, abstractField.nesting.fieldName];
-					// currentJsonPath.push(abstractField.nesting.fieldName);
 				}
 
 				const nestedOutput = convertFieldNodes(
@@ -109,6 +111,7 @@ export const convertFieldNodes = (
 					jsonColumnName,
 					true,
 					true,
+					parameters,
 				);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });

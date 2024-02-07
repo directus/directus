@@ -531,7 +531,7 @@ test.skip('selecting multiple attributes from json field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test.skip('selecting one attributes from json field which is an array', async () => {
+test('A property from a json field which is a string', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
@@ -577,16 +577,18 @@ test.skip('selecting one attributes from json field which is an array', async ()
 
 	const column1Value1 = randomIdentifier();
 	const column1Value2 = randomIdentifier();
+	const jsonColumnValue1 = randomIdentifier();
+	const jsonColumnValue2 = randomIdentifier();
 
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
 		getMockedStream([
 			{
 				c0: column1Value1,
-				c1: [1, 2],
+				c1: jsonColumnValue1,
 			},
 			{
 				c0: column1Value2,
-				c1: [4, 5],
+				c1: jsonColumnValue2,
 			},
 		]),
 	);
@@ -599,13 +601,13 @@ test.skip('selecting one attributes from json field which is an array', async ()
 		{
 			[column1Alias]: column1Value1,
 			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: [1, 2],
+				[jsonAttributeAlias]: jsonColumnValue1,
 			},
 		},
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: [4, 5],
+				[jsonAttributeAlias]: jsonColumnValue2,
 			},
 		},
 	];
