@@ -1,6 +1,5 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -199,6 +198,25 @@ router.delete(
 		});
 
 		await service.deleteOne(req.params['pk']!);
+
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/me/:collection/:pk?',
+	asyncHandler(async (req, res, next) => {
+		const { collection, pk } = req.params;
+
+		const service = new PermissionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const itemPermissions = await service.getItemPermissions(collection!, pk);
+
+		res.locals['payload'] = { data: itemPermissions };
 
 		return next();
 	}),

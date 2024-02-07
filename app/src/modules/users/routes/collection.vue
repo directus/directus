@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
@@ -28,8 +27,6 @@ const { t } = useI18n();
 
 const { roles } = useNavigation();
 const userInviteModalActive = ref(false);
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
 const serverStore = useServerStore();
 
 const layoutRef = ref();
@@ -60,26 +57,21 @@ const roleFilter = computed(() => {
 	return null;
 });
 
+const {
+	createAllowed,
+	updateAllowed: batchEditAllowed,
+	deleteAllowed: batchDeleteAllowed,
+} = useCollectionPermissions('directus_users');
+
+const { readAllowed: rolesReadAllowed } = useCollectionPermissions('directus_roles');
+
 const canInviteUsers = computed(() => {
 	if (serverStore.auth.disableDefault === true) return false;
 
-	const isAdmin = !!userStore.currentUser?.role.admin_access;
-	if (isAdmin) return true;
-
-	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
-	);
-
-	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
-	);
-
-	return !!usersCreatePermission && !!rolesReadPermission;
+	return createAllowed.value && rolesReadAllowed.value;
 });
 
 const { layoutWrapper } = useLayout(layout);
-
-const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
 onBeforeRouteLeave(() => {
 	selection.value = [];
@@ -157,43 +149,6 @@ function useBreadcrumb() {
 function clearFilters() {
 	filter.value = null;
 	search.value = null;
-}
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === 'directus_users',
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === 'directus_users',
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_users',
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
 }
 </script>
 
