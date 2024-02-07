@@ -24,6 +24,7 @@ import type { AbstractServiceOptions, Transformation, TransformationSet } from '
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { FilesService } from './files.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -32,10 +33,12 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
+	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
+		this.filesService = new FilesService({ ...options, accountability: null });
 		this.authorizationService = new AuthorizationService(options);
 	}
 
@@ -52,7 +55,6 @@ export class AssetsService {
 			.first();
 
 		const systemPublicKeys = Object.values(publicSettings || {});
-		logger.error('tfP:' + JSON.stringify(systemPublicKeys));
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -67,7 +69,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File | undefined;
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File | undefined;
 
 		if (!file) throw new ForbiddenError();
 
