@@ -181,7 +181,7 @@ const runManualFlow = async (flowId: string) => {
 		</div>
 
 		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
-			<v-card>
+			<v-card class="manual-flow-card">
 				<template v-if="confirmDetails">
 					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
 
