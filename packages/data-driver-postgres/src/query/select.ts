@@ -41,5 +41,5 @@ export function json(node: AbstractSqlQuerySelectJsonNode): string {
 	const tableAlias = tableIndexToIdentifier(node.tableIndex);
 	const columnAlias = columnIndexToIdentifier(node.columnIndex);
 	const column = `${escapeIdentifier(tableAlias)}.${escapeIdentifier(node.columnName)}`;
-	return `${column} -> ${node.path.map((i) => `$${i + 1}`).join(` ->> `)} AS ${escapeIdentifier(columnAlias)}`;
+	return `${column} -> ${node.path.map((i) => `$${i + 1}`).join(` -> `)} AS ${escapeIdentifier(columnAlias)}`;
 }
