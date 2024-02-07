@@ -343,23 +343,7 @@ import { createDirectus, rest, createCollection } from '@directus/sdk';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createCollection({
-		collection: 'collection_name',
-		meta: {},
-		fields: [
-			{
-				field: 'title',
-				type: 'string',
-				meta: {
-					icon: 'title'
-				},
-				schema: {
-					is_primary_key: true,
-					is_nullable: false
-				}
-			}
-		],
-	})
+	createCollection(collection_object)
 );
 ```
 
