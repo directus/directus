@@ -1,5 +1,6 @@
 ---
 layout: doc
+editLink: false
 ---
 
 <script setup>
