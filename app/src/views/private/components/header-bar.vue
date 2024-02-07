@@ -7,7 +7,6 @@ withDefaults(
 		title?: string;
 		showSidebarToggle?: boolean;
 		primaryActionIcon?: string;
-		small?: boolean;
 		shadow?: boolean;
 	}>(),
 	{
@@ -23,11 +22,11 @@ defineEmits<{
 
 const headerEl = ref<Element>();
 
-const collapsed = ref(false);
+const scrolled = ref(false);
 
 const observer = new IntersectionObserver(
 	([e]) => {
-		collapsed.value = e.boundingClientRect.y === -1;
+		scrolled.value = e.boundingClientRect.y === -1;
 	},
 	{ threshold: [1] },
 );
@@ -42,7 +41,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
+	<header ref="headerEl" class="header-bar" :class="{ scrolled, shadow }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
@@ -52,10 +51,6 @@ onUnmounted(() => {
 		</div>
 
 		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
-			<div class="headline">
-				<slot name="headline" />
-			</div>
-
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
@@ -84,17 +79,18 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .header-bar {
 	position: sticky;
-	top: -1px;
+	top: 0px;
 	left: 0;
 	z-index: 5;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
-	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
+	height: var(--header-bar-height);
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
+	box-sizing: content-box;
+
 	box-shadow: 0;
 	transition:
 		box-shadow var(--medium) var(--transition),
@@ -183,18 +179,7 @@ onUnmounted(() => {
 		}
 	}
 
-	&.small {
-		top: 0;
-		height: 60px;
-	}
-
-	&.small .title-container .headline {
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	&.collapsed.shadow,
-	&.small.shadow {
+	&.scrolled.shadow {
 		box-shadow: var(--theme--header--box-shadow);
 
 		.title-container {
@@ -220,23 +205,6 @@ onUnmounted(() => {
 
 	@media (min-width: 600px) {
 		padding: 0 32px;
-
-		&:not(.small) {
-			margin: 24px 0;
-
-			/* Somewhat hacky way to make sure we fill
-			the empty space caused by the margin with
-			the appropriate color*/
-			&::before {
-				content: '';
-				width: 100%;
-				height: 24px;
-				bottom: 100%;
-				left: 0;
-				background-color: var(--theme--header--background);
-				position: absolute;
-			}
-		}
 	}
 }
 </style>
