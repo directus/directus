@@ -17,18 +17,17 @@ export const createEnv = (): Env => {
 
 	const output: Env = {};
 
-	for (const [key, value] of Object.entries(rawConfiguration)) {
-		if (isDirectusVariable(key) === false) continue;
-
-		if (isFileKey(key) && typeof value === 'string') {
+	for (let [key, value] of Object.entries(rawConfiguration)) {
+		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
 			try {
-				output[removeFileSuffix(key)] = readFileSync(value, { encoding: 'utf8' });
+				value = readFileSync(value, { encoding: 'utf8' });
+				key = removeFileSuffix(key);
 			} catch {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
 			}
-		} else {
-			output[key] = cast(value, key);
 		}
+
+		output[key] = cast(value, key);
 	}
 
 	return { ...DEFAULTS, ...output };
