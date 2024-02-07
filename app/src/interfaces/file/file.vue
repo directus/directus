@@ -290,7 +290,7 @@ function useURLImport() {
 	margin-left: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
+	border-radius: calc(var(--theme--border-radius) - var(--theme--form--field--input--padding) + 8px);
 
 	img {
 		width: 100%;

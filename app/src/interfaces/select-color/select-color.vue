@@ -395,10 +395,11 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--theme--form--field--input--height) - 20px);
-	max-height: calc(var(--theme--form--field--input--height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 12px);
+	height: calc(var(--theme--form--field--input--height) - 12px);
+	--v-button-height: 40px;
+	--v-button-border-radius: calc(var(--theme--border-radius) - var(--theme--form--field--input--padding) + 8px);
 	overflow: hidden;
-	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -437,6 +438,7 @@ function useColor() {
 		width: 0;
 		height: 0;
 		visibility: hidden;
+		overflow: hidden;
 	}
 }
 
