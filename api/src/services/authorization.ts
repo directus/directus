@@ -604,7 +604,10 @@ export class AuthorizationService {
 
 		if (Array.isArray(pk)) {
 			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
-			if (!result) throw new ForbiddenError();
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
 			if (result.length !== pk.length) throw new ForbiddenError();
 		} else if (pk) {
 			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
@@ -612,7 +615,12 @@ export class AuthorizationService {
 		} else {
 			query.limit = 1;
 			const result = await itemsService.readByQuery(query, { permissionsAction: action });
-			const access = (action === 'create' && result) || result[0];
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
+			// for create action, an empty array is expected - for other actions, the first item is expected to be available
+			const access = action === 'create' ? result.length === 0 : !!result[0];
 			if (!access) throw new ForbiddenError();
 		}
 	}
