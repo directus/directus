@@ -48,7 +48,7 @@ import { createDirectus, rest } from '@directus/sdk';
 
 :::
 
-### Dropped Support for Asynchronous Logic In Config Files
+### Dropped Support for Asynchronous Logic In JS Config Files
 
 Environment handling has been moved to a new `@directus/env` package. With this new package, ESM config files are still
 supported, but will no longer support running asynchronous code within them.
