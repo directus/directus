@@ -80,7 +80,7 @@ test('Convert json node to array syntax', () => {
 		columnIndex,
 	};
 
-	const expected = `"t${tableIndex}"."${jsonColumnName}" -> $1 ->> $2 AS "c${columnIndex}"`;
+	const expected = `"t${tableIndex}"."${jsonColumnName}" -> $1 -> $2 AS "c${columnIndex}"`;
 	expect(json(sample)).toBe(expected);
 });
 
@@ -120,6 +120,6 @@ test('With json', () => {
 	};
 
 	const res = select(sample);
-	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> $1 AS "c1", "t${tableIndex}"."${jsonColumnName}" -> $2 ->> $3 AS "c2"`;
+	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> $1 AS "c1", "t${tableIndex}"."${jsonColumnName}" -> $2 -> $3 AS "c2"`;
 	expect(res).toStrictEqual(expected);
 });
