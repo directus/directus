@@ -1,6 +1,6 @@
 import { readItems } from '@directus/sdk';
 import { formatTitle } from '@directus/format-title';
-import { client } from '../lib/directus.ts';
+import { client } from '../lib/directus.js';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
 import { sections as guideSections } from './guides.js';
@@ -8,7 +8,7 @@ import { sections as guideSections } from './guides.js';
 export default {
 	'/': sidebarDeveloperReference(),
 	'/user-guide/': sidebarUserGuide(),
-    '/plus/': await sidebarDirectusPlus(),
+	'/plus/': await sidebarDirectusPlus(),
 	'/packages/': sidebarTypedocs(),
 } as DefaultTheme.Sidebar;
 
@@ -714,37 +714,31 @@ function typeDocSidebarFormat(item: DefaultTheme.SidebarItem) {
 }
 
 async function sidebarDirectusPlus() {
+	try {
+		const data = await client.request(
+			readItems('dplus_docs_sections', {
+				fields: ['*', { articles: ['title', 'slug'] }],
+				filter: {
+					articles: {
+						status: { _eq: 'published' },
+					},
+				},
+			}),
+		);
 
-  try {
-    const data = await client.request(
-        readItems('dplus_docs_sections', {
-            fields: [
-                '*',
-                { articles: ['title', 'slug', ] },
-            ],
-            filter: {
-                articles: {
-                    status: { _eq: 'published' },
-                }
-            },
-        }),
-    )
+		const sidebar = data.map((section) => {
+			return {
+				text: section.title,
+				collapsed: section.slug === 'overview' ? false : true,
+				items: section.articles.map((article) => ({
+					text: article.title,
+					link: `/plus/${article.slug}`,
+				})),
+			};
+		});
 
-    const sidebar = data.map((section) => {
-        return {
-        text: section.title,
-        collapsed: section.slug === 'overview' ? false : true,
-        items: section.articles.map((article) => ({
-            text: article.title,
-            link: `/plus/${article.slug}`,
-        })),
-
-        }
-    });
-
-    return sidebar;
-
-  } catch (error) {
-    throw new Error(error);
-  }
+		return sidebar;
+	} catch (error) {
+		throw new Error(error);
+	}
 }

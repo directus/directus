@@ -6,9 +6,7 @@ export default {
 		const articles = (
 			await client.request(
 				readItems('dplus_docs_articles', {
-					fields: [
-						'*',
-					],
+					fields: ['*'],
 				}),
 			)
 		).map((article) => ({
