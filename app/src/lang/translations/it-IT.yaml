@@ -74,6 +74,9 @@ extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
 extension_bundles: Pacchetti
+extension_reload_required: È necessario ricaricare la pagina
+extension_reload_required_copy: È necessario ricaricare la pagina per vedere le modifiche dopo aver abilitato o disabilitato le estensioni.
+extension_reload_now: Ricarica ora
 enable: Attivato
 disable: Disattiva
 custom: Personalizzato
@@ -301,13 +304,6 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria (tutte)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
@@ -679,6 +675,7 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
+  GRAPHQL_VALIDATION: Validazione GraphQL
   SERVICE_UNAVAILABLE: Servizio non disponibile
   UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
   UNEXPECTED_RESPONSE: Risposta inattesa
@@ -1386,7 +1383,6 @@ field_options:
   directus_roles:
     name: Nome unico per questo ruolo...
     description: Una descrizione per questo ruolo...
-    ip_access: Aggiungi gli indirizzi IP consentiti, lascia vuoto per consentirli tutti...
     fields:
       icon_name: Icona
       name_name: Nome
@@ -1855,7 +1851,9 @@ interfaces:
     description: Un editor di testo formattato per scrivere contenuto HTML
     toolbar: Barra degli strumenti
     custom_formats: Formati personalizzati
+    custom_formats_note: Elenco dei formati dei contenuti di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulla [formattazione dei contenuti](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Ridefinizione delle impostazioni
+    options_override_note: Chiavi e valori di formattazione utente di TinyMCE. Per maggiori informazioni, consultare la documentazione di TinyMCE sulle [opzioni di formattazione utente](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
     imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
@@ -1994,6 +1992,9 @@ displays:
   formatted-json-value:
     formatted-json-value: Valore JSON formattato
     description: Visualizza una versione formattata dell'oggetto
+  hash:
+    hash: Hash
+    description: Mostra una versione redatta del valore
   icon:
     icon: Icona
     description: Visualizza un'icona
