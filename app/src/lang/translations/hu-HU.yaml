@@ -244,13 +244,6 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
-geometry: Geometria (összes)
-geometry.Point: Pont
-geometry.LineString: Vonal
-geometry.Polygon: Sokszög
-geometry.MultiPoint: Többpontos
-geometry.MultiLineString: Többvonalas
-geometry.MultiPolygon: Több poligonos
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
@@ -1250,7 +1243,6 @@ field_options:
   directus_roles:
     name: E szerepkör egyedi neve...
     description: A szerepkör leírása...
-    ip_access: Adja hozzá az engedélyezett IP-címeket, minden IP engedélyezéséhez hagyja üresen...
     fields:
       icon_name: Ikon
       name_name: Név
@@ -1823,6 +1815,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
     description: Egy ikon megjelenítése

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
@@ -47,6 +46,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	save,
@@ -67,6 +67,11 @@ const {
 		  }
 		: undefined,
 );
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, fields },
+} = permissions;
 
 const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
@@ -98,9 +103,6 @@ const title = computed(() => {
 
 	return t('adding_user');
 });
-
-const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-	usePermissions(ref('directus_users'), item, isNew);
 
 // These fields will be shown in the sidebar instead
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];

@@ -105,6 +105,10 @@ function nudge() {
 	z-index: 600;
 }
 
+.container.center:has(.allow-drawer) {
+	z-index: 500;
+}
+
 .container.center.nudge > :slotted(*:not(:first-child)) {
 	animation: nudge 200ms;
 }

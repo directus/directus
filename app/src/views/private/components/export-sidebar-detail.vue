@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useServerStore } from '@/stores/server';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
@@ -47,6 +47,8 @@ const fileExtension = computed(() => {
 });
 
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
+
+const { createAllowed } = useCollectionPermissions(collection);
 
 const { info } = useServerStore();
 
@@ -358,10 +360,6 @@ async function exportDataFiles() {
 		exporting.value = false;
 	}
 }
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
 
 <template>
