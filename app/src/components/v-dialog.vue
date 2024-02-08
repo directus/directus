@@ -105,7 +105,7 @@ function nudge() {
 	z-index: 600;
 }
 
-.container.center:has(.manual-flow-card) {
+.container.center:has(.allow-drawer) {
 	z-index: 500;
 }
 
