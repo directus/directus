@@ -38,7 +38,7 @@ export class AssetsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.filesService = new FilesService(options);
+		this.filesService = new FilesService({ ...options, accountability: null });
 		this.authorizationService = new AuthorizationService(options);
 	}
 
@@ -69,9 +69,7 @@ export class AssetsService {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File | undefined;
-
-		if (!file) throw new ForbiddenError();
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
