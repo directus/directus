@@ -686,8 +686,8 @@ importers:
         specifier: 2.0.7
         version: 2.0.7
       '@types/geojson':
-        specifier: 7946.0.13
-        version: 7946.0.13
+        specifier: 7946.0.14
+        version: 7946.0.14
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1888,8 +1888,8 @@ importers:
         specifier: workspace:*
         version: link:../schema
       '@types/geojson':
-        specifier: 7946.0.13
-        version: 7946.0.13
+        specifier: 7946.0.14
+        version: 7946.0.14
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -6945,8 +6945,8 @@ packages:
       '@types/node': 18.19.14
     dev: true
 
-  /@types/geojson@7946.0.13:
-    resolution: {integrity: sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==}
+  /@types/geojson@7946.0.14:
+    resolution: {integrity: sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==}
 
   /@types/glob-to-regexp@0.4.4:
     resolution: {integrity: sha512-nDKoaKJYbnn1MZxUY0cA1bPmmgZbg0cTq7Rh13d0KWYNOiKbqoR+2d89SnRPszGh7ROzSwZ/GOjZ4jPbmmZ6Eg==}
@@ -7025,20 +7025,20 @@ packages:
   /@types/mapbox-gl@2.7.19:
     resolution: {integrity: sha512-pkRdlhQJNbtwcKJSVC4uuOA6M3OlOObIMhNecqHB991oeaDF5XkjSIRaTE0lh5p4KClptSCxW6MBiREVRHrl2A==}
     dependencies:
-      '@types/geojson': 7946.0.13
+      '@types/geojson': 7946.0.14
     dev: true
 
   /@types/mapbox__mapbox-gl-draw@1.4.6:
     resolution: {integrity: sha512-ajnIY/6pMjJhLyz5TUt1ukzs6rl9m/hItzw/b3Z0tQlrFq9vwDNPugLFOuNpLdmgA7emfMxlvxnLKbtE5/vtsw==}
     dependencies:
-      '@types/geojson': 7946.0.13
+      '@types/geojson': 7946.0.14
       '@types/mapbox-gl': 2.7.19
     dev: true
 
   /@types/mapbox__mapbox-gl-geocoder@4.7.7:
     resolution: {integrity: sha512-RFUDSDnFoCBapQWfGdgNGkB76drJ2kVG9tH0ottQtDpTW3KPtdQobw0lvvJK4VIMDEKIt/ssEyyLvY1Tja7MSw==}
     dependencies:
-      '@types/geojson': 7946.0.13
+      '@types/geojson': 7946.0.14
       '@types/mapbox-gl': 2.7.19
     dev: true
 
