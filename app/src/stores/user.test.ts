@@ -3,6 +3,10 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 
+import { User } from '@directus/types';
+import { useLatencyStore } from './latency';
+import { useUserStore } from './user';
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
@@ -11,10 +15,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { User } from '@directus/types';
-import { useLatencyStore } from './latency';
-import { useUserStore } from './user';
 
 const mockAdminUser = {
 	id: '00000000-0000-0000-0000-000000000000',
@@ -66,7 +66,7 @@ vi.mock('@/api', () => {
 });
 
 afterEach(() => {
-	vi.restoreAllMocks();
+	vi.clearAllMocks();
 });
 
 describe('getters', () => {
@@ -92,9 +92,26 @@ describe('getters', () => {
 			expect(userStore.isAdmin).toEqual(false);
 		});
 
-		test('should return true when is current user with role that has admin access', async () => {
+		test('should return false when current user has role with no admin access', async () => {
 			const userStore = useUserStore();
-			await userStore.hydrate();
+
+			userStore.currentUser = {
+				role: {
+					admin_access: false,
+				},
+			} as User;
+
+			expect(userStore.isAdmin).toEqual(false);
+		});
+
+		test('should return true when current user has role with admin access', async () => {
+			const userStore = useUserStore();
+
+			userStore.currentUser = {
+				role: {
+					admin_access: true,
+				},
+			} as User;
 
 			expect(userStore.isAdmin).toEqual(true);
 		});
@@ -106,6 +123,7 @@ describe('actions', () => {
 		test('should fetch user fields and set current user as the returned value', async () => {
 			const userStore = useUserStore();
 			await userStore.hydrate();
+
 			expect(userStore.currentUser).toEqual(mockAdminUser);
 		});
 	});
