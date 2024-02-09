@@ -8,10 +8,11 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
-import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
+import { pick, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import deepDiff from 'deep-diff';
 
 type HydrateOptions = {
 	/**
@@ -169,9 +170,17 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		const rawField = omit(values, ['name']);
 
 		if (existing) {
-			if (isEqual(values, existing)) return;
+			const diffs = deepDiff.diff(existing, values);
 
-			return await updateField(collection, field, rawField);
+			if (!diffs) return;
+
+			const updatedPaths = diffs.map((diff) => {
+				const isArrayChange = diff.path!.findIndex((path) => typeof path === 'number');
+				if (isArrayChange !== -1) return diff.path!.slice(0, isArrayChange).join('.');
+				return diff.path!.join('.');
+			});
+
+			return await updateField(collection, field, pick(rawField, Array.from(new Set(updatedPaths))));
 		} else {
 			return await createField(collection, rawField);
 		}
