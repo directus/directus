@@ -525,13 +525,6 @@ importers:
         version: 1.2.2(@types/node@18.19.14)
 
   app:
-    dependencies:
-      '@directus/extensions-registry':
-        specifier: workspace:*
-        version: link:../packages/extensions-registry
-      semver:
-        specifier: 7.5.4
-        version: 7.5.4
     devDependencies:
       '@directus/composables':
         specifier: workspace:*
@@ -542,6 +535,9 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../packages/extensions
+      '@directus/extensions-registry':
+        specifier: workspace:*
+        version: link:../packages/extensions-registry
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -842,6 +838,9 @@ importers:
       sass:
         specifier: 1.70.0
         version: 1.70.0
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
       tinymce:
         specifier: 6.8.2
         version: 6.8.2
