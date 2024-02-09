@@ -304,13 +304,6 @@ time: Čas
 timestamp: Časová pečiatka
 uuid: UUID
 hash: Hash
-geometry: Geometria (Všetko)
-geometry.Point: Bod
-geometry.LineString: LineString
-geometry.Polygon: Polygón
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automaticky (podľa systému)
 theme_light: Svetlý režim
 theme_dark: Tmavý režim
@@ -645,8 +638,6 @@ select_an_item: Vyberte položku...
 edit: Upraviť
 edit_item: Upraviť položku
 enabled: Zapnuté
-enabled_dev: Zapnuté (dev)
-enabled_dev_tooltip: Rozšírenia sa nedajú vypnúť v dev režime
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
@@ -1388,7 +1379,6 @@ field_options:
   directus_roles:
     name: Unikátny názov tejto role...
     description: Popis tejto role...
-    ip_access: Pridajte povolené IP adresy, nechajte prázdne pre povolenie všetkých...
     fields:
       icon_name: Ikona
       name_name: Názov
@@ -1996,6 +1986,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formátovaná hodnota JSON
     description: Zobrazí formátovanú hodnotu objektu
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Zobraziť ikonu
