@@ -44,7 +44,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
@@ -53,6 +53,7 @@ import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
+import { mergeVersionSaves } from '../../utils/merge-version-saves.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
@@ -1535,10 +1536,25 @@ export class GraphQLService {
 
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
-					return assign(result, ...saves);
+					mergeVersionSaves({
+						payload: result,
+						saves,
+						collection,
+						schema: this.schema,
+					});
+
+					return result;
 				} else {
 					if (result?.[0] === undefined) return null;
-					return assign(result[0], ...saves);
+
+					mergeVersionSaves({
+						payload: result[0],
+						saves,
+						collection,
+						schema: this.schema,
+					});
+
+					return result[0];
 				}
 			}
 		}
