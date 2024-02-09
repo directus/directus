@@ -40,7 +40,6 @@ export class AssetsService {
 		this.accountability = options.accountability || null;
 		this.filesService = new FilesService({ ...options, accountability: null });
 		this.authorizationService = new AuthorizationService(options);
-		this.filesService = new FilesService({ ...options, accountability: undefined });
 	}
 
 	async getAsset(
