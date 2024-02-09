@@ -130,6 +130,8 @@ watchEffect(async () => {
 				{{ t('no_results_copy') }}
 			</v-info>
 
+			<v-error v-if="error && !loading" :error="error" />
+
 			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" />
 
 			<router-view />
