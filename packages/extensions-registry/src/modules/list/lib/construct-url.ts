@@ -27,5 +27,9 @@ export const constructUrl = (query: ListQuery, options?: ListOptions) => {
 		url.searchParams.set('by', query.by);
 	}
 
+	if (query.sort) {
+		url.searchParams.set('sort', query.sort);
+	}
+
 	return url;
 };

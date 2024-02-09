@@ -44,7 +44,7 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
-		const { search, limit, offset, type, by } = req.query;
+		const { search, limit, offset, type, by, sort } = req.query;
 
 		const query: ListQuery = {};
 
@@ -62,6 +62,10 @@ router.get(
 
 		if (typeof by === 'string') {
 			query.by = by;
+		}
+
+		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent'] as const)) {
+			query.sort = sort;
 		}
 
 		if (typeof type === 'string') {
@@ -130,7 +134,7 @@ router.get(
 );
 
 router.post(
-	'/registry/install/',
+	'/registry/install',
 	asyncHandler(async (req, _res, next) => {
 		if (req.accountability && req.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -156,14 +160,14 @@ router.patch(
 			throw new ForbiddenError();
 		}
 
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-
-		if (!req.params['pk']) {
-			throw new ForbiddenError();
-		}
 
 		try {
 			const result = await service.updateOne(req.params['pk'], req.body);
@@ -201,7 +205,7 @@ router.delete(
 
 		const pk = req.params['pk'];
 
-		if (!pk || typeof pk !== 'string') {
+		if (typeof pk !== 'string') {
 			throw new ForbiddenError();
 		}
 

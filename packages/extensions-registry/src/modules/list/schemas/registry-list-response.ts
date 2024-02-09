@@ -13,19 +13,13 @@ export const RegistryListResponse = z.object({
 			downloads: z.number(),
 			verified: z.boolean(),
 			type: z.enum(EXTENSION_TYPES),
-			versions: z.array(
-				z.object({
-					version: z.string(),
-					publish_date: z.string(),
-					verified: z.boolean(),
-					type: z.enum(EXTENSION_TYPES),
-					publisher: z.object({
-						username: z.string(),
-						verified: z.boolean(),
-						github_name: z.string().nullable(),
-					}),
-				}),
-			),
+			last_updated: z.string(),
+			host_version: z.string(),
+			publisher: z.object({
+				username: z.string(),
+				verified: z.boolean(),
+				github_name: z.string().nullable(),
+			}),
 		}),
 	),
 });

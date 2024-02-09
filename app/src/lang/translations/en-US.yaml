@@ -51,6 +51,8 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+popular: Popular
+recent: Recent
 export_items: Export Items
 and: And
 or: Or
@@ -595,6 +597,7 @@ collapse: Collapse
 select_item: Select Item
 no_items: No items
 search_items: Search Items...
+search_extensions: Search Extensions...
 disabled: Disabled
 information: Information
 report_bug: Report Bug

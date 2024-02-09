@@ -10,8 +10,6 @@ const props = defineProps<{
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
-
-const latestVersion = computed(() => props.extension.versions.at(0)!);
 </script>
 
 <template>
@@ -20,14 +18,14 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 		<v-list-item-content>
 			<div class="name">{{ extension.name }}</div>
 			<div class="author">
-				{{ latestVersion.publisher.github_name ?? latestVersion.publisher.username }}
-				<v-icon v-if="latestVersion.publisher.verified" name="verified" x-small />
+				{{ extension.publisher.github_name ?? extension.publisher.username }}
+				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
 			<div class="description">{{ extension.description }}</div>
 		</v-list-item-content>
 		<div class="meta">
 			<div class="published">
-				{{ localizedFormatDistanceStrict(new Date(latestVersion.publish_date), new Date()) }}
+				{{ localizedFormatDistanceStrict(new Date(extension.last_updated), new Date()) }}
 				<v-icon small name="restore" />
 			</div>
 
