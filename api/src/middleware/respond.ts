@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
-import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export/index.js';
@@ -12,6 +11,7 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
+import { mergeVersionSaves } from '../utils/merge-version-saves.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
@@ -38,7 +38,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
 
 		if (saves) {
-			assign(res.locals['payload'].data, ...saves);
+			mergeVersionSaves({
+				payload: res.locals['payload'].data,
+				saves,
+				collection: req.collection,
+				schema: req.schema,
+			});
 		}
 	}
 
