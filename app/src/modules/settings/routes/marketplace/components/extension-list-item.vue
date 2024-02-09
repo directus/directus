@@ -4,6 +4,7 @@ import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { abbreviateNumber } from '@directus/utils';
 import { computed } from 'vue';
+import { formatName } from '../utils/format-name';
 
 const props = defineProps<{
 	extension: RegistryListResponse['data'][number];
@@ -16,7 +17,7 @@ const icon = computed(() => extensionTypeIconMap[props.extension.type]);
 	<v-list-item class="extension-list-item" block clickable :to="`/settings/marketplace/extension/${extension.id}`">
 		<div class="icon"><v-icon :name="icon" /></div>
 		<v-list-item-content>
-			<div class="name">{{ extension.name }}</div>
+			<div class="name">{{ formatName(extension) }}</div>
 			<div class="author">
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />

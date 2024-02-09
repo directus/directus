@@ -5,6 +5,7 @@ import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { formatName } from '../../../utils/format-name';
 
 const { t } = useI18n();
 
@@ -22,7 +23,7 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 			<v-chip outlined x-small>{{ t(`extension_${extension.type}`) }}</v-chip>
 		</template>
 
-		<h2 class="name">{{ extension.name }}</h2>
+		<h2 class="name">{{ formatName(extension) }}</h2>
 
 		<template #subtitle>
 			<p class="meta">
