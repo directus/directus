@@ -156,14 +156,14 @@ router.patch(
 			throw new ForbiddenError();
 		}
 
+		if (typeof req.params['pk'] !== 'string') {
+			throw new ForbiddenError();
+		}
+
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-
-		if (!req.params['pk']) {
-			throw new ForbiddenError();
-		}
 
 		try {
 			const result = await service.updateOne(req.params['pk'], req.body);
