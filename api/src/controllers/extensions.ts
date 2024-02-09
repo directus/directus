@@ -201,7 +201,7 @@ router.delete(
 
 		const pk = req.params['pk'];
 
-		if (!pk || typeof pk !== 'string') {
+		if (typeof pk !== 'string') {
 			throw new ForbiddenError();
 		}
 
