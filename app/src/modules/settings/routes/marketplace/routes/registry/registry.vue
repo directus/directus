@@ -1,57 +1,25 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
 import type { RegistryListResponse } from '@directus/extensions-registry';
-import { debounce } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
+import InlineFilter from './components/inline-filter.vue';
 import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
-import TypeFilter from './components/type-filter.vue';
 
 const { t, n } = useI18n();
-
-const liveSearch = ref<string | null>(null);
-
-watch(
-	liveSearch,
-	debounce(() => {
-		search.value = liveSearch.value;
-	}, 450),
-);
 
 const perPage = 6;
 const search = ref<string | null>(null);
 const page = ref(1);
 const type = ref<string | null>(null);
+const sort = ref<'popular' | 'recent'>('popular');
 
 watch(search, (newSearch, oldSearch) => newSearch !== oldSearch && (page.value = 1));
 
 const filterCount = ref(0);
-
-const showingCount = computed(() => {
-	const opts = {
-		start: n((+page.value - 1) * perPage + 1),
-		end: n(Math.min(page.value * perPage, filterCount.value || 0)),
-		count: n(filterCount.value || 0),
-	};
-
-	if (search.value) {
-		if (filterCount.value === 1) {
-			return t('one_filtered_item');
-		}
-
-		return t('start_end_of_count_filtered_items', opts);
-	}
-
-	if (filterCount.value > perPage) {
-		return t('start_end_of_count_items', opts);
-	}
-
-	return t('item_count', { count: filterCount.value });
-});
 
 const extensions = ref<RegistryListResponse['data']>([]);
 const pageCount = computed(() => Math.round(filterCount.value / perPage));
@@ -70,6 +38,7 @@ watchEffect(async () => {
 				limit: perPage,
 				offset: (page.value - 1) * perPage,
 				type: type.value,
+				sort: sort.value,
 			},
 		});
 
@@ -97,18 +66,6 @@ watchEffect(async () => {
 			<v-chip class="beta" outlined small>Beta</v-chip>
 		</template>
 
-		<template #actions:prepend>
-			<transition name="fade">
-				<span v-if="filterCount" class="item-count">
-					{{ showingCount }}
-				</span>
-			</transition>
-		</template>
-
-		<template #actions>
-			<search-input v-model="liveSearch" :show-filter="false" />
-		</template>
-
 		<template #navigation>
 			<settings-navigation />
 		</template>
@@ -120,13 +77,21 @@ watchEffect(async () => {
 		<div class="page-container">
 			<VBanner icon="storefront">Marketplace</VBanner>
 
-			<TypeFilter v-model="type" class="filter" />
+			<InlineFilter
+				v-model:type="type"
+				v-model:sort="sort"
+				v-model:search="search"
+				:page="page"
+				:filter-count="filterCount"
+				:per-page="perPage"
+				class="filter"
+			/>
 
-			<v-list>
+			<v-list class="results">
 				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
 
-			<v-info v-if="extensions.length === 0 && !loading && !error" :title="t('no_results')" icon="extension" center>
+			<v-info v-if="extensions.length === 0 && !loading && !error" :title="t('no_results')" icon="extension">
 				{{ t('no_results_copy') }}
 			</v-info>
 
@@ -157,28 +122,6 @@ watchEffect(async () => {
 	margin-top: 24px;
 }
 
-.item-count {
-	position: relative;
-	display: none;
-	margin: 0 8px;
-	color: var(--theme--foreground-subdued);
-	white-space: nowrap;
-
-	@media (min-width: 600px) {
-		display: inline;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity var(--medium) var(--transition);
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
 .beta {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
@@ -186,10 +129,19 @@ watchEffect(async () => {
 }
 
 .filter {
-	margin-block: 40px;
+	margin-block-start: 24px;
+	margin-block-end: 20px;
+}
+
+.results {
+	padding-top: 0 !important; // 🤫
 }
 
 .pagination {
 	margin-block-start: 20px;
+}
+
+.no-results {
+	margin-block-start: 40px;
 }
 </style>

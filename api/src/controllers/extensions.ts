@@ -44,7 +44,7 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
-		const { search, limit, offset, type, by } = req.query;
+		const { search, limit, offset, type, by, sort } = req.query;
 
 		const query: ListQuery = {};
 
@@ -62,6 +62,10 @@ router.get(
 
 		if (typeof by === 'string') {
 			query.by = by;
+		}
+
+		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent'] as const)) {
+			query.sort = sort;
 		}
 
 		if (typeof type === 'string') {
