@@ -17,7 +17,6 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 Add final breaking change note about changes to the SSO
 
-
 ## Version 10.9.0
 
 ### Updated Exif Tags
@@ -65,7 +64,6 @@ is to increase consistency of resulting snapshots artifacts.
 
 While this is not a breaking change, you are advised to regenerate the snapshot after the version update of Directus,
 provided you are tracking the snapshot in a version control system.
-
 
 ## Version 10.8.3
 
