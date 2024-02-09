@@ -102,7 +102,7 @@ watchEffect(async () => {
 
 			<v-error v-if="error && !loading" :error="error" />
 
-			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" show-first-last />
 
 			<router-view />
 		</div>
