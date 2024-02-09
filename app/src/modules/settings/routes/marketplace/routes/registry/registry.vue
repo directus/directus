@@ -2,6 +2,7 @@
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import type { RegistryListResponse } from '@directus/extensions-registry';
+import { isEqual } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
@@ -9,7 +10,7 @@ import ExtensionListItem from '../../components/extension-list-item.vue';
 import InlineFilter from './components/inline-filter.vue';
 import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
 
-const { t, n } = useI18n();
+const { t } = useI18n();
 
 const perPage = 6;
 const search = ref<string | null>(null);
@@ -17,7 +18,11 @@ const page = ref(1);
 const type = ref<string | null>(null);
 const sort = ref<'popular' | 'recent'>('popular');
 
-watch(search, (newSearch, oldSearch) => newSearch !== oldSearch && (page.value = 1));
+watch([search, sort, type], (newVals, oldVals) => {
+	if (isEqual(newVals, oldVals) === false) {
+		page.value = 1;
+	}
+});
 
 const filterCount = ref(0);
 
