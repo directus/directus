@@ -9,7 +9,7 @@ import { LOCAL_TYPES } from '@directus/constants';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, orderBy, set } from 'lodash';
+import { cloneDeep, get, has, isEmpty, merge, orderBy, set } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
@@ -39,13 +39,16 @@ export const useFieldDetailStore = defineStore({
 		// What field we're currently editing ("+"" for new)
 		editing: '+' as string,
 
-		// Field edits
+		// Full field data with edits
 		field: {
 			field: undefined,
 			type: undefined,
 			schema: {},
 			meta: {},
 		} as DeepPartial<Field>,
+
+		// Contains only edited properties of the field
+		fieldUpdates: {} as DeepPartial<Field>,
 
 		// Relations that will be upserted as part of this change
 		relations: {
@@ -160,6 +163,10 @@ export const useFieldDetailStore = defineStore({
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}
 
+			if (hasChanged('field')) {
+				merge(this.fieldUpdates, updates.field);
+			}
+
 			this.$patch(updates);
 		},
 		async save() {
@@ -205,7 +212,7 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				await fieldsStore.upsertField(this.collection, this.editing, this.field);
+				await fieldsStore.upsertField(this.collection, this.editing, this.fieldUpdates);
 
 				for (const collection of Object.values(this.collections)) {
 					if (!collection || !collection.collection) continue;
