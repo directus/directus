@@ -130,7 +130,7 @@ router.get(
 );
 
 router.post(
-	'/registry/install/',
+	'/registry/install',
 	asyncHandler(async (req, _res, next) => {
 		if (req.accountability && req.accountability.admin !== true) {
 			throw new ForbiddenError();
