@@ -15,11 +15,11 @@ export async function listFolders(location: string, options?: ListFoldersOptions
 	const directories: string[] = [];
 
 	for (const file of files) {
-		const filePath = path.join(fullPath, file);
-
 		if (options?.ignoreHidden && file.startsWith('.')) {
 			continue;
 		}
+
+		const filePath = path.join(fullPath, file);
 
 		const stats = await fse.stat(filePath);
 
