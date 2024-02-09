@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-Disregard this scenario where Chrome's autocomplete triggers an event with an undefined key.
+Fixed an issue where form fields could crash when filled out with Chrome's autofill functionality
