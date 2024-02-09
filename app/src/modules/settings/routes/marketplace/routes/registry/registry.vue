@@ -8,8 +8,8 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
-import TypeFilter from './components/type-filter.vue';
 import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
+import TypeFilter from './components/type-filter.vue';
 
 const { t, n } = useI18n();
 
@@ -54,21 +54,32 @@ const showingCount = computed(() => {
 });
 
 const extensions = ref<RegistryListResponse['data']>([]);
-
 const pageCount = computed(() => Math.round(filterCount.value / perPage));
+const loading = ref(false);
+const error = ref<unknown>(null);
 
 watchEffect(async () => {
-	const { data } = await api.get('/extensions/registry', {
-		params: {
-			search: search.value,
-			limit: perPage,
-			offset: (page.value - 1) * perPage,
-			type: type.value,
-		},
-	});
+	loading.value = true;
 
-	filterCount.value = data.meta.filter_count;
-	extensions.value = data.data;
+	try {
+		error.value = null;
+
+		const { data } = await api.get('/extensions/registry', {
+			params: {
+				search: search.value,
+				limit: perPage,
+				offset: (page.value - 1) * perPage,
+				type: type.value,
+			},
+		});
+
+		filterCount.value = data.meta.filter_count;
+		extensions.value = data.data;
+	} catch (err) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
 });
 </script>
 
@@ -114,6 +125,10 @@ watchEffect(async () => {
 			<v-list>
 				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
+
+			<v-info v-if="extensions.length === 0 && !loading" :title="t('no_results')" icon="extension" center>
+				{{ t('no_results_copy') }}
+			</v-info>
 
 			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" />
 
