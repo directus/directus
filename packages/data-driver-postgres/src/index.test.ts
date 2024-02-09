@@ -350,15 +350,15 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test.skip('selecting an attribute from a json field', async () => {
+test('Select a single properties from a json field', async () => {
 	const rootCollection = randomIdentifier();
 	const dataStore = randomIdentifier();
 	const column1 = randomIdentifier();
 	const column1Alias = randomIdentifier();
 	const jsonColumn = randomIdentifier();
 	const jsonColumnAlias = randomIdentifier();
-	const jsonAttribute = randomIdentifier();
-	const jsonAttributeAlias = randomIdentifier();
+	const jsonProp = randomIdentifier();
+	const jsonPropAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -378,189 +378,8 @@ test.skip('selecting an attribute from a json field', async () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: jsonAttribute,
-						alias: jsonAttributeAlias,
-					},
-				],
-				alias: jsonColumnAlias,
-			},
-		],
-		modifiers: {},
-	};
-
-	const driver = new DataDriverPostgres({
-		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
-	});
-
-	// define database response mocks
-
-	const column1Value1 = randomIdentifier();
-	const column1Value2 = randomIdentifier();
-	const attributeValue1 = randomIdentifier();
-	const attributeValue2 = randomIdentifier();
-
-	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
-		getMockedStream([
-			{
-				c0: column1Value1,
-				c1: attributeValue1,
-			},
-			{
-				c0: column1Value2,
-				c1: attributeValue2,
-			},
-		]),
-	);
-
-	const readableStream = await driver.query(query);
-	const actualResult = await readToEnd(readableStream);
-	await driver.destroy();
-
-	const expectedResult = [
-		{
-			[column1Alias]: column1Value1,
-			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: attributeValue1,
-			},
-		},
-		{
-			[column1Alias]: column1Value2,
-			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: attributeValue2,
-			},
-		},
-	];
-
-	expect(actualResult).toStrictEqual(expectedResult);
-});
-
-test.skip('selecting multiple attributes from json field', async () => {
-	const rootCollection = randomIdentifier();
-	const dataStore = randomIdentifier();
-	const column1 = randomIdentifier();
-	const column1Alias = randomIdentifier();
-	const jsonColumn = randomIdentifier();
-	const jsonColumnAlias = randomIdentifier();
-	const jsonAttribute1 = randomIdentifier();
-	const jsonAttribute1Alias = randomIdentifier();
-	const jsonAttribute2 = randomIdentifier();
-	const jsonAttribute2Alias = randomIdentifier();
-
-	const query: AbstractQuery = {
-		collection: rootCollection,
-		store: dataStore,
-		fields: [
-			{
-				type: 'primitive',
-				field: column1,
-				alias: column1Alias,
-			},
-			{
-				type: 'nested-single-one',
-				nesting: {
-					type: 'object-many',
-					fieldName: jsonColumn,
-				},
-				fields: [
-					{
-						type: 'primitive',
-						field: jsonAttribute1,
-						alias: jsonAttribute1Alias,
-					},
-					{
-						type: 'primitive',
-						field: jsonAttribute2,
-						alias: jsonAttribute2Alias,
-					},
-				],
-				alias: jsonColumnAlias,
-			},
-		],
-		modifiers: {},
-	};
-
-	const driver = new DataDriverPostgres({
-		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
-	});
-
-	// define database response mocks
-
-	const column1Value1 = randomIdentifier();
-	const column1Value2 = randomIdentifier();
-	const attribute1Value1 = randomIdentifier();
-	const attribute1Value2 = randomIdentifier();
-	const attribute2Value1 = randomIdentifier();
-	const attribute2Value2 = randomIdentifier();
-
-	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
-		getMockedStream([
-			{
-				c0: column1Value1,
-				c1: attribute1Value1,
-				c2: attribute2Value1,
-			},
-			{
-				c0: column1Value2,
-				c1: attribute1Value2,
-				c2: attribute2Value2,
-			},
-		]),
-	);
-
-	const readableStream = await driver.query(query);
-	const actualResult = await readToEnd(readableStream);
-	await driver.destroy();
-
-	const expectedResult = [
-		{
-			[column1Alias]: column1Value1,
-			[jsonColumnAlias]: {
-				[jsonAttribute1Alias]: attribute1Value1,
-				[jsonAttribute2Alias]: attribute2Value1,
-			},
-		},
-		{
-			[column1Alias]: column1Value2,
-			[jsonColumnAlias]: {
-				[jsonAttribute1Alias]: attribute1Value2,
-				[jsonAttribute2Alias]: attribute2Value2,
-			},
-		},
-	];
-
-	expect(actualResult).toStrictEqual(expectedResult);
-});
-
-test('A property from a json field which is a string', async () => {
-	const rootCollection = randomIdentifier();
-	const dataStore = randomIdentifier();
-	const column1 = randomIdentifier();
-	const column1Alias = randomIdentifier();
-	const jsonColumn = randomIdentifier();
-	const jsonColumnAlias = randomIdentifier();
-	const jsonAttribute = randomIdentifier();
-	const jsonAttributeAlias = randomIdentifier();
-
-	const query: AbstractQuery = {
-		collection: rootCollection,
-		store: dataStore,
-		fields: [
-			{
-				type: 'primitive',
-				field: column1,
-				alias: column1Alias,
-			},
-			{
-				type: 'nested-single-one',
-				nesting: {
-					type: 'object-many',
-					fieldName: jsonColumn,
-				},
-				fields: [
-					{
-						type: 'primitive',
-						field: jsonAttribute,
-						alias: jsonAttributeAlias,
+						field: jsonProp,
+						alias: jsonPropAlias,
 					},
 				],
 				alias: jsonColumnAlias,
@@ -601,13 +420,110 @@ test('A property from a json field which is a string', async () => {
 		{
 			[column1Alias]: column1Value1,
 			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: jsonColumnValue1,
+				[jsonPropAlias]: jsonColumnValue1,
 			},
 		},
 		{
 			[column1Alias]: column1Value2,
 			[jsonColumnAlias]: {
-				[jsonAttributeAlias]: jsonColumnValue2,
+				[jsonPropAlias]: jsonColumnValue2,
+			},
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
+
+test('Select multiple properties from json field', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+	const column1 = randomIdentifier();
+	const column1Alias = randomIdentifier();
+	const jsonColumn = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+	const jsonProp1 = randomIdentifier();
+	const jsonProp1Alias = randomIdentifier();
+	const jsonProp2 = randomIdentifier();
+	const jsonProp2Alias = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: column1,
+				alias: column1Alias,
+			},
+			{
+				type: 'nested-single-one',
+				nesting: {
+					type: 'object-many',
+					fieldName: jsonColumn,
+				},
+				fields: [
+					{
+						type: 'primitive',
+						field: jsonProp1,
+						alias: jsonProp1Alias,
+					},
+					{
+						type: 'primitive',
+						field: jsonProp2,
+						alias: jsonProp2Alias,
+					},
+				],
+				alias: jsonColumnAlias,
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	// define database response mocks
+
+	const column1Value1 = randomIdentifier();
+	const column1Value2 = randomIdentifier();
+	const prop1Value1 = randomIdentifier();
+	const prop1Value2 = randomIdentifier();
+	const prop2Value1 = randomIdentifier();
+	const prop2Value2 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
+		getMockedStream([
+			{
+				c0: column1Value1,
+				c1: prop1Value1,
+				c2: prop2Value1,
+			},
+			{
+				c0: column1Value2,
+				c1: prop1Value2,
+				c2: prop2Value2,
+			},
+		]),
+	);
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[column1Alias]: column1Value1,
+			[jsonColumnAlias]: {
+				[jsonProp1Alias]: prop1Value1,
+				[jsonProp2Alias]: prop2Value1,
+			},
+		},
+		{
+			[column1Alias]: column1Value2,
+			[jsonColumnAlias]: {
+				[jsonProp1Alias]: prop1Value2,
+				[jsonProp2Alias]: prop2Value2,
 			},
 		},
 	];
