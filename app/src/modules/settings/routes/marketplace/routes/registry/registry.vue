@@ -126,7 +126,7 @@ watchEffect(async () => {
 				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
 
-			<v-info v-if="extensions.length === 0 && !loading" :title="t('no_results')" icon="extension" center>
+			<v-info v-if="extensions.length === 0 && !loading && !error" :title="t('no_results')" icon="extension" center>
 				{{ t('no_results_copy') }}
 			</v-info>
 
