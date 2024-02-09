@@ -1,4 +1,4 @@
-import type { AbstractSqlQuerySelectJsonNode } from '../../../index.js';
+import type { AbstractSqlQuerySelectJsonNode } from '../../../types/clauses/select/json.js';
 import type { NumberGenerator } from '../../utils/number-generator.js';
 
 export function convertJson(
