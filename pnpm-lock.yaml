@@ -1648,8 +1648,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       undici:
-        specifier: 6.6.1
-        version: 6.6.1
+        specifier: 6.6.2
+        version: 6.6.2
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1778,8 +1778,8 @@ importers:
         specifier: 2.5.5
         version: 2.5.5
       undici:
-        specifier: 6.6.1
-        version: 6.6.1
+        specifier: 6.6.2
+        version: 6.6.2
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -18510,8 +18510,8 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  /undici@6.6.1:
-    resolution: {integrity: sha512-J0GaEp0ztu/grIE2Uq57AbK6TRb+bWbOlxu0POCzhFKA6LKbwSAev+hDQaQcgUUA9CPs8Ky+cauzTHnQrtAQEA==}
+  /undici@6.6.2:
+    resolution: {integrity: sha512-vSqvUE5skSxQJ5sztTZ/CdeJb1Wq0Hf44hlYMciqHghvz+K88U0l7D6u1VsndoFgskDcnU+nG3gYmMzJVzd9Qg==}
     engines: {node: '>=18.0'}
     dependencies:
       '@fastify/busboy': 2.1.0
