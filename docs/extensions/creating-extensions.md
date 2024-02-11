@@ -108,6 +108,16 @@ built.
 
 ## Developing Your Extension
 
+### Add NPM script to update your extension on build
+Your built index.js file needs to be placed in the extensions folder to be loaded by directus. You can automate this by adding an NPM script in the extension's package.JSON file, which you can make run on build.
+Example:
+``
+		"build": "directus-extension && npm run update",
+		"update": "mv dist/index.js ../extensions/enquiry_form/index.js"
+``
+  
+
+
 To learn more about how to develop extensions of a specific type, refer to the individual guides:
 
 ### App Extensions
