@@ -65,6 +65,11 @@
 	to = "/contributing/sponsor"
 	status = 301
 
+[[redirects]]
+	from = "/next-13"
+	to = "/next"
+	status = 301
+
 #####
 ##### User Guide
 #####
