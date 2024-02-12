@@ -95,6 +95,7 @@ website: Website
 github: GitHub
 beta: Beta
 n_downloads: '{n} Downloads'
+downloads: Downloads
 not_compatible_with_your_project: Incompatible with your Project
 enable: Enable
 disable: Disable

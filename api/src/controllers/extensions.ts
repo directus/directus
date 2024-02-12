@@ -64,7 +64,7 @@ router.get(
 			query.by = by;
 		}
 
-		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent'] as const)) {
+		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent', 'downloads'] as const)) {
 			query.sort = sort;
 		}
 

@@ -16,7 +16,7 @@ const perPage = 6;
 const search = ref<string | null>(null);
 const page = ref(1);
 const type = ref<string | null>(null);
-const sort = ref<'popular' | 'recent'>('popular');
+const sort = ref<'popular' | 'recent' | 'downloads'>('popular');
 
 watch([search, sort, type], (newVals, oldVals) => {
 	if (isEqual(newVals, oldVals) === false) {
@@ -92,7 +92,9 @@ watchEffect(async () => {
 				class="filter"
 			/>
 
-			<v-list class="results">
+			<v-error v-if="error && !loading" :error="error" />
+
+			<v-list v-if="!error" class="results">
 				<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
 			</v-list>
 
@@ -100,7 +102,6 @@ watchEffect(async () => {
 				{{ t('no_results_copy') }}
 			</v-info>
 
-			<v-error v-if="error && !loading" :error="error" />
 
 			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" show-first-last />
 

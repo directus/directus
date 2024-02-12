@@ -68,6 +68,10 @@ const sortOptions = [
 		text: t('recent'),
 		value: 'recent',
 	},
+	{
+		text: t('downloads'),
+		value: 'downloads',
+	},
 ];
 </script>
 

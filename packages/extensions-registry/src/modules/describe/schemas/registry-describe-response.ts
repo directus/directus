@@ -6,7 +6,7 @@ export const RegistryDescribeResponse = z.object({
 		id: z.string(),
 		name: z.string(),
 		description: z.union([z.null(), z.string()]),
-		monthly_downloads: z.number(),
+		total_downloads: z.number(),
 		downloads: z.union([
 			z.null(),
 			z.array(

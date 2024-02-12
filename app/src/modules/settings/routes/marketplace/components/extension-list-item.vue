@@ -31,7 +31,7 @@ const icon = computed(() => extensionTypeIconMap[props.extension.type]);
 			</div>
 
 			<div class="downloads">
-				{{ abbreviateNumber(extension.monthly_downloads) }}
+				{{ abbreviateNumber(extension.total_downloads) }}
 				<v-icon small name="download" />
 			</div>
 		</div>

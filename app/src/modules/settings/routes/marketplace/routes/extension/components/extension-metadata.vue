@@ -40,7 +40,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 			<div class="grid">
 				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataVersion :version="latestVersion.version" />
-				<ExtensionMetadataDownloads :downloads="extension.monthly_downloads" />
+				<ExtensionMetadataDownloads :downloads="extension.total_downloads" />
 				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
