@@ -5,7 +5,7 @@ import type {
 import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
 
-export interface AbstractQueryFieldNodeNestedObjectMany {
+export interface AbstractQueryFieldNodeNestedObjectSingle {
 	type: 'object-single';
 	fieldName: string;
 }
@@ -18,7 +18,7 @@ export interface AbstractQueryFieldNodeNestedSingleOne {
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedObjectMany;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedObjectSingle;
 }
 
 export interface AbstractQueryFieldNodeNestedUnionOne {
