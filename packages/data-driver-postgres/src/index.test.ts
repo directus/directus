@@ -530,3 +530,97 @@ test('Select multiple properties from json field', async () => {
 
 	expect(actualResult).toStrictEqual(expectedResult);
 });
+
+test('Select object properties from an array stored in a json column', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+	const column1Alias = randomIdentifier();
+	const jsonColumn = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+	const jsonProp = randomIdentifier();
+	const jsonPropAlias = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'nested-single-many',
+				nesting: {
+					type: 'object-single',
+					fieldName: jsonColumn,
+				},
+				fields: [
+					{
+						type: 'primitive',
+						field: jsonProp,
+						alias: jsonPropAlias,
+					},
+				],
+				alias: jsonColumnAlias,
+				modifiers: {},
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	const column1Value1 = randomIdentifier();
+	const column1Value2 = randomIdentifier();
+	const prop1Value1 = randomIdentifier();
+	const prop1Value2 = randomIdentifier();
+	const prop1Value3 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
+		getMockedStream([
+			{
+				c0: [
+					{
+						[jsonProp]: prop1Value1,
+					},
+					{
+						[jsonProp]: prop1Value2,
+					},
+				],
+			},
+			{
+				c0: [
+					{
+						[jsonProp]: prop1Value3,
+					},
+				],
+			},
+		]),
+	);
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[column1Alias]: column1Value1,
+			[jsonColumnAlias]: [
+				{
+					[jsonPropAlias]: prop1Value1,
+				},
+				{
+					[jsonPropAlias]: prop1Value1,
+				},
+			],
+		},
+		{
+			[column1Alias]: column1Value2,
+			[jsonColumnAlias]: [
+				{
+					[jsonPropAlias]: prop1Value3,
+				},
+			],
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
