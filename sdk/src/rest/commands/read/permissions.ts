@@ -1,13 +1,19 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
+import type { AllCollections, ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadPermissionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusPermission<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
+
+export type ReadItemPermissionsOutput = {
+	update: { access: boolean; presets?: Record<string, any> | null; fields?: string[] | null };
+	delete: { access: boolean };
+	share: { access: boolean };
+};
 
 /**
  * List all Permissions that exist in Directus.
@@ -26,7 +32,7 @@ export const readPermissions =
 
 /**
  * List all Permissions that exist in Directus.
- * @param key The primary key of the dashboard
+ * @param key The primary key of the permission
  * @param query The query parameters
  * @returns Returns a Permission object if a valid primary key was provided.
  * @throws Will throw if key is empty
@@ -42,6 +48,28 @@ export const readPermission =
 		return {
 			path: `/permissions/${key}`,
 			params: query ?? {},
+			method: 'GET',
+		};
+	};
+
+/**
+ * Check the current user's permissions on a specific item.
+ * @param collection The collection of the item
+ * @param key The primary key of the item
+ * @returns Returns a ItemPermissions object if a valid collection / primary key was provided.
+ */
+export const readItemPermissions =
+	<Schema extends object, Collection extends AllCollections<Schema>>(
+		collection: Collection,
+		key?: string | number,
+	): RestCommand<ReadItemPermissionsOutput, Schema> =>
+	() => {
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
+
+		const item = key ? `${collection as string}/${key}` : `${collection as string}`;
+
+		return {
+			path: `/permissions/me/${item}`,
 			method: 'GET',
 		};
 	};

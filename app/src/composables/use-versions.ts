@@ -1,13 +1,11 @@
 import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Query, ContentVersion } from '@directus/types';
+import { ContentVersion, Filter, Query } from '@directus/types';
 import { Ref, computed, ref, unref, watch } from 'vue';
+import { useCollectionPermissions } from './use-permissions';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
-	const { hasPermission } = usePermissionsStore();
-
-	const readVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'read'));
+	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 	const currentVersion = ref<ContentVersion | null>(null);
 	const versions = ref<ContentVersion[] | null>(null);

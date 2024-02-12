@@ -245,13 +245,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -1248,7 +1241,6 @@ field_options:
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
@@ -1822,6 +1814,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
   icon:
     icon: Icon
     description: Display an icon

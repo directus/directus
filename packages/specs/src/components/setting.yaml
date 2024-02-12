@@ -30,7 +30,12 @@ properties:
     nullable: true
   public_background:
     description: The background of the project.
-    type: string
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
     example: null
     nullable: true
   public_note:

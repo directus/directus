@@ -2,17 +2,16 @@
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { usePermissions } from '@/composables/use-permissions';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
-import { usePermissionsStore } from '@/stores/permissions';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
@@ -57,7 +56,6 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
-const permissionsStore = usePermissionsStore();
 
 const { width } = useWindowSize();
 
@@ -254,88 +252,33 @@ function useLanguages() {
 	}
 }
 
-const { junctionPerms } = useRelationPermissionsM2M(relationInfo);
-
-const createAllowed = computed(() => junctionPerms.value.create);
-const updateAllowed = computed(() => junctionPerms.value.update);
-
-const firstItemNew = computed(
-	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
+const firstItemPrimaryKey = computed(
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field],
 );
 
-const secondItemNew = computed(
-	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
+const secondItemPrimaryKey = computed(
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field],
 );
 
-const firstChangesAllowed = computed(() => {
-	if (firstItemNew.value) {
-		return updateAllowed.value;
-	}
+const firstItemNew = computed(() => !!(relationInfo.value && firstItemPrimaryKey.value === undefined));
 
-	return createAllowed.value;
-});
+const secondItemNew = computed(() => !!(relationInfo.value && secondItemPrimaryKey.value === undefined));
 
-const secondChangesAllowed = computed(() => {
-	if (secondItemNew.value) {
-		return updateAllowed.value;
-	}
+const {
+	itemPermissions: { saveAllowed: firstSaveAllowed, fields: firstFields },
+} = usePermissions(
+	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
+	firstItemPrimaryKey,
+	firstItemNew,
+);
 
-	return createAllowed.value;
-});
-
-const firstFields = computed(() => {
-	let fieldsWithPerms = cloneDeep(fields.value);
-	if (!relationInfo.value) return fieldsWithPerms;
-
-	const permissions = permissionsStore.getPermissionsForUser(
-		relationInfo.value.junctionCollection.collection,
-		firstItemNew.value ? 'create' : 'update',
-	);
-
-	if (!permissions) return fieldsWithPerms;
-
-	if (permissions.fields?.includes('*') === false) {
-		fieldsWithPerms = fieldsWithPerms.map((field) => {
-			if (permissions.fields?.includes(field.field) === false) {
-				field.meta = {
-					...(field.meta || {}),
-					readonly: true,
-				} as any;
-			}
-
-			return field;
-		});
-	}
-
-	return fieldsWithPerms;
-});
-
-const secondFields = computed(() => {
-	let fieldsWithPerms = cloneDeep(fields.value);
-	if (!relationInfo.value) return fieldsWithPerms;
-
-	const permissions = permissionsStore.getPermissionsForUser(
-		relationInfo.value.junctionCollection.collection,
-		secondItemNew.value ? 'create' : 'update',
-	);
-
-	if (!permissions) return fieldsWithPerms;
-
-	if (permissions.fields?.includes('*') === false) {
-		fieldsWithPerms = fieldsWithPerms.map((field) => {
-			if (permissions.fields?.includes(field.field) === false) {
-				field.meta = {
-					...(field.meta || {}),
-					readonly: true,
-				} as any;
-			}
-
-			return field;
-		});
-	}
-
-	return fieldsWithPerms;
-});
+const {
+	itemPermissions: { saveAllowed: secondSaveAllowed, fields: secondFields },
+} = usePermissions(
+	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
+	secondItemPrimaryKey,
+	secondItemNew,
+);
 </script>
 
 <template>
@@ -360,7 +303,7 @@ const secondFields = computed(() => {
 						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled || !firstChangesAllowed"
+				:disabled="disabled || !firstSaveAllowed"
 				:loading="loading"
 				:fields="firstFields"
 				:model-value="firstItem"
@@ -392,7 +335,7 @@ const secondFields = computed(() => {
 						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled || !secondChangesAllowed"
+				:disabled="disabled || !secondSaveAllowed"
 				:loading="loading"
 				:initial-values="secondItemInitial"
 				:fields="secondFields"

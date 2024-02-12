@@ -273,13 +273,6 @@ time: Vrijeme
 timestamp: Vremenska oznaka
 uuid: UUID
 hash: Hash
-geometry: Geometrija (sve)
-geometry.Point: Točka
-geometry.LineString: Linijski niz
-geometry.Polygon: Poligon
-geometry.MultiPoint: Više točaka
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Višestruki poligon
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
@@ -1314,7 +1307,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu ulogu...
     description: Opis uloge...
-    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1922,6 +1914,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Prikaži ikonu

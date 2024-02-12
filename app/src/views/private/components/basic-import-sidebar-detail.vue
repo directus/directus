@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -17,6 +17,8 @@ const emit = defineEmits(['refresh', 'download']);
 const { t, te } = useI18n();
 
 const { collection } = toRefs(props);
+
+const { createAllowed } = useCollectionPermissions(collection);
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -94,10 +96,6 @@ function useUpload() {
 		}
 	}
 }
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
 
 <template>

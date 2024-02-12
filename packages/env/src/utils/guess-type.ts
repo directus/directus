@@ -8,6 +8,7 @@ export const guessType = (value: unknown): EnvType => {
 	if (
 		String(value).startsWith('0') === false &&
 		isNaN(Number(value)) === false &&
+		String(value).length > 0 &&
 		Number(value) <= Number.MAX_SAFE_INTEGER
 	) {
 		return 'number';

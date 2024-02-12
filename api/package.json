@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "15.0.0",
+	"version": "16.0.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -65,7 +65,7 @@
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
-		"@aws-sdk/client-ses": "3.504.0",
+		"@aws-sdk/client-ses": "3.511.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",
@@ -111,7 +111,7 @@
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",
 		"execa": "8.0.1",
-		"exif-reader": "2.0.0",
+		"exif-reader": "2.0.1",
 		"express": "4.18.2",
 		"flat": "6.0.1",
 		"fs-extra": "11.2.0",
@@ -174,6 +174,7 @@
 		"zod-validation-error": "3.0.0"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "7.1.1",
@@ -187,7 +188,7 @@
 		"@types/destroy": "1.0.3",
 		"@types/encodeurl": "1.0.2",
 		"@types/express": "4.17.21",
-		"@types/express-serve-static-core": "4.17.42",
+		"@types/express-serve-static-core": "4.17.43",
 		"@types/fs-extra": "11.0.4",
 		"@types/glob-to-regexp": "0.4.4",
 		"@types/inquirer": "9.0.7",
@@ -198,7 +199,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
-		"@types/node": "18.19.12",
+		"@types/node": "18.19.14",
 		"@types/node-schedule": "2.1.6",
 		"@types/nodemailer": "6.4.14",
 		"@types/object-hash": "3.0.6",
