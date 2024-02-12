@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed the check for remaining admins to allow updates of associated users via role update
+Resolved error indicating inability to remove last admin user during user updates via roles
