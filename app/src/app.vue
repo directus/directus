@@ -25,10 +25,11 @@ const brandStyleCss = computed(() => {
 
 useHead({
 	style: [{ textContent: brandStyleCss }],
-	titleTemplate: computed((title?: string) => {
-		const projectName = serverStore.info?.project?.project_name ?? 'Directus';
-		return !title ? projectName : `${title} · ${projectName}`;
-	}),
+	title: 'Directus',
+	titleTemplate: '%s · %projectName',
+	templateParams: {
+		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus')
+	},
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
