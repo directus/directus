@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
+import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { pickBy } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, watch } from 'vue';
 
@@ -19,7 +21,7 @@ type ParsedLink = Omit<Link, 'url'> & {
 type Props = {
 	links: Link[];
 	collection: string;
-	primaryKey: string;
+	primaryKey?: PrimaryKey;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
-const resolvedRelationalValues = ref<Record<symbol, any>>({});
+const resolvedRelationalValues = ref<Record<string, any>>({});
 
 /**
  * Get all deduplicated relational fields from the link-templates.
@@ -53,8 +55,8 @@ const relatedFieldsFromTemplates = computed(
 );
 
 watch(relatedFieldsFromTemplates, async () => {
-	// No need to fetch if we're creating a new item
-	if (props.primaryKey === '+') return;
+	// No need to fetch if there are no fields or we're creating a new item
+	if (relatedFieldsFromTemplates.value.length === 0 || props.primaryKey === '+' || !props.primaryKey) return;
 
 	try {
 		const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
@@ -63,7 +65,9 @@ watch(relatedFieldsFromTemplates, async () => {
 			},
 		});
 
-		resolvedRelationalValues.value = response.data.data;
+		// Pick only non-arrays because we cant render those types of relations
+		// For example a M2M relation will return an array
+		resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
 	} catch (err) {
 		// eslint-disable-next-line no-console
 		console.warn('Presentation-Link: Fetching related fields failed');
@@ -74,12 +78,10 @@ const linksParsed = computed(
 	() =>
 		props.links?.map((link) => {
 			// Resolve related fields for interpolation
-			// If the vform has the related fields inside we use them
+			// If the vform already has some related fields inside we use them
 			// because those represent the current unstaged edits
 			// Else we use API responses to resolve those
-			const scope: Record<symbol, any> = Object.keys(resolvedRelationalValues.value).some(
-				(key) => typeof values.value[key] === 'object',
-			)
+			const scope = Object.keys(resolvedRelationalValues.value).some((key) => typeof values.value[key] === 'object')
 				? { ...resolvedRelationalValues.value, ...values.value }
 				: { ...values.value, ...resolvedRelationalValues.value };
 
