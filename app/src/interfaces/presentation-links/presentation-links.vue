@@ -65,6 +65,7 @@ watch(relatedFieldsFromTemplates, async () => {
 
 		resolvedRelationalValues.value = response.data.data;
 	} catch (err) {
+		// eslint-disable-next-line no-console
 		console.warn('Presentation-Link: Fetching related fields failed');
 	}
 });
