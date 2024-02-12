@@ -66,8 +66,8 @@
 	status = 301
 
 [[redirects]]
-	from = "/next-13"
-	to = "/next"
+	from = "/guides/headless-cms/build-static-website/next-13"
+	to = "/guides/headless-cms/build-static-website/next"
 	status = 301
 
 #####
