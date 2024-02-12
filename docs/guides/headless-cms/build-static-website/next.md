@@ -259,7 +259,7 @@ async function getPost(slug) {
 	try {
 		const post = await directus.request(
 			readItem('posts', slug, {
-				fields: ['*.*', { relation: ['*'] }],
+				fields: ['*.*'],
 			})
 		);
 
@@ -288,6 +288,7 @@ Some key notes about this code snippet.
 - Once again, `dangerouslySetInnerHTML` should only be used if all content is trusted.
 - Because almost-all fields are used in this page, including those from the `image` relational field, the `fields`
   property when using the Directus JavaScript SDK can be set to `*.*`.
+- To resolve only specific fields like the image, set the field query to `fields: ['*', 'image.*']`.
 
 Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
