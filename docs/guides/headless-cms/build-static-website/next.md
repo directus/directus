@@ -1,10 +1,10 @@
 ---
-description: This guide shows you how build a website with Next 13 and Directus as a Headless CMS.
-directus_version: 9.21.4
+description: This guide shows you how build a website with Next.js and Directus as a Headless CMS.
+directus_version: 10
 author: Kevin Lewis
 ---
 
-# Build a Website With Next 13 and the Directus JavaScript SDK
+# Build a Website With Next.js and the Directus JavaScript SDK
 
 > {{ $frontmatter.description }}
 
@@ -98,10 +98,10 @@ hit save.
 By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give
 Read access to the Global collection.
 
-Inside of the `app` directory, create a new file called `page.tsx`.
+Inside of the `app` directory, create a new file called `page.jsx`.
 
 ```jsx
-import directus from 'lib/directus';
+import directus from '@/lib/directus';
 import { readItems } from '@directus/sdk';
 
 async function getGlobals() {
@@ -132,11 +132,11 @@ Create a text input field called `title` and a WYSIWYG input field called `conte
 role read access to the new collection. Create 3 items in the new collection -
 [here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
-Inside of `app`, create a new directory called `[slug]` with a file called `page.tsx`. This is a dynamic route, so a
+Inside of `app`, create a new directory called `[slug]` with a file called `page.jsx`. This is a dynamic route, so a
 single file can be used for all of the top-level pages.
 
 ```jsx
-import directus from 'lib/directus';
+import directus from '@/lib/directus';
 import { notFound } from 'next/navigation';
 import { readItem } from '@directus/sdk';
 
@@ -190,7 +190,7 @@ Create 3 items in the posts collection -
 
 ### Create Blog Post Listing
 
-Inside of the `app` directory, create a new subdirectory called `blog` and a new file called `page.tsx` inside of it.
+Inside of the `app` directory, create a new subdirectory called `blog` and a new file called `page.jsx` inside of it.
 
 ```jsx
 import directus from '@/lib/directus';
@@ -222,44 +222,46 @@ related `author` item.
 Update the returned HTML:
 
 ```jsx
-<div>
-	<h1>Blog</h1>
-	<ul>
-		{posts.map((post) => {
-			return (
-				<li key={post.slug}>
-					<a href={`/blog/${post.slug}`}>
-						<h2>{post.title}</h2>
-					</a>
-					<span>
-						{post.publish_date} &bull; {post.author.name}
-					</span>
-				</li>
-			);
-		})}
-	</ul>
-</div>;
+	<div>
+		<h1>Blog</h1>
+		<ul>
+			{posts.map((post) => {
+				return (
+					<li key={post.slug}>
+						<h2>
+						<a href={`/blog/${post.slug}`}>
+							{post.title}
+						</a>
+						</h2>
+						<span>
+							{post.publish_date} &bull; {post.author.name}
+						</span>
+					</li>
+				);
+			})}
+		</ul>
+	</div>
 ```
 
-Visit http://localhost:3000 and you should now see a blog post listing, with latest items first.
+Visit http://localhost:3000/blog and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/next-blog-listing.webp)
 
 ### Create Blog Post Pages
 
 Each blog post links to a page that does not yet exist. In the `app/blog` directory, create a new directory called
-`[slug]`, and within it a `page.tsx` file:
+`[slug]`, and within it a `page.jsx` file:
 
 ```jsx
 import directus from '@/lib/directus';
-import { notFound } from 'next/navigation';
 import { readItem } from '@directus/sdk';
+import { notFound } from 'next/navigation';
 
 async function getPost(slug) {
 	try {
 		const post = await directus.request(
 			readItem('posts', slug, {
-				fields: ['*', { relation: ['*'] }],
+				fields: ['*', { image: ['filename_disk'], author: ['name'] }],
 			})
 		);
 
@@ -286,8 +288,6 @@ Some key notes about this code snippet.
 - In the `<img>` tag, `directus.url` is the value provided when creating the Directus plugin.
 - The `width` attribute demonstrates Directus' built-in image transformations.
 - Once again, `dangerouslySetInnerHTML` should only be used if all content is trusted.
-- Because almost-all fields are used in this page, including those from the `image` relational field, the `fields`
-  property when using the Directus JavaScript SDK can be set to `*.*`.
 
 Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
@@ -296,18 +296,20 @@ Click on any of the blog post links, and it will take you to a blog post page co
 ## Add Navigation
 
 While not strictly Directus-related, there are now several pages that aren't linked to each other. Create the file
-`app/layout.tsx` to add a navigation above the main content. Don't forget to use your specific page slugs.
+`app/layout.jsx` to add a navigation above the main content. Don't forget to use your specific page slugs.
 
 ```jsx
+import Link from 'next/link';
+
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<body>
 				<nav>
-					<Link href="/">Home</Link>
-					<Link href="/about">About</Link>
-					<Link href="/conduct">Code of Conduct</Link>
-					<Link href="/privacy">Privacy Policy</Link>
+					<Link href="/">Home</Link>{' | '}
+					<Link href="/about">About</Link>{' | '}
+					<Link href="/conduct">Code of Conduct</Link>{' | '}
+					<Link href="/privacy">Privacy Policy</Link>{' | '}
 					<Link href="/blog">Blog</Link>
 				</nav>
 				<main>{children}</main>
