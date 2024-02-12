@@ -6,7 +6,7 @@ import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
 
 export interface AbstractQueryFieldNodeNestedObjectMany {
-	type: 'object-many';
+	type: 'object-single';
 	fieldName: string;
 }
 

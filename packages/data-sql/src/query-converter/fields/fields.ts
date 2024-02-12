@@ -95,7 +95,7 @@ export const convertFieldNodes = (
 				select.push(...nestedOutput.clauses.select);
 			}
 
-			if (abstractField.nesting.type === 'object-many') {
+			if (abstractField.nesting.type === 'object-single') {
 				if (!isJsonContext && !isLeafOfJson) {
 					isJsonContext = true;
 					jsonColumnName = abstractField.nesting.fieldName;

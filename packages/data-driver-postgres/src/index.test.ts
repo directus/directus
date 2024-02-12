@@ -372,7 +372,7 @@ test('Select a single properties from a json field', async () => {
 			{
 				type: 'nested-single-one',
 				nesting: {
-					type: 'object-many',
+					type: 'object-single',
 					fieldName: jsonColumn,
 				},
 				fields: [
@@ -458,7 +458,7 @@ test('Select multiple properties from json field', async () => {
 			{
 				type: 'nested-single-one',
 				nesting: {
-					type: 'object-many',
+					type: 'object-single',
 					fieldName: jsonColumn,
 				},
 				fields: [

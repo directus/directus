@@ -371,7 +371,7 @@ test('primitive, json path', () => {
 		{
 			type: 'nested-single-one',
 			nesting: {
-				type: 'object-many',
+				type: 'object-single',
 				fieldName: jsonColumnName,
 			},
 			fields: [
@@ -383,7 +383,7 @@ test('primitive, json path', () => {
 				{
 					type: 'nested-single-one',
 					nesting: {
-						type: 'object-many',
+						type: 'object-single',
 						fieldName: attribute2,
 					},
 					fields: [
@@ -395,7 +395,7 @@ test('primitive, json path', () => {
 						{
 							type: 'nested-single-one',
 							nesting: {
-								type: 'object-many',
+								type: 'object-single',
 								fieldName: attribute4,
 							},
 							fields: [
