@@ -1,6 +1,6 @@
 ---
 description: This guide shows you how build a website with Next.js and Directus as a Headless CMS.
-directus_version: 9.21.4
+directus_version: 10
 author: Kevin Lewis
 ---
 
@@ -222,23 +222,25 @@ related `author` item.
 Update the returned HTML:
 
 ```jsx
-<div>
-	<h1>Blog</h1>
-	<ul>
-		{posts.map((post) => {
-			return (
-				<li key={post.slug}>
-					<a href={`/blog/${post.slug}`}>
-						<h2>{post.title}</h2>
-					</a>
-					<span>
-						{post.publish_date} &bull; {post.author.name}
-					</span>
-				</li>
-			);
-		})}
-	</ul>
-</div>;
+	<div>
+		<h1>Blog</h1>
+		<ul>
+			{posts.map((post) => {
+				return (
+					<li key={post.slug}>
+						<h2>
+						<a href={`/blog/${post.slug}`}>
+							{post.title}
+						</a>
+						</h2>
+						<span>
+							{post.publish_date} &bull; {post.author.name}
+						</span>
+					</li>
+				);
+			})}
+		</ul>
+	</div>
 ```
 
 Visit http://localhost:3000/blog and you should now see a blog post listing, with latest items first.
@@ -252,8 +254,8 @@ Each blog post links to a page that does not yet exist. In the `app/blog` direct
 
 ```jsx
 import directus from '@/lib/directus';
-import { notFound } from 'next/navigation';
 import { readItem } from '@directus/sdk';
+import { notFound } from 'next/navigation';
 
 async function getPost(slug) {
 	try {
@@ -304,10 +306,10 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<body>
 				<nav>
-					<Link href="/">Home</Link>
-					<Link href="/about">About</Link>
-					<Link href="/conduct">Code of Conduct</Link>
-					<Link href="/privacy">Privacy Policy</Link>
+					<Link href="/">Home</Link>{' | '}
+					<Link href="/about">About</Link>{' | '}
+					<Link href="/conduct">Code of Conduct</Link>{' | '}
+					<Link href="/privacy">Privacy Policy</Link>{' | '}
 					<Link href="/blog">Blog</Link>
 				</nav>
 				<main>{children}</main>
