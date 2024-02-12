@@ -259,7 +259,7 @@ async function getPost(slug) {
 	try {
 		const post = await directus.request(
 			readItem('posts', slug, {
-				fields: ['*.*'],
+				fields: ['*', { image: ['filename_disk'], author: ['name'] }],
 			})
 		);
 
@@ -286,9 +286,6 @@ Some key notes about this code snippet.
 - In the `<img>` tag, `directus.url` is the value provided when creating the Directus plugin.
 - The `width` attribute demonstrates Directus' built-in image transformations.
 - Once again, `dangerouslySetInnerHTML` should only be used if all content is trusted.
-- Because almost-all fields are used in this page, including those from the `image` relational field, the `fields`
-  property when using the Directus JavaScript SDK can be set to `*.*`.
-- To resolve only specific fields like the image, set the field query to `fields: ['*', 'image.*']`.
 
 Click on any of the blog post links, and it will take you to a blog post page complete with a header image.
 
