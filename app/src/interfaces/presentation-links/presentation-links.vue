@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { getFieldsFromTemplate } from '@directus/utils';
+import { useApi } from '@directus/composables';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 
 type Link = {
 	icon: string;
@@ -25,31 +26,62 @@ const props = withDefaults(defineProps<Props>(), {
 	links: () => [],
 });
 
+const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
+const resolvedRelationalValues = ref<Record<symbol, any>>({});
 
-const { collection, primaryKey } = toRefs(props);
+/**
+ * Get all deduplicated relational fields from the link-templates.
+ * For example:
+ * [ "related.field", "languages.code" ]
+ */
+const relatedFieldsFromTemplates = computed(
+	() =>
+		props.links
+			?.flatMap((link) => {
+				if (!link.url) return [];
+				return (
+					getFieldsFromTemplate(link.url)
+						// filter out any duplicates for this link
+						.filter((value, index, array) => array.indexOf(value) === index)
+						// filter out non-relations, since they should be included in the values already
+						.filter((value) => value.includes('.'))
+				);
+			})
+			// filter out any duplicates between all links
+			.filter((value, index, array) => array.indexOf(value) === index),
+);
 
-const relatedFieldsToResolve = computed(() => {
-	// TODO
+watch(relatedFieldsFromTemplates, async () => {
+	// No need to fetch if we're creating a new item
+	if (props.primaryKey === '+') return;
+
+	try {
+		const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
+			params: {
+				fields: relatedFieldsFromTemplates.value,
+			},
+		});
+
+		resolvedRelationalValues.value = response.data.data;
+	} catch (err) {
+		console.warn('Presentation-Link: Fetching related fields failed');
+	}
 });
 
 const linksParsed = computed(
 	() =>
 		props.links?.map((link) => {
 			// Resolve related fields for interpolation
-			const relatedValues = {};
+			// If the vform has the related fields inside we use them
+			// because those represent the current unstaged edits
+			// Else we use API responses to resolve those
+			const scope: Record<symbol, any> = Object.keys(resolvedRelationalValues.value).some(
+				(key) => typeof values.value[key] === 'object',
+			)
+				? { ...resolvedRelationalValues.value, ...values.value }
+				: { ...values.value, ...resolvedRelationalValues.value };
 
-			if (link.url && primaryKey.value) {
-				const relationsToResolve = getFieldsFromTemplate(link.url)
-					// filter out any duplicates
-					.filter((value, index, array) => array.indexOf(value) === index)
-					// filter out non-relations, since they should be included in the values already
-					.filter((value) => value.includes('.'));
-
-				// TODO: fetch the relational fields and put them into relatedValues
-			}
-
-			const scope = { ...relatedValues, ...values.value };
 			const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
 			// Preserving previous behaviour
