@@ -40,7 +40,7 @@ export interface AbstractQueryFieldNodeNestedSingleMany {
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
 
-	nesting: AbstractQueryFieldNodeNestedSingleRelational;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedObjectSingle;
 }
 
 export interface AbstractQueryFieldNodeNestedUnionMany {
