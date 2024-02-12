@@ -900,8 +900,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       spellchecker-cli:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.2.0
+        version: 6.2.0
       typedoc:
         specifier: 0.25.7
         version: 0.25.7(typescript@5.3.3)
@@ -17282,8 +17282,8 @@ packages:
     resolution: {integrity: sha512-eWN+LnM3GR6gPu35WxNgbGl8rmY1AEmoMDvL/QD6zYmPWgywxWqJWNdLGT+ke8dKNWrcYgYjPpG5gbTfghP8rw==}
     dev: true
 
-  /spellchecker-cli@6.1.1:
-    resolution: {integrity: sha512-blA0aWuGoMn3TSHHiyB3u1E3bJI94r2Zz1FX0HhW5jOZXw3dMO1wXSvzlYnrdMIMPoKMZPxeqwFlBR3qsgZd/g==}
+  /spellchecker-cli@6.2.0:
+    resolution: {integrity: sha512-oWYwNYp2TVAhwUQ1D5FVLGrSkKjBht37X1UVFzbx9RwzkrXPrOq2tynUbxxx78LrTLtBro63UxuELK80QeTPoA==}
     hasBin: true
     dependencies:
       chalk: 2.4.2
