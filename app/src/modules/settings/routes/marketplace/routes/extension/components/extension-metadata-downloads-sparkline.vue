@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import MetadataItem from '../../../components/metadata-item.vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
 	downloads: {
@@ -11,18 +10,25 @@ const props = defineProps<{
 	}[];
 }>();
 
+const chartContainerEl = ref<HTMLElement>();
 const chartEl = ref<HTMLElement>();
 const chart = ref<ApexCharts>();
 
+const strokeWidth = computed(() => {
+	if (!chartContainerEl.value) return 2;
+	const borderWidthPx = getComputedStyle(chartContainerEl.value).borderWidth;
+	return Number(borderWidthPx.substring(0, borderWidthPx.length - 2));
+});
+
 const initChart = () => {
 	chart.value = new ApexCharts(chartEl.value, {
-		colors: [cssVar('--theme--foreground-subdued')],
+		colors: [cssVar('--theme--primary')],
 		chart: {
 			type: 'area',
-			animation: {
+			animations: {
 				enabled: false,
 			},
-			height: '95%',
+			height: '100%',
 			width: '100%',
 			dropShadow: {
 				enabled: false,
@@ -40,6 +46,10 @@ const initChart = () => {
 				enabled: true,
 			},
 		},
+		fill: {
+			type: 'fill',
+			colors: [cssVar('--theme--primary-background')],
+		},
 		series: [
 			{
 				name: 'downloads',
@@ -47,15 +57,23 @@ const initChart = () => {
 			},
 		],
 		stroke: {
-			curve: 'smooth',
-			width: 2,
-			lineCap: 'round',
+			curve: 'straight',
+			width: strokeWidth.value,
+			lineCap: 'butt',
 		},
 		tooltip: {
 			enabled: false,
 		},
 		dataLabels: {
 			enabled: false,
+		},
+		grid: {
+			padding: {
+				top: 10,
+				bottom: 4,
+				left: 0,
+				right: 0,
+			},
 		},
 	});
 
@@ -80,15 +98,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div class="chart">
-		<div ref="chartEl" />
+	<div ref="chartContainerEl" class="chart-container">
+		<div ref="chartEl" class="chart" />
 	</div>
 </template>
 
 <style scoped>
-.chart {
+.chart-container {
 	height: var(--theme--form--field--input--height);
 	border: var(--theme--border-width) solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
+	display: flex;
+	overflow: hidden;
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background-color: var(--theme--primary-background);
+		height: 4px;
+		z-index: -1;
+	}
+}
+
+.chart {
+	width: 100%;
 }
 </style>
