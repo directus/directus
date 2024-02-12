@@ -82,6 +82,7 @@ const linksParsed = computed(
 			// because those represent the current unstaged edits
 			// Else we use API responses to resolve those
 			const scope = { ...values.value };
+
 			Object.keys(resolvedRelationalValues.value).forEach((key) => {
 				if (scope[key]?.constructor !== Object) {
 					scope[key] = resolvedRelationalValues.value[key];
