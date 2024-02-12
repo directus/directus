@@ -22,7 +22,7 @@ const initChart = () => {
 			animation: {
 				enabled: false,
 			},
-			height: '100%',
+			height: '95%',
 			width: '100%',
 			dropShadow: {
 				enabled: false,
