@@ -102,8 +102,14 @@ watchEffect(async () => {
 				{{ t('no_results_copy') }}
 			</v-info>
 
-
-			<v-pagination v-if="pageCount > 1" v-model="page" class="pagination" :length="pageCount" :total-visible="5" show-first-last />
+			<v-pagination
+				v-if="pageCount > 1"
+				v-model="page"
+				class="pagination"
+				:length="pageCount"
+				:total-visible="5"
+				show-first-last
+			/>
 
 			<router-view />
 		</div>
