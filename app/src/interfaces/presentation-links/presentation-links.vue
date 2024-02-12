@@ -81,9 +81,12 @@ const linksParsed = computed(
 			// If the vform already has some related fields inside we use them
 			// because those represent the current unstaged edits
 			// Else we use API responses to resolve those
-			const scope = Object.keys(resolvedRelationalValues.value).some((key) => typeof values.value[key] === 'object')
-				? { ...resolvedRelationalValues.value, ...values.value }
-				: { ...values.value, ...resolvedRelationalValues.value };
+			const scope = { ...values.value };
+			Object.keys(resolvedRelationalValues.value).forEach((key) => {
+				if (scope[key]?.constructor !== Object) {
+					scope[key] = resolvedRelationalValues.value[key];
+				}
+			});
 
 			const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
