@@ -6,7 +6,16 @@ export const RegistryDescribeResponse = z.object({
 		id: z.string(),
 		name: z.string(),
 		description: z.union([z.null(), z.string()]),
-		downloads: z.number(),
+		monthly_downloads: z.number(),
+		downloads: z.union([
+			z.null(),
+			z.array(
+				z.object({
+					date: z.string(),
+					count: z.number(),
+				}),
+			),
+		]),
 		verified: z.boolean(),
 		readme: z.union([z.null(), z.string()]),
 		type: z.enum(EXTENSION_TYPES),
