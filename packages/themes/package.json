@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -39,7 +39,7 @@
 		"@unhead/vue": "1.8.10",
 		"@vitejs/plugin-vue": "5.0.3",
 		"pinia": "2.1.7",
-		"rollup-plugin-node-externals": "7.0.0",
+		"rollup-plugin-node-externals": "7.0.1",
 		"typescript": "5.3.3",
 		"vite": "5.0.12",
 		"vite-plugin-dts": "3.7.2",
