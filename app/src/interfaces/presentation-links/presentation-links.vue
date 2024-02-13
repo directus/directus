@@ -107,7 +107,7 @@ const linksParsed = computed(
 				label: link.label,
 				to: isInternalLink ? interpolatedUrl : undefined,
 				href: isInternalLink ? undefined : interpolatedUrl,
-			} satisfies ParsedLink;
+			} satisfies ParsedLink as ParsedLink;
 		}),
 );
 </script>
