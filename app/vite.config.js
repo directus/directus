@@ -44,6 +44,23 @@ export default defineConfig({
 			},
 		},
 	],
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					/*
+					 * PNPM modules will be returned as a full resolved path, so doing an includes rather
+					 * than equality check allows this to work ish.
+					 */
+					if (id.includes('lodash')) return 'lodash';
+					if (id.includes('tinymce')) return 'tinymce';
+					if (id.includes('@fullcalendar')) return 'fullcalendar';
+					if (id.includes('@editorjs')) return 'editorjs';
+					if (id.includes('apexcharts')) return 'apexcharts';
+				},
+			},
+		},
+	},
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
