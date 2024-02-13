@@ -11,8 +11,11 @@ const defaults: Partial<Permission> = {
 	system: true,
 };
 
-export const schemaPermissions: Permission[] = schemaPermissionsRaw.map((row: Permission) => ({ ...defaults, ...row }));
+type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;
 
-export const appAccessMinimalPermissions: Permission[] = [...schemaPermissions, ...(permissions as Permission[])].map(
-	(row) => ({ ...defaults, ...row }),
-);
+export const schemaPermissions = (schemaPermissionsRaw as unknown as DataPermission[])
+	.map((row) => ({ ...defaults, ...row } as Permission));
+
+export const appAccessMinimalPermissions = [
+	...schemaPermissions, ...(permissions as unknown as DataPermission[])
+].map((row) => ({ ...defaults, ...row } as Permission));

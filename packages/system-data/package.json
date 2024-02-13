@@ -21,13 +21,15 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc && vite build"
+		"build": "NODE_ENV=production tsup",
+		"dev": "NODE_ENV=production tsup"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@modyfi/vite-plugin-yaml": "1.1.0",
-		"typescript": "^5.2.2",
-		"vite": "^5.0.8",
-		"vite-plugin-dts": "3.7.0"
+		"esbuild": "0.17.19",
+		"esbuild-yaml": "1.1.1",
+		"tsup": "8.0.1",
+		"typescript": "^5.2.2"
 	}
 }

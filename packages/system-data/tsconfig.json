@@ -1,25 +1,9 @@
 {
+	"extends": "@directus/tsconfig/base",
 	"compilerOptions": {
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"module": "ESNext",
+		"module": "NodeNext",
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"skipLibCheck": true,
-
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-
-		/* Linting */
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-
-		"types": ["@modyfi/vite-plugin-yaml/modules"]
+		"types": ["esbuild-yaml/types"]
 	},
 	"include": ["src"]
 }
