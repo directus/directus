@@ -91,7 +91,7 @@ export class RolesService extends ItemsService {
 					.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 					.first();
 
-				const otherAdminUsersCount = Number(otherAdminUsers?.count || 0);
+				const otherAdminUsersCount = Number(otherAdminUsers?.count ?? 0);
 
 				if (otherAdminUsersCount === 0) {
 					throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
