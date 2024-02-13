@@ -335,9 +335,6 @@ importers:
       stream-json:
         specifier: 1.8.0
         version: 1.8.0
-      tinypool:
-        specifier: 0.8.2
-        version: 0.8.2
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -18470,6 +18467,7 @@ packages:
   /tinypool@0.8.2:
     resolution: {integrity: sha512-SUszKYe5wgsxnNOVlBYO6IC+8VGWdVGZWAqUxp3UErNBtptZvWbwyUOyzNL59zigz2rCA92QiL3wvG+JDSdJdQ==}
     engines: {node: '>=14.0.0'}
+    dev: true
 
   /tinyqueue@2.0.3:
     resolution: {integrity: sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==}
