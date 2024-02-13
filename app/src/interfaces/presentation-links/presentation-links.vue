@@ -60,8 +60,6 @@ watch(
 		// No need to fetch if there are no fields or we're creating a new item
 		if (value.length === 0 || props.primaryKey === '+' || !props.primaryKey) return;
 
-		console.log('-------------------------', typeof value, JSON.stringify(value));
-
 		try {
 			const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
 				params: {
