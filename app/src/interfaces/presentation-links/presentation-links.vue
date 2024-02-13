@@ -54,25 +54,33 @@ const relatedFieldsFromTemplates = computed(
 			.filter((value, index, array) => array.indexOf(value) === index),
 );
 
-watch(relatedFieldsFromTemplates, async () => {
-	// No need to fetch if there are no fields or we're creating a new item
-	if (relatedFieldsFromTemplates.value.length === 0 || props.primaryKey === '+' || !props.primaryKey) return;
+watch(
+	relatedFieldsFromTemplates,
+	async (value) => {
+		// No need to fetch if there are no fields or we're creating a new item
+		if (value.length === 0 || props.primaryKey === '+' || !props.primaryKey) return;
 
-	try {
-		const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
-			params: {
-				fields: relatedFieldsFromTemplates.value,
-			},
-		});
+		console.log('-------------------------', typeof value, JSON.stringify(value));
 
-		// Pick only non-arrays because we cant render those types of relations
-		// For example a M2M relation will return an array
-		resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
-	} catch (err) {
-		// eslint-disable-next-line no-console
-		console.warn('Presentation-Link: Fetching related fields failed');
-	}
-});
+		try {
+			const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
+				params: {
+					fields: value,
+				},
+			});
+
+			// Pick only non-arrays because we cant render those types of relations
+			// For example a M2M relation will return an array
+			resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
+		} catch (err) {
+			// eslint-disable-next-line no-console
+			console.warn('Presentation-Link: Fetching related fields failed');
+		}
+	},
+	// Immediate for fetching when opening a new tab directly
+	// Once so we avoid unnecessary refetches
+	{ immediate: true, once: true },
+);
 
 const linksParsed = computed(
 	() =>
