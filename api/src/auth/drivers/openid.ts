@@ -109,6 +109,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const client = await this.client;
 			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
+			const env = useEnv();
 
 			return client.authorizationUrl({
 				scope: this.config['scope'] ?? 'openid profile email',
@@ -119,7 +120,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				nonce: codeChallenge,
+				nonce: env[`AUTH_${this.config['provider'].toUpperCase()}_NONCE_CHECK`] as boolean ? codeChallenge: undefined,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -151,6 +152,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		try {
 			const client = await this.client;
+			const env = useEnv();
 
 			const codeChallenge = plainCodeChallenge
 				? payload['codeVerifier']
@@ -159,7 +161,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: env[`AUTH_${this.config['provider'].toUpperCase()}_NONCE_CHECK`] as boolean ? codeChallenge: undefined },
 			);
 
 			userInfo = tokenSet.claims();
