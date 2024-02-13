@@ -16,7 +16,7 @@ import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
-import { searchForWorkspaceRoot } from 'vite';
+import { searchForWorkspaceRoot, splitVendorChunkPlugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
@@ -33,6 +33,7 @@ export default defineConfig({
 				return data === null ? {} : undefined;
 			},
 		}),
+		splitVendorChunkPlugin(),
 		{
 			name: 'watch-directus-dependencies',
 			configureServer: (server) => {
