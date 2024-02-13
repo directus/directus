@@ -99,7 +99,8 @@ const linksParsed = computed(
 
 			const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
-			// Preserving previous behaviour
+			// This incorrectly matches new links starting with two slashes but(!)
+			// updating this line would change existing behavior
 			const isInternalLink = interpolatedUrl?.startsWith('/');
 
 			return {
