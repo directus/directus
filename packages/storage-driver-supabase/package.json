@@ -29,13 +29,13 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@supabase/storage-js": "2.5.5",
-		"undici": "6.6.1"
+		"undici": "6.6.2"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "7.1.1",
 		"@vitest/coverage-v8": "1.2.2",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
 		"vitest": "1.2.2"
 	}

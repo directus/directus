@@ -43,4 +43,8 @@ describe('json', () => {
 	test('Defaults to json for object type values', () => {
 		expect(guessType({ hello: 'world' })).toBe('json');
 	});
+
+	test('Defaults to json for empty string', () => {
+		expect(guessType('')).toBe('json');
+	});
 });
