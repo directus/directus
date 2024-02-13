@@ -20,6 +20,7 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+about: About
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -28,6 +29,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Module Bar
@@ -49,6 +51,8 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+popular: Popular
+recent: Recent
 export_items: Export Items
 and: And
 or: Or
@@ -78,6 +82,21 @@ extension_bundles: Bundles
 extension_reload_required: Page Reload Required
 extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
 extension_reload_now: Reload now
+published_relative: Published {relativeTime}
+compatible_with_your_project: Compatible with your Project
+last_updated_relative: Last updated {relativeTime}
+n_files: '{n} Files'
+verified: Verified
+homepage: Homepage
+repository: Repository
+reload_required: Reload Required
+report_an_issue: Report an Issue
+website: Website
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
+not_compatible_with_your_project: Incompatible with your Project
 enable: Enable
 disable: Disable
 custom: Custom
@@ -579,6 +598,7 @@ collapse: Collapse
 select_item: Select Item
 no_items: No items
 search_items: Search Items...
+search_extensions: Search Extensions...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -1133,6 +1153,9 @@ page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
 page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
 page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
+page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
+page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -1146,6 +1169,13 @@ cancel: Cancel
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
+install_extension: Install Extension
+uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
+uninstall: Uninstall
+installed: Installed
+source_registry: Marketplace
+source_local: Local
+source_module: Node Module
 collection: Collection
 collections: Collections
 content: Content

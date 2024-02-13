@@ -61,12 +61,24 @@ extension_module: Модуль
 extension_panel: Панель
 extension_theme: Тема
 extension_hook: Хук
+extension_endpoint: Эндпоинт
 extension_operation: Действие
+extension_bundle: Набор
+extension_interfaces: Интерфейсы
 extension_displays: Отображения
+extension_layouts: Шаблоны
 extension_modules: Модули
 extension_panels: Панели
+extension_themes: Темы
 extension_hooks: Хуки
+extension_endpoints: Эндпоинты
+extension_operations: Операции
+extension_bundles: Пакеты
+extension_reload_required: Требуется перезагрузка страницы
+extension_reload_required_copy: Перезагрузка страницы необходима, чтобы увидеть изменения после включения или отключения расширений приложений.
+extension_reload_now: Перезагрузить сейчас
 enable: Включить
+disable: Отключить
 custom: Пользовательский
 hook: Хук
 fill_width: В ширину
@@ -114,6 +126,7 @@ rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
+keep: Оставить
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
@@ -124,8 +137,14 @@ create_version: Создать Версию
 rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
+promote_version: Повысить версию
+promote_version_disabled: Без изменений
+promote_version_drawer_title: Сделать {version} главной
 promote_version_changes: Изменения
 promote_version_preview: Предпросмотр
+outdated_notice: >-
+  Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
+delete_version: Удалить версию
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -278,13 +297,6 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия (все)
-geometry.Point: Точка
-geometry.LineString: LineString
-geometry.Polygon: Многоугольник
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: Мультиполигон
 theme_light: Светлая тема
 theme_dark: Тёмная тема
 not_available_for_type: Недоступно для этого типа
@@ -1324,7 +1336,6 @@ field_options:
   directus_roles:
     name: Уникальное название для этой роли...
     description: Описание этой роли...
-    ip_access: Добавьте разрешённые IP-адреса — оставьте поле пустым, чтобы разрешить все...
     fields:
       icon_name: Иконка
       name_name: Название
@@ -1912,6 +1923,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта
+  hash:
+    hash: Хэш
   icon:
     icon: Иконка
     description: Отображать иконку

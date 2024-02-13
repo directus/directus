@@ -2971,8 +2971,7 @@ export class GraphQLService {
 				update_extensions_item: {
 					type: Extension,
 					args: {
-						bundle: GraphQLString,
-						name: new GraphQLNonNull(GraphQLString),
+						id: GraphQLID,
 						data: toInputObjectType(
 							schemaComposer.createObjectTC({
 								name: 'update_directus_extensions_input',
@@ -2993,8 +2992,8 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						await extensionsService.updateOne(args['bundle'], args['name'], args['data']);
-						return await extensionsService.readOne(args['bundle'], args['name']);
+						await extensionsService.updateOne(args['id'], args['data']);
+						return await extensionsService.readOne(args['id']);
 					},
 				},
 			});

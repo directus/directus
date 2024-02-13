@@ -103,7 +103,7 @@ export const DEFAULTS = {
 
 	EXPORT_BATCH_SIZE: 5000,
 
-	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
+	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	GRAPHQL_INTROSPECTION: true,
 

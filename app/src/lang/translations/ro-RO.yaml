@@ -294,13 +294,6 @@ time: Timp
 timestamp: Marcă temporală
 uuid: UUID
 hash: Hash
-geometry: Geometrie (toate)
-geometry.Point: Punct
-geometry.LineString: Șir de linii (LineString)
-geometry.Polygon: Poligon
-geometry.MultiPoint: Multi-punct
-geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
-geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
 auto_refresh: Actualizare automată
@@ -1201,7 +1194,6 @@ field_options:
   directus_roles:
     name: Numele unic pentru acest rol...
     description: O descriere a acestui rol...
-    ip_access: Adaugă adresele IP permise, lasă gol pentru a le permite pe toate...
     fields:
       icon_name: Pictogramă
       name_name: Nume
@@ -1732,6 +1724,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valoare JSON formatată
     description: Afișează o versiune formatată a obiectului
+  hash:
+    hash: Hash
   icon:
     icon: Pictogramă
     description: Afișează o pictogramă

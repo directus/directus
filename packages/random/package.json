@@ -1,6 +1,6 @@
 {
 	"name": "@directus/random",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "Set of random-utilities for use in tests",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,7 +28,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.10",
+		"@types/node": "18.19.14",
 		"@vitest/coverage-v8": "1.2.2",
 		"tsup": "8.0.1",
 		"typescript": "5.3.3",

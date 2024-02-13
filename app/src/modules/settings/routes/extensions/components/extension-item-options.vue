@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { ExtensionType } from '@directus/extensions';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ExtensionType } from '@directus/extensions';
 import { ExtensionStatus } from '../types';
 
 const props = defineProps<{
 	status: ExtensionStatus;
 	type?: ExtensionType;
+	disableLocked?: boolean;
+	uninstallLocked?: boolean;
+	bundleEntry?: boolean;
 }>();
 
-defineEmits<{ toggleStatus: [enabled: boolean] }>();
+defineEmits<{ toggleStatus: [enabled: boolean]; uninstall: [] }>();
 
 const { t } = useI18n();
 
@@ -41,16 +44,35 @@ const actions = computed(() => {
 				<v-list-item
 					v-for="(action, index) in actions"
 					:key="index"
+					v-tooltip.left="disableLocked ? t('enabled_dev_tooltip') : null"
+					:disabled="disableLocked"
 					clickable
 					@click="$emit('toggleStatus', action.enabled)"
 				>
 					<v-list-item-icon>
-						<v-icon name="mode_off_on" :color="action.enabled ? 'var(--theme--danger)' : 'var(--theme--success)'" />
+						<v-icon name="mode_off_on" />
 					</v-list-item-icon>
 					<v-list-item-content>
 						{{ action.text }}
 					</v-list-item-content>
 				</v-list-item>
+				<template v-if="bundleEntry === false">
+					<v-divider />
+					<v-list-item
+						v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null"
+						:disabled="uninstallLocked"
+						class="uninstall"
+						clickable
+						@click="$emit('uninstall')"
+					>
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('uninstall') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 	</div>

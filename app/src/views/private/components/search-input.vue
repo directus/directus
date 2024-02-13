@@ -5,11 +5,17 @@ import { isObject } from 'lodash';
 import { Ref, computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-	modelValue: string | null;
-	collection: string;
-	filter?: Filter | null;
-}>();
+const props = withDefaults(
+	defineProps<{
+		modelValue: string | null;
+		showFilter: boolean;
+		collection?: string;
+		filter?: Filter | null;
+	}>(),
+	{
+		showFilter: true,
+	},
+);
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
@@ -107,7 +113,13 @@ function emitValue() {
 				middleware: onClickOutside,
 			}"
 			class="search-input"
-			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
+			:class="{
+				active,
+				'filter-active': filterActive,
+				'has-content': !!modelValue,
+				'filter-border': filterBorder,
+				'show-filter': showFilter,
+			}"
 			@click="active = true"
 		>
 			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
@@ -120,25 +132,27 @@ function emitValue() {
 				@click.stop="$emit('update:modelValue', null)"
 			/>
 
-			<v-icon
-				v-tooltip.bottom="t('filter')"
-				clickable
-				class="icon-filter"
-				name="filter_list"
-				@click="filterActive = !filterActive"
-			/>
+			<template v-if="showFilter">
+				<v-icon
+					v-tooltip.bottom="t('filter')"
+					clickable
+					class="icon-filter"
+					name="filter_list"
+					@click="filterActive = !filterActive"
+				/>
 
-			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
-				<div v-show="filterActive" ref="filterElement" class="filter">
-					<interface-system-filter
-						class="filter-input"
-						inline
-						:value="filter"
-						:collection-name="collection"
-						@input="$emit('update:filter', $event)"
-					/>
-				</div>
-			</transition-expand>
+				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
+					<div v-show="filterActive" ref="filterElement" class="filter">
+						<interface-system-filter
+							class="filter-input"
+							inline
+							:value="filter"
+							:collection-name="collection"
+							@input="$emit('update:filter', $event)"
+						/>
+					</div>
+				</transition-expand>
+			</template>
 		</div>
 	</v-badge>
 </template>
@@ -153,16 +167,21 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 68px;
+	width: 42px;
+	min-height: 42px;
 	max-width: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((40px + var(--theme--border-width) * 2) / 2);
+	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
 	transition:
 		width var(--slow) var(--transition),
 		border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
+
+	&.show-filter {
+		width: 68px;
+	}
 
 	.icon-empty {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -181,7 +200,7 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 8px;
+		margin: 0 9px; // visually center in closed filter
 		margin-right: 4px;
 	}
 
@@ -218,6 +237,7 @@ function emitValue() {
 		border: none;
 		border-radius: 0;
 		flex-grow: 1;
+		opacity: 0;
 
 		&::placeholder {
 			color: var(--theme--foreground-subdued);
@@ -226,10 +246,14 @@ function emitValue() {
 
 	&.active {
 		width: 300px;
-		border-color: var(--theme--form--field--input--border-color);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		.icon-empty {
 			display: block;
+		}
+
+		input {
+			opacity: 1;
 		}
 	}
 

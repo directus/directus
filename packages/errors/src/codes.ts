@@ -14,6 +14,7 @@ export enum ErrorCode {
 	InvalidToken = 'INVALID_TOKEN',
 	MethodNotAllowed = 'METHOD_NOT_ALLOWED',
 	NotNullViolation = 'NOT_NULL_VIOLATION',
+	OutOfDate = 'OUT_OF_DATE',
 	RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
 	RecordNotUnique = 'RECORD_NOT_UNIQUE',
 	RequestsExceeded = 'REQUESTS_EXCEEDED',

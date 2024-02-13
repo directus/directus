@@ -1213,6 +1213,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
+  hash:
+    hash: Hash
   icon:
     icon: Ikonica
     description: Prikaži ikonicu
