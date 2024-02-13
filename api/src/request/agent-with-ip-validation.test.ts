@@ -81,3 +81,19 @@ test('Does not block on resolve if IP is allowed', async () => {
 
 	expect(mockSocket.destroy).not.toHaveBeenCalled();
 });
+
+test('Checks each resolved IP', async () => {
+	vi.mocked(isDeniedIp).mockReturnValueOnce(false);
+	vi.mocked(isDeniedIp).mockReturnValueOnce(true);
+
+	const options = { host: 'baddomain' };
+
+	mockAgent.createConnection(options, () => {});
+
+	mockSocket.emit('lookup', null, '192.158.1.38');
+	mockSocket.emit('lookup', null, '127.0.0.1');
+
+	expect(mockSocket.destroy).toHaveBeenCalledWith(
+		new Error(`Requested domain "${options.host}" resolves to a denied IP address`),
+	);
+});
