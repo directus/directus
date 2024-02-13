@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@histoire/plugin-vue": "0.17.9",
+		"@histoire/plugin-vue": "0.17.11",
 		"@vitejs/plugin-vue": "5.0.3",
 		"@vitest/coverage-v8": "1.2.2",
 		"histoire": "0.17.9",
