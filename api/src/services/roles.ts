@@ -20,7 +20,7 @@ export class RolesService extends ItemsService {
 			.andWhere({ admin_access: true })
 			.first();
 
-		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
+		const otherAdminRolesCount = Number(otherAdminRoles?.count ?? 0);
 
 		if (otherAdminRolesCount === 0) {
 			throw new UnprocessableContentError({ reason: `You can't delete the last admin role` });
@@ -91,7 +91,7 @@ export class RolesService extends ItemsService {
 					.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 					.first();
 
-				const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+				const otherAdminUsersCount = Number(otherAdminUsers?.count || 0);
 
 				if (otherAdminUsersCount === 0) {
 					throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
@@ -116,20 +116,18 @@ export class RolesService extends ItemsService {
 			.map((user) => user.id);
 
 		// Active user(s) about to become admin
-		if (
-			usersAddedNonDeactivated.length > 0 &&
-			+(
-				(
-					await this.knex
-						.count('*', { as: 'count' })
-						.from('directus_users')
-						.whereIn('id', usersAddedNonDeactivated)
-						.andWhere({ status: 'active' })
-						.first()
-				)?.count || 0
-			) > 0
-		)
-			return;
+		if (usersAddedNonDeactivated.length > 0) {
+			const userCount = await this.knex
+				.count('*', { as: 'count' })
+				.from('directus_users')
+				.whereIn('id', usersAddedNonDeactivated)
+				.andWhere({ status: 'active' })
+				.first();
+
+			if (Number(userCount?.count ?? 0) > 0) {
+				return;
+			}
+		}
 
 		const otherAdminUsers = await this.knex
 			.count('*', { as: 'count' })
@@ -139,7 +137,7 @@ export class RolesService extends ItemsService {
 			.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 			.first();
 
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+		const otherAdminUsersCount = Number(otherAdminUsers?.count ?? 0);
 
 		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
