@@ -16,13 +16,20 @@ export type BaseCollectionMeta = Pick<
 	| 'system'
 >;
 
-export const systemCollectionRows: BaseCollectionMeta[] = systemData['data'].map((row: Record<string, any>) => ({
-	system: true,
-	...systemData['defaults'],
-	...row,
-}));
+export type DataCollectionMeta = Partial<BaseCollectionMeta> & Pick<BaseCollectionMeta, 'collection' | 'note'>;
 
-export const systemCollectionNames: string[] = systemData['data'].map((row: Record<string, any>) => row['collection']);
+export const systemCollectionRows = (systemData['data'] as DataCollectionMeta[]).map(
+	(row) =>
+		({
+			...(systemData['defaults'] as Partial<BaseCollectionMeta>),
+			...row,
+			system: true,
+		}) as BaseCollectionMeta,
+);
+
+export const systemCollectionNames: string[] = (systemData['data'] as DataCollectionMeta[]).map(
+	(row) => row['collection']!,
+);
 
 export function isSystemCollection(collection: string): boolean {
 	return systemCollectionNames.includes(collection);

@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup';
-import { YAMLPlugin } from "esbuild-yaml";
+import { YAMLPlugin } from 'esbuild-yaml';
 
 const env = process.env.NODE_ENV;
 
