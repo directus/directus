@@ -12,7 +12,6 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemFieldRows } from '@directus/system-data';
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';
@@ -24,6 +23,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { RelationsService } from './relations.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
+
+const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 export class FieldsService {
 	knex: Knex;

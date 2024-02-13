@@ -12,7 +12,8 @@ import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
-import { systemCollectionRows, systemFieldRows } from '@directus/system-data';
+import { systemCollectionRows } from '@directus/system-data';
+import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 
 const logger = useLogger();
 
@@ -66,6 +67,8 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		collections: {},
 		relations: [],
 	};
+
+	const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 	const schemaOverview = await schemaInspector.overview();
 
