@@ -16,5 +16,6 @@ dist/
 *.png
 *.liquid
 *.html
+*.toml
 Dockerfile
 license

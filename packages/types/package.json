@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "11.0.4",
+	"version": "11.0.5",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@types/geojson": "7946.0.13"
+		"@types/geojson": "7946.0.14"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
