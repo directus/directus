@@ -51,7 +51,7 @@
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.2.2",
 		"tmp": "0.2.1",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
 		"vitest": "1.2.2",
 		"vue": "3.4.15"

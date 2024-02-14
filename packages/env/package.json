@@ -1,6 +1,6 @@
 {
 	"name": "@directus/env",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Utilities around using global env configuration",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -30,7 +30,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/node": "18.19.14",
 		"@vitest/coverage-v8": "1.2.2",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
 		"vitest": "1.2.2"
 	},
