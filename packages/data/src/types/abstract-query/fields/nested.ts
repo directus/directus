@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedObjectSingle } from '../common/nested/object.js';
+import type { AbstractQueryFieldNodeNestedSingleObject } from '../common/nested/object.js';
 import type {
 	AbstractQueryFieldNodeNestedSingleRelational,
 	AbstractQueryFieldNodeNestedUnionRelational,
@@ -14,7 +14,7 @@ export interface AbstractQueryFieldNodeNestedSingleOne {
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedObjectSingle;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedSingleObject;
 }
 
 export interface AbstractQueryFieldNodeNestedUnionOne {
