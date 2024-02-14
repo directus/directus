@@ -29,6 +29,9 @@
 		"dev": "NODE_ENV=development tsup",
 		"test": "vitest --watch=false"
 	},
+	"dependencies": {
+		"@directus/system-data": "workspace:*"
+	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/node-fetch": "2.6.11",
