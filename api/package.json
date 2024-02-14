@@ -65,7 +65,7 @@
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
-		"@aws-sdk/client-ses": "3.504.0",
+		"@aws-sdk/client-ses": "3.511.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",
@@ -189,7 +189,7 @@
 		"@types/destroy": "1.0.3",
 		"@types/encodeurl": "1.0.2",
 		"@types/express": "4.17.21",
-		"@types/express-serve-static-core": "4.17.42",
+		"@types/express-serve-static-core": "4.17.43",
 		"@types/fs-extra": "11.0.4",
 		"@types/glob-to-regexp": "0.4.4",
 		"@types/inquirer": "9.0.7",
