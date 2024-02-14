@@ -29,6 +29,7 @@ import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 const logger = useLogger();
@@ -47,7 +48,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
-		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
+		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create',

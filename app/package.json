@@ -38,6 +38,7 @@
 		"@directus/random": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/stores": "workspace:*",
+		"@directus/system-data": "workspace:*",
 		"@directus/themes": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",

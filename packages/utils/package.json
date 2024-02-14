@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
+		"@directus/system-data": "workspace:*",
 		"date-fns": "3.3.1",
 		"fs-extra": "11.2.0",
 		"joi": "17.12.1",
