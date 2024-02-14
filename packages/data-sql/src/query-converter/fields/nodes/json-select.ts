@@ -1,33 +1,29 @@
+import type { AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlQuerySelectJsonNode } from '../../../types/clauses/select/json.js';
-import type { NumberGenerator } from '../../utils/number-generator.js';
+import type { IndexGenerators } from '../../utils/create-index-generators.js';
 
 export function convertJson(
-	path: string[],
 	tableIndex: number,
-	columnName: string,
+	objectPath: AtLeastOneElement<string>,
 	columnIndex: number,
-	parameterIndexGenerator: NumberGenerator,
+	indexGen: IndexGenerators,
 ): {
 	jsonNode: AbstractSqlQuerySelectJsonNode;
-	parameter: string[];
+	parameters: string[];
 } {
-	const pathAsIndexes: number[] = [];
-	const parameter: string[] = [];
+	const columnName = objectPath[0];
+	const parameters = objectPath.slice(1);
 
-	path.forEach((part) => {
-		const index = parameterIndexGenerator.next().value;
-		pathAsIndexes.push(index);
-		parameter.push(part);
-	});
+	const path = parameters.map(() => indexGen.parameter.next().value);
 
 	return {
 		jsonNode: {
 			type: 'json',
 			tableIndex,
-			path: pathAsIndexes,
 			columnName,
 			columnIndex,
+			path,
 		},
-		parameter,
+		parameters,
 	};
 }

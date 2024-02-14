@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest';
 import { convertJson } from './json-select.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { numberGenerator } from '../../utils/number-generator.js';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import type { AtLeastOneElement } from '@directus/data';
 
 test('json select', () => {
 	const tableIndex = randomInteger(0, 100);
@@ -9,10 +10,10 @@ test('json select', () => {
 	const jsonColumnName = randomIdentifier();
 	const attribute1 = randomIdentifier();
 	const attribute2 = randomIdentifier();
-	const path = [attribute1, attribute2];
-	const paramIndeGen = numberGenerator();
+	const objectPath: AtLeastOneElement<string> = [jsonColumnName, attribute1, attribute2];
 
-	const result = convertJson(path, tableIndex, jsonColumnName, columnIndex, paramIndeGen);
+	const indexGen = createIndexGenerators();
+	const result = convertJson(tableIndex, objectPath, columnIndex, indexGen);
 
 	const expected = {
 		jsonNode: {
@@ -22,7 +23,7 @@ test('json select', () => {
 			path: [0, 1],
 			columnIndex,
 		},
-		parameter: [attribute1, attribute2],
+		parameters: [attribute1, attribute2],
 	};
 
 	expect(result).toStrictEqual(expected);

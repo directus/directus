@@ -50,11 +50,10 @@ test('primitives only', () => {
 			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
-		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -112,11 +111,10 @@ test('primitive, fn', () => {
 			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
-		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -250,11 +248,10 @@ test('primitive, fn, m2o', () => {
 			},
 		],
 		subQueries: [],
-		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -337,11 +334,10 @@ test('primitive, o2m', () => {
 			},
 		],
 		subQueries: [expect.any(Function)],
-		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -490,10 +486,9 @@ test('primitive, json path', () => {
 			},
 		],
 		subQueries: [],
-		currentJsonPath: [],
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertFieldNodes(fields, tableIndex, indexGen, [], null, false, false);
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });

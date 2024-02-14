@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNode } from '@directus/data';
+import type { AbstractQueryFieldNode, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
 import { type IndexGenerators } from '../utils/create-index-generators.js';
 import { createJoin } from './nodes/join.js';
@@ -12,7 +12,6 @@ export type FieldConversionResult = {
 	parameters: ParameterTypes[];
 	aliasMapping: AliasMapping;
 	subQueries: SubQuery[];
-	currentJsonPath: string[];
 };
 
 /**
@@ -34,14 +33,11 @@ export const convertFieldNodes = (
 	abstractFields: AbstractQueryFieldNode[],
 	tableIndex: number,
 	indexGen: IndexGenerators,
-	currentJsonPath: string[] = [],
-	jsonColumnName: string | null,
-	isJsonContext: boolean,
-	isLeafOfJson: boolean,
-	parameters: ParameterTypes[] = [],
+	objectPath: AtLeastOneElement<string> | null = null,
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
+	const parameters: ParameterTypes[] = [];
 	const aliasMapping: AliasMapping = [];
 	const subQueries: SubQuery[] = [];
 
@@ -49,20 +45,19 @@ export const convertFieldNodes = (
 		if (abstractField.type === 'primitive') {
 			const columnIndex = indexGen.column.next().value;
 
-			let newNode = null;
+			if (objectPath !== null) {
+				const newObjectPath = [...objectPath, abstractField.field] as AtLeastOneElement<string>;
+				const conversionResult = convertJson(tableIndex, newObjectPath, columnIndex, indexGen);
 
-			if (isLeafOfJson) {
-				const newJsonPath = [...currentJsonPath, abstractField.field];
-				const jsonConversion = convertJson(newJsonPath, tableIndex, jsonColumnName, columnIndex, indexGen.parameter);
-				newNode = jsonConversion.jsonNode;
-				parameters.push(...jsonConversion.parameter);
-				isJsonContext = false;
+				select.push(conversionResult.jsonNode);
+				parameters.push(...conversionResult.parameters);
 			} else {
-				newNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
+				const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
+
+				select.push(selectNode);
 			}
 
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
-			select.push(newNode);
 			continue;
 		}
 
@@ -79,16 +74,7 @@ export const convertFieldNodes = (
 				const tableIndexRelational = indexGen.table.next().value;
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
 
-				const nestedOutput = convertFieldNodes(
-					abstractField.fields,
-					tableIndexRelational,
-					indexGen,
-					currentJsonPath,
-					jsonColumnName,
-					false,
-					false,
-					parameters,
-				);
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				joins.push(sqlJoinNode);
@@ -96,26 +82,16 @@ export const convertFieldNodes = (
 			}
 
 			if (abstractField.nesting.type === 'object-single') {
-				if (!isJsonContext && !isLeafOfJson) {
-					isJsonContext = true;
-					jsonColumnName = abstractField.nesting.fieldName;
-				} else {
-					currentJsonPath = [...currentJsonPath, abstractField.nesting.fieldName];
-				}
-
-				const nestedOutput = convertFieldNodes(
-					abstractField.fields,
-					tableIndex,
-					indexGen,
-					currentJsonPath,
-					jsonColumnName,
-					true,
-					true,
-					parameters,
-				);
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen, [
+					...(objectPath ?? []),
+					abstractField.nesting.fieldName,
+				]);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				select.push(...nestedOutput.clauses.select);
+				joins.push(...nestedOutput.clauses.joins);
+				subQueries.push(...nestedOutput.subQueries);
+				parameters.push(...nestedOutput.parameters);
 			}
 
 			continue;
@@ -156,6 +132,5 @@ export const convertFieldNodes = (
 		subQueries,
 		parameters,
 		aliasMapping,
-		currentJsonPath,
 	};
 };
