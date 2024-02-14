@@ -8,6 +8,7 @@ export function getSystemFieldRowsWithAuthProviders(): FieldMeta[] {
 	return systemFieldRows.map((systemField) => {
 		if (systemField.collection === 'directus_users' && systemField.field === 'provider') {
 			if (!systemField.options) systemField.options = {};
+
 			systemField.options['choices'] = getAuthProviders().map(({ name }) => ({
 				text: formatTitle(name),
 				value: name,
