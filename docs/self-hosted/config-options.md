@@ -335,7 +335,6 @@ Redis is required when you run Directus load balanced across multiple containers
 
 ## Security
 
-
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
 | `KEY`                               | Unique identifier for the project.                                                                                                                                                                   | --                        |
