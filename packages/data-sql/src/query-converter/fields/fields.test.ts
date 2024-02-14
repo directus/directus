@@ -54,6 +54,7 @@ test('primitives only', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -115,6 +116,7 @@ test('primitive, fn', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -252,6 +254,7 @@ test('primitive, fn, m2o', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -338,25 +341,31 @@ test('primitive, o2m', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
 	expect(result).toStrictEqual(expectedResult);
 });
 
 test('primitive, json path', () => {
 	const tableIndex = randomInteger(0, 100);
 	const columnName = randomIdentifier();
+	const columnIndex = 0;
 	const columnAlias = randomIdentifier();
 	const jsonColumnName = randomIdentifier();
-	const attribute1 = randomIdentifier();
-	const attribute1Alias = randomIdentifier();
-	const attribute2 = randomIdentifier();
-	const attribute2Alias = randomIdentifier();
-	const attribute3 = randomIdentifier();
-	const attribute3Alias = randomIdentifier();
-	const attribute4 = randomIdentifier();
-	const attribute4Alias = randomIdentifier();
-	const attribute5 = randomIdentifier();
-	const attribute5Alias = randomIdentifier();
-	const jsonValueAlias = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+
+	const property11 = randomIdentifier();
+	const property11Index = 1;
+	const property11Alias = randomIdentifier();
+	const property12 = randomIdentifier();
+	const property12Alias = randomIdentifier();
+	const property21 = randomIdentifier();
+	const property21Index = 2;
+	const property21Alias = randomIdentifier();
+	const property22 = randomIdentifier();
+	const property22Alias = randomIdentifier();
+	const property31 = randomIdentifier();
+	const property31Index = 3;
+	const property31Alias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
@@ -373,41 +382,41 @@ test('primitive, json path', () => {
 			fields: [
 				{
 					type: 'primitive',
-					field: attribute1,
-					alias: attribute1Alias,
+					field: property11,
+					alias: property11Alias,
 				},
 				{
 					type: 'nested-single-one',
 					nesting: {
 						type: 'object-single',
-						fieldName: attribute2,
+						fieldName: property12,
 					},
 					fields: [
 						{
 							type: 'primitive',
-							field: attribute3,
-							alias: attribute3Alias,
+							field: property21,
+							alias: property21Alias,
 						},
 						{
 							type: 'nested-single-one',
 							nesting: {
 								type: 'object-single',
-								fieldName: attribute4,
+								fieldName: property22,
 							},
 							fields: [
 								{
 									type: 'primitive',
-									field: attribute5,
-									alias: attribute5Alias,
+									field: property31,
+									alias: property31Alias,
 								},
 							],
-							alias: attribute4Alias,
+							alias: property22Alias,
 						},
 					],
-					alias: attribute2Alias,
+					alias: property12Alias,
 				},
 			],
-			alias: jsonValueAlias,
+			alias: jsonColumnAlias,
 		},
 	];
 
@@ -417,66 +426,66 @@ test('primitive, json path', () => {
 				{
 					type: 'primitive',
 					tableIndex,
-					columnName: columnName,
-					columnIndex: 0,
+					columnName,
+					columnIndex,
 				},
 				{
 					type: 'json',
 					tableIndex,
 					columnName: jsonColumnName,
 					path: [0],
-					columnIndex: 1,
+					columnIndex: property11Index,
 				},
 				{
 					type: 'json',
 					tableIndex,
 					columnName: jsonColumnName,
 					path: [1, 2],
-					columnIndex: 2,
+					columnIndex: property21Index,
 				},
 				{
 					type: 'json',
 					tableIndex,
 					columnName: jsonColumnName,
 					path: [3, 4, 5],
-					columnIndex: 3,
+					columnIndex: property31Index,
 				},
 			],
 			joins: [],
 		},
-		parameters: [attribute1, attribute2, attribute3, attribute2, attribute4, attribute5],
+		parameters: [property11, property12, property21, property12, property22, property31],
 		aliasMapping: [
 			{
 				type: 'root',
 				alias: columnAlias,
-				columnIndex: 0,
+				columnIndex,
 			},
 			{
 				type: 'nested',
-				alias: jsonValueAlias,
+				alias: jsonColumnAlias,
 				children: [
 					{
 						type: 'root',
-						alias: attribute1Alias,
-						columnIndex: 1,
+						alias: property11Alias,
+						columnIndex: property11Index,
 					},
 					{
 						type: 'nested',
-						alias: attribute2Alias,
+						alias: property12Alias,
 						children: [
 							{
 								type: 'root',
-								alias: attribute3Alias,
-								columnIndex: 2,
+								alias: property21Alias,
+								columnIndex: property21Index,
 							},
 							{
 								type: 'nested',
-								alias: attribute4Alias,
+								alias: property22Alias,
 								children: [
 									{
 										type: 'root',
-										alias: attribute5Alias,
-										columnIndex: 3,
+										alias: property31Alias,
+										columnIndex: property31Index,
 									},
 								],
 							},
@@ -490,5 +499,6 @@ test('primitive, json path', () => {
 
 	const indexGen = createIndexGenerators();
 	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
 	expect(result).toStrictEqual(expectedResult);
 });
