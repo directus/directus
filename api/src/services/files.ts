@@ -25,6 +25,7 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
+import { isAxiosError } from 'axios';
 
 const env = useEnv();
 const logger = useLogger();
@@ -373,11 +374,13 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 				decompress: false,
 			});
-		} catch (err: any) {
-			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
+		} catch (error: any) {
+			logger.warn(`Couldn't fetch file from URL "${importURL}"${error.message ? `: ${error.message}` : ''}`);
+			logger.trace(error);
+
 			throw new ServiceUnavailableError({
 				service: 'external-file',
-				reason: `Couldn't fetch file from url "${importURL}"`,
+				reason: `Couldn't fetch file from URL "${importURL}"`,
 			});
 		}
 
