@@ -19,35 +19,21 @@ type ParsedLink = Omit<Link, 'url'> & {
 	href?: string;
 };
 
-type Props = {
-	links: Link[];
-	collection: string;
-	primaryKey?: PrimaryKey;
-};
-
-const props = withDefaults(defineProps<Props>(), {
-	links: () => [],
-});
+const props = withDefaults(
+	defineProps<{
+		links: Link[];
+		collection: string;
+		primaryKey?: PrimaryKey;
+	}>(),
+	{
+		links: () => [],
+	},
+);
 
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
 const { primaryKey } = toRefs(props);
-
-/**
- * Get all deduplicated relational fields from the link-templates.
- * For example:
- * [ "related.field", "languages.code" ]
- */
-function getRelatedFieldsFromTemplates() {
-	const allFields = props.links?.flatMap((link) => (!link.url ? [] : getFieldsFromTemplate(link.url)));
-
-	return (
-		[...new Set(allFields)]
-			// filter out non-relations, since they should be included in the values already
-			.filter((value) => value.includes('.'))
-	);
-}
 
 watch(
 	primaryKey,
@@ -64,24 +50,28 @@ watch(
 				},
 			});
 
-			// Pick only non-arrays because we cant render those types of relations
-			// For example a M2M relation will return an array
+			/*
+			 * Pick only non-arrays because we can't render those types of relations.
+			 * For example, a M2M relation would return an array.
+			 */
 			resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
 		} catch (err) {
 			unexpectedError(err);
 		}
 	},
-	// Immediate for fetching when opening a new tab directly
 	{ immediate: true },
 );
 
-const linksParsed = computed(
+const linksParsed = computed<ParsedLink[]>(
 	() =>
 		props.links?.map((link) => {
-			// Resolve related fields for interpolation
-			// If the vform already has some related fields inside we use them
-			// because those represent the current unstaged edits
-			// Else we use API responses to resolve those
+			/*
+			 * Resolve related fields for interpolation.
+			 * If the values from v-form already include related fields,
+			 * we use them because those represent the current unstaged edits.
+			 * Otherwise we use the fetched values from the API.
+			 */
+
 			const scope = { ...values.value };
 
 			Object.keys(resolvedRelationalValues.value).forEach((key) => {
@@ -92,8 +82,10 @@ const linksParsed = computed(
 
 			const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
-			// This incorrectly matches new links starting with two slashes but(!)
-			// updating this line would change existing behavior
+			/*
+			 * This incorrectly matches new links starting with two slashes but(!)
+			 * updating this line would change existing behavior.
+			 */
 			const isInternalLink = interpolatedUrl?.startsWith('/');
 
 			return {
@@ -102,9 +94,24 @@ const linksParsed = computed(
 				label: link.label,
 				to: isInternalLink ? interpolatedUrl : undefined,
 				href: isInternalLink ? undefined : interpolatedUrl,
-			} satisfies ParsedLink as ParsedLink;
+			};
 		}),
 );
+
+/**
+ * Get all deduplicated relational fields from the link-templates.
+ * For example:
+ * [ "related.field", "languages.code" ]
+ */
+function getRelatedFieldsFromTemplates() {
+	const allFields = props.links?.flatMap((link) => (!link.url ? [] : getFieldsFromTemplate(link.url)));
+
+	const deduplicatedFields = [...new Set(allFields)];
+
+	const relationalFields = deduplicatedFields.filter((value) => value.includes('.'));
+
+	return relationalFields;
+}
 </script>
 
 <template>
