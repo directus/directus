@@ -1127,8 +1127,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 18.19.14
-        version: 18.19.14
+        specifier: 18.19.15
+        version: 18.19.15
       '@types/pg':
         specifier: 8.11.0
         version: 8.11.0
@@ -1149,7 +1149,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.14)
+        version: 1.2.2(@types/node@18.19.15)
 
   packages/data-sql:
     dependencies:
