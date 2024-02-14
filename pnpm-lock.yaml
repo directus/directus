@@ -1534,8 +1534,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 18.19.14
-        version: 18.19.14
+        specifier: 18.19.15
+        version: 18.19.15
       '@types/semver':
         specifier: 7.5.7
         version: 7.5.7
@@ -1547,7 +1547,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.14)
+        version: 1.2.2(@types/node@18.19.15)
 
   packages/schema:
     dependencies:
