@@ -1170,8 +1170,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@types/node':
-        specifier: 18.19.14
-        version: 18.19.14
+        specifier: 18.19.15
+        version: 18.19.15
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8
@@ -1189,7 +1189,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.2.2
-        version: 1.2.2(@types/node@18.19.14)
+        version: 1.2.2(@types/node@18.19.15)
 
   packages/env:
     dependencies:
