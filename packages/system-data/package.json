@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
-		"dev": "NODE_ENV=production tsup"
+		"dev": "NODE_ENV=development tsup"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
