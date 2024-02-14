@@ -85,7 +85,7 @@ const linksParsed = computed(
 			const scope = { ...values.value };
 
 			Object.keys(resolvedRelationalValues.value).forEach((key) => {
-				if (scope[key]?.constructor !== Object) {
+				if (scope[key]?.constructor !== Object && scope[key] !== null) {
 					scope[key] = resolvedRelationalValues.value[key];
 				}
 			});
