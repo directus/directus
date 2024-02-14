@@ -5,5 +5,8 @@
 		"lib": ["ES2020"],
 		"types": ["esbuild-yaml/types"]
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/index.ts"]
+	}
 }
