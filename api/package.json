@@ -107,7 +107,7 @@
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
 		"directus": "workspace:*",
-		"dotenv": "16.4.1",
+		"dotenv": "16.4.4",
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",
 		"execa": "8.0.1",
