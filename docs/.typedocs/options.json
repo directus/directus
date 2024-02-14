@@ -9,6 +9,7 @@
 		"../../packages/random",
 		"../../sdk",
 		"../../packages/stores",
+		"../../packages/system-data",
 		"../../packages/themes",
 		"../../packages/types",
 		"../../packages/update-check"

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useItem } from '@/composables/use-item';
-import { useCollection } from '@directus/composables';
-import { RELATIONAL_TYPES } from '@directus/constants';
-import { Query } from '@directus/types';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { omit } from 'lodash';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { useApi } from '@directus/composables';
+import { PrimaryKey } from '@directus/types';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { pickBy } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRefs, watch } from 'vue';
 
 type Link = {
 	icon: string;
@@ -15,65 +14,103 @@ type Link = {
 	url?: string;
 };
 
-type Props = {
-	links: Link[];
-	collection: string;
-	primaryKey: string;
+type ParsedLink = Omit<Link, 'url'> & {
+	to?: string;
+	href?: string;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-	links: () => [],
-});
+const props = withDefaults(
+	defineProps<{
+		links: Link[];
+		collection: string;
+		primaryKey?: PrimaryKey;
+	}>(),
+	{
+		links: () => [],
+	},
+);
 
+const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
+const resolvedRelationalValues = ref<Record<string, any>>({});
+const { primaryKey } = toRefs(props);
 
-const { collection, primaryKey } = toRefs(props);
+watch(
+	primaryKey,
+	async (value) => {
+		if (!value || value === '+') return;
 
-const query = computed(() => {
-	const fields = new Set();
+		const relatedFieldsFromTemplates = getRelatedFieldsFromTemplates();
+		if (relatedFieldsFromTemplates.length === 0) return;
 
-	props.links.forEach((link) => {
-		getFieldsFromTemplate(link.url ?? '').forEach((field) => fields.add(field));
-	});
+		try {
+			const response = await api.get(`${getEndpoint(props.collection)}/${value}`, {
+				params: {
+					fields: relatedFieldsFromTemplates,
+				},
+			});
 
-	return {
-		fields: Array.from(fields),
-	} as Query;
-});
-
-const { item } = useItem(collection, primaryKey, query);
-const { fields } = useCollection(collection);
-
-const fullItem = computed(() => {
-	const itemValue = item.value ?? {};
-
-	for (const field of fields.value) {
-		if (
-			field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special as (typeof RELATIONAL_TYPES)[number]))
-		) {
-			continue;
+			/*
+			 * Pick only non-arrays because we can't render those types of relations.
+			 * For example, a M2M relation would return an array.
+			 */
+			resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
+		} catch (err) {
+			unexpectedError(err);
 		}
+	},
+	{ immediate: true },
+);
 
-		itemValue[field.field] = values.value[field.field];
-	}
+const linksParsed = computed<ParsedLink[]>(() =>
+	props.links.map((link) => {
+		/*
+		 * Resolve related fields for interpolation.
+		 * If the values from v-form already include related fields,
+		 * we use them because those represent the current unstaged edits.
+		 * Otherwise we use the fetched values from the API.
+		 */
 
-	return itemValue;
-});
+		const scope = { ...values.value };
 
-const linksParsed = computed(() => {
-	return props.links.map((link) => {
-		const parsedLink = omit<Record<string, any>>(link, ['url']);
-		const linkValue = render(link.url ?? '', fullItem.value ?? {});
+		Object.keys(resolvedRelationalValues.value).forEach((key) => {
+			if (scope[key]?.constructor !== Object && scope[key] !== null) {
+				scope[key] = resolvedRelationalValues.value[key];
+			}
+		});
 
-		if (linkValue.startsWith('/')) {
-			parsedLink.to = linkValue;
-		} else {
-			parsedLink.href = linkValue;
-		}
+		const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
-		return parsedLink;
-	});
-});
+		/*
+		 * This incorrectly matches new links starting with two slashes but(!)
+		 * updating this line would change existing behavior.
+		 */
+		const isInternalLink = interpolatedUrl?.startsWith('/');
+
+		return {
+			icon: link.icon,
+			type: link.type,
+			label: link.label,
+			to: isInternalLink ? interpolatedUrl : undefined,
+			href: isInternalLink ? undefined : interpolatedUrl,
+		};
+	}),
+);
+
+/**
+ * Get all deduplicated relational fields from the link-templates.
+ * For example:
+ * [ "related.field", "languages.code" ]
+ */
+function getRelatedFieldsFromTemplates() {
+	const allFields = props.links?.flatMap((link) => (!link.url ? [] : getFieldsFromTemplate(link.url)));
+
+	const deduplicatedFields = [...new Set(allFields)];
+
+	const relationalFields = deduplicatedFields.filter((value) => value.includes('.'));
+
+	return relationalFields;
+}
 </script>
 
 <template>
