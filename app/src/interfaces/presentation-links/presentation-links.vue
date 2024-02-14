@@ -72,7 +72,6 @@ watch(
 		}
 	},
 	// Immediate for fetching when opening a new tab directly
-	// Once so we avoid unnecessary refetches
 	{ immediate: true },
 );
 
