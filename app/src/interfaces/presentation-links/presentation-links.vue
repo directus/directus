@@ -62,40 +62,39 @@ watch(
 	{ immediate: true },
 );
 
-const linksParsed = computed<ParsedLink[]>(
-	() =>
-		props.links.map((link) => {
-			/*
-			 * Resolve related fields for interpolation.
-			 * If the values from v-form already include related fields,
-			 * we use them because those represent the current unstaged edits.
-			 * Otherwise we use the fetched values from the API.
-			 */
+const linksParsed = computed<ParsedLink[]>(() =>
+	props.links.map((link) => {
+		/*
+		 * Resolve related fields for interpolation.
+		 * If the values from v-form already include related fields,
+		 * we use them because those represent the current unstaged edits.
+		 * Otherwise we use the fetched values from the API.
+		 */
 
-			const scope = { ...values.value };
+		const scope = { ...values.value };
 
-			Object.keys(resolvedRelationalValues.value).forEach((key) => {
-				if (scope[key]?.constructor !== Object && scope[key] !== null) {
-					scope[key] = resolvedRelationalValues.value[key];
-				}
-			});
+		Object.keys(resolvedRelationalValues.value).forEach((key) => {
+			if (scope[key]?.constructor !== Object && scope[key] !== null) {
+				scope[key] = resolvedRelationalValues.value[key];
+			}
+		});
 
-			const interpolatedUrl = link.url ? render(link.url, scope) : '';
+		const interpolatedUrl = link.url ? render(link.url, scope) : '';
 
-			/*
-			 * This incorrectly matches new links starting with two slashes but(!)
-			 * updating this line would change existing behavior.
-			 */
-			const isInternalLink = interpolatedUrl?.startsWith('/');
+		/*
+		 * This incorrectly matches new links starting with two slashes but(!)
+		 * updating this line would change existing behavior.
+		 */
+		const isInternalLink = interpolatedUrl?.startsWith('/');
 
-			return {
-				icon: link.icon,
-				type: link.type,
-				label: link.label,
-				to: isInternalLink ? interpolatedUrl : undefined,
-				href: isInternalLink ? undefined : interpolatedUrl,
-			};
-		}),
+		return {
+			icon: link.icon,
+			type: link.type,
+			label: link.label,
+			to: isInternalLink ? interpolatedUrl : undefined,
+			href: isInternalLink ? undefined : interpolatedUrl,
+		};
+	}),
 );
 
 /**
