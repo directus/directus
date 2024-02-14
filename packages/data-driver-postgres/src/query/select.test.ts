@@ -1,7 +1,7 @@
 import type { AbstractSqlClauses, AbstractSqlQuerySelectJsonNode } from '@directus/data-sql';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import { json, select } from './select.js';
-import { randomIdentifier, randomInteger } from '@directus/random';
 
 test('With multiple provided fields', () => {
 	const tableName1 = randomIdentifier();

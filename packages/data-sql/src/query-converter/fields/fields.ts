@@ -1,11 +1,11 @@
 import type { AbstractQueryFieldNode, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ParameterTypes, SubQuery } from '../../types/index.js';
 import { type IndexGenerators } from '../utils/create-index-generators.js';
+import { convertFieldFn } from './nodes/function.js';
 import { createJoin } from './nodes/join.js';
+import { convertJson } from './nodes/json-select.js';
 import { getNestedMany } from './nodes/nested-manys.js';
 import { createPrimitiveSelect } from './nodes/primitive-select.js';
-import { convertFieldFn } from './nodes/function.js';
-import { convertJson } from './nodes/json-select.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
@@ -46,7 +46,8 @@ export const convertFieldNodes = (
 			const columnIndex = indexGen.column.next().value;
 
 			if (objectPath !== null) {
-				const newObjectPath = [...objectPath, abstractField.field] as AtLeastOneElement<string>;
+				const newObjectPath: AtLeastOneElement<string> = [...objectPath, abstractField.field];
+
 				const conversionResult = convertJson(tableIndex, newObjectPath, columnIndex, indexGen);
 
 				select.push(conversionResult.jsonNode);
@@ -72,6 +73,7 @@ export const convertFieldNodes = (
 
 			if (abstractField.nesting.type === 'relational-single') {
 				const tableIndexRelational = indexGen.table.next().value;
+
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
 
 				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
@@ -82,10 +84,9 @@ export const convertFieldNodes = (
 			}
 
 			if (abstractField.nesting.type === 'object-single') {
-				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen, [
-					...(objectPath ?? []),
-					abstractField.nesting.fieldName,
-				]);
+				const newObjectPath: AtLeastOneElement<string> = [...(objectPath ?? []), abstractField.nesting.fieldName];
+
+				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen, newObjectPath);
 
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				select.push(...nestedOutput.clauses.select);
@@ -111,18 +112,23 @@ export const convertFieldNodes = (
 			 */
 
 			const nestedManyResult = getNestedMany(abstractField, tableIndex);
+
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
+
 			continue;
 		}
 
 		if (abstractField.type === 'fn') {
 			const columnIndex = indexGen.column.next().value;
-			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
+
 			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
+
+			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
+
 			continue;
 		}
 	}
