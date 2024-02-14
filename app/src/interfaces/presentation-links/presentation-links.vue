@@ -64,7 +64,7 @@ watch(
 
 const linksParsed = computed<ParsedLink[]>(
 	() =>
-		props.links?.map((link) => {
+		props.links.map((link) => {
 			/*
 			 * Resolve related fields for interpolation.
 			 * If the values from v-form already include related fields,
