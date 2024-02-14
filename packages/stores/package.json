@@ -31,9 +31,9 @@
 		"@directus/tsconfig": "workspace:*",
 		"@vueuse/shared": "10.7.2",
 		"pinia": "2.1.7",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
-		"vue": "3.4.15"
+		"vue": "3.4.19"
 	},
 	"peerDependencies": {
 		"pinia": "2",
