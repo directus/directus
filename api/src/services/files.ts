@@ -25,7 +25,6 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
-import { isAxiosError } from 'axios';
 
 const env = useEnv();
 const logger = useLogger();
