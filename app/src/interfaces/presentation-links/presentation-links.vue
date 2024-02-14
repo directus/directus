@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, watch } from 'vue';
+import { computed, inject, ref, toRefs, watch } from 'vue';
 
 type Link = {
 	icon: string;
@@ -31,39 +32,35 @@ const props = withDefaults(defineProps<Props>(), {
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
+const { primaryKey } = toRefs(props);
 
 /**
  * Get all deduplicated relational fields from the link-templates.
  * For example:
  * [ "related.field", "languages.code" ]
  */
-const relatedFieldsFromTemplates = computed(
-	() =>
-		props.links
-			?.flatMap((link) => {
-				if (!link.url) return [];
-				return (
-					getFieldsFromTemplate(link.url)
-						// filter out any duplicates for this link
-						.filter((value, index, array) => array.indexOf(value) === index)
-						// filter out non-relations, since they should be included in the values already
-						.filter((value) => value.includes('.'))
-				);
-			})
-			// filter out any duplicates between all links
-			.filter((value, index, array) => array.indexOf(value) === index),
-);
+function getRelatedFieldsFromTemplates() {
+	const allFields = props.links?.flatMap((link) => (!link.url ? [] : getFieldsFromTemplate(link.url)));
+
+	return (
+		[...new Set(allFields)]
+			// filter out non-relations, since they should be included in the values already
+			.filter((value) => value.includes('.'))
+	);
+}
 
 watch(
-	relatedFieldsFromTemplates,
+	primaryKey,
 	async (value) => {
-		// No need to fetch if there are no fields or we're creating a new item
-		if (value.length === 0 || props.primaryKey === '+' || !props.primaryKey) return;
+		if (!value || value === '+') return;
+
+		const relatedFieldsFromTemplates = getRelatedFieldsFromTemplates();
+		if (relatedFieldsFromTemplates.length === 0) return;
 
 		try {
-			const response = await api.get(`${getEndpoint(props.collection)}/${props.primaryKey}`, {
+			const response = await api.get(`${getEndpoint(props.collection)}/${value}`, {
 				params: {
-					fields: value,
+					fields: relatedFieldsFromTemplates,
 				},
 			});
 
@@ -71,13 +68,12 @@ watch(
 			// For example a M2M relation will return an array
 			resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
 		} catch (err) {
-			// eslint-disable-next-line no-console
-			console.warn('Presentation-Link: Fetching related fields failed');
+			unexpectedError(err);
 		}
 	},
 	// Immediate for fetching when opening a new tab directly
 	// Once so we avoid unnecessary refetches
-	{ immediate: true, once: true },
+	{ immediate: true },
 );
 
 const linksParsed = computed(
