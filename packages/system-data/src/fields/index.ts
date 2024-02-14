@@ -1,7 +1,3 @@
-import type { FieldMeta } from '@directus/types';
-
-export const systemFieldRows: FieldMeta[] = [];
-
 import defaults from './_defaults.yaml';
 
 import activityFields from './activity.yaml';
@@ -28,6 +24,10 @@ import operationFields from './operations.yaml';
 import translationFields from './translations.yaml';
 import versionFields from './versions.yaml';
 import extensionFields from './extensions.yaml';
+
+import { FieldMeta } from '../types.js';
+
+export const systemFieldRows: FieldMeta[] = [];
 
 processFields(activityFields);
 processFields(collectionFields);
@@ -58,24 +58,12 @@ function processFields(systemFields: Record<string, any>) {
 	const { fields, table } = systemFields as { fields: FieldMeta[]; table: string };
 
 	fields.forEach((field, index) => {
-		const systemField: FieldMeta = {
+		systemFieldRows.push({
 			system: true,
 			...defaults,
 			...field,
 			collection: table,
 			sort: index + 1,
-		};
-
-		// Dynamically populate auth providers field TODO move back to the API
-		// if (systemField.collection === 'directus_users' && systemField.field === 'provider') {
-		// 	getAuthProviders().forEach(({ name }) => {
-		// 		systemField.options?.['choices']?.push({
-		// 			text: formatTitle(name),
-		// 			value: name,
-		// 		});
-		// 	});
-		// }
-
-		systemFieldRows.push(systemField);
+		});
 	});
 }

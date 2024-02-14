@@ -1,4 +1,4 @@
-import type { RelationMeta } from '@directus/types';
+import { RelationMeta } from '../types.js';
 import systemData from './relations.yaml';
 
 export const systemRelationRows = (systemData['data'] as RelationMeta[]).map(

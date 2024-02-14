@@ -1,22 +1,6 @@
-import type { CollectionMeta } from '@directus/types';
+import { BaseCollectionMeta, DataCollectionMeta } from '../types.js';
 import systemData from './collections.yaml';
 
-export type BaseCollectionMeta = Pick<
-	CollectionMeta,
-	| 'collection'
-	| 'note'
-	| 'hidden'
-	| 'singleton'
-	| 'icon'
-	| 'translations'
-	| 'versioning'
-	| 'item_duplication_fields'
-	| 'accountability'
-	| 'group'
-	| 'system'
->;
-
-export type DataCollectionMeta = Partial<BaseCollectionMeta> & Pick<BaseCollectionMeta, 'collection' | 'note'>;
 
 export const systemCollectionRows = (systemData['data'] as DataCollectionMeta[]).map(
 	(row) =>

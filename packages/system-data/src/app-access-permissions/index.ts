@@ -1,6 +1,6 @@
-import type { Permission } from '@directus/types';
 import schemaPermissionsRaw from './schema-access-permissions.yaml';
 import permissions from './app-access-permissions.yaml';
+import { DataPermission, Permission } from '../types.js';
 
 const defaults: Partial<Permission> = {
 	role: null,
@@ -10,8 +10,6 @@ const defaults: Partial<Permission> = {
 	fields: ['*'],
 	system: true,
 };
-
-type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;
 
 export const schemaPermissions = (schemaPermissionsRaw as unknown as DataPermission[]).map(
 	(row) => ({ ...defaults, ...row }) as Permission,
