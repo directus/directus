@@ -202,10 +202,6 @@ export class RolesService extends ItemsService {
 	}
 
 	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		for (const partialItem of data) {
-			this.assertValidIpAccess(partialItem);
-		}
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const keys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
