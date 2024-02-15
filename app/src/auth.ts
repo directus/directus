@@ -39,9 +39,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 
 	const response = await sdk.login(email, password, options);
 
-	// Add the header to the API handler for every request
-	api.defaults.headers.common['Authorization'] = `Bearer ${response.access_token}`;
-
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	appStore.authenticated = true;
 
@@ -82,21 +79,28 @@ idleTracker.on('show', () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
+	const serverStore = useServerStore();
 
 	// Allow refresh during initial page load
-	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
-	else if (!appStore.authenticated) return;
+	if (!firstRefresh && !appStore.authenticated) return;
 
 	try {
 		const response = await sdk.refresh();
 
-		if (!response.access_token) throw new Error();
+		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 
-		// Add the header to the old API handler for every request
-		api.defaults.headers.common['Authorization'] = `Bearer ${response.access_token}`;
+		if (firstRefresh) {
+			firstRefresh = false;
+			appStore.authenticated = true;
 
-		return response.access_token;
+			// Reload server store to get authenticated data
+			serverStore.hydrate();
+
+			await hydrate();
+		}
+
+		return;
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 		return;
