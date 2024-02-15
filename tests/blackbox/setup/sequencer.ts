@@ -6,11 +6,13 @@ import { sequentialTestsList } from './sequential-tests';
 export default class CustomSequencer extends BaseSequencer {
 	override async sort(files: WorkspaceSpec[]) {
 		if (files.length > 1) {
+			const list = sequentialTestsList[files[0]![0].config.name as 'db' | 'common'];
+
 			// If specified, only run these tests sequentially
-			if (sequentialTestsList.only.length > 0) {
+			if (list.only.length > 0) {
 				const onlyTests = [];
 
-				for (const sequentialTest of sequentialTestsList.only) {
+				for (const sequentialTest of list.only) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});
@@ -26,7 +28,7 @@ export default class CustomSequencer extends BaseSequencer {
 
 				files = onlyTests;
 			} else {
-				for (const sequentialTest of sequentialTestsList.before.slice().reverse()) {
+				for (const sequentialTest of list.before.slice().reverse()) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});
@@ -40,7 +42,7 @@ export default class CustomSequencer extends BaseSequencer {
 					}
 				}
 
-				for (const sequentialTest of sequentialTestsList.after) {
+				for (const sequentialTest of list.after) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});

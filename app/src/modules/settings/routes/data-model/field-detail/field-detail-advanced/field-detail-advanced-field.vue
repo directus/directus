@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+import { getCurrentLanguage } from '@/lang/get-current-language';
 
 const { t } = useI18n();
 const fieldDetailStore = useFieldDetailStore();
@@ -65,7 +66,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 							},
 						},
 						schema: {
-							default_value: 'en-US',
+							default_value: getCurrentLanguage(),
 						},
 					},
 					{

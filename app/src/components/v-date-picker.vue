@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 });
 
-const emit = defineEmits(['update:modelValue', 'close']);
+const emit = defineEmits<{ 'update:modelValue': [value: string | null]; close: [] }>();
 
 const { t } = useI18n();
 
@@ -29,7 +29,7 @@ let flatpickr: Flatpickr.Instance | null;
 
 onMounted(async () => {
 	if (wrapper.value) {
-		const flatpickrLocale = await getFlatpickrLocale();
+		const flatpickrLocale = getFlatpickrLocale();
 		flatpickr = Flatpickr(wrapper.value as Node, { ...flatpickrOptions.value, locale: flatpickrLocale } as any);
 	}
 
@@ -63,11 +63,11 @@ const defaultOptions = {
 	wrap: true,
 
 	onChange(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
-		const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+		const selectedDate = selectedDates.length > 0 ? (selectedDates as [Date])[0] : null;
 		emitValue(selectedDate);
 	},
 	onClose(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
-		const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+		const selectedDate = selectedDates.length > 0 ? (selectedDates as [Date])[0] : null;
 		emitValue(selectedDate);
 	},
 	onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {

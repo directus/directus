@@ -101,6 +101,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	} finally {
 		resumeQueue();
 	}
+
+	return;
 }
 
 export enum LogoutReason {

@@ -12,6 +12,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
+import { isSystemCollection } from '@directus/system-data';
 
 const { t } = useI18n();
 
@@ -25,7 +26,7 @@ const collections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.meta,
+				(collection) => isSystemCollection(collection.collection) === false && collection.meta,
 			),
 			['meta.sort', 'collection'],
 		),
@@ -97,7 +98,7 @@ const tableCollections = computed(() => {
 		sortBy(
 			collectionsStore.collections.filter(
 				(collection) =>
-					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema,
+					isSystemCollection(collection.collection) === false && !!collection.meta === false && collection.schema,
 			),
 			['meta.sort', 'collection'],
 		),
@@ -108,7 +109,7 @@ const systemCollections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections
-				.filter((collection) => collection.collection.startsWith('directus_') === true)
+				.filter((collection) => isSystemCollection(collection.collection) === true)
 				.map((collection) => ({ ...collection, icon: 'settings' })),
 			'collection',
 		),

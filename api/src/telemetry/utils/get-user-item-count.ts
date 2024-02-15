@@ -1,6 +1,7 @@
 import { type Knex } from 'knex';
 import { getSchema } from '../../utils/get-schema.js';
 import { getItemCount } from './get-item-count.js';
+import { isSystemCollection } from '@directus/system-data';
 
 export interface UserItemCount {
 	collections: number;
@@ -19,7 +20,7 @@ export const getUserItemCount = async (db: Knex): Promise<UserItemCount> => {
 	const schema = await getSchema({ database: db });
 
 	const userCollections = Object.keys(schema.collections).filter(
-		(collection) => collection.startsWith('directus_') === false,
+		(collection) => isSystemCollection(collection) === false,
 	);
 
 	const counts = await getItemCount(db, userCollections);

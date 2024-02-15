@@ -1,82 +1,77 @@
-import { expect, test, vi, afterAll, beforeEach } from 'vitest';
-import { convertFieldNodes, type FieldConversionResult } from './fields.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
-
-afterAll(() => {
-	vi.restoreAllMocks();
-});
-
-vi.mock('../../utils/create-unique-alias.js', () => ({
-	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
-}));
-
-let randomPrimitiveField1: string;
-let randomPrimitiveField2: string;
-let randomPrimitiveFieldAlias1: string;
-let randomPrimitiveFieldAlias2: string;
-let randomCollection: string;
-
-beforeEach(() => {
-	randomPrimitiveField1 = randomIdentifier();
-	randomPrimitiveField2 = randomIdentifier();
-	randomPrimitiveFieldAlias1 = randomIdentifier();
-	randomPrimitiveFieldAlias2 = randomIdentifier();
-	randomCollection = randomIdentifier();
-});
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
+import { createIndexGenerators } from '../utils/create-index-generators.js';
+import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 
 test('primitives only', () => {
+	const tableIndex = randomInteger(0, 100);
+	const column1Name = randomIdentifier();
+	const column1Index = 0;
+	const column1Alias = randomIdentifier();
+	const column2Name = randomIdentifier();
+	const column2Index = 1;
+	const column2Alias = randomIdentifier();
+
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: randomPrimitiveField1,
-			alias: randomPrimitiveFieldAlias1,
+			field: column1Name,
+			alias: column1Alias,
 		},
 		{
 			type: 'primitive',
-			field: randomPrimitiveField2,
-			alias: randomPrimitiveFieldAlias2,
+			field: column2Name,
+			alias: column2Alias,
 		},
 	];
 
-	const expected: FieldConversionResult = {
+	const expectedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomPrimitiveField1,
-					as: `${randomPrimitiveField1}_RANDOM`,
+					tableIndex,
+					columnName: column1Name,
+					columnIndex: column1Index,
 				},
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomPrimitiveField2,
-					as: `${randomPrimitiveField2}_RANDOM`,
+					tableIndex,
+					columnName: column2Name,
+					columnIndex: column2Index,
 				},
 			],
 			joins: [],
 		},
 		parameters: [],
 		aliasMapping: [
-			{ type: 'root', alias: randomPrimitiveFieldAlias1, column: `${randomPrimitiveField1}_RANDOM` },
-			{ type: 'root', alias: randomPrimitiveFieldAlias2, column: `${randomPrimitiveField2}_RANDOM` },
+			{ type: 'root', alias: column1Alias, columnIndex: column1Index },
+			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes(randomCollection, fields, idGen);
-	expect(result).toStrictEqual(expected);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('primitive, fn', () => {
+	const tableIndex = randomInteger(0, 100);
+	const column1Name = randomIdentifier();
+	const column1Index = 0;
+	const column1Alias = randomIdentifier();
+	const column2Name = randomIdentifier();
+	const column2Index = 1;
+	const column2Alias = randomIdentifier();
+
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: randomPrimitiveField1,
-			alias: randomPrimitiveFieldAlias1,
+			field: column1Name,
+			alias: column1Alias,
 		},
 		{
 			type: 'fn',
@@ -84,19 +79,19 @@ test('primitive, fn', () => {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			field: randomPrimitiveField2,
-			alias: randomPrimitiveFieldAlias2,
+			field: column2Name,
+			alias: column2Alias,
 		},
 	];
 
-	const expected: FieldConversionResult = {
+	const expectedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomPrimitiveField1,
-					as: `${randomPrimitiveField1}_RANDOM`,
+					tableIndex,
+					columnName: column1Name,
+					columnIndex: column1Index,
 				},
 				{
 					type: 'fn',
@@ -104,65 +99,74 @@ test('primitive, fn', () => {
 						type: 'extractFn',
 						fn: 'month',
 					},
-					table: randomCollection,
-					column: randomPrimitiveField2,
-					as: `month_${randomPrimitiveField2}_RANDOM`,
+					tableIndex,
+					columnName: column2Name,
+					columnIndex: column2Index,
 				},
 			],
 			joins: [],
 		},
 		parameters: [],
 		aliasMapping: [
-			{ type: 'root', alias: randomPrimitiveFieldAlias1, column: `${randomPrimitiveField1}_RANDOM` },
-			{ type: 'root', alias: randomPrimitiveFieldAlias2, column: `month_${randomPrimitiveField2}_RANDOM` },
+			{ type: 'root', alias: column1Alias, columnIndex: column1Index },
+			{ type: 'root', alias: column2Alias, columnIndex: column2Index },
 		],
 		subQueries: [],
 	};
 
-	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes(randomCollection, fields, idGen);
-	expect(result).toStrictEqual(expected);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('primitive, fn, m2o', () => {
-	const randomJoinCurrentField = randomIdentifier();
-	const randomExternalCollection = randomIdentifier();
-	const randomExternalStore = randomIdentifier();
-	const randomExternalField = randomIdentifier();
-	const randomJoinNodeField = randomIdentifier();
-	const randomJoinNodeFieldAlias = randomIdentifier();
-	const randomPrimitiveFieldFn = randomIdentifier();
-	const randomPrimitiveFieldFnAlias = randomIdentifier();
-	const randomNestedAlias = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const column1Name = randomIdentifier();
+	const column1Index = 0;
+	const column1Alias = randomIdentifier();
+	const column2Name = randomIdentifier();
+	const column2Index = 2;
+	const column2Alias = randomIdentifier();
+	const foreignKeyColumnName = randomIdentifier();
+
+	const externalStore = randomIdentifier();
+	const externalTableName = randomIdentifier();
+	const externalTableIndex = 0;
+	const externalAlias = randomIdentifier();
+	const externalColumnName = randomIdentifier();
+	const externalColumnIndex = 1;
+	const externalColumnAlias = randomIdentifier();
+	const externalKeyColumnName = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: randomPrimitiveField1,
-			alias: randomPrimitiveFieldAlias1,
+			field: column1Name,
+			alias: column1Alias,
 		},
 		{
 			type: 'nested-single-one',
 			fields: [
 				{
 					type: 'primitive',
-					field: randomJoinNodeField,
-					alias: randomJoinNodeFieldAlias,
+					field: externalColumnName,
+					alias: externalColumnAlias,
 				},
 			],
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
-					fields: [randomJoinCurrentField],
+					fields: [foreignKeyColumnName],
 				},
 				foreign: {
-					store: randomExternalStore,
-					collection: randomExternalCollection,
-					fields: [randomExternalField],
+					store: externalStore,
+					collection: externalTableName,
+					fields: [externalKeyColumnName],
 				},
 			},
-			alias: randomNestedAlias,
+			alias: externalAlias,
 		},
 		{
 			type: 'fn',
@@ -170,25 +174,25 @@ test('primitive, fn, m2o', () => {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			field: randomPrimitiveFieldFn,
-			alias: randomPrimitiveFieldFnAlias,
+			field: column2Name,
+			alias: column2Alias,
 		},
 	];
 
-	const expected: FieldConversionResult = {
+	const expectedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomPrimitiveField1,
-					as: `${randomPrimitiveField1}_RANDOM`,
+					tableIndex,
+					columnName: column1Name,
+					columnIndex: column1Index,
 				},
 				{
 					type: 'primitive',
-					table: `${randomExternalCollection}_RANDOM`,
-					column: randomJoinNodeField,
-					as: `${randomJoinNodeField}_RANDOM`,
+					tableIndex: externalTableIndex,
+					columnName: externalColumnName,
+					columnIndex: externalColumnIndex,
 				},
 				{
 					type: 'fn',
@@ -196,34 +200,34 @@ test('primitive, fn, m2o', () => {
 						type: 'extractFn',
 						fn: 'month',
 					},
-					table: randomCollection,
-					column: `${randomPrimitiveFieldFn}`,
-					as: `month_${randomPrimitiveFieldFn}_RANDOM`,
+					tableIndex,
+					columnName: column2Name,
+					columnIndex: column2Index,
 				},
 			],
 			joins: [
 				{
 					type: 'join',
-					table: randomExternalCollection,
+					tableName: externalTableName,
+					tableIndex: externalTableIndex,
 					on: {
 						type: 'condition',
 						condition: {
 							type: 'condition-field',
 							target: {
 								type: 'primitive',
-								table: randomCollection,
-								column: randomJoinCurrentField,
+								tableIndex,
+								columnName: foreignKeyColumnName,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								table: `${randomExternalCollection}_RANDOM`,
-								column: randomExternalField,
+								tableIndex: externalTableIndex,
+								columnName: externalKeyColumnName,
 							},
 						},
 						negate: false,
 					},
-					as: `${randomExternalCollection}_RANDOM`,
 				},
 			],
 		},
@@ -231,82 +235,90 @@ test('primitive, fn, m2o', () => {
 		aliasMapping: [
 			{
 				type: 'root',
-				alias: randomPrimitiveFieldAlias1,
-				column: `${randomPrimitiveField1}_RANDOM`,
+				alias: column1Alias,
+				columnIndex: column1Index,
 			},
 			{
 				type: 'nested',
-				alias: randomNestedAlias,
-				children: [{ type: 'root', alias: randomJoinNodeFieldAlias, column: `${randomJoinNodeField}_RANDOM` }],
+				alias: externalAlias,
+				children: [{ type: 'root', alias: externalColumnAlias, columnIndex: externalColumnIndex }],
 			},
 			{
 				type: 'root',
-				alias: randomPrimitiveFieldFnAlias,
-				column: `month_${randomPrimitiveFieldFn}_RANDOM`,
+				alias: column2Alias,
+				columnIndex: column2Index,
 			},
 		],
 		subQueries: [],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
-	expect(result).toMatchObject(expected);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('primitive, o2m', () => {
-	const randomJoinCurrentField = randomIdentifier();
-	const randomExternalCollection = randomIdentifier();
-	const randomExternalStore = randomIdentifier();
-	const randomExternalField = randomIdentifier();
-	const randomJoinNodeField = randomIdentifier();
-	const randomJoinNodeFieldAlias = randomIdentifier();
-	const randomNestedAlias = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnIndex = 0;
+	const columnAlias = randomIdentifier();
+	const keyColumnName = randomIdentifier();
+	const keyColumnIndex = 1;
+
+	const externalStore = randomIdentifier();
+	const externalTableName = randomIdentifier();
+	const externalAlias = randomIdentifier();
+	const externalColumnName = randomIdentifier();
+	const externalColumnAlias = randomIdentifier();
+	const externalForeignKeyColumnName = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: randomPrimitiveField1,
-			alias: randomPrimitiveFieldAlias1,
+			field: columnName,
+			alias: columnAlias,
 		},
 		{
 			type: 'nested-single-many',
 			fields: [
 				{
 					type: 'primitive',
-					field: randomJoinNodeField,
-					alias: randomJoinNodeFieldAlias,
+					field: externalColumnName,
+					alias: externalColumnAlias,
 				},
 			],
-			alias: randomNestedAlias,
+			alias: externalAlias,
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
-					fields: [randomJoinCurrentField],
+					fields: [keyColumnName],
 				},
 				foreign: {
-					store: randomExternalStore,
-					collection: randomExternalCollection,
-					fields: [randomExternalField],
+					store: externalStore,
+					collection: externalTableName,
+					fields: [externalForeignKeyColumnName],
 				},
 			},
 			modifiers: {},
 		},
 	];
 
-	const expected: FieldConversionResult = {
+	const expectedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomPrimitiveField1,
-					as: `${randomPrimitiveField1}_RANDOM`,
+					tableIndex,
+					columnName,
+					columnIndex,
 				},
 				{
 					type: 'primitive',
-					table: randomCollection,
-					column: randomJoinCurrentField,
-					as: `${randomJoinCurrentField}_RANDOM`,
+					tableIndex,
+					columnName: keyColumnName,
+					columnIndex: keyColumnIndex,
 				},
 			],
 			joins: [],
@@ -315,18 +327,178 @@ test('primitive, o2m', () => {
 		aliasMapping: [
 			{
 				type: 'root',
-				alias: randomPrimitiveFieldAlias1,
-				column: `${randomPrimitiveField1}_RANDOM`,
+				alias: columnAlias,
+				columnIndex: columnIndex,
 			},
 			{
 				type: 'sub',
-				alias: randomNestedAlias,
+				alias: externalAlias,
 				index: 0,
 			},
 		],
 		subQueries: [expect.any(Function)],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
-	expect(result).toStrictEqual(expected);
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
+});
+
+test('primitive, json path', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnIndex = 0;
+	const columnAlias = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+
+	const property11 = randomIdentifier();
+	const property11Index = 1;
+	const property11Alias = randomIdentifier();
+	const property12 = randomIdentifier();
+	const property12Alias = randomIdentifier();
+	const property21 = randomIdentifier();
+	const property21Index = 2;
+	const property21Alias = randomIdentifier();
+	const property22 = randomIdentifier();
+	const property22Alias = randomIdentifier();
+	const property31 = randomIdentifier();
+	const property31Index = 3;
+	const property31Alias = randomIdentifier();
+
+	const fields: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: columnName,
+			alias: columnAlias,
+		},
+		{
+			type: 'nested-single-one',
+			nesting: {
+				type: 'object-single',
+				fieldName: jsonColumnName,
+			},
+			fields: [
+				{
+					type: 'primitive',
+					field: property11,
+					alias: property11Alias,
+				},
+				{
+					type: 'nested-single-one',
+					nesting: {
+						type: 'object-single',
+						fieldName: property12,
+					},
+					fields: [
+						{
+							type: 'primitive',
+							field: property21,
+							alias: property21Alias,
+						},
+						{
+							type: 'nested-single-one',
+							nesting: {
+								type: 'object-single',
+								fieldName: property22,
+							},
+							fields: [
+								{
+									type: 'primitive',
+									field: property31,
+									alias: property31Alias,
+								},
+							],
+							alias: property22Alias,
+						},
+					],
+					alias: property12Alias,
+				},
+			],
+			alias: jsonColumnAlias,
+		},
+	];
+
+	const expectedResult: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					tableIndex,
+					columnName,
+					columnIndex,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [0],
+					columnIndex: property11Index,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [1, 2],
+					columnIndex: property21Index,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [3, 4, 5],
+					columnIndex: property31Index,
+				},
+			],
+			joins: [],
+		},
+		parameters: [property11, property12, property21, property12, property22, property31],
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: columnAlias,
+				columnIndex,
+			},
+			{
+				type: 'nested',
+				alias: jsonColumnAlias,
+				children: [
+					{
+						type: 'root',
+						alias: property11Alias,
+						columnIndex: property11Index,
+					},
+					{
+						type: 'nested',
+						alias: property12Alias,
+						children: [
+							{
+								type: 'root',
+								alias: property21Alias,
+								columnIndex: property21Index,
+							},
+							{
+								type: 'nested',
+								alias: property22Alias,
+								children: [
+									{
+										type: 'root',
+										alias: property31Alias,
+										columnIndex: property31Index,
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+		subQueries: [],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
 });

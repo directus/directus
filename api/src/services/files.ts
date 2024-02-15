@@ -5,7 +5,7 @@ import type { BusboyFileStream, File } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
-import exif from 'exif-reader';
+import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import type { IccProfile } from 'icc';
 import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
@@ -178,7 +178,8 @@ export class FilesService extends ItemsService {
 				payload.metadata = metadata;
 			}
 
-			// Note that if this is a replace file upload, the below properities are fetched and included in the payload above in the `existingFile` variable...so this will ONLY set the values if they're not already set
+			// Note that if this is a replace file upload, the below properties are fetched and included in the payload above
+			// in the `existingFile` variable... so this will ONLY set the values if they're not already set
 
 			if (!payload.description && description) {
 				payload.description = description;
@@ -249,11 +250,11 @@ export class FilesService extends ItemsService {
 
 					// Backward-compatible layout as it used to be with 'exifr'
 					const fullMetadata: {
-						ifd0?: Record<string, unknown>;
-						ifd1?: Record<string, unknown>;
-						exif?: Record<string, unknown>;
-						gps?: Record<string, unknown>;
-						interop?: Record<string, unknown>;
+						ifd0?: Partial<ImageTags>;
+						ifd1?: Partial<ImageTags>;
+						exif?: Partial<PhotoTags>;
+						gps?: Partial<GPSInfoTags>;
+						interop?: Partial<IopTags>;
 						icc?: IccProfile;
 						iptc?: Record<string, unknown>;
 						xmp?: Record<string, unknown>;
@@ -261,23 +262,31 @@ export class FilesService extends ItemsService {
 
 					if (sharpMetadata.exif) {
 						try {
-							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+							const { Image, ThumbnailTags, Iop, GPSInfo, Photo } = (exif as unknown as typeof exif.default)(
+								sharpMetadata.exif,
+							);
 
-							if (image) {
-								fullMetadata.ifd0 = image;
+							if (Image) {
+								fullMetadata.ifd0 = Image;
 							}
 
-							if (thumbnail) {
-								fullMetadata.ifd1 = thumbnail;
+							if (ThumbnailTags) {
+								fullMetadata.ifd1 = ThumbnailTags;
 							}
 
-							if (interoperability) {
-								fullMetadata.interop = interoperability;
+							if (Iop) {
+								fullMetadata.interop = Iop;
 							}
 
-							Object.assign(fullMetadata, rest);
+							if (GPSInfo) {
+								fullMetadata.gps = GPSInfo;
+							}
+
+							if (Photo) {
+								fullMetadata.exif = Photo;
+							}
 						} catch (err) {
-							logger.warn(`Couldn't extract EXIF metadata from file`);
+							logger.warn(`Couldn't extract Exif metadata from file`);
 							logger.warn(err);
 						}
 					}
@@ -364,11 +373,13 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 				decompress: false,
 			});
-		} catch (err: any) {
-			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
+		} catch (error: any) {
+			logger.warn(`Couldn't fetch file from URL "${importURL}"${error.message ? `: ${error.message}` : ''}`);
+			logger.trace(error);
+
 			throw new ServiceUnavailableError({
 				service: 'external-file',
-				reason: `Couldn't fetch file from url "${importURL}"`,
+				reason: `Couldn't fetch file from URL "${importURL}"`,
 			});
 		}
 

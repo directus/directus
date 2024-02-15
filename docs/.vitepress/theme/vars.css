@@ -130,8 +130,10 @@
 
 :root {
 	--vp-docs-section-bg: #0e1c2f;
+	--footer-link-color: inherit;
 }
 
 .dark {
 	--vp-docs-section-bg: #000;
+	--footer-link-color: white;
 }

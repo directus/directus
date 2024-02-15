@@ -506,7 +506,11 @@ months:
   november: November
   december: December
 drag_mode: Drag Mode
+move_tool: Move Tool
+crop_tool: Crop Tool
+focal_point_tool: Focal Point Tool
 cancel_crop: Cancel Crop
+cancel_selection: Cancel Selection
 original: Original
 url: URL
 import_label: Import
@@ -1412,12 +1416,13 @@ field_options:
     description: An optional description...
     location: An optional location...
     storage_divider: File Naming
+    focal_point_divider: Focal Point
     filename_disk: Name on disk storage...
     filename_download: Name when downloading...
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, leave empty to allow all...
+    ip_access: Add allowed IP addresses, IP ranges and CIDR blocks. Leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
@@ -1872,6 +1877,7 @@ interfaces:
     no_collection: No Collection
     toggle_split_view: Toggle Split View
     enable: Enable
+    default_split_view_state: Default Split View State
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
