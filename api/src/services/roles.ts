@@ -1,7 +1,7 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
-import type { AbstractServiceOptions, Alterations, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
 import { PresetsService } from './presets.js';
@@ -152,6 +152,9 @@ export class RolesService extends ItemsService {
 
 		if (value.length === 0) return true;
 
+		// TODO: no need to further iterate if one item fails
+		// TODO: but similar to this way we could give users feedback exactly which ip failed
+		// TODO: check if we could provide that feedback in a safe manner
 		const results = value.map((ip) => {
 			try {
 				getMatch(ip);
@@ -164,10 +167,28 @@ export class RolesService extends ItemsService {
 		return results.every((v) => v === true);
 	}
 
-	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if ('ip_access' in data && !this.isIpAccessValid(data['ip_access'])) {
+	private assertValidIpAccess(partialItem: Partial<Item>): void {
+		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
 			throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
 		}
+	}
+
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
+		return super.createOne(data, opts);
+	}
+
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		for (const partialItem of data) {
+			this.assertValidIpAccess(partialItem);
+		}
+
+		return super.createMany(data, opts);
+	}
+
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
 
 		try {
 			if ('users' in data) {
@@ -180,11 +201,9 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		for (const partialItem of data) {
-			if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
-				throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
-			}
+			this.assertValidIpAccess(partialItem);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -202,14 +221,8 @@ export class RolesService extends ItemsService {
 		return super.updateBatch(data, opts);
 	}
 
-	override async updateMany(
-		keys: PrimaryKey[],
-		data: Record<string, any>,
-		opts?: MutationOptions,
-	): Promise<PrimaryKey[]> {
-		if ('ip_access' in data && !this.isIpAccessValid(data['ip_access'])) {
-			throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
-		}
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
 
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
