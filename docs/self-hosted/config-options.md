@@ -335,26 +335,29 @@ Redis is required when you run Directus load balanced across multiple containers
 
 ## Security
 
-| Variable                         | Description                                                                                                                                                                                          | Default Value             |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `KEY`                            | Unique identifier for the project.                                                                                                                                                                   | --                        |
-| `SECRET`                         | Secret string for the project.                                                                                                                                                                       | --                        |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                                                                                     | `7d`                      |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                                                                                             | --                        |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                                                                                          | `false`                   |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                                                                                | `lax`                     |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                                                                                       | `directus_refresh_token`  |
-| `LOGIN_STALL_TIME`               | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
-| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
-| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                                                                 | false                     |
-| `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
-| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
-| `CONTENT_SECURITY_POLICY_*`      | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
-| `HSTS_ENABLED`                   | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
-| `HSTS_*`                         | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
+| Variable                            | Description                                                                                                                                                                                          | Default Value             |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `KEY`                               | Unique identifier for the project.                                                                                                                                                                   | --                        |
+| `SECRET`                            | Secret string for the project.                                                                                                                                                                       | --                        |
+| `ACCESS_TOKEN_TTL`                  | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
+| `REFRESH_TOKEN_TTL`                 | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                                                                                     | `7d`                      |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`       | Which domain to use for the refresh cookie. Useful for development mode.                                                                                                                             | --                        |
+| `REFRESH_TOKEN_COOKIE_SECURE`       | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                                                                                          | `false`                   |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE`    | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                                                                                | `lax`                     |
+| `REFRESH_TOKEN_COOKIE_NAME`         | Name of refresh token cookie .                                                                                                                                                                       | `directus_refresh_token`  |
+| `LOGIN_STALL_TIME`                  | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
+| `PASSWORD_RESET_URL_ALLOW_LIST`     | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
+| `USER_INVITE_URL_ALLOW_LIST`        | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
+| `IP_TRUST_PROXY`                    | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
+| `IP_CUSTOM_HEADER`                  | What custom request header to use for the IP address                                                                                                                                                 | false                     |
+| `ASSETS_CONTENT_SECURITY_POLICY`    | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
+| `IMPORT_IP_DENY_LIST`<sup>[1]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
+| `CONTENT_SECURITY_POLICY_*`         | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
+| `HSTS_ENABLED`                      | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
+| `HSTS_*`                            | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
+
+<sup>[1]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
+both if you want to specifically block localhost.
 
 ::: tip Cookie Strictness
 
@@ -654,9 +657,9 @@ STORAGE_AWS_BUCKET="my-files"
 When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
-| Variable                   | Description                                                                                           | Default Value                                                                 |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+| Variable                   | Description                                                                                           | Default Value                                                                             |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings |
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
@@ -925,8 +928,8 @@ By default, extensions are not cached. The input data type for this environment 
 [`CACHE_TTL`](#cache).
 
 <sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
-extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
-and then loaded from there.
+extensions from a storage location instead. Under the hood, they are synced into a local directory within
+[`TEMP_PATH`](#general) and then loaded from there.
 
 ## Messenger
 

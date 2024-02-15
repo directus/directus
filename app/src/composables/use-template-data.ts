@@ -1,6 +1,7 @@
 import api from '@/api';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isSystemCollection } from '@directus/system-data';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Ref, computed, ref, watch } from 'vue';
 
@@ -53,7 +54,7 @@ export function useTemplateData(
 		if (isSingleton.value) {
 			endpoint = baseEndpoint;
 		} else {
-			endpoint = collection.value.collection.startsWith('directus_')
+			endpoint = isSystemCollection(collection.value.collection)
 				? `${baseEndpoint}/${primaryKey.value}`
 				: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
 		}

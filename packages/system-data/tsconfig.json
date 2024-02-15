@@ -1,0 +1,12 @@
+{
+	"extends": "@directus/tsconfig/base",
+	"compilerOptions": {
+		"module": "NodeNext",
+		"lib": ["ES2020"],
+		"types": ["esbuild-yaml/types"]
+	},
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/index.ts"]
+	}
+}

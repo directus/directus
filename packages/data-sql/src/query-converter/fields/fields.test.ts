@@ -155,7 +155,7 @@ test('primitive, fn, m2o', () => {
 				},
 			],
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
 					fields: [foreignKeyColumnName],
@@ -290,7 +290,7 @@ test('primitive, o2m', () => {
 			],
 			alias: externalAlias,
 			nesting: {
-				type: 'relational-many',
+				type: 'relational-single',
 
 				local: {
 					fields: [keyColumnName],
@@ -337,6 +337,164 @@ test('primitive, o2m', () => {
 			},
 		],
 		subQueries: [expect.any(Function)],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertFieldNodes(fields, tableIndex, indexGen);
+
+	expect(result).toStrictEqual(expectedResult);
+});
+
+test('primitive, json path', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnIndex = 0;
+	const columnAlias = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+
+	const property11 = randomIdentifier();
+	const property11Index = 1;
+	const property11Alias = randomIdentifier();
+	const property12 = randomIdentifier();
+	const property12Alias = randomIdentifier();
+	const property21 = randomIdentifier();
+	const property21Index = 2;
+	const property21Alias = randomIdentifier();
+	const property22 = randomIdentifier();
+	const property22Alias = randomIdentifier();
+	const property31 = randomIdentifier();
+	const property31Index = 3;
+	const property31Alias = randomIdentifier();
+
+	const fields: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: columnName,
+			alias: columnAlias,
+		},
+		{
+			type: 'nested-single-one',
+			nesting: {
+				type: 'object-single',
+				fieldName: jsonColumnName,
+			},
+			fields: [
+				{
+					type: 'primitive',
+					field: property11,
+					alias: property11Alias,
+				},
+				{
+					type: 'nested-single-one',
+					nesting: {
+						type: 'object-single',
+						fieldName: property12,
+					},
+					fields: [
+						{
+							type: 'primitive',
+							field: property21,
+							alias: property21Alias,
+						},
+						{
+							type: 'nested-single-one',
+							nesting: {
+								type: 'object-single',
+								fieldName: property22,
+							},
+							fields: [
+								{
+									type: 'primitive',
+									field: property31,
+									alias: property31Alias,
+								},
+							],
+							alias: property22Alias,
+						},
+					],
+					alias: property12Alias,
+				},
+			],
+			alias: jsonColumnAlias,
+		},
+	];
+
+	const expectedResult: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					tableIndex,
+					columnName,
+					columnIndex,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [0],
+					columnIndex: property11Index,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [1, 2],
+					columnIndex: property21Index,
+				},
+				{
+					type: 'json',
+					tableIndex,
+					columnName: jsonColumnName,
+					path: [3, 4, 5],
+					columnIndex: property31Index,
+				},
+			],
+			joins: [],
+		},
+		parameters: [property11, property12, property21, property12, property22, property31],
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: columnAlias,
+				columnIndex,
+			},
+			{
+				type: 'nested',
+				alias: jsonColumnAlias,
+				children: [
+					{
+						type: 'root',
+						alias: property11Alias,
+						columnIndex: property11Index,
+					},
+					{
+						type: 'nested',
+						alias: property12Alias,
+						children: [
+							{
+								type: 'root',
+								alias: property21Alias,
+								columnIndex: property21Index,
+							},
+							{
+								type: 'nested',
+								alias: property22Alias,
+								children: [
+									{
+										type: 'root',
+										alias: property31Alias,
+										columnIndex: property31Index,
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+		subQueries: [],
 	};
 
 	const indexGen = createIndexGenerators();
