@@ -1,4 +1,4 @@
-import api, { resumeQueue } from '@/api';
+import { resumeQueue } from '@/api';
 import { sdk } from '@/sdk';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
@@ -23,7 +23,6 @@ type LoginParams = {
 	share?: boolean;
 };
 
-// TODO fix non-null assertions
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
@@ -129,8 +128,6 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		navigate: true,
 		reason: LogoutReason.SIGN_OUT,
 	};
-
-	delete api.defaults.headers.common['Authorization'];
 
 	sdk.stopRefreshing();
 
