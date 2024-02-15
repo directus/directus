@@ -36,7 +36,6 @@
 	"devDependencies": {
 		"@directus/sdk": "workspace:*",
 		"@directus/extensions": "workspace:*",
-		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
