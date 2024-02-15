@@ -5,7 +5,7 @@ export type HookExtensionContext = ApiExtensionContext & {
 	emitter: any;
 };
 
-type RegisterFunctions = {
+export type RegisterFunctions = {
 	filter: <T = unknown>(event: string, handler: FilterHandler<T>) => void;
 	action: (event: string, handler: ActionHandler) => void;
 	init: (event: string, handler: InitHandler) => void;
@@ -13,6 +13,4 @@ type RegisterFunctions = {
 	embed: (position: 'head' | 'body', code: string | EmbedHandler) => void;
 };
 
-type HookConfigFunction = (register: RegisterFunctions, context: HookExtensionContext) => void;
-
-export type HookConfig = HookConfigFunction;
+export type HookConfig = (register: RegisterFunctions, context: HookExtensionContext) => void;

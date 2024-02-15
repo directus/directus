@@ -1,4 +1,10 @@
-import { columnIndexToIdentifier, tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
+import {
+	columnIndexToIdentifier,
+	tableIndexToIdentifier,
+	type AbstractSqlClauses,
+	type AbstractSqlQuerySelectJsonNode,
+} from '@directus/data-sql';
+import { escapeIdentifier } from '../utils/escape-identifier.js';
 import { applySelectFunction } from '../utils/functions.js';
 import { wrapColumn } from '../utils/wrap-column.js';
 
@@ -22,8 +28,21 @@ export const select = ({ select }: AbstractSqlClauses): string => {
 			return applySelectFunction(selectNode);
 		}
 
+		if (selectNode.type === 'json') {
+			return json(selectNode);
+		}
+
 		throw Error(`Unknown node type`);
 	});
 
 	return `SELECT ${escapedColumns.join(', ')}`;
 };
+
+export function json(node: AbstractSqlQuerySelectJsonNode): string {
+	const tableAlias = tableIndexToIdentifier(node.tableIndex);
+	const columnAlias = columnIndexToIdentifier(node.columnIndex);
+
+	const column = `${escapeIdentifier(tableAlias)}.${escapeIdentifier(node.columnName)}`;
+
+	return `${column} -> ${node.path.map((i) => `$${i + 1}`).join(` -> `)} AS ${escapeIdentifier(columnAlias)}`;
+}
