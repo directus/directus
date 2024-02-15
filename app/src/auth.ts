@@ -37,14 +37,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
 	if (credentials.otp) options.otp = credentials.otp;
 
-	const response = await api.post<any>(getAuthEndpoint(provider, share), {
-		...credentials,
-		mode: 'session',
-	});
-
-	// Refresh the token 10 seconds before the access token expires. This means the user will stay
-	// logged in without any noticeable hiccups or delays
-
 	const response = await sdk.login(email, password, options);
 
 	// Add the header to the API handler for every request
@@ -111,8 +103,6 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	} finally {
 		resumeQueue();
 	}
-
-	return;
 }
 
 export enum LogoutReason {
