@@ -18,12 +18,28 @@ There are two types of tokens that can be used to authenticate within Directus.
 expiration time, and are thus the most secure option to use. The tokens are returned with a `refresh_token` that can be
 used to retrieve a new access token via the [refresh](#refresh) endpoint/mutation.
 
+**Session Token (JWT)** can also be returned by the [login](#login) endpoint/mutation.\
+Session tokens combine both a refresh_token and access_token in a single cookie. These tokens should not have a short expiration
+time like the Temporary tokens as you cannot refresh these after they have expired.
+
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
 server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
 user settings inside of the Directus Data Studio User Module, or by updating the user's `token` value via API.
 
-Once you have your access token, there are two ways to pass it to the API, via the `access_token` query parameter, or in
-the request's Authorization Header.
+Once you have your access token, there are three ways to pass it to the API, in the request's Authorization Header, or
+as session cookie, or via the `access_token` query parameter.
+
+### Authorization Header
+
+```
+Authorization: Bearer <token>
+```
+
+### Session Cookie
+
+```
+Cookie: directus_session_token=<token>
+```
 
 ### Query Parameter
 
@@ -31,11 +47,11 @@ the request's Authorization Header.
 ?access_token=<token>
 ```
 
-### Authorization Header
+::: Tip
 
-```
-Authorization: Bearer <token>
-```
+The query parameter option is not recommended in production setups as the parameter can get logged by various systems.
+
+:::
 
 ## Login
 
@@ -101,20 +117,21 @@ Password of the user.
 The user's one-time-password (if MFA is enabled).
 
 `mode`\
-Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
-Defaults to `json`.
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
+`session`. Defaults to `json`.
 
 ### Response
 
 `access_token` **string**\
-Temporary access token to be used in follow-up requests.
+Temporary access token to be used in follow-up requests. Note: if you used `session` as the mode in the request, the access
+token won't be returned in the JSON.
 
 `expires` **integer**\
 How long before the access token will expire. Value is in milliseconds.
 
 `refresh_token` **string**\
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
-as the mode in the request, the refresh token won't be returned in the JSON.
+or `session` as the mode in the request, the refresh token won't be returned in the JSON.
 
 ::: tip Expiry time
 
@@ -231,19 +248,21 @@ The refresh token to use. If you have the refresh token in a cookie through [`/a
 it here.
 
 `mode`\
-Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
+`session`.
 
 ### Response
 
 `access_token` **string**\
-Temporary access token to be used in follow-up requests.
+Temporary access token to be used in follow-up requests. Note: if you used `session` as the mode in the request, the access
+token won't be returned in the JSON.
 
 `expires` **integer**\
 How long before the access token will expire. Value is in milliseconds.
 
 `refresh_token` **string**\
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
-as the mode in the request, the refresh token won't be returned in the JSON.
+or `session` as the mode in the request, the refresh token won't be returned in the JSON.
 
 ### Example
 

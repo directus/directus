@@ -345,6 +345,11 @@ Redis is required when you run Directus load balanced across multiple containers
 | `REFRESH_TOKEN_COOKIE_SECURE`       | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                                                                                          | `false`                   |
 | `REFRESH_TOKEN_COOKIE_SAME_SITE`    | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                                                                                | `lax`                     |
 | `REFRESH_TOKEN_COOKIE_NAME`         | Name of refresh token cookie .                                                                                                                                                                       | `directus_refresh_token`  |
+| `SESSION_COOKIE_TTL`                | The duration that the session token is valid, and also how long users stay logged-in to the App.                                                                                                     | `1d`                      |
+| `SESSION_COOKIE_DOMAIN`             | Which domain to use for the session cookie. Useful for development mode.                                                                                                                             | --                        |
+| `SESSION_COOKIE_SECURE`             | Whether or not to use a secure cookie for the session token in cookie mode.                                                                                                                          | `false`                   |
+| `SESSION_COOKIE_SAME_SITE`          | Value for `sameSite` in the session token cookie when in cookie mode.                                                                                                                                | `lax`                     |
+| `SESSION_COOKIE_NAME`               | Name of session token cookie .                                                                                                                                                                       | `directus_session_token`  |
 | `LOGIN_STALL_TIME`                  | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
 | `PASSWORD_RESET_URL_ALLOW_LIST`     | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
 | `USER_INVITE_URL_ALLOW_LIST`        | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
@@ -693,9 +698,10 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 For each auth provider you list, you must also provide the following configuration:
 
-| Variable                 | Description                                                             | Default Value |
-| ------------------------ | ----------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap`, `saml` | --            |
+| Variable                 | Description                                                                                                                                | Default Value |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap`, `saml`                                                                    | --            |
+| `AUTH_<PROVIDER>_MODE`   | Whether to use `'cookie'` or `'session'` authentication mode when redirecting. Applies to the following drivers `oauth2`, `openid`, `saml` | `session`     |
 
 You may also be required to specify additional variables depending on the auth driver. See configuration details below.
 

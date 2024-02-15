@@ -1,6 +1,6 @@
 import type { LoginOptions } from '../index.js';
 
-export type AuthenticationMode = 'json' | 'cookie';
+export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export interface AuthenticationData {
 	access_token: string | null;

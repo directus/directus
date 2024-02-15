@@ -500,6 +500,12 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ### Work With Images
 
+::: tip
+
+[DEPRECATED] The query parameter approach used here is deprecated, make use of session cookies instead.
+
+:::
+
 To use internal images, an access token needs to be included in the request. Create a new file called
 `use-directus-token.js` and copy the following code:
 

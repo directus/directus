@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { addTokenToURL } from '@/api';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
@@ -23,7 +22,7 @@ const signOutActive = ref(false);
 
 const avatarURL = computed<string | null>(() => {
 	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+	return `${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
 });
 
 const avatarError = ref<null | Event>(null);

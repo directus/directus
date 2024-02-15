@@ -37,6 +37,14 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
 	if (credentials.otp) options.otp = credentials.otp;
 
+	const response = await api.post<any>(getAuthEndpoint(provider, share), {
+		...credentials,
+		mode: 'session',
+	});
+
+	// Refresh the token 10 seconds before the access token expires. This means the user will stay
+	// logged in without any noticeable hiccups or delays
+
 	const response = await sdk.login(email, password, options);
 
 	// Add the header to the API handler for every request
@@ -80,11 +88,13 @@ idleTracker.on('show', () => {
 	}
 });
 
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
+export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
+	const appStore = useAppStore();
+
 	// Allow refresh during initial page load
 	if (firstRefresh) firstRefresh = false;
 	// Skip if not logged in
-	else if (!api.defaults.headers.common['Authorization']) return;
+	else if (!appStore.authenticated) return;
 
 	try {
 		const response = await sdk.refresh();

@@ -157,6 +157,12 @@ select-icon, which provides a searchable dropdown of the icon library.
 
 ## Work With Images
 
+::: tip
+
+[DEPRECATED] Use session cookies instead.
+
+:::
+
 When working with images inside Directus, you need an access token. Rather than use a static token, create a new file
 called `use-directus-token.js` and use the following script that fetches the current user’s access token:
 

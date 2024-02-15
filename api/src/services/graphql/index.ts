@@ -46,12 +46,16 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
+import {
+	DEFAULT_AUTH_PROVIDER,
+	GENERATE_SPECIAL,
+	REFRESH_COOKIE_OPTIONS,
+	SESSION_COOKIE_OPTIONS,
+} from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
@@ -1993,6 +1997,7 @@ export class GraphQLService {
 			values: {
 				json: { value: 'json' },
 				cookie: { value: 'cookie' },
+				session: { value: 'session' },
 			},
 		});
 
@@ -2208,16 +2213,16 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp, mode === 'session');
+
+					if (mode === 'cookie') {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, result['accessToken'], SESSION_COOKIE_OPTIONS);
 					}
 
 					return {
@@ -2257,16 +2262,16 @@ export class GraphQLService {
 						});
 					}
 
-					const result = await authenticationService.refresh(currentRefreshToken);
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+					const result = await authenticationService.refresh(currentRefreshToken, mode === 'session');
+
+					if (mode === 'cookie') {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, result['accessToken'], SESSION_COOKIE_OPTIONS);
 					}
 
 					return {

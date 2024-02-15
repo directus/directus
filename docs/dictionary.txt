@@ -249,7 +249,7 @@ JPG
 JS
 JS-SDK
 json
-JSON
+JSON\.?
 JWT
 kanban
 Kanban
