@@ -80,6 +80,8 @@ export const DEFAULTS = {
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
+	MARKETPLACE_TRUST: 'sandbox',
+
 	TELEMETRY: true,
 	TELEMETRY_URL: 'https://telemetry.directus.io',
 

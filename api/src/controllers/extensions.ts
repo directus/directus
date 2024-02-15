@@ -76,6 +76,12 @@ router.get(
 			query.type = type;
 		}
 
+		console.log(env['MARKETPLACE_TRUST']);
+
+		if (env['MARKETPLACE_TRUST'] === 'sandbox') {
+			query.sandbox = true;
+		}
+
 		const options: ListOptions = {};
 
 		if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
