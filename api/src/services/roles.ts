@@ -152,19 +152,15 @@ export class RolesService extends ItemsService {
 
 		if (value.length === 0) return true;
 
-		// TODO: no need to further iterate if one item fails
-		// TODO: but similar to this way we could give users feedback exactly which ip failed
-		// TODO: check if we could provide that feedback in a safe manner
-		const results = value.map((ip) => {
+		for (const ip of value) {
 			try {
 				getMatch(ip);
-				return true;
 			} catch {
 				return false;
 			}
-		});
+		}
 
-		return results.every((v) => v === true);
+		return true;
 	}
 
 	private assertValidIpAccess(partialItem: Partial<Item>): void {
