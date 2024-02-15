@@ -9,9 +9,9 @@ import ExtensionMetadataCompatibility from './extension-metadata-compatibility.v
 import ExtensionMetadataDate from './extension-metadata-date.vue';
 import ExtensionMetadataDownloadsSparkline from './extension-metadata-downloads-sparkline.vue';
 import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
+import ExtensionMetadataLicense from './extension-metadata-license.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
-import ExtensionMetadataLicense from './extension-metadata-license.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -20,6 +20,16 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const latestVersion = computed(() => props.extension.versions.at(0)!);
+
+const maintainers = computed(() => {
+	const publisherId = latestVersion.value.publisher.id;
+
+	return (
+		latestVersion.value.maintainers
+			?.filter(({ accounts_id: maintainer }) => maintainer.id !== publisherId)
+			.map(({ accounts_id: maintainer }) => maintainer) ?? []
+	);
+});
 </script>
 
 <template>
@@ -33,6 +43,17 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:username="latestVersion.publisher.username"
 					:github-name="latestVersion.publisher.github_name"
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
+					class="author"
+				/>
+
+				<ExtensionMetadataAuthor
+					v-for="maintainer of maintainers"
+					:id="maintainer.id"
+					:key="maintainer.id"
+					:verified="maintainer.verified"
+					:username="maintainer.username"
+					:github-name="maintainer.github_name"
+					:github-avatar-url="maintainer.github_avatar_url"
 					class="author"
 				/>
 			</div>
