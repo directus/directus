@@ -1,8 +1,8 @@
-import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import {
 	afterEach,
 	beforeAll,
@@ -11,8 +11,8 @@ import {
 	expect,
 	it,
 	vi,
-	type MockedFunction,
 	type MockInstance,
+	type MockedFunction,
 } from 'vitest';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
@@ -690,12 +690,28 @@ describe('Integration Tests', () => {
 				await service.createOne({});
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				try {
+					await service.createOne({ ip_access: ['invalid_ip'] });
+				} catch (error) {
+					expect(error).toBeInstanceOf(InvalidPayloadError);
+				}
+			});
 		});
 
 		describe('createMany', () => {
 			it('should not checkForOtherAdminRoles', async () => {
 				await service.createMany([{}]);
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				try {
+					await service.createMany([{ ip_access: ['invalid_ip'] }]);
+				} catch (error) {
+					expect(error).toBeInstanceOf(InvalidPayloadError);
+				}
 			});
 		});
 
@@ -716,6 +732,14 @@ describe('Integration Tests', () => {
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 				expect(checkForOtherAdminUsersSpy).toBeCalledTimes(1);
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				try {
+					await service.updateOne(1, { ip_access: ['invalid_ip'] });
+				} catch (error) {
+					expect(error).toBeInstanceOf(InvalidPayloadError);
+				}
+			});
 		});
 
 		describe('updateMany', () => {
@@ -727,6 +751,14 @@ describe('Integration Tests', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				await service.updateMany([1], { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				try {
+					await service.updateMany([1], { ip_access: ['invalid_ip'] });
+				} catch (error) {
+					expect(error).toBeInstanceOf(InvalidPayloadError);
+				}
 			});
 		});
 
