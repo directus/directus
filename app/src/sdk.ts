@@ -1,4 +1,4 @@
-import type { DirectusClient, RestClient } from '@directus/sdk';
+import type { DirectusClient, AuthenticationClient, RestClient } from '@directus/sdk';
 import { createDirectus, rest, authentication } from '@directus/sdk';
 import { getPublicURL } from '@/utils/get-root-path';
 
