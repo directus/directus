@@ -31,5 +31,9 @@ export const constructUrl = (query: ListQuery, options?: ListOptions) => {
 		url.searchParams.set('sort', query.sort);
 	}
 
+	if (query.sandbox) {
+		url.searchParams.set('sandbox', 'true');
+	}
+
 	return url;
 };
