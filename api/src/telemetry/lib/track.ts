@@ -1,6 +1,5 @@
 import { getNodeEnv } from '@directus/utils/node';
 import { setTimeout } from 'timers/promises';
-import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getUnsentOnboardingUsers } from '../utils/get-users-with-unsent-onboarding.js';
@@ -18,7 +17,6 @@ import { sendReport } from './send-report.js';
  */
 export const track = async (opts = { wait: true }) => {
 	const logger = useLogger();
-	const db = getDatabase();
 
 	if (opts.wait) {
 		await setTimeout(getRandomWaitTime());
@@ -28,7 +26,7 @@ export const track = async (opts = { wait: true }) => {
 		const report = await getReport();
 		await sendReport(report);
 
-		const userIds = await getUnsentOnboardingUsers(db);
+		const userIds = await getUnsentOnboardingUsers();
 		await resendOnboardings(userIds);
 
 		return true;

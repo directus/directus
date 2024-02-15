@@ -4,10 +4,14 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useLogger } from '../../logger.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
+import { getUnsentOnboardingUsers } from '../utils/get-users-with-unsent-onboarding.js';
 import { getReport } from './get-report.js';
+import { resendOnboardings } from './send-onboardings.js';
 import { sendReport } from './send-report.js';
 import { track } from './track.js';
 
+vi.mock('../utils/get-users-with-unsent-onboarding.js');
+vi.mock('./send-onboardings.js');
 vi.mock('./get-report.js');
 vi.mock('./send-report.js');
 vi.mock('timers/promises');
@@ -33,12 +37,19 @@ afterEach(() => {
 
 test('Generates and sends report', async () => {
 	const mockReport = {} as TelemetryReport;
+	const mockOnboardingUsers = ['1'];
+
 	vi.mocked(getReport).mockResolvedValue(mockReport);
+	vi.mocked(getUnsentOnboardingUsers).mockResolvedValue(mockOnboardingUsers);
 
 	const res = await track();
 
 	expect(getReport).toHaveBeenCalledOnce();
 	expect(sendReport).toHaveBeenCalledWith(mockReport);
+
+	expect(getUnsentOnboardingUsers).toHaveBeenCalledOnce();
+	expect(resendOnboardings).toHaveBeenCalledWith(mockOnboardingUsers);
+
 	expect(res).toBe(true);
 });
 
