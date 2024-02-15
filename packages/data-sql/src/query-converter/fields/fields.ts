@@ -6,7 +6,7 @@ import { createJoin } from './nodes/join.js';
 import { convertJson } from './nodes/json-select.js';
 import { getNestedMany } from './nodes/nested-manys.js';
 import { createPrimitiveSelect } from './nodes/primitive-select.js';
-import { getNestedUnionOne } from './create-nested-union-one.js';
+import { getNestedUnionOne } from './nodes/nested-union-one.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;

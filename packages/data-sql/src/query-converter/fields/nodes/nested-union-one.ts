@@ -5,12 +5,12 @@ import type {
 	AtLeastOneElement,
 	AbstractQueryFieldNodeNestedUnionRelational,
 } from '@directus/data';
-import { createIndexGenerators, type IndexGenerators } from '../utils/create-index-generators.js';
-import { convertFieldNodes } from './fields.js';
-import { getRelationCondition, type NestedManyResult } from './nodes/nested-manys.js';
-import type { AbstractSqlQueryConditionNode } from '../../types/clauses/where/condition.js';
-import type { AbstractSqlQueryWhereNode, SubQuery } from '../../index.js';
-import { createPrimitiveSelect } from './nodes/primitive-select.js';
+import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
+import { convertFieldNodes } from '../fields.js';
+import { getRelationCondition, type NestedManyResult } from './nested-manys.js';
+import type { AbstractSqlQueryConditionNode } from '../../../types/clauses/where/condition.js';
+import type { AbstractSqlQueryWhereNode, SubQuery } from '../../../index.js';
+import { createPrimitiveSelect } from './primitive-select.js';
 
 /**
  * Converts a nested union one node from the abstract query into a function which creates the sub query for a2o.

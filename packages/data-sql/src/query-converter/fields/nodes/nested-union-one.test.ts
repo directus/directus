@@ -1,10 +1,10 @@
 import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { ConverterResult } from '../../index.js';
-import { type NestedManyResult } from './nodes/nested-manys.js';
-import { getNestedUnionOne } from './create-nested-union-one.js';
-import { createIndexGenerators } from '../utils/create-index-generators.js';
+import type { ConverterResult } from '../../../index.js';
+import { type NestedManyResult } from './nested-manys.js';
+import { getNestedUnionOne } from './nested-union-one.js';
+import { createIndexGenerators } from '../../utils/create-index-generators.js';
 
 test('getNestedUnionOne with a single identifier', () => {
 	const relationalColumn = randomIdentifier();
