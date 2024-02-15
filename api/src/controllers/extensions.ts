@@ -44,6 +44,10 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const { search, limit, offset, type, by, sort } = req.query;
 
 		const query: ListQuery = {};
@@ -75,8 +79,6 @@ router.get(
 
 			query.type = type;
 		}
-
-		console.log(env['MARKETPLACE_TRUST']);
 
 		if (env['MARKETPLACE_TRUST'] === 'sandbox') {
 			query.sandbox = true;
