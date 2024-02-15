@@ -1,5 +1,6 @@
-import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Query, User } from '@directus/types';
+import { getMatch } from 'ip-matching';
 import type { AbstractServiceOptions, Alterations, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
@@ -146,7 +147,28 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
+	private isIpAccessValid(value?: any[] | null): boolean {
+		if (!value || !Array.isArray(value)) return false;
+
+		if (value.length === 0) return true;
+
+		const results = value.map((ip) => {
+			try {
+				getMatch(ip);
+				return true;
+			} catch {
+				return false;
+			}
+		});
+
+		return results.every((v) => v === true);
+	}
+
 	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if ('ip_access' in data && !this.isIpAccessValid(data['ip_access'])) {
+			throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
+		}
+
 		try {
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
@@ -159,8 +181,13 @@ export class RolesService extends ItemsService {
 	}
 
 	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		for (const partialItem of data) {
+			if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
+				throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
+			}
+		}
 
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const keys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
@@ -180,6 +207,10 @@ export class RolesService extends ItemsService {
 		data: Record<string, any>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
+		if ('ip_access' in data && !this.isIpAccessValid(data['ip_access'])) {
+			throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
+		}
+
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
