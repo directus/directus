@@ -386,7 +386,7 @@ test.todo('nested a2o field', async () => {
 				type: 'nested-union-one',
 				alias: foreignCollectionAlias,
 				nesting: {
-					type: 'relational-any',
+					type: 'relational-union',
 					field: localRelationalField,
 					collections: [
 						{

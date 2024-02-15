@@ -1,6 +1,5 @@
 import type {
 	A2ORelation,
-	AbstractQueryFieldNodeNestedUnionMany,
 	AbstractQueryFieldNodeNestedRelationalAnyCollection,
 	AbstractQueryFieldNodeNestedUnionOne,
 	AtLeastOneElement,
@@ -75,7 +74,7 @@ function createSubQueryLookUp(
  */
 function createSubQueryGenerator(
 	collection: AbstractQueryFieldNodeNestedRelationalAnyCollection,
-	nesting: AbstractQueryFieldNodeNestedUnionMany,
+	nesting: AbstractQueryFieldNodeNestedUnionRelational,
 	indexGenerators: IndexGenerators,
 ): (rel: A2ORelation) => SubQuery {
 	return (rel: A2ORelation): SubQuery => {
