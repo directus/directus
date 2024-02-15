@@ -13,7 +13,7 @@ const defaultConfigValues: AuthenticationConfig = {
 
 // setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
 // for tokens that last > 24 days. Ref #4054
-const MAX_INT32 = 2**31 - 1;
+const MAX_INT32 = 2 ** 31 - 1;
 
 /**
  * Creates a client to authenticate with Directus.

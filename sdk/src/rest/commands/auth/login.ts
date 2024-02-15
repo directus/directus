@@ -7,7 +7,7 @@ export type LoginOptions = {
 	mode?: AuthenticationMode;
 	share?: boolean;
 	provider?: string;
-}
+};
 
 /**
  * Retrieve a temporary access token and refresh token.
