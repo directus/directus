@@ -19,9 +19,9 @@ vi.mock('../utils/get-random-wait-time.js');
 vi.mock('../../logger.js');
 vi.mock('@directus/utils/node');
 
-// This is required because logger uses global env which is imported before the tests run. Can be
-// reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({ EXTENSIONS_PATH: './extensions' }),
+}));
 
 let mockLogger: any;
 
