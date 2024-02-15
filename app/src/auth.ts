@@ -1,4 +1,5 @@
 import api, { resumeQueue } from '@/api';
+import { sdk } from '@/sdk';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
@@ -6,7 +7,6 @@ import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { type LoginOptions } from '@directus/sdk';
-import sdk from './sdk';
 import { useServerStore } from './stores/server';
 
 type LoginCredentials = {
