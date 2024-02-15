@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data-driver-postgres",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Data storage abstraction layer for Postgres",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -30,12 +30,12 @@
 		"@directus/data": "workspace:*",
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.14",
+		"@types/node": "18.19.15",
 		"@types/pg": "8.11.0",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.2.2",
 		"dependency-cruiser": "16.2.0",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
 		"vitest": "1.2.2"
 	},

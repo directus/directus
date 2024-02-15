@@ -36,7 +36,7 @@ export const sections = {
 			{
 				title: 'Next.js',
 				items: [
-					{ display: 'Get Started with Next.js', path: '/guides/headless-cms/build-static-website/next-13' },
+					{ display: 'Get Started with Next.js', path: '/guides/headless-cms/build-static-website/next' },
 					{ display: 'Set Up Live Preview With Next.js', path: '/guides/headless-cms/live-preview/nextjs' },
 				],
 			},

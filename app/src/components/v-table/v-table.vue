@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { i18n } from '@/lang/';
+import { i18n } from '@/lang';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/extensions';
 import { clone, forEach, pick } from 'lodash';

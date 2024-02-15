@@ -4,6 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
+import { isSystemCollection } from '@directus/system-data';
 import type { DeepPartial } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -66,7 +67,7 @@ async function update(updates: DeepPartial<Collection>) {
 </script>
 
 <template>
-	<div v-if="collection.collection.startsWith('directus_') === false">
+	<div v-if="isSystemCollection(collection.collection) === false">
 		<v-menu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
