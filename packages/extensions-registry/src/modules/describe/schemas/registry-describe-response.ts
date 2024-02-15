@@ -19,6 +19,7 @@ export const RegistryDescribeResponse = z.object({
 		verified: z.boolean(),
 		readme: z.union([z.null(), z.string()]),
 		type: z.enum(EXTENSION_TYPES),
+		license: z.string().nullable(),
 		versions: z.array(
 			z.object({
 				id: z.string(),
@@ -32,6 +33,7 @@ export const RegistryDescribeResponse = z.object({
 				url_bugs: z.union([z.null(), z.string()]),
 				url_homepage: z.union([z.null(), z.string()]),
 				url_repository: z.union([z.null(), z.string()]),
+				license: z.string().nullable(),
 				publisher: z.object({
 					id: z.string(),
 					username: z.string(),

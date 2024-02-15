@@ -42,6 +42,11 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				{{ abbreviateNumber(extension.total_downloads) }}
 				<v-icon small name="download" />
 			</div>
+
+			<div class="license">
+				{{ props.extension.license ?? t('unknown') }}
+				<v-icon small name="policy" />
+			</div>
 		</div>
 	</v-list-item>
 </template>

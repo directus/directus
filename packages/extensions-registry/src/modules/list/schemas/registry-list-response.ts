@@ -16,6 +16,7 @@ export const RegistryListResponse = z.object({
 			last_updated: z.string(),
 			host_version: z.string(),
 			sandbox: z.boolean(),
+			license: z.string().nullable(),
 			publisher: z.object({
 				username: z.string(),
 				verified: z.boolean(),

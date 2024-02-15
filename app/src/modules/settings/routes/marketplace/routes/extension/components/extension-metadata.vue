@@ -11,6 +11,7 @@ import ExtensionMetadataDownloadsSparkline from './extension-metadata-downloads-
 import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import ExtensionMetadataLicense from './extension-metadata-license.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -44,6 +45,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 				<ExtensionMetadataVersion :version="latestVersion.version" />
 				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
+				<ExtensionMetadataLicense :license="extension.license" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
 					{{ t('homepage') }}

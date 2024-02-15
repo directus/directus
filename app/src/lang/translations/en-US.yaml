@@ -34,6 +34,7 @@ extensions: Extensions
 modules: Modules
 module_bar: Module Bar
 logs: Logs
+unknown: Unknown
 reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
