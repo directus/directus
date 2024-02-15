@@ -5,19 +5,27 @@ import type { RegistryListResponse } from '@directus/extensions-registry';
 import { abbreviateNumber } from '@directus/utils';
 import { computed } from 'vue';
 import { formatName } from '../utils/format-name';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
 	extension: RegistryListResponse['data'][number];
+	showType: boolean;
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
+const chip = computed(() => t(`extension_${props.extension.type}`));
 </script>
 
 <template>
 	<v-list-item class="extension-list-item" block clickable :to="`/settings/marketplace/extension/${extension.id}`">
 		<div class="icon"><v-icon :name="icon" /></div>
 		<v-list-item-content>
-			<div class="name">{{ formatName(extension) }}</div>
+			<div class="name">
+				{{ formatName(extension) }}
+				<v-chip v-if="showType" outlined x-small class="type-chip">{{ chip }}</v-chip>
+			</div>
 			<div class="author">
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
@@ -78,5 +86,12 @@ const icon = computed(() => extensionTypeIconMap[props.extension.type]);
 	margin-inline-start: 20px;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
+}
+
+.type-chip {
+	margin-inline-start: 4px;
+	vertical-align: 2px;
+	--v-chip-color: var(--theme--primary);
+	--v-chip-background-color: var(--theme--primary-subdued);
 }
 </style>
