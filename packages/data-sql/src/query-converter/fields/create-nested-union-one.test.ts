@@ -2,7 +2,7 @@ import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { ConverterResult } from '../../index.js';
-import { type NestedManyResult } from './create-nested-manys.js';
+import { type NestedManyResult } from './nodes/nested-manys.js';
 import { getNestedUnionOne } from './create-nested-union-one.js';
 import { createIndexGenerators } from '../utils/create-index-generators.js';
 
@@ -28,7 +28,7 @@ test('getNestedUnionOne with a single identifier', () => {
 		type: 'nested-union-one',
 		alias: manyAlias,
 		nesting: {
-			type: 'relational-any',
+			type: 'relational-union',
 			field: relationalColumn,
 			collections: [
 				{
