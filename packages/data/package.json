@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"description": "Data storage abstraction layer for Directus",
 	"homepage": "https://directus.io",
 	"repository": {

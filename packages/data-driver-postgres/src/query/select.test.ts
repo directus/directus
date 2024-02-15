@@ -1,7 +1,7 @@
-import type { AbstractSqlClauses } from '@directus/data-sql';
-import { expect, test } from 'vitest';
-import { select } from './select.js';
+import type { AbstractSqlClauses, AbstractSqlQuerySelectJsonNode } from '@directus/data-sql';
 import { randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
+import { json, select } from './select.js';
 
 test('With multiple provided fields', () => {
 	const tableName1 = randomIdentifier();
@@ -64,5 +64,62 @@ test('With a count', () => {
 
 	const res = select(sample);
 	const expected = `SELECT COUNT("t${tableIndex}"."*") AS "c${columnIndex}"`;
+	expect(res).toStrictEqual(expected);
+});
+
+test('Convert json node to array syntax', () => {
+	const tableIndex = randomInteger(0, 100);
+	const jsonColumnName = randomIdentifier();
+	const columnIndex = randomInteger(0, 100);
+
+	const sample: AbstractSqlQuerySelectJsonNode = {
+		type: 'json',
+		tableIndex,
+		columnName: jsonColumnName,
+		path: [0, 1],
+		columnIndex,
+	};
+
+	const expected = `"t${tableIndex}"."${jsonColumnName}" -> $1 -> $2 AS "c${columnIndex}"`;
+	expect(json(sample)).toBe(expected);
+});
+
+test('With json', () => {
+	const tableName = randomIdentifier();
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
+
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				tableIndex,
+				columnName: columnName,
+				columnIndex: 0,
+			},
+			{
+				type: 'json',
+				tableIndex,
+				columnName: jsonColumnName,
+				path: [0],
+				columnIndex: 1,
+			},
+			{
+				type: 'json',
+				tableIndex,
+				columnName: jsonColumnName,
+				path: [1, 2],
+				columnIndex: 2,
+			},
+		],
+		from: {
+			tableName,
+			tableIndex,
+		},
+	};
+
+	const res = select(sample);
+	const expected = `SELECT "t${tableIndex}"."${columnName}" AS "c0", "t${tableIndex}"."${jsonColumnName}" -> $1 AS "c1", "t${tableIndex}"."${jsonColumnName}" -> $2 -> $3 AS "c2"`;
 	expect(res).toStrictEqual(expected);
 });
