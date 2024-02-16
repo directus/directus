@@ -78,7 +78,7 @@ async function onSubmit() {
 
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
 
-		let lastPage: string | undefined;
+		let lastPage: string | null = null;
 
 		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
 			lastPage = userStore.currentUser.last_page;
