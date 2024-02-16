@@ -33,7 +33,7 @@
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.15",
+		"@types/node": "18.19.17",
 		"@types/semver": "7.5.7",
 		"@vitest/coverage-v8": "1.2.2",
 		"typescript": "5.3.3",

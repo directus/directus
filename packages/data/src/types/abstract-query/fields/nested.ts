@@ -1,3 +1,4 @@
+import type { AbstractQueryFieldNodeNestedSingleObject } from '../common/nested/object.js';
 import type {
 	AbstractQueryFieldNodeNestedSingleRelational,
 	AbstractQueryFieldNodeNestedUnionRelational,
@@ -8,12 +9,12 @@ import type { AbstractQueryModifiers } from '../modifiers.js';
 export interface AbstractQueryFieldNodeNestedSingleOne {
 	type: 'nested-single-one';
 
-	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
+	/* From the nested collection/object the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedSingleRelational;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedSingleObject;
 }
 
 export interface AbstractQueryFieldNodeNestedUnionOne {
