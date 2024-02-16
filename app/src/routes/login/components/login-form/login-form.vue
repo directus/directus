@@ -56,7 +56,8 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	if (email.value === null || password.value === null) {
+	// Very simple(!) Regex solely as a help for the user instead of validation
+	if (email.value === null || email.value.match(/^\S+@\S+$/) === null || password.value === null) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
@@ -97,7 +98,7 @@ async function onSubmit() {
 </script>
 
 <template>
-	<form @submit.prevent="onSubmit">
+	<form novalidate @submit.prevent="onSubmit">
 		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
 		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
