@@ -32,13 +32,11 @@ export function getNestedUnionOne(
 	return {
 		subQuery: (rootRow, columnIndexToIdentifier) => {
 			const aliasOfIdField = columnIndexToIdentifier(unionColumnIndex);
-			const anyColumnValueRaw = rootRow[aliasOfIdField] as string;
-			if (!anyColumnValueRaw) throw new Error('No value found for any column.');
-			const anyColumnValue = JSON.parse(anyColumnValueRaw) as A2ORelation;
-
-			const subQueryGenerator = lookUp.get(anyColumnValue.foreignCollection);
+			const relationalJson = rootRow[aliasOfIdField] as A2ORelation;
+			if (!relationalJson) throw new Error(`Column ${aliasOfIdField} was not found in root query result.`);
+			const subQueryGenerator = lookUp.get(relationalJson.foreignCollection);
 			if (!subQueryGenerator) throw new Error('No sub query generator found.');
-			return subQueryGenerator(anyColumnValue)(rootRow, columnIndexToIdentifier);
+			return subQueryGenerator(relationalJson)(rootRow, columnIndexToIdentifier);
 		},
 		select: [createPrimitiveSelect(tableIndex, field.nesting.field, unionColumnIndex)],
 	};
