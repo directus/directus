@@ -350,18 +350,15 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-test.todo('nested a2o field', async () => {
+test('nested a2o field', async () => {
 	const localDesiredField = randomIdentifier();
-	const localDesiredFieldId = randomIdentifier();
 	const localDesiredFieldAlias = randomIdentifier();
-	const localPkFieldId = randomIdentifier();
 	const foreignCollectionAlias = randomIdentifier();
 	const localRelationalField = randomIdentifier();
 
 	// first collection
 	const foreignTable1 = randomIdentifier();
 	const foreignField1 = randomIdentifier();
-	const foreignField1Id = randomIdentifier();
 	const foreignField1Alias = randomIdentifier();
 	const foreignIdField11 = randomIdentifier();
 	const foreignIdField12 = randomIdentifier();
@@ -369,7 +366,6 @@ test.todo('nested a2o field', async () => {
 	// second collection
 	const foreignTable2 = randomIdentifier();
 	const foreignField2 = randomIdentifier();
-	const foreignField2Id = randomIdentifier();
 	const foreignField2Alias = randomIdentifier();
 	const foreignIdField2 = randomIdentifier();
 
@@ -432,9 +428,7 @@ test.todo('nested a2o field', async () => {
 
 	// define database response mocks
 	const localDesiredFieldValue1 = randomIdentifier();
-	const localPkFieldValue1 = randomIdentifier();
 	const localDesiredFieldValue2 = randomIdentifier();
-	const localPkFieldValue2 = randomIdentifier();
 	const foreignField1Value1 = randomIdentifier();
 	const foreignField2Value1 = randomIdentifier();
 	const foreignField1Value2 = randomIdentifier();
@@ -444,9 +438,8 @@ test.todo('nested a2o field', async () => {
 		.mockResolvedValueOnce(
 			getMockedStream([
 				{
-					[localDesiredFieldId]: localDesiredFieldValue1,
-					[localPkFieldId]: localPkFieldValue1,
-					[localRelationalField]: {
+					c0: localDesiredFieldValue1,
+					c1: {
 						foreignKey: [
 							{ column: foreignIdField11, value: 1 },
 							{ column: foreignIdField12, value: 2 },
@@ -455,9 +448,8 @@ test.todo('nested a2o field', async () => {
 					} as A2ORelation,
 				},
 				{
-					[localDesiredFieldId]: localDesiredFieldValue2,
-					[localPkFieldId]: localPkFieldValue2,
-					[localRelationalField]: {
+					c0: localDesiredFieldValue2,
+					c1: {
 						foreignKey: [{ column: foreignIdField2, value: 1 }],
 						foreignCollection: foreignTable2,
 					} as A2ORelation,
@@ -467,16 +459,16 @@ test.todo('nested a2o field', async () => {
 		.mockResolvedValueOnce(
 			getMockedStream([
 				{
-					[foreignField1Id]: foreignField1Value1,
-					[foreignField2Id]: foreignField2Value1,
+					c0: foreignField1Value1,
+					c1: foreignField2Value1,
 				},
 			]),
 		)
 		.mockResolvedValueOnce(
 			getMockedStream([
 				{
-					[foreignField1Id]: foreignField1Value2,
-					[foreignField2Id]: foreignField2Value2,
+					c0: foreignField1Value2,
+					c1: foreignField2Value2,
 				},
 			]),
 		);
