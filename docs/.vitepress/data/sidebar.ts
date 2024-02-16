@@ -293,16 +293,16 @@ function sidebarDeveloperReference() {
 							link: '/extensions/installing-extensions',
 							text: 'Installing Extensions',
 						},
-						{
-							link: '/extensions/creating-extensions',
-							text: 'Creating Extensions',
-						},
 					],
 				},
 				{
 					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
+						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
 						{
 							text: 'Extension Types',
 							collapsed: true,
