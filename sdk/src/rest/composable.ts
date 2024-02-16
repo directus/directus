@@ -1,4 +1,5 @@
 import type { StaticTokenClient } from '../auth/types.js';
+import type { RequestConfig, RequestHooksList } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -14,20 +15,26 @@ const defaultConfigValues: RestConfig = {};
 export const rest = (config: Partial<RestConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		const restConfig = { ...defaultConfigValues, ...config };
+
+		if (config.onRequest) client.hooks.onRequest.push(config.onRequest);
+		if (config.onResponse) client.hooks.onResponse.push(config.onResponse);
+		if (config.onError) client.hooks.onError.push(config.onError);
+
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				// all api requests require this content type
-				if (!options.headers) {
-					options.headers = {};
-				}
+				const fetchOptions: RequestConfig = {
+					url: getRequestUrl(client, options.path, options.params),
+					method: options.method ?? 'GET',
+					headers: options.headers ?? {},
+				};
 
-				if ('Content-Type' in options.headers === false) {
-					options.headers['Content-Type'] = 'application/json';
-				} else if (options.headers['Content-Type'] === 'multipart/form-data') {
+				if ('Content-Type' in fetchOptions.headers === false) {
+					fetchOptions.headers['Content-Type'] = 'application/json';
+				} else if (fetchOptions.headers['Content-Type'] === 'multipart/form-data') {
 					// let the fetch function deal with multipart boundaries
-					delete options.headers['Content-Type'];
+					delete fetchOptions.headers['Content-Type'];
 				}
 
 				// we need to use THIS here instead of client to access overridden functions
@@ -35,17 +42,9 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 					const token = await (this.getToken as StaticTokenClient<Schema>['getToken'])();
 
 					if (token) {
-						if (!options.headers) options.headers = {};
-						options.headers['Authorization'] = `Bearer ${token}`;
+						fetchOptions.headers['Authorization'] = `Bearer ${token}`;
 					}
 				}
-
-				const requestUrl = getRequestUrl(client.url, options.path, options.params);
-
-				let fetchOptions: RequestInit = {
-					method: options.method ?? 'GET',
-					headers: options.headers ?? {},
-				};
 
 				if ('credentials' in restConfig) {
 					fetchOptions.credentials = restConfig.credentials;
@@ -55,30 +54,24 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 					fetchOptions['body'] = options.body;
 				}
 
-				// apply onRequest hook from command
-				if (options.onRequest) {
-					fetchOptions = await options.onRequest(fetchOptions);
-				}
+				const hooks = cloneHooks(client.hooks);
 
-				// apply global onRequest hook
-				if (restConfig.onRequest) {
-					fetchOptions = await restConfig.onRequest(fetchOptions);
-				}
+				if (options.onRequest) hooks.onRequest.push(options.onRequest);
+				if (options.onResponse) hooks.onResponse.push(options.onResponse);
+				if (options.onError) hooks.onError.push(options.onError);
 
-				let result = await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);
-
-				// apply onResponse hook from command
-				if ('onResponse' in options) {
-					result = await options.onResponse(result, fetchOptions);
-				}
-
-				// apply global onResponse hook
-				if ('onResponse' in config) {
-					result = await config.onResponse(result, fetchOptions);
-				}
+				const result = await request<Output>(fetchOptions, client.globals.fetch, hooks);
 
 				return result as Output;
 			},
 		};
 	};
 };
+
+function cloneHooks(hooks: RequestHooksList): RequestHooksList {
+	return {
+		onRequest: [...hooks.onRequest],
+		onResponse: [...hooks.onResponse],
+		onError: [...hooks.onError],
+	};
+}

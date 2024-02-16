@@ -1,4 +1,4 @@
-import type { LoginOptions } from '../index.js';
+import type { LoginOptions, RequestConfig } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -77,7 +77,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const authData = await storage.get();
 				resetStorage();
 
-				const fetchOptions: RequestInit = {
+				const fetchOptions: RequestConfig = {
+					url: getRequestUrl(client, '/auth/refresh'),
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -96,9 +97,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				fetchOptions.body = JSON.stringify(body);
 
-				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
-
-				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				const data = await request<AuthenticationData>(fetchOptions, client.globals.fetch, client.hooks);
 
 				setCredentials(data);
 				return data;
@@ -117,13 +116,12 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const requestUrl = getRequestUrl(client.url, '/auth/login');
-
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
 
-				const fetchOptions: RequestInit = {
+				const fetchOptions: RequestConfig = {
+					url: getRequestUrl(client, '/auth/login'),
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -135,7 +133,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					fetchOptions.credentials = authConfig.credentials;
 				}
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				const data = await request<AuthenticationData>(fetchOptions, client.globals.fetch, client.hooks);
 
 				setCredentials(data);
 				return data;
@@ -143,7 +141,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			async logout() {
 				const authData = await storage.get();
 
-				const fetchOptions: RequestInit = {
+				const fetchOptions: RequestConfig = {
+					url: getRequestUrl(client, '/auth/logout'),
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -160,8 +159,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					});
 				}
 
-				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				await request(fetchOptions, client.globals.fetch, client.hooks);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
