@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -699,11 +699,7 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				try {
-					await service.createOne({ ip_access: ['invalid_ip'] });
-				} catch (error) {
-					expect(error).toBeInstanceOf(InvalidPayloadError);
-				}
+				await expect(service.createOne({ ip_access: ['invalid_ip'] })).rejects.toThrow();
 			});
 		});
 
@@ -714,11 +710,7 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				try {
-					await service.createMany([{ ip_access: ['invalid_ip'] }]);
-				} catch (error) {
-					expect(error).toBeInstanceOf(InvalidPayloadError);
-				}
+				await expect(service.createMany([{ ip_access: ['invalid_ip'] }])).rejects.toThrow();
 			});
 		});
 
@@ -741,11 +733,7 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				try {
-					await service.updateOne(1, { ip_access: ['invalid_ip'] });
-				} catch (error) {
-					expect(error).toBeInstanceOf(InvalidPayloadError);
-				}
+				await expect(service.updateOne(1, { ip_access: ['invalid_ip'] })).rejects.toThrow();
 			});
 		});
 
@@ -761,11 +749,7 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				try {
-					await service.updateMany([1], { ip_access: ['invalid_ip'] });
-				} catch (error) {
-					expect(error).toBeInstanceOf(InvalidPayloadError);
-				}
+				await expect(service.updateMany([1], { ip_access: ['invalid_ip'] })).rejects.toThrow();
 			});
 		});
 
@@ -778,6 +762,10 @@ describe('Integration Tests', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				await service.updateBatch([{ id: 1, admin_access: false }]);
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateBatch([{ id: 1, ip_access: ['invalid_ip'] }])).rejects.toThrow();
 			});
 		});
 
@@ -794,6 +782,10 @@ describe('Integration Tests', () => {
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.updateByQuery({}, { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateByQuery({}, { ip_access: ['invalid_ip'] })).rejects.toThrow();
 			});
 		});
 
