@@ -151,13 +151,16 @@ export class RolesService extends ItemsService {
 	}
 
 	private isIpAccessValid(value?: any[] | null): boolean {
-		if (!value || !Array.isArray(value)) return false;
-
-		if (value.length === 0) return true;
+		if (value === undefined) return false;
+		if (value === null) return true;
+		if (Array.isArray(value) && value.length === 0) return true;
 
 		for (const ip of value) {
+			if (typeof ip !== 'string' || ip.includes('*')) return false;
+
 			try {
-				getMatch(ip);
+				const match = getMatch(ip);
+				if (match.type == 'IPMask') return false;
 			} catch {
 				return false;
 			}
@@ -168,7 +171,9 @@ export class RolesService extends ItemsService {
 
 	private assertValidIpAccess(partialItem: Partial<Item>): void {
 		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
-			throw new InvalidPayloadError({ reason: 'IP-Access contains an incorrect value' });
+			throw new InvalidPayloadError({
+				reason: 'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+			});
 		}
 	}
 
