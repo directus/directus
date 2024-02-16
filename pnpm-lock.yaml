@@ -1738,8 +1738,8 @@ importers:
         specifier: 3.515.0
         version: 3.515.0
       '@aws-sdk/lib-storage':
-        specifier: 3.513.0
-        version: 3.513.0(@aws-sdk/client-s3@3.515.0)
+        specifier: 3.515.0
+        version: 3.515.0(@aws-sdk/client-s3@3.515.0)
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -3139,8 +3139,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/lib-storage@3.513.0(@aws-sdk/client-s3@3.515.0):
-    resolution: {integrity: sha512-1xwpT+TJjGc0PHxQ4upwR5HuCf/oz2PT/7hiTgja1WRxMFAXgAWn4ennfiysMsyU86Zyx9V3peaJzT9VPPtwGw==}
+  /@aws-sdk/lib-storage@3.515.0(@aws-sdk/client-s3@3.515.0):
+    resolution: {integrity: sha512-/7z/3KnMs1ODNS9c8Skj/DFTsy6/v7n17clh1IGOcTYhhioCMA3MIzIZecWFeLjPYcUSkNQHIIjKFQt1nhZkwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@aws-sdk/client-s3': ^3.0.0
