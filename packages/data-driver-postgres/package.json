@@ -30,7 +30,7 @@
 		"@directus/data": "workspace:*",
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.15",
+		"@types/node": "18.19.17",
 		"@types/pg": "8.11.0",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.2.2",

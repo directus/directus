@@ -2,7 +2,7 @@ import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-client';
 import {
 	afterEach,
 	beforeAll,
@@ -393,9 +393,16 @@ describe('Integration Tests', () => {
 
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
+
+							tracker.on
+								.select(
+									({ sql, bindings }: RawQuery) =>
+										sql.startsWith('select count(*) as "count" from "directus_users"') && bindings.includes(userId2),
+								)
+								.response({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
+
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
 						});

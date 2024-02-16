@@ -88,7 +88,10 @@ export class RolesService extends ItemsService {
 					.count('*', { as: 'count' })
 					.from('directus_users')
 					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-					.whereNotIn('directus_users.id', usersAdded)
+					.whereNotIn(
+						'directus_users.id',
+						usersAdded.map((user) => user.id),
+					)
 					.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 					.first();
 
