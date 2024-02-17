@@ -23,7 +23,7 @@
 	"scripts": {
 		"build": "vite build",
 		"dev": "vite",
-		"story:build": "histoire build",
+		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
 		"test": "vitest --watch=false",
