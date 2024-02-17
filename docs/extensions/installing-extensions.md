@@ -24,7 +24,7 @@ By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introd
 <Card
 	title="User Guide"
 	text="Learn more about installing extensions from the Directus Marketplace."
-	url="/user-guide/marketplace/introduction"
+	url="/user-guide/marketplace/overview"
 	style="margin: 2rem 0"
 />
 

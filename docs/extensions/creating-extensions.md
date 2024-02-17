@@ -108,7 +108,7 @@ built.
 
 ## Marketplace Requirements
 
-By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are availble from the [Directus Marketplace](/user-guide/marketplace/introduction) in all Directus projects (Directus Professional and Enterprise Cloud, and self-hosted). If you are building an API or Hybrid extension and want to publish it to the Marketplace, it must use the Sandbox SDK.
+By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are availble from the [Directus Marketplace](/user-guide/marketplace/overview) in all Directus projects (Directus Professional and Enterprise Cloud, and self-hosted). If you are building an API or Hybrid extension and want to publish it to the Marketplace, it must use the Sandbox SDK.
 
 ## Developing Your Extension
 

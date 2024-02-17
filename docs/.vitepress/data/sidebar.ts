@@ -624,6 +624,16 @@ function sidebarUserGuide() {
 			],
 		},
 		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview'
+				}
+			]
+		},
+		{
 			text: 'Directus Cloud',
 			collapsed: true,
 			items: [

@@ -16,7 +16,7 @@ table {
 This feature is currently in Beta, and we need your feedback to make both the marketplace and [sandboxed extensions](/extensions/sandbox/introduction) better - join the `#marketplace-beta` channel on [Discord](https://directus.chat).
 :::
 
-The [Directus Marketplace](/user-guide/marketplace/introduction) provides a way for users to install extensions in their projects directly in the Data Studio. It's available in all projects, whether run on Directus Cloud or your own infrastructure.
+The [Directus Marketplace](/user-guide/marketplace/overview) provides a way for users to install extensions in their projects directly in the Data Studio. It's available in all projects, whether run on Directus Cloud or your own infrastructure.
 
 ![A marketplace listing in settings. There is a filter and sort option, and a seach extensions box. Each extension is shown with an icon, name, type, author, description, as well as other metadata.](https://marketing.directus.app/assets/9ed89505-ca30-43d7-b4c4-2f6b40223815.png)
 
