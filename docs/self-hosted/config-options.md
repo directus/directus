@@ -933,9 +933,9 @@ extensions from a storage location instead. Under the hood, they are synced into
 
 ## Marketplace
 
-| Variable               | Description                                                                         | Default Value                  |
-| ---------------------- | ----------------------------------------------------------------------------------- | ------------------------------ |
-| `MARKETPLACE_TRUST`    | Limit the Marketplace Registry to return only app and sandboxed extensions.         | `sandbox`                      |
+| Variable               | Description                                                                        | Default Value                  |
+| ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------ |
+| `MARKETPLACE_TRUST`    | Limit the Marketplace Registry to return only app and sandboxed extensions.        | `sandbox`                      |
 | `MARKETPLACE_REGISTRY` | The registry to use for the Directus Marketplace. Must implement the Registry API. | `https://registry.directus.io` |
 
 ## Synchronization
