@@ -102,7 +102,7 @@ If your email address is public on GitHub and matches your npm account, the Dire
 The Directus Marketplace will allow installation of all App extension types (Interfaces, Layouts, Displays, Panels, Modules, Themes) and [Sandboxed API/Hybrid extensions](/extensions/sandbox/introduction) (Endpoints, Hooks, Operations, Bundles).
 
 :::info Non-Sandboxed Extensions
-API/Hybrid extensions which are not sandboxed will not be available via the Marketplace by default in an effort to increase security and trust. They can be made available by setting the `TODO:VARIABLE` environment variable to `TODO:VALUE` (self-hosted and Enterprise Cloud).
+API/Hybrid extensions which are not sandboxed will not be available via the Marketplace by default in an effort to increase security and trust. They can be made available by setting the `MARKETPLACE_TRUST` environment variable to `TODO:VALUE` (self-hosted and Enterprise Cloud).
 :::
 
 ## Best Practices
