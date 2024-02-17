@@ -423,8 +423,8 @@ function sidebarDeveloperReference() {
 				},
 				{
 					text: 'Marketplace <span class="badge">Beta</span>',
-					link: '/extensions/marketplace/publishing'
-				}
+					link: '/extensions/marketplace/publishing',
+				},
 			],
 		},
 		{
@@ -629,9 +629,9 @@ function sidebarUserGuide() {
 			items: [
 				{
 					text: 'Introduction',
-					link: '/user-guide/marketplace/overview'
-				}
-			]
+					link: '/user-guide/marketplace/overview',
+				},
+			],
 		},
 		{
 			text: 'Directus Cloud',

@@ -17,9 +17,11 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Deprecated Local Extension Folders
 
-Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being deprecated in favor of relying on the `package.json` file for metadata including extension type.
+Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
+deprecated in favor of relying on the `package.json` file for metadata including extension type.
 
-If your extension is already in the root `extensions` directory and has a `package.json` file with a `directus:extension` object, there is no action required.
+If your extension is already in the root `extensions` directory and has a `package.json` file with a
+`directus:extension` object, there is no action required.
 
 ::: details Migration/Mitigation
 
@@ -45,11 +47,14 @@ If your project does not already have one, add a `directus:extension` object to 
 ```
 
 Notes:
-- Make sure `type` matches the JS type of your `dist` file (CJS or ESM).
+
+- Make sure `type` matches the JS type of your `dist` file (cjs or esm).
 - Make sure `directus:extension.type` matches the type of extension. This should match the legacy type folder name.
 - Make sure `directus:extension.path`points to your extensions’ `dist` file.
-- Make sure `directus:extension.source` points to your extensions’ source code entry point or set to an empty string `""` when the source code is not stored alongside the `package.json` file.
-- Make sure `directus:extension.host` is set to a Directus version range your extension is compatible with (for example: `^10.0.0`)
+- Make sure `directus:extension.source` points to your extensions’ source code entry point or set to an empty string
+  `""` when the source code is not stored alongside the `package.json` file.
+- Make sure `directus:extension.host` is set to a Directus version range your extension is compatible with (for example:
+  `^10.0.0`)
 
 :::
 

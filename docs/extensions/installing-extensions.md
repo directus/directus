@@ -19,7 +19,8 @@ There are three ways to install extensions to your Directus project:
 
 Extensions in the Directus Marketplace Registry are made available via the Marketplace section in the Settings Module.
 
-By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are availble from the Marketplace in all Directus projects (Directus Professional and Enterprise Cloud, and self-hosted).
+By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are available from the
+Marketplace in all Directus projects (Directus Professional and Enterprise Cloud, and self-hosted).
 
 <Card
 	title="User Guide"
