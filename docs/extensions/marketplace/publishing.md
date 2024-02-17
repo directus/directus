@@ -124,7 +124,7 @@ Bundles).
 
 :::info Non-Sandboxed Extensions API/Hybrid extensions which are not sandboxed will not be available via the Marketplace
 by default in an effort to increase security and trust. They can be made available by setting the `MARKETPLACE_TRUST`
-environment variable to `TODO:VALUE` (self-hosted and Enterprise Cloud). :::
+environment variable to `all` (self-hosted and Enterprise Cloud). :::
 
 ## Best Practices
 
