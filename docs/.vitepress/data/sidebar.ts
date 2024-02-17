@@ -421,6 +421,10 @@ function sidebarDeveloperReference() {
 						},
 					],
 				},
+				{
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing'
+				}
 			],
 		},
 		{
