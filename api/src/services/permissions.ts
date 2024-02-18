@@ -2,7 +2,7 @@ import { ForbiddenError } from '@directus/errors';
 import type { ItemPermissions, PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { filterItems } from '../utils/filter-items.js';
 import { AuthorizationService } from './authorization.js';
