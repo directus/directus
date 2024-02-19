@@ -116,7 +116,7 @@
 	font-size: 0.75em;
 	padding: 0.1rem 0.4rem;
 	border-radius: 10rem;
-	margin-bottom: 5px;
+	vertical-align: top;
 }
 
 .VPSidebarItem.is-active span.badge {
