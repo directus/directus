@@ -240,7 +240,8 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		await this.validateBindClient();
 
-		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId, syncUserInfo } =
+			this.config;
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
@@ -293,7 +294,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				};
 			}
 
-			if (env['AUTH_SYNC_USER_INFO']) {
+			if (syncUserInfo) {
 				emitPayload = {
 					...emitPayload,
 					first_name: userInfo.firstName,
