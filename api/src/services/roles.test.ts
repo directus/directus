@@ -699,7 +699,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				await expect(service.createOne({ ip_access: ['invalid_ip'] })).rejects.toThrow();
+				await expect(service.createOne({ ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -710,7 +712,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				await expect(service.createMany([{ ip_access: ['invalid_ip'] }])).rejects.toThrow();
+				await expect(service.createMany([{ ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -733,10 +737,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				// TODODODODODODODO THIS DOESNT SEEM TO CORRECTLY TEST THE BEHAVIOR
-				// TODODODODODODODO THIS DOESNT SEEM TO CORRECTLY TEST THE BEHAVIOR
-				// TODODODODODODODO THIS DOESNT SEEM TO CORRECTLY TEST THE BEHAVIOR
-				await expect(service.updateOne(1, { ip_access: ['invalid_ip'] })).rejects.toThrow();
+				await expect(service.updateOne(1, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -752,7 +755,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				await expect(service.updateMany([1], { ip_access: ['invalid_ip'] })).rejects.toThrow();
+				await expect(service.updateMany([1], { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -768,7 +773,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				await expect(service.updateBatch([{ id: 1, ip_access: ['invalid_ip'] }])).rejects.toThrow();
+				await expect(service.updateBatch([{ id: 1, ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -788,7 +795,9 @@ describe('Integration Tests', () => {
 			});
 
 			it('should throw due to invalid ip_access', async () => {
-				await expect(service.updateByQuery({}, { ip_access: ['invalid_ip'] })).rejects.toThrow();
+				await expect(service.updateByQuery({}, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
