@@ -52,8 +52,8 @@ function convertJsonTarget(
 	tableIndex: number,
 	indexGen: IndexGenerators,
 ): TargetConversionResult {
-	const columnName = objectPath[0];
-	const parameters = [...objectPath, targetFieldName].slice(1);
+	const columnName = targetFieldName;
+	const parameters = objectPath;
 	const path = parameters.map(() => indexGen.parameter.next().value);
 
 	return {
@@ -68,7 +68,11 @@ function convertJsonTarget(
 	};
 }
 
-function convertFnTarget(tableIndex: number, target: AbstractQueryFunction, indexGen: IndexGenerators) {
+function convertFnTarget(
+	tableIndex: number,
+	target: AbstractQueryFunction,
+	indexGen: IndexGenerators,
+): TargetConversionResult {
 	const convertedFn = convertFn(tableIndex, target, indexGen);
 
 	return {

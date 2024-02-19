@@ -143,14 +143,14 @@ test('convert nested target', () => {
 
 test('convert json filter target', () => {
 	const tableIndex = randomInteger(0, 100);
-	const externalColumnName = randomIdentifier();
+	const jsonColumnName = randomIdentifier();
 	const jsonProp = randomIdentifier();
 
 	const nestedTarget: AbstractQueryTargetNestedOne = {
 		type: 'nested-one-target',
 		field: {
 			type: 'primitive',
-			field: externalColumnName,
+			field: jsonColumnName,
 		},
 		nesting: {
 			type: 'object-single',
@@ -162,7 +162,7 @@ test('convert json filter target', () => {
 		value: {
 			type: 'json',
 			tableIndex,
-			columnName: externalColumnName,
+			columnName: jsonColumnName,
 			path: [0],
 		},
 		joins: [],
@@ -170,6 +170,6 @@ test('convert json filter target', () => {
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertNestedOneTarget(nestedTarget, tableIndex, indexGen);
+	const result = convertTarget(nestedTarget, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
