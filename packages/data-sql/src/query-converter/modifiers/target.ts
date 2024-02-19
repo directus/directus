@@ -1,4 +1,9 @@
-import type { AbstractQueryTarget, AbstractQueryTargetNestedOne, AtLeastOneElement } from '@directus/data';
+import type {
+	AbstractQueryFunction,
+	AbstractQueryTarget,
+	AbstractQueryTargetNestedOne,
+	AtLeastOneElement,
+} from '@directus/data';
 import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
 import { convertFn } from '../common/function.js';
 import { createJoin } from '../fields/nodes/join.js';
@@ -18,49 +23,59 @@ export function convertTarget(
 ): TargetConversionResult {
 	if (target.type === 'primitive') {
 		if (objectPath !== null) {
-			const columnName = objectPath[0];
-			const parameters = [...objectPath, target.field].slice(1);
-
-			const path = parameters.map(() => indexGen.parameter.next().value);
-
-			return {
-				value: {
-					type: 'json',
-					tableIndex,
-					columnName,
-					path,
-				},
-				joins: [],
-				parameters,
-			};
-		} else {
-			return {
-				value: {
-					type: 'primitive',
-					tableIndex,
-					columnName: target.field,
-				},
-				joins: [],
-				parameters: [],
-			};
+			return convertJsonTarget(objectPath, target.field, tableIndex, indexGen);
 		}
+
+		return convertPrimitiveTarget(tableIndex, target.field);
 	} else if (target.type === 'fn') {
-		const convertedFn = convertFn(tableIndex, target, indexGen);
-
-		return {
-			value: convertedFn.fn,
-			joins: [],
-			parameters: [],
-		};
+		return convertFnTarget(tableIndex, target, indexGen);
 	} else {
-		const { value, joins } = convertNestedOneTarget(target, tableIndex, indexGen, objectPath);
-
-		return {
-			value,
-			joins,
-			parameters: [],
-		};
+		return convertNestedOneTarget(target, tableIndex, indexGen, objectPath);
 	}
+}
+
+function convertPrimitiveTarget(tableIndex: number, targetFieldName: string): TargetConversionResult {
+	return {
+		value: {
+			type: 'primitive',
+			tableIndex,
+			columnName: targetFieldName,
+		},
+		joins: [],
+		parameters: [],
+	};
+}
+
+function convertJsonTarget(
+	objectPath: AtLeastOneElement<string>,
+	targetFieldName: string,
+	tableIndex: number,
+	indexGen: IndexGenerators,
+): TargetConversionResult {
+	const columnName = objectPath[0];
+	const parameters = [...objectPath, targetFieldName].slice(1);
+	const path = parameters.map(() => indexGen.parameter.next().value);
+
+	return {
+		value: {
+			type: 'json',
+			tableIndex,
+			columnName,
+			path,
+		},
+		joins: [],
+		parameters,
+	};
+}
+
+function convertFnTarget(tableIndex: number, target: AbstractQueryFunction, indexGen: IndexGenerators) {
+	const convertedFn = convertFn(tableIndex, target, indexGen);
+
+	return {
+		value: convertedFn.fn,
+		joins: [],
+		parameters: [],
+	};
 }
 
 /**
