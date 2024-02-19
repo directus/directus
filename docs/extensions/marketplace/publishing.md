@@ -12,9 +12,13 @@ table {
 
 # Publish on the Directus Marketplace
 
-:::tip The Directus Marketplace is in Beta This feature is currently in Beta, and we need your feedback to make both the
-marketplace and [sandboxed extensions](/extensions/sandbox/introduction) better - join the `#marketplace-beta` channel
-on [Discord](https://directus.chat). :::
+:::tip The Directus Marketplace is in Beta
+
+This feature is currently in Beta, and we need your feedback to make both the marketplace and
+[sandboxed extensions](/extensions/sandbox/introduction) better - join the `#marketplace-beta` channel on
+[Discord](https://directus.chat).
+
+:::
 
 The [Directus Marketplace](/user-guide/marketplace/overview) provides a way for users to install extensions in their
 projects directly in the Data Studio. It's available in all projects, whether run on Directus Cloud or your own
