@@ -12,8 +12,8 @@ import { data as packages } from '@/data/packages.data.js';
 There are three ways to install extensions to your Directus project:
 
 1. Installing via the Directus Marketplace
-2. Installing via the npm registry
-3. Installing via the extensions directory
+2. Installing via the npm Registry
+3. Installing via the Extensions Directory
 
 ## Installing via the Directus Marketplace
 
@@ -26,7 +26,7 @@ Marketplace in all Directus projects (Directus Professional and Enterprise Cloud
 	title="User Guide"
 	text="Learn more about installing extensions from the Directus Marketplace."
 	url="/user-guide/marketplace/overview"
-	style="margin: 2rem 0"
+	style="margin: 1rem 0"
 />
 
 <Card

@@ -117,6 +117,7 @@
 	padding: 0.1rem 0.4rem;
 	border-radius: 10rem;
 	vertical-align: top;
+	transition: background-color 0.25s;
 }
 
 .VPSidebarItem.is-active span.badge {
