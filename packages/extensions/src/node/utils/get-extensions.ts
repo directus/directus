@@ -6,132 +6,148 @@ import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constant
 import { ExtensionManifest } from '../../shared/schemas/index.js';
 import type { Extension } from '../../shared/types/index.js';
 
-type ExtensionList = [name: string, path: string][];
+export function getExtensionDefinition(manifest: ExtensionManifest, meta: { path: string; local: boolean }): Extension {
+	const { name, version } = manifest;
+	const { path, local } = meta;
+	const extensionOptions = manifest[EXTENSION_PKG_KEY];
 
-export async function getExtensions(extensionList: ExtensionList, local: boolean): Promise<Extension[]> {
-	const extensions: Extension[] = [];
+	if (extensionOptions.type === 'bundle') {
+		return {
+			path,
+			name,
+			partial: extensionOptions.partial,
+			version,
+			type: extensionOptions.type,
+			entrypoint: {
+				app: extensionOptions.path.app,
+				api: extensionOptions.path.api,
+			},
+			entries: extensionOptions.entries.map((entry) => pick(entry, 'name', 'type')),
+			host: extensionOptions.host,
+			local,
+		};
+	} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
+		return {
+			path,
+			name,
+			version,
+			type: extensionOptions.type,
+			entrypoint: {
+				app: extensionOptions.path.app,
+				api: extensionOptions.path.api,
+			},
+			host: extensionOptions.host,
+			sandbox: extensionOptions.sandbox,
+			local,
+		};
+	} else if (extensionOptions.type === 'hook' || extensionOptions.type === 'endpoint') {
+		return {
+			path,
+			name,
+			version,
+			type: extensionOptions.type,
+			entrypoint: extensionOptions.path,
+			host: extensionOptions.host,
+			sandbox: extensionOptions.sandbox,
+			local,
+		};
+	} else {
+		// App extensions
+		return {
+			path,
+			name,
+			version,
+			type: extensionOptions.type,
+			entrypoint: extensionOptions.path,
+			host: extensionOptions.host,
+			local,
+		};
+	}
+}
 
-	for (const [name, path] of extensionList) {
-		const packageJsonPath = join(path, 'package.json');
+export async function resolveFsExtensions(root: string): Promise<Map<string, Extension>> {
+	root = resolve(root);
 
-		const pkgExists = await fse.exists(packageJsonPath);
+	if (!(await fse.exists(root))) return new Map();
 
-		if (pkgExists === false) {
-			throw new Error(`${local ? 'Local' : 'Package'} extension "${name}" does not contain a package.json file.`);
-		}
+	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
-		const extensionManifest: Record<string, any> = await fse.readJSON(packageJsonPath);
+	const extensionMap = await Promise.all(
+		extensionFolders.map(async (folder) => {
+			const path = join(root, folder);
 
+			try {
+				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
+				return { name: folder, path, manifest };
+			} catch {
+				throw new Error(`Extension "${folder}" (${path}) does not contain a package.json file.`);
+			}
+		}),
+	);
+
+	const extensions = new Map();
+
+	for (const { name, path, manifest } of extensionMap.values()) {
 		let parsedManifest;
 
 		try {
-			parsedManifest = ExtensionManifest.parse(extensionManifest);
+			parsedManifest = ExtensionManifest.parse(manifest);
 		} catch (error) {
-			throw new Error(`The manifest of ${local ? 'local' : 'package'} extension "${name}" is invalid.\n${error}`);
+			throw new Error(`The manifest of the extension "${name} (${path}) is invalid.\n${error}`);
 		}
 
-		const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];
-
-		if (extensionOptions.type === 'bundle') {
-			extensions.push({
-				path,
-				name: parsedManifest.name,
-				partial: extensionOptions.partial,
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: {
-					app: extensionOptions.path.app,
-					api: extensionOptions.path.api,
-				},
-				entries: extensionOptions.entries.map((entry) => pick(entry, 'name', 'type')),
-				host: extensionOptions.host,
-				local,
-			});
-		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
-			extensions.push({
-				path,
-				name: parsedManifest.name,
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: {
-					app: extensionOptions.path.app,
-					api: extensionOptions.path.api,
-				},
-				host: extensionOptions.host,
-				sandbox: extensionOptions.sandbox,
-				local,
-			});
-		} else if (extensionOptions.type === 'hook' || extensionOptions.type === 'endpoint') {
-			extensions.push({
-				path,
-				name: parsedManifest.name,
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: extensionOptions.path,
-				host: extensionOptions.host,
-				sandbox: extensionOptions.sandbox,
-				local,
-			});
-		} else {
-			// App extensions
-			extensions.push({
-				path,
-				name: parsedManifest.name,
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: extensionOptions.path,
-				host: extensionOptions.host,
-				local,
-			});
-		}
+		const extensionDefinition = getExtensionDefinition(parsedManifest, { path, local: true });
+		extensions.set(name, extensionDefinition);
 	}
 
 	return extensions;
 }
 
-export async function resolveFsExtensions(root: string): Promise<Map<string, Extension>> {
-	if (!(await fse.exists(root))) return new Map();
-
-	const extensionFolders = await listFolders(root, { ignoreHidden: true });
-
-	const extensionList: ExtensionList = extensionFolders.map((folder) => [folder, join(root, folder)]);
-	const extensions = await getExtensions(extensionList, false);
-
-	const map = new Map();
-
-	for (const [index, extension] of extensions.entries()) {
-		map.set(extensionFolders[index]!, extension);
-	}
-
-	return map;
-}
-
-const isExtension = (pkgName: string) => {
-	const regex = /^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-)(.+)$/;
-	return regex.test(pkgName);
-};
-
 export async function resolveModuleExtensions(root: string): Promise<Map<string, Extension>> {
+	root = resolve(root);
+
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
-		pkg = await fse.readJSON(resolve(root, 'package.json'));
+		pkg = await fse.readJSON(join(root, 'package.json'));
 	} catch {
 		throw new Error(`Couldn't resolve package extensions: Path "${root}" does not contain a package.json file`);
 	}
 
 	const dependencyNames = Object.keys(pkg.dependencies ?? {});
 
-	const extensionNames = dependencyNames.filter((name) => isExtension(name));
+	const dependencyMap = await Promise.all(
+		dependencyNames.map(async (name) => {
+			try {
+				const path = resolvePackage(name, root);
+				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
+				if (EXTENSION_PKG_KEY in manifest) return { name, path, manifest };
+			} catch {
+				// Ignore
+			}
 
-	const extensionList: ExtensionList = extensionNames.map((pkgName) => [pkgName, resolvePackage(pkgName, root)]);
-	const extensions = await getExtensions(extensionList, true);
+			// Package cannot be resolved or is not an extension
+			return;
+		}),
+	);
 
-	const map = new Map();
+	const extensions = new Map();
 
-	for (const [index, extension] of extensions.entries()) {
-		map.set(extensionNames[index]!, extension);
+	for (const extension of dependencyMap.values()) {
+		if (!extension) continue;
+
+		let parsedManifest;
+
+		try {
+			parsedManifest = ExtensionManifest.parse(extension.manifest);
+		} catch (error) {
+			throw new Error(`The manifest of the package extension "${extension.name}" is invalid.\n${error}`);
+		}
+
+		const extensionDefinition = getExtensionDefinition(parsedManifest, { path: extension.path, local: true });
+
+		extensions.set(extension.name, extensionDefinition);
 	}
 
-	return map;
+	return extensions;
 }
