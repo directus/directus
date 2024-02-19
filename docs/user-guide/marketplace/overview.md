@@ -4,12 +4,15 @@ description: An introduction to the Directus Marketplace - a new way to publish 
 
 # Directus Marketplace
 
-:::tip The Directus Marketplace is in Beta This feature is currently in Beta, and we need your feedback to make the
-marketplace - join the `#marketplace-beta` channel on [Discord](https://directus.chat). :::
+:::tip The Directus Marketplace is in Beta
 
-The [Directus Marketplace](/user-guide/marketplace/overview) provides a way for users to install extensions in their
-projects directly in the Data Studio. It's available in all projects, whether run on Directus Cloud or your own
-infrastructure.
+This feature is currently in Beta, and we need your feedback to make the marketplace - join the `#marketplace-beta`
+channel on [Discord](https://directus.chat).
+
+:::
+
+The Directus Marketplace provides a way for users to install extensions in their projects directly in the Data Studio.
+It's available in all projects, whether run on Directus Cloud or your own infrastructure.
 
 ## Discover Extensions
 
@@ -28,11 +31,15 @@ You can click any extension in the Marketplace listing to enter the extension de
 
 On extension detail pages, click the **Install Extension** button to install the extension in your project.
 
-:::info Compatibility Warnings When creating extensions, authors specify which versions the extensions have been tested
-to work with. If authors don't update this value, we may show an incompatibility warning.
+:::info Compatibility Warnings
+
+When creating extensions, authors specify which versions the extensions have been tested to work with. If authors don't
+update this value, we may show an incompatibility warning.
 
 This does not mean that an extension does not work, but that the author has not explicitly stated that it does. You can
-still install and try them. :::
+still install and try them.
+
+:::
 
 ## Manage Extensions
 
