@@ -93,7 +93,7 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 		try {
 			parsedManifest = ExtensionManifest.parse(manifest);
 		} catch (error) {
-			throw new Error(`The manifest of the extension "${name} (${path}) is invalid.\n${error}`);
+			throw new Error(`The manifest of the extension "${name}" (${path}) is invalid.\n${error}`);
 		}
 
 		const extensionDefinition = getExtensionDefinition(parsedManifest, { path, local: true });
