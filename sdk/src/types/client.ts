@@ -21,7 +21,6 @@ export type ClientGlobals = {
 	URL: typeof URL;
 };
 
-
 /**
  * Available options on the client
  */

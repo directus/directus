@@ -27,7 +27,7 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 					url: getRequestUrl(client, requestPath),
 					method: 'POST',
 					body: JSON.stringify({ query, variables }),
-					headers: {}
+					headers: {},
 				};
 
 				if ('credentials' in gqlConfig) {

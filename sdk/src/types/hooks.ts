@@ -1,4 +1,4 @@
-import type { RequestConfig } from "./request.js";
+import type { RequestConfig } from './request.js';
 
 export type RequestTransformer = (request: RequestConfig) => RequestConfig | Promise<RequestConfig>;
 

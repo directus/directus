@@ -22,4 +22,3 @@ The SDK allows for a couple fo ways to integrate or customize how it works.
 ## Custom Commands
 
 To call custom endpoints you'll want to make a custom command to be used with the `rest.request` function.
-
