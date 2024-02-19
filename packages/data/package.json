@@ -32,9 +32,9 @@
 		"@types/node": "18.19.17",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.2.2",
-		"dependency-cruiser": "16.2.0",
+		"dependency-cruiser": "16.2.1",
 		"tsup": "8.0.2",
 		"typescript": "5.3.3",
-		"vitest": "1.2.2"
+		"vitest": "1.3.0"
 	}
 }
