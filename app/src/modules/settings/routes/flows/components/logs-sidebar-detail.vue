@@ -3,9 +3,10 @@ import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
 import type { FlowRaw } from '@directus/types';
 import { Action } from '@directus/constants';
-import { computed, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
+import { abbreviateNumber } from '@directus/utils';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -24,14 +25,15 @@ const usedTrigger = computed(() => {
 
 const page = ref<number>(1);
 
-const { revisionsByDate, revisionsCount, loading, pagesCount, refresh } = useRevisions(
-	ref('directus_flows'),
-	computed(() => unref(flow).id),
-	ref(null),
-	{
-		action: Action.RUN,
-	},
-);
+const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loading, loadingCount, pagesCount, refresh } =
+	useRevisions(
+		ref('directus_flows'),
+		computed(() => unref(flow).id),
+		ref(null),
+		{
+			action: Action.RUN,
+		},
+	);
 
 watch(
 	() => page.value,
@@ -39,6 +41,10 @@ watch(
 		refresh(newPage);
 	},
 );
+
+onMounted(() => {
+	getRevisionsCount();
+});
 
 const previewing = ref();
 
@@ -86,10 +92,19 @@ const steps = computed(() => {
 		},
 	);
 });
+
+function onToggle(open: boolean) {
+	if (open && revisionsByDate.value === null) getRevisions();
+}
 </script>
 
 <template>
-	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
+	<sidebar-detail
+		:title="t('logs')"
+		icon="fact_check"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		@toggle="onToggle"
+	>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>

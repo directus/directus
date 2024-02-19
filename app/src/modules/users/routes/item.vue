@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useFormFields } from '@/composables/use-form-fields';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
@@ -14,7 +12,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import type { Field, User } from '@directus/types';
+import type { User } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -48,6 +46,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	save,
@@ -68,6 +67,11 @@ const {
 		  }
 		: undefined,
 );
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, fields },
+} = permissions;
 
 const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
@@ -100,14 +104,11 @@ const title = computed(() => {
 	return t('adding_user');
 });
 
-const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-	usePermissions(ref('directus_users'), item, isNew);
-
 // These fields will be shown in the sidebar instead
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
 const fieldsFiltered = computed(() => {
-	return fields.value.filter((field: Field) => {
+	return fields.value.filter((field) => {
 		// These fields should only be editable when creating new users or by administrators
 		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 			field.meta.readonly = true;
@@ -116,8 +117,6 @@ const fieldsFiltered = computed(() => {
 		return !fieldsDenyList.includes(field.field);
 	});
 });
-
-const { formFields } = useFormFields(fieldsFiltered);
 
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
@@ -400,7 +399,7 @@ function revert(values: Record<string, any>) {
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
-				:fields="formFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="user"
 				:primary-key="primaryKey"

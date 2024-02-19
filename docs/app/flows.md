@@ -161,7 +161,7 @@ You'll now see your trigger in an empty grid area. Its time to start adding oper
      open its context menu. Click <span mi icon>input</span> and a popup menu will open. Choose the desired flow from
      the dropdown and click **Copy**.
    - **<span mi icon>data_object</span> Toggle Raw Editor** — Click <span mi icon>data_object</span> on an operations'
-     form input fields to toggle the input type between standard and raw value. This is allows you to add a raw value or
+     form input fields to toggle the input type between standard and raw value. This allows you to add a raw value or
      [Data Chain Variables](#data-chain-variables) within any type of configuration option, even dropdown menus,
      checkboxes, and radio buttons.
    - **Delete an Operation** — To delete an operation, click <span mi icon>more_vert</span> then

@@ -243,13 +243,6 @@ time: Час
 timestamp: Времеви печат
 uuid: UUID
 hash: Хеш
-geometry: Геометричен (всякакъв)
-geometry.Point: Точка
-geometry.LineString: Линия
-geometry.Polygon: Многоъгълник
-geometry.MultiPoint: Множество точки
-geometry.MultiLineString: Множество линии
-geometry.MultiPolygon: Множество многоъгълници
 not_available_for_type: Не е налично за типът
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
@@ -593,7 +586,6 @@ errors:
   VALUE_OUT_OF_RANGE: Стойността е извън границите
   INVALID_FOREIGN_KEY: Невалиден външен ключ
   UNKNOWN: Неочаквана грешка
-  GRAPHQL_VALIDATION_EXCEPTION: Изключение при валидацията в GraphQL
   SERVICE_UNAVAILABLE: Услугата е недостъпна
   UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
   UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
@@ -1246,7 +1238,6 @@ field_options:
   directus_roles:
     name: Уникално име за ролята...
     description: Описание на ролята...
-    ip_access: Позволяване само на определни IP адреси, оставяне на празно за всички...
     fields:
       icon_name: Икона
       name_name: Име
@@ -1812,11 +1803,15 @@ displays:
     icon: Икона
     border: Рамка
     border_label: Показване на рамката
+    mask: Маскиране
+    mask_label: Скриване на истинската стойност
     text: Текст
     text_placeholder: Заместващ текст...
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
     description: Показване на форматирана стойност на JSON обект
+  hash:
+    hash: Хеш
   icon:
     icon: Икона
     description: Показване като икона

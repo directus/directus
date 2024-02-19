@@ -229,8 +229,6 @@ time: Thời gian
 timestamp: Mốc thời gian
 uuid: UUID
 hash: Hash
-geometry.Point: Point
-geometry.LineString: LineString
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
@@ -1139,6 +1137,8 @@ displays:
     color: Màu sắc
     icon: Biểu tượng
     text: Đoạn văn bản
+  hash:
+    hash: Hash
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng

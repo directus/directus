@@ -1,10 +1,19 @@
 import { Focus } from '@/__utils__/focus';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
+import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';
 import VSelect from './v-select.vue';
+
+vi.mock('lodash', async () => {
+	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
+	return {
+		...mod.default,
+		debounce: (fn: any) => fn,
+	};
+});
 
 const i18n = createI18n({
 	legacy: false,
@@ -26,13 +35,6 @@ const VMenu = {
 		/>
 	</div>
 	`,
-};
-
-const VInput = {
-	template: `<div id="v-input-stub" />`,
-	setup(_props: any, { emit }: any) {
-		emit('update:modelValue', 'Item 1');
-	},
 };
 
 const VListItem = {
@@ -62,6 +64,7 @@ const global: GlobalMountOptions = {
 		'v-divider': true,
 		'v-checkbox': true,
 		'v-icon': true,
+		'display-color': true,
 	},
 	plugins: [i18n],
 	directives: {
@@ -112,6 +115,13 @@ describe('should hide items not matching search value', () => {
 
 	const stringItems = Array.from({ length: 11 }, (_, index) => `Item ${index + 1}`);
 
+	const VInput = {
+		template: `<div id="v-input-stub" />`,
+		setup(_props: any, { emit }: any) {
+			emit('update:modelValue', 'Item 1');
+		},
+	};
+
 	test.each([
 		['object items', objectItems],
 		['string items', stringItems],
@@ -125,8 +135,7 @@ describe('should hide items not matching search value', () => {
 			global: { ...global, stubs: { ...global.stubs, 'v-input': VInput } },
 		});
 
-		// Wait for search debounce
-		await new Promise((r) => setTimeout(r, 300));
+		await nextTick();
 
 		expect(wrapper.html()).toMatchSnapshot();
 	});

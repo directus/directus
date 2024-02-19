@@ -2,8 +2,8 @@ import { useAliasFields } from '@/composables/use-alias-fields';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field, Item } from '@directus/types';
+import { Parser } from '@json2csv/plainjs';
 import { saveAs } from 'file-saver';
-import { parse } from 'json2csv';
 import { computed } from 'vue';
 
 /**
@@ -65,7 +65,9 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		parsedItems.push(parsedItem);
 	}
 
-	const csvContent = parse(parsedItems);
+	const parser = new Parser();
+	const csvContent = parser.parse(parsedItems);
+
 	const now = new Date();
 
 	const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now

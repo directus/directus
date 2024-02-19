@@ -9,13 +9,13 @@ import type { IfAny, UnpackList } from './utils.js';
  */
 export interface Query<Schema extends object, Item> {
 	readonly fields?: IfAny<Schema, (string | Record<string, any>)[], QueryFields<Schema, Item>> | undefined;
-	readonly filter?: IfAny<Schema, Record<string, any>, QueryFilter<Schema, Item>> | undefined;
-	readonly search?: string | undefined;
-	readonly sort?: IfAny<Schema, string | string[], QuerySort<Schema, Item> | QuerySort<Schema, Item>[]> | undefined;
-	readonly limit?: number | undefined;
-	readonly offset?: number | undefined;
-	readonly page?: number | undefined;
-	readonly deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
+	filter?: IfAny<Schema, Record<string, any>, QueryFilter<Schema, Item>> | undefined;
+	search?: string | undefined;
+	sort?: IfAny<Schema, string | string[], QuerySort<Schema, Item> | QuerySort<Schema, Item>[]> | undefined;
+	limit?: number | undefined;
+	offset?: number | undefined;
+	page?: number | undefined;
+	deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
 	readonly alias?: IfAny<Schema, Record<string, string>, QueryAlias<Schema, Item>> | undefined;
 }
 
@@ -64,7 +64,7 @@ export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends i
 	  }[keyof FlatItem]
 	: never;
 
-export type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 
 /**
  * Alias object

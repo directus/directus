@@ -26,6 +26,7 @@ method: Metoda
 published: Objavljeno
 draft: Skica
 archived: Arhivirano
+extensions: Ekstenzije
 modules: Moduli
 module_bar: Bočni meni
 logs: Logovi
@@ -53,9 +54,21 @@ modifier: Modifikator
 extension_interface: Interfejs
 extension_display: Prikaz
 extension_layout: Raspored
+extension_module: Modul
+extension_panel: Ploča
+extension_theme: Tema
 extension_hook: Kuka
+extension_endpoint: Krajnja tačka
+extension_operation: Operacija
+extension_interfaces: Interfejs
+extension_layouts: Raspored
 extension_modules: Moduli
+extension_panels: Ploča
+extension_themes: Teme
+extension_operations: Operacije
+extension_reload_required: Stranica se mora ponovo učitati
 enable: Omogući
+disable: Onemogući
 custom: Prilagođeno
 hook: Kuka
 fill_width: Širina ispune
@@ -231,13 +244,6 @@ string: Niz
 text: Tekst
 time: Vrijeme
 timestamp: Vremenska oznaka
-geometry: Geometrija (sve)
-geometry.Point: Tačka
-geometry.LineString: Linijski niz
-geometry.Polygon: Poligon
-geometry.MultiPoint: Više tačaka
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Višestruki poligon
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
@@ -452,6 +458,7 @@ comments: Komentari
 no_comments: Još nema komentara
 select_item: Odaberi stavku
 no_items: Nema stavki
+search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -562,7 +569,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL izuzetak provjere valjanosti
   SERVICE_UNAVAILABLE: Usluga nije dostupna
   UNSUPPORTED_MEDIA_TYPE: Nepodržan tip fajla
   UNEXPECTED_RESPONSE: Neočekivani odgovor
@@ -1180,7 +1186,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu rolu...
     description: Opis role...
-    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1725,6 +1730,8 @@ displays:
     icon: Ikona
     border: Obrub
     border_label: Prikaži rubove
+    mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
     text: Tekst
     text_placeholder: Opcionalno nadjačavanje vrijednosti...
   formatted-json-value:

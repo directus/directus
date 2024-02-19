@@ -47,11 +47,11 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
@@ -516,11 +516,11 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<v-list v-else>
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">

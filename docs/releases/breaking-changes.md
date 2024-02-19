@@ -7,11 +7,133 @@ description: A list of any actions you may need to take on upgrades of Directus.
 As we continue to build Directus, we occasionally make changes that change how certain features works. We try and keep
 these to a minimum, but rest assured we only make them with good reason.
 
-[Learn more about Versioning ->](/getting-started/architecture#versioning)
+[Learn more about Versioning](/getting-started/architecture#versioning)
 
-[Learn more about Upgrading your Instance ->](/self-hosted/upgrades-migrations)
+[Learn more about Upgrading your Instance](/self-hosted/upgrades-migrations)
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
+
+## Version 10.9.0
+
+### Updated Exif Tags
+
+The library `exif-reader`, which is used for Exif metadata extraction of images, has been updated to v2. In this
+release, tag names have been updated to align with the Exif standard. See
+https://github.com/devongovett/exif-reader/pull/30 for a complete list of updated tags.
+
+This might be a breaking change if a custom `FILE_METADATA_ALLOW_LIST` config is in place, or you rely on the generated
+Exif tags stored in Directus Files to not change name.
+
+The updated Exif tags only apply to images which are uploaded after upgrading to this release.
+
+### Dropped Support for SDK Scoped Entrypoints
+
+You can no longer import parts of the SDK through scoped entrypoints to prevent issues with TypeScript based libraries
+consuming the SDK.
+
+Any scoped imports of `@directus/sdk` will need updating to import functions from the root.
+
+::: details Migration/Mitigation
+
+::: code-group
+
+```js [Before]
+import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
+```
+
+```js [After]
+import { createDirectus, rest } from '@directus/sdk';
+```
+
+:::
+
+### Dropped Support for Asynchronous Logic In JS Config Files
+
+Environment handling has been moved to a new `@directus/env` package. With this new package, ESM config files are still
+supported, but will no longer support running asynchronous code within them.
+
+### Updated Sorting in Schema Snapshots
+
+The sort order of fields and relations inside schema snapshots has been changed to their original creation order. This
+is to increase consistency of resulting snapshots artifacts.
+
+While this is not a breaking change, you are advised to regenerate the snapshot after the version update of Directus,
+provided you are tracking the snapshot in a version control system.
+
+## Version 10.8.3
+
+### Updated GraphQL Content Version Usage
+
+Previously when accessing content versions via GraphQL, a `version` parameter was used on existing fields. This has now
+been changed and is accessed via dedicated query types (`<collection>_by_version` and `versions`).
+
+::: details Migration/Mitigation
+
+::: code-group
+
+```graphql [Before]
+# Get an item's version by id
+query {
+	<collection>_by_id(id: 15, version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+# Get a version singleton or list versions in a collection
+query {
+	<collection>(version: "draft") {
+		id
+		title
+		body
+	}
+}
+```
+
+```graphql [After]
+# Get an item's version by id
+query {
+	<collection>_by_version(id: 15, version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+# Get a version singleton
+query {
+	<collection>_by_version(version: "draft") {
+		id
+		title
+		body
+	}
+}
+
+# List versions in a collection (`/graphql/system`)
+query {
+	versions(filter: { collection: { _eq: "posts" } }) {
+        item
+        key
+    }
+}
+```
+
+:::
+
+### Renamed `ExtensionItem` Type in the SDK
+
+The `ExtensionItem` type has been renamed to `DirectusExtension` to be inline with other system collections.
+
+## Version 10.7.0
+
+### Replaced Extensions List Endpoints
+
+In previous releases, it was possible to `GET /extensions/:type` to retrieve a list of enabled extensions for a given
+type.
+
+This has been replaced with a `GET /extensions` endpoint that returns all extensions along with their type and status.
 
 ## Version 10.6.2
 
@@ -19,6 +141,8 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 The parameter order for the `refresh` method and thus also the default auth mode have been swapped in order to work well
 with both auth modes, `cookie` and `json`.
+
+::: details Migration/Mitigation
 
 ::: code-group
 

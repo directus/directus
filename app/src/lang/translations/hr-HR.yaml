@@ -273,13 +273,6 @@ time: Vrijeme
 timestamp: Vremenska oznaka
 uuid: UUID
 hash: Hash
-geometry: Geometrija (sve)
-geometry.Point: Točka
-geometry.LineString: Linijski niz
-geometry.Polygon: Poligon
-geometry.MultiPoint: Više točaka
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Višestruki poligon
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
@@ -641,7 +634,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL iznimka provjere valjanosti
   SERVICE_UNAVAILABLE: Usluga nije dostupna
   UNSUPPORTED_MEDIA_TYPE: Nepodržan tip datoteke
   UNEXPECTED_RESPONSE: Neočekivani odgovor
@@ -1315,7 +1307,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu ulogu...
     description: Opis uloge...
-    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1916,11 +1907,15 @@ displays:
     icon: Ikona
     border: Obrub
     border_label: Prikaži rubove
+    mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
     text: Tekst
     text_placeholder: Opcionalno nadjačavanje vrijednosti...
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Prikaži ikonu

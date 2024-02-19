@@ -102,6 +102,11 @@ function nudge() {
 .container.center {
 	align-items: center;
 	justify-content: center;
+	z-index: 600;
+}
+
+.container.center:has(.allow-drawer) {
+	z-index: 500;
 }
 
 .container.center.nudge > :slotted(*:not(:first-child)) {

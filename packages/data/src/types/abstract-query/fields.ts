@@ -1,9 +1,16 @@
-import type { AbstractQueryFieldNodeFn } from './fields/function.js';
-import type { AbstractQueryFieldNodeNestedMany, AbstractQueryFieldNodeNestedOne } from './fields/nested.js';
 import type { AbstractQueryFieldNodePrimitive } from './fields/primitive.js';
+import type { AbstractQueryFieldNodeFn } from './fields/function.js';
+import type {
+	AbstractQueryFieldNodeNestedSingleMany,
+	AbstractQueryFieldNodeNestedSingleOne,
+	AbstractQueryFieldNodeNestedUnionMany,
+	AbstractQueryFieldNodeNestedUnionOne,
+} from './fields/nested.js';
 
 export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodePrimitive
 	| AbstractQueryFieldNodeFn
-	| AbstractQueryFieldNodeNestedMany
-	| AbstractQueryFieldNodeNestedOne;
+	| AbstractQueryFieldNodeNestedSingleMany
+	| AbstractQueryFieldNodeNestedSingleOne
+	| AbstractQueryFieldNodeNestedUnionMany
+	| AbstractQueryFieldNodeNestedUnionOne;

@@ -1,13 +1,16 @@
+import { useEnv } from '@directus/env';
+import { HitRateLimitError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import env from '../env.js';
-import { HitRateLimitError } from '@directus/errors';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';
 import { validateEnv } from '../utils/validate-env.js';
 
 const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
+
+const env = useEnv();
+const logger = useLogger();
 
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 
@@ -27,7 +30,7 @@ if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 
 			res.set('Retry-After', String(Math.round(rateLimiterRes.msBeforeNext / 1000)));
 			throw new HitRateLimitError({
-				limit: +env['RATE_LIMITER_GLOBAL_POINTS'],
+				limit: +(env['RATE_LIMITER_GLOBAL_POINTS'] as string),
 				reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
 			});
 		}

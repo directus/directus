@@ -321,7 +321,7 @@ function expandCluster(event: MapLayerMouseEvent) {
 		if (err) return;
 
 		map.flyTo({
-			center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike,
+			center: (features[0]?.geometry as GeoJSON.Point).coordinates as LngLatLike,
 			zoom: zoom,
 			speed: 1.3,
 		});

@@ -103,6 +103,7 @@ Alibaba
 allowlist
 allowList
 alwaysdata
+AMI
 anonymized
 api
 API
@@ -130,6 +131,7 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
+CIDR
 CLA
 CLI
 CloudFront
@@ -138,7 +140,9 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
+CollectionsService
 CommonJS
 composables
 config-options
@@ -167,6 +171,7 @@ DDoS
 destructured
 devs
 Devtools
+destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -192,11 +197,13 @@ Entrypoint
 env
 ENV
 ESM
-EXIF
+Exif
 fallbacks
 falsy
 FavIcon
+FieldsService
 filepath
+FilesService
 free-form
 frontend
 G2
@@ -234,6 +241,7 @@ intwined
 IoT
 ISO8601
 iss
+ItemsService
 iteratively
 Jamstack
 Javascript
@@ -351,6 +359,7 @@ reframe
 REKT
 relationally
 relationally-linked
+RelationsService
 repo
 repurpose
 S3
@@ -396,7 +405,7 @@ SVGs?
 TablePlus
 tfa
 TFA
-Theming
+(T|t)heming
 TileJSON
 TinyMCE
 TLS
@@ -415,6 +424,7 @@ Ungrouped
 unintuitive
 unpaused
 unselectable
+unstyled
 upscaled
 upvotes
 userbase

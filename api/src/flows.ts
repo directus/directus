@@ -1,16 +1,16 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
+import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
-import { ForbiddenError } from '@directus/errors';
-import logger from './logger.js';
-import { getMessenger } from './messenger.js';
+import { useLogger } from './logger.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -23,6 +23,7 @@ import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
+import { isSystemCollection } from '@directus/system-data';
 
 let flowManager: FlowManager | undefined;
 
@@ -46,6 +47,10 @@ const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
 const ENV_KEY = '$env';
 
+interface FlowMessage {
+	type: 'reload';
+}
+
 class FlowManager {
 	private isLoaded = false;
 
@@ -59,12 +64,15 @@ class FlowManager {
 	private envs: Record<string, any>;
 
 	constructor() {
+		const env = useEnv();
+		const logger = useLogger();
+
 		this.reloadQueue = new JobQueue();
-		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
+		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
-		const messenger = getMessenger();
+		const messenger = useBus();
 
-		messenger.subscribe('flows', (event) => {
+		messenger.subscribe<FlowMessage>('flows', (event) => {
 			if (event['type'] === 'reload') {
 				this.reloadQueue.enqueue(async () => {
 					if (this.isLoaded) {
@@ -85,9 +93,9 @@ class FlowManager {
 	}
 
 	public async reload(): Promise<void> {
-		const messenger = getMessenger();
+		const messenger = useBus();
 
-		messenger.publish('flows', { type: 'reload' });
+		messenger.publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
@@ -99,6 +107,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		const logger = useLogger();
+
 		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
 			return null;
@@ -114,6 +124,8 @@ class FlowManager {
 		data: unknown,
 		context: Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		const logger = useLogger();
+
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new ForbiddenError();
@@ -125,6 +137,8 @@ class FlowManager {
 	}
 
 	private async load(): Promise<void> {
+		const logger = useLogger();
+
 		const flowsService = new FlowsService({ knex: getDatabase(), schema: await getSchema() });
 
 		const flows = await flowsService.readByQuery({
@@ -146,7 +160,7 @@ class FlowManager {
 								if (!flow.options?.['collections']) return [];
 
 								return toArray(flow.options['collections']).map((collection: string) => {
-									if (collection.startsWith('directus_')) {
+									if (isSystemCollection(collection)) {
 										const action = scope.split('.')[1];
 										return collection.substring(9) + '.' + action;
 									}
@@ -398,6 +412,8 @@ class FlowManager {
 		data: unknown;
 		options: Record<string, any> | null;
 	}> {
+		const logger = useLogger();
+
 		if (!this.operations.has(operation.type)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
 
@@ -411,7 +427,7 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				env,
+				env: useEnv(),
 				database: getDatabase(),
 				logger,
 				getSchema,

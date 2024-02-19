@@ -259,13 +259,6 @@ time: Čas
 timestamp: Časové razítko
 uuid: UUID
 hash: Hash
-geometry: Geometrie (vše)
-geometry.Point: Bod
-geometry.LineString: LineString
-geometry.Polygon: Mnohoúhelník
-geometry.MultiPoint: Více bodů
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Pro tento typ není k dispozici
 create_translations: Vytvořit překlady
 auto_refresh: Automatické obnovení
@@ -602,7 +595,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
   INVALID_FOREIGN_KEY: Neplatný cizí klíč
   UNKNOWN: Neočekávaná chyba
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba není dostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ média
   UNEXPECTED_RESPONSE: Neočekávaná odpověď
@@ -1242,7 +1234,6 @@ field_options:
   directus_roles:
     name: Jedinečný název této role...
     description: Popis této role...
-    ip_access: Přidejte povolené IP adresy, ponechte prázdné pro povolení všech...
     fields:
       icon_name: Ikona
       name_name: Jméno
@@ -1790,11 +1781,15 @@ displays:
     icon: Ikona
     border: Ohraničení
     border_label: Zobrazit ohraničení
+    mask: Maskovaná
+    mask_label: Skrýt skutečnou hodnotu
     text: Text
     text_placeholder: Volitelné přetížení hodnoty...
   formatted-json-value:
     formatted-json-value: Formátovaná hodnota JSON
     description: Zobrazit formátovanou verzi objektu
+  hash:
+    hash: Hash
   icon:
     icon: Ikona
     description: Zobrazit ikonu

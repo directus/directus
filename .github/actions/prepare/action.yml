@@ -13,12 +13,12 @@ runs:
   using: composite
   steps:
     - name: Install Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 18
         registry-url: ${{ inputs.registry }}
 
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v3
       name: Install pnpm
       id: pnpm-install
       with:
@@ -31,7 +31,7 @@ runs:
         echo "os-release=$(node --eval 'console.log(os.release())')" >> $GITHUB_OUTPUT
         echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       name: Setup pnpm cache
       with:
         path: ${{ steps.cache-info.outputs.pnpm-cache-dir }}

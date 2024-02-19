@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -25,7 +25,6 @@ const { t } = useI18n();
 const router = useRouter();
 
 const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
 const serverStore = useServerStore();
 const userInviteModalActive = ref(false);
 const { primaryKey } = toRefs(props);
@@ -62,21 +61,14 @@ useShortcut('meta+s', () => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+const { createAllowed: usersCreateAllowed } = useCollectionPermissions('directus_users');
+
+const { readAllowed: rolesReadAllowed } = useCollectionPermissions('directus_roles');
+
 const canInviteUsers = computed(() => {
 	if (serverStore.auth.disableDefault === true) return false;
 
-	const isAdmin = !!userStore.currentUser?.role?.admin_access;
-	if (isAdmin) return true;
-
-	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
-	);
-
-	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
-	);
-
-	return !!usersCreatePermission && !!rolesReadPermission;
+	return usersCreateAllowed.value && rolesReadAllowed.value;
 });
 
 /**
@@ -182,20 +174,14 @@ function discardAndLeave() {
 
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
-		<div class="roles">
+		<div v-if="!loading" class="roles">
 			<v-notice v-if="adminEnabled">
 				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
-			<v-form
-				v-model="edits"
-				collection="directus_roles"
-				:primary-key="primaryKey"
-				:loading="loading"
-				:initial-values="item"
-			/>
+			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
 		</div>
 
 		<template #sidebar>

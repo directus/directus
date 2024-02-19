@@ -239,13 +239,6 @@ time: समय
 timestamp: समयछाप
 uuid: UUID
 hash: ह्यास
-geometry: ज्यामिति (सबै)
-geometry.Point: बिन्दु
-geometry.LineString: LineString
-geometry.Polygon: बहुभुज
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: यस प्रकारको लागि उपलब्ध छैन
 create_translations: अनुवाद सिर्जना
 auto_refresh: 'स्वत: रिफ्रेस'
@@ -579,7 +572,6 @@ errors:
   VALUE_OUT_OF_RANGE: मान दायरा भन्दा बाहिर छ
   INVALID_FOREIGN_KEY: अवैध विदेशी कुञ्जी
   UNKNOWN: नसाेचेकाे समस्या
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL प्रमाणीकरण अपवाद
   SERVICE_UNAVAILABLE: सेवा उपलब्ध छैन
   UNSUPPORTED_MEDIA_TYPE: असमर्थित मिडिया प्रकार
   UNEXPECTED_RESPONSE: अप्रत्याशित प्रतिक्रिया
@@ -1199,7 +1191,6 @@ field_options:
   directus_roles:
     name: "यो भूमिकाको लागि अद्वितीय नाम ...\n"
     description: यस भूमिकाको विवरण...
-    ip_access: "अनुमति दिइएको IP ठेगानाहरू थप्नुहोस्, सबैलाई अनुमति दिन खाली छोड्नुहोस्...\n"
     fields:
       icon_name: आइकन
       name_name: नाम
@@ -1634,6 +1625,8 @@ displays:
     text: पाठ
   formatted-json-value:
     formatted-json-value: JSON मान स्वरूप
+  hash:
+    hash: ह्यास
   icon:
     icon: आइकन
     description: आइकन देखाउनुहोस्

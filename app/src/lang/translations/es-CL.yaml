@@ -257,13 +257,6 @@ time: Hora
 timestamp: Marca de Tiempo
 uuid: UUID
 hash: Hash
-geometry: Geometría (Todo)
-geometry.Point: Punto
-geometry.LineString: Linea
-geometry.Polygon: Polígono
-geometry.MultiPoint: Multipunto
-geometry.MultiLineString: MultiLinea
-geometry.MultiPolygon: MultiPolígono
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
 auto_refresh: Actualización automática
@@ -607,7 +600,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
-  GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
   SERVICE_UNAVAILABLE: Servicio no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
   UNEXPECTED_RESPONSE: Respuesta inesperada
@@ -1260,7 +1252,6 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP permitidas, dejar vacío para permitir todos...
     fields:
       icon_name: Icono
       name_name: Nombre
@@ -1826,11 +1817,15 @@ displays:
     icon: Icono
     border: Border
     border_label: Mostrar borde
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
     text: Texto
     text_placeholder: Sobrescribir valor opcional...
   formatted-json-value:
     formatted-json-value: Valor JSON Formateado
     description: Presentar una versión formateada del objeto
+  hash:
+    hash: Hash
   icon:
     icon: Icono
     description: Presentar un ícono

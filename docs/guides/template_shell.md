@@ -20,7 +20,7 @@ https://vitepress.vuejs.org/guide/markdown
 ::: tip Requirements
 
 Define the knowledge they need to implement the recipe. Define the pre-existing configurations such as collections,
-roles, permssions, flows, etc. that they need to use your recipe.
+roles, permissions, flows, etc. that they need to use your recipe.
 
 :::
 
@@ -54,5 +54,5 @@ If there's a part 3, write it! If not, you're done!
 
 ## Final Tips
 
-This is where you expand and solidify your reader's understanding of the recipe. Its where you fill in the gaps that
+This is where you expand and solidify your reader's understanding of the recipe. It's where you fill in the gaps that
 would be overwhelming or hard to follow in the previous sections.

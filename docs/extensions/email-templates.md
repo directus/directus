@@ -3,7 +3,7 @@ description: A guide on how to build custom Email Templates in Directus.
 readTime: 1 min read
 ---
 
-# Email Templates <small></small>
+# Email Templates
 
 > Templates can be used to add custom templates for your emails, or to override the system emails used for things like
 > resetting a password or inviting a user.
@@ -34,5 +34,5 @@ Learn how to build email templates with our official guides:
 <GuidesListExtensions type="Email Templates" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
@@ -22,6 +21,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
+import { isSystemCollection } from '@directus/system-data';
 
 type Item = {
 	[field: string]: any;
@@ -37,8 +37,6 @@ const { t } = useI18n();
 
 const router = useRouter();
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
 const layoutRef = ref();
 
 const { collection } = toRefs(props);
@@ -94,7 +92,12 @@ watch(
 	{ immediate: true },
 );
 
-const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+const {
+	updateAllowed: batchEditAllowed,
+	archiveAllowed: batchArchiveAllowed,
+	deleteAllowed: batchDeleteAllowed,
+	createAllowed,
+} = useCollectionPermissions(collection);
 
 const hasArchive = computed(
 	() =>
@@ -277,58 +280,6 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value,
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchArchiveAllowed = computed(() => {
-		if (!currentCollection.value?.meta?.archive_field) return false;
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value,
-		);
-
-		if (!updatePermissions) return false;
-		if (!updatePermissions.fields) return false;
-		if (updatePermissions.fields.includes('*')) return true;
-		return updatePermissions.fields.includes(currentCollection.value.meta.archive_field);
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value,
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value,
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed };
-}
 </script>
 
 <template>
@@ -347,7 +298,7 @@ function usePermissions() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<content-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
+		<content-not-found v-if="!currentCollection || isSystemCollection(collection)" />
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"

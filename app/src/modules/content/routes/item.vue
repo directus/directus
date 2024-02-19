@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { usePermissions } from '@/composables/use-permissions';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
@@ -18,7 +15,10 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -67,6 +67,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	error,
@@ -81,22 +82,12 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey, query);
 
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
+} = permissions;
+
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
-
-const isSavable = computed(() => {
-	if (saveAllowed.value === false) return false;
-	if (hasEdits.value === true) return true;
-
-	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
-	}
-
-	if (isNew.value === true) {
-		return Object.keys(defaults.value).length > 0 || hasEdits.value;
-	}
-
-	return hasEdits.value;
-});
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
@@ -162,22 +153,57 @@ useShortcut(
 	form,
 );
 
-const {
-	createAllowed,
-	deleteAllowed,
-	archiveAllowed,
-	saveAllowed,
-	updateAllowed,
-	shareAllowed,
-	fields,
-	revisionsAllowed,
-} = usePermissions(collection, item, isNew);
+const isSavable = computed(() => {
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
+	if (hasEdits.value === true) return true;
+
+	if (
+		primaryKeyField.value &&
+		!primaryKeyField.value?.schema?.has_auto_increment &&
+		!primaryKeyField.value?.meta?.special?.includes('uuid')
+	) {
+		return !!edits.value?.[primaryKeyField.value.field];
+	}
+
+	if (isNew.value === true) {
+		return Object.keys(defaults.value).length > 0 || hasEdits.value;
+	}
+
+	return hasEdits.value;
+});
+
+const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
+	'directus_versions',
+	computed(() => currentVersion.value?.id ?? null),
+	computed(() => !currentVersion.value),
+);
+
+const isFormDisabled = computed(() => {
+	if (isNew.value) return false;
+	if (updateAllowed.value) return false;
+	if (currentVersion.value !== null && updateVersionsAllowed.value) return false;
+	return true;
+});
+
+const actualPrimaryKey = computed(() => {
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+	}
+
+	return props.primaryKey;
+});
 
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+	}
 
 	return props.primaryKey;
 });
@@ -505,6 +531,7 @@ function revert(values: Record<string, any>) {
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:update-allowed="updateAllowed"
 				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
@@ -665,7 +692,7 @@ function revert(values: Record<string, any>) {
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
-			:disabled="isNew ? false : updateAllowed === false"
+			:disabled="isFormDisabled"
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
@@ -694,12 +721,12 @@ function revert(values: Record<string, any>) {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-drawer-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
@@ -707,19 +734,19 @@ function revert(values: Record<string, any>) {
 				<comments-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 				/>
 				<shares-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
 					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:has-edits="hasEdits"
 					@refresh="refresh"
 				/>

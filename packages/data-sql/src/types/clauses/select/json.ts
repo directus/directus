@@ -1,8 +1,9 @@
-/** @TODO */
-// export interface SqlStatementSelectJson {
-// 	type: 'json';
-// 	table: string;
-// 	column: string;
-// 	as?: string;
-// 	path: string;
-// }
+export interface AbstractSqlQuerySelectJsonNode {
+	type: 'json';
+	tableIndex: number;
+	columnName: string;
+	columnIndex: number;
+
+	/* The index of the value in the list of parameter */
+	path: number[];
+}

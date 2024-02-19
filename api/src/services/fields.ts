@@ -12,7 +12,6 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';
@@ -24,6 +23,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { RelationsService } from './relations.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
+
+const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 export class FieldsService {
 	knex: Knex;
@@ -412,15 +414,21 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
+				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
+					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+				}
+
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
 				const columnToCompare =
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
-						await this.knex.schema.alterTable(collection, (table) => {
-							if (!hookAdjustedField.schema) return;
-							this.addColumnToTable(table, field, existingColumn);
+						await this.knex.transaction(async (trx) => {
+							await trx.schema.alterTable(collection, async (table) => {
+								if (!hookAdjustedField.schema) return;
+								this.addColumnToTable(table, field, existingColumn);
+							});
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err);

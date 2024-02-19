@@ -1,41 +1,37 @@
 import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
-import { createUniqueAlias } from '../../orm/create-unique-alias.js';
-import type {
-	AbstractSqlQueryFnNode,
-	AbstractSqlQueryJoinNode,
-	AbstractSqlQuerySelectNode,
-} from '../../types/index.js';
-import { createJoin } from '../fields/create-join.js';
-import { convertFn } from '../functions.js';
+import type { AbstractSqlQueryJoinNode, AbstractSqlQueryTargetNode } from '../../types/index.js';
+import type { IndexGenerators } from '../utils/create-index-generators.js';
+import { convertFn } from '../common/function.js';
+import { createJoin } from '../fields/nodes/join.js';
 
 export interface TargetConversionResult {
-	value: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	value: AbstractSqlQueryTargetNode;
 	joins: AbstractSqlQueryJoinNode[];
 }
 
 export function convertTarget(
 	target: AbstractQueryTarget,
-	collection: string,
-	idxGenerator: Generator<number, number, number>,
+	tableIndex: number,
+	indexGen: IndexGenerators,
 ): TargetConversionResult {
 	if (target.type === 'primitive') {
 		return {
 			value: {
 				type: 'primitive',
-				table: collection,
-				column: target.field,
+				tableIndex,
+				columnName: target.field,
 			},
 			joins: [],
 		};
 	} else if (target.type === 'fn') {
-		const convertedFn = convertFn(collection, target, idxGenerator);
+		const convertedFn = convertFn(tableIndex, target, indexGen);
 
 		return {
 			value: convertedFn.fn,
 			joins: [],
 		};
 	} else {
-		const { value, joins } = convertNestedOneTarget(collection, target, idxGenerator);
+		const { value, joins } = convertNestedOneTarget(target, tableIndex, indexGen);
 
 		return {
 			value,
@@ -49,17 +45,15 @@ export function convertTarget(
  * @param nestedTarget
  */
 export function convertNestedOneTarget(
-	currentCollection: string,
 	nestedTarget: AbstractQueryTargetNestedOne,
-	idxGenerator: Generator<number, number, number>,
+	tableIndex: number,
+	indexGen: IndexGenerators,
 ): TargetConversionResult {
-	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');
+	const tableIndexRelational = indexGen.table.next().value;
 
-	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
+	const join = createJoin(nestedTarget.nesting, tableIndex, tableIndexRelational);
 
-	const join = createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias);
-
-	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, idxGenerator);
+	const { value, joins } = convertTarget(nestedTarget.field, tableIndexRelational, indexGen);
 
 	return {
 		value,

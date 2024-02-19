@@ -1,11 +1,10 @@
-<script setup>
-import { toRaw } from 'vue';
+<script setup lang="ts">
+import { sections } from '@/data/guides';
 
-const props = defineProps({
-	section: Object,
-});
+type Keys = keyof typeof sections;
+type Sections = (typeof sections)[Keys];
 
-const { section } = toRaw(props);
+defineProps<{ section: Sections }>();
 </script>
 
 <template>
@@ -13,8 +12,8 @@ const { section } = toRaw(props);
 		<div v-for="block of section.blocks" :key="block.title" class="box">
 			<h3>{{ block.title }}</h3>
 			<ul>
-				<li v-for="item in block.items" :key="item.path">
-					<a v-if="item.path" :href="item.path">{{ item.display }}</a>
+				<li v-for="item in block.items" :key="item.display">
+					<a v-if="'path' in item" :href="item.path">{{ item.display }}</a>
 					<span v-else>
 						<span>{{ item.display }}:</span>
 						<a v-for="variant of item.paths" :key="variant.path" :href="variant.path">{{ variant.label }}</a>

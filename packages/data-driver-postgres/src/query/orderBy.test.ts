@@ -1,25 +1,17 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
-import { randomIdentifier } from '@directus/random';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { beforeEach, expect, test } from 'vitest';
 import { orderBy } from './orderBy.js';
-import { applyFunction } from '../utils/functions.js';
-
-vi.mock('../utils/functions.js', (importOriginal) => {
-	const mod = importOriginal();
-	return {
-		...mod,
-		applyFunction: vi.fn(),
-	};
-});
 
 let sample: AbstractSqlClauses;
 
-const randomTable = randomIdentifier();
+const tableName = randomIdentifier();
+const tableIndex = randomInteger(0, 100);
 
 beforeEach(() => {
 	sample = {
 		select: [],
-		from: randomTable,
+		from: { tableName, tableIndex },
 	};
 });
 
@@ -34,29 +26,29 @@ test('Returns order part for one primitive field', () => {
 		{
 			orderBy: {
 				type: 'primitive',
-				column: field,
-				table: randomTable,
+				columnName: field,
+				tableIndex: tableIndex,
 			},
 			type: 'order',
 			direction: 'ASC',
 		},
 	];
 
-	const expected = `ORDER BY "${randomTable}"."${field}" ASC`;
+	const expected = `ORDER BY "t${tableIndex}"."${field}" ASC`;
 
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
 
 test('Returns order part for multiple primitive fields', () => {
-	const field1 = randomIdentifier();
-	const field2 = randomIdentifier();
+	const columnName1 = randomIdentifier();
+	const columnName2 = randomIdentifier();
 
 	sample.order = [
 		{
 			orderBy: {
 				type: 'primitive',
-				column: field1,
-				table: randomTable,
+				columnName: columnName1,
+				tableIndex,
 			},
 			type: 'order',
 			direction: 'ASC',
@@ -64,28 +56,28 @@ test('Returns order part for multiple primitive fields', () => {
 		{
 			orderBy: {
 				type: 'primitive',
-				column: field2,
-				table: randomTable,
+				columnName: columnName2,
+				tableIndex,
 			},
 			type: 'order',
 			direction: 'DESC',
 		},
 	];
 
-	const expected = `ORDER BY "${randomTable}"."${field1}" ASC, "${randomTable}"."${field2}" DESC`;
+	const expected = `ORDER BY "t${tableIndex}"."${columnName1}" ASC, "t${tableIndex}"."${columnName2}" DESC`;
 
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
 
 test('Returns order part when a function was applied', () => {
-	const field1 = randomIdentifier();
+	const columnName = randomIdentifier();
 
 	sample.order = [
 		{
 			orderBy: {
 				type: 'fn',
-				column: field1,
-				table: randomTable,
+				columnName,
+				tableIndex,
 				fn: {
 					type: 'arrayFn',
 					fn: 'count',
@@ -96,8 +88,7 @@ test('Returns order part when a function was applied', () => {
 		},
 	];
 
-	const fnMock = `COUNT("${randomTable}"."${field1}")`;
-	vi.mocked(applyFunction).mockReturnValueOnce(fnMock);
-	const expected = `ORDER BY ${fnMock} ASC`;
+	const expected = `ORDER BY COUNT("t${tableIndex}"."${columnName}") ASC`;
+
 	expect(orderBy(sample)).toStrictEqual(expected);
 });

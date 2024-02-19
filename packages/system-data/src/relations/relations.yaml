@@ -1,0 +1,197 @@
+table: directus_relations
+
+defaults:
+  many_collection: directus_users
+  many_field: null
+  one_collection: null
+  one_field: null
+  one_allowed_collections: null
+  one_collection_field: null
+  one_deselect_action: 'nullify'
+  junction_field: null
+  sort_field: null
+
+data:
+  ### Collections
+  - many_collection: directus_collections
+    many_field: group
+    one_collection: directus_collections
+
+  ### Users
+  - many_collection: directus_users
+    many_field: role
+    one_collection: directus_roles
+    one_field: users
+
+  - many_collection: directus_users
+    many_field: avatar
+    one_collection: directus_files
+
+  ### Revisions
+  - many_collection: directus_revisions
+    many_field: activity
+    one_collection: directus_activity
+    one_field: revisions
+
+  - many_collection: directus_revisions
+    many_field: parent
+    one_collection: directus_revisions
+
+  - many_collection: directus_revisions
+    many_field: version
+    one_collection: directus_versions
+
+  ### Presets
+  - many_collection: directus_presets
+    many_field: user
+    one_collection: directus_users
+
+  - many_collection: directus_presets
+    many_field: role
+    one_collection: directus_roles
+
+  ### Folders
+  - many_collection: directus_folders
+    many_field: parent
+    one_collection: directus_folders
+
+  ### Files
+  - many_collection: directus_files
+    many_field: folder
+    one_collection: directus_folders
+
+  - many_collection: directus_files
+    many_field: uploaded_by
+    one_collection: directus_users
+
+  - many_collection: directus_files
+    many_field: modified_by
+    one_collection: directus_users
+
+  ### Fields
+  - many_collection: directus_fields
+    many_field: collection
+    one_collection: directus_collections
+    one_field: fields
+
+  - many_collection: directus_fields
+    many_field: group
+    one_collection: directus_fields
+
+  ### Activity
+  - many_collection: directus_activity
+    many_field: user
+    one_collection: directus_users
+
+  ### Settings
+  - many_collection: directus_settings
+    many_field: project_logo
+    one_collection: directus_files
+
+  - many_collection: directus_settings
+    many_field: public_foreground
+    one_collection: directus_files
+
+  - many_collection: directus_settings
+    many_field: public_background
+    one_collection: directus_files
+
+  - many_collection: directus_settings
+    many_field: public_favicon
+    one_collection: directus_files
+
+  - many_collection: directus_settings
+    many_field: storage_default_folder
+    one_collection: directus_folders
+
+  ### Panels
+  - many_collection: directus_panels
+    many_field: dashboard
+    one_collection: directus_dashboards
+    one_field: panels
+
+  - many_collection: directus_panels
+    many_field: user_created
+    one_collection: directus_users
+
+  ### Flows
+  - many_collection: directus_flows
+    many_field: operation
+    one_collection: directus_operations
+
+  - many_collection: directus_flows
+    many_field: user_created
+    one_collection: directus_users
+
+  ### Operations
+  - many_collection: directus_operations
+    many_field: flow
+    one_collection: directus_flows
+    one_field: operations
+    one_deselect_action: delete
+
+  - many_collection: directus_operations
+    many_field: resolve
+    one_collection: directus_operations
+
+  - many_collection: directus_operations
+    many_field: reject
+    one_collection: directus_operations
+
+  - many_collection: directus_operations
+    many_field: user_created
+    one_collection: directus_users
+
+  ### Permissions
+  - many_collection: directus_permissions
+    many_field: role
+    one_collection: directus_roles
+
+  ### Sessions
+  - many_collection: directus_sessions
+    many_field: user
+    one_collection: directus_users
+
+  - many_collection: directus_sessions
+    many_field: share
+    one_collection: directus_shares
+
+  ### Dashboards
+  - many_collection: directus_dashboards
+    many_field: user_created
+    one_collection: directus_users
+
+  ### Notifications
+  - many_collection: directus_notifications
+    many_field: recipient
+    one_collection: directus_users
+
+  - many_collection: directus_notifications
+    many_field: sender
+    one_collection: directus_users
+
+  ### Shares
+  - many_collection: directus_shares
+    many_field: role
+    one_collection: directus_roles
+
+  - many_collection: directus_shares
+    many_field: collection
+    one_collection: directus_collections
+
+  - many_collection: directus_shares
+    many_field: user_created
+    one_collection: directus_users
+
+  ### Versions
+  - many_collection: directus_versions
+    many_field: collection
+    one_collection: directus_collections
+
+  - many_collection: directus_versions
+    many_field: user_created
+    one_collection: directus_users
+
+  - many_collection: directus_versions
+    many_field: user_updated
+    one_collection: directus_users

@@ -6,24 +6,26 @@ import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { notify } from '@/utils/notify';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
 import { Field, Query, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { usePermissions } from './use-permissions';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
+import { UsablePermissions, usePermissions } from './use-permissions';
+import { getEndpoint } from '@directus/utils';
+import { isSystemCollection } from '@directus/system-data';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
-	hasEdits: Ref<boolean>;
+	hasEdits: ComputedRef<boolean>;
 	item: Ref<T | null>;
+	permissions: UsablePermissions;
 	error: Ref<any>;
-	loading: Ref<boolean>;
+	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
 	save: () => Promise<any>;
@@ -41,13 +43,13 @@ type UsableItem<T extends Record<string, any>> = {
 export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Ref<Query> | Query = {},
+	query: MaybeRef<Query> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
-	const loading = ref(false);
+	const loadingItem = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
@@ -66,7 +68,10 @@ export function useItem<T extends Record<string, any>>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
+	const permissions = usePermissions(collection, primaryKey, isNew);
+	const fieldsWithPermissions = permissions.itemPermissions.fields;
+
+	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
@@ -78,12 +83,15 @@ export function useItem<T extends Record<string, any>>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+
+	refreshItem();
 
 	return {
 		edits,
 		hasEdits,
 		item,
+		permissions,
 		error,
 		loading,
 		saving,
@@ -101,7 +109,7 @@ export function useItem<T extends Record<string, any>>(
 	};
 
 	async function getItem() {
-		loading.value = true;
+		loadingItem.value = true;
 		error.value = null;
 
 		try {
@@ -110,7 +118,7 @@ export function useItem<T extends Record<string, any>>(
 		} catch (err: any) {
 			error.value = err;
 		} finally {
-			loading.value = false;
+			loadingItem.value = false;
 		}
 	}
 
@@ -437,10 +445,19 @@ export function useItem<T extends Record<string, any>>(
 
 	function refresh() {
 		error.value = null;
-		loading.value = false;
+		validationErrors.value = [];
+		loadingItem.value = false;
 		saving.value = false;
 		deleting.value = false;
+		archiving.value = false;
 
+		item.value = null;
+
+		refreshItem();
+		permissions.itemPermissions.refresh();
+	}
+
+	function refreshItem() {
 		if (isNew.value === true) {
 			item.value = null;
 		} else {
@@ -450,8 +467,8 @@ export function useItem<T extends Record<string, any>>(
 
 	function setItemValueToResponse(response: AxiosResponse) {
 		if (
-			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
 		) {
 			response.data.data = translate(response.data.data);
 		}

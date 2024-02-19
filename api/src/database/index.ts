@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import fse from 'fs-extra';
@@ -9,9 +10,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
-import env from '../env.js';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -23,10 +23,15 @@ let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default function getDatabase(): Knex {
+export default getDatabase;
+
+export function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}
+
+	const env = useEnv();
+	const logger = useLogger();
 
 	const {
 		client,
@@ -206,6 +211,7 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 
 export async function validateDatabaseConnection(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
+	const logger = useLogger();
 
 	try {
 		if (getDatabaseClient(database) === 'oracle') {
@@ -255,6 +261,7 @@ export async function isInstalled(): Promise<boolean> {
 
 export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
@@ -294,6 +301,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const geometrySupport = await helpers.st.supported();
+	const logger = useLogger();
 
 	if (!geometrySupport) {
 		switch (client) {
@@ -310,7 +318,9 @@ export async function validateDatabaseExtensions(): Promise<void> {
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	const env = useEnv();
 	database = database ?? getDatabase();
+	const logger = useLogger();
 
 	if (getDatabaseClient(database) === 'mysql') {
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();

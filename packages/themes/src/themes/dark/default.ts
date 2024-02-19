@@ -1,7 +1,8 @@
 import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
-	name: 'Directus Default',
+	id: 'Directus Default',
+	name: '$t:theme_directus_default',
 	appearance: 'dark',
 	rules: {
 		borderRadius: '6px',

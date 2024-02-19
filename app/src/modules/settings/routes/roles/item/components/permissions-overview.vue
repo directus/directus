@@ -3,10 +3,11 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
 import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { appMinimalPermissions, appRecommendedPermissions } from '../../app-permissions';
+import { appMinimalPermissions, appRecommendedPermissions, disabledActions } from '../../app-permissions';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
@@ -21,11 +22,11 @@ const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
-const regularCollections = computed(() => collectionsStore.databaseCollections);
+const regularCollections = computed(() => orderBy(collectionsStore.databaseCollections, ['meta.sort', 'collection']));
 
 const systemCollections = computed(() =>
 	orderBy(
-		collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+		collectionsStore.collections.filter((collection) => isSystemCollection(collection.collection) === true),
 		'name',
 	),
 );
@@ -99,7 +100,7 @@ function useReset() {
 		resetting.value = true;
 
 		const toBeDeleted = permissions.value
-			.filter((permission) => permission.collection.startsWith('directus_'))
+			.filter((permission) => isSystemCollection(permission.collection))
 			.map((permission) => permission.id);
 
 		try {
@@ -160,6 +161,7 @@ function useReset() {
 						:key="collection.collection"
 						:collection="collection"
 						:role="role"
+						:disabled-actions="disabledActions[collection.collection]"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
 						:app-minimal="

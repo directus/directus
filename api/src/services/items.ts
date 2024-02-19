@@ -1,17 +1,16 @@
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ForbiddenError } from '@directus/errors';
-import { translateDatabaseError } from '../database/errors/translate.js';
-import { InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -25,6 +24,9 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
+import { isSystemCollection } from '@directus/system-data';
+
+const env = useEnv();
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -49,7 +51,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.collection = collection;
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
+		this.eventScope = isSystemCollection(this.collection) ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 		this.cache = getCache().cache;
 
@@ -176,8 +178,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// The primary key can already exist in the payload.
 			// In case of manual string / UUID primary keys it's always provided at this point.
-			// In case of an integer primary key, it might be provided as the user can specify the value manually.
+			// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
+
+			if (primaryKey) {
+				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+			}
 
 			// If a PK of type number was provided, although the PK is set the auto_increment,
 			// depending on the database, the sequence might need to be reset to protect future PK collisions.
@@ -187,9 +193,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			if (
 				primaryKey &&
+				pkField &&
 				!opts.bypassAutoIncrementSequenceReset &&
-				pkField!.type === 'integer' &&
-				pkField!.defaultValue === 'AUTO_INCREMENT'
+				['integer', 'bigInteger'].includes(pkField.type) &&
+				pkField.defaultValue === 'AUTO_INCREMENT'
 			) {
 				autoIncrementSequenceNeedsToBeReset = true;
 			}
@@ -679,7 +686,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			for (const key of keys) {
 				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-					payload,
+					payloadWithA2O,
 					key,
 					opts,
 				);
@@ -768,7 +775,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						? ['items.update', `${this.collection}.items.update`]
 						: `${this.eventScope}.update`,
 				meta: {
-					payload,
+					payload: payloadWithPresets,
 					keys,
 					collection: this.collection,
 				},

@@ -245,13 +245,6 @@ time: 시간
 timestamp: 타임스탬프
 uuid: UUID
 hash: 해시
-geometry: 기하학 (전체)
-geometry.Point: 포인트
-geometry.LineString: 줄 문자열
-geometry.Polygon: 다각형
-geometry.MultiPoint: 멀티포인트
-geometry.MultiLineString: 여러 줄 문자열
-geometry.MultiPolygon: 다중 다각형
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
@@ -602,7 +595,6 @@ errors:
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
   INVALID_FOREIGN_KEY: 잘못된 외래 키
   UNKNOWN: 예기치 않은 오류
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 유효성 검사 예외
   SERVICE_UNAVAILABLE: 서비스 불가
   UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
   UNEXPECTED_RESPONSE: 예상치 못한 응답
@@ -1264,7 +1256,6 @@ field_options:
   directus_roles:
     name: 이 역할의 고유한 이름...
     description: 이 역할에 대한 설명...
-    ip_access: 허용된 IP 주소를 추가하고 모두 허용하려면 비워 두세요...
     fields:
       icon_name: 아이콘
       name_name: 이름
@@ -1835,11 +1826,15 @@ displays:
     icon: 아이콘
     border: 테두리
     border_label: 테두리 표시
+    mask: 마스크
+    mask_label: 진짜 값 숨기기
     text: 텍스트
     text_placeholder: 선택적 값 재정의...
   formatted-json-value:
     formatted-json-value: 형식화된 JSON 값
     description: 객체의 형식화된 버전 표시
+  hash:
+    hash: 해시
   icon:
     icon: 아이콘
     description: 아이콘 표시

@@ -1353,10 +1353,14 @@ displays:
     suffix: Järelliide
     color: Värv
     icon: Ikoon
+    mask: Maskeeritud
+    mask_label: Peida algne väärtus
     text: Tekst
   formatted-json-value:
     formatted-json-value: Vormista JSON väärtusena
     description: Näita objekti vormistatud versiooni
+  hash:
+    hash: Hash (räsi)
   icon:
     icon: Ikoon
     description: Kuva ikooni

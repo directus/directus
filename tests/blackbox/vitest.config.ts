@@ -5,8 +5,8 @@ import Sequencer from './setup/sequencer';
 export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
-		globalSetup: './setup/setup.ts',
-		environment: 'blackbox',
+		pool: 'forks',
+		environment: './setup/environment.ts',
 		sequence: {
 			sequencer: Sequencer,
 		},

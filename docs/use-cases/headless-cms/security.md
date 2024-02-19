@@ -8,11 +8,11 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-[Headless CMS](/use-cases/headless-cms/introduction) when coupled with statically-generated sites are architecture
-choices that are generally more secure than Traditional CMS because your content is separated from the presentation
-layer. Given that users don't directly interact with a server to construct a page, there is a reduced ability for
-malicious actors to attack the website. However, it is still very important that you follow good security protocols to
-keep your data protected.
+A [Headless CMS](https://directus.io/solutions/headless-cms), when coupled with statically-generated sites, are
+architecture choices that are generally more secure than Traditional CMS because your content is separated from the
+presentation layer. Given that users don't directly interact with a server to construct a page, there is a reduced
+ability for malicious actors to attack the website. However, it is still very important that you follow good security
+protocols to keep your data protected.
 
 In this guide, we'll cover some best practices for keeping your Directus Headless CMS secure.
 
@@ -20,10 +20,10 @@ In this guide, we'll cover some best practices for keeping your Directus Headles
 
 Directus makes it super easy to share your content with our REST and GraphQL APIs.
 
-The Public role within [Roles and Permissions](/user-guide/user-management/users-roles-permissions#roles) defines what
-content is available without authentication. To be safe, all permissions are turned off by default. This means that no
-data is available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your
-use case may allow all data to be public, but it may instead require restricted access.
+The Public role within [Access Control](/user-guide/user-management/users-roles-permissions#roles) defines what content
+is available without authentication. To be safe, all permissions are turned off by default. This means that no data is
+available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your use case
+may allow all data to be public, but it may instead require restricted access.
 
 **If you do want to make data public, we recommend these guidelines.**
 
@@ -114,7 +114,7 @@ But when it’s time to go to production and add all your different users, we re
    ![A sample user's detail page is shown. The Two-Factor Authentication form field is highlighted. ](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-user.webp)
 
 2. **Enable the Strong option for Auth Password Policy under
-   [Project Settings > Security](/user-guide/cloud/project-settings#security).**
+   [Project Settings > Security](/user-guide/settings/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
 

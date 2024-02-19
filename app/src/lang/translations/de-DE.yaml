@@ -59,6 +59,7 @@ extension_display: Anzeige
 extension_layout: Ansicht
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Design
 extension_hook: Hook
 extension_endpoint: Endpunkt
 extension_operation: Operation
@@ -299,13 +300,6 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Geometrie (alle)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatisch (Systemeinstellung folgen)
 theme_light: Heller Modus
 theme_dark: Dunkler Modus
@@ -674,7 +668,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
   UNKNOWN: Unerwarteter Fehler
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
   UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
@@ -1219,6 +1212,7 @@ fields:
     last_page: Letzte Seite
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
+    appearance: Erscheinung
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
@@ -1375,7 +1369,6 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
-    ip_access: Erlaubte IP-Adressen hinzufügen, leer lassen um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1976,11 +1969,15 @@ displays:
     icon: Symbol
     border: Umrandung
     border_label: Rahmen anzeigen
+    mask: Maskiert
+    mask_label: Tatsächlichen Wert ausblenden
     text: Text
     text_placeholder: Optionaler Wert überschreiben...
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
+  hash:
+    hash: Hash
   icon:
     icon: Symbol
     description: Icon anzeigen

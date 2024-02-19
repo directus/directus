@@ -820,3 +820,149 @@ const result = await client.request(deletePermissions(['56', '57']));
 
 </template>
 </SnippetToggler>
+
+## Check Permissions for a Specific Item
+
+Check the current user's permissions on a specific item.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me/:collection/:id?`
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readItemPermissions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+// collection item
+const result = await client.request(readItemPermissions(collection_name, item_id));
+
+// singleton
+const result = await client.request(readItemPermissions(collection_name));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+```json
+{
+	"data": {
+		"update": {
+			"access": boolean
+		},
+		"delete": {
+			"access": boolean
+		},
+		"share": {
+			"access": boolean
+		}
+	}
+}
+```
+
+For a Singleton where update access is given, the `presets` and `fields` properties from the corresponding
+[update permission](#the-permission-object) are additionally returned:
+
+```json
+{
+	"data": {
+		"update": {
+			"access": true,
+			"presets": permission_presets,
+			"fields": permission_fields
+		},
+		"delete": {
+			"access": boolean
+		},
+		"share": {
+			"access": boolean
+		}
+	}
+}
+```
+
+::: tip Non-existing Collection / Item
+
+The response structure is maintained in any case, even if the collection or item does not exist. To check for the
+existence of an item, use the [Get Items](/reference/items.html#get-items) endpoint instead.
+
+:::
+
+##### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me/articles/15`
+
+```json
+{
+	"data": {
+		"update": {
+			"access": true
+		},
+		"delete": {
+			"access": false
+		},
+		"share": {
+			"access": false
+		}
+	}
+}
+```
+
+`GET /permissions/me/about`
+
+```json
+{
+	"data": {
+		"update": {
+			"access": true,
+			"presets": {},
+			"fields": ["*"]
+		},
+		"delete": {
+			"access": false
+		},
+		"share": {
+			"access": false
+		}
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readItemPermissions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+// collection item
+const result = await client.request(readItemPermissions('articles', '15'));
+
+// singleton
+const result = await client.request(readItemPermissions('about'));
+```
+
+</template>
+</SnippetToggler>

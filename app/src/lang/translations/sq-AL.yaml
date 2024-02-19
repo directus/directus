@@ -263,13 +263,6 @@ time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
 hash: Hash
-geometry: Gjeometri (Të Gjitha)
-geometry.Point: Pikë
-geometry.LineString: Vijë
-geometry.Polygon: Poligon
-geometry.MultiPoint: ShumëPikë
-geometry.MultiLineString: ShumëVijë
-geometry.MultiPolygon: ShumëPoligon
 not_available_for_type: Nuk është i Disponueshëm për këtë Lloj
 create_translations: Krijo përkthime
 auto_refresh: Rifreskim Automatik
@@ -632,7 +625,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
   INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
   UNKNOWN: Gabim i papritur
-  GRAPHQL_VALIDATION_EXCEPTION: Përjashtim Validimi GraphQL
   SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
   UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
   UNEXPECTED_RESPONSE: Përgjigje e papritur
@@ -1307,7 +1299,6 @@ field_options:
   directus_roles:
     name: Emri unik për këtë rol...
     description: Përshkrimi i këtij roli...
-    ip_access: Shto IP të lejuara, lërë bosh për të lejuar të gjitha...
     fields:
       icon_name: Ikonë
       name_name: Emri
@@ -1905,11 +1896,15 @@ displays:
     icon: Ikonë
     border: Kornizë
     border_label: Shfaq kufirin
+    mask: I maskuar
+    mask_label: Fshih vlerën e vërtetë
     text: Tekst
     text_placeholder: Kalim i vlerës opsionale...
   formatted-json-value:
     formatted-json-value: Vlerë e Formatuar JSON
     description: Shfaq një version të formatuar të objektit
+  hash:
+    hash: Hash
   icon:
     icon: Ikonë
     description: Shfaq një ikonë

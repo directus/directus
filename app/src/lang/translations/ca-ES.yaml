@@ -241,13 +241,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria (totes)
-geometry.Point: Punt
-geometry.LineString: Cadena Línia
-geometry.Polygon: Polígon
-geometry.MultiPoint: Multipunt
-geometry.MultiLineString: Cadena Línia múltiple
-geometry.MultiPolygon: Multipolígon
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -588,7 +581,6 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   INVALID_FOREIGN_KEY: Clau forana invàlida
   UNKNOWN: Error inesperat
-  GRAPHQL_VALIDATION_EXCEPTION: Excepció de validació de GraphQL
   SERVICE_UNAVAILABLE: Servei no disponible
   UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
   UNEXPECTED_RESPONSE: Resposta inesperada
@@ -1653,10 +1645,14 @@ displays:
     suffix: Sufix
     color: Color
     icon: Icona
+    mask: Enmascarat
+    mask_label: Amaga el valor real
     text: Text
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte
+  hash:
+    hash: Hash
   icon:
     icon: Icona
     description: Mostra una icona
