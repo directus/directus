@@ -2,6 +2,7 @@ import { convertNumericOperators, tableIndexToIdentifier, type SqlConditionNumbe
 import { applyFunction } from '../functions.js';
 import { wrapColumn } from '../wrap-column.js';
 import { applyJsonPathIfNeeded } from '../json-path.js';
+import { applyIntegerCast } from '../casting.js';
 
 export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: boolean): string => {
 	const target = conditionNode.target;
@@ -14,6 +15,10 @@ export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: b
 	} else {
 		firstOperand = wrapColumn(tableAlias, target.columnName);
 		firstOperand = applyJsonPathIfNeeded(conditionNode.target, firstOperand);
+
+		if (target.type === 'json') {
+			firstOperand = applyIntegerCast(firstOperand);
+		}
 	}
 
 	const compareValue = `$${conditionNode.compareTo.parameterIndex + 1}`;
