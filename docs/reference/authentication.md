@@ -20,7 +20,7 @@ used to retrieve a new access token via the [refresh](#refresh) endpoint/mutatio
 
 **Session Token (JWT)** can also be returned by the [login](#login) endpoint/mutation.\
 Session tokens combine both a refresh_token and access_token in a single cookie. These tokens should not have a short expiration
-time like the Temporary tokens as you cannot refresh these after they have expired.
+time like the Temporary Tokens as you cannot refresh these after they have expired.
 
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
 server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
