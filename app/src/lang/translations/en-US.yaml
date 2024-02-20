@@ -97,7 +97,10 @@ github: GitHub
 beta: Beta
 n_downloads: '{n} Downloads'
 downloads: Downloads
-not_compatible_with_your_project: Incompatible with your Project
+compatibility_not_verified: Compatibility not verified
+compatibility_not_verified_copy:
+  The author of this extension has not verified the extension to be compatible with the version of your project
+  ({currentVersion}). The extension has been verified to work on version(s) {hostVersion}.
 enable: Enable
 disable: Disable
 custom: Custom

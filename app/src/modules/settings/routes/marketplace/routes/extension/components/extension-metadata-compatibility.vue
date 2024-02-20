@@ -15,11 +15,26 @@ const { t } = useI18n();
 const isCompatible = computed(() => satisfies(serverStore.info.version!, props.hostVersion));
 const icon = computed(() => (isCompatible.value ? 'check' : 'warning'));
 
-const label = computed(() =>
-	isCompatible.value ? t('compatible_with_your_project') : t('not_compatible_with_your_project'),
-);
+const label = computed(() => (isCompatible.value ? t('compatible_with_your_project') : t('compatibility_not_verified')));
 </script>
 
 <template>
-	<MetadataItem :icon="icon" :color="isCompatible ? 'primary' : 'warning'">{{ label }}</MetadataItem>
+	<MetadataItem
+		v-tooltip="
+			isCompatible
+				? null
+				: t('compatibility_not_verified_copy', { currentVersion: serverStore.info.version!, hostVersion: hostVersion })
+		"
+		:icon="icon"
+		:color="isCompatible ? 'primary' : 'warning'"
+		:class="{ incompatible: !isCompatible }"
+	>
+		{{ label }}
+	</MetadataItem>
 </template>
+
+<style scoped>
+.incompatible {
+	cursor: help;
+}
+</style>
