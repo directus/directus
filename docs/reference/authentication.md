@@ -45,15 +45,15 @@ Retrieve a temporary access token and refresh token.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
+To authenticate a user you can send a post to `POST /auth/login/` or to `POST /auth/login/:provider` like this
+```http
+POST /auth/login
+Accept: */*
+User-Agent: Http Client Test
+Content-Type: application/json
 
-`POST /auth/login`
-
-`POST /auth/login/:provider`
-
-```json
 {
-	"email": user_email,
-	"password": user_password
+  "email":"user_email", "password":"user_password"
 }
 ```
 
