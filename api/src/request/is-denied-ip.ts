@@ -3,28 +3,24 @@ import os from 'node:os';
 import { useLogger } from '../logger.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
-const deniedError = (url: string) => new Error(`Requested URL "${url}" resolves to a denied IP address`);
-
-export function validateIp(ip: string, url: string) {
+export function isDeniedIp(ip: string): boolean {
 	const env = useEnv();
 	const logger = useLogger();
 
 	const ipDenyList = env['IMPORT_IP_DENY_LIST'] as string[];
 
-	if (ipDenyList.length === 0) return;
-
-	let denied;
+	if (ipDenyList.length === 0) return false;
 
 	try {
-		denied = ipInNetworks(ip, ipDenyList);
+		const denied = ipInNetworks(ip, ipDenyList);
+
+		if (denied) return true;
 	} catch (error) {
-		logger.warn(`Invalid "IMPORT_IP_DENY_LIST" configuration`);
+		logger.warn(`Cannot verify IP address due to invalid "IMPORT_IP_DENY_LIST" config`);
 		logger.warn(error);
 
-		throw deniedError(url);
+		return true;
 	}
-
-	if (denied) throw deniedError(url);
 
 	if (ipDenyList.includes('0.0.0.0')) {
 		const networkInterfaces = os.networkInterfaces();
@@ -33,10 +29,10 @@ export function validateIp(ip: string, url: string) {
 			if (!networkInfo) continue;
 
 			for (const info of networkInfo) {
-				if (info.address === ip) {
-					throw deniedError(url);
-				}
+				if (info.address === ip) return true;
 			}
 		}
 	}
+
+	return false;
 }

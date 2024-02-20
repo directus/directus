@@ -28,7 +28,7 @@ export type Info = {
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
-		public_background: string | null;
+		public_background: { id: string; type: string } | null;
 		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
