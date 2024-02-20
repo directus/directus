@@ -56,8 +56,10 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	// Very simple(!) Regex solely as a help for the user instead of validation
-	if (email.value === null || email.value.match(/^\S+@\S+$/) === null || password.value === null) {
+	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
+	const emailRegex = /^\S+@\S+$/;
+
+	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
