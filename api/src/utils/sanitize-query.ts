@@ -64,6 +64,8 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery['version']) {
 		query.version = rawQuery['version'];
+		// whether or not to merge the relational results
+		query.versionRaw = 'versionRaw' in rawQuery;
 	}
 
 	if (rawQuery['export']) {
