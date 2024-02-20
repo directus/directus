@@ -59,6 +59,7 @@ const install = async () => {
 	--v-list-item-border-color-hover: var(--theme--primary-accent);
 	--v-list-item-color: var(--foreground-inverted);
 	--v-list-item-icon-color: var(--foreground-inverted);
+	--v-list-item-padding: 8px;
 
 	&.installing {
 		--v-list-item-background-color-hover: var(--theme--primary);
