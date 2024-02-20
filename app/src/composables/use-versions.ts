@@ -17,6 +17,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		return {
 			version: currentVersion.value.key,
+			versionRaw: true,
 		};
 	});
 
