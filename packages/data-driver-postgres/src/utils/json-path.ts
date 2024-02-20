@@ -9,7 +9,13 @@ import type { AbstractSqlQueryTargetNode } from '@directus/data-sql';
  */
 export function applyJsonPathIfNeeded(targetNode: AbstractSqlQueryTargetNode, target: string): string {
 	if (targetNode.type !== 'json') return target;
-	let updatedTarget = target;
-	targetNode.path.forEach((p) => (updatedTarget += ` ->> $${p + 1}`));
-	return updatedTarget;
+	let path = '';
+
+	targetNode.path.forEach((p, idx) => {
+		const isLastItem = idx === targetNode.path.length - 1;
+		const arrow = isLastItem ? '->>' : '->';
+		path += ` ${arrow} $${p + 1}`;
+	});
+
+	return target + path;
 }
