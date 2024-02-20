@@ -61,7 +61,7 @@ const maintainers = computed(() => {
 		<v-divider class="divider" />
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionMetadataDownloadsSparkline v-if="extension.downloads" :downloads="extension.downloads" />
+				<ExtensionMetadataDownloadsSparkline v-if="extension.downloads" class="sparkline" :downloads="extension.downloads" />
 				<ExtensionMetadataDownloads :downloads="extension.total_downloads" />
 				<ExtensionMetadataVersion :version="latestVersion.version" />
 				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
@@ -112,5 +112,9 @@ const maintainers = computed(() => {
 
 .author {
 	margin-block-start: 8px;
+}
+
+.sparkline {
+	margin-bottom: 14px;
 }
 </style>
