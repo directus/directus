@@ -1,14 +1,17 @@
 import { tableIndexToIdentifier, type SqlConditionStringNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
+import { applyJsonPathIfNeeded } from '../json-path.js';
 
 export const stringCondition = (condition: SqlConditionStringNode, negate: boolean): string => {
 	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
 
-	const column = wrapColumn(tableAlias, condition.target.columnName);
+	let target = wrapColumn(tableAlias, condition.target.columnName);
+	target = applyJsonPathIfNeeded(condition.target, target);
+
 	const compareValue = `$${condition.compareTo.parameterIndex + 1}`;
 
 	if (condition.operation === 'eq') {
-		return `${column} ${negate ? '!=' : '='} ${compareValue}`;
+		return `${target} ${negate ? '!=' : '='} ${compareValue}`;
 	}
 
 	let likeValue = '';
@@ -25,5 +28,5 @@ export const stringCondition = (condition: SqlConditionStringNode, negate: boole
 			break;
 	}
 
-	return `${column} ${negate ? 'NOT LIKE' : 'LIKE'} ${likeValue}`;
+	return `${target} ${negate ? 'NOT LIKE' : 'LIKE'} ${likeValue}`;
 };

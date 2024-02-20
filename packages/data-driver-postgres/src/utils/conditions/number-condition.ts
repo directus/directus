@@ -1,6 +1,7 @@
 import { convertNumericOperators, tableIndexToIdentifier, type SqlConditionNumberNode } from '@directus/data-sql';
 import { applyFunction } from '../functions.js';
 import { wrapColumn } from '../wrap-column.js';
+import { applyJsonPathIfNeeded } from '../json-path.js';
 
 export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: boolean): string => {
 	const target = conditionNode.target;
@@ -12,6 +13,7 @@ export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: b
 		firstOperand = applyFunction(target);
 	} else {
 		firstOperand = wrapColumn(tableAlias, target.columnName);
+		firstOperand = applyJsonPathIfNeeded(conditionNode.target, firstOperand);
 	}
 
 	const compareValue = `$${conditionNode.compareTo.parameterIndex + 1}`;

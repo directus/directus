@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryLogicalNode } from '@directus/data-sql';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { expect, test } from 'vitest';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { conditionString } from './index.js';
@@ -147,5 +147,35 @@ test('Convert filter nested and with negation', () => {
 
 	expect(conditionString(where)).toStrictEqual(
 		`"t${tableIndex}"."${columnName1}" > $1 OR "t${tableIndex}"."${columnName2}" != $2 OR NOT ("t${tableIndex}"."${columnName3}" >= $3 AND "t${tableIndex}"."${columnName4}" = $4)`,
+	);
+});
+
+test('Convert filter on json value', () => {
+	const tableIndex = randomInteger(0, 100);
+	const jsonColumnName = randomIdentifier();
+	const parameterIndex = randomInteger(0, 10);
+	const pathItemIndex = randomInteger(10, 20);
+
+	const where: AbstractSqlQueryConditionNode = {
+		type: 'condition',
+		negate: false,
+		condition: {
+			type: 'condition-string',
+			target: {
+				type: 'json',
+				tableIndex,
+				columnName: jsonColumnName,
+				path: [pathItemIndex],
+			},
+			operation: 'eq',
+			compareTo: {
+				type: 'value',
+				parameterIndex,
+			},
+		},
+	};
+
+	expect(conditionString(where)).toStrictEqual(
+		`"t${tableIndex}"."${jsonColumnName}" ->> $${pathItemIndex + 1} = $${parameterIndex + 1}`,
 	);
 });
