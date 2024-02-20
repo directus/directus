@@ -155,7 +155,7 @@ router.post(
 		}
 
 		const extensionManager = getExtensionManager();
-		await extensionManager.install(version);
+		await extensionManager.install(version, req.accountability);
 		return next();
 	}),
 	respond,
