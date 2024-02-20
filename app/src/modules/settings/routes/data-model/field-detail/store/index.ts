@@ -9,7 +9,7 @@ import { LOCAL_TYPES } from '@directus/constants';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, orderBy, set } from 'lodash';
+import { cloneDeep, get, has, isEmpty, merge, omit, orderBy, set } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
@@ -39,13 +39,16 @@ export const useFieldDetailStore = defineStore({
 		// What field we're currently editing ("+"" for new)
 		editing: '+' as string,
 
-		// Field edits
+		// Full field data with edits
 		field: {
 			field: undefined,
 			type: undefined,
 			schema: {},
 			meta: {},
 		} as DeepPartial<Field>,
+
+		// Contains only edited properties of the field
+		fieldUpdates: {} as DeepPartial<Field>,
 
 		// Relations that will be upserted as part of this change
 		relations: {
@@ -160,7 +163,29 @@ export const useFieldDetailStore = defineStore({
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}
 
-			this.$patch(updates);
+			if (hasChanged('field')) {
+				merge(this.fieldUpdates, omit(updates.field, 'schema', 'meta'));
+
+				if (updates.field?.schema) {
+					Object.assign((this.fieldUpdates.schema ??= {}), updates.field.schema);
+				}
+
+				if (updates.field?.meta) {
+					Object.assign((this.fieldUpdates.meta ??= {}), updates.field.meta);
+				}
+			}
+
+			this.$patch((state) => {
+				merge(state, omit(updates, 'field.schema', 'field.meta'));
+
+				if (updates.field?.schema) {
+					Object.assign((state.field.schema ??= {}), updates.field.schema);
+				}
+
+				if (updates.field?.meta) {
+					Object.assign((state.field.meta ??= {}), updates.field.meta);
+				}
+			});
 		},
 		async save() {
 			if (!this.collection || !this.field.field) return;
@@ -205,7 +230,7 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				await fieldsStore.upsertField(this.collection, this.editing, this.field);
+				await fieldsStore.upsertField(this.collection, this.editing, this.fieldUpdates);
 
 				for (const collection of Object.values(this.collections)) {
 					if (!collection || !collection.collection) continue;
@@ -276,9 +301,7 @@ export const useFieldDetailStore = defineStore({
 			});
 		},
 		readyToSave() {
-			// There's a bug in pinia where the other getters don't show up in the types for "this"
-			const missing = (this as typeof this & { missingConfiguration: string[] }).missingConfiguration;
-			return missing.length === 0;
+			return this.missingConfiguration.length === 0;
 		},
 		interfacesForType(): InterfaceConfig[] {
 			const { interfaces } = useExtensions();
