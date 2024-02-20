@@ -10,6 +10,10 @@ defineProps<{
 
 <style scoped lang="scss">
 .readme {
+	:deep(*) {
+		user-select: text;
+	}
+
 	:deep() {
 		@import '@/styles/markdown';
 	}
