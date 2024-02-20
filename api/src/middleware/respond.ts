@@ -4,14 +4,12 @@ import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export.js';
-import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
-import { mergeVersionSaves } from '../utils/merge-version-saves.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
@@ -25,26 +23,6 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
 		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE'] as string);
 		exceedsMaxSize = valueSize > maxSize;
-	}
-
-	if (
-		req.sanitizedQuery.version &&
-		req.collection &&
-		(req.singleton || req.params['pk']) &&
-		'data' in res.locals['payload']
-	) {
-		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
-
-		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
-
-		if (saves) {
-			mergeVersionSaves({
-				payload: res.locals['payload'].data,
-				saves,
-				collection: req.collection,
-				schema: req.schema,
-			});
-		}
 	}
 
 	if (
