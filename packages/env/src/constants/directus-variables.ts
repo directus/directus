@@ -173,10 +173,6 @@ export const DIRECTUS_VARIABLES = [
 	// migrations
 	'MIGRATIONS_PATH',
 
-	// messenger
-	'MESSENGER_STORE',
-	'MESSENGER_NAMESPACE',
-
 	// synchronization
 	'SYNCHRONIZATION_STORE',
 	'SYNCHRONIZATION_NAMESPACE',
