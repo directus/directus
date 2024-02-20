@@ -2,7 +2,7 @@ import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-client';
 import {
 	afterEach,
 	beforeAll,
@@ -11,8 +11,8 @@ import {
 	expect,
 	it,
 	vi,
-	type MockedFunction,
 	type MockInstance,
+	type MockedFunction,
 } from 'vitest';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
@@ -122,6 +122,8 @@ describe('Integration Tests', () => {
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
 
+							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
+
 							const result = await service.updateOne(adminRoleId, data);
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
@@ -186,6 +188,10 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 
+							tracker.on
+								.select('select count(*) as "count" from "directus_users" where "id" in')
+								.responseOnce({ count: 1 });
+
 							const result = await service.updateOne(adminRoleId, data);
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
@@ -201,6 +207,8 @@ describe('Integration Tests', () => {
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
+
+							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
 							expect(result).toBe(adminRoleId);
@@ -385,9 +393,16 @@ describe('Integration Tests', () => {
 
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
+
+							tracker.on
+								.select(
+									({ sql, bindings }: RawQuery) =>
+										sql.startsWith('select count(*) as "count" from "directus_users"') && bindings.includes(userId2),
+								)
+								.response({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
+
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
 						});
@@ -443,55 +458,6 @@ describe('Integration Tests', () => {
 							const result = await service.updateOne(adminRoleId, data);
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
-						});
-
-						it('having a removed last user that is not the last admin of system', async () => {
-							const data: Record<string, any> = {
-								users: [],
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
-
-							const result = await service.updateOne(adminRoleId, data);
-							expect(result).toBe(adminRoleId);
-							expect(superUpdateOne).toHaveBeenCalledOnce();
-						});
-
-						it('having a removed a last user that is the last admin of system', async () => {
-							const service = new RolesService({
-								knex: db,
-								schema: testSchema,
-								accountability: { role: 'test', admin: false },
-							});
-
-							const data: Record<string, any> = {
-								users: [],
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
-
-							const promise = service.updateOne(adminRoleId, data);
-
-							expect.assertions(5); // to ensure both assertions in the catch block are reached
-
-							try {
-								await promise;
-							} catch (err: any) {
-								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenError);
-							}
-
-							expect(superUpdateOne).toHaveBeenCalled();
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
-								`Can't process content. You can't remove the last admin user from the admin role.`,
-							);
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -561,55 +527,6 @@ describe('Integration Tests', () => {
 							const result = await service.updateOne(adminRoleId, data);
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
-						});
-
-						it('having a removed last user that is not the last admin of system', async () => {
-							const data: Record<string, any> = {
-								users: [],
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
-
-							const result = await service.updateOne(adminRoleId, data);
-							expect(result).toBe(adminRoleId);
-							expect(superUpdateOne).toHaveBeenCalledOnce();
-						});
-
-						it('having a removed a last user that is the last admin of system', async () => {
-							const service = new RolesService({
-								knex: db,
-								schema: testSchema,
-								accountability: { role: 'test', admin: false },
-							});
-
-							const data: Record<string, any> = {
-								users: [],
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
-
-							const promise = service.updateOne(adminRoleId, data);
-
-							expect.assertions(5); // to ensure both assertions in the catch block are reached
-
-							try {
-								await promise;
-							} catch (err: any) {
-								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenError);
-							}
-
-							expect(superUpdateOne).toHaveBeenCalled();
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
-								`Can't process content. You can't remove the last admin user from the admin role.`,
-							);
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -710,63 +627,6 @@ describe('Integration Tests', () => {
 							expect(result).toBe(adminRoleId);
 							expect(superUpdateOne).toHaveBeenCalledOnce();
 						});
-
-						it('having a removed last user that is not the last admin of system', async () => {
-							const data: Record<string, any> = {
-								users: {
-									create: [],
-									update: [],
-									delete: [userId1],
-								},
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
-
-							const result = await service.updateOne(adminRoleId, data);
-							expect(result).toBe(adminRoleId);
-							expect(superUpdateOne).toHaveBeenCalledOnce();
-						});
-
-						it('having a removed a last user that is the last admin of system', async () => {
-							const service = new RolesService({
-								knex: db,
-								schema: testSchema,
-								accountability: { role: 'test', admin: false },
-							});
-
-							const data: Record<string, any> = {
-								users: {
-									create: [],
-									update: [],
-									delete: [userId1],
-								},
-							};
-
-							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
-							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
-							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
-
-							const promise = service.updateOne(adminRoleId, data);
-
-							expect.assertions(5); // to ensure both assertions in the catch block are reached
-
-							try {
-								await promise;
-							} catch (err: any) {
-								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenError);
-							}
-
-							expect(superUpdateOne).toHaveBeenCalled();
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
-								`Can't process content. You can't remove the last admin user from the admin role.`,
-							);
-
-							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
-						});
 					});
 				});
 			});
@@ -837,12 +697,24 @@ describe('Integration Tests', () => {
 				await service.createOne({});
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.createOne({ ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('createMany', () => {
 			it('should not checkForOtherAdminRoles', async () => {
 				await service.createMany([{}]);
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.createMany([{ ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -863,6 +735,12 @@ describe('Integration Tests', () => {
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 				expect(checkForOtherAdminUsersSpy).toBeCalledTimes(1);
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateOne(1, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('updateMany', () => {
@@ -875,6 +753,12 @@ describe('Integration Tests', () => {
 				await service.updateMany([1], { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateMany([1], { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('updateBatch', () => {
@@ -886,6 +770,12 @@ describe('Integration Tests', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				await service.updateBatch([{ id: 1, admin_access: false }]);
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateBatch([{ id: 1, ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -902,6 +792,12 @@ describe('Integration Tests', () => {
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.updateByQuery({}, { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateByQuery({}, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 

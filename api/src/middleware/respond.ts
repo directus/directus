@@ -3,7 +3,7 @@ import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import { useLogger } from '../logger.js';
-import { ExportService } from '../services/import-export/index.js';
+import { ExportService } from '../services/import-export.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
