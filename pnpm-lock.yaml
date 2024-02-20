@@ -210,8 +210,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       inquirer:
-        specifier: 9.2.14
-        version: 9.2.14
+        specifier: 9.2.15
+        version: 9.2.15
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
@@ -246,8 +246,8 @@ importers:
         specifier: 2.3.3
         version: 2.3.3
       liquidjs:
-        specifier: 10.10.0
-        version: 10.10.0
+        specifier: 10.10.1
+        version: 10.10.1
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1051,8 +1051,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.2.14
-        version: 9.2.14
+        specifier: 9.2.15
+        version: 9.2.15
 
   packages/create-directus-project:
     dependencies:
@@ -1392,8 +1392,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       inquirer:
-        specifier: 9.2.14
-        version: 9.2.14
+        specifier: 9.2.15
+        version: 9.2.15
       ora:
         specifier: 6.3.1
         version: 6.3.1
@@ -12866,8 +12866,8 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /inquirer@9.2.14:
-    resolution: {integrity: sha512-4ByIMt677Iz5AvjyKrDpzaepIyMewNvDcvwpVVRZNmy9dLakVoVgdCHZXbK1SlVJra1db0JZ6XkJyHsanpdrdQ==}
+  /inquirer@9.2.15:
+    resolution: {integrity: sha512-vI2w4zl/mDluHt9YEQ/543VTCwPKWiHzKtm9dM2V0NdFcqEexDAjUHzO1oA60HRNaVifGXXM1tRRNluLVHa0Kg==}
     engines: {node: '>=18'}
     dependencies:
       '@ljharb/through': 2.3.12
@@ -13874,8 +13874,8 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /liquidjs@10.10.0:
-    resolution: {integrity: sha512-f4gPvCq4uV4Fm5YezVUQoAMPmBMEuIE2LvgCnzyWoPRx+ZefH6b8DU2eb7znltRqATHF8zYvOsd5FD2z1spJgg==}
+  /liquidjs@10.10.1:
+    resolution: {integrity: sha512-h699VW79OLoshCTjFF02tmRCrd8t/E49LSIsjLwlg4k0TbMVjxsCRXVUEsURXbfKl3HUln2cShlDQCrSNm2YaA==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
