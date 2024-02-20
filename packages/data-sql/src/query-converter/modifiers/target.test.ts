@@ -148,13 +148,13 @@ test('convert json filter target', () => {
 
 	const nestedTarget: AbstractQueryTargetNestedOne = {
 		type: 'nested-one-target',
-		field: {
-			type: 'primitive',
-			field: jsonColumnName,
-		},
 		nesting: {
 			type: 'object-single',
-			fieldName: jsonProp,
+			fieldName: jsonColumnName,
+		},
+		field: {
+			type: 'primitive',
+			field: jsonProp,
 		},
 	};
 

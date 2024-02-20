@@ -52,8 +52,8 @@ function convertJsonTarget(
 	tableIndex: number,
 	indexGen: IndexGenerators,
 ): TargetConversionResult {
-	const columnName = targetFieldName;
-	const parameters = objectPath;
+	const columnName = objectPath[0];
+	const parameters = [...objectPath, targetFieldName].slice(1);
 	const path = parameters.map(() => indexGen.parameter.next().value);
 
 	return {
