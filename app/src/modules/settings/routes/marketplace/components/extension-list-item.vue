@@ -35,7 +35,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 		<div class="meta">
 			<div class="published">
 				{{ localizedFormatDistanceStrict(new Date(extension.last_updated), new Date()) }}
-				<v-icon small name="restore" />
+				<v-icon small name="event" />
 			</div>
 
 			<div class="downloads">

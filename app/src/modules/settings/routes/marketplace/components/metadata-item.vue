@@ -6,6 +6,7 @@ withDefaults(
 		href?: string;
 		to?: string;
 		monospace?: boolean;
+		hasTooltip?: boolean;
 	}>(),
 	{
 		color: 'subdued',
@@ -14,7 +15,7 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item :class="color" :clickable="!!href || !!to" :href="href" :to="to">
+	<v-list-item :class="[color, { 'has-tooltip': hasTooltip }]" :clickable="!!href || !!to" :href="href" :to="to">
 		<v-list-item-icon>
 			<slot name="icon"><v-icon :name="icon" small /></slot>
 		</v-list-item-icon>
@@ -46,5 +47,9 @@ withDefaults(
 .monospace {
 	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 	font-weight: var(--theme--fonts--monospace--font-weight);
+}
+
+.has-tooltip {
+	cursor: help;
 }
 </style>

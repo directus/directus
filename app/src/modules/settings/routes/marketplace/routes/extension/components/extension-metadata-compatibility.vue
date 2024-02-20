@@ -15,7 +15,9 @@ const { t } = useI18n();
 const isCompatible = computed(() => satisfies(serverStore.info.version!, props.hostVersion));
 const icon = computed(() => (isCompatible.value ? 'check' : 'warning'));
 
-const label = computed(() => (isCompatible.value ? t('compatible_with_your_project') : t('compatibility_not_verified')));
+const label = computed(() =>
+	isCompatible.value ? t('compatible_with_your_project') : t('compatibility_not_verified'),
+);
 </script>
 
 <template>
@@ -27,14 +29,8 @@ const label = computed(() => (isCompatible.value ? t('compatible_with_your_proje
 		"
 		:icon="icon"
 		:color="isCompatible ? 'primary' : 'warning'"
-		:class="{ incompatible: !isCompatible }"
+		has-tooltip
 	>
 		{{ label }}
 	</MetadataItem>
 </template>
-
-<style scoped>
-.incompatible {
-	cursor: help;
-}
-</style>
