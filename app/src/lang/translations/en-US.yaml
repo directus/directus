@@ -846,6 +846,7 @@ operators:
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
+extension_readme_missing: This extension does not have a README file.
 drop_to_upload: Drop to Upload
 item: Item
 items: Items

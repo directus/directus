@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 defineProps<{
-	readme: string;
+	readme: string | null;
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
-	<div v-md="{ value: readme, target: '_blank' }" class="readme" />
+	<v-notice v-if="!readme" class="notice">{{ t('extension_readme_missing') }}</v-notice>
+	<div v-else v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 
 <style scoped lang="scss">
@@ -21,5 +26,10 @@ defineProps<{
 	:deep(* + *) {
 		margin-top: 1rem;
 	}
+}
+
+.notice {
+	align-self: flex-start;
+	margin-top: 4px;
 }
 </style>

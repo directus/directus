@@ -62,7 +62,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 					<div class="grid">
 						<ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
-						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" />
+						<ExtensionReadme class="readme" :readme="extension.readme" />
 					</div>
 				</div>
 			</template>
