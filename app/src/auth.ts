@@ -161,7 +161,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
 		try {
-			await api.post(`/auth/logout`);
+			await api.post(`/auth/logout`, { mode: 'session' });
 		} catch {
 			// User already signed out
 		}

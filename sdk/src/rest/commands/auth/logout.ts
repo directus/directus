@@ -1,3 +1,4 @@
+import type { AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -8,9 +9,9 @@ import type { RestCommand } from '../../types.js';
  * @returns Empty body.
  */
 export const logout =
-	<Schema extends object>(refresh_token?: string): RestCommand<void, Schema> =>
+	<Schema extends object>(refresh_token?: string, mode: AuthenticationMode = 'cookie'): RestCommand<void, Schema> =>
 	() => ({
 		path: '/auth/logout',
 		method: 'POST',
-		body: JSON.stringify(refresh_token ? { refresh_token } : {}),
+		body: JSON.stringify(refresh_token ? { refresh_token, mode } : { mode }),
 	});

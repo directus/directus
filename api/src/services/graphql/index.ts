@@ -85,6 +85,8 @@ import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
 import { isSystemCollection } from '@directus/system-data';
+import isDirectusJWT from '../../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../../utils/jwt.js';
 
 const env = useEnv();
 
@@ -2285,6 +2287,7 @@ export class GraphQLService {
 				type: GraphQLBoolean,
 				args: {
 					refresh_token: GraphQLString,
+					mode: AuthMode,
 				},
 				resolve: async (_, args, { req }) => {
 					const accountability: Accountability = { role: null };
@@ -2302,7 +2305,21 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
+					let currentRefreshToken: string | undefined;
+
+					if (mode === 'json') {
+						currentRefreshToken = args['refresh_token'];
+					} else if (mode === 'cookie') {
+						currentRefreshToken = req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					} else if (mode === 'session') {
+						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
+
+						if (isDirectusJWT(token)) {
+							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							currentRefreshToken = payload.session;
+						}
+					}
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({

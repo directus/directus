@@ -365,6 +365,10 @@ const result = await client.request(logout(refresh_token));
 The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have
 to submit it here.
 
+`mode`\
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
+`session`. Defaults to `json`.
+
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
@@ -374,7 +378,8 @@ to submit it here.
 
 ```json
 {
-	"refresh_token": "gmPd...8wuB"
+	"refresh_token": "gmPd...8wuB",
+	"mode": "json"
 }
 ```
 
@@ -385,7 +390,7 @@ to submit it here.
 
 ```graphql
 mutation {
-	auth_logout(refresh_token: "gmPd...8wuB")
+	auth_logout(refresh_token: "gmPd...8wuB", mode: "json")
 }
 ```
 
@@ -395,7 +400,7 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, logout } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
+const client = createDirectus('https://directus.example.com').with(authentication('json')).with(rest());
 
 // logout using the authentication composable
 const result = await client.logout();
