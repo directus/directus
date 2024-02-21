@@ -96,7 +96,7 @@ const sortOptions = [
 			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_extensions')" class="search-input" />
 		</div>
 
-		<div v-if="filterCount !== 0" class="item-count">{{ showingCount }}</div>
+		<div v-show="filterCount !== 0" class="item-count">{{ showingCount }}</div>
 	</div>
 </template>
 
