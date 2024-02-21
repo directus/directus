@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBanner from '@/components/v-banner.vue';
 import type { RegistryAccountResponse, RegistryListResponse } from '@directus/extensions-registry';
 import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
-import AccountBanner from './components/account-banner.vue';
-import AccountMetadata from './components/account-metadata.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
+import AccountBanner from './components/account-banner.vue';
 import AccountInfoSidebarDetail from './components/account-info-sidebar-detail.vue';
+import AccountMetadata from './components/account-metadata.vue';
 
 const props = defineProps<{
 	accountId: string;
@@ -104,7 +105,10 @@ const navigateBack = () => {
 				</div>
 			</template>
 
-			<v-progress-circular v-else-if="loading" indeterminate />
+			<v-banner v-else-if="loading" icon="plugin">
+				<template #avatar><v-progress-circular indeterminate /></template>
+				{{ t('loading') }}
+			</v-banner>
 
 			<v-error v-else :error="error" />
 		</div>
