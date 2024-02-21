@@ -110,6 +110,7 @@ const sortOptions = [
 	border-radius: 0;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
 	width: 180px;
+	background: transparent;
 
 	&::placeholder {
 		color: var(--theme--foreground-subdued);
