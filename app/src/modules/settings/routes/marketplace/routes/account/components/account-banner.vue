@@ -16,7 +16,9 @@ const hasMeta = computed(() => {
 <template>
 	<VBanner icon="person">
 		<template v-if="account.github_avatar_url" #avatar>
-			<img class="avatar" :src="account.github_avatar_url" :alt="account.github_name ?? account.username" />
+			<div class="avatar">
+				<img :src="account.github_avatar_url" :alt="account.github_name ?? account.username" />
+			</div>
 		</template>
 
 		<h2 class="name">{{ account.github_name ?? account.username }}</h2>
@@ -38,10 +40,27 @@ const hasMeta = computed(() => {
 
 <style scoped lang="scss">
 .avatar {
+	position: relative;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
-	object-position: center center;
+
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		box-shadow: inset 0px 0px 0px 2px #ffffff33;
+	}
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center center;
+	}
 }
 
 .meta {

@@ -26,6 +26,10 @@ const { t } = useI18n();
 	:deep(* + *) {
 		margin-top: 1rem;
 	}
+
+	:deep(img) {
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
 }
 
 .notice {
