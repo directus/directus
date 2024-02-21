@@ -392,7 +392,7 @@ function useDisplayValue() {
 */
 
 .list {
-	--v-list-min-width: 0;
+	--v-list-min-width: 180px;
 }
 
 .v-input {
