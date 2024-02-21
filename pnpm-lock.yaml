@@ -614,8 +614,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7
       '@fullcalendar/daygrid':
-        specifier: 6.1.7
-        version: 6.1.7(@fullcalendar/core@6.1.7)
+        specifier: 6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.7)
       '@fullcalendar/interaction':
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
@@ -5058,10 +5058,10 @@ packages:
       preact: 10.12.1
     dev: true
 
-  /@fullcalendar/daygrid@6.1.7(@fullcalendar/core@6.1.7):
-    resolution: {integrity: sha512-IB+QdRcs+TeTlsK8qJFtYZ/2GugmXEFC0C00/n1aLT7GLgFn3ueV1GN0EKvXv9HJ5ai8My65mYbSyQizY/Ishw==}
+  /@fullcalendar/daygrid@6.1.11(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-hF5jJB7cgUIxWD5MVjj8IU407HISyLu7BWXcEIuTytkfr8oolOXeCazqnnjmRbnFOncoJQVstTtq6SIhaT32Xg==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.7
+      '@fullcalendar/core': ~6.1.11
     dependencies:
       '@fullcalendar/core': 6.1.7
     dev: true
@@ -5088,7 +5088,7 @@ packages:
       '@fullcalendar/core': ~6.1.7
     dependencies:
       '@fullcalendar/core': 6.1.7
-      '@fullcalendar/daygrid': 6.1.7(@fullcalendar/core@6.1.7)
+      '@fullcalendar/daygrid': 6.1.11(@fullcalendar/core@6.1.7)
     dev: true
 
   /@gar/promisify@1.1.3:
