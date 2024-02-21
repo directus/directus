@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-	<div v-md="readme" class="readme" />
+	<div v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 
 <style scoped lang="scss">
