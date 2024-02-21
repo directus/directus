@@ -20,7 +20,7 @@ import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
-import type { AuthDriverOptions, User } from '../../types/index.js';
+import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { AuthDriver } from '../auth.js';
@@ -439,7 +439,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode = req.body.mode || 'json';
+			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
