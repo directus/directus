@@ -35,46 +35,19 @@ const install = async () => {
 </script>
 
 <template>
-	<MetadataItem v-if="installed" icon="check" color="primary">
-		{{ t('installed') }}
-	</MetadataItem>
+	<v-button v-if="installed" class="install" align="left" full-width to="/settings/extensions" secondary>
+		<v-icon name="settings" left />
+		{{ t('manage') }}
+	</v-button>
 
-	<v-list-item v-else class="install-button" :class="{ installing }" clickable @click="install">
-		<v-progress-circular v-if="installing" class="spinner" indeterminate></v-progress-circular>
-
-		<template v-else>
-			<v-list-item-icon>
-				<slot name="icon"><v-icon name="download" /></slot>
-			</v-list-item-icon>
-			<v-list-item-content>{{ t('install_extension') }}</v-list-item-content>
-		</template>
-	</v-list-item>
+	<v-button v-else :loading="installing" class="install" align="left" full-width @click="install">
+		<v-icon name="download" left />
+		{{ t('install_extension') }}
+	</v-button>
 </template>
 
 <style scoped>
-.install-button {
-	--v-list-item-background-color: var(--theme--primary);
-	--v-list-item-border-color: var(--theme--primary);
-	--v-list-item-background-color-hover: var(--theme--primary-accent);
-	--v-list-item-border-color-hover: var(--theme--primary-accent);
-	--v-list-item-color: var(--foreground-inverted);
-	--v-list-item-color-hover: var(--foreground-inverted);
-	--v-list-item-icon-color: var(--foreground-inverted);
-	--v-list-item-padding: 8px;
-
-	&.installing {
-		--v-list-item-background-color-hover: var(--theme--primary);
-		--v-list-item-border-color-hover: var(--theme--primary);
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-}
-
-.spinner {
-	--v-progress-circular-color: var(--foreground-inverted);
-	--v-progress-circular-background-color: transparent;
-	position: absolute;
+.install {
+	--v-button-padding: 0 10px;
 }
 </style>

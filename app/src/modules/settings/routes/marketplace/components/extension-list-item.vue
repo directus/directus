@@ -11,7 +11,7 @@ const { t } = useI18n();
 
 const props = defineProps<{
 	extension: RegistryListResponse['data'][number];
-	showType: boolean;
+	showType?: boolean;
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);

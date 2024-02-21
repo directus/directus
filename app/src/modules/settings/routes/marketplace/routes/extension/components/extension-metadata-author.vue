@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import MetadataItem from '../../../components/metadata-item.vue';
 
 const { t } = useI18n();
 
@@ -14,21 +13,17 @@ defineProps<{
 </script>
 
 <template>
-	<MetadataItem class="author" icon="face" :to="`/settings/marketplace/account/${id}`" color="foreground">
-		<template v-if="githubAvatarUrl" #icon>
-			<img :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
-		</template>
-		<span>
-			{{ githubName ?? username }}
-			<v-icon v-if="verified" v-tooltip="t('verified')" name="verified" small />
-		</span>
-	</MetadataItem>
+	<v-button class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
+		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
+		<v-icon v-else name="face" left />
+		{{ githubName ?? username }}
+		<v-icon v-if="verified" v-tooltip="t('verified')" name="verified" small />
+	</v-button>
 </template>
 
 <style scoped>
 .author {
-	--v-list-item-padding: 8px;
-	border: var(--theme--border-width) solid var(--theme--border-color);
+	--v-button-padding: 0 10px;
 }
 
 .avatar {
@@ -37,5 +32,7 @@ defineProps<{
 	border-radius: 10px;
 	object-fit: cover;
 	object-position: center center;
+	margin-left: 2px;
+	margin-right: 9px;
 }
 </style>

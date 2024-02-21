@@ -105,8 +105,7 @@ onUnmounted(() => {
 
 <style scoped>
 .chart-container {
-	height: var(--theme--form--field--input--height);
-	border: var(--theme--border-width) solid var(--theme--border-color);
+	height: 48px;
 	border-radius: var(--theme--border-radius);
 	display: flex;
 	overflow: hidden;

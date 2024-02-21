@@ -58,7 +58,6 @@ const maintainers = computed(() => {
 				/>
 			</div>
 		</v-list>
-		<v-divider class="divider" />
 		<v-list class="list">
 			<div class="grid">
 				<ExtensionMetadataDownloadsSparkline
@@ -104,6 +103,11 @@ const maintainers = computed(() => {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 4px 16px;
 
+		.sparkline {
+			grid-column: 1 / span 2;
+			margin-block-start: 16px;
+		}
+
 		.install {
 			margin-bottom: 0 !important;
 		}
@@ -119,6 +123,7 @@ const maintainers = computed(() => {
 }
 
 .sparkline {
+	margin-top: 6px;
 	margin-bottom: 14px;
 }
 </style>
