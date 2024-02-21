@@ -57,8 +57,10 @@ export const useExtensionsStore = defineStore('extensions', () => {
 					title: t('reload_required'),
 					text: t('extension_reload_required_copy'),
 					type: 'warning',
-					dialog: true,
+					dialog: false,
 					persist: true,
+					alwaysShowText: true,
+					dismissIcon: 'refresh',
 					dismissText: t('extension_reload_now'),
 					dismissAction: () => {
 						window.location.reload();
