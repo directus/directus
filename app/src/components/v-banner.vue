@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineProps<{
 	icon: string;
+	hideAvatarBackground?: boolean;
 }>();
 </script>
 
 <template>
 	<div class="v-banner">
-		<div class="avatar">
+		<div class="avatar" :class="{ 'no-bg': hideAvatarBackground }">
 			<slot name="avatar"><v-icon :name="icon" large /></slot>
 		</div>
 
@@ -181,6 +182,10 @@ defineProps<{
 		background-color: var(--theme--banner--avatar--background);
 		color: var(--theme--banner--avatar--foreground);
 		display: none;
+
+		&.no-bg {
+			background: transparent;
+		}
 
 		@container (width > 700px) {
 			display: flex;
