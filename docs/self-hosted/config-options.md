@@ -937,12 +937,6 @@ By default, extensions are not cached. The input data type for this environment 
 extensions from a storage location instead. Under the hood, they are synced into a local directory within
 [`TEMP_PATH`](#general) and then loaded from there.
 
-## Messenger
-
-| Variable              | Description                        | Default Value        |
-| --------------------- | ---------------------------------- | -------------------- |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis | `directus-messenger` |
-
 ## Synchronization
 
 | Variable                    | Description                            | Default Value   |
