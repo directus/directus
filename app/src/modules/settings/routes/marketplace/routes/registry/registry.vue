@@ -164,6 +164,6 @@ watchEffect(async () => {
 }
 
 .no-results {
-	margin-block-start: 40px;
+	margin-block-start: 120px;
 }
 </style>
