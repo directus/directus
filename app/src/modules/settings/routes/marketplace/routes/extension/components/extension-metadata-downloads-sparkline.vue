@@ -14,12 +14,6 @@ const chartContainerEl = ref<HTMLElement>();
 const chartEl = ref<HTMLElement>();
 const chart = ref<ApexCharts>();
 
-const strokeWidth = computed(() => {
-	if (!chartContainerEl.value) return 2;
-	const borderWidthPx = getComputedStyle(chartContainerEl.value).borderWidth;
-	return Number(borderWidthPx.substring(0, borderWidthPx.length - 2));
-});
-
 const initChart = () => {
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: [cssVar('--theme--primary')],
@@ -57,8 +51,8 @@ const initChart = () => {
 			},
 		],
 		stroke: {
-			curve: 'straight',
-			width: strokeWidth.value,
+			curve: 'monotoneCubic',
+			width: 1,
 			lineCap: 'butt',
 		},
 		tooltip: {
