@@ -40,6 +40,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
 	const loading = ref(false);
 	const error = ref<unknown>(null);
 	const extensions = ref<ApiOutput[]>([]);
+	const reloadNotificationVisible = ref(false);
 
 	const refresh = async (forceRefresh = true) => {
 		loading.value = true;
@@ -52,8 +53,13 @@ export const useExtensionsStore = defineStore('extensions', () => {
 
 			const newEnabledBrowserExtensions = getEnabledBrowserExtensions(extensions.value);
 
-			if (forceRefresh && isEqual(currentlyEnabledBrowserExtensions, newEnabledBrowserExtensions) === false) {
+			if (
+				forceRefresh &&
+				isEqual(currentlyEnabledBrowserExtensions, newEnabledBrowserExtensions) === false &&
+				!reloadNotificationVisible.value
+			) {
 				notificationsStore.add({
+					id: 'reload-required',
 					title: t('reload_required'),
 					text: t('extension_reload_required_copy'),
 					type: 'warning',
@@ -66,6 +72,8 @@ export const useExtensionsStore = defineStore('extensions', () => {
 						window.location.reload();
 					},
 				});
+
+				reloadNotificationVisible.value = true;
 			}
 		} catch (err) {
 			error.value = err;
