@@ -179,3 +179,65 @@ test('Convert filter on json value', () => {
 		`"t${tableIndex}"."${jsonColumnName}" ->> $${pathItemIndex + 1} = $${parameterIndex + 1}`,
 	);
 });
+
+test('Convert logical filter on json value like for o2a', () => {
+	const tableIndex = randomInteger(0, 100);
+	const jsonColumnName = randomIdentifier();
+	const parameterIndex1 = randomInteger(0, 100);
+	const parameterIndex2 = randomInteger(0, 100);
+	const parameterIndex3 = randomInteger(0, 100);
+	const parameterIndex4 = randomInteger(0, 100);
+	const parameterIndex5 = randomInteger(0, 100);
+
+	const where: AbstractSqlQueryLogicalNode = {
+		type: 'logical',
+		operator: 'and',
+		negate: false,
+		childNodes: [
+			{
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-string',
+					target: {
+						type: 'json',
+						tableIndex,
+						columnName: jsonColumnName,
+						path: [parameterIndex1],
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: parameterIndex2,
+					},
+				},
+			},
+			{
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-number',
+					target: {
+						type: 'json',
+						tableIndex,
+						columnName: jsonColumnName,
+						path: [parameterIndex3, parameterIndex4],
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: parameterIndex5,
+					},
+				},
+			},
+		],
+	};
+
+	expect(conditionString(where)).toStrictEqual(
+		`"t${tableIndex}"."${jsonColumnName}" ->> $${parameterIndex1 + 1} = $${
+			parameterIndex2 + 1
+		} AND CAST("t${tableIndex}"."${jsonColumnName}" -> $${parameterIndex3 + 1} ->> $${parameterIndex4 + 1} AS INTEGER) = $${
+			parameterIndex5 + 1
+		}`,
+	);
+});

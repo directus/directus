@@ -105,6 +105,8 @@ export function convertNestedOneTarget(
 			parameters,
 		};
 	} else {
+		// node type is 'object-single'
+
 		const newObjectPath: AtLeastOneElement<string> = [...(objectPath ?? []), nestedTarget.nesting.fieldName];
 
 		const { value, joins, parameters } = convertTarget(nestedTarget.field, tableIndex, indexGen, newObjectPath);
