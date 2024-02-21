@@ -64,7 +64,7 @@ const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
-	return Object.assign({}, props.initialValues, props.modelValue);
+	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
 
 const el = ref<Element>();
