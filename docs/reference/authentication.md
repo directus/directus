@@ -12,7 +12,7 @@ pageClass: page-reference
 
 ## Access Tokens
 
-There are two types of tokens that can be used to authenticate within Directus.
+There are three types of tokens that can be used to authenticate within Directus.
 
 **Temporary Token (JWT)** are returned by the [login](#login) endpoint/mutation. These tokens have a relatively short
 expiration time, and are thus the most secure option to use. The tokens are returned with a `refresh_token` that can be
