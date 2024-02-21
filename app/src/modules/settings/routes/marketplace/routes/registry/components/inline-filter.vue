@@ -31,10 +31,6 @@ watchDebounced(
 const { t, n } = useI18n();
 
 const showingCount = computed(() => {
-	if (props.filterCount === 0) {
-		return t('no_results');
-	}
-
 	const opts = {
 		start: n((+props.page - 1) * props.perPage + 1),
 		end: n(Math.min(props.page * props.perPage, props.filterCount || 0)),
@@ -100,7 +96,7 @@ const sortOptions = [
 			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_extensions')" class="search-input" />
 		</div>
 
-		<div class="item-count">{{ showingCount }}</div>
+		<div v-if="filterCount !== 0" class="item-count">{{ showingCount }}</div>
 	</div>
 </template>
 
