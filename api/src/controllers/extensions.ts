@@ -135,7 +135,6 @@ router.get(
 		const payload = await describe(req.params['pk'], options);
 
 		res.locals['payload'] = payload;
-
 		return next();
 	}),
 	respond,
