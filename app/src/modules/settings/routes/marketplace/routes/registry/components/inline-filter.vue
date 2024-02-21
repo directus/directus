@@ -19,14 +19,22 @@ const searchInputValue = ref('');
 watchDebounced(
 	searchInputValue,
 	(val) => {
-		search.value = val;
+		if (val && val.length > 0) {
+			search.value = val;
+		} else {
+			search.value = null;
+		}
 	},
-	{ debounce: 300, maxWait: 1000 },
+	{ debounce: 300 },
 );
 
 const { t, n } = useI18n();
 
 const showingCount = computed(() => {
+	if (props.filterCount === 0) {
+		return t('no_results');
+	}
+
 	const opts = {
 		start: n((+props.page - 1) * props.perPage + 1),
 		end: n(Math.min(props.page * props.perPage, props.filterCount || 0)),
