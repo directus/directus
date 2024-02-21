@@ -21,8 +21,8 @@ const conditionsSync = computed({
 		return { conditions: conditions.value };
 	},
 	set(value) {
-		if (!value.conditions || value.conditions.length === 0) {
-			conditions.value = null;
+		if (!value.conditions) {
+			conditions.value = value.conditions;
 			return;
 		}
 
@@ -36,6 +36,8 @@ const conditionsSync = computed({
 		conditions.value = conditionsWithDefaults;
 	},
 });
+
+const conditionsInitial = conditionsSync.value;
 
 const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 	{
@@ -160,7 +162,7 @@ const optionDefaults = computed(() => {
 		.reduce((result, option) => ({ ...result, [option.field]: option.schema.default_value }), {});
 });
 
-const fields = computed(() => [
+const fields = computed<DeepPartial<Field>[]>(() => [
 	{
 		field: 'conditions',
 		name: t('conditions'),
@@ -172,10 +174,13 @@ const fields = computed(() => [
 				template: '{{ name }}',
 			},
 		},
+		schema: {
+			default_value: null,
+		},
 	},
 ]);
 </script>
 
 <template>
-	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
+	<v-form v-model="conditionsSync" :initial-values="conditionsInitial" :fields="fields" :loading="loading" />
 </template>
