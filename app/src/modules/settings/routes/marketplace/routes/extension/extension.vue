@@ -9,6 +9,7 @@ import ExtensionBanner from './components/extension-banner.vue';
 import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
 import ExtensionReadme from './components/extension-readme.vue';
+import VBanner from '@/components/v-banner.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -66,7 +67,10 @@ const navigateBack = () => router.push('/settings/marketplace');
 				</div>
 			</template>
 
-			<v-progress-circular v-else-if="loading" indeterminate />
+			<v-banner v-else-if="loading" icon="plugin">
+				<template #avatar><v-progress-circular indeterminate /></template>
+				{{ t('loading') }}
+			</v-banner>
 
 			<v-error v-else :error="error" />
 		</div>
