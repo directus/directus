@@ -206,6 +206,7 @@ async function batchDelete() {
 
 		<template #actions>
 			<v-input
+				v-if="insightsStore.dashboards.length > 0"
 				v-model="search"
 				class="search"
 				:autofocus="insightsStore.dashboards.length > 25"
@@ -367,8 +368,8 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
-			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
+		<v-info v-else icon="space_dashboard" :title="search ? t('no_results') : t('no_dashboards')" center>
+			{{ search ? t('no_results_copy') : t('no_dashboards_copy') }}
 
 			<template v-if="createAllowed && !search" #append>
 				<dashboard-dialog v-model="createDialogActive">
