@@ -87,7 +87,7 @@ const sortOptions = [
 	<div class="inline-filter">
 		<div class="field">
 			<v-icon class="icon" small name="category" />
-			<v-select v-model="type" class="type" inline :items="typeOptions" />
+			<v-select v-model="type" menu-full-height class="type" inline :items="typeOptions" />
 		</div>
 
 		<div class="field">
