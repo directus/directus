@@ -174,9 +174,6 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 				template: '{{ name }}',
 			},
 		},
-		schema: {
-			default_value: null,
-		},
 	},
 ]);
 </script>
