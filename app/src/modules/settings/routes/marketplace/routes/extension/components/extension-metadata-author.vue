@@ -14,7 +14,7 @@ defineProps<{
 </script>
 
 <template>
-	<MetadataItem icon="face" :to="`/settings/marketplace/account/${id}`" color="foreground">
+	<MetadataItem class="author" icon="face" :to="`/settings/marketplace/account/${id}`" color="foreground">
 		<template v-if="githubAvatarUrl" #icon>
 			<img :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		</template>
@@ -26,6 +26,11 @@ defineProps<{
 </template>
 
 <style scoped>
+.author {
+	--v-list-item-padding: 8px;
+	border: var(--theme--border-width) solid var(--theme--border-color);
+}
+
 .avatar {
 	width: 20px;
 	height: 20px;

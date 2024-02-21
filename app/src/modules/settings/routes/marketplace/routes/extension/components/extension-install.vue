@@ -39,7 +39,7 @@ const install = async () => {
 		{{ t('installed') }}
 	</MetadataItem>
 
-	<v-list-item v-else class="install-button" block :class="{ installing }" clickable @click="install">
+	<v-list-item v-else class="install-button" :class="{ installing }" clickable @click="install">
 		<v-progress-circular v-if="installing" class="spinner" indeterminate></v-progress-circular>
 
 		<template v-else>
@@ -58,6 +58,7 @@ const install = async () => {
 	--v-list-item-background-color-hover: var(--theme--primary-accent);
 	--v-list-item-border-color-hover: var(--theme--primary-accent);
 	--v-list-item-color: var(--foreground-inverted);
+	--v-list-item-color-hover: var(--foreground-inverted);
 	--v-list-item-icon-color: var(--foreground-inverted);
 	--v-list-item-padding: 8px;
 
