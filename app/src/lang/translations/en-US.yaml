@@ -99,8 +99,8 @@ n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_verified: Compatibility not verified
 compatibility_not_verified_copy:
-  The author of this extension has not verified the extension to be compatible with the version of your project
-  ({currentVersion}). The extension has been verified to work on version(s) {hostVersion}.
+  The author has not verified this extension to be compatible with your project's version ({currentVersion}). Currently
+  verified for {hostVersion}.
 enable: Enable
 disable: Disable
 custom: Custom
