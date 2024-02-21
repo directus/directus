@@ -26,7 +26,7 @@ watch([search, sort, type], (newVals, oldVals) => {
 
 const filterCount = ref(0);
 
-const extensions = ref<RegistryListResponse['data']>([]);
+const extensions = ref<RegistryListResponse['data'] | null>(null);
 const pageCount = computed(() => Math.round(filterCount.value / perPage));
 const loading = ref(false);
 const error = ref<unknown>(null);
@@ -94,7 +94,9 @@ watchEffect(async () => {
 
 			<v-error v-if="error && !loading" :error="error" />
 
-			<v-list v-if="!error" class="results">
+			<v-progress-circular v-if="!error && extensions === null && loading" class="spinner" indeterminate />
+
+			<v-list v-if="!error && extensions !== null" class="results" :class="{ loading }">
 				<ExtensionListItem
 					v-for="extension in extensions"
 					:key="extension.id"
@@ -104,7 +106,7 @@ watchEffect(async () => {
 			</v-list>
 
 			<v-info
-				v-if="extensions.length === 0 && !loading && !error"
+				v-if="extensions?.length === 0 && !loading && !error"
 				:title="t('no_results')"
 				class="no-results"
 				icon="extension"
@@ -157,6 +159,12 @@ watchEffect(async () => {
 
 .results {
 	padding-top: 0 !important; // 🤫
+	opacity: 1;
+	transition: opacity var(--fast) var(--transition);
+
+	&.loading {
+		opacity: 0.5;
+	}
 }
 
 .pagination {
@@ -165,5 +173,9 @@ watchEffect(async () => {
 
 .no-results {
 	margin-block-start: 120px;
+}
+
+.spinner {
+	margin: 120px auto;
 }
 </style>

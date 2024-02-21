@@ -3,7 +3,6 @@ import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MetadataItem from '../../../components/metadata-item.vue';
 
 const { t } = useI18n();
 
