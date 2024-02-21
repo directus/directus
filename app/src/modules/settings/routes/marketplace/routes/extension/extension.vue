@@ -77,6 +77,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 .extension-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	padding-top: 0;
 	max-width: 1200px;
 	width: 100%;
 }
