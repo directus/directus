@@ -1,17 +1,17 @@
 import { expect, test, beforeEach } from 'vitest';
 import { randomIdentifier } from '@directus/random';
-import { setCondition } from './set-condition.js';
-import type { SqlConditionSetNode } from '@directus/data-sql';
+import { setNumberCondition } from './set-number-condition.js';
+import type { SqlConditionSetNumberNode } from '@directus/data-sql';
 
 let tableIndex: number;
 let columnName: string;
-let sampleCondition: SqlConditionSetNode;
+let sampleCondition: SqlConditionSetNumberNode;
 
 beforeEach(() => {
 	columnName = randomIdentifier();
 
 	sampleCondition = {
-		type: 'condition-set',
+		type: 'condition-set-number',
 		target: {
 			type: 'primitive',
 			tableIndex,
@@ -26,13 +26,13 @@ beforeEach(() => {
 });
 
 test('set', () => {
-	const res = setCondition(sampleCondition, false);
+	const res = setNumberCondition(sampleCondition, false);
 	const expected = `"t${tableIndex}"."${columnName}" IN ($3, $4, $5)`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('negated set', () => {
-	const res = setCondition(sampleCondition, true);
+	const res = setNumberCondition(sampleCondition, true);
 	const expected = `"t${tableIndex}"."${columnName}" NOT IN ($3, $4, $5)`;
 	expect(res).toStrictEqual(expected);
 });

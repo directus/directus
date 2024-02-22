@@ -14,9 +14,9 @@ import type { AbstractQueryTarget } from '../../target.js';
  * 	compareTo: [1, 2, 3]
  * ```
  */
-export interface ConditionSetNode {
-	type: 'condition-set';
+export interface ConditionSetNumberNode {
+	type: 'condition-set-number';
 	target: AbstractQueryTarget;
 	operation: 'in';
-	compareTo: (string | number)[]; // could also be an actual JS Set
+	compareTo: number[];
 }

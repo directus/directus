@@ -1,7 +1,7 @@
-import { tableIndexToIdentifier, type SqlConditionSetNode } from '@directus/data-sql';
+import { tableIndexToIdentifier, type SqlConditionSetStringNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
 
-export const setCondition = (condition: SqlConditionSetNode, negate: boolean): string => {
+export const setStringCondition = (condition: SqlConditionSetStringNode, negate: boolean): string => {
 	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
 
 	const column = wrapColumn(tableAlias, condition.target.columnName);
