@@ -53,8 +53,8 @@ function convertJsonTarget(
 	indexGen: IndexGenerators,
 ): TargetConversionResult {
 	const columnName = objectPath[0];
-	const parameters = [...objectPath, targetFieldName].slice(1);
-	const path = parameters.map(() => indexGen.parameter.next().value);
+	const parameters = [...objectPath, targetFieldName].slice(1) as AtLeastOneElement<string>;
+	const path = parameters.map(() => indexGen.parameter.next().value) as AtLeastOneElement<number>;
 
 	return {
 		value: {

@@ -41,3 +41,16 @@ test('intersects_bbox', () => {
 		`"t${tableIndex}"."${columnName}" && ST_GeomFromText($${parameterIndex + 1}))`,
 	);
 });
+
+test('intersects_bbo with json target', () => {
+	sampleCondition.target = {
+		type: 'json',
+		tableIndex,
+		columnName,
+		path: [5],
+	};
+
+	expect(geoCondition(sampleCondition)).toStrictEqual(
+		`ST_Intersects("t${tableIndex}"."${columnName}" -> $6, ST_GeomFromText($${parameterIndex + 1}))`,
+	);
+});

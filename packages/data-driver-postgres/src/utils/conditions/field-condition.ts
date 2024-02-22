@@ -1,5 +1,11 @@
-import { convertNumericOperators, tableIndexToIdentifier, type SqlConditionFieldNode } from '@directus/data-sql';
+import {
+	convertNumericOperators,
+	tableIndexToIdentifier,
+	type SqlConditionFieldNode,
+	type AbstractSqlQueryTargetNode,
+} from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
+import { applyJsonPathAsString } from '../json-path.js';
 
 /**
  * This is mainly used for JOIN conditions.
@@ -8,11 +14,20 @@ import { wrapColumn } from '../wrap-column.js';
  * @returns col1 = col2
  */
 export const fieldCondition = (condition: SqlConditionFieldNode, negate: boolean): string => {
-	const tableAlias1 = tableIndexToIdentifier(condition.target.tableIndex);
-	const tableAlias2 = tableIndexToIdentifier(condition.compareTo.tableIndex);
+	const operant1 = getOperant(condition.target);
+	const operant2 = getOperant(condition.compareTo);
 
-	const column1 = wrapColumn(tableAlias1, condition.target.columnName);
-	const column2 = wrapColumn(tableAlias2, condition.compareTo.columnName);
 	const operation = convertNumericOperators(condition.operation, negate);
-	return `${column1} ${operation} ${column2}`;
+	return `${operant1} ${operation} ${operant2}`;
 };
+
+function getOperant(operant: AbstractSqlQueryTargetNode) {
+	const tableAlias = tableIndexToIdentifier(operant.tableIndex);
+	let wrappedColumn = wrapColumn(tableAlias, operant.columnName);
+
+	if (operant.type === 'json') {
+		wrappedColumn = applyJsonPathAsString(wrappedColumn, operant.path);
+	}
+
+	return wrappedColumn;
+}
