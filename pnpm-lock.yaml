@@ -395,8 +395,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/types
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@types/async':
         specifier: 3.2.24
         version: 3.2.24
@@ -644,8 +644,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@pinia/testing':
         specifier: 0.1.3
         version: 0.1.3(pinia@2.1.7)(vue@3.4.19)
@@ -1624,8 +1624,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.0)
@@ -1658,8 +1658,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.0)
@@ -1689,8 +1689,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.0)
@@ -1714,8 +1714,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@types/node':
         specifier: 18.19.17
         version: 18.19.17
@@ -1754,8 +1754,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.0)
@@ -1788,8 +1788,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.0)
@@ -5941,8 +5941,8 @@ packages:
     dev: false
     optional: true
 
-  /@ngneat/falso@7.1.1:
-    resolution: {integrity: sha512-/5HuJDaZHXl3WVdgvYBAM52OSYbSKfiNazVOZOw/3KjeZ6dQW9F0QCG+W6z52lUu5MZvp/TkPGaVRtoz6h9T1w==}
+  /@ngneat/falso@7.2.0:
+    resolution: {integrity: sha512-283EXBFd05kCbGuGSXgmvhCsQYEYzvD/eJaE7lxd05qRB0tgREvZX7TRlJ1KSp8nHxoK6Ws029G1Y30mt4IVAA==}
     dependencies:
       seedrandom: 3.0.5
       uuid: 8.3.2

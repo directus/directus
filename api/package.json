@@ -177,7 +177,7 @@
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@ngneat/falso": "7.1.1",
+		"@ngneat/falso": "7.2.0",
 		"@types/async": "3.2.24",
 		"@types/busboy": "1.5.3",
 		"@types/bytes": "3.1.4",
