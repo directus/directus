@@ -6,14 +6,12 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-const props = defineProps<{ versionId: string }>();
+const props = defineProps<{ extensionId: string; versionId: string }>();
 
 const extensionsStore = useExtensionsStore();
 
 const installed = computed(() => {
-	return extensionsStore.extensions.some(
-		(ext) => ext.meta.source === 'registry' && ext.meta.folder === props.versionId,
-	);
+	return extensionsStore.extensionIds.includes(props.extensionId);
 });
 
 const installing = ref(false);
@@ -24,7 +22,7 @@ const install = async () => {
 	installing.value = true;
 
 	try {
-		await extensionsStore.install(props.versionId);
+		await extensionsStore.install(props.extensionId, props.versionId);
 	} catch (err) {
 		unexpectedError(err);
 	}

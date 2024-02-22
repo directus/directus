@@ -37,6 +37,18 @@ export class ExtensionsService {
 		});
 	}
 
+	async install(id: string, version: string) {
+		await this.extensionsItemService.createOne({
+			id: id,
+			enabled: true,
+			folder: version,
+			source: 'registry',
+			bundle: null,
+		});
+
+		await this.extensionsManager.install(version);
+	}
+
 	async readAll() {
 		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
 

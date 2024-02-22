@@ -28,8 +28,8 @@ const label = computed(() =>
 				: t('compatibility_not_verified_copy', { currentVersion: serverStore.info.version!, hostVersion: hostVersion })
 		"
 		:icon="icon"
-		:color="isCompatible ? 'primary' : 'warning'"
-		has-tooltip
+		:color="isCompatible ? 'subdued' : 'warning'"
+		:has-tooltip="!isCompatible"
 	>
 		{{ label }}
 	</MetadataItem>

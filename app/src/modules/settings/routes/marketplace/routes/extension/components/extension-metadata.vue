@@ -36,7 +36,7 @@ const maintainers = computed(() => {
 	<div class="metadata">
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionInstall class="install" :version-id="latestVersion.id" />
+				<ExtensionInstall class="install" :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"

@@ -4,7 +4,7 @@ import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from './notifications';
 
@@ -95,8 +95,8 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await refresh();
 	};
 
-	const install = async (versionId: string) => {
-		await api.post('/extensions/registry/install', { version: versionId });
+	const install = async (extensionId: string, versionId: string) => {
+		await api.post('/extensions/registry/install', { extension: extensionId, version: versionId });
 		await refresh();
 	};
 
@@ -105,7 +105,9 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await refresh();
 	};
 
+	const extensionIds = computed(() => extensions.value.map((ext) => ext.id));
+
 	refresh(false);
 
-	return { extensions, loading, error, refresh, toggleState, install, uninstall };
+	return { extensions, extensionIds, loading, error, refresh, toggleState, install, uninstall };
 });

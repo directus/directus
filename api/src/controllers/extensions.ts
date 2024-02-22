@@ -147,14 +147,18 @@ router.post(
 			throw new ForbiddenError();
 		}
 
-		const { version } = req.body;
+		const { version, extension } = req.body;
 
-		if (!version) {
+		if (!version || !extension) {
 			throw new ForbiddenError();
 		}
 
-		const extensionManager = getExtensionManager();
-		await extensionManager.install(version, req.accountability);
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.install(extension, version);
 		return next();
 	}),
 	respond,

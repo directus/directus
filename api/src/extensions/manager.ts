@@ -1,4 +1,3 @@
-import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type {
 	ApiExtension,
@@ -13,7 +12,6 @@ import type {
 import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
-	Accountability,
 	ActionHandler,
 	EmbedHandler,
 	FilterHandler,
@@ -42,7 +40,6 @@ import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
 import { useLogger } from '../logger.js';
 import * as services from '../services/index.js';
-import { ActivityService } from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -225,24 +222,9 @@ export class ExtensionManager {
 	/**
 	 * Installs an external extension from registry
 	 */
-	public async install(versionId: string, accountability?: Accountability): Promise<void> {
+	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
 		await this.reload();
-
-		if (accountability) {
-			const activityService = new ActivityService({ accountability, knex: getDatabase(), schema: await getSchema() });
-
-			await activityService.createOne({
-				action: Action.INSTALL,
-				user: accountability?.user ?? null,
-				collection: 'directus_extensions',
-				ip: accountability?.ip ?? null,
-				user_agent: accountability?.userAgent ?? null,
-				origin: accountability?.origin ?? null,
-				item: versionId,
-			});
-		}
-
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
