@@ -1,8 +1,7 @@
 import type { RequestHandler } from 'express';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
-import { mergeVersionSaves } from '../utils/merge-version-saves.js';
-import { assign } from 'lodash-es';
+import { mergeVersionsRaw, mergeVersionSaves } from '../utils/merge-version-saves.js';
 
 /**
  * Checks and merges
@@ -16,18 +15,20 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 	) {
 		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
-		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
-		if (!saves) return next();
+		const versionData = await versionsService.getVersionSaves(
+			req.sanitizedQuery.version,
+			req.collection,
+			req.params['pk'],
+		);
+
+		if (!versionData) return next();
+
+		const originalData = res.locals['payload'].data;
 
 		if (req.sanitizedQuery.versionRaw) {
-			assign(res.locals['payload'].data, ...saves);
+			res.locals['payload'].data = mergeVersionsRaw(originalData, versionData);
 		} else {
-			mergeVersionSaves({
-				payload: res.locals['payload'].data,
-				saves,
-				collection: req.collection,
-				schema: req.schema,
-			});
+			res.locals['payload'].data = mergeVersionSaves(originalData, versionData, req.collection, req.schema);
 		}
 	}
 

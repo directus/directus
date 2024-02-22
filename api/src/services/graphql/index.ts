@@ -1537,23 +1537,13 @@ export class GraphQLService {
 
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
-					mergeVersionSaves({
-						payload: result,
-						saves,
-						collection,
-						schema: this.schema,
-					});
+					mergeVersionSaves(result, saves, collection, this.schema);
 
 					return result;
 				} else {
 					if (result?.[0] === undefined) return null;
 
-					mergeVersionSaves({
-						payload: result[0],
-						saves,
-						collection,
-						schema: this.schema,
-					});
+					mergeVersionSaves(result[0], saves, collection, this.schema);
 
 					return result[0];
 				}

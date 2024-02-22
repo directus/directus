@@ -9,64 +9,108 @@ const alterationSchema = Joi.object({
 	delete: Joi.array().items(Joi.string(), Joi.number()),
 });
 
-export function mergeVersionSaves({
-	payload,
-	saves,
-	collection,
-	schema,
-}: {
-	payload: Record<any, any>;
-	saves: Partial<Item>[];
-	collection: string;
-	schema: SchemaOverview;
-}) {
-	const relations = schema.relations.filter((relation) => {
-		if (relation.related_collection !== collection) return false;
-		if (!relation.meta?.one_field) return false;
-		return relation.meta.one_field in payload;
-	});
+export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
+	let result = { ...item };
 
-	for (const save of saves) {
-		for (const [key, value] of Object.entries(payload)) {
-			if (!(key in save)) continue;
+	for (const versionRecord of versionData) {
+		result = { ...result, ...versionRecord };
+	}
 
-			const { error } = alterationSchema.validate(save[key]);
+	return result;
+}
 
-			if (error || !Array.isArray(value)) {
-				payload[key] = save[key];
+export function mergeVersionSaves(
+	item: Item,
+	versionData: Partial<Item>[],
+	collection: string,
+	schema: SchemaOverview,
+): Item {
+	const relations = schema.relations.reduce(
+		(result, relation) => {
+			if (relation.related_collection === collection && relation.meta?.one_field && relation.meta.one_field in item) {
+				result[relation.meta.one_field] = relation.collection;
+			}
+
+			if (relation.collection === collection && relation.related_collection && relation.field in item) {
+				result[relation.field] = relation.related_collection;
+			}
+
+			return result;
+		},
+		{} as Record<string, string>,
+	);
+
+	// console.log({relations}, item);
+	const result = { ...item };
+
+	for (const versionRecord of versionData) {
+		// console.log('a', versionRecord)
+
+		for (const [key, value] of Object.entries(item)) {
+			// console.log('b', key)
+			if (!(key in versionRecord)) continue;
+
+			const { error } = alterationSchema.validate(versionRecord[key]);
+
+			// console.log(error, key, versionRecord[key]);
+			if (error /*|| !Array.isArray(value)*/) {
+				if (typeof versionRecord[key] === 'object' && key in relations) {
+					// recurse single relation
+					// console.log('#b1', key, error, [
+					// 	!value || typeof value !== 'object' ? versionRecord[key] : value,
+					// 	[versionRecord[key]], relations[key]!]);
+
+					result[key] = mergeVersionSaves(
+						!value || typeof value !== 'object' ? versionRecord[key] : value,
+						[versionRecord[key]],
+						relations[key]!,
+						schema,
+					);
+					// console.log('#b2', result[key]);
+				} else {
+					result[key] = versionRecord[key];
+				}
+
 				continue;
 			}
 
-			const alterations = save[key] as Alterations;
-
-			for (const relation of relations) {
-				const currentPrimaryKeyField = schema.collections[relation.related_collection!]!.primary;
-				const relatedPrimaryKeyField = schema.collections[relation.collection]!.primary;
-
-				payload[key] = [
-					...value
-						.filter((item) => {
-							if (item?.[currentPrimaryKeyField]) return !alterations.delete.includes(item[currentPrimaryKeyField]);
-							return !alterations.delete.includes(item);
-						})
-						.map((item) => {
-							if (item?.[currentPrimaryKeyField]) {
-								const updates = alterations.update.find(
-									(updatedItem) => updatedItem[relatedPrimaryKeyField] === item[currentPrimaryKeyField],
-								);
-
-								if (updates) return assign({}, item, updates);
-							}
-
-							const updates = alterations.update.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === item);
-
-							if (updates) return updates;
-
-							return item;
-						}),
-					...alterations.create,
-				];
+			if (!(key in versionRecord) || !(key in relations)) {
+				continue;
 			}
+
+			const alterations = versionRecord[key] as Alterations;
+			const related_collection = relations[key]!;
+
+			const currentPrimaryKeyField = schema.collections[collection]!.primary;
+			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
+
+			// console.log(key, currentPrimaryKeyField, relatedPrimaryKeyField, value, alterations)
+
+			result[key] = [
+				...(Array.isArray(value) ? value : [])
+					.filter((item: any) => {
+						if (item?.[currentPrimaryKeyField]) return !alterations.delete?.includes(item[currentPrimaryKeyField]);
+						return !alterations.delete?.includes(item);
+					})
+					.map((item: any) => {
+						if (item?.[currentPrimaryKeyField]) {
+							const updates = alterations.update?.find(
+								(updatedItem) => updatedItem[relatedPrimaryKeyField] === item[currentPrimaryKeyField],
+							);
+
+							if (updates) return assign({}, item, updates);
+						}
+
+						const updates = alterations.update?.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === item);
+
+						if (updates) return updates;
+
+						return item;
+					}),
+				...(alterations.create ?? []),
+			];
 		}
 	}
+
+	return result;
 }
