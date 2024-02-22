@@ -267,8 +267,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3
       nanoid:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.0.6
+        version: 5.0.6
       node-machine-id:
         specifier: 1.1.12
         version: 1.1.12
@@ -303,8 +303,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       pino:
-        specifier: 8.18.0
-        version: 8.18.0
+        specifier: 8.19.0
+        version: 8.19.0
       pino-http:
         specifier: 9.0.0
         version: 9.0.0
@@ -327,8 +327,8 @@ importers:
         specifier: 2.8.10
         version: 2.8.10
       sanitize-html:
-        specifier: 2.11.0
-        version: 2.11.0
+        specifier: 2.12.0
+        version: 2.12.0
       sharp:
         specifier: 0.33.2
         version: 0.33.2
@@ -395,8 +395,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/types
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@types/async':
         specifier: 3.2.24
         version: 3.2.24
@@ -497,8 +497,8 @@ importers:
         specifier: 8.5.10
         version: 8.5.10
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -644,8 +644,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@pinia/testing':
         specifier: 0.1.3
         version: 0.1.3(pinia@2.1.7)(vue@3.4.19)
@@ -755,8 +755,8 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       dompurify:
-        specifier: 3.0.8
-        version: 3.0.8
+        specifier: 3.0.9
+        version: 3.0.9
       editorjs-toggle-block:
         specifier: 0.3.14
         version: 0.3.14
@@ -777,7 +777,7 @@ importers:
         version: 13.3.8
       histoire:
         specifier: 0.17.9
-        version: 0.17.9(sass@1.70.0)(vite@5.1.1)
+        version: 0.17.9(sass@1.71.1)(vite@5.1.1)
       html-entities:
         specifier: 2.4.0
         version: 2.4.0
@@ -809,8 +809,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       nanoid:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.0.6
+        version: 5.0.6
       p-queue:
         specifier: 8.0.1
         version: 8.0.1
@@ -824,8 +824,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       sass:
-        specifier: 1.70.0
-        version: 1.70.0
+        specifier: 1.71.1
+        version: 1.71.1
       tinymce:
         specifier: 6.8.3
         version: 6.8.3
@@ -834,10 +834,10 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vitest:
         specifier: 1.3.0
-        version: 1.3.0(happy-dom@13.3.8)(sass@1.70.0)
+        version: 1.3.0(happy-dom@13.3.8)(sass@1.71.1)
       vue:
         specifier: 3.4.19
         version: 3.4.19(typescript@5.3.3)
@@ -945,8 +945,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.1)(vue@3.4.19)
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       histoire:
         specifier: 0.17.9
         version: 0.17.9(vite@5.1.1)
@@ -961,7 +961,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.2
         version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -993,8 +993,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       nanoid:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.0.6
+        version: 5.0.6
     devDependencies:
       '@directus/extensions':
         specifier: workspace:*
@@ -1012,8 +1012,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       '@vue/test-utils':
         specifier: 2.4.4
         version: 2.4.4(vue@3.4.19)
@@ -1093,8 +1093,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       dependency-cruiser:
         specifier: 16.2.1
         version: 16.2.1
@@ -1142,8 +1142,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       dependency-cruiser:
         specifier: 16.2.1
         version: 16.2.1
@@ -1182,8 +1182,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       dependency-cruiser:
         specifier: 16.2.1
         version: 16.2.1
@@ -1222,8 +1222,8 @@ importers:
         specifier: 18.19.17
         version: 18.19.17
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1253,8 +1253,8 @@ importers:
         specifier: 0.7.34
         version: 0.7.34
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1308,14 +1308,14 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       knex:
         specifier: 3.1.0
         version: 3.1.0
       pino:
-        specifier: 8.18.0
-        version: 8.18.0
+        specifier: 8.19.0
+        version: 8.19.0
       tmp:
         specifier: 0.2.1
         version: 0.2.1
@@ -1423,8 +1423,8 @@ importers:
         specifier: 9.0.7
         version: 9.0.7
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1457,8 +1457,8 @@ importers:
         specifier: 18.19.17
         version: 18.19.17
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1485,8 +1485,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1506,8 +1506,8 @@ importers:
         specifier: 18.19.17
         version: 18.19.17
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1546,8 +1546,8 @@ importers:
         specifier: 7.5.7
         version: 7.5.7
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1596,8 +1596,8 @@ importers:
         specifier: 18.19.17
         version: 18.19.17
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1624,11 +1624,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1658,11 +1658,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1689,11 +1689,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1714,14 +1714,14 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@types/node':
         specifier: 18.19.17
         version: 18.19.17
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1754,11 +1754,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1788,11 +1788,11 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@ngneat/falso':
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.0
+        version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1890,7 +1890,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.2
         version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -1959,8 +1959,8 @@ importers:
         specifier: 7.5.7
         version: 7.5.7
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
@@ -2023,8 +2023,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tmp:
         specifier: 0.2.1
         version: 0.2.1
@@ -2060,8 +2060,8 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
-        specifier: 1.2.2
-        version: 1.2.2(vitest@1.3.0)
+        specifier: 1.3.1
+        version: 1.3.1(vitest@1.3.0)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -3712,9 +3712,9 @@ packages:
     resolution: {integrity: sha512-qrSfCYxYQB5owCmGLbl8XRpX1ytXlpueOb0N0UmQwA073KZxejgQTzAmJezxvpwQD9uGtK2shHdi55QT+MbjIw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.23.6
+      '@babel/types': 7.23.9
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.20
+      '@jridgewell/trace-mapping': 0.3.22
       jsesc: 2.5.2
     dev: true
 
@@ -3734,14 +3734,6 @@ packages:
       chalk: 2.4.2
       js-tokens: 4.0.0
 
-  /@babel/parser@7.23.6:
-    resolution: {integrity: sha512-Z2uID7YJ7oNvAI20O9X0bblw7Qqs8Q2hFy0R9tAfnfLkp5MW0UH9eUvnDSnFwKZ0AvgS1ucqR4KzvVHgnke1VQ==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-    dependencies:
-      '@babel/types': 7.23.6
-    dev: true
-
   /@babel/parser@7.23.9:
     resolution: {integrity: sha512-9tcKgqKbs3xGJ+NtKF2ndOBBLVwPjl1SHxPQkd36r3Dlirw3xWUeGaTbqr7uGZcTaxkVNwc+03SVP7aCdWrTlA==}
     engines: {node: '>=6.0.0'}
@@ -3754,15 +3746,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
-    dev: true
-
-  /@babel/types@7.23.6:
-    resolution: {integrity: sha512-+uarb83brBzPKN38NX1MkB6vb6+mwvR6amUulqAE7ccQw1pEl+bCia9TbdG1lsnFP7lZySvUn37CHyXQdfTwzg==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-string-parser': 7.23.4
-      '@babel/helper-validator-identifier': 7.22.20
-      to-fast-properties: 2.0.0
     dev: true
 
   /@babel/types@7.23.9:
@@ -5213,7 +5196,7 @@ packages:
       '@histoire/vendors': 0.17.8
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.9(sass@1.70.0)(vite@5.1.1)
+      histoire: 0.17.9(sass@1.71.1)(vite@5.1.1)
       launch-editor: 2.6.1
       pathe: 1.1.2
       vue: 3.4.19(typescript@5.3.3)
@@ -5232,7 +5215,7 @@ packages:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     dev: true
 
   /@histoire/shared@0.17.9(vite@5.1.1):
@@ -5246,7 +5229,7 @@ packages:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     dev: true
 
   /@histoire/vendors@0.17.8:
@@ -5532,7 +5515,7 @@ packages:
     dependencies:
       '@jridgewell/set-array': 1.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@jridgewell/trace-mapping': 0.3.20
+      '@jridgewell/trace-mapping': 0.3.22
 
   /@jridgewell/resolve-uri@3.1.1:
     resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
@@ -5546,24 +5529,17 @@ packages:
     resolution: {integrity: sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==}
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.20
+      '@jridgewell/trace-mapping': 0.3.22
     dev: false
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
-
-  /@jridgewell/trace-mapping@0.3.20:
-    resolution: {integrity: sha512-R8LcPeWZol2zR8mmH3JeKQ6QRCFb7XgUhV9ZlGhHLGyg4wpPiPZNQOOWhFZhxKw8u//yTbNGI42Bx/3paXEQ+Q==}
-    dependencies:
-      '@jridgewell/resolve-uri': 3.1.1
-      '@jridgewell/sourcemap-codec': 1.4.15
 
   /@jridgewell/trace-mapping@0.3.22:
     resolution: {integrity: sha512-Wf963MzWtA2sjrNt+g18IAln9lKnlRp+K2eH4jjIoF1wYeq3aMREpG09xhlhdzS0EjwU7qmUJYangWa+151vZw==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
 
   /@js-joda/core@5.6.1:
     resolution: {integrity: sha512-Xla/d7ZMMR6+zRd6lTio0wRZECfcfFJP7GGe9A9L4tDOlD5CX4YcZ4YZle9w58bBYzssojVapI84RraKWDQZRg==}
@@ -5965,8 +5941,8 @@ packages:
     dev: false
     optional: true
 
-  /@ngneat/falso@7.1.1:
-    resolution: {integrity: sha512-/5HuJDaZHXl3WVdgvYBAM52OSYbSKfiNazVOZOw/3KjeZ6dQW9F0QCG+W6z52lUu5MZvp/TkPGaVRtoz6h9T1w==}
+  /@ngneat/falso@7.2.0:
+    resolution: {integrity: sha512-283EXBFd05kCbGuGSXgmvhCsQYEYzvD/eJaE7lxd05qRB0tgREvZX7TRlJ1KSp8nHxoK6Ws029G1Y30mt4IVAA==}
     dependencies:
       seedrandom: 3.0.5
       uuid: 8.3.2
@@ -8198,14 +8174,14 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
       vue: 3.4.19(typescript@5.3.3)
     dev: true
 
-  /@vitest/coverage-v8@1.2.2(vitest@1.3.0):
-    resolution: {integrity: sha512-IHyKnDz18SFclIEEAHb9Y4Uxx0sPKC2VO1kdDCs1BF6Ip4S8rQprs971zIsooLUn7Afs71GRxWMWpkCGZpRMhw==}
+  /@vitest/coverage-v8@1.3.1(vitest@1.3.0):
+    resolution: {integrity: sha512-UuBnkSJUNE9rdHjDCPyJ4fYuMkoMtnghes1XohYa4At0MS3OQSAo97FrbwSLRshYsXThMZy1+ybD/byK5llyIg==}
     peerDependencies:
-      vitest: ^1.0.0
+      vitest: 1.3.1
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
@@ -8317,7 +8293,7 @@ packages:
   /@vue/compiler-sfc@3.3.8:
     resolution: {integrity: sha512-WMzbUrlTjfYF8joyT84HfwwXo+8WPALuPxhy+BZ6R4Aafls+jDBnSz8PDz60uFhuqFbl3HxRfxvDzrUf3THwpA==}
     dependencies:
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.23.9
       '@vue/compiler-core': 3.3.8
       '@vue/compiler-dom': 3.3.8
       '@vue/compiler-ssr': 3.3.8
@@ -9037,7 +9013,7 @@ packages:
     resolution: {integrity: sha512-2XZi+wqlluYQcxJ1G8qE/U0IeO5CbxUyv1lnSdD7ByJtd5Z3+1063Q6IHbRaYkka1Kb6WgGqEkBrSMaBtbHuFQ==}
     engines: {node: '>=16.14.0'}
     dependencies:
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.23.9
       '@rollup/pluginutils': 5.1.0
       pathe: 1.1.2
     transitivePeerDependencies:
@@ -10784,8 +10760,8 @@ packages:
     dependencies:
       domelementtype: 2.3.0
 
-  /dompurify@3.0.8:
-    resolution: {integrity: sha512-b7uwreMYL2eZhrSCRC4ahLTeZcPZxSmYfmcQGXGkXiZSNW1X85v+SDM5KsWcpivIiUBH47Ji7NtyUdpLeF5JZQ==}
+  /dompurify@3.0.9:
+    resolution: {integrity: sha512-uyb4NDIvQ3hRn6NiC+SIFaP4mJ/MdXlvtunaqK9Bn6dD3RuB/1S/gasEjDHD8eiaqdSael2vBv+hOs7Y+jhYOQ==}
     dev: true
 
   /domutils@2.8.0:
@@ -12507,7 +12483,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.9(sass@1.70.0)(vite@5.1.1):
+  /histoire@0.17.9(sass@1.71.1)(vite@5.1.1):
     resolution: {integrity: sha512-z5Jb9QwbOw0TKvpkU0v7+CxJG6hIljIKMhWXzOfteteRZGDFElpTEwbr5/8EdPI6VTdF/k76fqZ07nmS9YdUvA==}
     hasBin: true
     peerDependencies:
@@ -12543,8 +12519,8 @@ packages:
       sade: 1.8.1
       shiki-es: 0.2.0
       sirv: 2.0.4
-      vite: 5.1.1(sass@1.70.0)
-      vite-node: 0.34.7(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
+      vite-node: 0.34.7(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -14959,8 +14935,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /nanoid@5.0.5:
-    resolution: {integrity: sha512-/Veqm+QKsyMY3kqi4faWplnY1u+VuKO3dD2binyPIybP31DRO29bPF+1mszgLnrR2KqSLceFLBNw0zmvDzN1QQ==}
+  /nanoid@5.0.6:
+    resolution: {integrity: sha512-rRq0eMHoGZxlvaFOUdK1Ev83Bd1IgzzR+WJ3IbDJ7QOSdAxYjlurSPqFs9s4lJg29RT6nPwizFtJhQS6V5xgiA==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -16119,7 +16095,7 @@ packages:
     resolution: {integrity: sha512-Q9QDNEz0vQmbJtMFjOVr2c9yL92vHudjmr3s3m6J1hbw3DBGFZJm3TIj9TWyynZ4GEsEA9SOtni4heRUr6lNOg==}
     dependencies:
       get-caller-file: 2.0.5
-      pino: 8.18.0
+      pino: 8.19.0
       pino-std-serializers: 6.2.2
       process-warning: 3.0.0
     dev: false
@@ -16166,8 +16142,8 @@ packages:
   /pino-std-serializers@6.2.2:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
 
-  /pino@8.18.0:
-    resolution: {integrity: sha512-Mz/gKiRyuXu4HnpHgi1YWdHQCoWMufapzooisvFn78zl4dZciAxS+YeRkUxXl1ee/SzU80YCz1zpECCh4oC6Aw==}
+  /pino@8.19.0:
+    resolution: {integrity: sha512-oswmokxkav9bADfJ2ifrvfHUwad6MLp73Uat0IkQWY3iAw5xTRoznXbXksZs8oaOUMpmhVWD+PZogNzllWpJaA==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
@@ -17634,19 +17610,19 @@ packages:
       xpath: 0.0.32
     dev: false
 
-  /sanitize-html@2.11.0:
-    resolution: {integrity: sha512-BG68EDHRaGKqlsNjJ2xUB7gpInPA8gVx/mvjO743hZaeMCZ2DwzW7xvsqZ+KNU4QKwj86HJ3uu2liISf2qBBUA==}
+  /sanitize-html@2.12.0:
+    resolution: {integrity: sha512-2pq2H0b4npSaMPrRuauYVml1Q3BzaL67Y8WDOk9gsqoS8gS+VFZcgwF1ITJbfOCHgw1sUQMG14KwXyVE+75tSg==}
     dependencies:
       deepmerge: 4.3.1
       escape-string-regexp: 4.0.0
       htmlparser2: 8.0.2
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.32
+      postcss: 8.4.35
     dev: false
 
-  /sass@1.70.0:
-    resolution: {integrity: sha512-uUxNQ3zAHeAx5nRFskBnrWzDUJrrvpCPD5FNAoRvTi0WwremlheES3tg+56PaVtCs5QDRX5CBLxxKMDJMEa1WQ==}
+  /sass@1.71.1:
+    resolution: {integrity: sha512-wovtnV2PxzteLlfNzbgm1tFXPLoZILYAMJtvoXXkD7/+1uP41eKkIt1ypWq5/q2uT94qHjXehEYfmjKOvjL9sg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
@@ -19509,7 +19485,7 @@ packages:
     dependencies:
       '@antfu/utils': 0.7.7
       '@babel/generator': 7.23.6
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.23.9
       '@rollup/pluginutils': 5.1.0
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
@@ -19772,7 +19748,7 @@ packages:
       - terser
     dev: true
 
-  /vite-node@0.34.7(sass@1.70.0):
+  /vite-node@0.34.7(sass@1.71.1):
     resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -19782,7 +19758,7 @@ packages:
       mlly: 1.5.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -19836,7 +19812,7 @@ packages:
       - terser
     dev: true
 
-  /vite-node@1.3.0(sass@1.70.0):
+  /vite-node@1.3.0(sass@1.71.1):
     resolution: {integrity: sha512-D/oiDVBw75XMnjAXne/4feCkCEwcbr2SU1bjAhCcfI5Bq3VoOHji8/wCPAfUkDIeohJ5nSZ39fNxM3dNZ6OBOA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19845,7 +19821,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -20002,7 +19978,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.1.1(sass@1.70.0):
+  /vite@5.1.1(sass@1.71.1):
     resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20033,7 +20009,7 @@ packages:
       esbuild: 0.19.12
       postcss: 8.4.35
       rollup: 4.10.0
-      sass: 1.70.0
+      sass: 1.71.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -20204,7 +20180,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.3.0(happy-dom@13.3.8)(sass@1.70.0):
+  /vitest@1.3.0(happy-dom@13.3.8)(sass@1.71.1):
     resolution: {integrity: sha512-V9qb276J1jjSx9xb75T2VoYXdO1UKi+qfflY7V7w93jzX7oA/+RtYE6TcifxksxsZvygSSMwu2Uw6di7yqDMwg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20247,8 +20223,8 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.6.0
       tinypool: 0.8.2
-      vite: 5.1.1(sass@1.70.0)
-      vite-node: 1.3.0(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
+      vite-node: 1.3.0(sass@1.71.1)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
