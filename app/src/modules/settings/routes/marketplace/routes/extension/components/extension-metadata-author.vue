@@ -17,7 +17,7 @@ defineProps<{
 		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		<v-icon v-else name="face" left />
 		{{ githubName ?? username }}
-		<v-icon v-if="verified" v-tooltip="t('verified')" name="verified" small />
+		<v-icon v-if="verified" v-tooltip="t('verified')" class="verified" name="verified" small />
 	</v-button>
 </template>
 
@@ -34,5 +34,9 @@ defineProps<{
 	object-position: center center;
 	margin-left: 2px;
 	margin-right: 9px;
+}
+
+.verified {
+	margin-left: 4px;
 }
 </style>
