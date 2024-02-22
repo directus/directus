@@ -12,19 +12,18 @@ export const stringCondition = (condition: SqlConditionStringNode, negate: boole
 	if (condition.target.type === 'primitive') {
 		return `${column} ${operator} ${comparisonValue}`;
 	} else if (condition.target.type === 'fn') {
-		throw new Error("Not supported!");
+		throw new Error('Not supported!');
 	} else {
 		const jsonPath = applyJsonPathAsString(column, condition.target.path);
-
 		return `${jsonPath} ${operator} ${comparisonValue}`;
 	}
 };
 
 function getOperator(condition: SqlConditionStringNode, negate: boolean) {
 	if (condition.operation === 'eq') {
-		return negate ? '!=' : '='
+		return negate ? '!=' : '=';
 	} else {
-		return negate ? 'NOT LIKE' : 'LIKE'
+		return negate ? 'NOT LIKE' : 'LIKE';
 	}
 }
 
@@ -41,4 +40,3 @@ function getComparisonValue(condition: SqlConditionStringNode) {
 		return compareValue;
 	}
 }
-

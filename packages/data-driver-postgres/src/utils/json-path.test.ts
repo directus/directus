@@ -54,7 +54,6 @@ test('json prop with array syntax as number', () => {
 	expect(res).toStrictEqual(expected);
 });
 
-
 test('json prop with array syntax as object', () => {
 	const target = randomIdentifier();
 	const columnName = randomIdentifier();

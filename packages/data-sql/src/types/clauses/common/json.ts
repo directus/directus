@@ -1,4 +1,4 @@
-import type { AtLeastOneElement } from "@directus/data";
+import type { AtLeastOneElement } from '@directus/data';
 
 export interface AbstractSqlQueryJsonNode {
 	type: 'json';
