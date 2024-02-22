@@ -44,62 +44,69 @@ export function mergeVersionSaves(
 	const result = { ...item };
 
 	for (const versionRecord of versionData) {
+		for (const key in item) {
+			if (key in versionRecord === false) {
+				continue;
+			}
 
-		for (const [key, value] of Object.entries(item)) {
-			if (!(key in versionRecord)) continue;
+			const currentValue = item[key];
+			const newValue = versionRecord[key];
 
-			const { error } = alterationSchema.validate(versionRecord[key]);
+			const { error } = alterationSchema.validate(newValue);
 
-			if (error /*|| !Array.isArray(value)*/) {
-				if (typeof versionRecord[key] === 'object' && key in relations) {
-					// recurse into single relation
-
-					result[key] = mergeVersionSaves(
-						!value || typeof value !== 'object' ? versionRecord[key] : value,
-						[versionRecord[key]],
-						relations[key]!,
-						schema,
-					);
+			if (error) {
+				if (typeof newValue === 'object' && key in relations) {
+					const newItem = !currentValue || typeof currentValue !== 'object' ? newValue : currentValue;
+					result[key] = mergeVersionSaves(newItem, [newValue], relations[key]!, schema);
 				} else {
-					result[key] = versionRecord[key];
+					result[key] = newValue;
 				}
 
 				continue;
 			}
 
-			if (!(key in versionRecord) || !(key in relations)) {
+			if (key in relations === false) {
 				continue;
 			}
 
-			const alterations = versionRecord[key] as Alterations;
+			const alterations = newValue as Alterations;
 			const related_collection = relations[key]!;
 
 			const currentPrimaryKeyField = schema.collections[collection]!.primary;
 			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
 
-			result[key] = [
-				...(Array.isArray(value) ? value : [])
-					.filter((item: any) => {
-						if (item?.[currentPrimaryKeyField]) return !alterations.delete?.includes(item[currentPrimaryKeyField]);
-						return !alterations.delete?.includes(item);
+			let mergedRelation: Item[] = [];
+
+			if (Array.isArray(currentValue)) {
+				mergedRelation = currentValue
+					.filter((child: any) => {
+						if (child?.[currentPrimaryKeyField]) return !alterations.delete.includes(child[currentPrimaryKeyField]);
+						return !alterations.delete.includes(child);
 					})
-					.map((item: any) => {
-						if (item?.[currentPrimaryKeyField]) {
-							const updates = alterations.update?.find(
-								(updatedItem) => updatedItem[relatedPrimaryKeyField] === item[currentPrimaryKeyField],
+					.map((child: any) => {
+						if (child?.[currentPrimaryKeyField]) {
+							const updates = alterations.update.find(
+								(updatedItem) => updatedItem[relatedPrimaryKeyField] === child[currentPrimaryKeyField],
 							);
 
-							if (updates) return { ...item, ...updates };
+							if (updates) return { ...child, ...updates };
 						}
 
-						const updates = alterations.update?.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === item);
+						const updates = alterations.update.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === child);
 
 						if (updates) return updates;
 
-						return item;
-					}),
-				...(alterations.create ?? []),
-			];
+						return child;
+					});
+			}
+
+			if (alterations.create.length > 0) {
+				for (const relatedItem of alterations.create) {
+					mergedRelation.push(relatedItem);
+				}
+			}
+
+			result[key] = mergedRelation;
 		}
 	}
 
