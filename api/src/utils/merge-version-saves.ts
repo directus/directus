@@ -1,6 +1,5 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import Joi from 'joi';
-import { assign } from 'lodash-es';
 import type { Alterations } from '../types/index.js';
 
 const alterationSchema = Joi.object({
@@ -10,10 +9,12 @@ const alterationSchema = Joi.object({
 });
 
 export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
-	let result = { ...item };
+	const result = { ...item };
 
 	for (const versionRecord of versionData) {
-		result = { ...result, ...versionRecord };
+		for (const key in versionRecord) {
+			result[key] = versionRecord[key];
+		}
 	}
 
 	return result;
@@ -40,25 +41,18 @@ export function mergeVersionSaves(
 		{} as Record<string, string>,
 	);
 
-	// console.log({relations}, item);
 	const result = { ...item };
 
 	for (const versionRecord of versionData) {
-		// console.log('a', versionRecord)
 
 		for (const [key, value] of Object.entries(item)) {
-			// console.log('b', key)
 			if (!(key in versionRecord)) continue;
 
 			const { error } = alterationSchema.validate(versionRecord[key]);
 
-			// console.log(error, key, versionRecord[key]);
 			if (error /*|| !Array.isArray(value)*/) {
 				if (typeof versionRecord[key] === 'object' && key in relations) {
-					// recurse single relation
-					// console.log('#b1', key, error, [
-					// 	!value || typeof value !== 'object' ? versionRecord[key] : value,
-					// 	[versionRecord[key]], relations[key]!]);
+					// recurse into single relation
 
 					result[key] = mergeVersionSaves(
 						!value || typeof value !== 'object' ? versionRecord[key] : value,
@@ -66,7 +60,6 @@ export function mergeVersionSaves(
 						relations[key]!,
 						schema,
 					);
-					// console.log('#b2', result[key]);
 				} else {
 					result[key] = versionRecord[key];
 				}
@@ -84,8 +77,6 @@ export function mergeVersionSaves(
 			const currentPrimaryKeyField = schema.collections[collection]!.primary;
 			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
 
-			// console.log(key, currentPrimaryKeyField, relatedPrimaryKeyField, value, alterations)
-
 			result[key] = [
 				...(Array.isArray(value) ? value : [])
 					.filter((item: any) => {
@@ -98,7 +89,7 @@ export function mergeVersionSaves(
 								(updatedItem) => updatedItem[relatedPrimaryKeyField] === item[currentPrimaryKeyField],
 							);
 
-							if (updates) return assign({}, item, updates);
+							if (updates) return { ...item, ...updates };
 						}
 
 						const updates = alterations.update?.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === item);
