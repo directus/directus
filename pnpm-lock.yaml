@@ -327,8 +327,8 @@ importers:
         specifier: 2.8.10
         version: 2.8.10
       sanitize-html:
-        specifier: 2.11.0
-        version: 2.11.0
+        specifier: 2.12.0
+        version: 2.12.0
       sharp:
         specifier: 0.33.2
         version: 0.33.2
@@ -17610,15 +17610,15 @@ packages:
       xpath: 0.0.32
     dev: false
 
-  /sanitize-html@2.11.0:
-    resolution: {integrity: sha512-BG68EDHRaGKqlsNjJ2xUB7gpInPA8gVx/mvjO743hZaeMCZ2DwzW7xvsqZ+KNU4QKwj86HJ3uu2liISf2qBBUA==}
+  /sanitize-html@2.12.0:
+    resolution: {integrity: sha512-2pq2H0b4npSaMPrRuauYVml1Q3BzaL67Y8WDOk9gsqoS8gS+VFZcgwF1ITJbfOCHgw1sUQMG14KwXyVE+75tSg==}
     dependencies:
       deepmerge: 4.3.1
       escape-string-regexp: 4.0.0
       htmlparser2: 8.0.2
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.32
+      postcss: 8.4.35
     dev: false
 
   /sass@1.71.1:
