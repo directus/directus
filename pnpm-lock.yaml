@@ -777,7 +777,7 @@ importers:
         version: 13.3.8
       histoire:
         specifier: 0.17.9
-        version: 0.17.9(sass@1.70.0)(vite@5.1.1)
+        version: 0.17.9(sass@1.71.1)(vite@5.1.1)
       html-entities:
         specifier: 2.4.0
         version: 2.4.0
@@ -824,8 +824,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       sass:
-        specifier: 1.70.0
-        version: 1.70.0
+        specifier: 1.71.1
+        version: 1.71.1
       tinymce:
         specifier: 6.8.3
         version: 6.8.3
@@ -834,10 +834,10 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vitest:
         specifier: 1.3.0
-        version: 1.3.0(happy-dom@13.3.8)(sass@1.70.0)
+        version: 1.3.0(happy-dom@13.3.8)(sass@1.71.1)
       vue:
         specifier: 3.4.19
         version: 3.4.19(typescript@5.3.3)
@@ -961,7 +961,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.2
         version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -1890,7 +1890,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(sass@1.70.0)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.2
         version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -5213,7 +5213,7 @@ packages:
       '@histoire/vendors': 0.17.8
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.9(sass@1.70.0)(vite@5.1.1)
+      histoire: 0.17.9(sass@1.71.1)(vite@5.1.1)
       launch-editor: 2.6.1
       pathe: 1.1.2
       vue: 3.4.19(typescript@5.3.3)
@@ -5232,7 +5232,7 @@ packages:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     dev: true
 
   /@histoire/shared@0.17.9(vite@5.1.1):
@@ -5246,7 +5246,7 @@ packages:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     dev: true
 
   /@histoire/vendors@0.17.8:
@@ -8198,7 +8198,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
       vue: 3.4.19(typescript@5.3.3)
     dev: true
 
@@ -12507,7 +12507,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.9(sass@1.70.0)(vite@5.1.1):
+  /histoire@0.17.9(sass@1.71.1)(vite@5.1.1):
     resolution: {integrity: sha512-z5Jb9QwbOw0TKvpkU0v7+CxJG6hIljIKMhWXzOfteteRZGDFElpTEwbr5/8EdPI6VTdF/k76fqZ07nmS9YdUvA==}
     hasBin: true
     peerDependencies:
@@ -12543,8 +12543,8 @@ packages:
       sade: 1.8.1
       shiki-es: 0.2.0
       sirv: 2.0.4
-      vite: 5.1.1(sass@1.70.0)
-      vite-node: 0.34.7(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
+      vite-node: 0.34.7(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -17645,8 +17645,8 @@ packages:
       postcss: 8.4.32
     dev: false
 
-  /sass@1.70.0:
-    resolution: {integrity: sha512-uUxNQ3zAHeAx5nRFskBnrWzDUJrrvpCPD5FNAoRvTi0WwremlheES3tg+56PaVtCs5QDRX5CBLxxKMDJMEa1WQ==}
+  /sass@1.71.1:
+    resolution: {integrity: sha512-wovtnV2PxzteLlfNzbgm1tFXPLoZILYAMJtvoXXkD7/+1uP41eKkIt1ypWq5/q2uT94qHjXehEYfmjKOvjL9sg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
@@ -19772,7 +19772,7 @@ packages:
       - terser
     dev: true
 
-  /vite-node@0.34.7(sass@1.70.0):
+  /vite-node@0.34.7(sass@1.71.1):
     resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -19782,7 +19782,7 @@ packages:
       mlly: 1.5.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -19836,7 +19836,7 @@ packages:
       - terser
     dev: true
 
-  /vite-node@1.3.0(sass@1.70.0):
+  /vite-node@1.3.0(sass@1.71.1):
     resolution: {integrity: sha512-D/oiDVBw75XMnjAXne/4feCkCEwcbr2SU1bjAhCcfI5Bq3VoOHji8/wCPAfUkDIeohJ5nSZ39fNxM3dNZ6OBOA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19845,7 +19845,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.1(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -20002,7 +20002,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.1.1(sass@1.70.0):
+  /vite@5.1.1(sass@1.71.1):
     resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20033,7 +20033,7 @@ packages:
       esbuild: 0.19.12
       postcss: 8.4.35
       rollup: 4.10.0
-      sass: 1.70.0
+      sass: 1.71.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -20204,7 +20204,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.3.0(happy-dom@13.3.8)(sass@1.70.0):
+  /vitest@1.3.0(happy-dom@13.3.8)(sass@1.71.1):
     resolution: {integrity: sha512-V9qb276J1jjSx9xb75T2VoYXdO1UKi+qfflY7V7w93jzX7oA/+RtYE6TcifxksxsZvygSSMwu2Uw6di7yqDMwg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20247,8 +20247,8 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.6.0
       tinypool: 0.8.2
-      vite: 5.1.1(sass@1.70.0)
-      vite-node: 1.3.0(sass@1.70.0)
+      vite: 5.1.1(sass@1.71.1)
+      vite-node: 1.3.0(sass@1.71.1)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
