@@ -32,9 +32,9 @@
 	"devDependencies": {
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"@directus/extensions": "workspace:*",
 		"@directus/format-title": "10.1.0",
 		"@directus/random": "workspace:*",
 		"@directus/sdk": "workspace:*",
@@ -100,6 +100,7 @@
 		"@vitejs/plugin-vue": "5.0.4",
 		"@vue/test-utils": "2.4.4",
 		"@vueuse/core": "10.7.2",
+		"@vueuse/router": "10.8.0",
 		"apexcharts": "3.46.0",
 		"axios": "1.6.7",
 		"base-64": "1.0.0",

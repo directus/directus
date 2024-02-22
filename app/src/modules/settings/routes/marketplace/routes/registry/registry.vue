@@ -2,6 +2,7 @@
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import type { RegistryListResponse } from '@directus/extensions-registry';
+import { useRouteQuery } from '@vueuse/router';
 import { isEqual } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,13 +14,14 @@ import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail
 const { t } = useI18n();
 
 const perPage = 10;
-const search = ref<string | null>(null);
-const page = ref(1);
-const type = ref<string | null>(null);
-const sort = ref<'popular' | 'recent' | 'downloads'>('popular');
 
-watch([search, sort, type], (newVals, oldVals) => {
-	if (isEqual(newVals, oldVals) === false) {
+const search = useRouteQuery('search');
+const page = useRouteQuery('page', 1);
+const type = useRouteQuery('type');
+const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
+
+watch([search, sort, type], (newVal, oldVal) => {
+	if (isEqual(newVal, oldVal) === false) {
 		page.value = 1;
 	}
 });

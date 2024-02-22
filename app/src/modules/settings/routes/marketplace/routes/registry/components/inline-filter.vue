@@ -14,11 +14,13 @@ const props = defineProps<{
 	perPage: number;
 }>();
 
-const searchInputValue = ref('');
+const searchInputValue = ref(search.value);
 
 watchDebounced(
 	searchInputValue,
 	(val) => {
+		if (val === search.value) return;
+
 		if (val && val.length > 0) {
 			search.value = val;
 		} else {

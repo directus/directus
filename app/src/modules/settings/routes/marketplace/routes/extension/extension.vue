@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBanner from '@/components/v-banner.vue';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,7 +10,6 @@ import ExtensionBanner from './components/extension-banner.vue';
 import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
 import ExtensionReadme from './components/extension-readme.vue';
-import VBanner from '@/components/v-banner.vue';
 
 const props = defineProps<{
 	extensionId: string;
@@ -37,7 +37,16 @@ watchEffect(async () => {
 	}
 });
 
-const navigateBack = () => router.push('/settings/marketplace');
+const navigateBack = () => {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push('/settings/marketplace');
+};
 </script>
 
 <template>
