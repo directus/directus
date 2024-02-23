@@ -61,6 +61,6 @@ test('number condition targeting json value', () => {
 	};
 
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(
-		`CAST("t${tableIndex}"."${columnName}" ->> $${jsonPropIndex + 1} AS INTEGER) > $${parameterIndex + 1}`,
+		`CAST("t${tableIndex}"."${columnName}" -> $${jsonPropIndex + 1} AS INTEGER) > $${parameterIndex + 1}`,
 	);
 });

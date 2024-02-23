@@ -236,7 +236,7 @@ test('Convert logical filter on json value like for o2a', () => {
 	expect(conditionString(where)).toStrictEqual(
 		`"t${tableIndex}"."${jsonColumnName}" ->> $${parameterIndex1 + 1} = $${
 			parameterIndex2 + 1
-		} AND CAST("t${tableIndex}"."${jsonColumnName}" -> $${parameterIndex3 + 1} ->> $${
+		} AND CAST("t${tableIndex}"."${jsonColumnName}" -> $${parameterIndex3 + 1} -> $${
 			parameterIndex4 + 1
 		} AS INTEGER) = $${parameterIndex5 + 1}`,
 	);
