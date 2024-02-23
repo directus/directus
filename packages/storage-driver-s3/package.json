@@ -30,7 +30,7 @@
 		"@aws-sdk/lib-storage": "3.515.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@smithy/node-http-handler": "2.3.1"
+		"@smithy/node-http-handler": "2.4.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
