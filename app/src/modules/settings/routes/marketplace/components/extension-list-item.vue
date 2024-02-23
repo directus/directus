@@ -27,8 +27,8 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 		<v-list-item-content>
 			<div class="name">
 				{{ formatName(extension) }}
-				<v-chip v-if="showType" outlined x-small class="type-chip">{{ chip }}</v-chip>
-				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" x-small class="installed-chip">
+				<v-chip v-if="showType" outlined x-small class="chip">{{ chip }}</v-chip>
+				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
 					{{ t('installed') }}
 				</v-chip>
 			</div>
@@ -99,13 +99,9 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	text-align: end;
 }
 
-.type-chip,
-.installed-chip {
+.chip {
 	margin-inline-start: 4px;
 	vertical-align: 2px;
-}
-
-.type-chip {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
 }
