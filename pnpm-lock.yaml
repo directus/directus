@@ -963,8 +963,8 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
-        specifier: 3.7.2
-        version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
+        specifier: 3.7.3
+        version: 3.7.3(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
       vitest:
         specifier: 1.3.0
         version: 1.3.0
@@ -1892,8 +1892,8 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
-        specifier: 3.7.2
-        version: 3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
+        specifier: 3.7.3
+        version: 3.7.3(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
       vue:
         specifier: 3.4.19
         version: 3.4.19(typescript@5.3.3)
@@ -5142,19 +5142,6 @@ packages:
     dependencies:
       '@hapi/hoek': 9.3.0
     dev: false
-
-  /@histoire/app@0.17.10(vite@5.1.1):
-    resolution: {integrity: sha512-WN28m1N8x3WkVzzePYekrwgUQNixyUrLdyITpLk3/scFqsDSByG0nsHKi1MAMMHaVxyC9dcdQF4j50QdVWCZgQ==}
-    dependencies:
-      '@histoire/controls': 0.17.9(vite@5.1.1)
-      '@histoire/shared': 0.17.10(vite@5.1.1)
-      '@histoire/vendors': 0.17.8
-      '@types/flexsearch': 0.7.6
-      flexsearch: 0.7.21
-      shiki-es: 0.2.0
-    transitivePeerDependencies:
-      - vite
-    dev: true
 
   /@histoire/app@0.17.9(vite@5.1.1):
     resolution: {integrity: sha512-JoSGbsoo1/JY5TtTiMBUSPllIEJLvC6jHIGruvwPG/cJ3niqa3EyEMOsOWtcu+xjtx1uETgL9Yj5RJMJjC+OBA==}
@@ -10575,10 +10562,6 @@ packages:
     resolution: {integrity: sha512-Vy2wmG3NTkmHNg/kzpuvHhkqeIx3ODWqasgCRbKtbXEN0G+HpEEv9BtJLp7ZG1CZloFaC41Ah3ZFbq7aqCqMeQ==}
     dev: true
 
-  /defu@6.1.4:
-    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
-    dev: true
-
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
@@ -12542,9 +12525,9 @@ packages:
       vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
       '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.10(vite@5.1.1)
+      '@histoire/app': 0.17.9(vite@5.1.1)
       '@histoire/controls': 0.17.9(vite@5.1.1)
-      '@histoire/shared': 0.17.10(vite@5.1.1)
+      '@histoire/shared': 0.17.9(vite@5.1.1)
       '@histoire/vendors': 0.17.8
       '@types/flexsearch': 0.7.6
       '@types/markdown-it': 12.2.3
@@ -12552,7 +12535,7 @@ packages:
       change-case: 4.1.2
       chokidar: 3.6.0
       connect: 3.7.0
-      defu: 6.1.4
+      defu: 6.1.3
       diacritics: 1.3.0
       flexsearch: 0.7.21
       fs-extra: 10.1.0
@@ -12566,7 +12549,7 @@ packages:
       markdown-it-emoji: 2.0.2
       micromatch: 4.0.5
       mrmime: 1.0.1
-      pathe: 1.1.2
+      pathe: 1.1.1
       picocolors: 1.0.0
       sade: 1.8.1
       shiki-es: 0.2.0
@@ -19833,8 +19816,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.7.2(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1):
-    resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
+  /vite-plugin-dts@3.7.3(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1):
+    resolution: {integrity: sha512-26eTlBYdpjRLWCsTJebM8vkCieE+p9gP3raf+ecDnzzK5E3FG6VE1wcy55OkRpfWWVlVvKkYFe6uvRHYWx7Nog==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'

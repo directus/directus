@@ -42,7 +42,7 @@
 		"rollup-plugin-node-externals": "7.0.1",
 		"typescript": "5.3.3",
 		"vite": "5.1.1",
-		"vite-plugin-dts": "3.7.2",
+		"vite-plugin-dts": "3.7.3",
 		"vue": "3.4.19"
 	},
 	"peerDependencies": {
