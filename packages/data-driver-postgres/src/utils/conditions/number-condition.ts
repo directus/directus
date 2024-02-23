@@ -4,23 +4,21 @@ import { wrapColumn } from '../wrap-column.js';
 import { applyJsonPathAsNumber } from '../json-path.js';
 
 export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: boolean): string => {
-	const target = conditionNode.target;
-	const tableAlias = tableIndexToIdentifier(target.tableIndex);
+	const tableAlias = tableIndexToIdentifier(conditionNode.target.tableIndex);
 
-	let firstOperand;
+	const column = wrapColumn(tableAlias, conditionNode.target.columnName);
+	const operator = convertNumericOperators(conditionNode.operation, negate);
+	const comparisonValue = `$${conditionNode.compareTo.parameterIndex + 1}`;
 
-	if (target.type === 'fn') {
-		firstOperand = applyFunction(target);
+	if (conditionNode.target.type === 'primitive') {
+		return `${column} ${operator} ${comparisonValue}`;
+	} else if (conditionNode.target.type === 'json') {
+		const jsonPath = applyJsonPathAsNumber(column, conditionNode.target.path);
+
+		return `${jsonPath} ${operator} ${comparisonValue}`;
 	} else {
-		firstOperand = wrapColumn(tableAlias, target.columnName);
+		const fn = applyFunction(conditionNode.target);
 
-		if (conditionNode.target.type === 'json') {
-			firstOperand = applyJsonPathAsNumber(firstOperand, conditionNode.target.path);
-		}
+		return `${fn} ${operator} ${comparisonValue}`;
 	}
-
-	const compareValue = `$${conditionNode.compareTo.parameterIndex + 1}`;
-	const operation = convertNumericOperators(conditionNode.operation, negate);
-
-	return `${firstOperand} ${operation} ${compareValue}`;
 };
