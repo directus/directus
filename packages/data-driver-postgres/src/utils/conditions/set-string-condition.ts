@@ -6,11 +6,16 @@ export const setStringCondition = (condition: SqlConditionSetStringNode, negate:
 	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
 
 	const column = wrapColumn(tableAlias, condition.target.columnName);
-
-	const jsonPath = condition.target.type === 'json' ? applyJsonPathAsString(column, condition.target.path) : null;
-
+	const operator = negate ? 'NOT IN' : 'IN';
 	const compareValues = condition.compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ');
-	const firstOperand = jsonPath !== null ? jsonPath : column;
 
-	return `${firstOperand} ${negate ? 'NOT ' : ''}IN (${compareValues})`;
+	if (condition.target.type === 'primitive') {
+		return `${column} ${operator} (${compareValues})`;
+	} else if (condition.target.type === 'json') {
+		const jsonPath = applyJsonPathAsString(column, condition.target.path);
+
+		return `${jsonPath} ${operator} (${compareValues})`;
+	} else {
+		throw new Error('Not supported!');
+	}
 };
