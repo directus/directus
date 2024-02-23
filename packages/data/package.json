@@ -21,8 +21,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "pnpm run '/^bundle|typecheck$/'",
+		"dev": "pnpm run bundle --watch",
+		"bundle": "tsup src/index.ts --format=esm --dts",
+		"typecheck": "tsc --noEmit",
 		"test": "vitest --watch=false",
 		"depcruise": "depcruise src --include-only '^src' -x test.ts --output-type dot | dot -T svg > dependency-graph.svg"
 	},
