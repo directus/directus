@@ -7,14 +7,14 @@ export const stringCondition = (condition: SqlConditionStringNode, negate: boole
 
 	const column = wrapColumn(tableAlias, condition.target.columnName);
 	const operator = getOperator(condition, negate);
-	const comparisonValue = getComparisonValue(condition);
+	const compareValue = getCompareValue(condition);
 
 	if (condition.target.type === 'primitive') {
-		return `${column} ${operator} ${comparisonValue}`;
+		return `${column} ${operator} ${compareValue}`;
 	} else if (condition.target.type === 'json') {
 		const jsonPath = applyJsonPathAsString(column, condition.target.path);
 
-		return `${jsonPath} ${operator} ${comparisonValue}`;
+		return `${jsonPath} ${operator} ${compareValue}`;
 	} else {
 		throw new Error('Not supported!');
 	}
@@ -28,7 +28,7 @@ function getOperator(condition: SqlConditionStringNode, negate: boolean) {
 	}
 }
 
-function getComparisonValue(condition: SqlConditionStringNode) {
+function getCompareValue(condition: SqlConditionStringNode) {
 	const compareValue = `$${condition.compareTo.parameterIndex + 1}`;
 
 	if (condition.operation === 'contains') {
