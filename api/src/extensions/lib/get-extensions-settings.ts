@@ -86,22 +86,5 @@ export const getExtensionsSettings = async ({
 
 	const settings = [...existingSettings, ...newSettings];
 
-	// /**
-	//  * Silently ignore settings for extensions that have been manually removed from the extensions
-	//  * folder. Having them automatically synced feels dangerous, as it's a destructive action. In the
-	//  * edge case you'd deploy / start with the extensions folder misconfigured, it would remove all
-	//  * previous options on startup, without an option to undo.
-	//  */
-	return settings.filter(({ source, folder }) => {
-		switch (source) {
-			case 'module':
-				return Array.from(module.keys()).includes(folder);
-			case 'registry':
-				return Array.from(registry.keys()).includes(folder);
-			case 'local':
-				return Array.from(local.keys()).includes(folder);
-			default:
-				return false;
-		}
-	});
+	return settings;
 };

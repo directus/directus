@@ -39,7 +39,7 @@ export class ExtensionsService {
 		});
 	}
 
-	async install(id: string, versionId: string) {
+	async install(extensionId: string, versionId: string) {
 		const env = useEnv();
 
 		const describeOptions: DescribeOptions = {};
@@ -48,9 +48,10 @@ export class ExtensionsService {
 			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const extension = await describe(id, describeOptions);
+		const extension = await describe(extensionId, describeOptions);
+		const version = extension.data.versions.find((version) => version.id === versionId);
 
-		if (extension.data.versions.some((version) => version.id === versionId) === false) {
+		if (!version) {
 			throw new ForbiddenError();
 		}
 
@@ -64,7 +65,7 @@ export class ExtensionsService {
 			 * extension to avoid a vulnerability where you can get around the technical limit by bundling
 			 * all extensions you want
 			 */
-			const points = extension.data.versions?.[0]?.bundled?.length ?? 1;
+			const points = version.bundled.length ?? 1;
 
 			const afterInstallCount = currentlyInstalledCount + points;
 
@@ -74,12 +75,23 @@ export class ExtensionsService {
 		}
 
 		await this.extensionsItemService.createOne({
-			id: id,
+			id: extensionId,
 			enabled: true,
 			folder: versionId,
 			source: 'registry',
 			bundle: null,
 		});
+
+		if (extension.data.type === 'bundle' && version.bundled.length > 0) {
+			await this.extensionsItemService.createMany(
+				version.bundled.map((entry) => ({
+					enabled: true,
+					folder: entry.name,
+					source: 'registry',
+					bundle: extensionId,
+				})),
+			);
+		}
 
 		await this.extensionsManager.install(versionId);
 	}
@@ -177,6 +189,7 @@ export class ExtensionsService {
 		}
 
 		await this.extensionsItemService.deleteOne(id);
+		await this.extensionsItemService.deleteByQuery({ filter: { bundle: { _eq: id } } });
 		await this.extensionsManager.uninstall(settings.folder);
 	}
 
