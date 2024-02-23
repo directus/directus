@@ -39,7 +39,7 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-const directusPermissionSchema: DeepPartial<CollectionsOverview[string]> = {
+const directusPermissionsSchema: DeepPartial<CollectionsOverview[string]> = {
 	primary: 'id',
 	fields: {
 		id: { type: 'integer', special: [] },
@@ -91,7 +91,7 @@ describe('Services / PermissionsService', () => {
 
 			const schema: DeepPartial<SchemaOverview> = {
 				collections: {
-					directus_permissions: directusPermissionSchema,
+					directus_permissions: directusPermissionsSchema,
 				},
 				relations: [],
 			};
