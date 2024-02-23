@@ -12,6 +12,7 @@ export enum ErrorCode {
 	InvalidProviderConfig = 'INVALID_PROVIDER_CONFIG',
 	InvalidQuery = 'INVALID_QUERY',
 	InvalidToken = 'INVALID_TOKEN',
+	LimitExceeded = 'LIMIT_EXCEEDED',
 	MethodNotAllowed = 'METHOD_NOT_ALLOWED',
 	NotNullViolation = 'NOT_NULL_VIOLATION',
 	OutOfDate = 'OUT_OF_DATE',
