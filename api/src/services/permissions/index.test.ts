@@ -54,7 +54,7 @@ const directusPermissionsSchema: DeepPartial<CollectionsOverview[string]> = {
 };
 
 describe('Services / PermissionsService', () => {
-	describe('with system permissions', async () => {
+	describe('with app minimal permissions', async () => {
 		let service: PermissionsService;
 
 		let sample: {
@@ -163,7 +163,7 @@ describe('Services / PermissionsService', () => {
 
 		const baseSchema: DeepPartial<SchemaOverview> = {
 			collections: {
-				directus_permissions: directusPermissionSchema,
+				directus_permissions: directusPermissionsSchema,
 				[collection]: {
 					collection: collection,
 					primary: primaryKeyField,
