@@ -44,7 +44,14 @@ const refresh = inject<() => Promise<void>>('refresh-permissions');
 
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
-	if (Object.keys(props.appMinimal).length === 2) return 'full';
+
+	if (
+		props.appMinimal.fields?.includes('*') &&
+		Object.keys(props.appMinimal.permissions || {}).length === 0 &&
+		Object.keys(props.appMinimal.validation || {}).length === 0
+	)
+		return 'full';
+
 	return 'partial';
 });
 

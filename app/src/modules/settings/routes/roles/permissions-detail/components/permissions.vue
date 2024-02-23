@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useSync } from '@directus/composables';
-import type { Permission, Role } from '@directus/types';
-import { computed } from 'vue';
+import type { DeepPartial, Field, Permission, Role } from '@directus/types';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -14,9 +13,24 @@ const emit = defineEmits(['update:permission']);
 
 const { t } = useI18n();
 
-const permissionSync = useSync(props, 'permission', emit);
+const permissionLocal = ref({ permissions: props.permission.permissions });
+const permissionInitial = permissionLocal.value;
 
-const fields = computed(() => [
+const permissionSync = computed({
+	get() {
+		return permissionLocal.value;
+	},
+	set(value) {
+		permissionLocal.value = value;
+
+		emit('update:permission', {
+			...props.permission,
+			permissions: value.permissions !== undefined ? value.permissions : permissionInitial.permissions,
+		});
+	},
+});
+
+const fields = computed<DeepPartial<Field>[]>(() => [
 	{
 		field: 'permissions',
 		name: t('rule'),
@@ -24,7 +38,7 @@ const fields = computed(() => [
 		meta: {
 			interface: 'system-filter',
 			options: {
-				collectionName: permissionSync.value.collection,
+				collectionName: props.permission.collection,
 				rawFieldNames: true,
 			},
 		},
@@ -43,7 +57,7 @@ const fields = computed(() => [
 			}}
 		</v-notice>
 
-		<v-form v-model="permissionSync" :fields="fields" />
+		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
 
 		<div v-if="appMinimal" class="app-minimal">
 			<v-divider />

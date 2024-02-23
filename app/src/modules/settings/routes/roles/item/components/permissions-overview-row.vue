@@ -49,7 +49,7 @@ function isLoading(action: string) {
 				:role="role"
 				:permissions="permissions"
 				:loading="isLoading(action)"
-				:app-minimal="appMinimal && appMinimal.find((p) => p.action === action)"
+				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
 			/>
 			<value-null v-else />
 		</template>

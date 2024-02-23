@@ -2,12 +2,12 @@
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { Permission } from '@directus/types';
-import { isSystemCollection } from '@directus/system-data';
 import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { appMinimalPermissions, appRecommendedPermissions, disabledActions } from '../../app-permissions';
+import { appRecommendedPermissions, disabledActions } from '../../app-permissions';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
@@ -165,7 +165,9 @@ function useReset() {
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
 						:app-minimal="
-							appAccess ? appMinimalPermissions.filter((p) => p.collection === collection.collection) : undefined
+							appAccess
+								? appAccessMinimalPermissions.filter((permission) => permission.collection === collection.collection)
+								: undefined
 						"
 					/>
 				</div>
