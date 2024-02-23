@@ -163,14 +163,7 @@ describe('Services / PermissionsService', () => {
 
 		const baseSchema: DeepPartial<SchemaOverview> = {
 			collections: {
-				directus_permissions: {
-					primary: 'id',
-					fields: {
-						role: { type: 'string', special: [] },
-						collection: { type: 'string', special: [] },
-						action: { type: 'string', special: [] },
-					},
-				},
+				directus_permissions: directusPermissionSchema,
 				[collection]: {
 					collection: collection,
 					primary: primaryKeyField,
