@@ -192,7 +192,9 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 no_description: No description...
-reached_maximum_number_of_extensions: You've reached the maximum number of extensions for this project ({n}). Contact your system administrator for more information.
+reached_maximum_number_of_extensions:
+  You've reached the maximum number of extensions for this project ({n}). Contact your system administrator for more
+  information.
 not_allowed: Not Allowed
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
