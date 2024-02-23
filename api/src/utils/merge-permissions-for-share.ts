@@ -1,6 +1,6 @@
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
 import { assign, set, uniq } from 'lodash-es';
-import { schemaPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { schemaPermissions } from '@directus/system-data';
 import { mergePermissions } from './merge-permissions.js';
 import { reduceSchema } from './reduce-schema.js';
 

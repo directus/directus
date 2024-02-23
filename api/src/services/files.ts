@@ -373,11 +373,13 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 				decompress: false,
 			});
-		} catch (err: any) {
-			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
+		} catch (error: any) {
+			logger.warn(`Couldn't fetch file from URL "${importURL}"${error.message ? `: ${error.message}` : ''}`);
+			logger.trace(error);
+
 			throw new ServiceUnavailableError({
 				service: 'external-file',
-				reason: `Couldn't fetch file from url "${importURL}"`,
+				reason: `Couldn't fetch file from URL "${importURL}"`,
 			});
 		}
 

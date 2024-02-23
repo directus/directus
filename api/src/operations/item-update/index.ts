@@ -52,7 +52,9 @@ export default defineOperationApi<Options>({
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 
-		if (!key || (Array.isArray(key) && key.length === 0)) {
+		if (Array.isArray(payloadObject)) {
+			result = await itemsService.updateBatch(payloadObject, { emitEvents: !!emitEvents });
+		} else if (!key || (Array.isArray(key) && key.length === 0)) {
 			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
 		} else {
 			const keys = toArray(key);

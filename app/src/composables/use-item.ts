@@ -12,11 +12,12 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
 import { Field, Query, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
+import { getEndpoint } from '@directus/utils';
+import { isSystemCollection } from '@directus/system-data';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -466,8 +467,8 @@ export function useItem<T extends Record<string, any>>(
 
 	function setItemValueToResponse(response: AxiosResponse) {
 		if (
-			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
 		) {
 			response.data.data = translate(response.data.data);
 		}

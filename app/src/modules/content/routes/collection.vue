@@ -21,6 +21,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
+import { isSystemCollection } from '@directus/system-data';
 
 type Item = {
 	[field: string]: any;
@@ -297,7 +298,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<content-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
+		<content-not-found v-if="!currentCollection || isSystemCollection(collection)" />
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
