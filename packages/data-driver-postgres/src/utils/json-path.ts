@@ -22,3 +22,9 @@ export function applyJsonPathAsNumber(wrappedColumn: string, path: AtLeastOneEle
 
 	return `CAST(${jsonPath} AS numeric)`;
 }
+
+export function applyJsonPathAsGeometry(wrappedColumn: string, path: AtLeastOneElement<number>): string {
+	const jsonPath = applyJsonPathAsString(wrappedColumn, path);
+
+	return `CAST(${jsonPath} AS geometry)`;
+}

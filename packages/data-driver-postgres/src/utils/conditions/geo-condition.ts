@@ -1,4 +1,5 @@
 import { tableIndexToIdentifier, type SqlConditionGeoNode } from '@directus/data-sql';
+import { applyJsonPathAsGeometry } from '../json-path.js';
 import { wrapColumn } from '../wrap-column.js';
 
 /**
@@ -18,17 +19,28 @@ export const geoCondition = (condition: SqlConditionGeoNode): string => {
 	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
 	const column = wrapColumn(tableAlias, condition.target.columnName);
 
-	if (condition.target.type === 'json') {
-		throw Error('JSON target for geo condition is not yet supported');
-	}
-
 	const parameterIndex = condition.compareTo.parameterIndex;
 	const geomConvertedText = `ST_GeomFromText($${parameterIndex + 1})`;
 
-	switch (condition.operation) {
-		case 'intersects':
-			return `ST_Intersects(${column}, ${geomConvertedText})`;
-		case 'intersects_bbox':
-			return `${column} && ${geomConvertedText})`;
+	if (condition.target.type === 'primitive') {
+		return getOperation(condition.operation, column, geomConvertedText);
+	} else if (condition.target.type === 'json') {
+		const jsonPath = applyJsonPathAsGeometry(column, condition.target.path);
+
+		return getOperation(condition.operation, jsonPath, geomConvertedText);
+	} else {
+		throw new Error('Not supported!');
 	}
 };
+
+function getOperation(
+	operation: SqlConditionGeoNode['operation'],
+	firstOperand: string,
+	secondOperand: string,
+): string {
+	if (operation === 'intersects') {
+		return `ST_Intersects(${firstOperand}, ${secondOperand})`;
+	} else {
+		return `${firstOperand} && ${secondOperand})`;
+	}
+}
