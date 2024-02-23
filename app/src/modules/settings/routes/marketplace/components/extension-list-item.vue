@@ -15,7 +15,6 @@ const extensionsStore = useExtensionsStore();
 const props = defineProps<{
 	extension: RegistryListResponse['data'][number];
 	showType?: boolean;
-	installed: boolean;
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
