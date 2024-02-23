@@ -14,8 +14,8 @@ import emitter from '../emitter.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
-import { ItemsService, PermissionsService } from './index.js';
-import type { QueryOptions } from './items.js';
+import { ItemsService, type QueryOptions } from './items.js';
+import { PermissionsService } from './permissions/index.js';
 
 export class RelationsService {
 	knex: Knex;

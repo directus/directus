@@ -2,7 +2,10 @@ import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '
 import type { Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
-import { ItemsService, PermissionsService, PresetsService, UsersService } from './index.js';
+import { ItemsService } from './items.js';
+import { PermissionsService } from './permissions/index.js';
+import { PresetsService } from './presets.js';
+import { UsersService } from './users.js';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
