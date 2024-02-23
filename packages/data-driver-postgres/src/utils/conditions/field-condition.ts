@@ -18,16 +18,19 @@ export const fieldCondition = (condition: SqlConditionFieldNode, negate: boolean
 	const operand2 = getOperand(condition.compareTo);
 
 	const operation = convertNumericOperators(condition.operation, negate);
+
 	return `${operand1} ${operation} ${operand2}`;
 };
 
 function getOperand(target: AbstractSqlQueryTargetNode) {
 	const tableAlias = tableIndexToIdentifier(target.tableIndex);
-	let wrappedColumn = wrapColumn(tableAlias, target.columnName);
+	const wrappedColumn = wrapColumn(tableAlias, target.columnName);
 
-	if (target.type === 'json') {
-		wrappedColumn = applyJsonPathAsString(wrappedColumn, target.path);
+	if (target.type === 'primitive') {
+		return wrappedColumn;
+	} else if (target.type === 'json') {
+		return applyJsonPathAsString(wrappedColumn, target.path);
+	} else {
+		throw new Error('Not supported!');
 	}
-
-	return wrappedColumn;
 }
