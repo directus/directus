@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
-import { InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, BundleExtension, ExtensionSettings } from '@directus/extensions';
+import { describe, type DescribeOptions } from '@directus/extensions-registry';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -38,15 +39,36 @@ export class ExtensionsService {
 		});
 	}
 
-	async install(id: string, version: string) {
+	async install(id: string, versionId: string) {
 		const env = useEnv();
+
+		const describeOptions: DescribeOptions = {};
+
+		if (typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const extension = await describe(id, describeOptions);
+
+		if (extension.data.versions.some((version) => version.id === versionId) === false) {
+			throw new ForbiddenError();
+		}
 
 		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
 
 		if (limit !== null) {
 			const currentlyInstalledCount = this.extensionsManager.extensions.length;
 
-			if (currentlyInstalledCount >= limit) {
+			/**
+			 * Bundle extensions should be counted as the number of nested entries rather than a single
+			 * extension to avoid a vulnerability where you can get around the technical limit by bundling
+			 * all extensions you want
+			 */
+			const points = extension.data.versions?.[0]?.bundled?.length ?? 1;
+
+			const afterInstallCount = currentlyInstalledCount + points;
+
+			if (afterInstallCount >= limit) {
 				throw new LimitExceededError();
 			}
 		}
@@ -54,12 +76,12 @@ export class ExtensionsService {
 		await this.extensionsItemService.createOne({
 			id: id,
 			enabled: true,
-			folder: version,
+			folder: versionId,
 			source: 'registry',
 			bundle: null,
 		});
 
-		await this.extensionsManager.install(version);
+		await this.extensionsManager.install(versionId);
 	}
 
 	async readAll() {
