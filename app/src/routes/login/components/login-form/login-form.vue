@@ -56,7 +56,10 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	if (email.value === null || password.value === null) {
+	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
+	const emailRegex = /^\S+@\S+$/;
+
+	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
@@ -77,7 +80,7 @@ async function onSubmit() {
 
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
 
-		let lastPage: string | undefined;
+		let lastPage: string | null = null;
 
 		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
 			lastPage = userStore.currentUser.last_page;
@@ -97,7 +100,7 @@ async function onSubmit() {
 </script>
 
 <template>
-	<form @submit.prevent="onSubmit">
+	<form novalidate @submit.prevent="onSubmit">
 		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
 		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
