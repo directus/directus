@@ -1,6 +1,5 @@
 import { tableIndexToIdentifier, type SqlConditionGeoNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
-import { applyJsonPathAsObject } from '../json-path.js';
 
 /**
  * Used to check if a geo shape intersects with another geo shape.
@@ -17,10 +16,10 @@ import { applyJsonPathAsObject } from '../json-path.js';
  */
 export const geoCondition = (condition: SqlConditionGeoNode): string => {
 	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
-	let column = wrapColumn(tableAlias, condition.target.columnName);
+	const column = wrapColumn(tableAlias, condition.target.columnName);
 
 	if (condition.target.type === 'json') {
-		column = applyJsonPathAsObject(column, condition.target.path);
+		throw Error('JSON target for geo condition is not yet supported');
 	}
 
 	const parameterIndex = condition.compareTo.parameterIndex;
