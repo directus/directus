@@ -2,6 +2,7 @@ import type { AtLeastOneElement } from '@directus/data';
 
 export function applyJsonPathAsObject(wrappedColumn: string, path: AtLeastOneElement<number>): string {
 	const jsonPath = path.map((p) => ` -> $${p + 1}`).join('');
+
 	return `${wrappedColumn}${jsonPath}`;
 }
 
@@ -18,5 +19,6 @@ export function applyJsonPathAsString(wrappedColumn: string, path: AtLeastOneEle
 
 export function applyJsonPathAsNumber(wrappedColumn: string, path: AtLeastOneElement<number>): string {
 	const jsonPath = applyJsonPathAsObject(wrappedColumn, path);
-	return `CAST(${jsonPath} AS INTEGER)`;
+
+	return `CAST(${jsonPath} AS numeric)`;
 }
