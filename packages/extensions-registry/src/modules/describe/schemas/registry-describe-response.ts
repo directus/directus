@@ -41,6 +41,12 @@ export const RegistryDescribeResponse = z.object({
 					github_name: z.string().nullable(),
 					github_avatar_url: z.string().nullable(),
 				}),
+				bundled: z.array(
+					z.object({
+						name: z.string(),
+						type: z.string(),
+					}),
+				),
 				maintainers: z
 					.array(
 						z.object({

@@ -93,7 +93,7 @@ const maintainers = computed(() => {
 
 .grid {
 	.install {
-		margin-bottom: 16px !important;
+		margin-bottom: 8px !important;
 	}
 
 	@container metadata (width > 580px) {

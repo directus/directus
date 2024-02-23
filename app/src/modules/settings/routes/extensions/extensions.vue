@@ -72,6 +72,7 @@ const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 .page-container {
 	padding: var(--content-padding);
 	padding-top: 0;
+	max-width: 1200px;
 }
 
 .group-divider {

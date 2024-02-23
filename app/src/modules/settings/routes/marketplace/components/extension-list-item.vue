@@ -15,7 +15,6 @@ const extensionsStore = useExtensionsStore();
 const props = defineProps<{
 	extension: RegistryListResponse['data'][number];
 	showType?: boolean;
-	installed: boolean;
 }>();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
@@ -28,8 +27,8 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 		<v-list-item-content>
 			<div class="name">
 				{{ formatName(extension) }}
-				<v-chip v-if="showType" outlined x-small class="type-chip">{{ chip }}</v-chip>
-				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" x-small class="installed-chip">
+				<v-chip v-if="showType" outlined x-small class="chip">{{ chip }}</v-chip>
+				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
 					{{ t('installed') }}
 				</v-chip>
 			</div>
@@ -37,7 +36,8 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
-			<div class="description">{{ extension.description }}</div>
+			<div v-if="extension.description" class="description">{{ extension.description }}</div>
+			<div v-else class="description">{{ t('no_description') }}</div>
 		</v-list-item-content>
 		<div class="meta">
 			<div class="published">
@@ -50,7 +50,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				<v-icon small name="download" />
 			</div>
 
-			<div class="license">
+			<div class="license" :class="{ known: !!props.extension.license }">
 				{{ props.extension.license ?? t('unknown') }}
 				<v-icon small name="policy" />
 			</div>
@@ -100,14 +100,14 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	text-align: end;
 }
 
-.type-chip,
-.installed-chip {
+.chip {
 	margin-inline-start: 4px;
 	vertical-align: 2px;
-}
-
-.type-chip {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
+}
+
+.license.known {
+	text-transform: uppercase;
 }
 </style>

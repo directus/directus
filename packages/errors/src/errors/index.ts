@@ -12,6 +12,7 @@ export { InvalidProviderConfigError } from './invalid-provider-config.js';
 export { InvalidProviderError } from './invalid-provider.js';
 export { InvalidQueryError } from './invalid-query.js';
 export { InvalidTokenError } from './invalid-token.js';
+export { LimitExceededError } from './limit-exceeded.js';
 export { MethodNotAllowedError } from './method-not-allowed.js';
 export { NotNullViolationError } from './not-null-violation.js';
 export { OutOfDateError } from './out-of-date.js';
