@@ -36,7 +36,8 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
-			<div class="description">{{ extension.description }}</div>
+			<div v-if="extension.description" class="description">{{ extension.description }}</div>
+			<div v-else class="description">{{ t('no_description') }}</div>
 		</v-list-item-content>
 		<div class="meta">
 			<div class="published">
@@ -49,7 +50,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				<v-icon small name="download" />
 			</div>
 
-			<div class="license">
+			<div class="license" :class="{ known: !!props.extension.license }">
 				{{ props.extension.license ?? t('unknown') }}
 				<v-icon small name="policy" />
 			</div>
@@ -104,5 +105,9 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	vertical-align: 2px;
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
+}
+
+.license.known {
+	text-transform: uppercase;
 }
 </style>

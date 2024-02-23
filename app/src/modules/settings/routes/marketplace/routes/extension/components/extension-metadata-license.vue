@@ -8,7 +8,13 @@ defineProps<{ license: string | null }>();
 </script>
 
 <template>
-	<MetadataItem icon="policy">
+	<MetadataItem icon="policy" :class="{ known: !!license }">
 		{{ license ?? t('unknown') }}
 	</MetadataItem>
 </template>
+
+<style scoped>
+.known {
+	text-transform: uppercase;
+}
+</style>
