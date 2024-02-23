@@ -161,9 +161,11 @@ export class ImportService {
 			return new Promise<void>((resolve, reject) => {
 				const streams: Stream[] = [stream];
 
-				const cleanup = () => {
-					for (const stream of streams) {
-						destroyStream(stream);
+				const cleanup = (destroy = true) => {
+					if (destroy) {
+						for (const stream of streams) {
+							destroyStream(stream);
+						}
 					}
 
 					tmpFile.cleanup().catch(() => {
@@ -205,7 +207,7 @@ export class ImportService {
 								reject(new InvalidPayloadError({ reason: error.message }));
 							})
 							.on('end', () => {
-								cleanup();
+								cleanup(false);
 
 								// In case of empty CSV file
 								if (!saveQueue.started) return resolve();
