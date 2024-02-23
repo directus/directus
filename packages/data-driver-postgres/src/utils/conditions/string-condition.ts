@@ -11,11 +11,12 @@ export const stringCondition = (condition: SqlConditionStringNode, negate: boole
 
 	if (condition.target.type === 'primitive') {
 		return `${column} ${operator} ${comparisonValue}`;
-	} else if (condition.target.type === 'fn') {
-		throw new Error('Not supported!');
-	} else {
+	} else if (condition.target.type === 'json') {
 		const jsonPath = applyJsonPathAsString(column, condition.target.path);
+
 		return `${jsonPath} ${operator} ${comparisonValue}`;
+	} else {
+		throw new Error('Not supported!');
 	}
 };
 
