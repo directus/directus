@@ -1,4 +1,5 @@
-import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, BundleExtension, ExtensionSettings } from '@directus/extensions';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
@@ -38,6 +39,18 @@ export class ExtensionsService {
 	}
 
 	async install(id: string, version: string) {
+		const env = useEnv();
+
+		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
+
+		if (limit !== null) {
+			const currentlyInstalledCount = this.extensionsManager.extensions.length;
+
+			if (currentlyInstalledCount >= limit) {
+				throw new LimitExceededError();
+			}
+		}
+
 		await this.extensionsItemService.createOne({
 			id: id,
 			enabled: true,
