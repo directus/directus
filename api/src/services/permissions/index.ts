@@ -6,7 +6,7 @@ import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '
 import { AuthorizationService } from '../authorization.js';
 import type { QueryOptions } from '../items.js';
 import { ItemsService } from '../items.js';
-import { withSystemPermissions } from './lib/with-system-permissions.js';
+import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
@@ -47,7 +47,7 @@ export class PermissionsService extends ItemsService {
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
 		const result = (await super.readByQuery(query, opts)) as Permission[];
 
-		return withSystemPermissions(this.accountability, result, query.filter);
+		return withAppMinimalPermissions(this.accountability, result, query.filter);
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {

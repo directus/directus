@@ -17,14 +17,14 @@ import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { PermissionsService } from './index.js';
-import { withSystemPermissions } from './lib/with-system-permissions.js';
+import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
 
 vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('./lib/with-system-permissions.js');
+vi.mock('./lib/with-app-minimal-permissions.js');
 
 let db: MockedFunction<Knex>;
 let tracker: Tracker;
@@ -115,20 +115,20 @@ describe('Services / PermissionsService', () => {
 			});
 
 			tracker.on.select('select "directus_permissions"').response(sample.permissions);
-			vi.mocked(withSystemPermissions).mockImplementation(() => result);
+			vi.mocked(withAppMinimalPermissions).mockImplementation(() => result);
 		});
 
 		test('readByQuery', async () => {
 			const result = await service.readByQuery(sample.query);
 
-			expect(withSystemPermissions).toBeCalledWith(sample.accountability, sample.permissions, sample.query.filter);
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, sample.query.filter);
 			expect(result).toEqual(sample.result);
 		});
 
 		test('readMany', async () => {
 			const result = await service.readMany([sample.permissionId], sample.query);
 
-			expect(withSystemPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
 				_and: [
 					{
 						id: {
@@ -145,7 +145,7 @@ describe('Services / PermissionsService', () => {
 		test('readOne', async () => {
 			const result = await service.readOne(sample.permissionId, sample.query);
 
-			expect(withSystemPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
 				...sample.query.filter,
 				id: { _eq: sample.permissionId },
 			});
@@ -428,7 +428,7 @@ describe('Services / PermissionsService', () => {
 
 				tracker.on.select('directus_permissions').response(permissions);
 
-				vi.mocked(withSystemPermissions).mockImplementation(() => permissions);
+				vi.mocked(withAppMinimalPermissions).mockImplementation(() => permissions);
 
 				const result = await service.getItemPermissions(collection);
 
@@ -460,7 +460,7 @@ describe('Services / PermissionsService', () => {
 
 				tracker.on.select('directus_permissions').response(permissions);
 
-				vi.mocked(withSystemPermissions).mockImplementation(() => permissions);
+				vi.mocked(withAppMinimalPermissions).mockImplementation(() => permissions);
 
 				const result = await service.getItemPermissions(collection);
 

@@ -3,13 +3,13 @@ import type { Accountability, Permission, Query } from '@directus/types';
 import { filterItems } from '../../../utils/filter-items.js';
 import { mergePermissions } from '../../../utils/merge-permissions.js';
 
-export function withSystemPermissions(
+export function withAppMinimalPermissions(
 	accountability: Accountability | null,
 	permissions: Permission[],
 	filter: Query['filter'],
 ): Permission[] {
 	if (accountability?.app === true) {
-		const systemPermissions = filterItems(
+		const filteredAppMinimalPermissions = filterItems(
 			appAccessMinimalPermissions.map((permission) => ({
 				...permission,
 				role: accountability.role,
@@ -17,7 +17,7 @@ export function withSystemPermissions(
 			filter,
 		);
 
-		return mergePermissions('or', permissions, systemPermissions);
+		return mergePermissions('or', permissions, filteredAppMinimalPermissions);
 	}
 
 	return permissions;
