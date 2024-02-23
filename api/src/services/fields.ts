@@ -383,6 +383,12 @@ export class FieldsService {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		// 'type' is required for further checks on schema update
+		if (field.schema && !field.type) {
+			const existingType = this.schema.collections[collection]?.fields[field.field]?.type;
+			if (existingType) field.type = existingType;
+		}
+
 		try {
 			const hookAdjustedField = await emitter.emitFilter(
 				`fields.update`,

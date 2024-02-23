@@ -47,11 +47,11 @@ export class BusRedis implements Bus {
 		const existingSet = this.handlers[namespaced];
 
 		if (existingSet === undefined) {
-			await this.sub.subscribe(namespaced);
-
 			const set = new Set<MessageHandler<T>>();
 			set.add(callback);
 			this.handlers[namespaced] = set;
+
+			await this.sub.subscribe(namespaced);
 		} else {
 			existingSet.add(callback);
 		}
@@ -70,7 +70,8 @@ export class BusRedis implements Bus {
 
 		if (set.size === 0) {
 			delete this.handlers[namespaced];
-			this.sub.unsubscribe(namespaced);
+
+			await this.sub.unsubscribe(namespaced);
 		}
 	}
 
