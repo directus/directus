@@ -14,19 +14,19 @@ import { applyJsonPathAsString } from '../json-path.js';
  * @returns col1 = col2
  */
 export const fieldCondition = (condition: SqlConditionFieldNode, negate: boolean): string => {
-	const operant1 = getOperant(condition.target);
-	const operant2 = getOperant(condition.compareTo);
+	const operand1 = getOperand(condition.target);
+	const operand2 = getOperand(condition.compareTo);
 
 	const operation = convertNumericOperators(condition.operation, negate);
-	return `${operant1} ${operation} ${operant2}`;
+	return `${operand1} ${operation} ${operand2}`;
 };
 
-function getOperant(operant: AbstractSqlQueryTargetNode) {
-	const tableAlias = tableIndexToIdentifier(operant.tableIndex);
-	let wrappedColumn = wrapColumn(tableAlias, operant.columnName);
+function getOperand(target: AbstractSqlQueryTargetNode) {
+	const tableAlias = tableIndexToIdentifier(target.tableIndex);
+	let wrappedColumn = wrapColumn(tableAlias, target.columnName);
 
-	if (operant.type === 'json') {
-		wrappedColumn = applyJsonPathAsString(wrappedColumn, operant.path);
+	if (target.type === 'json') {
+		wrappedColumn = applyJsonPathAsString(wrappedColumn, target.path);
 	}
 
 	return wrappedColumn;
