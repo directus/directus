@@ -15,6 +15,7 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
+import { getNodeEnv } from '@directus/utils/node';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -52,6 +53,18 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
+		if (getNodeEnv() === 'development') {
+			logger.info(payload);
+			if (!email || !identifier)
+				throw new Error(
+					`Could not find email key "${
+						emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+					}" or identifier key "${
+						identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+					}" in SAMLResponse payload. Available keys sent were:\n${Object.keys(payload).join('\n')}`,
+				);
+		}
 
 		const userID = await this.fetchUserID(identifier);
 

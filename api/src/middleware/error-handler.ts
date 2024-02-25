@@ -21,10 +21,12 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	for (const err of errors) {
 		if (getNodeEnv() === 'development') {
-			err.extensions = {
-				...(err.extensions || {}),
-				stack: err.stack,
-			};
+			if (typeof err === 'object') {
+				err.extensions = {
+					...(err.extensions || {}),
+					stack: err.stack,
+				};
+			}
 		}
 
 		if (isDirectusError(err)) {
