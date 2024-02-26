@@ -35,8 +35,8 @@ data - such as extension blocking/delisting.
 In the future, the registry may allow extensions or authors to be 'verified' and inclusion of extensions from different
 sources on top of npm.
 
-The Directus Extensions Registry is updated every `TODO:X` hours, and only the latest version of an extension is
-available in the Marketplace.
+The Directus Extensions Registry is updated every few hours, and only the latest version of an extension is available in
+the Marketplace.
 
 ### Required Metadata
 
@@ -45,9 +45,9 @@ To be discovered by the Directus Extensions Registry, your extension must be pub
 
 To be listed in the Marketplace, the `package.json` file must also contain the following properties:
 
-| Property                          | Description                                                                    |
-| --------------------------------- | ------------------------------------------------------------------------------ |
-| `directus:extension.type`         | The extension type - used to categorize extensions in the Marketplace listing. |
+| Property                  | Description                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `directus:extension.type` | The extension type - used to categorize extensions in the Marketplace listing. |
 | `directus:extension.host` | The minimum Directus version required for the extension to run.                |
 
 ```json
@@ -59,11 +59,26 @@ To be listed in the Marketplace, the `package.json` file must also contain the f
 }
 ```
 
-If you create an extension with the [create-directus-extension CLI utility](/extensions/creating-extensions), then these
-fields will be populated on your behalf.
+If you create an extension with the [`create-directus-extension` CLI utility](/extensions/creating-extensions), then
+these fields will be populated on your behalf.
 
 Additionally, publishing on npm requires the package `name` and `version` to be set. These values are shown in the
 Marketplace listing and extension detail page.
+
+:::info Publishing Your `dist` Directory on npm
+
+If you use the `create-directus-extension` CLI utility, the `dist` directory will be added to your `.gitignore` as it
+contains only the output files from running the build command. npm will, by default, use your `.gitignore` to determine
+which files are uploaded to the registry, ignoring your built files. Ensure that your `package.json` file contains the
+following property:
+
+```json
+{
+	"files": ["dist"]
+}
+```
+
+:::
 
 ### Additional Metadata
 
