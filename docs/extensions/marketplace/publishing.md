@@ -48,12 +48,12 @@ To be listed in the Marketplace, the `package.json` file must also contain the f
 | Property                          | Description                                                                    |
 | --------------------------------- | ------------------------------------------------------------------------------ |
 | `directus:extension.type`         | The extension type - used to categorize extensions in the Marketplace listing. |
-| `directus:extension.host_version` | The minimum Directus version required for the extension to run.                |
+| `directus:extension.host` | The minimum Directus version required for the extension to run.                |
 
 ```json
 {
 	"directus:extension": {
-		"host_version": "^10.3.3",
+		"host": "^10.3.3",
 		"type": "endpoint"
 	}
 }
