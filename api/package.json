@@ -91,7 +91,7 @@
 		"@rollup/plugin-alias": "5.1.0",
 		"@rollup/plugin-node-resolve": "15.2.3",
 		"@rollup/plugin-virtual": "3.0.2",
-		"argon2": "0.31.2",
+		"argon2": "0.40.1",
 		"async": "3.2.5",
 		"axios": "1.6.7",
 		"busboy": "1.6.0",
