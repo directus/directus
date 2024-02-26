@@ -623,8 +623,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/timegrid':
-        specifier: 6.1.7
-        version: 6.1.7(@fullcalendar/core@6.1.7)
+        specifier: 6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.11
         version: 0.17.11(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19)
@@ -5041,6 +5041,14 @@ packages:
       preact: 10.12.1
     dev: true
 
+  /@fullcalendar/daygrid@6.1.11(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-hF5jJB7cgUIxWD5MVjj8IU407HISyLu7BWXcEIuTytkfr8oolOXeCazqnnjmRbnFOncoJQVstTtq6SIhaT32Xg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.7
+    dev: true
+
   /@fullcalendar/daygrid@6.1.7(@fullcalendar/core@6.1.7):
     resolution: {integrity: sha512-IB+QdRcs+TeTlsK8qJFtYZ/2GugmXEFC0C00/n1aLT7GLgFn3ueV1GN0EKvXv9HJ5ai8My65mYbSyQizY/Ishw==}
     peerDependencies:
@@ -5065,13 +5073,13 @@ packages:
       '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/timegrid@6.1.7(@fullcalendar/core@6.1.7):
-    resolution: {integrity: sha512-kVgJVswu96LrCozr+GyYzF+LUZjURC4HyDg11tCfrj2wMTsrYKqUxilTGXuD3daD4T7qp3CLCg5GdD6lbYHI7A==}
+  /@fullcalendar/timegrid@6.1.11(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-0seUHK/ferH89IeuCvV4Bib0zWjgK0nsptNdmAc9wDBxD/d9hm5Mdti0URJX6bDoRtsSfRDu5XsRcrzwoc+AUQ==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.7
+      '@fullcalendar/core': ~6.1.11
     dependencies:
       '@fullcalendar/core': 6.1.7
-      '@fullcalendar/daygrid': 6.1.7(@fullcalendar/core@6.1.7)
+      '@fullcalendar/daygrid': 6.1.11(@fullcalendar/core@6.1.7)
     dev: true
 
   /@gar/promisify@1.1.3:
