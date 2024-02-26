@@ -626,8 +626,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
-        specifier: 0.17.11
-        version: 0.17.11(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19)
+        specifier: 0.17.12
+        version: 0.17.12(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -939,8 +939,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@histoire/plugin-vue':
-        specifier: 0.17.11
-        version: 0.17.11(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19)
+        specifier: 0.17.12
+        version: 0.17.12(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19)
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.1)(vue@3.4.19)
@@ -5172,8 +5172,8 @@ packages:
       - vite
     dev: true
 
-  /@histoire/plugin-vue@0.17.11(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19):
-    resolution: {integrity: sha512-6QPs1imD2NLfsQAjJN32P60IUI0yRyswVB7c+D8JMvVeHQoot2dB7YoCSyuTRq02p1goqHS8pwlqmOYKm3obfQ==}
+  /@histoire/plugin-vue@0.17.12(histoire@0.17.9)(vite@5.1.1)(vue@3.4.19):
+    resolution: {integrity: sha512-mpx2uwHq/qemnX+ARQtDR3M9kIt1y4kBCmzBkOquhJTp61mtHMu4hZKSzzQpQWA2QxEyuuwpaNiU7Mlms13EaQ==}
     peerDependencies:
       histoire: ^0.17.9
       vue: ^3.2.47
