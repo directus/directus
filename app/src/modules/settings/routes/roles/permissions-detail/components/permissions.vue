@@ -2,6 +2,7 @@
 import type { DeepPartial, Field, Permission, Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;
@@ -59,33 +60,12 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 
 		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
 
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
+		<app-minimal :value="appMinimal" />
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .v-notice {
 	margin-bottom: 36px;
-}
-
-.app-minimal {
-	.v-divider {
-		margin: 24px 0;
-	}
-
-	.v-notice {
-		margin-bottom: 24px;
-	}
-
-	.app-minimal-preview {
-		padding: 16px;
-		font-family: var(--theme--fonts--monospace--font-family);
-		background-color: var(--theme--background-subdued);
-		border-radius: var(--theme--border-radius);
-	}
 }
 </style>

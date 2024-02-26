@@ -13,7 +13,7 @@ const props = defineProps<{
 	disabledActions?: EditablePermissionsAction[];
 	permissions: Permission[];
 	refreshing: number[];
-	role?: string;
+	role: string | null;
 	appMinimal?: Partial<Permission>[];
 }>();
 

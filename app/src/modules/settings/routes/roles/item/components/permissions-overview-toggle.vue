@@ -8,9 +8,9 @@ import useUpdatePermissions from '../composables/use-update-permissions';
 
 const props = defineProps<{
 	collection: Collection;
-	action: string;
-	role?: string;
-	permissions?: Permission[];
+	action: 'create' | 'read' | 'update' | 'delete' | 'share';
+	role: string | null;
+	permissions: Permission[];
 	loading?: boolean;
 	appMinimal?: Partial<Permission>;
 }>();

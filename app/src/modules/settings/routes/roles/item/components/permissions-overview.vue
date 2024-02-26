@@ -12,7 +12,7 @@ import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
 const props = defineProps<{
-	role?: string;
+	role: string | null;
 	/** the permission row primary key in case we're on the permission detail modal view */
 	permission?: string;
 	appAccess?: boolean;
@@ -162,7 +162,7 @@ function useReset() {
 						:collection="collection"
 						:role="role"
 						:disabled-actions="disabledActions[collection.collection]"
-						:permissions="permissions.filter((p) => p.collection === collection.collection)"
+						:permissions="permissions.filter((permission) => permission.collection === collection.collection)"
 						:refreshing="refreshing"
 						:app-minimal="
 							appAccess
