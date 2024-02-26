@@ -25,6 +25,10 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 
 		const originalData = res.locals['payload'].data;
 
+		if ((originalData && typeof originalData !== "object") || versionData.length === 0) {
+			return next();
+		}
+
 		if (req.sanitizedQuery.versionRaw) {
 			res.locals['payload'].data = mergeVersionsRaw(originalData, versionData);
 		} else {
