@@ -21,29 +21,14 @@ export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
 }
 
 export function mergeVersionSaves(
-	item: unknown,
+	item: Item,
 	versionData: Partial<Item>[],
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
-	console.log('item', typeof item, item, versionData);
-
-	if (typeof item !== "object" || item === null) {
-		if (versionData.length > 0) {
-			item = versionData.shift();
-		} else {
-			// no item and no versionData should not happen
-			console.error('no data?');
-			return item as Item;
-		}
-	}
-
-	console.log('item2', typeof item, item);
-
 	if (typeof item !== "object" || item === null) {
 		return item;
 	}
-
 
 	const relations = schema.relations.reduce(
 		(result, relation) => {
@@ -63,7 +48,6 @@ export function mergeVersionSaves(
 	const result = { ...item };
 
 	for (const versionRecord of versionData) {
-		console.log('A', versionRecord, item);
 		for (const key in item) {
 			if (!versionRecord || key in versionRecord === false) {
 				continue;
