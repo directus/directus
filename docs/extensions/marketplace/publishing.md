@@ -189,7 +189,7 @@ extension title in the listing and extension detail page.
 
 Having our own registry means we can remove items, which we will do if we are made aware that extensions are malicious
 or at the request of extension authors. If you wish to have an extension removed for either of these reasons, please get
-in touch with EMAIL?
+in touch with marketplace@directus.io?
 
 ## Feedback
 
