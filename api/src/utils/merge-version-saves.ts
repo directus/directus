@@ -21,18 +21,37 @@ export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
 }
 
 export function mergeVersionSaves(
-	item: Item,
+	item: unknown,
 	versionData: Partial<Item>[],
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
+	console.log('item', typeof item, item, versionData);
+
+	if (typeof item !== "object" || item === null) {
+		if (versionData.length > 0) {
+			item = versionData.shift();
+		} else {
+			// no item and no versionData should not happen
+			console.error('no data?');
+			return item as Item;
+		}
+	}
+
+	console.log('item2', typeof item, item);
+
+	if (typeof item !== "object" || item === null) {
+		return item;
+	}
+
+
 	const relations = schema.relations.reduce(
 		(result, relation) => {
-			if (relation.related_collection === collection && relation.meta?.one_field && relation.meta.one_field in item) {
+			if (relation.related_collection === collection && relation.meta?.one_field && item && relation.meta.one_field in item) {
 				result[relation.meta.one_field] = relation.collection;
 			}
 
-			if (relation.collection === collection && relation.related_collection && relation.field in item) {
+			if (relation.collection === collection && relation.related_collection && item && relation.field in item) {
 				result[relation.field] = relation.related_collection;
 			}
 
@@ -44,8 +63,9 @@ export function mergeVersionSaves(
 	const result = { ...item };
 
 	for (const versionRecord of versionData) {
+		console.log('A', versionRecord, item);
 		for (const key in item) {
-			if (key in versionRecord === false) {
+			if (!versionRecord || key in versionRecord === false) {
 				continue;
 			}
 
