@@ -2,6 +2,7 @@
 import { DeepPartial, Field, Permission, Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;
