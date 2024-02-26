@@ -15,10 +15,10 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.10.0
 
-### Deprecated Local Extension Folders
+### Removed Local Extension Folders
 
 Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
-deprecated in favor of relying on the `package.json` file for metadata including extension type.
+removed in favor of relying on the `package.json` file for metadata including extension type.
 
 If your extension is already in the root `extensions` directory and has a `package.json` file with a
 `directus:extension` object, there is no action required.
