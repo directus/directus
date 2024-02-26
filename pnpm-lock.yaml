@@ -617,8 +617,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/interaction':
-        specifier: 6.1.7
-        version: 6.1.7(@fullcalendar/core@6.1.7)
+        specifier: 6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.7)
       '@fullcalendar/list':
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
@@ -5049,10 +5049,10 @@ packages:
       '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/interaction@6.1.7(@fullcalendar/core@6.1.7):
-    resolution: {integrity: sha512-C2KHSinc9cFUTcGYxRSIj7cBYNSroce+1d2Wa+HKVHguVv4kQuEvm/oPxJpTLXqFjNLfxyxVac7Zd4U0znjFtg==}
+  /@fullcalendar/interaction@6.1.11(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-ynOKjzuPwEAMgTQ6R/Z2zvzIIqG4p8/Qmnhi1q0vzPZZxSIYx3rlZuvpEK2WGBZZ1XEafDOP/LGfbWoNZe+qdg==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.7
+      '@fullcalendar/core': ~6.1.11
     dependencies:
       '@fullcalendar/core': 6.1.7
     dev: true
