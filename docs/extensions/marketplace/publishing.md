@@ -67,15 +67,20 @@ Marketplace listing and extension detail page.
 :::info Publishing Your `dist` Directory on npm
 
 If you use the `create-directus-extension` CLI utility, the `dist` directory will be added to your `.gitignore` as it
-contains only the output files from running the build command. npm will, by default, use your `.gitignore` to determine
-which files are uploaded to the registry, ignoring your built files. Ensure that your `package.json` file contains the
-following property:
+contains only the output files from running the build command.
+
+npm will, by default, use your `.gitignore` to determine which files are uploaded to the registry, ignoring your built
+files.
+
+Ensure that your `package.json` file contains the following property:
 
 ```json
 {
 	"files": ["dist"]
 }
 ```
+
+In newer versions of `create-directus-extension`, this will be automatically added when creating a new extension.
 
 :::
 
