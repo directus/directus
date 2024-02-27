@@ -161,7 +161,7 @@
 		"rate-limiter-flexible": "4.0.1",
 		"rollup": "4.10.0",
 		"samlify": "2.8.10",
-		"sanitize-html": "2.12.0",
+		"sanitize-html": "2.12.1",
 		"sharp": "0.33.2",
 		"snappy": "7.2.2",
 		"stream-json": "1.8.0",
