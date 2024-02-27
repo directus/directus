@@ -620,8 +620,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@fullcalendar/list':
-        specifier: 6.1.7
-        version: 6.1.7(@fullcalendar/core@6.1.7)
+        specifier: 6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.7)
       '@fullcalendar/timegrid':
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
@@ -5057,10 +5057,10 @@ packages:
       '@fullcalendar/core': 6.1.7
     dev: true
 
-  /@fullcalendar/list@6.1.7(@fullcalendar/core@6.1.7):
-    resolution: {integrity: sha512-Fl6jGKylhrk+g/RCISsv66vzpzjCFhd4r3nUDeHTAAE375OYGlVPKpH67YaKxpMrofj82JLIzS3JEzyQBZo0Cg==}
+  /@fullcalendar/list@6.1.11(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-9Qx8uvik9pXD12u50FiHwNzlHv4wkhfsr+r03ycahW7vEeIAKCsIZGTkUfFP+96I5wHihrfLazu1cFQG4MPiuw==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.7
+      '@fullcalendar/core': ~6.1.11
     dependencies:
       '@fullcalendar/core': 6.1.7
     dev: true
