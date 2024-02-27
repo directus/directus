@@ -1,6 +1,5 @@
-import { tableIndexToIdentifier, type SqlConditionGeoNode } from '@directus/data-sql';
-import { applyJsonPathAsGeometry } from '../json-path.js';
-import { wrapColumn } from '../wrap-column.js';
+import { type SqlConditionGeoNode } from '@directus/data-sql';
+import { convertTarget } from '../convert-target.js';
 
 /**
  * Used to check if a geo shape intersects with another geo shape.
@@ -15,23 +14,13 @@ import { wrapColumn } from '../wrap-column.js';
  * @param condition
  * @returns
  */
-export const geoCondition = (condition: SqlConditionGeoNode): string => {
-	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
-	const column = wrapColumn(tableAlias, condition.target.columnName);
-
+export function geoCondition(condition: SqlConditionGeoNode): string {
 	const parameterIndex = condition.compareTo.parameterIndex;
 	const geomConvertedText = `ST_GeomFromText($${parameterIndex + 1})`;
+	const target = convertTarget(condition.target, 'geo');
 
-	if (condition.target.type === 'primitive') {
-		return getOperation(condition.operation, column, geomConvertedText);
-	} else if (condition.target.type === 'json') {
-		const jsonPath = applyJsonPathAsGeometry(column, condition.target.path);
-
-		return getOperation(condition.operation, jsonPath, geomConvertedText);
-	} else {
-		throw new Error('Not supported!');
-	}
-};
+	return getOperation(condition.operation, target, geomConvertedText);
+}
 
 function getOperation(
 	operation: SqlConditionGeoNode['operation'],

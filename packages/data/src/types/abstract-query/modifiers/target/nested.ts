@@ -11,6 +11,6 @@ export interface AbstractQueryTargetNestedOne {
 	/* From the related collection the user can pick primitives, apply a function or add another nested node */
 	field: AbstractQueryTarget;
 
-	/* A nested one target can only target m2o relationship */
+	/* A nested one target can be a relationship or a nested object  */
 	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedSingleObject;
 }

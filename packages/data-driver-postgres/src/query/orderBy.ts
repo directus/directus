@@ -1,8 +1,5 @@
-import { tableIndexToIdentifier, type AbstractSqlClauses } from '@directus/data-sql';
-import { escapeIdentifier } from '../utils/escape-identifier.js';
-import { applyFunction } from '../utils/functions.js';
-import { applyJsonPathAsObject } from '../utils/json-path.js';
-import { wrapColumn } from '../utils/wrap-column.js';
+import { type AbstractSqlClauses } from '@directus/data-sql';
+import { convertTarget } from '../utils/convert-target.js';
 
 /**
  * Generates the `ORDER BY x` part of a SQL statement.
@@ -17,18 +14,8 @@ export function orderBy({ order }: AbstractSqlClauses): string | null {
 	}
 
 	const sortExpressions = order.map((o) => {
-		if (o.orderBy.type === 'fn') {
-			return `${applyFunction(o.orderBy)} ${o.direction}`;
-		} else if (o.orderBy.type === 'json') {
-			const tableAlias = tableIndexToIdentifier(o.orderBy.tableIndex);
-			const column = wrapColumn(tableAlias, o.orderBy.columnName);
-
-			return `${applyJsonPathAsObject(column, o.orderBy.path)} ${o.direction}`;
-		} else {
-			const tableAlias = tableIndexToIdentifier(o.orderBy.tableIndex);
-
-			return `${escapeIdentifier(tableAlias)}.${escapeIdentifier(o.orderBy.columnName)} ${o.direction}`;
-		}
+		const target = convertTarget(o.orderBy);
+		return `${target} ${o.direction}`;
 	});
 
 	return `ORDER BY ${sortExpressions.join(', ')}`;

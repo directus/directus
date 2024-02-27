@@ -1,24 +1,13 @@
-import { tableIndexToIdentifier, type SqlConditionStringNode } from '@directus/data-sql';
-import { wrapColumn } from '../wrap-column.js';
-import { applyJsonPathAsString } from '../json-path.js';
+import { type SqlConditionStringNode } from '@directus/data-sql';
+import { convertTarget } from '../convert-target.js';
 
-export const stringCondition = (condition: SqlConditionStringNode, negate: boolean): string => {
-	const tableAlias = tableIndexToIdentifier(condition.target.tableIndex);
-
-	const column = wrapColumn(tableAlias, condition.target.columnName);
+export function stringCondition(condition: SqlConditionStringNode, negate: boolean): string {
 	const operator = getOperator(condition, negate);
 	const compareValue = getCompareValue(condition);
+	const target = convertTarget(condition.target);
 
-	if (condition.target.type === 'primitive') {
-		return `${column} ${operator} ${compareValue}`;
-	} else if (condition.target.type === 'json') {
-		const jsonPath = applyJsonPathAsString(column, condition.target.path);
-
-		return `${jsonPath} ${operator} ${compareValue}`;
-	} else {
-		throw new Error('Not supported!');
-	}
-};
+	return `${target} ${operator} ${compareValue}`;
+}
 
 function getOperator(condition: SqlConditionStringNode, negate: boolean) {
 	if (condition.operation === 'eq') {
