@@ -54,7 +54,7 @@ To be listed in the Marketplace, the `package.json` file must also contain the f
 {
 	"directus:extension": {
 		"host": "^10.3.3",
-		"type": "endpoint"
+		"type": "interface"
 	}
 }
 ```
