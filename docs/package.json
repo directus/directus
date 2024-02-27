@@ -20,7 +20,7 @@
 		"@directus/format-title": "10.1.0",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@pnpm/find-workspace-dir": "6.0.2",
+		"@pnpm/find-workspace-dir": "6.0.3",
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.1",
