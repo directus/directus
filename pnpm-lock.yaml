@@ -882,8 +882,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/tsconfig
       '@pnpm/find-workspace-dir':
-        specifier: 6.0.2
-        version: 6.0.2
+        specifier: 6.0.3
+        version: 6.0.3
       '@pnpm/find-workspace-packages':
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
@@ -6222,6 +6222,14 @@ packages:
     engines: {node: '>=16.14'}
     dependencies:
       '@pnpm/constants': 7.1.1
+    dev: false
+
+  /@pnpm/error@5.0.3:
+    resolution: {integrity: sha512-ONJU5cUeoeJSy50qOYsMZQHTA/9QKmGgh1ATfEpCLgtbdwqUiwD9MxHNeXUYYI/pocBCz6r1ZCFqiQvO+8SUKA==}
+    engines: {node: '>=16.14'}
+    dependencies:
+      '@pnpm/constants': 7.1.1
+    dev: true
 
   /@pnpm/fetcher-base@14.0.1:
     resolution: {integrity: sha512-DXPZ33CrmDQXnYzwvqyP7I0BF0MQELo4ah2JGpXhLhgOdzU+vj7zdKFo2x82L8anrK861IRi01V8o14oATq1vA==}
@@ -6241,11 +6249,11 @@ packages:
       - domexception
     dev: false
 
-  /@pnpm/find-workspace-dir@6.0.2:
-    resolution: {integrity: sha512-JSrpQUFCs4vY1D5tOmj7qBb+oE2j/lO6341giEdUpvYf3FijY8CY13l8rPjfHV2y3m//utzl0An+q+qx14S6Nw==}
+  /@pnpm/find-workspace-dir@6.0.3:
+    resolution: {integrity: sha512-0iJnNkS4T8lJE4ldOhRERgER1o59iHA1nMlvpUI5lxNC9SUruH6peRUOlP4/rNcDg+UQ9u0rt5loYOnWKCojtw==}
     engines: {node: '>=16.14'}
     dependencies:
-      '@pnpm/error': 5.0.2
+      '@pnpm/error': 5.0.3
       find-up: 5.0.0
     dev: true
 
