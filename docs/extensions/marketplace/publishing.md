@@ -29,8 +29,7 @@ infrastructure.
 ## Directus Extensions Registry
 
 Directus hosts and manages our own extensions registry, which currently mirrors the contents of npm with a new API that
-allows for greater searching/filtering. It also allows for security features such as the ability to store additional
-data - such as extension blocking/delisting.
+allows for greater searching/filtering. It also allows for security features such as extension blocking/delisting.
 
 In the future, the registry may allow extensions or authors to be 'verified' and inclusion of extensions from different
 sources on top of npm.
@@ -99,7 +98,7 @@ The extension title displayed in the extension detail page is based on your npm 
 processing:
 
 - The `directus-extension-` prefix is removed, if present.
-- The package's scope is removed, is present.
+- The package's scope is removed, if present.
 - The title is parsed by the [Title Formatter](https://github.com/directus/format-title) used throughout the Data
   Studio.
 
