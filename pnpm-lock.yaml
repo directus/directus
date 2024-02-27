@@ -168,8 +168,8 @@ importers:
         specifier: workspace:*
         version: link:../directus
       dotenv:
-        specifier: 16.4.4
-        version: 16.4.4
+        specifier: 16.4.5
+        version: 16.4.5
       encodeurl:
         specifier: 1.0.2
         version: 1.0.2
@@ -1206,8 +1206,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       dotenv:
-        specifier: 16.4.4
-        version: 16.4.4
+        specifier: 16.4.5
+        version: 16.4.5
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -10748,8 +10748,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /dotenv@16.4.4:
-    resolution: {integrity: sha512-XvPXc8XAQThSjAbY6cQ/9PcBXmFoWuw1sQ3b8HqUCR6ziGXjkTi//kB9SWa2UwqlgdAIuRqAa/9hVljzPehbYg==}
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
     dev: false
 
