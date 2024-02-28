@@ -476,7 +476,7 @@ const allowDrag = computed(
 
 <style lang="scss" scoped>
 .v-list {
-	--v-list-padding: 0 0 4px;
+	--v-list-padding: 0 0 2px;
 }
 
 .v-list-item {
