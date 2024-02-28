@@ -86,9 +86,7 @@ function recursiveMerging(
 			if (Array.isArray(currentValue)) {
 				if (alterations.delete.length > 0) {
 					for (const currentItem of currentValue) {
-						const currentId = typeof currentItem === 'object'
-							? currentItem[currentPrimaryKeyField]
-							: currentItem;
+						const currentId = typeof currentItem === 'object' ? currentItem[currentPrimaryKeyField] : currentItem;
 						if (alterations.delete.includes(currentId) === false) {
 							mergedRelation.push(currentItem);
 						}
@@ -98,7 +96,9 @@ function recursiveMerging(
 				if (alterations.update.length > 0) {
 					for (const updatedItem of alterations.update) {
 						// find existing item to update
-						const item = mergedRelation.find((currentItem) => currentItem[relatedPrimaryKeyField] === updatedItem[currentPrimaryKeyField]);
+						const item = mergedRelation.find(
+							(currentItem) => currentItem[relatedPrimaryKeyField] === updatedItem[currentPrimaryKeyField],
+						);
 
 						// console.log('debug', item, updatedItem);
 

@@ -515,7 +515,11 @@ describe('content versioning mergeVersionSaves', () => {
 				testSchema,
 			);
 
-			expect(result).toMatchObject({ id: 2, status: 'draft', o2m: [{ m2o: '2', id: 2 }, { m2o: '2', id: 3 }, { status: 'draft' }] });
+			expect(result).toMatchObject({
+				id: 2,
+				status: 'draft',
+				o2m: [{ m2o: '2', id: 2 }, { m2o: '2', id: 3 }, { status: 'draft' }],
+			});
 		});
 
 		// test('', () => {});
