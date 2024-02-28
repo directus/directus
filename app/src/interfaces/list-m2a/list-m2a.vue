@@ -347,9 +347,9 @@ const allowDrag = computed(
 			/>
 		</template>
 
-		<v-list v-else>
-			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
+		<v-notice v-else-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
+		<v-list v-else>
 			<draggable
 				:model-value="displayItems"
 				item-key="$index"

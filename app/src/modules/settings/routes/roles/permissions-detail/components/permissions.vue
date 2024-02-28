@@ -64,7 +64,7 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 	</div>
 </template>
 
-<style lang="scss">
+<style scoped>
 .v-notice {
 	margin-bottom: 36px;
 }
