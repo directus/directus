@@ -26,6 +26,11 @@ export function mergeVersionSaves(
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
+	// console.log('-------------------------');
+	// console.log(JSON.stringify(item, null, 2));
+	// console.log(JSON.stringify(versionData, null, 2));
+	// console.log('-------------------------');
+
 	if (versionData.length === 0) return item;
 
 	return recursiveMerging(item, versionData, collection, schema) as Item;
@@ -60,14 +65,14 @@ function recursiveMerging(
 				continue;
 			}
 
-			// console.log('a', {key, currentValue, newValue});
+			// console.log('a', { key, currentValue, newValue });
 
 			const { error } = alterationSchema.validate(newValue);
 
 			if (error) {
 				if (typeof newValue === 'object' && key in relations) {
 					const newItem = !currentValue || typeof currentValue !== 'object' ? newValue : currentValue;
-					// console.log('recur', {newItem, newValue, rel:relations[key]});
+					// console.log('recur', { newItem, newValue, rel: relations[key] });
 					result[key] = mergeVersionSaves(newItem, [newValue], relations[key]!, schema);
 				}
 
@@ -91,24 +96,37 @@ function recursiveMerging(
 							mergedRelation.push(currentItem);
 						}
 					}
+				} else {
+					mergedRelation.push(...currentValue);
 				}
 
 				if (alterations.update.length > 0) {
 					for (const updatedItem of alterations.update) {
 						// find existing item to update
-						const item = mergedRelation.find(
+						const itemIndex = mergedRelation.findIndex(
 							(currentItem) => currentItem[relatedPrimaryKeyField] === updatedItem[currentPrimaryKeyField],
 						);
 
-						// console.log('debug', item, updatedItem);
+						// console.log('debug', itemIndex, updatedItem);
 
-						if (!item) {
-							// nothing to update so add the item as is
-							mergedRelation.push(updatedItem);
+						if (itemIndex === -1) {
+							// check for raw primary keys
+							const pkIndex = mergedRelation.findIndex(
+								(currentItem) => currentItem === updatedItem[currentPrimaryKeyField],
+							);
+
+							if (pkIndex === -1) {
+								// nothing to update so add the item as is
+								mergedRelation.push(updatedItem);
+							} else {
+								mergedRelation[pkIndex] = updatedItem;
+							}
+
 							continue;
 						}
 
-						mergedRelation.push({ ...item, ...updatedItem });
+						const item = mergedRelation[itemIndex];
+						mergedRelation[itemIndex] = { ...item, ...updatedItem };
 					}
 				}
 			}

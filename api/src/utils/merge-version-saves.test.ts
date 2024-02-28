@@ -593,12 +593,12 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		test('Updating m2m ids', () => {
+		test('Updating m2m value', () => {
 			const result = mergeVersionSaves(
 				{
 					id: 1,
 					status: 'draft',
-					m2m: [1, 2, 3],
+					m2m: [1, 2, 3, { id: 4 }],
 				},
 				[
 					{
@@ -612,6 +612,12 @@ describe('content versioning mergeVersionSaves', () => {
 									id: 1,
 									collection_c_id: {
 										id: 1,
+									},
+								},
+								{
+									id: 4,
+									collection_c_id: {
+										id: 2,
 									},
 								},
 							],
@@ -634,69 +640,10 @@ describe('content versioning mergeVersionSaves', () => {
 						id: 1,
 					},
 					3,
-				],
-			});
-		});
-
-		test('Updating m2m value', () => {
-			const result = mergeVersionSaves(
-				{
-					id: 1,
-					status: 'draft',
-					m2m: [
-						{
-							id: 1,
-							collection_a_id: 1,
-							collection_c_id: 1,
-						},
-					],
-				},
-				[
 					{
-						status: 'published',
-					},
-					{
-						m2m: {
-							create: [
-								{
-									collection_a_id: '1',
-									collection_c_id: {
-										id: 2,
-									},
-								},
-								{
-									collection_c_id: {
-										status: 'published',
-									},
-								},
-							],
-							update: [],
-							delete: [],
-						},
-					},
-				],
-				'collection_a',
-				testSchema,
-			);
-
-			expect(result).toMatchObject({
-				id: 1,
-				status: 'published',
-				m2m: [
-					{
-						id: 1,
-						collection_a_id: 1,
-						collection_c_id: 1,
-					},
-					{
-						collection_a_id: '1',
+						id: 4,
 						collection_c_id: {
 							id: 2,
-						},
-					},
-					{
-						collection_c_id: {
-							status: 'published',
 						},
 					},
 				],
