@@ -13,7 +13,11 @@
 	"author": "Tim de Heiden <tim@directus.io>",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
