@@ -1,11 +1,8 @@
 import type { RequestHandler } from 'express';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
-import { mergeVersionsRaw, mergeVersionSaves } from '../utils/merge-version-saves.js';
+import { mergeVersionsRaw, mergeVersionsRecursive } from '../utils/merge-version-data.js';
 
-/**
- * Checks and merges
- */
 export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (
 		req.sanitizedQuery.version &&
@@ -32,7 +29,7 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 		if (req.sanitizedQuery.versionRaw) {
 			res.locals['payload'].data = mergeVersionsRaw(originalData, versionData);
 		} else {
-			res.locals['payload'].data = mergeVersionSaves(originalData, versionData, req.collection, req.schema);
+			res.locals['payload'].data = mergeVersionsRecursive(originalData, versionData, req.collection, req.schema);
 		}
 	}
 

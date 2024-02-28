@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { mergeVersionSaves, mergeVersionsRaw } from './merge-version-saves.js';
+import { mergeVersionsRecursive, mergeVersionsRaw } from './merge-version-data.js';
 import type { SchemaOverview } from '@directus/types';
 
 describe('content versioning mergeVersionsRaw', () => {
@@ -37,7 +37,7 @@ describe('content versioning mergeVersionsRaw', () => {
 	});
 });
 
-describe('content versioning mergeVersionSaves', () => {
+describe('content versioning mergeVersionsRecursive', () => {
 	const testSchema: SchemaOverview = {
 		collections: {
 			collection_a: {
@@ -687,14 +687,14 @@ describe('content versioning mergeVersionSaves', () => {
 	};
 
 	test('No versions available', () => {
-		const result = mergeVersionSaves({ status: 'draft' }, [], 'collection_a', testSchema);
+		const result = mergeVersionsRecursive({ status: 'draft' }, [], 'collection_a', testSchema);
 
 		expect(result).toMatchObject({ status: 'draft' });
 	});
 
 	describe('m2o field', () => {
 		test('Setting m2o value', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{ id: 1, status: 'draft', m2o: null },
 				[{ status: 'published' }, { m2o: 1 }],
 				'collection_a',
@@ -705,7 +705,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('Unsetting m2o value', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{ id: 1, status: 'draft', m2o: { id: 1, status: 'draft' } },
 				[{ status: 'published', m2o: null }],
 				'collection_a',
@@ -716,7 +716,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('Updating m2o value', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{ id: 1, status: 'draft', m2o: { id: 1, test: 'data', status: 'draft' } },
 				[{ status: 'published' }, { m2o: { id: 1, status: 'published' } }],
 				'collection_a',
@@ -729,7 +729,7 @@ describe('content versioning mergeVersionSaves', () => {
 
 	describe('o2m field', () => {
 		test('Setting o2m values', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{ id: 2, status: 'draft', o2m: [] },
 				[
 					{
@@ -761,7 +761,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('Updating o2m values', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{ id: 1, status: 'draft', o2m: [1, 2, 3, { id: 4, test: 'value' }, { id: 5 }] },
 				[
 					{
@@ -812,7 +812,7 @@ describe('content versioning mergeVersionSaves', () => {
 
 	describe('m2m field', () => {
 		test('Adding related items', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 1,
 					status: 'draft',
@@ -864,7 +864,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('Updating m2m values', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 1,
 					status: 'draft',
@@ -934,7 +934,7 @@ describe('content versioning mergeVersionSaves', () => {
 
 	describe('m2a field', () => {
 		test('Adding related items', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 1,
 					status: 'draft',
@@ -1015,7 +1015,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('Updating m2a values', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 1,
 					status: 'draft',
@@ -1110,7 +1110,7 @@ describe('content versioning mergeVersionSaves', () => {
 
 	describe('nested relations', () => {
 		test('m2o > translation', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 1,
 					status: 'draft',
@@ -1193,7 +1193,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('m2m > translations', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 3,
 					status: 'draft',
@@ -1305,7 +1305,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('m2a > translations', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 4,
 					status: 'draft',
@@ -1422,7 +1422,7 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 
 		test('creating nested relations', () => {
-			const result = mergeVersionSaves(
+			const result = mergeVersionsRecursive(
 				{
 					id: 2,
 					status: 'draft',

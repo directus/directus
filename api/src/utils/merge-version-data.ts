@@ -20,7 +20,7 @@ export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
 	return result;
 }
 
-export function mergeVersionSaves(
+export function mergeVersionsRecursive(
 	item: Item,
 	versionData: Partial<Item>[],
 	collection: string,
@@ -59,7 +59,7 @@ function recursiveMerging(
 				// check for m2a exception
 				if (isManyToAnyCollection(collection, schema) && key === 'item') {
 					const item = addMissingKeys(currentValue && typeof currentValue === 'object' ? currentValue : {}, newValue);
-					result[key] = mergeVersionSaves(item, [newValue], data['collection'], schema);
+					result[key] = recursiveMerging(item, [newValue], data['collection'], schema);
 				} else {
 					// item is not a relation
 					result[key] = newValue;
@@ -73,7 +73,7 @@ function recursiveMerging(
 			if (error) {
 				if (typeof newValue === 'object' && key in relations) {
 					const newItem = !currentValue || typeof currentValue !== 'object' ? newValue : currentValue;
-					result[key] = mergeVersionSaves(newItem, [newValue], relations[key]!, schema);
+					result[key] = recursiveMerging(newItem, [newValue], relations[key]!, schema);
 				}
 
 				continue;
@@ -124,7 +124,7 @@ function recursiveMerging(
 
 						const item = addMissingKeys(mergedRelation[itemIndex]!, updatedItem);
 
-						mergedRelation[itemIndex] = mergeVersionSaves(item, [updatedItem], relations[key]!, schema);
+						mergedRelation[itemIndex] = recursiveMerging(item, [updatedItem], relations[key]!, schema) as Item;
 					}
 				}
 			}
@@ -132,7 +132,7 @@ function recursiveMerging(
 			if (alterations.create.length > 0) {
 				for (const createdItem of alterations.create) {
 					const item = addMissingKeys({}, createdItem);
-					mergedRelation.push(mergeVersionSaves(item, [createdItem], relations[key]!, schema));
+					mergedRelation.push(recursiveMerging(item, [createdItem], relations[key]!, schema) as Item);
 				}
 			}
 

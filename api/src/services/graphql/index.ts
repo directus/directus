@@ -53,7 +53,7 @@ import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
-import { mergeVersionSaves } from '../../utils/merge-version-saves.js';
+import { mergeVersionsRecursive } from '../../utils/merge-version-data.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
@@ -1537,15 +1537,11 @@ export class GraphQLService {
 
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
-					mergeVersionSaves(result, saves, collection, this.schema);
-
-					return result;
+					return mergeVersionsRecursive(result, saves, collection, this.schema);
 				} else {
 					if (result?.[0] === undefined) return null;
 
-					mergeVersionSaves(result[0], saves, collection, this.schema);
-
-					return result[0];
+					return mergeVersionsRecursive(result[0], saves, collection, this.schema);
 				}
 			}
 		}
