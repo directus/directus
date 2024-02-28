@@ -1257,7 +1257,7 @@ describe('content versioning mergeVersionSaves', () => {
 													id: 2,
 												},
 											],
-											delete: [],
+											delete: [1],
 										},
 										id: 1,
 									},
@@ -1284,8 +1284,10 @@ describe('content versioning mergeVersionSaves', () => {
 								{
 									id: 2,
 									collection_c_id: 1,
-									languages_id: 'de-DE',
-									text: 'de-de',
+									text: 'german',
+									languages_id: {
+										code: 'de-DE',
+									}
 								},
 								{
 									text: 'english',
@@ -1400,7 +1402,9 @@ describe('content versioning mergeVersionSaves', () => {
 								{
 									id: 2,
 									collection_c_id: 1,
-									languages_id: 'de-DE',
+									languages_id: {
+										code: 'de-DE',
+									},
 									text: 'german',
 								},
 								{
