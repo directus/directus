@@ -533,11 +533,54 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		// test('Updating o2m value', () => {
-		// 	const result = mergeVersionSaves({ id: 1, status: 'draft', o2m: [] }, [], 'collection_a', testSchema);
+		test('Updating o2m values', () => {
+			const result = mergeVersionSaves(
+				{ id: 1, status: 'draft', o2m: [1, 2, 3, { id: 4, test: 'value' }, { id: 5 }] },
+				[
+					{
+						status: 'published',
+					},
+					{
+						o2m: {
+							create: [
+								{
+									test: 'new',
+								},
+							],
+							update: [
+								{
+									id: 1,
+								},
+								{
+									id: 4,
+								},
+							],
+							delete: [2, 5],
+						},
+					},
+				],
+				'collection_b',
+				testSchema,
+			);
 
-		// 	expect(result).toMatchObject({ id: 1, status: 'published' });
-		// });
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'published',
+				o2m: [
+					{
+						id: 1,
+					},
+					3,
+					{
+						id: 4,
+						test: 'value',
+					},
+					{
+						test: 'new',
+					},
+				],
+			});
+		});
 	});
 
 	describe('m2m field', () => {
@@ -593,12 +636,12 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		test('Updating m2m value', () => {
+		test('Updating m2m values', () => {
 			const result = mergeVersionSaves(
 				{
 					id: 1,
 					status: 'draft',
-					m2m: [1, 2, 3, { id: 4 }],
+					m2m: [1, 2, 3, { id: 4 }, { id: 5 }],
 				},
 				[
 					{
@@ -606,7 +649,13 @@ describe('content versioning mergeVersionSaves', () => {
 					},
 					{
 						m2m: {
-							create: [],
+							create: [
+								{
+									collection_c_id: {
+										id: 3,
+									},
+								},
+							],
 							update: [
 								{
 									id: 1,
@@ -621,7 +670,7 @@ describe('content versioning mergeVersionSaves', () => {
 									},
 								},
 							],
-							delete: [2],
+							delete: [2, 5],
 						},
 					},
 				],
@@ -644,6 +693,11 @@ describe('content versioning mergeVersionSaves', () => {
 						id: 4,
 						collection_c_id: {
 							id: 2,
+						},
+					},
+					{
+						collection_c_id: {
+							id: 3,
 						},
 					},
 				],
@@ -733,17 +787,98 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		// test('Updating m2a value', () => {
-		// 	const result = mergeVersionSaves(
-		// 		{ id: 1, status: 'draft', },
-		// 		[],
-		// 		'collection_a',
-		// 		testSchema,
-		// 	);
+		test('Updating m2a values', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2a: [
+						1,
+						{
+							id: 2,
+							collection_a_id: 1,
+							item: '1',
+							collection: 'collection_c',
+						},
+						3,
+						{ id: 4 },
+						{
+							id: 5,
+							collection_a_id: 1,
+							item: '1',
+							collection: 'collection_b',
+						},
+					],
+				},
+				[
+					{
+						status: 'published',
+					},
+					{
+						m2a: {
+							create: [
+								{
+									collection: 'collection_c',
+									item: {
+										status: 'published',
+									},
+								},
+							],
+							update: [
+								{
+									collection: 'collection_b',
+									item: {
+										status: 'published',
+										id: 1,
+									},
+									id: 1,
+								},
+								{
+									collection: 'collection_b',
+									item: {
+										id: '2',
+									},
+									id: 5,
+								},
+							],
+							delete: [2, 4],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
 
-		// 	expect(result).toMatchObject({ id: 1, status: 'published' });
-		// });
-		// test('', () => {});
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'published',
+				m2a: [
+					{
+						id: 1,
+						item: {
+							status: 'published',
+							id: 1,
+						},
+						collection: 'collection_b',
+					},
+					3,
+					{
+						id: 5,
+						collection_a_id: 1,
+						item: {
+							id: '2',
+						},
+						collection: 'collection_b',
+					},
+					{
+						collection: 'collection_c',
+						item: {
+							status: 'published',
+						},
+					},
+				],
+			});
+		});
 	});
 
 	// describe('nested relations', () => {
