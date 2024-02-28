@@ -26,50 +26,51 @@ export function mergeVersionSaves(
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
-	if (typeof item !== "object" || item === null) {
-		return item;
-	}
+	if (versionData.length === 0) return item;
 
-	const relations = schema.relations.reduce(
-		(result, relation) => {
-			if (relation.related_collection === collection && relation.meta?.one_field && item && relation.meta.one_field in item) {
-				result[relation.meta.one_field] = relation.collection;
-			}
+	return recursiveMerging(item, versionData, collection, schema) as Item;
+}
 
-			if (relation.collection === collection && relation.related_collection && item && relation.field in item) {
-				result[relation.field] = relation.related_collection;
-			}
-
-			return result;
-		},
-		{} as Record<string, string>,
-	);
-
-	const result = { ...item };
+function recursiveMerging(
+	data: Item,
+	versionData: Partial<Item>[],
+	collection: string,
+	schema: SchemaOverview,
+): unknown {
+	const result = { ...data };
+	const relations = getRelations(collection, schema);
 
 	for (const versionRecord of versionData) {
-		for (const key in item) {
+		for (const key in data) {
 			if (!versionRecord || key in versionRecord === false) {
 				continue;
 			}
 
-			const currentValue = item[key];
+			const currentValue = data[key];
 			const newValue = versionRecord[key];
+
+			if (typeof newValue !== 'object' || newValue === null) {
+				// primitive type substitution
+				result[key] = newValue;
+				continue;
+			}
+
+			if (key in relations === false) {
+				// item is not a relation
+				continue;
+			}
+
+			// console.log('a', {key, currentValue, newValue});
 
 			const { error } = alterationSchema.validate(newValue);
 
 			if (error) {
 				if (typeof newValue === 'object' && key in relations) {
 					const newItem = !currentValue || typeof currentValue !== 'object' ? newValue : currentValue;
+					// console.log('recur', {newItem, newValue, rel:relations[key]});
 					result[key] = mergeVersionSaves(newItem, [newValue], relations[key]!, schema);
-				} else {
-					result[key] = newValue;
 				}
 
-				continue;
-			}
-
-			if (key in relations === false) {
 				continue;
 			}
 
@@ -80,33 +81,41 @@ export function mergeVersionSaves(
 			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
 
 			let mergedRelation: Item[] = [];
+			// console.log(currentValue, alterations)
 
 			if (Array.isArray(currentValue)) {
-				mergedRelation = currentValue
-					.filter((child: any) => {
-						if (child?.[currentPrimaryKeyField]) return !alterations.delete.includes(child[currentPrimaryKeyField]);
-						return !alterations.delete.includes(child);
-					})
-					.map((child: any) => {
-						if (child?.[currentPrimaryKeyField]) {
-							const updates = alterations.update.find(
-								(updatedItem) => updatedItem[relatedPrimaryKeyField] === child[currentPrimaryKeyField],
-							);
+				if (alterations.delete.length > 0) {
+					for (const currentItem of currentValue) {
+						const currentId = typeof currentItem === 'object'
+							? currentItem[currentPrimaryKeyField]
+							: currentItem;
+						if (alterations.delete.includes(currentId) === false) {
+							mergedRelation.push(currentItem);
+						}
+					}
+				}
 
-							if (updates) return { ...child, ...updates };
+				if (alterations.update.length > 0) {
+					for (const updatedItem of alterations.update) {
+						// find existing item to update
+						const item = mergedRelation.find((currentItem) => currentItem[relatedPrimaryKeyField] === updatedItem[currentPrimaryKeyField]);
+
+						// console.log('debug', item, updatedItem);
+
+						if (!item) {
+							// nothing to update so add the item as is
+							mergedRelation.push(updatedItem);
+							continue;
 						}
 
-						const updates = alterations.update.find((updatedItem) => updatedItem[relatedPrimaryKeyField] === child);
-
-						if (updates) return updates;
-
-						return child;
-					});
+						mergedRelation.push({ ...item, ...updatedItem });
+					}
+				}
 			}
 
 			if (alterations.create.length > 0) {
-				for (const relatedItem of alterations.create) {
-					mergedRelation.push(relatedItem);
+				for (const createdItem of alterations.create) {
+					mergedRelation.push(createdItem);
 				}
 			}
 
@@ -115,4 +124,21 @@ export function mergeVersionSaves(
 	}
 
 	return result;
+}
+
+function getRelations(collection: string, schema: SchemaOverview) {
+	return schema.relations.reduce(
+		(result, relation) => {
+			if (relation.related_collection === collection && relation.meta?.one_field) {
+				result[relation.meta.one_field] = relation.collection;
+			}
+
+			if (relation.collection === collection && relation.related_collection) {
+				result[relation.field] = relation.related_collection;
+			}
+
+			return result;
+		},
+		{} as Record<string, string>,
+	);
 }
