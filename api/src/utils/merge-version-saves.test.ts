@@ -467,23 +467,202 @@ describe('content versioning mergeVersionSaves', () => {
 
 	describe('m2o field', () => {
 		test('Setting m2o value', () => {
-			const result = mergeVersionSaves({ id: 1, status: 'draft', m2o: null }, [{ status: 'published' }, { m2o: 1 }], 'collection_a', testSchema);
+			const result = mergeVersionSaves(
+				{ id: 1, status: 'draft', m2o: null },
+				[{ status: 'published' }, { m2o: 1 }],
+				'collection_a',
+				testSchema,
+			);
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: 1 });
 		});
 
 		test('Unsetting m2o value', () => {
-			const result = mergeVersionSaves({ id: 1, status: 'draft', m2o: { id: 1, status: 'draft' } }, [{ status: 'published', m2o: null }], 'collection_a', testSchema);
+			const result = mergeVersionSaves(
+				{ id: 1, status: 'draft', m2o: { id: 1, status: 'draft' } },
+				[{ status: 'published', m2o: null }],
+				'collection_a',
+				testSchema,
+			);
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: null });
 		});
 	});
 
-	// describe('o2m field', () => {});
+	describe('o2m field', () => {
+		test('Setting o2m values', () => {
+			const result = mergeVersionSaves(
+				{ id: 2, status: 'draft', o2m: [] },
+				[
+					{
+						o2m: {
+							create: [{ status: 'draft' }],
+							update: [
+								{
+									m2o: '2',
+									id: 2,
+								},
+								{
+									m2o: '2',
+									id: 3,
+								},
+							],
+							delete: [],
+						},
+					},
+				],
+				'collection_b',
+				testSchema,
+			);
 
-	// describe('m2m field', () => {});
+			expect(result).toMatchObject({ id: 2, status: 'draft', o2m: [{ status: 'draft' }, 2, 3] });
+		});
 
-	// describe('m2a field', () => {});
+		// test('', () => {});
+	});
 
-	// describe('nested relations', () => {});
+	describe('m2m field', () => {
+		test('Adding related items', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2m: [],
+				},
+				[
+					{
+						status: 'published',
+						m2m: {
+							create: [
+								{
+									collection_c_id: {
+										status: 'published',
+									},
+								},
+								{
+									collection_a_id: '1',
+									collection_c_id: {
+										id: 1,
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'published',
+				m2m: [
+					{
+						collection_c_id: {
+							status: 'published',
+						},
+					},
+					{
+						collection_a_id: '1',
+						collection_c_id: {
+							id: 1,
+						},
+					},
+				],
+			});
+		});
+
+		// test('', () => {});
+	});
+
+	describe('m2a field', () => {
+		test('Adding related items', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2a: [],
+				},
+				[
+					{
+						m2a: {
+							create: [
+								{
+									collection_a_id: '1',
+									collection: 'collection_b',
+									item: {
+										id: 2,
+									},
+								},
+								{
+									collection_a_id: '1',
+									collection: 'collection_c',
+									item: {
+										id: 1,
+									},
+								},
+								{
+									collection: 'collection_b',
+									item: {
+										status: 'published',
+									},
+								},
+								{
+									collection: 'collection_c',
+									item: {
+										status: 'published',
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'draft',
+				m2a: [
+					{
+						collection_a_id: '1',
+						collection: 'collection_b',
+						item: {
+							id: 2,
+						},
+					},
+					{
+						collection_a_id: '1',
+						collection: 'collection_c',
+						item: {
+							id: 1,
+						},
+					},
+					{
+						collection: 'collection_b',
+						item: {
+							status: 'published',
+						},
+					},
+					{
+						collection: 'collection_c',
+						item: {
+							status: 'published',
+						},
+					},
+				],
+			});
+		});
+
+		// test('', () => {});
+	});
+
+	// describe('nested relations', () => {
+	// TODO
+	// });
 });
