@@ -85,12 +85,13 @@ function recursiveMerging(
 			const currentPrimaryKeyField = schema.collections[collection]!.primary;
 			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
 
-			let mergedRelation: Item[] = [];
+			const mergedRelation: Item[] = [];
 
 			if (Array.isArray(currentValue)) {
 				if (alterations.delete.length > 0) {
 					for (const currentItem of currentValue) {
 						const currentId = typeof currentItem === 'object' ? currentItem[currentPrimaryKeyField] : currentItem;
+
 						if (alterations.delete.includes(currentId) === false) {
 							mergedRelation.push(currentItem);
 						}
@@ -145,11 +146,13 @@ function recursiveMerging(
 
 function addMissingKeys(item: Item, edits: Item) {
 	const result: Item = { ...item };
+
 	for (const key in edits) {
 		if (key in item === false) {
 			result[key] = null;
 		}
 	}
+
 	return result;
 }
 
@@ -157,6 +160,7 @@ function isManyToAnyCollection(collection: string, schema: SchemaOverview) {
 	const relation = schema.relations.find(
 		(relation) => relation.collection === collection && relation.meta?.many_collection === collection,
 	);
+
 	if (!relation || !relation.meta?.one_field || !relation.related_collection) return false;
 
 	return Boolean(
