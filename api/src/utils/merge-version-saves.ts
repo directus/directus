@@ -26,14 +26,6 @@ export function mergeVersionSaves(
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
-	console.log('-------------------------');
-	console.log(JSON.stringify(item, null, 2));
-	console.log(JSON.stringify(versionData, null, 2));
-	console.log(collection/*, schema.collections[collection]*/)
-	// writeFileSync('test.json', JSON.stringify(schema, null, 2));
-	// console.log(JSON.stringify(schema.collections['collection_c'], null, 2));
-	console.log('-------------------------');
-
 	if (versionData.length === 0) return item;
 
 	return recursiveMerging(item, versionData, collection, schema) as Item;
@@ -66,7 +58,7 @@ function recursiveMerging(
 			if (key in relations === false) {
 				// check for m2a exception
 				if (isManyToAnyCollection(collection, schema) && key === 'item') {
-					const item = addMissingKeys(currentValue && typeof currentValue === "object" ? currentValue : {}, newValue);
+					const item = addMissingKeys(currentValue && typeof currentValue === 'object' ? currentValue : {}, newValue);
 					result[key] = mergeVersionSaves(item, [newValue], data['collection'], schema);
 				} else {
 					// item is not a relation
@@ -75,8 +67,6 @@ function recursiveMerging(
 
 				continue;
 			}
-
-			console.log('a', { key, currentValue, newValue });
 
 			const { error } = alterationSchema.validate(newValue);
 
@@ -96,7 +86,6 @@ function recursiveMerging(
 			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
 
 			let mergedRelation: Item[] = [];
-			// console.log(currentValue, alterations)
 
 			if (Array.isArray(currentValue)) {
 				if (alterations.delete.length > 0) {
@@ -117,8 +106,6 @@ function recursiveMerging(
 							(currentItem) => currentItem[relatedPrimaryKeyField] === updatedItem[currentPrimaryKeyField],
 						);
 
-						// console.log('debug', itemIndex, updatedItem);
-
 						if (itemIndex === -1) {
 							// check for raw primary keys
 							const pkIndex = mergedRelation.findIndex(
@@ -137,7 +124,6 @@ function recursiveMerging(
 
 						const item = addMissingKeys(mergedRelation[itemIndex]!, updatedItem);
 
-						// console.log('why?', mergedRelation[itemIndex]!, updatedItem, '=', item)
 						mergedRelation[itemIndex] = mergeVersionSaves(item, [updatedItem], relations[key]!, schema);
 					}
 				}
@@ -146,7 +132,6 @@ function recursiveMerging(
 			if (alterations.create.length > 0) {
 				for (const createdItem of alterations.create) {
 					const item = addMissingKeys({}, createdItem);
-					console.log('whu?', [item, createdItem])
 					mergedRelation.push(mergeVersionSaves(item, [createdItem], relations[key]!, schema));
 				}
 			}
@@ -169,10 +154,14 @@ function addMissingKeys(item: Item, edits: Item) {
 }
 
 function isManyToAnyCollection(collection: string, schema: SchemaOverview) {
-	const relation = schema.relations.find((relation) => relation.collection === collection && relation.meta?.many_collection === collection);
+	const relation = schema.relations.find(
+		(relation) => relation.collection === collection && relation.meta?.many_collection === collection,
+	);
 	if (!relation || !relation.meta?.one_field || !relation.related_collection) return false;
 
-	return Boolean(schema.collections[relation.related_collection]?.fields[relation.meta.one_field]?.special.includes('m2a'));
+	return Boolean(
+		schema.collections[relation.related_collection]?.fields[relation.meta.one_field]?.special.includes('m2a'),
+	);
 }
 
 function getRelations(collection: string, schema: SchemaOverview) {

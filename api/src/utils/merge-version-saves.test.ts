@@ -1287,7 +1287,7 @@ describe('content versioning mergeVersionSaves', () => {
 									text: 'german',
 									languages_id: {
 										code: 'de-DE',
-									}
+									},
 								},
 								{
 									text: 'english',
