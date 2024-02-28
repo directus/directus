@@ -90,6 +90,20 @@ describe('content versioning mergeVersionSaves', () => {
 						alias: false,
 						validation: null,
 					},
+					m2o_c: {
+						field: 'm2o_c',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'integer',
+						dbType: 'integer',
+						precision: null,
+						scale: null,
+						special: ['m2o'],
+						note: null,
+						alias: false,
+						validation: null,
+					},
 					m2m: {
 						field: 'm2m',
 						defaultValue: null,
@@ -208,6 +222,20 @@ describe('content versioning mergeVersionSaves', () => {
 						alias: false,
 						validation: null,
 					},
+					translations: {
+						field: 'translations',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'alias',
+						dbType: null,
+						precision: null,
+						scale: null,
+						special: ['translations'],
+						note: null,
+						alias: true,
+						validation: null,
+					},
 				},
 			},
 			collection_a_collection_c: {
@@ -314,6 +342,124 @@ describe('content versioning mergeVersionSaves', () => {
 					},
 					collection: {
 						field: 'collection',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'string',
+						dbType: 'character varying',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+				},
+			},
+			languages: {
+				collection: 'languages',
+				primary: 'code',
+				singleton: false,
+				note: null,
+				sortField: null,
+				accountability: 'all',
+				fields: {
+					code: {
+						field: 'code',
+						defaultValue: null,
+						nullable: false,
+						generated: false,
+						type: 'string',
+						dbType: 'character varying',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+					name: {
+						field: 'name',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'string',
+						dbType: 'character varying',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+					direction: {
+						field: 'direction',
+						defaultValue: 'ltr',
+						nullable: true,
+						generated: false,
+						type: 'string',
+						dbType: 'character varying',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+				},
+			},
+			collection_c_translations: {
+				collection: 'collection_c_translations',
+				primary: 'id',
+				singleton: false,
+				note: null,
+				sortField: null,
+				accountability: 'all',
+				fields: {
+					id: {
+						field: 'id',
+						defaultValue: 'AUTO_INCREMENT',
+						nullable: false,
+						generated: false,
+						type: 'integer',
+						dbType: 'integer',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+					collection_c_id: {
+						field: 'collection_c_id',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'integer',
+						dbType: 'integer',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+					languages_id: {
+						field: 'languages_id',
+						defaultValue: null,
+						nullable: true,
+						generated: false,
+						type: 'string',
+						dbType: 'character varying',
+						precision: null,
+						scale: null,
+						special: [],
+						note: null,
+						alias: false,
+						validation: null,
+					},
+					text: {
+						field: 'text',
 						defaultValue: null,
 						nullable: true,
 						generated: false,
@@ -439,6 +585,60 @@ describe('content versioning mergeVersionSaves', () => {
 				},
 			},
 			{
+				collection: 'collection_c_translations',
+				field: 'collection_c_id',
+				related_collection: 'collection_c',
+				schema: {
+					constraint_name: 'collection_c_translations_collection_c_id_foreign',
+					table: 'collection_c_translations',
+					column: 'collection_c_id',
+					foreign_key_schema: 'public',
+					foreign_key_table: 'collection_c',
+					foreign_key_column: 'id',
+					on_update: 'NO ACTION',
+					on_delete: 'SET NULL',
+				},
+				meta: {
+					id: 10,
+					many_collection: 'collection_c_translations',
+					many_field: 'collection_c_id',
+					one_collection: 'collection_c',
+					one_field: 'translations',
+					one_collection_field: null,
+					one_allowed_collections: null,
+					junction_field: 'languages_id',
+					sort_field: null,
+					one_deselect_action: 'nullify',
+				},
+			},
+			{
+				collection: 'collection_c_translations',
+				field: 'languages_id',
+				related_collection: 'languages',
+				schema: {
+					constraint_name: 'collection_c_translations_languages_id_foreign',
+					table: 'collection_c_translations',
+					column: 'languages_id',
+					foreign_key_schema: 'public',
+					foreign_key_table: 'languages',
+					foreign_key_column: 'code',
+					on_update: 'NO ACTION',
+					on_delete: 'SET NULL',
+				},
+				meta: {
+					id: 9,
+					many_collection: 'collection_c_translations',
+					many_field: 'languages_id',
+					one_collection: 'languages',
+					one_field: null,
+					one_collection_field: null,
+					one_allowed_collections: null,
+					junction_field: 'collection_c_id',
+					sort_field: null,
+					one_deselect_action: 'nullify',
+				},
+			},
+			{
 				collection: 'collection_a_m2a',
 				field: 'item',
 				related_collection: null,
@@ -452,6 +652,33 @@ describe('content versioning mergeVersionSaves', () => {
 					one_collection_field: 'collection',
 					one_allowed_collections: ['collection_b', 'collection_c'],
 					junction_field: 'collection_a_id',
+					sort_field: null,
+					one_deselect_action: 'nullify',
+				},
+			},
+			{
+				collection: 'collection_a',
+				field: 'm2o_c',
+				related_collection: 'collection_c',
+				schema: {
+					constraint_name: 'collection_a_m2o_c_foreign',
+					table: 'collection_a',
+					column: 'm2o_c',
+					foreign_key_schema: 'public',
+					foreign_key_table: 'collection_c',
+					foreign_key_column: 'id',
+					on_update: 'NO ACTION',
+					on_delete: 'SET NULL',
+				},
+				meta: {
+					id: 11,
+					many_collection: 'collection_a',
+					many_field: 'm2o_c',
+					one_collection: 'collection_c',
+					one_field: null,
+					one_collection_field: null,
+					one_allowed_collections: null,
+					junction_field: null,
 					sort_field: null,
 					one_deselect_action: 'nullify',
 				},
@@ -881,7 +1108,419 @@ describe('content versioning mergeVersionSaves', () => {
 		});
 	});
 
-	// describe('nested relations', () => {
-	// TODO
-	// });
+	describe('nested relations', () => {
+		test('m2o > translation', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2o_c: {
+						id: 1,
+						status: 'draft',
+						translations: [
+							{
+								id: 1,
+								collection_c_id: 1,
+								languages_id: 'ar-SA',
+								text: 'ar-sa',
+							},
+							{
+								id: 2,
+								collection_c_id: 1,
+								languages_id: 'de-DE',
+								text: 'de-de',
+							},
+						],
+					},
+				},
+				[
+					{
+						m2o_c: {
+							translations: {
+								create: [
+									{
+										text: 'en-us',
+										languages_id: {
+											code: 'en-US',
+										},
+										collection_c_id: 1,
+									},
+								],
+								update: [
+									{
+										text: 'german',
+										languages_id: {
+											code: 'de-DE',
+										},
+										id: 2,
+									},
+								],
+								delete: [1],
+							},
+							id: 1,
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'draft',
+				m2o_c: {
+					id: 1,
+					status: 'draft',
+					translations: [
+						{
+							id: 2,
+							collection_c_id: 1,
+							languages_id: {
+								code: 'de-DE',
+							},
+							text: 'german',
+						},
+						{
+							text: 'en-us',
+							languages_id: {
+								code: 'en-US',
+							},
+							collection_c_id: 1,
+						},
+					],
+				},
+			});
+		});
+
+		test('m2m > translations', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 3,
+					status: 'draft',
+					m2m: [
+						{
+							id: 2,
+							collection_a_id: 3,
+							collection_c_id: {
+								id: 1,
+								status: 'draft',
+								translations: [
+									{
+										id: 1,
+										collection_c_id: 1,
+										languages_id: 'ar-SA',
+										text: 'ar-sa',
+									},
+									{
+										id: 2,
+										collection_c_id: 1,
+										languages_id: 'de-DE',
+										text: 'de-de',
+									},
+								],
+							},
+						},
+						{
+							id: 3,
+							collection_a_id: 3,
+							collection_c_id: {
+								id: 2,
+								status: 'draft',
+								translations: [],
+							},
+						},
+					],
+				},
+				[
+					{
+						m2m: {
+							create: [],
+							update: [
+								{
+									collection_c_id: {
+										translations: {
+											create: [
+												{
+													text: 'english',
+													languages_id: {
+														code: 'en-US',
+													},
+													collection_c_id: 1,
+												},
+											],
+											update: [
+												{
+													text: 'german',
+													languages_id: {
+														code: 'de-DE',
+													},
+													id: 2,
+												},
+											],
+											delete: [],
+										},
+										id: 1,
+									},
+									id: 2,
+								},
+							],
+							delete: [3],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 3,
+				status: 'draft',
+				m2m: [
+					{
+						id: 2,
+						collection_a_id: 3,
+						collection_c_id: {
+							translations: [
+								{
+									id: 2,
+									collection_c_id: 1,
+									languages_id: 'de-DE',
+									text: 'de-de',
+								},
+								{
+									text: 'english',
+									languages_id: {
+										code: 'en-US',
+									},
+									collection_c_id: 1,
+								},
+							],
+							id: 1,
+						},
+					},
+				],
+			});
+		});
+
+		test('m2a > translations', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 4,
+					status: 'draft',
+					m2a: [
+						{
+							id: 3,
+							collection_a_id: 4,
+							collection: 'collection_b',
+							item: 2,
+						},
+						{
+							id: 4,
+							collection_a_id: 4,
+							collection: 'collection_c',
+							item: {
+								id: 1,
+								translations: [
+									{
+										id: 1,
+										collection_c_id: 1,
+										languages_id: 'ar-SA',
+										text: 'ar-sa',
+									},
+									{
+										id: 2,
+										collection_c_id: 1,
+										languages_id: 'de-DE',
+										text: 'de-de',
+									},
+								],
+							},
+						},
+					],
+				},
+				[
+					{
+						m2a: {
+							create: [],
+							update: [
+								{
+									collection: 'collection_c',
+									item: {
+										translations: {
+											create: [
+												{
+													languages_id: {
+														code: 'en-US',
+													},
+													collection_c_id: 1,
+													text: 'english',
+												},
+											],
+											update: [
+												{
+													text: 'german',
+													languages_id: {
+														code: 'de-DE',
+													},
+													id: 2,
+												},
+											],
+											delete: [1],
+										},
+										id: 1,
+									},
+									id: 4,
+								},
+							],
+							delete: [],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 4,
+				status: 'draft',
+				m2a: [
+					{
+						id: 3,
+						collection_a_id: 4,
+						collection: 'collection_b',
+						item: 2,
+					},
+					{
+						id: 4,
+						collection_a_id: 4,
+						collection: 'collection_c',
+						item: {
+							id: 1,
+							translations: [
+								{
+									id: 2,
+									collection_c_id: 1,
+									languages_id: 'de-DE',
+									text: 'german',
+								},
+								{
+									languages_id: {
+										code: 'en-US',
+									},
+									collection_c_id: 1,
+									text: 'english',
+								},
+							],
+						},
+					},
+				],
+			});
+		});
+
+		test('creating nested relations', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 2,
+					status: 'draft',
+					m2m: [],
+					m2o_c: null,
+				},
+				[
+					{
+						m2m: {
+							create: [
+								{
+									collection_c_id: {
+										translations: {
+											create: [
+												{
+													text: 'german',
+													languages_id: {
+														code: 'de-DE',
+													},
+												},
+												{
+													text: 'english',
+													languages_id: {
+														code: 'en-US',
+													},
+												},
+											],
+											update: [],
+											delete: [],
+										},
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+						m2o_c: {
+							translations: {
+								create: [
+									{
+										text: 'french',
+										languages_id: {
+											code: 'fr-FR',
+										},
+									},
+									{
+										text: 'english',
+										languages_id: {
+											code: 'en-US',
+										},
+									},
+								],
+								update: [],
+								delete: [],
+							},
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 2,
+				status: 'draft',
+				m2m: [
+					{
+						collection_c_id: {
+							translations: [
+								{
+									text: 'german',
+									languages_id: {
+										code: 'de-DE',
+									},
+								},
+								{
+									text: 'english',
+									languages_id: {
+										code: 'en-US',
+									},
+								},
+							],
+						},
+					},
+				],
+				m2o_c: {
+					translations: [
+						{
+							text: 'french',
+							languages_id: {
+								code: 'fr-FR',
+							},
+						},
+						{
+							text: 'english',
+							languages_id: {
+								code: 'en-US',
+							},
+						},
+					],
+				},
+			});
+		});
+	});
 });
