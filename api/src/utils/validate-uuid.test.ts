@@ -10,12 +10,16 @@ describe('should pass validation', () => {
 		expect(validateUuid('4b9adc65-4ad8-4242-9144-fbfc58400d74')).toBe(true);
 	});
 
-	test('v7', () => {
+	// https://datatracker.ietf.org/doc/html/draft-peabody-dispatch-new-uuid-format-04#name-uuid-version-7
+	test('non-standard version "7"', () => {
 		expect(validateUuid('018df14d-1309-7226-9ed7-ffbfecad6b5f')).toBe(true);
 	});
 
-	// https://github.com/directus/directus/issues/21573
-	test('example from issue 21573', () => {
+	// The following test covers a case encountered in https://github.com/directus/directus/issues/21573 where
+	// the UUID being inserted into the database is non-standard. In this specific example, the UUID is sourced
+	// from a platform that uses "e" as the version. While this is non-standard, it is still a valid UUID and should
+	// be treated as such.
+	test('non-standard version "e"', () => {
 		expect(validateUuid('dc60771a-d86d-e7a3-79b1-5277050cbc99')).toBe(true);
 	});
 });
