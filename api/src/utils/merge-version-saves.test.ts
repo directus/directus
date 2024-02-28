@@ -487,6 +487,17 @@ describe('content versioning mergeVersionSaves', () => {
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: null });
 		});
+
+		test('Updating m2o value', () => {
+			const result = mergeVersionSaves(
+				{ id: 1, status: 'draft', m2o: { id: 1, test: 'data', status: 'draft' } },
+				[{ status: 'published' }, { m2o: { id: 1, status: 'published' } }],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({ id: 1, status: 'published', m2o: { id: 1, test: 'data', status: 'published' } });
+		});
 	});
 
 	describe('o2m field', () => {
@@ -522,7 +533,11 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		// test('', () => {});
+		// test('Updating o2m value', () => {
+		// 	const result = mergeVersionSaves({ id: 1, status: 'draft', o2m: [] }, [], 'collection_a', testSchema);
+
+		// 	expect(result).toMatchObject({ id: 1, status: 'published' });
+		// });
 	});
 
 	describe('m2m field', () => {
@@ -578,7 +593,115 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
-		// test('', () => {});
+		test('Updating m2m ids', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2m: [1, 2, 3],
+				},
+				[
+					{
+						status: 'published',
+					},
+					{
+						m2m: {
+							create: [],
+							update: [
+								{
+									id: 1,
+									collection_c_id: {
+										id: 1,
+									},
+								},
+							],
+							delete: [2],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'published',
+				m2m: [
+					{
+						collection_c_id: {
+							id: 1,
+						},
+						id: 1,
+					},
+					3,
+				],
+			});
+		});
+
+		test('Updating m2m value', () => {
+			const result = mergeVersionSaves(
+				{
+					id: 1,
+					status: 'draft',
+					m2m: [
+						{
+							id: 1,
+							collection_a_id: 1,
+							collection_c_id: 1,
+						},
+					],
+				},
+				[
+					{
+						status: 'published',
+					},
+					{
+						m2m: {
+							create: [
+								{
+									collection_a_id: '1',
+									collection_c_id: {
+										id: 2,
+									},
+								},
+								{
+									collection_c_id: {
+										status: 'published',
+									},
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					},
+				],
+				'collection_a',
+				testSchema,
+			);
+
+			expect(result).toMatchObject({
+				id: 1,
+				status: 'published',
+				m2m: [
+					{
+						id: 1,
+						collection_a_id: 1,
+						collection_c_id: 1,
+					},
+					{
+						collection_a_id: '1',
+						collection_c_id: {
+							id: 2,
+						},
+					},
+					{
+						collection_c_id: {
+							status: 'published',
+						},
+					},
+				],
+			});
+		});
 	});
 
 	describe('m2a field', () => {
@@ -663,6 +786,16 @@ describe('content versioning mergeVersionSaves', () => {
 			});
 		});
 
+		// test('Updating m2a value', () => {
+		// 	const result = mergeVersionSaves(
+		// 		{ id: 1, status: 'draft', },
+		// 		[],
+		// 		'collection_a',
+		// 		testSchema,
+		// 	);
+
+		// 	expect(result).toMatchObject({ id: 1, status: 'published' });
+		// });
 		// test('', () => {});
 	});
 
