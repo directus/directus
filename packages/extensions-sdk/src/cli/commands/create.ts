@@ -183,6 +183,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
 		type: 'module',
+		files: ['dist'],
 		[EXTENSION_PKG_KEY]: options,
 		scripts: {
 			build: 'directus-extension build',

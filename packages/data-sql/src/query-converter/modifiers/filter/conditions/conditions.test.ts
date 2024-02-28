@@ -114,8 +114,7 @@ test('Convert set condition', () => {
 		type: 'condition',
 
 		condition: {
-			type: 'condition-set',
-
+			type: 'condition-set-string',
 			operation: 'in',
 			target: {
 				type: 'primitive',
@@ -131,7 +130,7 @@ test('Convert set condition', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'condition-set',
+					type: 'condition-set-string',
 					operation: 'in',
 					target: {
 						type: 'primitive',

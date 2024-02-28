@@ -5,17 +5,19 @@ import {
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
+import { createTmpFile } from '@directus/utils/node';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { createReadStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
-import type { Readable } from 'node:stream';
+import type { Readable, Stream } from 'node:stream';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../database/index.js';
@@ -29,7 +31,6 @@ import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 const logger = useLogger();
@@ -119,7 +120,10 @@ export class ImportService {
 		});
 	}
 
-	importCSV(collection: string, stream: Readable): Promise<void> {
+	async importCSV(collection: string, stream: Readable): Promise<void> {
+		const tmpFile = await createTmpFile().catch(() => null);
+		if (!tmpFile) throw new Error('Failed to create temporary file for import');
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		return this.knex.transaction((trx) => {
@@ -155,38 +159,77 @@ export class ImportService {
 			};
 
 			return new Promise<void>((resolve, reject) => {
-				stream
-					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
-					.on('data', (obj: Record<string, unknown>) => {
-						// Filter out all undefined fields
-						for (const field in obj) {
-							if (obj[field] === undefined) {
-								delete obj[field];
-							}
+				const streams: Stream[] = [stream];
+
+				const cleanup = (destroy = true) => {
+					if (destroy) {
+						for (const stream of streams) {
+							destroyStream(stream);
 						}
+					}
 
-						saveQueue.push(obj);
+					tmpFile.cleanup().catch(() => {
+						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+					});
+				};
+
+				saveQueue.error((error) => {
+					reject(error);
+				});
+
+				const fileWriteStream = createWriteStream(tmpFile.path)
+					.on('error', (error) => {
+						cleanup();
+						reject(new Error('Error while writing import data to temporary file', { cause: error }));
 					})
-					.on('error', (err: any) => {
-						destroyStream(stream);
-						reject(new InvalidPayloadError({ reason: err.message }));
-					})
-					.on('end', () => {
-						// In case of empty CSV file
-						if (!saveQueue.started) return resolve();
-
-						saveQueue.drain(() => {
-							for (const nestedActionEvent of nestedActionEvents) {
-								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-							}
-
-							return resolve();
+					.on('finish', () => {
+						const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while reading import data from temporary file', { cause: error }));
 						});
+
+						streams.push(fileReadStream);
+
+						fileReadStream
+							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
+							.on('data', (obj: Record<string, unknown>) => {
+								// Filter out all undefined fields
+								for (const field in obj) {
+									if (obj[field] === undefined) {
+										delete obj[field];
+									}
+								}
+
+								saveQueue.push(obj);
+							})
+							.on('error', (error) => {
+								cleanup();
+								reject(new InvalidPayloadError({ reason: error.message }));
+							})
+							.on('end', () => {
+								cleanup(false);
+
+								// In case of empty CSV file
+								if (!saveQueue.started) return resolve();
+
+								saveQueue.drain(() => {
+									for (const nestedActionEvent of nestedActionEvents) {
+										emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+									}
+
+									return resolve();
+								});
+							});
 					});
 
-				saveQueue.error((err) => {
-					reject(err);
-				});
+				streams.push(fileWriteStream);
+
+				stream
+					.on('error', (error) => {
+						cleanup();
+						reject(new Error('Error while retrieving import data', { cause: error }));
+					})
+					.pipe(fileWriteStream);
 			});
 		});
 	}

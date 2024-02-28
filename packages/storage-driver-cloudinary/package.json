@@ -33,10 +33,10 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "7.1.1",
-		"@vitest/coverage-v8": "1.2.2",
+		"@ngneat/falso": "7.2.0",
+		"@vitest/coverage-v8": "1.3.1",
 		"tsup": "8.0.2",
 		"typescript": "5.3.3",
-		"vitest": "1.2.2"
+		"vitest": "1.3.1"
 	}
 }

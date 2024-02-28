@@ -5,8 +5,8 @@ import type { AbstractSqlQueryTargetNode } from '../../common/target.js';
  * Condition to filter rows where a column value is in a list of values.
  * The value can basically be of any time, although the type should be obviously the same as the column type.
  */
-export interface SqlConditionSetNode {
-	type: 'condition-set';
+export interface SqlConditionSetNumberNode {
+	type: 'condition-set-number';
 
 	/* The only operator which is valid for a comparison against a set of values. */
 	operation: 'in';
