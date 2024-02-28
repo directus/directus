@@ -14,7 +14,7 @@ export function orderBy({ order }: AbstractSqlClauses): string | null {
 	}
 
 	const sortExpressions = order.map((o) => {
-		const target = convertTarget(o.orderBy);
+		const target = convertTarget(o.orderBy, 'object');
 		return `${target} ${o.direction}`;
 	});
 
