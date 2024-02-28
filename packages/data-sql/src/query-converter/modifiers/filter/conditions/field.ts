@@ -9,8 +9,8 @@ export function convertFieldCondition(
 	indexGen: IndexGenerators,
 	negate: boolean,
 ): FilterResult {
-	const { value: value1, joins: joins1 } = convertTarget(node.target, tableIndex, indexGen);
-	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, tableIndex, indexGen);
+	const { value: value1, joins: joins1, parameters: parameters1 } = convertTarget(node.target, tableIndex, indexGen);
+	const { value: value2, joins: joins2, parameters: parameters2 } = convertTarget(node.compareTo, tableIndex, indexGen);
 
 	return {
 		clauses: {
@@ -26,6 +26,6 @@ export function convertFieldCondition(
 			},
 			joins: [...joins1, ...joins2],
 		},
-		parameters: [],
+		parameters: [...parameters1, ...parameters2],
 	};
 }
