@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Be more relaxed with UUID validation, permitting values with non-standard versions
+Adjusted UUID validation of keys to be more relaxed, permitting values with non-standard versions
