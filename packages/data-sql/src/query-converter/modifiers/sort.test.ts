@@ -34,11 +34,11 @@ test('convert ascending sort with a single field', () => {
 				},
 			],
 		},
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertSort(sorts, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -72,11 +72,11 @@ test('convert descending sort with a single field', () => {
 				},
 			],
 		},
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertSort(sorts, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -128,6 +128,7 @@ test('convert ascending sort with multiple fields', () => {
 				},
 			],
 		},
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
@@ -139,7 +140,6 @@ test('convert ascending sort with multiple fields', () => {
 test('convert sort on nested item', () => {
 	const tableIndex = randomInteger(0, 100);
 	const foreignKeyColumnName = randomIdentifier();
-
 	const externalStore = randomIdentifier();
 	const externalTableName = randomIdentifier();
 	const externalTableIndex = 0;
@@ -210,10 +210,10 @@ test('convert sort on nested item', () => {
 				},
 			],
 		},
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertSort(sorts, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });

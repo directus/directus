@@ -27,7 +27,7 @@ You will need:
 - Some knowledge of React.js and Next.js.
 
 If you're just getting started with Next.js and Directus, reference our
-[guide](/guides/headless-cms/build-static-website/next-13) to set up Next.js 13 with Directus.
+[guide](/guides/headless-cms/build-static-website/next) to set up Next.js 13 with Directus.
 
 ## Configure Live Preview URL in Directus
 

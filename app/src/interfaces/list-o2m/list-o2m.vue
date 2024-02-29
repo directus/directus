@@ -471,11 +471,11 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
-
 			<v-list v-else>
+				<v-notice v-if="displayItems.length === 0">
+					{{ t('no_items') }}
+				</v-notice>
+
 				<draggable
 					:model-value="displayItems"
 					item-key="id"
@@ -617,11 +617,6 @@ function getLinkForItem(item: DisplayItem) {
 			color: var(--danger-75);
 		}
 	}
-}
-
-.v-skeleton-loader,
-.v-notice {
-	margin-top: 8px;
 }
 
 .actions {

@@ -1,13 +1,13 @@
 import { ForbiddenError } from '@directus/errors';
-import type { ItemPermissions, PermissionsAction, Query } from '@directus/types';
+import type { ItemPermissions, Permission, PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
-import { clearSystemCache, getCache } from '../cache.js';
-import { appAccessMinimalPermissions } from '@directus/system-data';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
-import { filterItems } from '../utils/filter-items.js';
-import { AuthorizationService } from './authorization.js';
-import type { QueryOptions } from './items.js';
-import { ItemsService } from './items.js';
+import { clearSystemCache, getCache } from '../../cache.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../../types/index.js';
+import { AuthorizationService } from '../authorization.js';
+import type { QueryOptions } from '../items.js';
+import { ItemsService } from '../items.js';
+import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
+
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
 
@@ -45,39 +45,9 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
-		const result = await super.readByQuery(query, opts);
+		const result = (await super.readByQuery(query, opts)) as Permission[];
 
-		if (Array.isArray(result) && this.accountability && this.accountability.app === true) {
-			result.push(
-				...filterItems(
-					appAccessMinimalPermissions.map((permission) => ({
-						...permission,
-						role: this.accountability!.role,
-					})),
-					query.filter,
-				),
-			);
-		}
-
-		return result;
-	}
-
-	override async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Partial<Item>[]> {
-		const result = await super.readMany(keys, query, opts);
-
-		if (this.accountability && this.accountability.app === true) {
-			result.push(
-				...filterItems(
-					appAccessMinimalPermissions.map((permission) => ({
-						...permission,
-						role: this.accountability!.role,
-					})),
-					query.filter,
-				),
-			);
-		}
-
-		return result;
+		return withAppMinimalPermissions(this.accountability, result, query.filter);
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {

@@ -6,8 +6,8 @@ import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
 import { collectionFirst, collectionIgnored, seedDBValues } from './cache.seed';
 
@@ -228,7 +228,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor, env))
@@ -270,7 +270,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Referer', referer)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -307,7 +307,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Referer', referer)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
