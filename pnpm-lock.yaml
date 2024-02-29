@@ -1527,8 +1527,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 2.0.14
-        version: 2.0.14(@pnpm/logger@5.0.0)
+        specifier: 2.0.15
+        version: 2.0.15(@pnpm/logger@5.0.0)
       semver:
         specifier: 7.6.0
         version: 7.6.0
@@ -6199,19 +6199,11 @@ packages:
     dependencies:
       '@pnpm/constants': 7.1.0
 
-  /@pnpm/error@5.0.2:
-    resolution: {integrity: sha512-0TEm+tWNYm+9uh6DSKyRbv8pv/6b4NL0PastLvMxIoqZbBZ5Zj1cYi332R9xsSUi31ZOsu2wpgn/bC7DA9hrjg==}
-    engines: {node: '>=16.14'}
-    dependencies:
-      '@pnpm/constants': 7.1.1
-    dev: false
-
   /@pnpm/error@5.0.3:
     resolution: {integrity: sha512-ONJU5cUeoeJSy50qOYsMZQHTA/9QKmGgh1ATfEpCLgtbdwqUiwD9MxHNeXUYYI/pocBCz6r1ZCFqiQvO+8SUKA==}
     engines: {node: '>=16.14'}
     dependencies:
       '@pnpm/constants': 7.1.1
-    dev: true
 
   /@pnpm/fetcher-base@14.0.1:
     resolution: {integrity: sha512-DXPZ33CrmDQXnYzwvqyP7I0BF0MQELo4ah2JGpXhLhgOdzU+vj7zdKFo2x82L8anrK861IRi01V8o14oATq1vA==}
@@ -6340,14 +6332,14 @@ packages:
       validate-npm-package-name: 4.0.0
     dev: false
 
-  /@pnpm/npm-resolver@18.1.0(@pnpm/logger@5.0.0):
-    resolution: {integrity: sha512-fUYKX/iHiHldL0VRVvkQI35YK2jWhZEkPO6rrGke8309+LKAo12v833nBttMDpQrtHefmqhB4mhCzQq6L2Xqmg==}
+  /@pnpm/npm-resolver@18.1.1(@pnpm/logger@5.0.0):
+    resolution: {integrity: sha512-NptzncmMD5ZMimbjWkGpMzuBRhlCY+sh7mzypPdBOTNlh5hmEQe/VaRKjNK4V9/b0C/llElkvIePL6acybu86w==}
     engines: {node: '>=16.14'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
     dependencies:
       '@pnpm/core-loggers': 9.0.6(@pnpm/logger@5.0.0)
-      '@pnpm/error': 5.0.2
+      '@pnpm/error': 5.0.3
       '@pnpm/fetching-types': 5.0.0
       '@pnpm/graceful-fs': 3.2.0
       '@pnpm/logger': 5.0.0
@@ -6480,12 +6472,12 @@ packages:
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  /@pnpm/workspace.pkgs-graph@2.0.14(@pnpm/logger@5.0.0):
-    resolution: {integrity: sha512-SBXXyWDkPEoaLTjLRyQzRHoBYH+P0NLcIjX1yPUxuJiMTvGOMzjpLWTuxYNVe/P0V0VQMrjpJFaJPjlViNLhzg==}
+  /@pnpm/workspace.pkgs-graph@2.0.15(@pnpm/logger@5.0.0):
+    resolution: {integrity: sha512-Txxd5FzzVfBfGCTngISaxFlJzZhzdS8BUrCEtAWJfZOFbQzpWy27rzkaS7TaWW2dHiFcCVYzPI/2vgxfeRansA==}
     engines: {node: '>=16.14'}
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 18.1.0(@pnpm/logger@5.0.0)
+      '@pnpm/npm-resolver': 18.1.1(@pnpm/logger@5.0.0)
       '@pnpm/resolve-workspace-range': 5.0.1
       ramda: /@pnpm/ramda@0.28.1
     transitivePeerDependencies:
