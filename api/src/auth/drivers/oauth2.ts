@@ -379,8 +379,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						codeVerifier: verifier,
 						state: req.query['state'],
 					},
-					undefined,
-					authMode === 'session',
+					{ session: authMode === 'session' },
 				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated

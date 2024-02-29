@@ -411,8 +411,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						state: req.query['state'],
 						iss: req.query['iss'],
 					},
-					undefined,
-					authMode === 'session',
+					{ session: authMode === 'session' },
 				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated

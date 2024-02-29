@@ -87,30 +87,28 @@ export function createLocalAuthRouter(provider: string): Router {
 
 			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
-			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				provider,
-				req.body,
-				req.body?.otp,
-				mode === 'session',
-			);
+			const { accessToken, refreshToken, expires } = await authenticationService.login(provider, req.body, {
+				session: mode === 'session',
+				otp: req.body?.otp,
+			});
 
-			const payload = { data: { expires } } as Record<string, Record<string, any>>;
+			const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
 
 			if (mode === 'json') {
-				payload['data']!['refresh_token'] = refreshToken;
-				payload['data']!['access_token'] = accessToken;
+				payload.refresh_token = refreshToken;
+				payload.access_token = accessToken;
 			}
 
 			if (mode === 'cookie') {
 				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-				payload['data']!['access_token'] = accessToken;
+				payload.access_token = accessToken;
 			}
 
 			if (mode === 'session') {
 				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 			}
 
-			res.locals['payload'] = payload;
+			res.locals['payload'] = { data: payload };
 
 			return next();
 		}),

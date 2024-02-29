@@ -162,12 +162,9 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-				const { accessToken, refreshToken, expires } = await authService.login(
-					providerName,
-					extract.attributes,
-					undefined,
-					authMode === 'session',
-				);
+				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes, {
+					session: authMode === 'session',
+				});
 
 				res.locals['payload'] = {
 					data: {

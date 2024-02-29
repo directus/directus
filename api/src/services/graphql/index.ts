@@ -2217,7 +2217,10 @@ export class GraphQLService {
 
 					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp, mode === 'session');
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, {
+						session: mode === 'session',
+						otp: args?.otp,
+					});
 
 					if (mode === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);
@@ -2266,7 +2269,7 @@ export class GraphQLService {
 
 					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					const result = await authenticationService.refresh(currentRefreshToken, mode === 'session');
+					const result = await authenticationService.refresh(currentRefreshToken, { session: mode === 'session' });
 
 					if (mode === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], REFRESH_COOKIE_OPTIONS);

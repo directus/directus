@@ -126,10 +126,9 @@ router.post(
 			});
 		}
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(
-			currentRefreshToken,
-			mode === 'session',
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, {
+			session: mode === 'session',
+		});
 
 		const payload = {
 			data: { expires },
