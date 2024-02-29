@@ -32,12 +32,37 @@ The library `exif-reader`, which is used for Exif metadata extraction of images,
 release, tag names have been updated to align with the Exif standard. See
 https://github.com/devongovett/exif-reader/pull/30 for a complete list of updated tags.
 
-This might be a breaking change if
-
-- a custom `FILE_METADATA_ALLOW_LIST` config is in place
-- you rely on the generated Exif tags stored in Directus Files
+This might be a breaking change if a custom `FILE_METADATA_ALLOW_LIST` config is in place, or you rely on the generated
+Exif tags stored in Directus Files to not change name.
 
 The updated Exif tags only apply to images which are uploaded after upgrading to this release.
+
+### Dropped Support for SDK Scoped Entrypoints
+
+You can no longer import parts of the SDK through scoped entrypoints to prevent issues with TypeScript based libraries
+consuming the SDK.
+
+Any scoped imports of `@directus/sdk` will need updating to import functions from the root.
+
+::: details Migration/Mitigation
+
+::: code-group
+
+```js [Before]
+import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
+```
+
+```js [After]
+import { createDirectus, rest } from '@directus/sdk';
+```
+
+:::
+
+### Dropped Support for Asynchronous Logic In JS Config Files
+
+Environment handling has been moved to a new `@directus/env` package. With this new package, ESM config files are still
+supported, but will no longer support running asynchronous code within them.
 
 ### Updated Sorting in Schema Snapshots
 

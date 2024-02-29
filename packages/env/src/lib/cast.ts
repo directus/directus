@@ -23,7 +23,9 @@ export const cast = (value: unknown, key?: string): unknown => {
 		case 'regex':
 			return new RegExp(String(value));
 		case 'array':
-			return toArray(value).map((v) => cast(v));
+			return toArray(value)
+				.map((v) => cast(v))
+				.filter((v) => v !== '');
 		case 'json':
 			return tryJson(value);
 	}

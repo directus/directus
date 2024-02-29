@@ -250,13 +250,6 @@ time: زمان
 timestamp: الگوی زمانی
 uuid: شماره شناسایی یکتا (UUID)
 hash: هش
-geometry: هندسی (تمام)
-geometry.Point: نقطه
-geometry.LineString: رشته مسیر
-geometry.Polygon: چندضلعی
-geometry.MultiPoint: چندنقطه ای
-geometry.MultiLineString: مجموعه ای از رشته مسیرها
-geometry.MultiPolygon: مجموعه ای از چندضلعی ها
 not_available_for_type: برای این نوع در دسترس نیست
 create_translations: ایجاد ترجمه
 auto_refresh: تازه نمودن خودکار
@@ -1273,7 +1266,6 @@ field_options:
   directus_roles:
     name: نامی یکتا برای این نقش...
     description: توضیحات مربوط به این نقش...
-    ip_access: IP های مورد تأیید را وارد کنید، برای اجازه دسترسی به تمامی IP ها فیلد را خالی بگذارید...
     fields:
       icon_name: آیکن
       name_name: نام
@@ -1869,6 +1861,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: هش
   icon:
     icon: آیکن
     description: نمایش یک آیکن

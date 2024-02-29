@@ -75,11 +75,12 @@ const options = computed({
 		return fieldDetailStore.field.meta?.display_options ?? {};
 	},
 	set(newOptions: Record<string, any>) {
-		fieldDetailStore.$patch((state) => {
-			state.field.meta = {
-				...(state.field.meta ?? {}),
-				display_options: newOptions,
-			};
+		fieldDetailStore.update({
+			field: {
+				meta: {
+					display_options: newOptions,
+				},
+			},
 		});
 	},
 });

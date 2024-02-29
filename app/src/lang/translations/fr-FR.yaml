@@ -295,13 +295,6 @@ time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
-geometry: Géométrie (tous)
-geometry.Point: Point
-geometry.LineString: Chaîne ligne simple
-geometry.Polygon: Polygone
-geometry.MultiPoint: Multi points
-geometry.MultiLineString: Chaîne multi-lignes
-geometry.MultiPolygon: Polygone multiple
 theme_auto: Automatique (basé sur le système)
 theme_light: Mode Clair
 theme_dark: Mode Sombre
@@ -1361,7 +1354,6 @@ field_options:
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
-    ip_access: Ajoutez des adresses IP autorisées, laissez vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -1966,6 +1958,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
+  hash:
+    hash: Hash
   icon:
     icon: Icône
     description: Afficher une icône

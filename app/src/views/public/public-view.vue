@@ -22,13 +22,14 @@ const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
 });
 
+const customBackgroundIsVideo = computed(() => info.value?.project?.public_background?.type?.startsWith('video/'));
+const customBackgroundUrl = computed(() => getRootPath() + `assets/${info.value!.project?.public_background?.id}`);
+
 const artStyles = computed(() => {
 	if (!hasCustomBackground.value) return {};
 
-	const url = getRootPath() + `assets/${info.value!.project?.public_background}`;
-
 	return {
-		background: `url(${url})`,
+		background: `url(${customBackgroundUrl.value})`,
 		backgroundSize: 'cover',
 		backgroundPosition: 'center center',
 	};
@@ -82,6 +83,8 @@ const logoURL = computed<string | null>(() => {
 				<div><div></div></div>
 				<div><div></div></div>
 			</div>
+
+			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
 
 			<transition name="scale">
 				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
@@ -179,6 +182,16 @@ const logoURL = computed<string | null>(() => {
 		height: 100%;
 		background-position: center center;
 		background-size: cover;
+
+		video {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			left: 0;
+		}
 
 		.fallback {
 			position: absolute;

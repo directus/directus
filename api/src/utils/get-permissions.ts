@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash-es';
 import hash from 'object-hash';
 import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import { useLogger } from '../logger.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
