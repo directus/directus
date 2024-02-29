@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
+import { useSettingsStore } from '@/stores/settings';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -35,6 +36,8 @@ const searchValue = ref<string | null>(null);
 const loading = ref(false);
 const translationsKeys = ref<string[]>([]);
 const translationsStore = useTranslationsStore();
+
+const settingsStore = useSettingsStore();
 
 const isCustomTranslationDrawerOpen = ref<boolean>(false);
 
@@ -204,6 +207,7 @@ function openNewCustomTranslationDrawer() {
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
+			:edits="{ language: settingsStore?.settings?.default_language }"
 			@input="create"
 		/>
 	</div>
