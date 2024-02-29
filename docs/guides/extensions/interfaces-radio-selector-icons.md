@@ -157,9 +157,9 @@ select-icon, which provides a searchable dropdown of the icon library.
 
 ## Work With Images
 
-::: tip
+::: warning DEPRECATED
 
-[DEPRECATED] Use session cookies instead.
+Use session cookies instead.
 
 :::
 
