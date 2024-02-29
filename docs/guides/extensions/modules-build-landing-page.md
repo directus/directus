@@ -500,9 +500,9 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ### Work With Images
 
-::: tip
+::: warning DEPRECATED
 
-[DEPRECATED] The query parameter approach used here is deprecated, make use of session cookies instead.
+The query parameter approach used here is deprecated, make use of session cookies instead.
 
 :::
 
