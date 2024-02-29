@@ -723,7 +723,7 @@ importers:
         version: 10.7.2(vue@3.4.19)
       '@vueuse/router':
         specifier: 10.9.0
-        version: 10.9.0(vue-router@4.2.5)(vue@3.4.19)
+        version: 10.9.0(vue-router@4.3.0)(vue@3.4.19)
       apexcharts:
         specifier: 3.46.0
         version: 3.46.0
@@ -8764,14 +8764,14 @@ packages:
   /@vueuse/metadata@10.7.2:
     resolution: {integrity: sha512-kCWPb4J2KGrwLtn1eJwaJD742u1k5h6v/St5wFe8Quih90+k2a0JP8BS4Zp34XUuJqS2AxFYMb1wjUL8HfhWsQ==}
 
-  /@vueuse/router@10.9.0(vue-router@4.2.5)(vue@3.4.19):
+  /@vueuse/router@10.9.0(vue-router@4.3.0)(vue@3.4.19):
     resolution: {integrity: sha512-MOmrCMQlRuPS4PExE1hy8T0XbZUXaNbEuh7CAG5mC8kdvdgANQMkdvJ7vIEOP27n5mXK/4YjvXJOZSsur4E0QQ==}
     peerDependencies:
       vue-router: '>=4.0.0-rc.1'
     dependencies:
       '@vueuse/shared': 10.9.0(vue@3.4.19)
       vue-demi: 0.14.7(vue@3.4.19)
-      vue-router: 4.2.5(vue@3.4.19)
+      vue-router: 4.3.0(vue@3.4.19)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
