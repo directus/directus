@@ -26,11 +26,11 @@ test('convert primitive target', () => {
 			columnName,
 		},
 		joins: [],
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertTarget(condition.target, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
@@ -66,18 +66,17 @@ test('convert function target', () => {
 			columnName,
 		},
 		joins: [],
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertTarget(condition.target, tableIndex, indexGen);
-
 	expect(result).toStrictEqual(expectedResult);
 });
 
 test('convert nested target', () => {
 	const tableIndex = randomInteger(0, 100);
 	const foreignKeyColumnName = randomIdentifier();
-
 	const externalStore = randomIdentifier();
 	const externalTableName = randomIdentifier();
 	const externalTableIndex = 0;
@@ -134,10 +133,43 @@ test('convert nested target', () => {
 				},
 			},
 		],
+		parameters: [],
 	};
 
 	const indexGen = createIndexGenerators();
 	const result = convertNestedOneTarget(nestedTarget, tableIndex, indexGen);
+	expect(result).toStrictEqual(expectedResult);
+});
 
+test('convert json filter target', () => {
+	const tableIndex = randomInteger(0, 100);
+	const jsonColumnName = randomIdentifier();
+	const jsonProp = randomIdentifier();
+
+	const nestedTarget: AbstractQueryTargetNestedOne = {
+		type: 'nested-one-target',
+		nesting: {
+			type: 'object-single',
+			fieldName: jsonColumnName,
+		},
+		field: {
+			type: 'primitive',
+			field: jsonProp,
+		},
+	};
+
+	const expectedResult: TargetConversionResult = {
+		value: {
+			type: 'json',
+			tableIndex,
+			columnName: jsonColumnName,
+			path: [0],
+		},
+		joins: [],
+		parameters: [jsonProp],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertTarget(nestedTarget, tableIndex, indexGen);
 	expect(result).toStrictEqual(expectedResult);
 });
