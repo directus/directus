@@ -15,10 +15,13 @@ describe('should pass validation', () => {
 		expect(validateUuid('018df14d-1309-7226-9ed7-ffbfecad6b5f')).toBe(true);
 	});
 
-	// The following test covers a case encountered in https://github.com/directus/directus/issues/21573 where
-	// the UUID being inserted into the database is non-standard. In this specific example, the UUID is sourced
-	// from a platform that uses "e" as the version. While this is non-standard, it is still a valid UUID and should
-	// be treated as such.
+	/*
+	 * The following test covers a case encountered in https://github.com/directus/directus/issues/21573 where
+	 * the UUID being inserted into the database is non-standard.
+	 * In this specific example, the UUID is sourced from a platform that uses "e" as the version.
+	 * While this is non-standard, it is still regard as a valid UUID by database vendors
+	 * and should be treated as such.
+	 */
 	test('non-standard version "e"', () => {
 		expect(validateUuid('dc60771a-d86d-e7a3-79b1-5277050cbc99')).toBe(true);
 	});
