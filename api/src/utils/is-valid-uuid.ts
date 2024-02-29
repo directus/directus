@@ -3,7 +3,7 @@ type UUID = `${string}-${string}-${string}-${string}-${string}`;
 /**
  * Based on the patterns found in the 'uuid' and 'uuid-validate' npm packages, both of which are MIT licensed.
  *
- * The primary difference between our pattern and the patterns found in the referenced packages is that
+ * The primary difference between this pattern and the patterns found in the referenced packages is that
  * no validation over the version component (the 14th character) is performed, while the
  * packages fail if the version is not a known one (only versions 1 through 5 are accepted).
  *
