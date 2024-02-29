@@ -1,10 +1,10 @@
-import type { ConditionStringNode } from '@directus/data';
+import type { ConditionSetStringNode } from '@directus/data';
 import type { IndexGenerators } from '../../../utils/create-index-generators.js';
 import { convertTarget } from '../../target.js';
 import type { FilterResult } from '../utils.js';
 
-export function convertStringNode(
-	node: ConditionStringNode,
+export function convertSetStringCondition(
+	node: ConditionSetStringNode,
 	tableIndex: number,
 	indexGen: IndexGenerators,
 	negate: boolean,
@@ -17,17 +17,17 @@ export function convertStringNode(
 				type: 'condition',
 				negate,
 				condition: {
-					type: node.type,
+					type: 'condition-set-string',
 					operation: node.operation,
 					target: value,
 					compareTo: {
-						type: 'value',
-						parameterIndex: indexGen.parameter.next().value,
+						type: 'values',
+						parameterIndexes: Array.from(node.compareTo).map(() => indexGen.parameter.next().value),
 					},
 				},
 			},
 			joins,
 		},
-		parameters: [...parameters, node.compareTo],
+		parameters: [...parameters, ...node.compareTo],
 	};
 }

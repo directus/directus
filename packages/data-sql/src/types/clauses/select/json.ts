@@ -1,9 +1,5 @@
-export interface AbstractSqlQuerySelectJsonNode {
-	type: 'json';
-	tableIndex: number;
-	columnName: string;
-	columnIndex: number;
+import type { AbstractSqlQueryJsonNode } from '../common/json.js';
 
-	/* The index of the value in the list of parameter */
-	path: number[];
+export interface AbstractSqlQuerySelectJsonNode extends AbstractSqlQueryJsonNode {
+	columnIndex: number;
 }

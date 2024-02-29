@@ -1,17 +1,17 @@
-import type { ConditionSetNode } from '@directus/data';
-import { randomIdentifier, randomInteger } from '@directus/random';
+import type { ConditionSetStringNode } from '@directus/data';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import { createIndexGenerators } from '../../../utils/create-index-generators.js';
 import type { FilterResult } from '../utils.js';
-import { convertSetCondition } from './set.js';
+import { convertSetStringCondition } from './set-string.js';
 
-test('convert set condition', () => {
+test('convert set string condition', () => {
 	const tableIndex = randomInteger(0, 100);
 	const columnName = randomIdentifier();
-	const columnValues = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
+	const columnValues = [randomAlpha(10), randomAlpha(10), randomAlpha(10)];
 
-	const condition: ConditionSetNode = {
-		type: 'condition-set',
+	const condition: ConditionSetStringNode = {
+		type: 'condition-set-string',
 		target: {
 			type: 'primitive',
 			field: columnName,
@@ -25,7 +25,7 @@ test('convert set condition', () => {
 			where: {
 				type: 'condition',
 				condition: {
-					type: 'condition-set',
+					type: 'condition-set-string',
 					target: {
 						type: 'primitive',
 						tableIndex,
@@ -45,7 +45,7 @@ test('convert set condition', () => {
 	};
 
 	const indexGen = createIndexGenerators();
-	const result = convertSetCondition(condition, tableIndex, indexGen, false);
+	const result = convertSetStringCondition(condition, tableIndex, indexGen, false);
 
 	expect(result).toStrictEqual(expectedResult);
 });
