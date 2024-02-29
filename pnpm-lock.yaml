@@ -341,9 +341,6 @@ importers:
       tsx:
         specifier: 4.7.1
         version: 4.7.1
-      uuid:
-        specifier: 9.0.1
-        version: 9.0.1
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
@@ -481,9 +478,6 @@ importers:
       '@types/stream-json':
         specifier: 1.7.7
         version: 1.7.7
-      '@types/uuid':
-        specifier: 9.0.8
-        version: 9.0.8
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8
