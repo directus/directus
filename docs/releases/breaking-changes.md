@@ -71,7 +71,7 @@ const authenticatedURL = '/assets/<uuid>';
 
 :::
 
-### Extensions using AuthenticationService
+### Extensions using `AuthenticationService`
 
 In the `AuthenticationService` the `login` function signature has been changed to have an `options` object for any extra
 options:
