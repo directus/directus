@@ -47,7 +47,7 @@ Cookie: directus_session_token=<token>
 ?access_token=<token>
 ```
 
-::: Tip
+::: warning
 
 The query parameter option is not recommended in production setups as the parameter can get logged by various systems.
 
