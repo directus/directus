@@ -1,6 +1,6 @@
 import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_flows', (table) => {
@@ -39,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
 	const operations = [];
 
 	for (const webhook of webhooks) {
-		const flowID = uuid();
+		const flowID = randomUUID();
 
 		flows.push({
 			id: flowID,
@@ -55,7 +55,7 @@ export async function up(knex: Knex): Promise<void> {
 		});
 
 		operations.push({
-			id: uuid(),
+			id: randomUUID(),
 			name: 'Request',
 			key: 'request',
 			type: 'request',
