@@ -13,9 +13,74 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version [NEXT]
+## Version 10.10.0
 
-Add final breaking change note about changes to the SSO
+### Session Cookie Based Authentication
+
+For improved security and ease of use we have implemented session based authentication and have updated the App to use this over the previous token based authentication. This impacts `oauth2`, `open-id` and `saml` SSO installations as they too will now also default to the new session based authentication in order to work with the App out-of-the-box. 
+
+To keep using the old SSO functionality setting the refresh token instead of session token you can set `AUTH_<PROVIDER>_MODE=cookie`.
+
+### Extensions extracting the current token from `axios`
+
+This affects App extensions that are currently extracting the token from `axios`. This will no longer be either possible or necessary as the App now uses a session cookie which will be sent with each request from the browser.
+
+This also means that the `<v-image >` component being deprecated as it does not adds any value over using the native `<img >` tag anymore.
+
+::: code-group
+
+```js [Before]
+function addQueryToPath(path, query) {
+	const queryParams = [];
+
+	for (const [key, value] of Object.entries(query)) {
+		queryParams.push(`${key}=${value}`);
+	}
+
+	return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
+}
+
+function getToken() {
+	return (
+		directusApi.defaults?.headers?.['Authorization']?.split(' ')[1] ||
+		directusApi.defaults?.headers?.common?.['Authorization']?.split(' ')[1] ||
+		null
+	);
+}
+
+function addTokenToURL(url) {
+	const accessToken = getToken();
+	if (!accessToken) return url;
+	return addQueryToPath(url, {
+		access_token: accessToken,
+	});
+}
+
+const authenticatedURL = addTokenToURL('/assets/<uuid>')
+```
+
+```js [After]
+// no extra logic is need to be authenticated
+const authenticatedURL = '/assets/<uuid>';
+```
+
+:::
+
+### Extensions using AuthenticationService
+
+In the `AuthenticationService` the `login` function signature has been changed to have an `options` object for any extra options:
+
+::: code-group
+
+```js [Before]
+AuthenticationService.login('email', 'password', 'otp-code');
+```
+
+```js [After]
+AuthenticationService.login('email', 'password', { otp: 'otp-code', session: true });
+```
+
+:::
 
 ## Version 10.9.0
 
