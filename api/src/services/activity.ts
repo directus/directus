@@ -6,9 +6,9 @@ import { uniq } from 'lodash-es';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { validateUuid } from '../utils/validate-uuid.js';
 import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
@@ -76,8 +76,8 @@ export class ActivityService extends ItemsService {
 
 					for (const mention of mentions) {
 						const uuid = mention.substring(1);
-						// We only match on UUIDs in the first place. This is just an extra sanity check
-						if (validateUuid(uuid) === false) continue;
+						// We only match on UUIDs in the first place. This is just an extra sanity check.
+						if (isValidUuid(uuid) === false) continue;
 						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
 					}
 

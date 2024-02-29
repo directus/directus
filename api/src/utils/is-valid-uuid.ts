@@ -1,3 +1,5 @@
+type UUID = `${string}-${string}-${string}-${string}-${string}`;
+
 /**
  * Based on the patterns found in the 'uuid' and 'uuid-validate' npm packages, both of which are MIT licensed.
  *
@@ -15,8 +17,8 @@
  * @see https://github.com/microsoft/uuid-validate/blob/06554db1b093aa6bb429156fa8964e1cde2b750c/index.js
  * @see https://github.com/directus/directus/issues/21573
  */
-const REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export function validateUuid(uuid: string): boolean {
-	return REGEX.test(uuid);
+export function isValidUuid(value: string): value is UUID {
+	return regex.test(value);
 }

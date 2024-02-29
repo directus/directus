@@ -21,8 +21,8 @@ import { useLogger } from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
-import { validateUuid } from '../utils/validate-uuid.js';
 import { AuthorizationService } from './authorization.js';
 import { FilesService } from './files.js';
 
@@ -61,7 +61,7 @@ export class AssetsService {
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
 		 */
-		if (!validateUuid(id)) throw new ForbiddenError();
+		if (!isValidUuid(id)) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);

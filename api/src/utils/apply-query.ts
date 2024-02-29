@@ -1,3 +1,4 @@
+import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
 	ClientFilterOperator,
@@ -14,13 +15,12 @@ import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
-import { InvalidQueryError } from '@directus/errors';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
+import { isValidUuid } from './is-valid-uuid.js';
 import { stripFunction } from './strip-function.js';
-import { validateUuid } from './validate-uuid.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -823,7 +823,7 @@ export async function applySearch(
 				if (validateNumber(searchQuery, number)) {
 					this.orWhere({ [`${collection}.${name}`]: number });
 				}
-			} else if (field.type === 'uuid' && validateUuid(searchQuery)) {
+			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
 		});
