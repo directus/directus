@@ -26,7 +26,8 @@ time like the Temporary Tokens as you cannot refresh these after they have expir
 server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
 user settings inside of the Directus Data Studio User Module, or by updating the user's `token` value via API.
 
-Once you have your access token, there are three ways to pass it to the API: in the request's `Authorization` Header, as session cookie or via the `access_token` query parameter.
+Once you have your access token, there are three ways to pass it to the API: in the request's `Authorization` Header, as
+session cookie or via the `access_token` query parameter.
 
 ### Authorization Header
 

@@ -159,7 +159,8 @@ select-icon, which provides a searchable dropdown of the icon library.
 
 ::: warning DEPRECATED
 
-Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) this is no longer required and you can rely on [session cookies](/reference/authentication.html#access-tokens) instead.
+Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) this is no longer required and you can
+rely on [session cookies](/reference/authentication.html#access-tokens) instead.
 
 :::
 

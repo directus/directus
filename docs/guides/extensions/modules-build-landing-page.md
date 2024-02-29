@@ -502,7 +502,9 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ::: warning DEPRECATED
 
-Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) the query parameter authentication is no longer required and considered deprecated, you can rely on [session cookies](/reference/authentication.html#access-tokens) instead.
+Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) the query parameter authentication is
+no longer required and considered deprecated, you can rely on
+[session cookies](/reference/authentication.html#access-tokens) instead.
 
 :::
 
