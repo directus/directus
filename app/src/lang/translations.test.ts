@@ -33,12 +33,12 @@ async function importLanguageFile(locale: string): Promise<{ isImported: boolean
 }
 
 describe.each(locales)('Locale %s', async (locale) => {
-	const i18n = createI18n({ locale: locale });
+	const i18n = createI18n({ legacy: false, locale: locale });
 	const datefnsLocale = (await importDateLocale(locale))?.default;
 
 	const { isImported, translations } = await importLanguageFile(locale);
 	i18n.global.mergeLocaleMessage(locale, translations);
-	const messages = flatten((i18n.global.messages as Record<string, any>)[locale]);
+	const messages = flatten((i18n.global.messages.value as Record<string, any>)[locale]);
 	const translationKeys = Object.keys(messages);
 
 	test(`import ${locale} language file successfully`, () => {
