@@ -1,3 +1,4 @@
+import { isObject } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -12,9 +13,8 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 	) {
 		const originalData = res.locals['payload'].data as unknown;
 
-		if (!originalData || typeof originalData !== 'object') {
-			return next();
-		}
+		// only act on single item requests
+		if (!isObject(originalData)) return next();
 
 		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
@@ -24,9 +24,7 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 			req.params['pk'],
 		);
 
-		if(!versionData || versionData.length === 0) {
-			return next();
-		}
+		if (!versionData || versionData.length === 0) return next();
 
 		if (req.sanitizedQuery.versionRaw) {
 			res.locals['payload'].data = mergeVersionsRaw(originalData, versionData);
