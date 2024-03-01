@@ -10,6 +10,12 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 		(req.singleton || req.params['pk']) &&
 		'data' in res.locals['payload']
 	) {
+		const originalData = res.locals['payload'].data as unknown;
+
+		if (!originalData || typeof originalData !== 'object') {
+			return next();
+		}
+
 		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
 		const versionData = await versionsService.getVersionSaves(
@@ -18,11 +24,7 @@ export const mergeContentVersions: RequestHandler = asyncHandler(async (req, res
 			req.params['pk'],
 		);
 
-		if (!versionData) return next();
-
-		const originalData = res.locals['payload'].data;
-
-		if ((originalData && typeof originalData !== 'object') || versionData.length === 0) {
+		if(!versionData || versionData.length === 0) {
 			return next();
 		}
 
