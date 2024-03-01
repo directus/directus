@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
+import { DEFAULT_REPORT_BUG_URL, DEFAULT_REPORT_FEATURE_URL } from '@/constants.js';
 
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
@@ -65,14 +66,12 @@ const externalItems = computed(() => {
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
-			href: settings.value?.report_bug_url ?? 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
+			href: settings.value?.report_bug_url ?? DEFAULT_REPORT_BUG_URL,
 		},
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
-			href:
-				settings.value?.report_feature_url ??
-				'https://github.com/directus/directus/discussions/new?category=feature-requests',
+			href: settings.value?.report_feature_url ?? DEFAULT_REPORT_FEATURE_URL,
 		},
 	];
 });

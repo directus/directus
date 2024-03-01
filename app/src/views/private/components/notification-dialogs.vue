@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { render } from 'micromustache';
 import { storeToRefs } from 'pinia';
+import { DEFAULT_REPORT_BUG_URL } from '@/constants';
 
 const { t } = useI18n();
 
@@ -18,7 +19,7 @@ const notifications = computed(() => notificationsStore.dialogs);
 
 function getErrorUrl(error: undefined | Error) {
 	if (!settings.value?.report_error_url) {
-		return 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
+		return DEFAULT_REPORT_BUG_URL;
 	}
 
 	const route = useRoute();
