@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getCurrentLanguage } from '@/lang/get-current-language';
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
@@ -205,6 +206,7 @@ function openNewCustomTranslationDrawer() {
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
+			:edits="{ language: getCurrentLanguage() }"
 			@input="create"
 		/>
 	</div>
