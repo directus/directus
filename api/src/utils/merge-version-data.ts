@@ -50,7 +50,7 @@ function recursiveMerging(
 			const newValue: unknown = versionRecord[key];
 
 			if (typeof newValue !== 'object' || newValue === null) {
-				// primitive type substitution
+				// primitive type substitution, json and non relational array values are handled in the next check
 				result[key] = newValue;
 				continue;
 			}
