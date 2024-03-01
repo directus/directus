@@ -2,5 +2,4 @@
 '@directus/app': patch
 ---
 
-Ensured that the system default language is used as the default language when creating a new custom translation via the
-system-input-translated-string interface
+Ensured the user / project language is used as default value when creating a new custom translation via translation dropdown interface
