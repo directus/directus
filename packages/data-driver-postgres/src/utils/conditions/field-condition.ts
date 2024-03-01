@@ -1,5 +1,5 @@
-import { convertNumericOperators, tableIndexToIdentifier, type SqlConditionFieldNode } from '@directus/data-sql';
-import { wrapColumn } from '../wrap-column.js';
+import { convertNumericOperators, type SqlConditionFieldNode } from '@directus/data-sql';
+import { convertTarget } from '../convert-target.js';
 
 /**
  * This is mainly used for JOIN conditions.
@@ -8,11 +8,9 @@ import { wrapColumn } from '../wrap-column.js';
  * @returns col1 = col2
  */
 export const fieldCondition = (condition: SqlConditionFieldNode, negate: boolean): string => {
-	const tableAlias1 = tableIndexToIdentifier(condition.target.tableIndex);
-	const tableAlias2 = tableIndexToIdentifier(condition.compareTo.tableIndex);
-
-	const column1 = wrapColumn(tableAlias1, condition.target.columnName);
-	const column2 = wrapColumn(tableAlias2, condition.compareTo.columnName);
+	const operand1 = convertTarget(condition.target);
+	const operand2 = convertTarget(condition.compareTo);
 	const operation = convertNumericOperators(condition.operation, negate);
-	return `${column1} ${operation} ${column2}`;
+
+	return `${operand1} ${operation} ${operand2}`;
 };

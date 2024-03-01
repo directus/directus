@@ -1,11 +1,13 @@
 import { randomIdentifier, randomInteger, randomUUID } from '@directus/random';
 import type {
 	Accountability,
+	CollectionsOverview,
 	DeepPartial,
 	Filter,
 	ItemPermissions,
 	Permission,
 	PermissionsAction,
+	Query,
 	SchemaOverview,
 } from '@directus/types';
 import type { Knex } from 'knex';
@@ -15,11 +17,14 @@ import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { PermissionsService } from './index.js';
+import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
+
+vi.mock('./lib/with-app-minimal-permissions.js');
 
 let db: MockedFunction<Knex>;
 let tracker: Tracker;
@@ -34,7 +39,121 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
+const directusPermissionsSchema: DeepPartial<CollectionsOverview[string]> = {
+	primary: 'id',
+	fields: {
+		id: { type: 'integer', special: [] },
+		role: { type: 'string', special: [] },
+		collection: { type: 'string', special: [] },
+		action: { type: 'string', special: [] },
+		permissions: { type: 'json', special: ['cast-json'] },
+		validation: { type: 'json', special: ['cast-json'] },
+		presets: { type: 'json', special: ['cast-json'] },
+		fields: { type: 'csv', special: ['cast-csv'] },
+	},
+};
+
 describe('Services / PermissionsService', () => {
+	describe('with app minimal permissions', async () => {
+		let service: PermissionsService;
+
+		let sample: {
+			permissionId: number;
+			permissions: Permission[];
+			accountability: Accountability;
+			query: Query;
+			result: Permission[];
+		};
+
+		beforeEach(() => {
+			const permissionId = randomInteger(1, 100);
+			const role = randomUUID();
+
+			const permissions: Permission[] = [
+				{
+					id: permissionId,
+					role,
+					collection: 'directus_permissions',
+					action: 'read',
+					permissions: {},
+					validation: {},
+					presets: {},
+					fields: ['*'],
+				},
+			];
+
+			const accountability: Accountability = {
+				user: randomUUID(),
+				role,
+				app: true,
+				permissions,
+			};
+
+			const schema: DeepPartial<SchemaOverview> = {
+				collections: {
+					directus_permissions: directusPermissionsSchema,
+				},
+				relations: [],
+			};
+
+			const query: Query = { filter: { collection: { _eq: permissionId } } };
+
+			const result: Permission[] = [{} as Permission];
+
+			sample = {
+				permissionId,
+				permissions,
+				accountability,
+				query,
+				result,
+			};
+
+			service = new PermissionsService({
+				knex: db,
+				schema: schema as SchemaOverview,
+				accountability,
+			});
+
+			tracker.on.select('select "directus_permissions"').response(sample.permissions);
+			vi.mocked(withAppMinimalPermissions).mockImplementation(() => result);
+		});
+
+		test('readByQuery', async () => {
+			const result = await service.readByQuery(sample.query);
+
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, sample.query.filter);
+			expect(result).toEqual(sample.result);
+		});
+
+		test('readMany', async () => {
+			const result = await service.readMany([sample.permissionId], sample.query);
+
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
+				_and: [
+					{
+						id: {
+							_in: [sample.permissionId],
+						},
+					},
+					sample.query.filter,
+				],
+			});
+
+			expect(result).toEqual(sample.result);
+		});
+
+		test('readOne', async () => {
+			const result = await service.readOne(sample.permissionId, sample.query);
+
+			expect(withAppMinimalPermissions).toBeCalledWith(sample.accountability, sample.permissions, {
+				...sample.query.filter,
+				id: { _eq: sample.permissionId },
+			});
+
+			expect(result).toEqual(sample.result[0]);
+		});
+	});
+
 	describe('#getItemPermissions', () => {
 		const collection = randomIdentifier();
 		const primaryKeyField = 'id';
@@ -44,14 +163,7 @@ describe('Services / PermissionsService', () => {
 
 		const baseSchema: DeepPartial<SchemaOverview> = {
 			collections: {
-				directus_permissions: {
-					primary: 'id',
-					fields: {
-						role: { type: 'string', special: [] },
-						collection: { type: 'string', special: [] },
-						action: { type: 'string', special: [] },
-					},
-				},
+				directus_permissions: directusPermissionsSchema,
 				[collection]: {
 					collection: collection,
 					primary: primaryKeyField,
@@ -316,6 +428,8 @@ describe('Services / PermissionsService', () => {
 
 				tracker.on.select('directus_permissions').response(permissions);
 
+				vi.mocked(withAppMinimalPermissions).mockImplementation(() => permissions);
+
 				const result = await service.getItemPermissions(collection);
 
 				expect(result.update).toEqual({
@@ -345,6 +459,8 @@ describe('Services / PermissionsService', () => {
 				tracker.on.select(checkPermissionStatement).response([{ [primaryKeyField]: primaryKey }]);
 
 				tracker.on.select('directus_permissions').response(permissions);
+
+				vi.mocked(withAppMinimalPermissions).mockImplementation(() => permissions);
 
 				const result = await service.getItemPermissions(collection);
 

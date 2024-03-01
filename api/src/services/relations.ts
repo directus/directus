@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { systemRelationRows } from '@directus/system-data';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -13,10 +14,8 @@ import emitter from '../emitter.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
-import type { QueryOptions } from './items.js';
-import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
-import { systemRelationRows } from '@directus/system-data';
+import { ItemsService, type QueryOptions } from './items.js';
+import { PermissionsService } from './permissions/index.js';
 
 export class RelationsService {
 	knex: Knex;
