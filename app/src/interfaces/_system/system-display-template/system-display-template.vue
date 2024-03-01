@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
+	placeholder?: string | null;
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
@@ -104,6 +105,7 @@ const tree = computed(() => {
 			:tree="tree.list"
 			:model-value="value"
 			:disabled="disabled"
+			:placeholder="placeholder"
 			:load-path-level="tree.pathLoader"
 			@update:model-value="$emit('input', $event)"
 		/>

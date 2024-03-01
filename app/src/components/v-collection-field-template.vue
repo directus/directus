@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
+	placeholder?: string | null;
 	disabled?: boolean;
 	collection: string | null;
 	inject: {
@@ -35,6 +36,7 @@ const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 			:tree="treeList"
 			:model-value="value"
 			:disabled="disabled"
+			:placeholder="placeholder"
 			:load-path-level="loadFieldRelations"
 			@update:model-value="$emit('input', $event)"
 		/>

@@ -28,6 +28,7 @@ fields:
   - field: project_error_url
     interface: system-display-template
     options:
+      placeholder: https://example.com
       fields:
         - name: Error
           field: error
