@@ -180,7 +180,7 @@
 		"@types/busboy": "1.5.3",
 		"@types/bytes": "3.1.4",
 		"@types/content-disposition": "0.5.8",
-		"@types/cookie-parser": "1.4.6",
+		"@types/cookie-parser": "1.4.7",
 		"@types/cors": "2.8.17",
 		"@types/deep-diff": "1.0.5",
 		"@types/destroy": "1.0.3",
