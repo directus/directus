@@ -18,7 +18,7 @@ const { collection } = toRefs(props);
 const fieldsStore = useFieldsStore();
 fieldsStore.hydrate({ skipTranslation: true });
 
-const fields = computed(() => fieldsStore.getFieldsForCollectionSorted(collection.value) as Field[]);
+const fields = computed(() => fieldsStore.getFieldsForCollectionSorted(collection.value));
 
 const parsedFields = computed(() => {
 	return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
