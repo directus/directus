@@ -43,6 +43,10 @@ export default defineConfig({
 			},
 		},
 	],
+	define: {
+		__INTLIFY_JIT_COMPILATION__: true,
+		__VUE_I18N_LEGACY_API__: false,
+	},
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
