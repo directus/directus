@@ -1268,6 +1268,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Reporting
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster

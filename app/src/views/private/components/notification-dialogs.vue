@@ -17,7 +17,7 @@ const { settings } = storeToRefs(useSettingsStore());
 const notifications = computed(() => notificationsStore.dialogs);
 
 function getErrorUrl(error: undefined | Error) {
-	if (!settings.value?.project_error_url) {
+	if (!settings.value?.report_error_url) {
 		return 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
 	}
 
@@ -60,7 +60,7 @@ function getErrorUrl(error: undefined | Error) {
 		};
 	}
 
-	return render(settings.value.project_error_url, renderScope);
+	return render(settings.value.report_error_url, renderScope);
 }
 
 function done(id: string) {

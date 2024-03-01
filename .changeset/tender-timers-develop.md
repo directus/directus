@@ -6,4 +6,4 @@
 '@directus/sdk': patch
 ---
 
-Added project report URL configuration support
+Added report URL configuration support
