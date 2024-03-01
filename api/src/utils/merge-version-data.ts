@@ -1,6 +1,7 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import Joi from 'joi';
 import type { Alterations } from '../types/index.js';
+import { isObject } from '@directus/utils';
 
 const alterationSchema = Joi.object({
 	create: Joi.array().items(Joi.object().unknown()),
@@ -22,7 +23,7 @@ export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
 
 export function mergeVersionsRecursive(
 	item: Item,
-	versionData: Partial<Item>[],
+	versionData: Item[],
 	collection: string,
 	schema: SchemaOverview,
 ): Item {
@@ -33,7 +34,7 @@ export function mergeVersionsRecursive(
 
 function recursiveMerging(
 	data: Item,
-	versionData: Partial<Item>[],
+	versionData: unknown[],
 	collection: string,
 	schema: SchemaOverview,
 ): unknown {
@@ -41,8 +42,12 @@ function recursiveMerging(
 	const relations = getRelations(collection, schema);
 
 	for (const versionRecord of versionData) {
+		if (!isObject(versionRecord)) {
+			continue;
+		}
+
 		for (const key of Object.keys(data)) {
-			if (!versionRecord || key in versionRecord === false) {
+			if (key in versionRecord === false) {
 				continue;
 			}
 
@@ -58,7 +63,7 @@ function recursiveMerging(
 			if (key in relations === false) {
 				// check for m2a exception
 				if (isManyToAnyCollection(collection, schema) && key === 'item') {
-					const item = addMissingKeys(currentValue && typeof currentValue === 'object' ? currentValue : {}, newValue);
+					const item = addMissingKeys(isObject(currentValue) ? currentValue : {}, newValue);
 					result[key] = recursiveMerging(item, [newValue], data['collection'], schema);
 				} else {
 					// item is not a relation
