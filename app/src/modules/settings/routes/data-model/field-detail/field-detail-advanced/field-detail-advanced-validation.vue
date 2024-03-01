@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { DeepPartial, Field } from '@directus/types';
+import { isEqual } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -16,17 +18,19 @@ const validationMessage = syncFieldDetailStoreProperty('field.meta.validation_me
 const validationSync = computed({
 	get() {
 		return {
-			...(validation.value && { validation: validation.value }),
-			...(validationMessage.value && { validationMessage: validationMessage.value }),
+			validation: validation.value,
+			validationMessage: validationMessage.value,
 		};
 	},
 	set(value) {
-		validation.value = value.validation ?? null;
-		validationMessage.value = value.validationMessage ?? null;
+		if (!isEqual(value.validation, validation.value)) validation.value = value.validation;
+		if (!isEqual(value.validationMessage, validationMessage.value)) validationMessage.value = value.validationMessage;
 	},
 });
 
-const fields = computed(() => [
+const validationInitial = validationSync.value;
+
+const fields = computed<DeepPartial<Field>[]>(() => [
 	{
 		field: 'validation',
 		name: t('validation'),
@@ -55,7 +59,7 @@ const fields = computed(() => [
 <template>
 	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
 
-	<v-form v-else v-model="validationSync" :fields="fields" :loading="loading" />
+	<v-form v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
 </template>
 
 <style lang="scss" scoped>

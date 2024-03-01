@@ -300,13 +300,6 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Geometrie (alle)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 theme_auto: Automatisch (Systemeinstellung folgen)
 theme_light: Heller Modus
 theme_dark: Dunkler Modus
@@ -1376,7 +1369,6 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
-    ip_access: Erlaubte IP-Adressen hinzufügen, leer lassen um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1984,6 +1976,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
+  hash:
+    hash: Hash
   icon:
     icon: Symbol
     description: Icon anzeigen

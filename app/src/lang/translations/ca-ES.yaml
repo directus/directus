@@ -241,13 +241,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria (totes)
-geometry.Point: Punt
-geometry.LineString: Cadena Línia
-geometry.Polygon: Polígon
-geometry.MultiPoint: Multipunt
-geometry.MultiLineString: Cadena Línia múltiple
-geometry.MultiPolygon: Multipolígon
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -1658,6 +1651,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valor JSON formatat
     description: Mostra una versió formatada del l'objecte
+  hash:
+    hash: Hash
   icon:
     icon: Icona
     description: Mostra una icona

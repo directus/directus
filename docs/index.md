@@ -101,7 +101,7 @@ for await (const item of subscription) {
 			/>
 			<Card
 				title="Data Model"
-				text="Structure and organize items in your collection, while also establishing relationships between them."
+				text="Structure and organize items, fields, and relationships in your collections."
 				url="/app/data-model"
 				icon="database"
 			/>
@@ -211,14 +211,19 @@ for await (const item of subscription) {
 			</p>
 		</div>
 		<div :class="[$style.grid4, $style.m60, $style.frameworks]">
+			<a href="/guides/headless-cms/build-static-website/next-13">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/next.png" alt="Next.js" />
+				</div>
+			</a>
 			<a href="/guides/headless-cms/build-static-website/nuxt-3">
 				<div :class="[$style.image]">
 					<img src="/assets/frameworks/nuxt.png" alt="Nuxt" />
 				</div>
 			</a>
-			<a href="/guides/headless-cms/build-static-website/next-13">
+			<a href="/blog/getting-started-directus-astro">
 				<div :class="[$style.image]">
-					<img src="/assets/frameworks/next.png" alt="Next.js" />
+					<img src="/assets/frameworks/astro.png" alt="Astro" />
 				</div>
 			</a>
 			<a href="/blog/getting-started-directus-sveltekit">
@@ -226,9 +231,24 @@ for await (const item of subscription) {
 					<img src="/assets/frameworks/sveltekit.png" alt="SvelteKit" />
 				</div>
 			</a>
-			<a href="/blog/getting-started-directus-astro">
+			<a href="/blog/getting-started-solidstart">
 				<div :class="[$style.image]">
-					<img src="/assets/frameworks/astro.png" alt="Astro" />
+					<img src="/assets/frameworks/solidstart.png" alt="SolidStart" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-with-directus-and-gatsby">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/gatsby.png" alt="Gastby" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-directus-and-eleventy-11ty-3">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/11ty.png" alt="Eleventy" />
+				</div>
+			</a>
+			<a href="/blog/getting-started-with-directus-and-remix">
+				<div :class="[$style.image]">
+					<img src="/assets/frameworks/remix.png" alt="Remix" />
 				</div>
 			</a>
 		</div>

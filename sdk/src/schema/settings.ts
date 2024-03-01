@@ -14,7 +14,7 @@ export type DirectusSettings<Schema extends object> = MergeCoreCollection<
 		project_color: string | null;
 		project_logo: string | null;
 		public_foreground: string | null;
-		public_background: string | null;
+		public_background: { id: string; type: string } | null;
 		public_note: string | null;
 		auth_login_attempts: number;
 		auth_password_policy: string | null;

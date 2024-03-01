@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedRelationalMany } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedSingleRelational } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { AbstractSqlQueryJoinNode } from '../../../types/index.js';
@@ -13,8 +13,8 @@ test('Convert m2o relation on single field ', () => {
 	const externalTableIndex = randomInteger(0, 100);
 	const externalColumnName = randomIdentifier();
 
-	const relationalField: AbstractQueryFieldNodeNestedRelationalMany = {
-		type: 'relational-many',
+	const relationalField: AbstractQueryFieldNodeNestedSingleRelational = {
+		type: 'relational-single',
 		local: {
 			fields: [columnName],
 		},
@@ -65,8 +65,8 @@ test('Convert m2o relation with composite keys', () => {
 	const externalColumn1Name = randomIdentifier();
 	const externalColumn2Name = randomIdentifier();
 
-	const relationalField: AbstractQueryFieldNodeNestedRelationalMany = {
-		type: 'relational-many',
+	const relationalField: AbstractQueryFieldNodeNestedSingleRelational = {
+		type: 'relational-single',
 		local: {
 			fields: [column1Name, column2Name],
 		},

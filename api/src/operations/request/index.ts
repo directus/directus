@@ -40,12 +40,12 @@ export default defineOperationApi<Options>({
 
 			return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
 		} catch (error: unknown) {
-			if (isAxiosError(error)) {
+			if (isAxiosError(error) && error.response) {
 				throw JSON.stringify({
-					status: error.response?.status,
-					statusText: error.response?.statusText,
-					headers: error.response?.headers,
-					data: error.response?.data,
+					status: error.response.status,
+					statusText: error.response.statusText,
+					headers: error.response.headers,
+					data: error.response.data,
 				});
 			} else {
 				throw error;

@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type {
 	Accountability,
 	Aggregate,
@@ -13,7 +14,6 @@ import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '@directus/errors';
 import type {
 	AST,
 	AbstractServiceOptions,
@@ -589,7 +589,7 @@ export class AuthorizationService {
 		return payloadWithPresets;
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
+	async checkAccess(action: PermissionsAction, collection: string, pk?: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
 		const itemsService = new ItemsService(collection, {
@@ -604,11 +604,24 @@ export class AuthorizationService {
 
 		if (Array.isArray(pk)) {
 			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
-			if (!result) throw new ForbiddenError();
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
 			if (result.length !== pk.length) throw new ForbiddenError();
-		} else {
+		} else if (pk) {
 			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
 			if (!result) throw new ForbiddenError();
+		} else {
+			query.limit = 1;
+			const result = await itemsService.readByQuery(query, { permissionsAction: action });
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
+			// for create action, an empty array is expected - for other actions, the first item is expected to be available
+			const access = action === 'create' ? result.length === 0 : !!result[0];
+			if (!access) throw new ForbiddenError();
 		}
 	}
 }
