@@ -12,7 +12,7 @@ export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
 	const result = { ...item };
 
 	for (const versionRecord of versionData) {
-		for (const key in versionRecord) {
+		for (const key of Object.keys(versionRecord)) {
 			result[key] = versionRecord[key];
 		}
 	}
@@ -41,7 +41,7 @@ function recursiveMerging(
 	const relations = getRelations(collection, schema);
 
 	for (const versionRecord of versionData) {
-		for (const key in data) {
+		for (const key of Object.keys(data)) {
 			if (!versionRecord || key in versionRecord === false) {
 				continue;
 			}
@@ -147,7 +147,7 @@ function recursiveMerging(
 function addMissingKeys(item: Item, edits: Item) {
 	const result: Item = { ...item };
 
-	for (const key in edits) {
+	for (const key of Object.keys(edits)) {
 		if (key in item === false) {
 			result[key] = null;
 		}
