@@ -32,12 +32,7 @@ export function mergeVersionsRecursive(
 	return recursiveMerging(item, versionData, collection, schema) as Item;
 }
 
-function recursiveMerging(
-	data: Item,
-	versionData: unknown[],
-	collection: string,
-	schema: SchemaOverview,
-): unknown {
+function recursiveMerging(data: Item, versionData: unknown[], collection: string, schema: SchemaOverview): unknown {
 	const result = { ...data };
 	const relations = getRelations(collection, schema);
 
