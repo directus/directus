@@ -367,20 +367,20 @@ fields:
     interface: input
     options:
       iconRight: link
-      placeholder: https://example.com
+      placeholder: https://example.com/feature
     width: half
 
   - field: report_bug_url
     interface: input
     options:
       iconRight: link
-      placeholder: https://example.com
+      placeholder: https://example.com/bug
     width: half
 
   - field: report_error_url
     interface: system-display-template
     options:
-      placeholder: https://example.com
+      placeholder: https://example.com/error
       fields:
         - name: Error
           field: error
