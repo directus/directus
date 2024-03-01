@@ -1,143 +1,187 @@
-import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedUnionRelational } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { ConverterResult } from '../../../index.js';
-import { type NestedManyResult } from './nested-manys.js';
-import { getNestedUnionOne } from './nested-union-one.js';
+import { getNestedUnionOne, type NestedUnionOneResult } from './nested-union-one.js';
 import { createIndexGenerators } from '../../utils/create-index-generators.js';
 
 test('getNestedUnionOne with a single identifier', () => {
 	const relationalColumn = randomIdentifier();
 	const tableIndex = 0;
-
-	// first foreign collection
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldAlias = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
-
-	// second foreign collection
 	const foreignIdField2 = randomIdentifier();
 	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
 	const foreignStore2 = randomIdentifier();
 
-	const manyAlias = randomIdentifier();
-
-	const field: AbstractQueryFieldNodeNestedUnionOne = {
-		type: 'nested-union-one',
-		alias: manyAlias,
-		nesting: {
-			type: 'relational-union',
-			field: relationalColumn,
-			collections: [
-				{
+	const field: AbstractQueryFieldNodeNestedUnionRelational = {
+		type: 'relational-union',
+		field: relationalColumn,
+		collections: [
+			{
+				fields: [
+					{
+						type: 'primitive',
+						field: foreignIdField,
+						alias: foreignIdFieldAlias,
+					},
+				],
+				relational: {
+					store: foreignStore,
+					collectionName: foreignTable,
+					collectionIdentifier: randomIdentifier(),
 					fields: [
 						{
-							type: 'primitive',
-							field: foreignIdField,
-							alias: foreignIdFieldAlias,
+							name: foreignIdField,
+							type: 'string',
 						},
 					],
-					relational: {
-						store: foreignStore,
-						collectionName: foreignTable,
-						collectionIdentifier: randomIdentifier(),
-						identifierFields: [foreignIdField],
-					},
 				},
-				{
+			},
+			{
+				fields: [
+					{
+						type: 'primitive',
+						field: foreignIdField2,
+						alias: foreignIdFieldAlias2,
+					},
+				],
+				relational: {
+					store: foreignStore2,
+					collectionName: foreignTable2,
+					collectionIdentifier: randomIdentifier(),
 					fields: [
 						{
-							type: 'primitive',
-							field: foreignIdField2,
-							alias: foreignIdFieldAlias2,
+							name: foreignIdField2,
+							type: 'string',
 						},
 					],
-					relational: {
-						store: foreignStore2,
-						collectionName: foreignTable2,
-						collectionIdentifier: randomIdentifier(),
-						identifierFields: [foreignIdField2],
-					},
 				},
-			],
-		},
+			},
+		],
 	};
 
 	const indexGenerators = createIndexGenerators();
-
 	const result = getNestedUnionOne(field, tableIndex, indexGenerators);
 
-	const expected: NestedManyResult = {
-		subQuery: expect.any(Function),
-		select: [
+	const expected: NestedUnionOneResult = {
+		joins: [
 			{
-				type: 'primitive',
-				tableIndex,
-				columnName: relationalColumn,
+				type: 'join',
+				tableIndex: 0,
+				tableName: foreignTable,
+				on: {
+					type: 'logical',
+					negate: false,
+					operator: 'and',
+					childNodes: [
+						{
+							type: 'condition',
+							negate: false,
+							condition: {
+								type: 'condition-string',
+								operation: 'eq',
+								target: {
+									type: 'json',
+									tableIndex: 0,
+									columnName: relationalColumn,
+									path: [0],
+								},
+								compareTo: {
+									type: 'value',
+									parameterIndex: 1,
+								},
+							},
+						},
+						{
+							type: 'condition',
+							negate: false,
+							condition: {
+								type: 'condition-field',
+								operation: 'eq',
+								target: {
+									type: 'json',
+									tableIndex: 0,
+									columnName: relationalColumn,
+									path: [2],
+								},
+								compareTo: {
+									type: 'primitive',
+									columnName: foreignIdField,
+									tableIndex: 0,
+								},
+							},
+						},
+					],
+				},
+			},
+			{
+				type: 'join',
+				tableIndex: 1,
+				tableName: foreignTable2,
+				on: {
+					type: 'logical',
+					negate: false,
+					operator: 'and',
+					childNodes: [
+						{
+							type: 'condition',
+							negate: false,
+							condition: {
+								type: 'condition-string',
+								operation: 'eq',
+								target: {
+									type: 'json',
+									tableIndex: 1,
+									columnName: relationalColumn,
+									path: [3],
+								},
+								compareTo: {
+									type: 'value',
+									parameterIndex: 4,
+								},
+							},
+						},
+						{
+							type: 'condition',
+							negate: false,
+							condition: {
+								type: 'condition-field',
+								operation: 'eq',
+								target: {
+									type: 'json',
+									tableIndex: 0,
+									columnName: relationalColumn,
+									path: [5],
+								},
+								compareTo: {
+									type: 'primitive',
+									columnName: foreignIdField2,
+									tableIndex: 1,
+								},
+							},
+						},
+					],
+				},
+			},
+		],
+		select: {
+			type: 'primitive',
+			tableIndex,
+			columnName: relationalColumn,
+			columnIndex: 0,
+		},
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: relationalColumn,
 				columnIndex: 0,
 			},
 		],
+		parameters: ['foreignCollection', foreignTable, 'foreignKey', 'foreignCollection', foreignTable2, 'foreignKey'],
 	};
 
 	expect(result).toStrictEqual(expected);
-
-	const jsonValue = {
-		foreignKey: [
-			{
-				column: foreignIdField2,
-				value: 1,
-			},
-		],
-		foreignCollection: foreignTable2,
-	};
-
-	const exampleRootRow = {
-		c0: JSON.stringify(jsonValue),
-	};
-
-	const expectedGeneratedQuery: ConverterResult = {
-		rootQuery: {
-			clauses: {
-				select: [
-					{
-						type: 'primitive',
-						tableIndex,
-						columnName: foreignIdField2,
-						columnIndex: 0,
-					},
-				],
-				from: {
-					tableName: foreignTable2,
-					tableIndex,
-				},
-				joins: [],
-				where: {
-					type: 'condition',
-					condition: {
-						type: 'condition-string',
-						operation: 'eq',
-						target: {
-							type: 'primitive',
-							tableIndex,
-							columnName: foreignIdField2,
-						},
-						compareTo: {
-							type: 'value',
-							parameterIndex: 0,
-						},
-					},
-					negate: false,
-				},
-			},
-			parameters: [1],
-		},
-		subQueries: [],
-		aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
-	};
-
-	expect(result.subQuery(exampleRootRow, (columnIndex: number) => `c${columnIndex}`)).toStrictEqual(
-		expectedGeneratedQuery,
-	);
 });
