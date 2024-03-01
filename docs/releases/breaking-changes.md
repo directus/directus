@@ -13,6 +13,15 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.10.0
+
+### Content Versioning output
+
+Starting with 10.10, nested relational changes to one-to-many are resolved rather than returned as a raw changes object
+(See https://github.com/directus/directus/issues/20890 for more information). This means that the output for a versioned
+record will match the output of a non-versioned record. You can add the new `?versionRaw=true` query parameter to
+retrieve the raw staged version (which was the < 10.10 behavior).
+
 ## Version 10.9.0
 
 ### Updated Exif Tags
