@@ -19,10 +19,11 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 For improved security and ease of use we have implemented session based authentication and have updated the App to use
 this method over the previous token based authentication. This impacts `oauth2`, `open-id` and `saml` SSO installations
-as they too will now default to the new session based authentication in order to work with the App out-of-the-box.
+as they too will now default to the new session based authentication in order to work with the App out-of-the-box. The
+new session cookie can be configured using the `SESSION_COOKIE_*` environment variables.
 
-To keep using the previous SSO behavior setting the refresh token instead of session token for use in external applications, you can set
-`AUTH_<PROVIDER>_MODE=cookie`. This will however not work with the Directus app.
+To keep using the previous SSO behavior setting the refresh token instead of session token for use in external
+applications, you can set `AUTH_<PROVIDER>_MODE=cookie`. This will however not work with the Directus app.
 
 ### Extensions Extracting the Current Token from `axios`
 
