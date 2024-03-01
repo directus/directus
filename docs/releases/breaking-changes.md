@@ -15,12 +15,15 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.10.0
 
-### Content Versioning output
+### Content Versioning Output
 
-Starting with 10.10, nested relational changes to one-to-many are resolved rather than returned as a raw changes object
-(See https://github.com/directus/directus/issues/20890 for more information). This means that the output for a versioned
-record will more closely match the output of a non-versioned record. You can add the new `?versionRaw=true` query
-parameter to retrieve the raw staged version (which was the < 10.10 behavior).
+Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
+resolved rather than returned as a raw changes object (see https://github.com/directus/directus/issues/20890 for more
+information).
+
+The change makes the output for a versioned record match the format of the `Main` record more closely, which then
+natively supports other features like Live Preview. To retrieve the raw staged version (pre-10.10.0 behavior), just add
+the new `?versionRaw=true` query parameter to the request.
 
 ## Version 10.9.0
 
