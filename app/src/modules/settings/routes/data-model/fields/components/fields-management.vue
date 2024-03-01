@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { useCollection } from '@directus/composables';
 import { Field, LocalType } from '@directus/types';
 import { isNil, orderBy } from 'lodash';
 import { computed, toRefs } from 'vue';
@@ -16,8 +15,10 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const { collection } = toRefs(props);
-const { fields } = useCollection(collection);
 const fieldsStore = useFieldsStore();
+fieldsStore.hydrate({ skipTranslation: true });
+
+const fields = computed(() => fieldsStore.getFieldsForCollectionSorted(collection.value) as Field[]);
 
 const parsedFields = computed(() => {
 	return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
