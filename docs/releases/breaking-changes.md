@@ -13,7 +13,7 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version [NEXT]
+## Version 10.10.0
 
 ### Introduced Allow List for OAuth/OpenID Redirects
 
@@ -22,7 +22,7 @@ these redirects. If your current workflow depends on redirecting to an external 
 the `?redirect=http://example.com/login` query parameter then you'll need to add this URL to the
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`.
 
-# `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma separated list of URLs (which include the path when comparing).
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma separated list of URLs (which include the path when comparing).
 
 ## Version 10.9.0
 
