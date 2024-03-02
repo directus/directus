@@ -931,6 +931,13 @@ By default, extensions are not cached. The input data type for this environment 
 extensions from a storage location instead. Under the hood, they are synced into a local directory within
 [`TEMP_PATH`](#general) and then loaded from there.
 
+## Marketplace
+
+| Variable               | Description                                       | Default Value                  |
+| ---------------------- | ------------------------------------------------- | ------------------------------ |
+| `MARKETPLACE_TRUST`    | One of `sandbox`, `all`                           | `sandbox`                      |
+| `MARKETPLACE_REGISTRY` | The registry to use for the Directus Marketplace. | `https://registry.directus.io` |
+
 ## Synchronization
 
 | Variable                    | Description                            | Default Value   |
