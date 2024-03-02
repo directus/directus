@@ -7,6 +7,7 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
+import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -31,9 +32,13 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_roles'), primaryKey, {
-	deep: { users: { _limit: 0 } },
-});
+const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem<Role>(
+	ref('directus_roles'),
+	primaryKey,
+	{
+		deep: { users: { _limit: 0 } },
+	},
+);
 
 const confirmDelete = ref(false);
 

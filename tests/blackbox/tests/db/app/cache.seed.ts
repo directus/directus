@@ -1,6 +1,6 @@
 import { CreateCollection, CreateField, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 
 export const collectionFirst = 'test_app_cache_first';
@@ -64,14 +64,14 @@ export const seedDBValues = async () => {
 			await CreateItem(vendor, {
 				collection: collectionFirst,
 				item: {
-					string_field: uuid(),
+					string_field: randomUUID(),
 				},
 			});
 
 			await CreateItem(vendor, {
 				collection: collectionIgnored,
 				item: {
-					string_field: uuid(),
+					string_field: randomUUID(),
 				},
 			});
 		}),

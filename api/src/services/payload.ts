@@ -6,7 +6,7 @@ import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -68,7 +68,7 @@ export class PayloadService {
 		},
 		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
-				return uuid();
+				return randomUUID();
 			}
 
 			return value;

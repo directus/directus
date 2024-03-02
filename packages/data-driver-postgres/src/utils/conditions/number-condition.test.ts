@@ -49,3 +49,18 @@ test('number condition with function', () => {
 		`EXTRACT(MONTH FROM "t${tableIndex}"."${columnName}") > $${parameterIndex + 1}`,
 	);
 });
+
+test('number condition targeting json value', () => {
+	const jsonPropIndex = randomInteger(0, 100);
+
+	sampleCondition.target = {
+		type: 'json',
+		tableIndex,
+		columnName: columnName,
+		path: [jsonPropIndex],
+	};
+
+	expect(numberCondition(sampleCondition, false)).toStrictEqual(
+		`CAST("t${tableIndex}"."${columnName}" -> $${jsonPropIndex + 1} AS numeric) > $${parameterIndex + 1}`,
+	);
+});

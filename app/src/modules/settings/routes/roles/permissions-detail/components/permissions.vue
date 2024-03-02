@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useSync } from '@directus/composables';
-import type { Permission, Role } from '@directus/types';
-import { computed } from 'vue';
+import type { DeepPartial, Field, Permission, Role } from '@directus/types';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;
@@ -14,9 +14,24 @@ const emit = defineEmits(['update:permission']);
 
 const { t } = useI18n();
 
-const permissionSync = useSync(props, 'permission', emit);
+const permissionLocal = ref({ permissions: props.permission.permissions });
+const permissionInitial = permissionLocal.value;
 
-const fields = computed(() => [
+const permissionSync = computed({
+	get() {
+		return permissionLocal.value;
+	},
+	set(value) {
+		permissionLocal.value = value;
+
+		emit('update:permission', {
+			...props.permission,
+			permissions: value.permissions !== undefined ? value.permissions : permissionInitial.permissions,
+		});
+	},
+});
+
+const fields = computed<DeepPartial<Field>[]>(() => [
 	{
 		field: 'permissions',
 		name: t('rule'),
@@ -24,7 +39,7 @@ const fields = computed(() => [
 		meta: {
 			interface: 'system-filter',
 			options: {
-				collectionName: permissionSync.value.collection,
+				collectionName: props.permission.collection,
 				rawFieldNames: true,
 			},
 		},
@@ -43,35 +58,14 @@ const fields = computed(() => [
 			}}
 		</v-notice>
 
-		<v-form v-model="permissionSync" :fields="fields" />
+		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
 
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
+		<app-minimal :value="appMinimal" />
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-notice {
 	margin-bottom: 36px;
-}
-
-.app-minimal {
-	.v-divider {
-		margin: 24px 0;
-	}
-
-	.v-notice {
-		margin-bottom: 24px;
-	}
-
-	.app-minimal-preview {
-		padding: 16px;
-		font-family: var(--theme--fonts--monospace--font-family);
-		background-color: var(--theme--background-subdued);
-		border-radius: var(--theme--border-radius);
-	}
 }
 </style>

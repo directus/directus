@@ -144,7 +144,7 @@ Update an existing extension.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`PATCH /extension/:bundleOrName/:name?`
+`PATCH /extensions/:bundleOrName/:name?`
 
 Provide a partial [extension object](#the-extension-object) as the body of your request.
 

@@ -89,7 +89,7 @@ const {
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
