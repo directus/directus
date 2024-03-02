@@ -16,7 +16,7 @@ It's available in all projects, whether run on Directus Cloud or your own infras
 
 ## Discover Extensions
 
-![A marketplace listing in settings. There is a filter and sort option, and a search extensions box. Each extension is shown with an icon, name, type, author, description, as well as other metadata.](https://marketing.directus.app/assets/9ed89505-ca30-43d7-b4c4-2f6b40223815.png)
+![A marketplace listing in settings. There is a filter and sort option, and a search extensions box. Each extension is shown with an icon, name, type, author, description, as well as other metadata.](https://marketing.directus.app/assets/2d38c367-5498-4257-94fe-a9da922b27c5.png)
 
 Navigate to **Settings > Marketplace** to access the Directus Marketplace. You can now browse extensions to install.
 
@@ -27,7 +27,7 @@ You can click any extension in the Marketplace listing to enter the extension de
 
 ## Install Extensions
 
-![An extension page showing the key metadata from the home, as well as a readme with a screenshot, install button, and a popularity graph.](https://marketing.directus.app/assets/ac0c5aea-30dc-49d2-a5e7-e7e6f95ba384.png)
+![An extension page showing the key metadata from the home, as well as a readme with a screenshot, install button, and a popularity graph.](https://marketing.directus.app/assets/30431b63-1297-432a-aa22-5fde8aaccf24.png)
 
 On extension detail pages, click the **Install Extension** button to install the extension in your project.
 
@@ -43,7 +43,7 @@ still install and try them.
 
 ## Manage Extensions
 
-![An extension listing in settings. One extension is shown under a Modules header. The extension name and version number is shown, along with an Enabled indicator.](https://marketing.directus.app/assets/61ea239c-5116-4c82-a677-acd1323972f0.png)
+![An extension listing in settings. One extension is shown under a Modules header. The extension name and version number is shown, along with an Enabled indicator.](https://marketing.directus.app/assets/62c170a8-ea6b-4fae-b824-7c701c7e7521.png)
 
 Navigate to **Settings > Extensions** to see all installed extensions in your Directus project. They are grouped by
 extension type.

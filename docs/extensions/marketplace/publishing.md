@@ -24,7 +24,7 @@ The [Directus Marketplace](/user-guide/marketplace/overview) provides a way for 
 projects directly in the Data Studio. It's available in all projects, whether run on Directus Cloud or your own
 infrastructure.
 
-![A marketplace listing in settings. There is a filter and sort option, and a search extensions box. Each extension is shown with an icon, name, type, author, description, as well as other metadata.](https://marketing.directus.app/assets/9ed89505-ca30-43d7-b4c4-2f6b40223815.png)
+![A marketplace listing in settings. There is a filter and sort option, and a search extensions box. Each extension is shown with an icon, name, type, author, description, as well as other metadata.](https://marketing.directus.app/assets/2d38c367-5498-4257-94fe-a9da922b27c5.png)
 
 ## Directus Extensions Registry
 
@@ -95,7 +95,7 @@ In newer versions of `create-directus-extension`, this will be automatically add
 
 ## Extension Detail Page
 
-![An extension page showing the key metadata from the home, as well as a readme with a screenshot, install button, and a popularity graph.](https://marketing.directus.app/assets/ac0c5aea-30dc-49d2-a5e7-e7e6f95ba384.png)
+![An extension page showing the key metadata from the home, as well as a readme with a screenshot, install button, and a popularity graph.](https://marketing.directus.app/assets/30431b63-1297-432a-aa22-5fde8aaccf24.png)
 
 ### Extension Title
 
@@ -134,7 +134,7 @@ repository, visit the direct URL of the image, and use this reference inside you
 
 ## Author Profile Page
 
-![A page shows an individual author's extensions, along with their name, location, workplace, bio, and links to their NPM, GitHub, and website.](https://marketing.directus.app/assets/88661c0c-21d9-4d0c-8e85-2c3eb77c0a1a.png)
+![A page shows an individual author's extensions, along with their name, location, workplace, bio, and links to their NPM, GitHub, and website.](https://marketing.directus.app/assets/16760e1f-8489-4dc3-acad-9b07314b2e1a.png)
 
 If your email address is public on GitHub and matches your npm account, the Directus Extensions Registry will also
 include information from your GitHub profile, including profile image, name, location, bio, and links.
