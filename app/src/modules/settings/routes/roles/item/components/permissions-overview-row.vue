@@ -13,7 +13,7 @@ const props = defineProps<{
 	disabledActions?: EditablePermissionsAction[];
 	permissions: Permission[];
 	refreshing: number[];
-	role?: string;
+	role: string | null;
 	appMinimal?: Partial<Permission>[];
 }>();
 
@@ -31,14 +31,15 @@ function isLoading(action: string) {
 
 <template>
 	<div class="permissions-overview-row">
-		<span class="name">
-			<span v-tooltip.left="collection.name">{{ collection.collection }}</span>
-			<span class="actions">
-				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
-				<span class="divider">/</span>
-				<span class="none" @click="setNoAccessAll">{{ t('none') }}</span>
-			</span>
+		<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
+
+		<span class="actions">
+			<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
+			<span class="divider">/</span>
+			<span class="none" @click="setNoAccessAll">{{ t('none') }}</span>
 		</span>
+
+		<span class="spacer" />
 
 		<template v-for="action in editablePermissionActions" :key="action">
 			<permissions-overview-toggle
@@ -48,7 +49,7 @@ function isLoading(action: string) {
 				:role="role"
 				:permissions="permissions"
 				:loading="isLoading(action)"
-				:app-minimal="appMinimal && appMinimal.find((p) => p.action === action)"
+				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
 			/>
 			<value-null v-else />
 		</template>
@@ -63,39 +64,46 @@ function isLoading(action: string) {
 	padding: 0 12px;
 
 	.name {
-		flex-grow: 1;
 		font-family: var(--theme--fonts--monospace--font-family);
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-		.actions {
-			margin-left: 8px;
-			color: var(--theme--foreground-subdued);
-			font-size: 12px;
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+	.actions {
+		font-family: var(--theme--fonts--monospace--font-family);
+		margin-left: 8px;
+		color: var(--theme--foreground-subdued);
+		font-size: 12px;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
 
-			span {
-				cursor: pointer;
+		span {
+			cursor: pointer;
 
-				&:hover {
-					&.all {
-						color: var(--theme--success);
-					}
+			&:hover {
+				&.all {
+					color: var(--theme--success);
+				}
 
-					&.none {
-						color: var(--theme--danger);
-					}
+				&.none {
+					color: var(--theme--danger);
 				}
 			}
+		}
 
-			.divider {
-				margin: 0 6px;
-				cursor: default;
-			}
+		.divider {
+			margin: 0 6px;
+			cursor: default;
 		}
 	}
 
-	&:hover .name .actions {
+	&:hover .actions {
 		opacity: 1;
+	}
+
+	.spacer {
+		flex-grow: 1;
+		width: 20px;
 	}
 
 	.null {
@@ -103,6 +111,7 @@ function isLoading(action: string) {
 		justify-content: center;
 		width: 24px;
 		color: var(--theme--foreground);
+		cursor: not-allowed;
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {

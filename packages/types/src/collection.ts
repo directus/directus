@@ -25,6 +25,7 @@ export type CollectionMeta = {
 	archive_app_filter: boolean;
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'activity' | null;
+	system: boolean | null;
 	sort: number | null;
 	group: string | null;
 	collapse: 'open' | 'closed' | 'locked';

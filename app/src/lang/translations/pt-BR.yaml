@@ -250,13 +250,6 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometria (Todos)
-geometry.Point: Ponto
-geometry.LineString: Linha de Texto
-geometry.Polygon: Polígono
-geometry.MultiPoint: MultiPonto
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: Multipolígono
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -1267,7 +1260,6 @@ field_options:
   directus_roles:
     name: O nome único para este papel...
     description: Uma descrição deste papel...
-    ip_access: Adicione endereços IP permitidos ou deixe em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
@@ -1834,6 +1826,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
     description: Exibe uma versão formatada do objeto
+  hash:
+    hash: Hash
   icon:
     icon: Ícone
     description: Exibir um ícone

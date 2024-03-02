@@ -8,12 +8,12 @@ import { mapValues } from 'lodash-es';
 import { getSchemaCache, setSchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
-import { systemFieldRows } from '../database/system-data/fields/index.js';
 import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
+import { systemCollectionRows } from '@directus/system-data';
+import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 
 const logger = useLogger();
 
@@ -67,6 +67,8 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		collections: {},
 		relations: [],
 	};
+
+	const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 	const schemaOverview = await schemaInspector.overview();
 

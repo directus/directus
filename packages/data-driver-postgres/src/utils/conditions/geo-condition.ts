@@ -1,5 +1,5 @@
-import type { SqlConditionGeoNode } from '@directus/data-sql';
-import { wrapColumn } from '../wrap-column.js';
+import { type SqlConditionGeoNode } from '@directus/data-sql';
+import { convertTarget } from '../convert-target.js';
 
 /**
  * Used to check if a geo shape intersects with another geo shape.
@@ -14,15 +14,22 @@ import { wrapColumn } from '../wrap-column.js';
  * @param condition
  * @returns
  */
-export const geoCondition = (condition: SqlConditionGeoNode): string => {
-	const column = wrapColumn(condition.target.table, condition.target.column);
+export function geoCondition(condition: SqlConditionGeoNode): string {
 	const parameterIndex = condition.compareTo.parameterIndex;
 	const geomConvertedText = `ST_GeomFromText($${parameterIndex + 1})`;
+	const target = convertTarget(condition.target, 'geo');
 
-	switch (condition.operation) {
-		case 'intersects':
-			return `ST_Intersects(${column}, ${geomConvertedText})`;
-		case 'intersects_bbox':
-			return `${column} && ${geomConvertedText})`;
+	return getOperation(condition.operation, target, geomConvertedText);
+}
+
+function getOperation(
+	operation: SqlConditionGeoNode['operation'],
+	firstOperand: string,
+	secondOperand: string,
+): string {
+	if (operation === 'intersects') {
+		return `ST_Intersects(${firstOperand}, ${secondOperand})`;
+	} else {
+		return `${firstOperand} && ${secondOperand})`;
 	}
-};
+}

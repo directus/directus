@@ -285,13 +285,6 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometrie (Alle)
-geometry.Point: Punt
-geometry.LineString: LineString
-geometry.Polygon: Veelhoek
-geometry.MultiPoint: Multipoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiVeelhoek
 theme_auto: Automatisch (gebaseerd op systeem)
 theme_light: Lichtmodus
 theme_dark: Donkere Modus
@@ -1264,7 +1257,6 @@ field_options:
   directus_files:
     title: Een unieke titel...
   directus_roles:
-    ip_access: Toegestane IP-adressen toevoegen, leeg laten om alles toe te staan...
     fields:
       icon_name: Icoon
       name_name: Naam
@@ -1655,6 +1647,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven
+  hash:
+    hash: Hash
   icon:
     icon: Icoon
     description: Toon een icoon

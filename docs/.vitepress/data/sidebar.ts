@@ -1,4 +1,6 @@
+import { readItems } from '@directus/sdk';
 import { formatTitle } from '@directus/format-title';
+import { client } from '../lib/directus.js';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
 import { sections as guideSections } from './guides.js';
@@ -6,6 +8,7 @@ import { sections as guideSections } from './guides.js';
 export default {
 	'/': sidebarDeveloperReference(),
 	'/user-guide/': sidebarUserGuide(),
+	'/plus/': await sidebarDirectusPlus(),
 	'/packages/': sidebarTypedocs(),
 } as DefaultTheme.Sidebar;
 
@@ -290,16 +293,16 @@ function sidebarDeveloperReference() {
 							link: '/extensions/installing-extensions',
 							text: 'Installing Extensions',
 						},
-						{
-							link: '/extensions/creating-extensions',
-							text: 'Creating Extensions',
-						},
 					],
 				},
 				{
 					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
+						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
 						{
 							text: 'Extension Types',
 							collapsed: true,
@@ -355,7 +358,7 @@ function sidebarDeveloperReference() {
 							],
 						},
 						{
-							text: 'Secure Extensions',
+							text: 'Sandboxed Extensions',
 							collapsed: true,
 							items: [
 								{
@@ -417,6 +420,10 @@ function sidebarDeveloperReference() {
 							text: 'Packages',
 						},
 					],
+				},
+				{
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing',
 				},
 			],
 		},
@@ -617,6 +624,16 @@ function sidebarUserGuide() {
 			],
 		},
 		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview',
+				},
+			],
+		},
+		{
 			text: 'Directus Cloud',
 			collapsed: true,
 			items: [
@@ -708,4 +725,30 @@ function typeDocSidebarFormat(item: DefaultTheme.SidebarItem) {
 	}
 
 	return item;
+}
+
+async function sidebarDirectusPlus() {
+	const sections = await client.request(
+		readItems('dplus_docs_sections', {
+			fields: ['*', { articles: ['title', 'slug'] }],
+			filter: {
+				articles: {
+					status: { _eq: 'published' },
+				},
+			},
+		}),
+	);
+
+	const sidebar = sections.map((section) => {
+		return {
+			text: section.title,
+			collapsed: section.slug === 'overview' ? false : true,
+			items: section.articles.map((article) => ({
+				text: article.title,
+				link: `/plus/${article.slug}`,
+			})),
+		};
+	});
+
+	return sidebar;
 }

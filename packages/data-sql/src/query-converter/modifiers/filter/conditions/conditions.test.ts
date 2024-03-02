@@ -1,79 +1,214 @@
-import { beforeEach, expect, test, vi, afterEach, describe } from 'vitest';
-import { convertCondition } from './conditions.js';
-import { randomIdentifier } from '@directus/random';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import type { AbstractQueryConditionNode } from '@directus/data';
-import { convertStringNode } from './string.js';
-import { convertNumberNode } from './number.js';
-import { convertSetCondition } from './set.js';
-import { convertGeoCondition } from './geo.js';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test } from 'vitest';
+import { createIndexGenerators } from '../../../utils/create-index-generators.js';
+import type { FilterResult } from '../utils.js';
+import { convertCondition } from './conditions.js';
 
-let sample: AbstractQueryConditionNode;
-let randomCollection: string;
-let generator: Generator<number, number, number>;
+test('Convert string condition', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomAlpha(10);
 
-afterEach(() => {
-	vi.restoreAllMocks();
-});
-
-beforeEach(() => {
-	sample = {
+	const condition: AbstractQueryConditionNode = {
 		type: 'condition',
-		// @ts-ignore - the only prop which is relevant here for the test
+
 		condition: {
 			type: 'condition-string',
+
+			operation: 'eq',
+			target: {
+				type: 'primitive',
+				field: columnName,
+			},
+			compareTo: columnValue,
 		},
 	};
 
-	randomCollection = randomIdentifier();
-	generator = parameterIndexGenerator();
-});
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-string',
+					operation: 'eq',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
+			joins: [],
+		},
+		parameters: [columnValue],
+	};
 
-test('Convert string condition', () => {
-	vi.mock('./string.js', () => ({
-		convertStringNode: vi.fn(),
-	}));
+	const indexGen = createIndexGenerators();
+	const result = convertCondition(condition, tableIndex, indexGen, false);
 
-	convertCondition(sample, randomCollection, generator, false);
-	expect(convertStringNode).toHaveBeenCalledOnce();
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('Convert number condition', () => {
-	sample.condition.type = 'condition-number';
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomInteger(1, 100);
 
-	vi.mock('./number.js', () => ({
-		convertNumberNode: vi.fn(),
-	}));
+	const condition: AbstractQueryConditionNode = {
+		type: 'condition',
 
-	convertCondition(sample, randomCollection, generator, false);
-	expect(convertNumberNode).toHaveBeenCalledOnce();
+		condition: {
+			type: 'condition-number',
+
+			operation: 'eq',
+			target: {
+				type: 'primitive',
+				field: columnName,
+			},
+			compareTo: columnValue,
+		},
+	};
+
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-number',
+					operation: 'eq',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
+			joins: [],
+		},
+		parameters: [columnValue],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
 test('Convert set condition', () => {
-	sample.condition.type = 'condition-set';
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValue = randomAlpha(10);
 
-	vi.mock('./set.js', () => ({
-		convertSetCondition: vi.fn(),
-	}));
+	const condition: AbstractQueryConditionNode = {
+		type: 'condition',
 
-	convertCondition(sample, randomCollection, generator, false);
-	expect(convertSetCondition).toHaveBeenCalledOnce();
+		condition: {
+			type: 'condition-set-string',
+			operation: 'in',
+			target: {
+				type: 'primitive',
+				field: columnName,
+			},
+			compareTo: [columnValue],
+		},
+	};
+
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-set-string',
+					operation: 'in',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					compareTo: {
+						type: 'values',
+						parameterIndexes: [0],
+					},
+				},
+			},
+			joins: [],
+		},
+		parameters: [columnValue],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });
 
-describe('Convert field condition', () => {
-	vi.mock('./geo.js', () => ({
-		convertGeoCondition: vi.fn(),
-	}));
+test('Convert geo points and lines condition', () => {
+	const tableIndex = randomInteger(0, 100);
+	const columnName = randomIdentifier();
+	const columnValueCoordinateX = randomInteger(0, 100);
+	const columnValueCoordinateY = randomInteger(0, 100);
 
-	test('Convert geo points and lines condition', () => {
-		sample.condition.type = 'condition-geo-intersects';
-		convertCondition(sample, randomCollection, generator, false);
-		expect(convertGeoCondition).toHaveBeenCalledOnce();
-	});
+	const condition: AbstractQueryConditionNode = {
+		type: 'condition',
 
-	test('Convert geo points and lines condition', () => {
-		sample.condition.type = 'condition-geo-intersects-bbox';
-		convertCondition(sample, randomCollection, generator, false);
-		expect(convertGeoCondition).toHaveBeenCalledOnce();
-	});
+		condition: {
+			type: 'condition-geo-intersects',
+
+			operation: 'intersects',
+			target: {
+				type: 'primitive',
+				field: columnName,
+			},
+			compareTo: {
+				type: 'Point',
+				coordinates: [columnValueCoordinateX, columnValueCoordinateY],
+			},
+		},
+	};
+
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-geo',
+					operation: 'intersects',
+					target: {
+						type: 'primitive',
+						tableIndex,
+						columnName,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
+			joins: [],
+		},
+		parameters: [
+			{
+				type: 'Point',
+				coordinates: [columnValueCoordinateX, columnValueCoordinateY],
+			},
+		],
+	};
+
+	const indexGen = createIndexGenerators();
+	const result = convertCondition(condition, tableIndex, indexGen, false);
+
+	expect(result).toStrictEqual(expectedResult);
 });

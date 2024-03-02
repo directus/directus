@@ -183,7 +183,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'));
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
 	}
 
 	return config;

@@ -24,6 +24,7 @@
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)elisting
 (D|d)ev
 (D|d)onut
 (D|d)ropdown
@@ -46,6 +47,7 @@
 (M|m)isconfigured
 (M|m)ultitenancy
 (N|n)atively
+(N|n)on-(S|s)andboxed
 (P|p)olyfill
 (Q|q)uickstart
 (R|r)eal-(T|t)ime
@@ -103,6 +105,7 @@ Alibaba
 allowlist
 allowList
 alwaysdata
+AMI
 anonymized
 api
 API
@@ -131,6 +134,7 @@ cardinality
 CDNs?
 changelogs
 CIDR
+cjs
 CLA
 CLI
 CloudFront
@@ -196,6 +200,7 @@ Entrypoint
 env
 ENV
 ESM
+esm
 Exif
 fallbacks
 falsy
@@ -291,7 +296,6 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
-non-sandboxed
 NoSQL
 npm
 NPM
@@ -302,6 +306,7 @@ O2M
 O2Ms
 O2O
 OAuth
+OpenAI
 Okta
 omnichannel
 on-prem
@@ -349,6 +354,7 @@ pub/sub
 px
 px.
 reactively
+readme
 readonly
 readTime
 rebase

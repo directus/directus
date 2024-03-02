@@ -1,14 +1,15 @@
 import type { ConditionNumberNode } from '@directus/data';
+import type { IndexGenerators } from '../../../utils/create-index-generators.js';
 import { convertTarget } from '../../target.js';
 import type { FilterResult } from '../utils.js';
 
 export function convertNumberNode(
 	node: ConditionNumberNode,
-	collection: string,
-	generator: Generator<number, number, number>,
+	tableIndex: number,
+	indexGen: IndexGenerators,
 	negate: boolean,
 ): FilterResult {
-	const { value, joins } = convertTarget(node.target, collection, generator);
+	const { value, joins, parameters } = convertTarget(node.target, tableIndex, indexGen);
 
 	return {
 		clauses: {
@@ -21,12 +22,12 @@ export function convertNumberNode(
 					target: value,
 					compareTo: {
 						type: 'value',
-						parameterIndex: generator.next().value,
+						parameterIndex: indexGen.parameter.next().value,
 					},
 				},
 			},
 			joins,
 		},
-		parameters: [node.compareTo],
+		parameters: [...parameters, node.compareTo],
 	};
 }

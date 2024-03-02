@@ -21,15 +21,16 @@ import type {
 	ScheduleHandler,
 } from '@directus/types';
 import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
-import { getNodeEnv, pathToRelativeUrl } from '@directus/utils/node';
+import { getNodeEnv } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
-import { clone } from 'lodash-es';
+import { clone, debounce } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
+import os from 'node:os';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -224,16 +225,21 @@ export class ExtensionManager {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	public reload(): void {
+		if (this.reloadQueue.size > 0) {
+			// The pending job in the queue will already handle the additional changes
+			return;
+		}
+
 		const logger = useLogger();
 
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
-				logger.info('Reloading extensions');
-
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
 				await this.load();
+
+				logger.info('Extensions reloaded');
 
 				const added = this.extensions.filter(
 					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path),
@@ -307,32 +313,45 @@ export class ExtensionManager {
 
 		logger.info('Watching extensions for changes...');
 
-		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
+		const extensionsDir = path.resolve(getExtensionsPath());
 
-		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
+		const rootPackageJson = path.resolve(env['PACKAGE_FILE_LOCATION'] as string, 'package.json');
+		const localExtensions = path.join(extensionsDir, '*', 'package.json');
+
+		const nestedExtensions = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.join(extensionsDir, pluralize(type));
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 				return [
-					path.posix.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-					path.posix.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
 				];
 			} else {
-				return path.posix.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
+				return path.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
 			}
 		});
 
-		this.watcher = chokidar.watch(
-			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json'), ...localExtensionUrls],
-			{
-				ignoreInitial: true,
-			},
-		);
+		this.watcher = chokidar.watch([rootPackageJson, localExtensions, ...nestedExtensions], {
+			ignoreInitial: true,
+			// dotdirs are watched by default and frequently found in 'node_modules'
+			ignored: `${extensionsDir}/**/node_modules/**`,
+			// on macOS dotdirs in linked extensions are watched too
+			followSymlinks: os.platform() === 'darwin' ? false : true,
+		});
 
 		this.watcher
-			.on('add', () => this.reload())
-			.on('change', () => this.reload())
-			.on('unlink', () => this.reload());
+			.on(
+				'add',
+				debounce(() => this.reload(), 500),
+			)
+			.on(
+				'change',
+				debounce(() => this.reload(), 650),
+			)
+			.on(
+				'unlink',
+				debounce(() => this.reload(), 2000),
+			);
 	}
 
 	/**
@@ -352,9 +371,15 @@ export class ExtensionManager {
 	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
+			const extensionDir = path.resolve(getExtensionsPath());
+
+			const nestedExtensionDirs = NESTED_EXTENSION_TYPES.map((type) => {
+				return path.join(extensionDir, pluralize(type));
+			});
+
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
-					.filter((extension) => !extension.local || extension.type === 'bundle')
+					.filter((extension) => !nestedExtensionDirs.some((path) => extension.path.startsWith(path)))
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
