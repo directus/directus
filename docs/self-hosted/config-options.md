@@ -772,7 +772,7 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 | `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                           | --                     |
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `openid profile email` |
 | `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                              | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                       | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                          | `sub`<sup>[2]</sup>    |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`                |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                           | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --                     |
@@ -842,14 +842,16 @@ without a password.
 - Identity provider (IdP) authenticates users and provides to service providers an authentication assertion that
   indicates a user has been authenticated.
 
-| Variable                                    | Description                                                              | Default Value |
-| ------------------------------------------- | ------------------------------------------------------------------------ | ------------- |
-| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider                      | --            |
-| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider                     | --            |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                  | `false`       |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                              | --            |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`. | --            |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                  | `email`       |
+| Variable                                    | Description                                             | Default Value                                                          |
+| ------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider     | --                                                                     |
+| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider    | --                                                                     |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users. | `false`                                                                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.             | --                                                                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.             | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                 | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`   |
+| `AUTH_<PROVIDER>_GIVEN_NAME_KEY`            | User first name attribute.                              | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`      |
+| `AUTH_<PROVIDER>_FAMILY_NAME_KEY`           | User last name attribute.                               | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`        |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
