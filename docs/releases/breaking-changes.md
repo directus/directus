@@ -68,13 +68,13 @@ new session cookie can be configured using the `SESSION_COOKIE_*` environment va
 To keep using the previous SSO behavior setting the refresh token instead of session token for use in external
 applications, you can set `AUTH_<PROVIDER>_MODE=cookie`. This will however not work with the Directus app.
 
-### Extensions Extracting the Current Token from `axios`
+#### Extensions Extracting the Current Token from `axios`
 
 This affects App extensions that are currently extracting the token from `axios`. This will no longer be either possible
 or necessary, as the App now uses a session cookie, which will be sent with each request from the browser.
 
-This also means that the `<v-image >` component being deprecated as it does not add any value over using the native
-`<img >` tag anymore.
+This also means that the `<v-image>` component being deprecated as it does not add any value over using the native
+`<img>` tag anymore.
 
 ::: details Migration/Mitigation
 
@@ -117,7 +117,7 @@ const authenticatedURL = '/assets/<uuid>';
 
 :::
 
-### Extensions using `AuthenticationService`
+#### Extensions using `AuthenticationService`
 
 In the `AuthenticationService` the `login` function signature has been changed to have an `options` object as the third
 argument for any extra options:
