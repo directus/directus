@@ -10,72 +10,72 @@ import { computed } from 'vue';
  * Saves the given collection + items combination as a CSV file
  */
 export async function saveAsCSV(collection: string, fields: string[], items: Item[]) {
-	const fieldsStore = useFieldsStore();
+    const fieldsStore = useFieldsStore();
 
-	const fieldsUsed: Record<string, Field | null> = {};
+    const fieldsUsed: Record<string, Field | null> = {};
 
-	for (const key of fields) {
-		fieldsUsed[key] = fieldsStore.getField(collection, key);
-	}
+    for (const key of fields) {
+        fieldsUsed[key] = fieldsStore.getField(collection, key);
+    }
 
-	const { getFromAliasedItem } = useAliasFields(fields, collection);
+    const { getFromAliasedItem } = useAliasFields(fields, collection);
 
-	const parsedItems = [];
+    const parsedItems = [];
 
-	for (const item of items) {
-		const parsedItem: Record<string, any> = {};
+    for (const item of items) {
+        const parsedItem: Record<string, any> = {};
 
-		for (const key of fields) {
-			let name: string;
+        for (const key of fields) {
+            let name: string;
 
-			const keyParts = key.split('.');
+            const keyParts = key.split('.');
 
-			if (keyParts.length > 1) {
-				const names = keyParts.map((fieldKey, index) => {
-					const pathPrefix = keyParts.slice(0, index);
-					const field = fieldsStore.getField(collection, [...pathPrefix, fieldKey].join('.'));
-					return field?.name ?? fieldKey;
-				});
+            if (keyParts.length > 1) {
+                const names = keyParts.map((fieldKey, index) => {
+                    const pathPrefix = keyParts.slice(0, index);
+                    const field = fieldsStore.getField(collection, [...pathPrefix, fieldKey].join('.'));
+                    return field?.name ?? fieldKey;
+                });
 
-				name = names.join(' -> ');
-			} else {
-				name = fieldsUsed[key]?.name ?? key;
-			}
+                name = names.join(' -> ');
+            } else {
+                name = fieldsUsed[key]?.name ?? key;
+            }
 
-			const value = getFromAliasedItem(item, key);
+            const value = getFromAliasedItem(item, key);
 
-			const display = useExtension(
-				'display',
-				computed(() => fieldsUsed[key]?.meta?.display ?? null),
-			);
+            const display = useExtension(
+                'display',
+                computed(() => fieldsUsed[key]?.meta?.display ?? null)
+            );
 
-			if (value !== undefined && value !== null) {
-				parsedItem[name] = display.value?.handler
-					? await display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
-							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
-							field: fieldsUsed[key] ?? undefined,
-							collection: collection,
-					  })
-					: value;
-			} else {
-				parsedItem[name] = value;
-			}
-		}
+            if (value !== undefined && value !== null) {
+                parsedItem[name] = display.value?.handler
+                    ? await display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
+                          interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+                          field: fieldsUsed[key] ?? undefined,
+                          collection: collection,
+                      })
+                    : value;
+            } else {
+                parsedItem[name] = value;
+            }
+        }
 
-		parsedItems.push(parsedItem);
-	}
+        parsedItems.push(parsedItem);
+    }
 
-	const parser = new Parser();
-	const csvContent = parser.parse(parsedItems);
+    const parser = new Parser();
+    const csvContent = parser.parse(parsedItems);
 
-	const now = new Date();
+    const now = new Date();
 
-	const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now
-		.getDate()
-		.toString()
-		.padStart(2, '0')}`;
-	
-	const bom = "\ufeff";
-	
-	saveAs(new Blob([bom+csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+    const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now
+        .getDate()
+        .toString()
+        .padStart(2, '0')}`;
+
+    const bom = '\ufeff';
+
+    saveAs(new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
 }
