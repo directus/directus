@@ -64,7 +64,7 @@ const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
-	return Object.assign({}, props.initialValues, props.modelValue);
+	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
 
 const el = ref<Element>();
@@ -330,7 +330,7 @@ function useRawEditor() {
 </script>
 
 <template>
-	<div ref="el" class="v-form" :class="gridClass">
+	<div ref="el" :class="['v-form', gridClass, { inline }]">
 		<validation-errors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
@@ -339,9 +339,10 @@ function useRawEditor() {
 		/>
 		<v-info
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
+			class="no-fields-info"
 			:title="t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
-			center
+			:center="!inline"
 		>
 			{{ t('no_visible_fields_copy') }}
 		</v-info>
@@ -423,10 +424,14 @@ function useRawEditor() {
 
 .v-form {
 	@include form-grid;
-}
 
-.v-form .first-visible-field :deep(.v-divider) {
-	margin-top: 0;
+	.first-visible-field :deep(.v-divider) {
+		margin-top: 0;
+	}
+
+	&.inline > .no-fields-info {
+		grid-column: 1 / -1;
+	}
 }
 
 .v-divider {

@@ -293,16 +293,16 @@ function sidebarDeveloperReference() {
 							link: '/extensions/installing-extensions',
 							text: 'Installing Extensions',
 						},
-						{
-							link: '/extensions/creating-extensions',
-							text: 'Creating Extensions',
-						},
 					],
 				},
 				{
 					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
+						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
 						{
 							text: 'Extension Types',
 							collapsed: true,
@@ -420,6 +420,10 @@ function sidebarDeveloperReference() {
 							text: 'Packages',
 						},
 					],
+				},
+				{
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing',
 				},
 			],
 		},
@@ -616,6 +620,16 @@ function sidebarUserGuide() {
 				{
 					text: 'Charts',
 					link: '/user-guide/insights/charts',
+				},
+			],
+		},
+		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview',
 				},
 			],
 		},

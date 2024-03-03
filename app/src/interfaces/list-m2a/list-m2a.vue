@@ -424,7 +424,7 @@ const allowDrag = computed(
 
 			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button class="existing" :disabled="disabled" @click="toggle">
+					<v-button :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
@@ -514,10 +514,6 @@ const allowDrag = computed(
 			display: inline-flex;
 		}
 	}
-}
-
-.existing {
-	margin-left: 8px;
 }
 
 .drag-handle {

@@ -3,11 +3,11 @@ import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import { Permission, Role } from '@directus/types';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { appMinimalPermissions } from '../app-permissions';
 import Actions from './components/actions.vue';
 import Fields from './components/fields.vue';
 import Permissions from './components/permissions.vue';
@@ -104,9 +104,16 @@ watch(
 );
 
 const appMinimal = computed(() => {
-	if (!permission.value) return null;
-	return appMinimalPermissions.find(
-		(p: Partial<Permission>) => p.collection === permission.value!.collection && p.action === permission.value!.action,
+	if (!role.value?.app_access) return null;
+
+	const currentPermission = permission.value;
+
+	if (!currentPermission) return null;
+
+	return appAccessMinimalPermissions.find(
+		(minimalPermission: Partial<Permission>) =>
+			minimalPermission.collection === currentPermission.collection &&
+			minimalPermission.action === currentPermission.action,
 	);
 });
 
@@ -173,7 +180,12 @@ async function load() {
 				:role="role"
 				:app-minimal="appMinimal?.fields"
 			/>
-			<validation v-if="currentTab === 'validation'" v-model:permission="permission" :role="role" />
+			<validation
+				v-if="currentTab === 'validation'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal?.validation"
+			/>
 			<presets v-if="currentTab === 'presets'" v-model:permission="permission" :role="role" />
 		</div>
 

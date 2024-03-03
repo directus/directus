@@ -15,6 +15,49 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.10.0
 
+### Removed Local Extension Folders
+
+Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
+removed in favor of relying on the `package.json` file for metadata including extension type.
+
+If your extension is already in the root `extensions` directory and has a `package.json` file with a
+`directus:extension` object, there is no action required.
+
+::: details Migration/Mitigation
+
+Move all extension directories from their extension type subdirectory one level up. For example:
+
+- `./extensions/modules/module-a/` becomes `./extensions/module-a/`.
+- `./extensions/panels/panel-b/` becomes `./extensions/panel-b/`.
+
+If your project does not already have one, add a `directus:extension` object to your `package.json` file:
+
+```json
+{
+	"name": "directus-extension-hello-world",
+	"version": "1.0.0",
+	"type": "module",
+	"directus:extension": {
+		"type": "endpoint",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^10.0.0"
+	}
+}
+```
+
+Notes:
+
+- Make sure `type` matches the JS type of your `dist` file (cjs or esm).
+- Make sure `directus:extension.type` matches the type of extension. This should match the legacy type folder name.
+- Make sure `directus:extension.path`points to your extensions’ `dist` file.
+- Make sure `directus:extension.source` points to your extensions’ source code entry point or set to an empty string
+  `""` when the source code is not stored alongside the `package.json` file.
+- Make sure `directus:extension.host` is set to a Directus version range your extension is compatible with (for example:
+  `^10.0.0`)
+
+:::
+
 ### Session Cookie Based Authentication
 
 For improved security and ease of use we have implemented session based authentication and have updated the App to use

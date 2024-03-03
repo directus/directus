@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 export default async function generateKey(): Promise<void> {
-	process.stdout.write(uuidv4());
+	process.stdout.write(randomUUID());
 	process.exit(0);
 }

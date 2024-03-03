@@ -51,7 +51,12 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
-		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+		const identifier = payload[identifierKey || 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
+		if (!identifier) {
+			logger.warn(`[SAML] Failed to find user identifier for provider "${provider}"`);
+			throw new InvalidCredentialsError();
+		}
 
 		const userID = await this.fetchUserID(identifier);
 
@@ -185,7 +190,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				}
 
 				return next();
-			} catch (error: any) {
+			} catch (error) {
 				if (relayState) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
