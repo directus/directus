@@ -85,6 +85,9 @@ extension_reload_required_copy: A page reload is required to see the changes aft
 extension_reload_now: Reload now
 published_relative: Published {relativeTime}
 compatible_with_your_project: Compatible with your Project
+compatible_with_your_project_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which matches your project's version
+  ({currentVersion})
 last_updated_relative: Last updated {relativeTime}
 n_files: '{n} Files'
 verified: Verified
@@ -97,10 +100,10 @@ github: GitHub
 beta: Beta
 n_downloads: '{n} Downloads'
 downloads: Downloads
-compatibility_not_verified: Compatibility not verified
-compatibility_not_verified_copy:
-  The author has not verified this extension to be compatible with your project's version ({currentVersion}). Currently
-  verified for {hostVersion}.
+compatibility_not_guaranteed: Compatibility not guaranteed
+compatibility_not_guaranteed_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which doesn't match your project's
+  version ({currentVersion})
 enable: Enable
 disable: Disable
 custom: Custom
