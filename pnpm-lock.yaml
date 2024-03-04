@@ -183,8 +183,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.18.3
+        version: 4.18.3
       flat:
         specifier: 6.0.1
         version: 6.0.1
@@ -276,8 +276,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       nodemailer:
-        specifier: 6.9.10
-        version: 6.9.10
+        specifier: 6.9.11
+        version: 6.9.11
       object-hash:
         specifier: 3.0.0
         version: 3.0.0
@@ -404,8 +404,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@types/cookie-parser':
-        specifier: 1.4.6
-        version: 1.4.6
+        specifier: 1.4.7
+        version: 1.4.7
       '@types/cors':
         specifier: 2.8.17
         version: 2.8.17
@@ -764,8 +764,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       happy-dom:
-        specifier: 13.3.8
-        version: 13.3.8
+        specifier: 13.6.2
+        version: 13.6.2
       histoire:
         specifier: 0.17.9
         version: 0.17.9(sass@1.71.1)(vite@5.1.1)
@@ -828,13 +828,13 @@ importers:
         version: 5.1.1(sass@1.71.1)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.3.8)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
       vue:
         specifier: 3.4.19
         version: 3.4.19(typescript@5.3.3)
       vue-i18n:
-        specifier: 9.9.1
-        version: 9.9.1(vue@3.4.19)
+        specifier: 9.10.0
+        version: 9.10.0(vue@3.4.19)
       vue-router:
         specifier: 4.3.0
         version: 4.3.0(vue@3.4.19)
@@ -952,7 +952,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(@types/node@18.19.17)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.3
         version: 3.7.3(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -963,8 +963,8 @@ importers:
         specifier: 3.4.19
         version: 3.4.19(typescript@5.3.3)
       vue-i18n:
-        specifier: 9.9.1
-        version: 9.9.1(vue@3.4.19)
+        specifier: 9.10.0
+        version: 9.10.0(vue@3.4.19)
       vue-router:
         specifier: 4.3.0
         version: 4.3.0(vue@3.4.19)
@@ -1308,8 +1308,8 @@ importers:
         specifier: 8.19.0
         version: 8.19.0
       tmp:
-        specifier: 0.2.2
-        version: 0.2.2
+        specifier: 0.2.3
+        version: 0.2.3
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1881,7 +1881,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.1
-        version: 5.1.1(@types/node@18.19.17)
+        version: 5.1.1(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.3
         version: 3.7.3(rollup@4.10.0)(typescript@5.3.3)(vite@5.1.1)
@@ -2017,8 +2017,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
       tmp:
-        specifier: 0.2.2
-        version: 0.2.2
+        specifier: 0.2.3
+        version: 0.2.3
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -5434,24 +5434,24 @@ packages:
     dev: false
     optional: true
 
-  /@intlify/core-base@9.9.1:
-    resolution: {integrity: sha512-qsV15dg7jNX2faBRyKMgZS8UcFJViWEUPLdzZ9UR0kQZpFVeIpc0AG7ZOfeP7pX2T9SQ5jSiorq/tii9nkkafA==}
+  /@intlify/core-base@9.10.0:
+    resolution: {integrity: sha512-7e/rtEUAzMv1rVQexyvDTMgmvdJQvexasdwXFBqz60AD1wgoe43rIhb5uh2Mdol2QZwabvHepPFuUQCjACgEHQ==}
     engines: {node: '>= 16'}
     dependencies:
-      '@intlify/message-compiler': 9.9.1
-      '@intlify/shared': 9.9.1
+      '@intlify/message-compiler': 9.10.0
+      '@intlify/shared': 9.10.0
     dev: true
 
-  /@intlify/message-compiler@9.9.1:
-    resolution: {integrity: sha512-zTvP6X6HeumHOXuAE1CMMsV6tTX+opKMOxO1OHTCg5N5Sm/F7d8o2jdT6W6L5oHUsJ/vvkGefHIs7Q3hfowmsA==}
+  /@intlify/message-compiler@9.10.0:
+    resolution: {integrity: sha512-CPVRS6pX9vqXUvvAhyt/brDckFFo0A4TuP4ukdXwAWtHTKtaFe8nkiIF1BYhXR3T8+Aran/E2uP32SKatbaang==}
     engines: {node: '>= 16'}
     dependencies:
-      '@intlify/shared': 9.9.1
+      '@intlify/shared': 9.10.0
       source-map-js: 1.0.2
     dev: true
 
-  /@intlify/shared@9.9.1:
-    resolution: {integrity: sha512-b3Pta1nwkz5rGq434v0psHwEwHGy1pYCttfcM22IE//K9owbpkEvFptx9VcuRAxjQdrO2If249cmDDjBu5wMDA==}
+  /@intlify/shared@9.10.0:
+    resolution: {integrity: sha512-nAIr9kM9gjSKKCZ6/MOAgOxBJw0XF5EhnVB/l1ifUfGWtt9wVYVQLmtQD85lwXkesPnVR+p8T+wX1T828aArSg==}
     engines: {node: '>= 16'}
     dev: true
 
@@ -7732,8 +7732,8 @@ packages:
     resolution: {integrity: sha512-QVSSvno3dE0MgO76pJhmv4Qyi/j0Yk9pBp0Y7TJ2Tlj+KCgJWY6qX7nnxCOLkZ3VYRSIk1WTxCvwUSdx6CCLdg==}
     dev: true
 
-  /@types/cookie-parser@1.4.6:
-    resolution: {integrity: sha512-KoooCrD56qlLskXPLGUiJxOMnv5l/8m7cQD2OxJ73NPMhuSz9PmvwRD6EpjDyKBVrdJDdQ4bQK7JFNHnNmax0w==}
+  /@types/cookie-parser@1.4.7:
+    resolution: {integrity: sha512-Fvuyi354Z+uayxzIGCwYTayFKocfV7TuDYZClCdIP9ckhvAu/ixDtCB6qx2TT0FKjPLf1f3P/J1rgf6lPs64mw==}
     dependencies:
       '@types/express': 4.17.21
     dev: true
@@ -9438,8 +9438,8 @@ packages:
     dev: false
     optional: true
 
-  /body-parser@1.20.1:
-    resolution: {integrity: sha512-jWi7abTbYwajOytWCQc37VulmWiRae5RyTpaCyDcS5/lMdtwSz5lOpDE67srw/HYe35f1z3fDQw+3txg7gNtWw==}
+  /body-parser@1.20.2:
+    resolution: {integrity: sha512-ml9pReCu3M61kGlqoTm2umSXTlRTuGTx0bfYj+uIUKKYycG5NtSbeetV3faSU6R7ajOPw0g/J1PvK4qNy7s5bA==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
     dependencies:
       bytes: 3.1.2
@@ -9451,7 +9451,7 @@ packages:
       iconv-lite: 0.4.24
       on-finished: 2.4.1
       qs: 6.11.0
-      raw-body: 2.5.1
+      raw-body: 2.5.2
       type-is: 1.6.18
       unpipe: 1.0.0
     transitivePeerDependencies:
@@ -11717,13 +11717,13 @@ packages:
     engines: {node: '>=6'}
     requiresBuild: true
 
-  /express@4.18.2:
-    resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}
+  /express@4.18.3:
+    resolution: {integrity: sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
       array-flatten: 1.1.1
-      body-parser: 1.20.1
+      body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
       cookie: 0.5.0
@@ -12578,8 +12578,8 @@ packages:
       - supports-color
     dev: false
 
-  /happy-dom@13.3.8:
-    resolution: {integrity: sha512-RAbq4oYfJNkVan1m1F3jfA4YEyRY0/ASoNvZsNJbuX85jIypidmsz9jQZD7Tqz0VXA2MhAGfcsh5oshwmwNYSg==}
+  /happy-dom@13.6.2:
+    resolution: {integrity: sha512-Ku+wDqcF/KwFA0dI+xIMZd9Jn020RXjuSil/Vz7gu2yhDC3FsDYZ55qqV9k+SGC4opwb4acisXqVSRxUJMlPbQ==}
     engines: {node: '>=16.0.0'}
     dependencies:
       entities: 4.5.0
@@ -15423,8 +15423,8 @@ packages:
     dev: false
     optional: true
 
-  /nodemailer@6.9.10:
-    resolution: {integrity: sha512-qtoKfGFhvIFW5kLfrkw2R6Nm6Ur4LNUMykyqu6n9BRKJuyQrqEGwdXXUAbwWEKt33dlWUGXb7rzmJP/p4+O+CA==}
+  /nodemailer@6.9.11:
+    resolution: {integrity: sha512-UiAkgiERuG94kl/3bKfE8o10epvDnl0vokNEtZDPTq9BWzIl6EFT9336SbIT4oaTBD8NmmUTLsQyXHV82eXSWg==}
     engines: {node: '>=6.0.0'}
     dev: false
 
@@ -17105,8 +17105,8 @@ packages:
     resolution: {integrity: sha512-2/dGHpDFpeA0+755oUkW+EKyklqLS9lu0go9pDsbhqQjZcxfRyJ6LA4JI0+HAdZ2bemD/oOjUeZQB2lCZqXQfQ==}
     dev: false
 
-  /raw-body@2.5.1:
-    resolution: {integrity: sha512-qqJBtEyVgS0ZmPGdCFPWJ3FreoqvG4MVQln/kCgF7Olq95IbOp0/BWyMwbdtn4VTvkM8Y7khCQ2Xgk/tcrCXig==}
+  /raw-body@2.5.2:
+    resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
     dependencies:
       bytes: 3.1.2
@@ -17652,14 +17652,6 @@ packages:
     requiresBuild: true
     dependencies:
       glob: 7.2.3
-
-  /rimraf@5.0.5:
-    resolution: {integrity: sha512-CqDakW+hMe/Bz202FPEymy68P+G50RfMQK+Qo5YUqc9SPipvbGjCGKd0RSKEelbsfQuw3g5NZDSrlZZAJurH1A==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dependencies:
-      glob: 10.3.10
-    dev: true
 
   /rollup-plugin-esbuild@5.0.0(esbuild@0.17.19)(rollup@3.29.4):
     resolution: {integrity: sha512-1cRIOHAPh8WQgdQQyyvFdeOdxuiyk+zB5zJ5+YOwrZP4cJ0MT3Fs48pQxrZeyZHcn+klFherytILVfE4aYrneg==}
@@ -18904,7 +18896,7 @@ packages:
     dependencies:
       chokidar: 3.6.0
       commander: 5.1.0
-      express: 4.18.2
+      express: 4.18.3
       js-yaml: 3.14.1
       json-refs: 3.0.15
       open: 7.4.2
@@ -19136,11 +19128,9 @@ packages:
     dependencies:
       os-tmpdir: 1.0.2
 
-  /tmp@0.2.2:
-    resolution: {integrity: sha512-ETcvHhaIc9J2MDEAH6N67j9bvBvu/3Gb764qaGhwtFvjtvhegqoqSpofgeyq1Sc24mW5pdyUDs9HP5j3ehkxRw==}
-    engines: {node: '>=14'}
-    dependencies:
-      rimraf: 5.0.5
+  /tmp@0.2.3:
+    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
+    engines: {node: '>=14.14'}
     dev: true
 
   /to-fast-properties@2.0.0:
@@ -20410,7 +20400,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.3.1(happy-dom@13.3.8)(sass@1.71.1):
+  /vitest@1.3.1(happy-dom@13.6.2)(sass@1.71.1):
     resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -20444,7 +20434,7 @@ packages:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      happy-dom: 13.3.8
+      happy-dom: 13.6.2
       local-pkg: 0.5.0
       magic-string: 0.30.7
       pathe: 1.1.2
@@ -20548,14 +20538,14 @@ packages:
       - supports-color
     dev: true
 
-  /vue-i18n@9.9.1(vue@3.4.19):
-    resolution: {integrity: sha512-xyQ4VspLdNSPTKBFBPWa1tvtj+9HuockZwgFeD2OhxxXuC2CWeNvV4seu2o9+vbQOyQbhAM5Ez56oxUrrnTWdw==}
+  /vue-i18n@9.10.0(vue@3.4.19):
+    resolution: {integrity: sha512-uzgouz6BEBv1QXm3n8MHcCBf/H3U3PTqS7taAhO58XnlVgmQZ6W0gEGUxh0vOM7vy+tAQH2WvvMJAb2mXO/ThA==}
     engines: {node: '>= 16'}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
-      '@intlify/core-base': 9.9.1
-      '@intlify/shared': 9.9.1
+      '@intlify/core-base': 9.10.0
+      '@intlify/shared': 9.10.0
       '@vue/devtools-api': 6.5.1
       vue: 3.4.19(typescript@5.3.3)
     dev: true

@@ -17,7 +17,7 @@ describe('/auth/login/saml', () => {
 
 					const cookies = loginPage.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
 
-					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
+					const AuthState = decodeURIComponent(String(loginPage.headers['location'])).split('AuthState=')[1];
 
 					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
@@ -49,7 +49,7 @@ describe('/auth/login/saml', () => {
 
 					const cookies = loginPage.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
 
-					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
+					const AuthState = decodeURIComponent(String(loginPage.headers['location'])).split('AuthState=')[1];
 
 					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
@@ -78,7 +78,7 @@ describe('/auth/login/saml', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
 					const samlLogin = await request(getUrl(vendor)).get('/auth/login/saml').expect(302);
-					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
+					const samlRedirectUrl = String(samlLogin.headers['location']).split('/simplesaml/');
 
 					const authResponse = await request(samlRedirectUrl[0])
 						.get(`/simplesaml/${samlRedirectUrl[1]}`)
@@ -117,7 +117,7 @@ describe('/auth/login/saml', () => {
 						.get(`/auth/login/saml?redirect=${getUrl(vendor)}/admin/login?continue`)
 						.expect(302);
 
-					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
+					const samlRedirectUrl = String(samlLogin.headers['location']).split('/simplesaml/');
 
 					const authResponse = await request(samlRedirectUrl[0])
 						.get(`/simplesaml/${samlRedirectUrl[1]}`)
@@ -144,7 +144,7 @@ describe('/auth/login/saml', () => {
 					const cookies = acsResponse.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
 
 					// Assert
-					expect(cookies).toMatch(/directus_refresh_token/);
+					expect(cookies).toMatch(/directus_session_token/);
 				});
 			});
 		});

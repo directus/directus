@@ -311,7 +311,6 @@ function exportDataLocal() {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
 

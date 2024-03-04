@@ -4,11 +4,11 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
-import { COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import { useEnv } from '@directus/env';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
-import type { User } from '../../types/index.js';
+import type { AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { stall } from '../../utils/stall.js';
@@ -52,7 +52,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
+		mode: Joi.string().valid('cookie', 'json', 'session'),
 		otp: Joi.string(),
 	}).unknown();
 
@@ -85,27 +85,30 @@ export function createLocalAuthRouter(provider: string): Router {
 				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode = req.body.mode || 'json';
+			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
-			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				provider,
-				req.body,
-				req.body?.otp,
-			);
+			const { accessToken, refreshToken, expires } = await authenticationService.login(provider, req.body, {
+				session: mode === 'session',
+				otp: req.body?.otp,
+			});
 
-			const payload = {
-				data: { access_token: accessToken, expires },
-			} as Record<string, Record<string, any>>;
+			const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
 
 			if (mode === 'json') {
-				payload['data']!['refresh_token'] = refreshToken;
+				payload.refresh_token = refreshToken;
+				payload.access_token = accessToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+				payload.access_token = accessToken;
 			}
 
-			res.locals['payload'] = payload;
+			if (mode === 'session') {
+				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+			}
+
+			res.locals['payload'] = { data: payload };
 
 			return next();
 		}),
