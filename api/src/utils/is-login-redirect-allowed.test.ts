@@ -27,39 +27,42 @@ test('isLoginRedirectAllowed returns true for allowed URL', () => {
 
 	vi.mocked(useEnv).mockReturnValue({
 		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]:
-			'http://example.com,https://example.com,http://example.com:8055/test',
-		PUBLIC_URL: 'http://example.com',
+			'http://external.example.com,https://external.example.com,http://external.example.com:8055/test',
+		PUBLIC_URL: 'http://public.example.com',
 	});
 
-	expect(isLoginRedirectAllowed('http://example.com', provider)).toBe(true);
-	expect(isLoginRedirectAllowed('https://example.com', provider)).toBe(true);
-	expect(isLoginRedirectAllowed('http://example.com:8055/test', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('http://public.example.com', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('http://external.example.com', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('https://external.example.com', provider)).toBe(true);
+	expect(isLoginRedirectAllowed('http://external.example.com:8055/test', provider)).toBe(true);
 });
 
 test('isLoginRedirectAllowed returns false for denied URL', () => {
 	const provider = 'local';
 
 	vi.mocked(useEnv).mockReturnValue({
-		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://example.com',
-		PUBLIC_URL: 'http://example.com',
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://external.example.com',
+		PUBLIC_URL: 'http://public.example.com',
 	});
 
-	expect(isLoginRedirectAllowed('https://example.com', provider)).toBe(false);
-	expect(isLoginRedirectAllowed('http://example.com:8055', provider)).toBe(false);
-	expect(isLoginRedirectAllowed('http://example.com/test', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('https://external.example.com', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('http://external.example.com:8055', provider)).toBe(false);
+	expect(isLoginRedirectAllowed('http://external.example.com/test', provider)).toBe(false);
 });
 
 test('isLoginRedirectAllowed returns true for relative paths', () => {
 	const provider = 'local';
 
 	vi.mocked(useEnv).mockReturnValue({
-		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://directus.io',
-		PUBLIC_URL: 'http://example.com',
+		[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://external.example.com',
+		PUBLIC_URL: 'http://public.example.com',
 	});
 
 	expect(isLoginRedirectAllowed('/admin/content', provider)).toBe(true);
 	expect(isLoginRedirectAllowed('../admin/content', provider)).toBe(true);
 	expect(isLoginRedirectAllowed('./admin/content', provider)).toBe(true);
+
+	expect(isLoginRedirectAllowed('http://public.example.com/admin/content', provider)).toBe(true);
 });
 
 test('isLoginRedirectAllowed returns false if missing protocol', () => {

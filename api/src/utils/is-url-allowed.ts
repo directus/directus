@@ -3,7 +3,7 @@ import { URL } from 'url';
 import { useLogger } from '../logger.js';
 
 /**
- * Check if url matches allow list either exactly or by origin (protocol+domain+port) + pathname
+ * Check if URL matches allow list either exactly or by origin (protocol+domain+port) + pathname
  */
 export default function isUrlAllowed(url: string, allowList: string | string[]): boolean {
 	const logger = useLogger();
