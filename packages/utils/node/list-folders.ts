@@ -1,7 +1,7 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-export interface ListFoldersOptions {
+interface ListFoldersOptions {
 	/**
 	 * Ignore folders starting with a period `.`
 	 */
