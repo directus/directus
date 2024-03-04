@@ -6,7 +6,7 @@ import { isDeniedIp } from './is-denied-ip.js';
  * 'createConnection' is missing in 'Agent' type, but assigned in actual implementation:
  * https://github.com/nodejs/node/blob/8a41d9b636be86350cd32847c3f89d327c4f6ff7/lib/_http_agent.js#L215
  */
-export type _Agent = Agent & { createConnection: NonNullable<ClientRequestArgs['createConnection']> };
+export type _Agent = Agent & { createConnection: ClientRequestArgs['createConnection'] };
 
 const deniedError = (domain: string) => new Error(`Requested domain "${domain}" resolves to a denied IP address`);
 
@@ -34,7 +34,12 @@ export const agentWithIpValidation = (agent: Agent) => {
 		 */
 		if (isIP(host) !== 0 && isDeniedIp(host)) throw deniedError(host);
 
-		const socket = createConnection.call(this, options, oncreate);
+		const socket = createConnection?.call(this, options, oncreate);
+
+		// Unexpected, but in that case the request is denied to be on the safe side
+		if (!socket) {
+			throw new Error('Request cannot be verified due to lost socket');
+		}
 
 		// Emitted after resolving the host name but before connecting.
 		socket.on('lookup', (error, address) => {
