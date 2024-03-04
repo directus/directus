@@ -16,13 +16,6 @@ If you would like to help ensure Directus stays free, please consider providing 
 
 There's a range of perks available, including access to an exclusive Discord channel.
 
-### Sponsored Work
-
-As a point of principle, we don't provide timelines for upcoming features or bug fixes. However, if you require specific
-work in a known time, [Commissioned Features](/getting-started/support#commissioned-features) and
-[Expedited Fixes](/getting-started/support#expedited-fixes) are great ways to financially support the development of
-Directus and improve the codebase for the community and for your project!
-
 ## Advocacy
 
 ### GitHub Stars
