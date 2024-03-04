@@ -26,6 +26,7 @@ const querySchema = Joi.object({
 	search: Joi.string(),
 	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
 	version: Joi.string(),
+	versionRaw: Joi.boolean(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),

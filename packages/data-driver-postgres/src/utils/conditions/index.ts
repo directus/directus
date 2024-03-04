@@ -2,7 +2,8 @@ import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from 
 import { numberCondition } from './number-condition.js';
 import { stringCondition } from './string-condition.js';
 import { geoCondition } from './geo-condition.js';
-import { setCondition } from './set-condition.js';
+import { setNumberCondition } from './set-number-condition.js';
+import { setStringCondition } from './set-string-condition.js';
 import { fieldCondition } from './field-condition.js';
 
 /**
@@ -32,8 +33,10 @@ function getCondition(conditionNode: AbstractSqlQueryConditionNode) {
 			return stringCondition(conditionNode.condition, conditionNode.negate);
 		case 'condition-geo':
 			return geoCondition(conditionNode.condition);
-		case 'condition-set':
-			return setCondition(conditionNode.condition, conditionNode.negate);
+		case 'condition-set-number':
+			return setNumberCondition(conditionNode.condition, conditionNode.negate);
+		case 'condition-set-string':
+			return setStringCondition(conditionNode.condition, conditionNode.negate);
 		case 'condition-field':
 			return fieldCondition(conditionNode.condition, conditionNode.negate);
 	}

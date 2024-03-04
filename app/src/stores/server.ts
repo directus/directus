@@ -44,6 +44,9 @@ export type Info = {
 		max: number;
 	};
 	version?: string;
+	extensions?: {
+		limit: number | null;
+	};
 };
 
 export type Auth = {
@@ -54,6 +57,7 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
+		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
 	});
@@ -84,6 +88,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.version = serverInfoResponse.data.data?.version;
 
 		auth.providers = authResponse.data.data;

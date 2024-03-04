@@ -78,6 +78,10 @@ export class ServerService {
 				info['rateLimitGlobal'] = false;
 			}
 
+			info['extensions'] = {
+				limit: env['EXTENSIONS_LIMIT'] ?? null,
+			};
+
 			info['queryLimit'] = {
 				default: env['QUERY_LIMIT_DEFAULT'],
 				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,

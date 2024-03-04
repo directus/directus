@@ -5,6 +5,7 @@ import { convertTarget } from './target.js';
 
 export type SortConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'order' | 'joins'>>;
+	parameters: string[];
 };
 
 /**
@@ -21,6 +22,7 @@ export const convertSort = (
 			joins: [],
 			order: [],
 		},
+		parameters: [],
 	};
 
 	abstractSorts.forEach((abstractSort) => {
@@ -34,6 +36,7 @@ export const convertSort = (
 
 		result.clauses.order.push(orderBy);
 		result.clauses.joins.push(...targetConversionResult.joins);
+		result.parameters.push(...targetConversionResult.parameters);
 
 		return result;
 	});

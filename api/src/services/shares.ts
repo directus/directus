@@ -40,7 +40,12 @@ export class SharesService extends ItemsService {
 		return super.createOne(data, opts);
 	}
 
-	async login(payload: Record<string, any>): Promise<LoginResult> {
+	async login(
+		payload: Record<string, any>,
+		options?: Partial<{
+			session: boolean;
+		}>,
+	): Promise<Omit<LoginResult, 'id'>> {
 		const { nanoid } = await import('nanoid');
 
 		const record = await this.knex
@@ -91,13 +96,19 @@ export class SharesService extends ItemsService {
 			},
 		};
 
-		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
-			issuer: 'directus',
-		});
-
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
+		if (options?.session) {
+			tokenPayload.session = refreshToken;
+		}
+
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
+		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
+			expiresIn: TTL,
+			issuer: 'directus',
+		});
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -113,7 +124,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 		};
 	}
 

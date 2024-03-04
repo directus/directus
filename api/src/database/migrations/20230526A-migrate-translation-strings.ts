@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 type NewTranslationString = {
 	id: string;
@@ -19,7 +19,7 @@ function transformStringsNewFormat(oldStrings: OldTranslationString[]): NewTrans
 		if (!item.key || !item.translations) return result;
 
 		for (const [language, value] of Object.entries(item.translations)) {
-			result.push({ id: uuid(), key: item.key, language, value });
+			result.push({ id: randomUUID(), key: item.key, language, value });
 		}
 
 		return result;
