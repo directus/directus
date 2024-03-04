@@ -44,7 +44,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import {
 	DEFAULT_AUTH_PROVIDER,
@@ -57,6 +57,7 @@ import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } 
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getService } from '../../utils/get-service.js';
+import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-version-data.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
@@ -543,6 +544,15 @@ export class GraphQLService {
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection]!,
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? relation.field];
+							},
+						},
+					});
+
+					VersionTypes[relation.collection]?.addFields({
+						[relation.field]: {
+							type: GraphQLJSON,
 							resolve: (obj: Record<string, any>, _, __, info) => {
 								return obj[info?.path?.key ?? relation.field];
 							},
@@ -1181,6 +1191,7 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
+							version: GraphQLString,
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1493,6 +1504,7 @@ export class GraphQLService {
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0]!.arguments || [], info.variableValues);
 
 		let query: Query;
+		let versionRaw = false;
 
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
@@ -1508,6 +1520,7 @@ export class GraphQLService {
 
 			if (collection.endsWith('_by_version') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -11);
+				versionRaw = true;
 			}
 		}
 
@@ -1542,10 +1555,15 @@ export class GraphQLService {
 
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
-					return assign(result, ...saves);
+					return versionRaw
+						? mergeVersionsRaw(result, saves)
+						: mergeVersionsRecursive(result, saves, collection, this.schema);
 				} else {
 					if (result?.[0] === undefined) return null;
-					return assign(result[0], ...saves);
+
+					return versionRaw
+						? mergeVersionsRaw(result[0], saves)
+						: mergeVersionsRecursive(result[0], saves, collection, this.schema);
 				}
 			}
 		}

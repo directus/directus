@@ -58,6 +58,16 @@ Notes:
 
 :::
 
+### Content Versioning Output
+
+Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
+resolved rather than returned as a raw changes object (see [#20890](https://github.com/directus/directus/issues/20890)
+for more information).
+
+The change makes the output for a versioned record match the format of the `Main` record more closely, which then
+natively supports other features like Live Preview. To retrieve the raw staged version (pre-10.10.0 behavior), just add
+the new `?versionRaw=true` query parameter to the request.
+
 ### Session Cookie Based Authentication
 
 For improved security and ease of use we have implemented session based authentication and have updated the App to use
