@@ -1,13 +1,15 @@
 import type { AbstractQueryFieldNodeNestedUnionRelational } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import { getNestedUnionOne, type NestedUnionOneResult } from './nested-union-one.js';
 import { createIndexGenerators } from '../../utils/create-index-generators.js';
 
 test('getNestedUnionOne with a single identifier', () => {
 	const relationalColumn = randomIdentifier();
-	const tableIndex = 0;
+	const rootTableIndex = randomInteger(0, 10);
 	const foreignIdField = randomIdentifier();
+	const foreignDesiredField1 = randomIdentifier();
+	const foreignDesiredField2 = randomIdentifier();
 	const foreignIdFieldAlias = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
@@ -24,7 +26,7 @@ test('getNestedUnionOne with a single identifier', () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: foreignIdField,
+						field: foreignDesiredField1,
 						alias: foreignIdFieldAlias,
 					},
 				],
@@ -44,7 +46,7 @@ test('getNestedUnionOne with a single identifier', () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: foreignIdField2,
+						field: foreignDesiredField2,
 						alias: foreignIdFieldAlias2,
 					},
 				],
@@ -64,7 +66,7 @@ test('getNestedUnionOne with a single identifier', () => {
 	};
 
 	const indexGenerators = createIndexGenerators();
-	const result = getNestedUnionOne(field, tableIndex, indexGenerators);
+	const result = getNestedUnionOne(field, rootTableIndex, indexGenerators);
 
 	const expected: NestedUnionOneResult = {
 		joins: [
@@ -85,7 +87,7 @@ test('getNestedUnionOne with a single identifier', () => {
 								operation: 'eq',
 								target: {
 									type: 'json',
-									tableIndex: 0,
+									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
 									path: [0],
 								},
@@ -103,7 +105,7 @@ test('getNestedUnionOne with a single identifier', () => {
 								operation: 'eq',
 								target: {
 									type: 'json',
-									tableIndex: 0,
+									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
 									path: [2],
 								},
@@ -134,7 +136,7 @@ test('getNestedUnionOne with a single identifier', () => {
 								operation: 'eq',
 								target: {
 									type: 'json',
-									tableIndex: 1,
+									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
 									path: [3],
 								},
@@ -152,7 +154,7 @@ test('getNestedUnionOne with a single identifier', () => {
 								operation: 'eq',
 								target: {
 									type: 'json',
-									tableIndex: 0,
+									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
 									path: [5],
 								},
@@ -167,17 +169,53 @@ test('getNestedUnionOne with a single identifier', () => {
 				},
 			},
 		],
-		select: {
-			type: 'primitive',
-			tableIndex,
-			columnName: relationalColumn,
-			columnIndex: 0,
-		},
+		selects: [
+			{
+				type: 'primitive',
+				tableIndex: rootTableIndex,
+				columnName: relationalColumn,
+				columnIndex: 0,
+			},
+			{
+				type: 'primitive',
+				tableIndex: 0,
+				columnName: foreignDesiredField1,
+				columnIndex: 1,
+			},
+			{
+				type: 'primitive',
+				tableIndex: 1,
+				columnName: foreignDesiredField2,
+				columnIndex: 2,
+			},
+		],
 		aliasMapping: [
 			{
 				type: 'root',
 				alias: relationalColumn,
 				columnIndex: 0,
+			},
+			{
+				type: 'nested',
+				alias: foreignTable,
+				children: [
+					{
+						type: 'root',
+						alias: foreignIdFieldAlias,
+						columnIndex: 1,
+					},
+				],
+			},
+			{
+				type: 'nested',
+				alias: foreignTable2,
+				children: [
+					{
+						type: 'root',
+						alias: foreignIdFieldAlias2,
+						columnIndex: 2,
+					},
+				],
 			},
 		],
 		parameters: ['foreignCollection', foreignTable, 'foreignKey', 'foreignCollection', foreignTable2, 'foreignKey'],

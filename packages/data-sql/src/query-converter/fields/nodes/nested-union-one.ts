@@ -1,4 +1,8 @@
-import type { AbstractQueryFieldNodeNestedUnionRelational, AtLeastOneElement } from '@directus/data';
+import type {
+	AbstractQueryFieldNodeNestedRelationalAnyCollection,
+	AbstractQueryFieldNodeNestedUnionRelational,
+	AtLeastOneElement,
+} from '@directus/data';
 import type {
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
@@ -7,12 +11,13 @@ import type {
 	ParameterTypes,
 } from '../../../types/index.js';
 import type { IndexGenerators } from '../../utils/create-index-generators.js';
+import { createPrimitiveSelect } from './primitive-select.js';
 
 export type NestedUnionOneResult = {
 	joins: AbstractSqlQueryJoinNode[];
 	parameters: ParameterTypes[];
 	aliasMapping: AliasMapping;
-	select: AbstractSqlQuerySelectPrimitiveNode;
+	selects: AbstractSqlQuerySelectPrimitiveNode[];
 };
 
 export const getNestedUnionOne = (
@@ -23,11 +28,26 @@ export const getNestedUnionOne = (
 	const parameters = [];
 	const unionJoins: AbstractSqlQueryJoinNode[] = [];
 	const aliasMapping: AliasMapping = [];
+	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
+
+	const relationalFieldResult = getSelectForRelationalField(tableIndex, indexGen, unionRelational.field);
+	selects.push(relationalFieldResult.select);
+	aliasMapping.push(...relationalFieldResult.aliasMapping);
 
 	for (const collection of unionRelational.collections) {
 		const conditions: AbstractSqlQueryConditionNode[] = [];
 		const foreignTableIndex = indexGen.table.next().value;
 		const foreignTableName = collection.relational.collectionName;
+
+		const nestedSelectResult = getNestedSelects(
+			collection,
+			foreignTableIndex,
+			indexGen,
+			collection.relational.collectionName,
+		);
+
+		aliasMapping.push(...nestedSelectResult.aliasMapping);
+		selects.push(...nestedSelectResult.selects);
 
 		const collectionCondition: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -38,7 +58,7 @@ export const getNestedUnionOne = (
 				target: {
 					type: 'json',
 					columnName: unionRelational.field,
-					tableIndex: foreignTableIndex,
+					tableIndex,
 					path: [indexGen.parameter.next().value],
 				},
 				compareTo: {
@@ -63,6 +83,7 @@ export const getNestedUnionOne = (
 						columnName: unionRelational.field,
 						tableIndex,
 						path: [indexGen.parameter.next().value],
+						dataType: idField.type,
 					},
 					compareTo: {
 						type: 'primitive',
@@ -91,25 +112,60 @@ export const getNestedUnionOne = (
 		unionJoins.push(join);
 	}
 
-	const jsonColumnIndex = indexGen.column.next().value;
-
-	const select: AbstractSqlQuerySelectPrimitiveNode = {
-		type: 'primitive',
-		tableIndex: tableIndex,
-		columnName: unionRelational.field,
-		columnIndex: jsonColumnIndex,
-	};
-
-	aliasMapping.push({
-		type: 'root',
-		alias: unionRelational.field,
-		columnIndex: jsonColumnIndex,
-	});
-
 	return {
 		joins: unionJoins,
 		parameters,
-		select,
+		selects,
 		aliasMapping,
 	};
 };
+
+function getNestedSelects(
+	c: AbstractQueryFieldNodeNestedRelationalAnyCollection,
+	foreignTableIndex: number,
+	indexGen: IndexGenerators,
+	foreignTableName: string,
+) {
+	const aliasMapping: AliasMapping = [];
+	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
+
+	for (const nestedField of c.fields) {
+		const newColIndex = indexGen.column.next().value;
+		if (nestedField.type !== 'primitive') throw new Error('functions in a2o not yet supported');
+
+		aliasMapping.push({
+			type: 'nested',
+			alias: foreignTableName,
+			children: [{ type: 'root', alias: nestedField.alias, columnIndex: newColIndex }],
+		});
+
+		const select = createPrimitiveSelect(foreignTableIndex, nestedField.field, newColIndex);
+		selects.push(select);
+	}
+
+	return { selects, aliasMapping };
+}
+
+function getSelectForRelationalField(
+	tableIndex: number,
+	indexGen: IndexGenerators,
+	relationalField: string,
+): { select: AbstractSqlQuerySelectPrimitiveNode; aliasMapping: AliasMapping } {
+	const jsonColumnIndex = indexGen.column.next().value;
+
+	return {
+		select: {
+			type: 'primitive',
+			tableIndex,
+			columnName: relationalField,
+			columnIndex: jsonColumnIndex,
+		},
+		aliasMapping: [
+			{
+				type: 'root',
+				alias: relationalField,
+				columnIndex: jsonColumnIndex,
+			},
+		],
+	};
+}
