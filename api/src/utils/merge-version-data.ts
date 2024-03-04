@@ -81,10 +81,8 @@ function recursiveMerging(data: Item, versionData: unknown[], collection: string
 			}
 
 			const alterations = newValue as Alterations;
-			const related_collection = relations[key]!;
-
 			const currentPrimaryKeyField = schema.collections[collection]!.primary;
-			const relatedPrimaryKeyField = schema.collections[related_collection]!.primary;
+			const relatedPrimaryKeyField = schema.collections[relations[key]!]!.primary;
 
 			const mergedRelation: Item[] = [];
 
