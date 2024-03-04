@@ -4,4 +4,4 @@
 "@directus/types": patch
 ---
 
-Added deep relational fields merging for content versions
+Introduced deep relational fields merging for Content Versions
