@@ -21,11 +21,11 @@ export function convertTarget(targetNode: AbstractSqlQueryTargetNode, cast?: 'nu
 	if (targetNode.type === 'primitive') {
 		return wrappedColumn;
 	} else if (targetNode.type === 'json') {
-		if (cast === 'number') {
+		if (cast === 'number' || targetNode.dataType === 'number') {
 			return applyJsonPathAsNumber(wrappedColumn, targetNode.path);
-		} else if (cast === 'geo') {
+		} else if (cast === 'geo' || targetNode.dataType === 'geo') {
 			return applyJsonPathAsGeometry(wrappedColumn, targetNode.path);
-		} else if (cast === 'object') {
+		} else if (cast === 'object' || targetNode.dataType === 'object') {
 			return applyJsonPathAsObject(wrappedColumn, targetNode.path);
 		} else {
 			return applyJsonPathAsString(wrappedColumn, targetNode.path);
