@@ -27,7 +27,7 @@ Which one you choose is ultimately up to you.
 ## Authentication
 
 By default, all data in the system is off-limits for unauthenticated users. To gain access to protected data, you must
-[include an access token with every request](/reference/authentication#access-tokens), or
+[include an access token or session cookie with every request](/reference/authentication#access-tokens), or
 [configure permissions for the public role](/getting-started/quickstart#_6-set-role-public-permissions).
 
 Useful references:
