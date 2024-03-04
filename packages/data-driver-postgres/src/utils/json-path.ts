@@ -18,7 +18,7 @@ export function applyJsonPathAsString(wrappedColumn: string, path: AtLeastOneEle
 }
 
 export function applyJsonPathAsNumber(wrappedColumn: string, path: AtLeastOneElement<number>): string {
-	const jsonPath = applyJsonPathAsObject(wrappedColumn, path);
+	const jsonPath = applyJsonPathAsString(wrappedColumn, path);
 
 	return `CAST(${jsonPath} AS numeric)`;
 }
