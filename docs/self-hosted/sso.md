@@ -123,6 +123,13 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      await client.refresh();
      ```
 
+::: tip Redirect Allow List
+
+To allow Directus to redirect to external domains like `https://client.myserver.com/` used above you'll need to include
+it in the `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` security setting.
+
+:::
+
 ### Testing Seamless SSO locally
 
 The above `REFRESH_TOKEN_*` configuration will likely fail for local testing, as you'll likely won't be serving Directus
