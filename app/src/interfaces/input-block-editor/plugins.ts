@@ -60,9 +60,8 @@ class Uploader {
 			const currentPreview = this.getCurrentFile();
 
 			if (currentPreview) {
-				this.config.uploader.setCurrentPreview(
-					this.config.uploader.addTokenToURL(currentPreview) + '&key=system-large-contain',
-				);
+				const separator = currentPreview.includes('?') ? '&' : '?';
+				this.config.uploader.setCurrentPreview(`${currentPreview}${separator}key=system-large-contain`);
 			}
 		}
 
@@ -92,7 +91,7 @@ class Uploader {
 					},
 				};
 
-				onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
+				onPreview(response.file.fileURL);
 				this.onUpload(response);
 			},
 		);
@@ -131,7 +130,8 @@ export class AttachesTool extends BaseAttachesTool {
 			const downloadButton = this.nodes.wrapper.querySelector('a.cdx-attaches__download-button');
 
 			if (downloadButton) {
-				downloadButton.href = this.config.uploader.addTokenToURL(this.data.file.url) + '&download';
+				const separator = this.data.file.url.includes('?') ? '&' : '?';
+				downloadButton.href = `${this.data.file.url}${separator}download`;
 			}
 		}
 	}
@@ -153,7 +153,8 @@ export class ImageTool extends BaseImageTool {
 		this._data.file = file || {};
 
 		if (file && file.url) {
-			const imageUrl = this.config.uploader.addTokenToURL(file.url) + '&key=system-large-contain';
+			const separator = file.url.includes('?') ? '&' : '?';
+			const imageUrl = `${file.url}${separator}key=system-large-contain`;
 			this.ui.fillImage(imageUrl);
 		}
 	}
