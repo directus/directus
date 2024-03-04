@@ -1913,8 +1913,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       vue:
-        specifier: 3.4.19
-        version: 3.4.19(typescript@5.3.3)
+        specifier: 3.4.21
+        version: 3.4.21(typescript@5.3.3)
 
   packages/update-check:
     dependencies:
@@ -7894,7 +7894,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.1.4
+      vite: 5.1.4(sass@1.71.1)
       vue: 3.4.21(typescript@5.3.3)
     dev: true
 
