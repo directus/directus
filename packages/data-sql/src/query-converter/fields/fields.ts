@@ -48,14 +48,11 @@ export const convertFieldNodes = (
 
 			if (objectPath !== null) {
 				const newObjectPath: AtLeastOneElement<string> = [...objectPath, abstractField.field];
-
 				const conversionResult = convertJson(tableIndex, newObjectPath, columnIndex, indexGen);
-
 				select.push(conversionResult.jsonNode);
 				parameters.push(...conversionResult.parameters);
 			} else {
 				const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
-
 				select.push(selectNode);
 			}
 
@@ -82,9 +79,7 @@ export const convertFieldNodes = (
 
 			if (abstractField.nesting.type === 'object-single') {
 				const newObjectPath: AtLeastOneElement<string> = [...(objectPath ?? []), abstractField.nesting.fieldName];
-
 				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen, newObjectPath);
-
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				select.push(...nestedOutput.clauses.select);
 				joins.push(...nestedOutput.clauses.joins);
@@ -96,11 +91,11 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			const tableIndex = indexGen.table.next().value;
-			const nestedUnionOneResult = getNestedUnionOne(abstractField, tableIndex, indexGen);
-			subQueries.push(nestedUnionOneResult.subQuery);
-			select.push(...nestedUnionOneResult.select);
-			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length - 1 });
+			const nestedUnionResult = getNestedUnionOne(abstractField.nesting, tableIndex, indexGen);
+			joins.push(...nestedUnionResult.joins);
+			select.push(...nestedUnionResult.selects);
+			parameters.push(...nestedUnionResult.parameters);
+			aliasMapping.push(...nestedUnionResult.aliasMapping);
 			continue;
 		}
 
