@@ -5,7 +5,7 @@ description:
 
 # SDK Integrations and Customization
 
-The SDK allows for a couple fo ways to integrate or customize how it works.
+The SDK allows for a couple of ways to integrate or customize how it works.
 
 ## Global Request Hooks
 
