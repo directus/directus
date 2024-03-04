@@ -53,7 +53,7 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T | void> {
+	async send<T>(options: EmailOptions): Promise<T> {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
@@ -80,16 +80,8 @@ export class MailService {
 				.join('\n');
 		}
 
-		const info = this.mailer.sendMail({ ...emailOptions, from, html });
-
-		if (env['EMAIL_AWAIT_RESPONSE']) {
-			return await info;
-		} else {
-			info.then().catch((error) => {
-				logger.warn(`Email failed to sent:`);
-				logger.warn(error);
-			});
-		}
+		const info = await this.mailer.sendMail({ ...emailOptions, from, html });
+		return info;
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
