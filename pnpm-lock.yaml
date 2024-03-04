@@ -1843,8 +1843,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.14
-        version: 0.32.14
+        specifier: 0.32.15
+        version: 0.32.15
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -6865,8 +6865,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sinclair/typebox@0.32.14:
-    resolution: {integrity: sha512-EC77Mw8huT2z9YlYbWfpIQgN6shZE1tH4NP4/Trig8UBel9FZNMZRJ42ubJI8PLor2uIU+waLml1dce5ReCOPg==}
+  /@sinclair/typebox@0.32.15:
+    resolution: {integrity: sha512-5Lrwo7VOiWEBJBhHmqNmf3TPB9ll8gcEshvYJyAIJyCZ2PF48MFOtiDHJNj8+FsNcqImaQYmxVkKBCBlyAa/wg==}
     dev: false
 
   /@sindresorhus/is@4.6.0:
