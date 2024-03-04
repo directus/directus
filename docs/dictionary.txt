@@ -305,7 +305,7 @@ Nuxt
 O2M
 O2Ms
 O2O
-OAuth
+OAuth2?
 OpenAI
 Okta
 omnichannel
