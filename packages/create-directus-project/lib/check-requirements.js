@@ -10,8 +10,13 @@ export default function checkRequirements() {
 
 	if (major !== 18 || minor < 17) {
 		console.error(`You are running ${chalk.red(`Node.js ${nodeVersion}`)}.`);
-		console.error(`Directus requires ${chalk.green(`Node.js 18`)}, specifically version 18.17 or higher.`);
+
+		console.error(
+			`Directus requires ${chalk.green(`Node.js 18`)}, specifically version 18.17 or higher (>=18.17 & <19).`,
+		);
+
 		console.error('Please adjust your Node.js version and try again.');
+
 		process.exit(1);
 	}
 }
