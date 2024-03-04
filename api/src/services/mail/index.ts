@@ -53,7 +53,7 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T> {
+	async send(options: EmailOptions): Promise<void> {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
@@ -80,8 +80,10 @@ export class MailService {
 				.join('\n');
 		}
 
-		const info = await this.mailer.sendMail({ ...emailOptions, from, html });
-		return info;
+		this.mailer.sendMail({ ...emailOptions, from, html }).catch((error) => {
+			logger.warn(`Email send failed:`);
+			logger.warn(error);
+		});
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
