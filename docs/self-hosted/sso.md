@@ -84,19 +84,7 @@ configuration to work across domains, but is simple as:
 1. Setup an external provider. You have some examples on [Supported SSO mechanisms](#supported-sso-mechanisms)
 2. Allow cookie to be accessible across domains. Put the following configuration on `.env`:
 
-**Authentication Mode: session**
-
 ```sh
-AUTH_<PROVIDER>_MODE="session"
-SESSION_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
-SESSION_COOKIE_SECURE="true"
-SESSION_COOKIE_SAME_SITE="None"
-```
-
-**Authentication Mode: cookie**
-
-```sh
-AUTH_<PROVIDER>_MODE="cookie"
 REFRESH_TOKEN_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
 REFRESH_TOKEN_COOKIE_SECURE="true"
 REFRESH_TOKEN_COOKIE_SAME_SITE="None"
@@ -124,18 +112,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      });
      ```
 
-   - via SDK in `session` authentication mode
-
-     ```js
-     import { createDirectus, authentication } from '@directus/sdk';
-
-     const client = createDirectus('https://directus.example.com')
-          .with(authentication('session', { credentials: 'include' }));
-
-     await client.refresh();
-     ```
-
-   - via SDK in `cookie` authentication mode
+   - via SDK
 
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
@@ -152,21 +129,12 @@ The above `REFRESH_TOKEN_*` configuration will likely fail for local testing, as
 using a valid SSL certificate which are required for "Secure" cookies. Instead, for local testing purposes (**and local
 testing purposes only**), the following configuration can be used:
 
-**Authentication Mode: session**
-
-```sh
-SESSION_COOKIE_SECURE="false"
-SESSION_COOKIE_SAME_SITE="lax"
-```
-
-**Authentication Mode: cookie**
-
 ```sh
 REFRESH_TOKEN_COOKIE_SECURE="false"
 REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
 ```
 
-Note that no `REFRESH_TOKEN_COOKIE_DOMAIN` or `SESSION_COOKIE_DOMAIN` value is set.
+Note that no `REFRESH_TOKEN_COOKIE_DOMAIN` value is set.
 
 ::: warning Disabling secured cookies
 
