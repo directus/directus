@@ -80,8 +80,16 @@ export class MailService {
 				.join('\n');
 		}
 
-		const info = await this.mailer.sendMail({ ...emailOptions, from, html });
-		return info;
+		const info = this.mailer.sendMail({ ...emailOptions, from, html });
+
+		if (env['EMAIL_AWAIT_RESPONSE']) {
+			return await info;
+		} else {
+			info.then().catch((error) => {
+				logger.warn(`Email failed to sent:`);
+				logger.warn(error);
+			});
+		}
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {

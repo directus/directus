@@ -80,6 +80,7 @@ export const DEFAULTS = {
 
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
+	EMAIL_AWAIT_RESPONSE: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
