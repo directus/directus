@@ -106,7 +106,16 @@ const uninstall = async () => {
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
 			<span class="monospace">
-				{{ extension.schema?.name ?? extension.meta.folder }}
+				<router-link
+					v-if="extension.schema?.name && extension.meta.source === 'registry'"
+					v-tooltip="t('open_in_marketplace')"
+					class="link"
+					:to="`/settings/marketplace/extension/${extension.id}`"
+				>
+					{{ extension.schema?.name }}
+				</router-link>
+				<span v-else>{{ extension.schema?.name ?? extension.meta.folder }}</span>
+				{{ ' ' }}
 				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
 			</span>
 		</v-list-item-content>
@@ -155,6 +164,12 @@ const uninstall = async () => {
 
 .options {
 	margin-left: 12px;
+}
+
+.link {
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .version {

@@ -6,5 +6,6 @@ export interface ListQuery {
 	limit?: number;
 	offset?: number;
 	by?: string;
-	sort?: 'popular' | 'recent';
+	sort?: 'popular' | 'recent' | 'downloads';
+	sandbox?: boolean;
 }

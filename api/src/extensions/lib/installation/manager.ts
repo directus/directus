@@ -33,7 +33,7 @@ export class InstallationManager {
 				options.registry = env['MARKETPLACE_REGISTRY'];
 			}
 
-			const tarReadableStream = await download(versionId, options);
+			const tarReadableStream = await download(versionId, env['MARKETPLACE_TRUST'] === 'sandbox', options);
 
 			if (!tarReadableStream) {
 				throw new Error(`No readable stream returned from download`);

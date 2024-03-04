@@ -5,5 +5,5 @@ defineProps<{ version: string }>();
 </script>
 
 <template>
-	<MetadataItem icon="info">v{{ version }}</MetadataItem>
+	<MetadataItem icon="sell">v{{ version }}</MetadataItem>
 </template>

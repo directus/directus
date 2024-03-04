@@ -1,15 +1,24 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 defineProps<{
-	readme: string;
+	readme: string | null;
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
-	<div v-md="readme" class="readme" />
+	<v-notice v-if="!readme" class="notice">{{ t('extension_readme_missing') }}</v-notice>
+	<div v-else v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 
 <style scoped lang="scss">
 .readme {
+	:deep(*) {
+		user-select: text;
+	}
+
 	:deep() {
 		@import '@/styles/markdown';
 	}
@@ -17,5 +26,14 @@ defineProps<{
 	:deep(* + *) {
 		margin-top: 1rem;
 	}
+
+	:deep(img) {
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
+}
+
+.notice {
+	align-self: flex-start;
+	margin-top: 4px;
 }
 </style>

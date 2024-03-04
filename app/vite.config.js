@@ -40,6 +40,10 @@ export default defineConfig({
 			},
 		},
 	],
+	define: {
+		__INTLIFY_JIT_COMPILATION__: true,
+		__VUE_I18N_LEGACY_API__: false,
+	},
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
@@ -143,9 +147,28 @@ function directusExtensions() {
 			  new Map();
 
 		const mockSetting = (source, folder, extension) => {
-			return extension.type === 'bundle'
-				? extension.entries.map((entry) => ({ source, folder: entry.name, enabled: true }))
-				: { source, folder: folder, enabled: true };
+			const settings = [
+				{
+					id: extension.name,
+					enabled: true,
+					folder: folder,
+					bundle: null,
+					source: source,
+				},
+			];
+
+			if (extension.type === 'bundle') {
+				settings.push(
+					...extension.entries.map((entry) => ({
+						enabled: true,
+						folder: entry.name,
+						bundle: extension.name,
+						source: source,
+					})),
+				);
+			}
+
+			return settings;
 		};
 
 		// default to enabled for app extension in developer mode

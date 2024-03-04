@@ -6,7 +6,7 @@ import { EnumType } from 'json-to-graphql-query';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
-const authModes = ['json', 'cookie'];
+const authModes = ['json', 'cookie', 'session'];
 
 describe('Authentication Refresh Tests', () => {
 	describe('POST /refresh', () => {
@@ -62,7 +62,13 @@ describe('Authentication Refresh Tests', () => {
 							// Assert
 							expect(response.statusCode).toBe(200);
 
-							if (mode === 'cookie') {
+							if (mode === 'session') {
+								expect(response.body).toMatchObject({
+									data: {
+										expires: expect.any(Number),
+									},
+								});
+							} else if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
 										access_token: expect.any(String),
@@ -157,7 +163,13 @@ describe('Authentication Refresh Tests', () => {
 							// Assert
 							expect(response.statusCode).toBe(200);
 
-							if (mode === 'cookie') {
+							if (mode === 'session') {
+								expect(response.body).toMatchObject({
+									data: {
+										expires: expect.any(Number),
+									},
+								});
+							} else if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
 										access_token: expect.any(String),

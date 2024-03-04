@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBanner from '@/components/v-banner.vue';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -36,7 +37,16 @@ watchEffect(async () => {
 	}
 });
 
-const navigateBack = () => router.push('/settings/marketplace');
+const navigateBack = () => {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push('/settings/marketplace');
+};
 </script>
 
 <template>
@@ -61,12 +71,15 @@ const navigateBack = () => router.push('/settings/marketplace');
 					<div class="grid">
 						<ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
-						<ExtensionReadme v-if="extension.readme" class="readme" :readme="extension.readme" />
+						<ExtensionReadme class="readme" :readme="extension.readme" />
 					</div>
 				</div>
 			</template>
 
-			<v-progress-circular v-else-if="loading" indeterminate />
+			<v-banner v-else-if="loading" icon="plugin">
+				<template #avatar><v-progress-circular indeterminate /></template>
+				{{ t('loading') }}
+			</v-banner>
 
 			<v-error v-else :error="error" />
 		</div>
@@ -77,6 +90,7 @@ const navigateBack = () => router.push('/settings/marketplace');
 .extension-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	padding-top: 0;
 	max-width: 1200px;
 	width: 100%;
 }

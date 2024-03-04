@@ -1,5 +1,5 @@
 import type { Extension, ExtensionSettings } from '@directus/extensions';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -35,7 +35,7 @@ export const getExtensionsSettings = async ({
 
 	const generateSettingsEntry = (folder: string, extension: Extension, source: 'local' | 'registry' | 'module') => {
 		if (extension.type === 'bundle') {
-			const bundleId = uuid();
+			const bundleId = randomUUID();
 
 			newSettings.push({
 				id: bundleId,
@@ -47,7 +47,7 @@ export const getExtensionsSettings = async ({
 
 			for (const entry of extension.entries) {
 				newSettings.push({
-					id: uuid(),
+					id: randomUUID(),
 					enabled: true,
 					source: source,
 					bundle: bundleId,
@@ -56,7 +56,7 @@ export const getExtensionsSettings = async ({
 			}
 		} else {
 			newSettings.push({
-				id: uuid(),
+				id: randomUUID(),
 				enabled: true,
 				source: source,
 				bundle: null,
@@ -86,22 +86,5 @@ export const getExtensionsSettings = async ({
 
 	const settings = [...existingSettings, ...newSettings];
 
-	// /**
-	//  * Silently ignore settings for extensions that have been manually removed from the extensions
-	//  * folder. Having them automatically synced feels dangerous, as it's a destructive action. In the
-	//  * edge case you'd deploy / start with the extensions folder misconfigured, it would remove all
-	//  * previous options on startup, without an option to undo.
-	//  */
-	return settings.filter(({ source, folder }) => {
-		switch (source) {
-			case 'module':
-				return Array.from(module.keys()).includes(folder);
-			case 'registry':
-				return Array.from(registry.keys()).includes(folder);
-			case 'local':
-				return Array.from(local.keys()).includes(folder);
-			default:
-				return false;
-		}
-	});
+	return settings;
 };

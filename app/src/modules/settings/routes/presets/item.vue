@@ -15,6 +15,7 @@ import { Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { isSystemCollection } from '@directus/system-data';
 
 type FormattedPreset = {
 	id: number;
@@ -330,7 +331,7 @@ function useForm() {
 							value: collection.collection,
 						}))
 						.filter((option) => {
-							if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
+							if (isSystemCollection(option.value)) return systemCollectionWhiteList.includes(option.value);
 
 							return true;
 						}),

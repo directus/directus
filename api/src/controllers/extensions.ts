@@ -44,6 +44,10 @@ router.get(
 router.get(
 	'/registry',
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const { search, limit, offset, type, by, sort } = req.query;
 
 		const query: ListQuery = {};
@@ -64,7 +68,7 @@ router.get(
 			query.by = by;
 		}
 
-		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent'] as const)) {
+		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent', 'downloads'] as const)) {
 			query.sort = sort;
 		}
 
@@ -74,6 +78,10 @@ router.get(
 			}
 
 			query.type = type;
+		}
+
+		if (env['MARKETPLACE_TRUST'] === 'sandbox') {
+			query.sandbox = true;
 		}
 
 		const options: ListOptions = {};
@@ -127,7 +135,6 @@ router.get(
 		const payload = await describe(req.params['pk'], options);
 
 		res.locals['payload'] = payload;
-
 		return next();
 	}),
 	respond,
@@ -140,14 +147,18 @@ router.post(
 			throw new ForbiddenError();
 		}
 
-		const { version } = req.body;
+		const { version, extension } = req.body;
 
-		if (!version) {
+		if (!version || !extension) {
 			throw new ForbiddenError();
 		}
 
-		const extensionManager = getExtensionManager();
-		await extensionManager.install(version);
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.install(extension, version);
 		return next();
 	}),
 	respond,

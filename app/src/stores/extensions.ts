@@ -4,7 +4,7 @@ import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from './notifications';
 
@@ -40,6 +40,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
 	const loading = ref(false);
 	const error = ref<unknown>(null);
 	const extensions = ref<ApiOutput[]>([]);
+	const reloadNotificationVisible = ref(false);
 
 	const refresh = async (forceRefresh = true) => {
 		loading.value = true;
@@ -52,18 +53,27 @@ export const useExtensionsStore = defineStore('extensions', () => {
 
 			const newEnabledBrowserExtensions = getEnabledBrowserExtensions(extensions.value);
 
-			if (forceRefresh && isEqual(currentlyEnabledBrowserExtensions, newEnabledBrowserExtensions) === false) {
+			if (
+				forceRefresh &&
+				isEqual(currentlyEnabledBrowserExtensions, newEnabledBrowserExtensions) === false &&
+				!reloadNotificationVisible.value
+			) {
 				notificationsStore.add({
+					id: 'reload-required',
 					title: t('reload_required'),
 					text: t('extension_reload_required_copy'),
 					type: 'warning',
-					dialog: true,
+					dialog: false,
 					persist: true,
+					alwaysShowText: true,
+					dismissIcon: 'refresh',
 					dismissText: t('extension_reload_now'),
 					dismissAction: () => {
 						window.location.reload();
 					},
 				});
+
+				reloadNotificationVisible.value = true;
 			}
 		} catch (err) {
 			error.value = err;
@@ -85,8 +95,8 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await refresh();
 	};
 
-	const install = async (versionId: string) => {
-		await api.post('/extensions/registry/install', { version: versionId });
+	const install = async (extensionId: string, versionId: string) => {
+		await api.post('/extensions/registry/install', { extension: extensionId, version: versionId });
 		await refresh();
 	};
 
@@ -95,7 +105,9 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await refresh();
 	};
 
+	const extensionIds = computed(() => extensions.value.map((ext) => ext.id));
+
 	refresh(false);
 
-	return { extensions, loading, error, refresh, toggleState, install, uninstall };
+	return { extensions, extensionIds, loading, error, refresh, toggleState, install, uninstall };
 });

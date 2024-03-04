@@ -2,14 +2,16 @@
 import { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import MetadataItem from '../../../components/metadata-item.vue';
+import ExtensionInstall from './extension-install.vue';
 import ExtensionMetadataAuthor from './extension-metadata-author.vue';
 import ExtensionMetadataCompatibility from './extension-metadata-compatibility.vue';
 import ExtensionMetadataDate from './extension-metadata-date.vue';
+import ExtensionMetadataDownloadsSparkline from './extension-metadata-downloads-sparkline.vue';
 import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
-import MetadataItem from '../../../components/metadata-item.vue';
+import ExtensionMetadataLicense from './extension-metadata-license.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
-import ExtensionInstall from './extension-install.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -18,13 +20,23 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const latestVersion = computed(() => props.extension.versions.at(0)!);
+
+const maintainers = computed(() => {
+	const publisherId = latestVersion.value.publisher.id;
+
+	return (
+		latestVersion.value.maintainers
+			?.filter(({ accounts_id: maintainer }) => maintainer.id !== publisherId)
+			.map(({ accounts_id: maintainer }) => maintainer) ?? []
+	);
+});
 </script>
 
 <template>
 	<div class="metadata">
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionInstall class="install" :version-id="latestVersion.id" />
+				<ExtensionInstall class="install" :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
@@ -33,15 +45,31 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
 					class="author"
 				/>
+
+				<ExtensionMetadataAuthor
+					v-for="maintainer of maintainers"
+					:id="maintainer.id"
+					:key="maintainer.id"
+					:verified="maintainer.verified"
+					:username="maintainer.username"
+					:github-name="maintainer.github_name"
+					:github-avatar-url="maintainer.github_avatar_url"
+					class="author"
+				/>
 			</div>
 		</v-list>
-		<v-divider class="divider" />
 		<v-list class="list">
 			<div class="grid">
-				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
+				<ExtensionMetadataDownloadsSparkline
+					v-if="extension.downloads"
+					class="sparkline"
+					:downloads="extension.downloads"
+				/>
+				<ExtensionMetadataDownloads :downloads="extension.total_downloads" />
 				<ExtensionMetadataVersion :version="latestVersion.version" />
-				<ExtensionMetadataDownloads :downloads="extension.downloads" />
+				<ExtensionMetadataCompatibility :host-version="latestVersion.host_version" />
 				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
+				<ExtensionMetadataLicense :license="extension.license" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
 					{{ t('homepage') }}
@@ -65,7 +93,7 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 
 .grid {
 	.install {
-		margin-bottom: 16px !important;
+		margin-bottom: 8px !important;
 	}
 
 	@container metadata (width > 580px) {
@@ -74,6 +102,11 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 4px 16px;
+
+		.sparkline {
+			grid-column: 1 / span 2;
+			margin-block-start: 16px;
+		}
 
 		.install {
 			margin-bottom: 0 !important;
@@ -87,5 +120,10 @@ const latestVersion = computed(() => props.extension.versions.at(0)!);
 
 .author {
 	margin-block-start: 8px;
+}
+
+.sparkline {
+	margin-top: 6px;
+	margin-bottom: 14px;
 }
 </style>

@@ -49,7 +49,8 @@ export class ServerService {
 				'theme_dark_overrides',
 				'default_language',
 				'public_foreground',
-				'public_background',
+				'public_background.id',
+				'public_background.type',
 				'public_favicon',
 				'public_note',
 				'custom_css',
@@ -76,6 +77,10 @@ export class ServerService {
 			} else {
 				info['rateLimitGlobal'] = false;
 			}
+
+			info['extensions'] = {
+				limit: env['EXTENSIONS_LIMIT'] ?? null,
+			};
 
 			info['queryLimit'] = {
 				default: env['QUERY_LIMIT_DEFAULT'],

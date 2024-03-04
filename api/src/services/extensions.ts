@@ -1,5 +1,7 @@
-import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
 import type { ApiOutput, BundleExtension, ExtensionSettings } from '@directus/extensions';
+import { describe, type DescribeOptions } from '@directus/extensions-registry';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -35,6 +37,63 @@ export class ExtensionsService {
 			schema: this.schema,
 			accountability: this.accountability,
 		});
+	}
+
+	async install(extensionId: string, versionId: string) {
+		const env = useEnv();
+
+		const describeOptions: DescribeOptions = {};
+
+		if (typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const extension = await describe(extensionId, describeOptions);
+		const version = extension.data.versions.find((version) => version.id === versionId);
+
+		if (!version) {
+			throw new ForbiddenError();
+		}
+
+		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
+
+		if (limit !== null) {
+			const currentlyInstalledCount = this.extensionsManager.extensions.length;
+
+			/**
+			 * Bundle extensions should be counted as the number of nested entries rather than a single
+			 * extension to avoid a vulnerability where you can get around the technical limit by bundling
+			 * all extensions you want
+			 */
+			const points = version.bundled.length ?? 1;
+
+			const afterInstallCount = currentlyInstalledCount + points;
+
+			if (afterInstallCount >= limit) {
+				throw new LimitExceededError();
+			}
+		}
+
+		await this.extensionsItemService.createOne({
+			id: extensionId,
+			enabled: true,
+			folder: versionId,
+			source: 'registry',
+			bundle: null,
+		});
+
+		if (extension.data.type === 'bundle' && version.bundled.length > 0) {
+			await this.extensionsItemService.createMany(
+				version.bundled.map((entry) => ({
+					enabled: true,
+					folder: entry.name,
+					source: 'registry',
+					bundle: extensionId,
+				})),
+			);
+		}
+
+		await this.extensionsManager.install(versionId);
 	}
 
 	async readAll() {
@@ -130,6 +189,7 @@ export class ExtensionsService {
 		}
 
 		await this.extensionsItemService.deleteOne(id);
+		await this.extensionsItemService.deleteByQuery({ filter: { bundle: { _eq: id } } });
 		await this.extensionsManager.uninstall(settings.folder);
 	}
 

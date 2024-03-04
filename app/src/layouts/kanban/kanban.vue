@@ -5,7 +5,6 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { addTokenToURL } from '@/api';
 import { getItemRoute } from '@/utils/get-route';
 import { getRootPath } from '@/utils/get-root-path';
 import type { Field } from '@directus/types';
@@ -66,7 +65,7 @@ function parseAvatar(file: Record<string, any>) {
 	if (file.type.startsWith('image') === false) return;
 
 	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
-	return addTokenToURL(url);
+	return url;
 }
 
 function cancelChanges() {

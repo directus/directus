@@ -88,6 +88,14 @@ p {
 	background-color: var(--vp-c-brand-light);
 }
 
+:deep(.hs_recaptcha .input .grecaptcha-badge) {
+	box-shadow: none !important;
+	height: 44px !important;
+	transform: scale(0.735);
+	transform-origin: top left;
+	margin-top: 0.5rem;
+}
+
 :deep(.hs-error-msgs) {
 	margin: 0;
 	padding: 0;

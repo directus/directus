@@ -18,7 +18,7 @@ runs:
         node-version: 18
         registry-url: ${{ inputs.registry }}
 
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v3
       name: Install pnpm
       id: pnpm-install
       with:

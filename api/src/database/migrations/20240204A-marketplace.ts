@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<void> {
 	const idMap = new Map<string, string>();
 
 	for (const { name } of installedExtensions) {
-		const id = uuid();
+		const id = randomUUID();
 		await knex('directus_extensions').update({ id, source: 'local' }).where({ name });
 		idMap.set(name, id);
 	}

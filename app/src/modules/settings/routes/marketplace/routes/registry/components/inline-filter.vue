@@ -14,14 +14,20 @@ const props = defineProps<{
 	perPage: number;
 }>();
 
-const searchInputValue = ref('');
+const searchInputValue = ref(search.value);
 
 watchDebounced(
 	searchInputValue,
 	(val) => {
-		search.value = val;
+		if (val === search.value) return;
+
+		if (val && val.length > 0) {
+			search.value = val;
+		} else {
+			search.value = null;
+		}
 	},
-	{ debounce: 300, maxWait: 1000 },
+	{ debounce: 300 },
 );
 
 const { t, n } = useI18n();
@@ -68,6 +74,10 @@ const sortOptions = [
 		text: t('recent'),
 		value: 'recent',
 	},
+	{
+		text: t('downloads'),
+		value: 'downloads',
+	},
 ];
 </script>
 
@@ -75,7 +85,7 @@ const sortOptions = [
 	<div class="inline-filter">
 		<div class="field">
 			<v-icon class="icon" small name="category" />
-			<v-select v-model="type" class="type" inline :items="typeOptions" />
+			<v-select v-model="type" menu-full-height class="type" inline :items="typeOptions" />
 		</div>
 
 		<div class="field">
@@ -88,7 +98,7 @@ const sortOptions = [
 			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_extensions')" class="search-input" />
 		</div>
 
-		<div class="item-count">{{ showingCount }}</div>
+		<div v-show="filterCount !== 0" class="item-count">{{ showingCount }}</div>
 	</div>
 </template>
 
@@ -106,6 +116,7 @@ const sortOptions = [
 	border-radius: 0;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
 	width: 180px;
+	background: transparent;
 
 	&::placeholder {
 		color: var(--theme--foreground-subdued);

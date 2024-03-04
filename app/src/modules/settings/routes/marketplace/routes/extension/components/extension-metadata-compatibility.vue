@@ -16,10 +16,27 @@ const isCompatible = computed(() => satisfies(serverStore.info.version!, props.h
 const icon = computed(() => (isCompatible.value ? 'check' : 'warning'));
 
 const label = computed(() =>
-	isCompatible.value ? t('compatible_with_your_project') : t('not_compatible_with_your_project'),
+	isCompatible.value ? t('compatible_with_your_project') : t('compatibility_not_guaranteed'),
 );
 </script>
 
 <template>
-	<MetadataItem :icon="icon" :color="isCompatible ? 'primary' : 'warning'">{{ label }}</MetadataItem>
+	<MetadataItem
+		v-tooltip="
+			isCompatible
+				? t('compatible_with_your_project_copy', {
+						currentVersion: serverStore.info.version!,
+						hostVersion: hostVersion,
+				  })
+				: t('compatibility_not_guaranteed_copy', {
+						currentVersion: serverStore.info.version!,
+						hostVersion: hostVersion,
+				  })
+		"
+		:icon="icon"
+		:color="isCompatible ? 'subdued' : 'warning'"
+		has-tooltip
+	>
+		{{ label }}
+	</MetadataItem>
 </template>
