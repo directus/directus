@@ -9,6 +9,13 @@ Single Sign-On is a mechanism which allows to use external providers to login in
 your Google or Facebook account to authenticate into systems without the need to create a new registration on those
 systems.
 
+::: warning SSO Cookie Mode
+
+This guide was created using the previous default cookie mode.
+After [Directus 10.10.0](/releases/breaking-changes.html#version-10-10-0) you'll need to configure `AUTH_<PROVIDER>_MODE="cookie"` for the expected behavior.
+
+:::
+
 ## Supported SSO mechanisms
 
 Directus supports four standard types of SSO mechanisms:
@@ -83,6 +90,7 @@ configuration to work across domains, but is simple as:
 
 1. Setup an external provider. You have some examples on [Supported SSO mechanisms](#supported-sso-mechanisms)
 2. Allow cookie to be accessible across domains. Put the following configuration on `.env`:
+
 
 ```sh
 REFRESH_TOKEN_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
