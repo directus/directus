@@ -2,6 +2,7 @@ import type { Item, SchemaOverview } from '@directus/types';
 import Joi from 'joi';
 import type { Alterations } from '../types/index.js';
 import { isObject } from '@directus/utils';
+import { cloneDeep } from 'lodash-es';
 
 const alterationSchema = Joi.object({
 	create: Joi.array().items(Joi.object().unknown()),
@@ -10,7 +11,7 @@ const alterationSchema = Joi.object({
 });
 
 export function mergeVersionsRaw(item: Item, versionData: Partial<Item>[]) {
-	const result = { ...item };
+	const result = cloneDeep(item);
 
 	for (const versionRecord of versionData) {
 		for (const key of Object.keys(versionRecord)) {
@@ -33,7 +34,7 @@ export function mergeVersionsRecursive(
 }
 
 function recursiveMerging(data: Item, versionData: unknown[], collection: string, schema: SchemaOverview): unknown {
-	const result = { ...data };
+	const result = cloneDeep(data);
 	const relations = getRelations(collection, schema);
 
 	for (const versionRecord of versionData) {
