@@ -122,7 +122,7 @@ router.post(
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({
-				reason: `The refresh or session token is required in either the JSON payload or Cookie`,
+				reason: `The refresh token is required in either the payload or cookie`,
 			});
 		}
 
@@ -176,7 +176,7 @@ router.post(
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadError({
-				reason: `The refresh or session token is required in either the JSON payload or Cookie`,
+				reason: `The refresh token is required in either the payload or cookie`,
 			});
 		}
 

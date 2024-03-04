@@ -15,11 +15,11 @@ pageClass: page-reference
 There are three types of tokens that can be used to authenticate within Directus.
 
 **Temporary Token (JWT)** are returned by the [login](#login) endpoint/mutation. These tokens have a relatively short
-expiration time, and are thus the most secure option to use. The tokens are returned with a `refresh_token` that can be
+expiration time, and are thus the most secure option to use. The tokens are returned with a refresh token that can be
 used to retrieve a new access token via the [refresh](#refresh) endpoint/mutation.
 
 **Session Token (JWT)** can also be returned by the [login](#login) endpoint/mutation.\
-Session tokens combine both a refresh_token and access_token in a single cookie. These tokens should not have a short expiration
+Session tokens combine both a refresh token and access token in a single cookie. These tokens should not have a short expiration
 time like the Temporary Tokens as you cannot refresh these after they have expired.
 
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
@@ -117,8 +117,8 @@ Password of the user.
 The user's one-time-password (if MFA is enabled).
 
 `mode`\
-Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
-`session`. Defaults to `json`.
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` cookie. One of `json`, `cookie` or `session`.
+Defaults to `json`.
 
 ### Response
 
@@ -213,7 +213,7 @@ Retrieve a new access token using a refresh token.
 
 ```graphql
 mutation {
-	auth_refresh(refresh_token: "abc...def", mode: json) {
+	auth_refresh(refresh_token: "refresh_token", mode: refresh_mode) {
 		access_token
 		refresh_token
 	}
@@ -248,8 +248,8 @@ The refresh token to use. If you have the refresh token in a cookie through [`/a
 it here.
 
 `mode`\
-Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
-`session`.
+Whether to submit and retrieve the refresh token in the JSON response, or in a `httpOnly` cookie. One of `json`, `cookie`
+or `session`.
 
 ### Response
 
@@ -366,8 +366,7 @@ The refresh token to invalidate. If you have the refresh token in a cookie throu
 to submit it here.
 
 `mode`\
-Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie` or
-`session`. Defaults to `json`.
+Whether the refresh token is submitted in the JSON response, or in a `httpOnly` cookie. One of `json`, `cookie` or `session`.
 
 ### Example
 

@@ -4,6 +4,7 @@ import type { RestCommand } from '../../types.js';
 /**
  * Invalidate the refresh token thus destroying the user's session.
  *
+ * @param mode Whether the refresh token is submitted in the JSON response, or in a httpOnly cookie.
  * @param refresh_token The refresh token to invalidate. If you have the refresh token in a cookie through /auth/login, you don't have to submit it here.
  *
  * @returns Empty body.

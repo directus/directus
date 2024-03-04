@@ -55,10 +55,10 @@ export type ShareData = {
 };
 
 export type LoginResult = {
-	accessToken: any;
-	refreshToken: any;
-	expires: any;
-	id?: any;
+	accessToken: string;
+	refreshToken: string;
+	expires: number;
+	id?: string;
 };
 
 export type AuthenticationMode = 'json' | 'cookie' | 'session';

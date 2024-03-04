@@ -1,27 +1,21 @@
-/**
- * Extract access token from:
- *
- * Authorization: Bearer
- * access_token query parameter
- *
- * and store in req.token
- */
-
 import type { RequestHandler } from 'express';
 import { InvalidPayloadError } from '@directus/errors';
 import { useEnv } from '@directus/env';
 
+/**
+ * Extract access token from
+ *
+ * - 'access_token' query parameter
+ * - 'Authorization' header
+ * - Session cookie
+ *
+ * and store it under req.token
+ */
 const extractToken: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
 
 	let token: string | null = null;
 
-	/**
-	 * Look into RFC6750 compliance:
-	 * In order to be fully compliant with RFC6750, we have to throw a 400 error when you have the
-	 * token in more than 1 place afaik. We also might have to support "access_token" as a post body
-	 * key
-	 */
 	if (req.query && req.query['access_token']) {
 		token = req.query['access_token'] as string;
 	}
@@ -31,7 +25,10 @@ const extractToken: RequestHandler = (req, _res, next) => {
 
 		if (parts.length === 2 && parts[0]!.toLowerCase() === 'bearer') {
 			if (token !== null) {
-				// RFC6750 compliance:
+				/*
+				 * RFC6750 compliance (https://datatracker.ietf.org/doc/html/rfc6750#section-2)
+				 * > Clients MUST NOT use more than one method to transmit the token in each request.
+				 */
 				throw new InvalidPayloadError({
 					reason: 'The request uses more than one method for including an access token',
 				});
@@ -42,8 +39,10 @@ const extractToken: RequestHandler = (req, _res, next) => {
 	}
 
 	if (req.cookies && req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
-		/**
-		 * To include session cookies in RFC6750 compliance: throw an error if token !== null
+		/*
+		 * Exclude session cookie from "RFC6750 multi auth method" rule, e.g.
+		 * - allow using a different token to perform requests from within the Data Studio (static token in WYSIWYG interface / Extensions)
+		 * - to not break external apps running under the same domain as the Data Studio while using a different method
 		 */
 		if (token === null) {
 			token = req.cookies[env['SESSION_COOKIE_NAME'] as string];

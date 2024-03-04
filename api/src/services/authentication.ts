@@ -272,7 +272,7 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<Record<string, any>> {
+	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
