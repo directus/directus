@@ -251,7 +251,7 @@ export const useFieldDetailStore = defineStore({
 					await api.post(getEndpoint(collection), this.items[collection]);
 				}
 
-				await fieldsStore.hydrate();
+				await fieldsStore.hydrate({ skipTranslation: true });
 			} catch (error) {
 				unexpectedError(error);
 			} finally {
