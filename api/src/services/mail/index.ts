@@ -53,7 +53,7 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T> {
+	async send<T>(options: EmailOptions): Promise<T | void> {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
