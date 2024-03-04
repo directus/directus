@@ -176,18 +176,16 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			let emitPayload;
+			let emitPayload = {
+				auth_data: userPayload.auth_data,
+			};
 
 			if (syncUserInfo) {
 				emitPayload = {
-					auth_data: userPayload.auth_data,
+					...emitPayload,
 					first_name: userPayload.first_name,
 					last_name: userPayload.last_name,
 					email: userPayload.email,
-				};
-			} else {
-				emitPayload = {
-					auth_data: userPayload.auth_data,
 				};
 			}
 
