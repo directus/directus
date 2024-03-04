@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { cssVar } from '@directus/utils/browser';
+import { useMediaQuery } from '@vueuse/core';
 import ApexCharts from 'apexcharts';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
 	downloads: {
@@ -9,6 +10,8 @@ const props = defineProps<{
 		date: string;
 	}[];
 }>();
+
+const browserAppearance = useMediaQuery('(prefers-color-scheme: dark)');
 
 const chartContainerEl = ref<HTMLElement>();
 const chartEl = ref<HTMLElement>();
@@ -74,13 +77,10 @@ const initChart = () => {
 	chart.value.render();
 };
 
-watch(
-	() => props.downloads,
-	() => {
-		chart.value?.destroy();
-		initChart();
-	},
-);
+watch([() => props.downloads, browserAppearance], () => {
+	chart.value?.destroy();
+	initChart();
+});
 
 onMounted(() => {
 	initChart();
