@@ -1,8 +1,9 @@
-import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Query, User } from '@directus/types';
-import type { AbstractServiceOptions, Alterations, MutationOptions, PrimaryKey } from '../types/index.js';
+import { getMatch } from 'ip-matching';
+import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
+import { PermissionsService } from './permissions/index.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
 
@@ -149,7 +150,50 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
-	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
+	private isIpAccessValid(value?: any[] | null): boolean {
+		if (value === undefined) return false;
+		if (value === null) return true;
+		if (Array.isArray(value) && value.length === 0) return true;
+
+		for (const ip of value) {
+			if (typeof ip !== 'string' || ip.includes('*')) return false;
+
+			try {
+				const match = getMatch(ip);
+				if (match.type == 'IPMask') return false;
+			} catch {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private assertValidIpAccess(partialItem: Partial<Item>): void {
+		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
+			throw new InvalidPayloadError({
+				reason: 'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+			});
+		}
+	}
+
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
+		return super.createOne(data, opts);
+	}
+
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		for (const partialItem of data) {
+			this.assertValidIpAccess(partialItem);
+		}
+
+		return super.createMany(data, opts);
+	}
+
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
 		try {
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
@@ -161,9 +205,12 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		for (const partialItem of data) {
+			this.assertValidIpAccess(partialItem);
+		}
 
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const keys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
@@ -178,11 +225,9 @@ export class RolesService extends ItemsService {
 		return super.updateBatch(data, opts);
 	}
 
-	override async updateMany(
-		keys: PrimaryKey[],
-		data: Record<string, any>,
-		opts?: MutationOptions,
-	): Promise<PrimaryKey[]> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
+
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
@@ -192,6 +237,16 @@ export class RolesService extends ItemsService {
 		}
 
 		return super.updateMany(keys, data, opts);
+	}
+
+	override async updateByQuery(
+		query: Query,
+		data: Partial<Item>,
+		opts?: MutationOptions | undefined,
+	): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
+
+		return super.updateByQuery(query, data, opts);
 	}
 
 	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {

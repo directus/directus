@@ -35,7 +35,6 @@ test('Returns order part for one primitive field', () => {
 	];
 
 	const expected = `ORDER BY "t${tableIndex}"."${field}" ASC`;
-
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
 
@@ -65,7 +64,6 @@ test('Returns order part for multiple primitive fields', () => {
 	];
 
 	const expected = `ORDER BY "t${tableIndex}"."${columnName1}" ASC, "t${tableIndex}"."${columnName2}" DESC`;
-
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
 
@@ -89,6 +87,26 @@ test('Returns order part when a function was applied', () => {
 	];
 
 	const expected = `ORDER BY COUNT("t${tableIndex}"."${columnName}") ASC`;
+	expect(orderBy(sample)).toStrictEqual(expected);
+});
 
+test('Returns order part for a json target', () => {
+	const columnName = randomIdentifier();
+	const pathIndex = randomInteger(0, 100);
+
+	sample.order = [
+		{
+			orderBy: {
+				type: 'json',
+				columnName,
+				tableIndex,
+				path: [pathIndex],
+			},
+			type: 'order',
+			direction: 'ASC',
+		},
+	];
+
+	const expected = `ORDER BY "t${tableIndex}"."${columnName}" -> $${pathIndex + 1} ASC`;
 	expect(orderBy(sample)).toStrictEqual(expected);
 });

@@ -2,7 +2,7 @@ import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { createTracker, MockClient, Tracker, type RawQuery } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-client';
 import {
 	afterEach,
 	beforeAll,
@@ -11,8 +11,8 @@ import {
 	expect,
 	it,
 	vi,
-	type MockedFunction,
 	type MockInstance,
+	type MockedFunction,
 } from 'vitest';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
@@ -697,12 +697,24 @@ describe('Integration Tests', () => {
 				await service.createOne({});
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.createOne({ ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('createMany', () => {
 			it('should not checkForOtherAdminRoles', async () => {
 				await service.createMany([{}]);
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.createMany([{ ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -723,6 +735,12 @@ describe('Integration Tests', () => {
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 				expect(checkForOtherAdminUsersSpy).toBeCalledTimes(1);
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateOne(1, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('updateMany', () => {
@@ -735,6 +753,12 @@ describe('Integration Tests', () => {
 				await service.updateMany([1], { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateMany([1], { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
+			});
 		});
 
 		describe('updateBatch', () => {
@@ -746,6 +770,12 @@ describe('Integration Tests', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				await service.updateBatch([{ id: 1, admin_access: false }]);
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateBatch([{ id: 1, ip_access: ['invalid_ip'] }])).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 
@@ -762,6 +792,12 @@ describe('Integration Tests', () => {
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.updateByQuery({}, { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+
+			it('should throw due to invalid ip_access', async () => {
+				await expect(service.updateByQuery({}, { ip_access: ['invalid_ip'] })).rejects.toThrow(
+					'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+				);
 			});
 		});
 

@@ -5,12 +5,12 @@ import type { SqlConditionStringNode } from '@directus/data-sql';
 
 let sampleCondition: SqlConditionStringNode;
 let tableIndex: number;
-let randomColumn: string;
+let columnName: string;
 let parameterIndex: number;
 
 beforeEach(() => {
 	tableIndex = randomInteger(0, 100);
-	randomColumn = randomIdentifier();
+	columnName = randomIdentifier();
 	parameterIndex = randomInteger(0, 100);
 
 	sampleCondition = {
@@ -18,7 +18,7 @@ beforeEach(() => {
 		target: {
 			type: 'primitive',
 			tableIndex,
-			columnName: randomColumn,
+			columnName,
 		},
 		operation: 'starts_with',
 		compareTo: {
@@ -28,22 +28,39 @@ beforeEach(() => {
 	};
 });
 
-test('letter condition starts_with', () => {
+test('string condition starts_with', () => {
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"t${tableIndex}"."${randomColumn}" LIKE $${parameterIndex + 1}||'%'`;
+	const expected = `"t${tableIndex}"."${columnName}" LIKE $${parameterIndex + 1}||'%'`;
 	expect(res).toStrictEqual(expected);
 });
 
-test('letter condition contains', () => {
+test('string condition contains', () => {
 	sampleCondition.operation = 'contains';
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"t${tableIndex}"."${randomColumn}" LIKE '%'||$${parameterIndex + 1}||'%'`;
+	const expected = `"t${tableIndex}"."${columnName}" LIKE '%'||$${parameterIndex + 1}||'%'`;
 	expect(res).toStrictEqual(expected);
 });
 
-test('letter condition contains', () => {
+test('string condition end_with', () => {
 	sampleCondition.operation = 'ends_with';
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"t${tableIndex}"."${randomColumn}" LIKE '%'||$${parameterIndex + 1}`;
+	const expected = `"t${tableIndex}"."${columnName}" LIKE '%'||$${parameterIndex + 1}`;
+	expect(res).toStrictEqual(expected);
+});
+
+test('string condition eq json value', () => {
+	const jsonPropIndex = randomInteger(0, 20);
+
+	sampleCondition.operation = 'eq';
+
+	sampleCondition.target = {
+		type: 'json',
+		tableIndex,
+		columnName: columnName,
+		path: [jsonPropIndex],
+	};
+
+	const res = stringCondition(sampleCondition, false);
+	const expected = `"t${tableIndex}"."${columnName}" ->> $${jsonPropIndex + 1} = $${parameterIndex + 1}`;
 	expect(res).toStrictEqual(expected);
 });

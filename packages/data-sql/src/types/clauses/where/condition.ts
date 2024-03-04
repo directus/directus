@@ -1,8 +1,9 @@
 import type { SqlConditionFieldNode } from './conditions/field-condition.js';
 import type { SqlConditionGeoNode } from './conditions/geo-condition.js';
 import type { SqlConditionNumberNode } from './conditions/number-condition.js';
-import type { SqlConditionSetNode } from './conditions/set-condition.js';
+import type { SqlConditionSetStringNode } from './conditions/set-string-condition.js';
 import type { SqlConditionStringNode } from './conditions/string-condition.js';
+import type { SqlConditionSetNumberNode } from './conditions/set-number-condition.js';
 
 /**
  * Condition to filter rows.
@@ -15,7 +16,8 @@ export interface AbstractSqlQueryConditionNode {
 		| SqlConditionStringNode
 		| SqlConditionNumberNode
 		| SqlConditionGeoNode
-		| SqlConditionSetNode
+		| SqlConditionSetStringNode
+		| SqlConditionSetNumberNode
 		| SqlConditionFieldNode;
 	negate: boolean;
 }

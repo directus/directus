@@ -14,7 +14,7 @@ export function convertJson(
 	const columnName = objectPath[0];
 	const parameters = objectPath.slice(1);
 
-	const path = parameters.map(() => indexGen.parameter.next().value);
+	const path = parameters.map(() => indexGen.parameter.next().value) as AtLeastOneElement<number>;
 
 	return {
 		jsonNode: {

@@ -3,11 +3,11 @@ import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors'
 import type { Accountability } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
+import { randomUUID } from 'node:crypto';
 import type { ParsedUrlQuery } from 'querystring';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type internal from 'stream';
 import { parse } from 'url';
-import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
@@ -201,7 +201,7 @@ export default abstract class SocketController {
 		const client = ws as WebSocketClient;
 		client.accountability = accountability;
 		client.expires_at = expires_at;
-		client.uid = uuid();
+		client.uid = randomUUID();
 		client.auth_timer = null;
 
 		ws.on('message', async (data: WebSocket.RawData) => {

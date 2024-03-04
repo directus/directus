@@ -9,7 +9,7 @@ export function convertNumberNode(
 	indexGen: IndexGenerators,
 	negate: boolean,
 ): FilterResult {
-	const { value, joins } = convertTarget(node.target, tableIndex, indexGen);
+	const { value, joins, parameters } = convertTarget(node.target, tableIndex, indexGen);
 
 	return {
 		clauses: {
@@ -28,6 +28,6 @@ export function convertNumberNode(
 			},
 			joins,
 		},
-		parameters: [node.compareTo],
+		parameters: [...parameters, node.compareTo],
 	};
 }

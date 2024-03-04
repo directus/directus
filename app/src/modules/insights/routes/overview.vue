@@ -118,7 +118,6 @@ function exportDasboard(ids: string[]) {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: 'json',
 		fields: [
 			'name',
@@ -206,6 +205,7 @@ async function batchDelete() {
 
 		<template #actions>
 			<v-input
+				v-if="insightsStore.dashboards.length > 0"
 				v-model="search"
 				class="search"
 				:autofocus="insightsStore.dashboards.length > 25"
@@ -367,10 +367,18 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
-			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
+		<v-info v-else-if="search" icon="search" :title="t('no_results')" center>
+			{{ t('no_results_copy') }}
 
-			<template v-if="createAllowed && !search" #append>
+			<template #append>
+				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
+		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
+			{{ t('no_dashboards_copy') }}
+
+			<template v-if="createAllowed" #append>
 				<dashboard-dialog v-model="createDialogActive">
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')" @click="on">
