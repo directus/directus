@@ -1,6 +1,12 @@
 import * as validator from '@authenio/samlify-node-xmllint';
 import { useEnv } from '@directus/env';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderError,
+	isDirectusError,
+} from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
@@ -15,6 +21,7 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -126,7 +133,13 @@ export function createSAMLAuthRouter(providerName: string) {
 			const parsedUrl = new URL(url);
 
 			if (req.query['redirect']) {
-				parsedUrl.searchParams.append('RelayState', req.query['redirect'] as string);
+				const redirect = req.query['redirect'] as string;
+
+				if (isLoginRedirectAllowed(redirect, providerName) === false) {
+					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
+				}
+
+				parsedUrl.searchParams.append('RelayState', redirect);
 			}
 
 			return res.redirect(parsedUrl.toString());

@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	InvalidCredentialsError,
+	InvalidPayloadError,
 	InvalidProviderConfigError,
 	InvalidProviderError,
 	InvalidTokenError,
@@ -16,6 +17,7 @@ import jwt from 'jsonwebtoken';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -26,9 +28,9 @@ import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
-import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -320,7 +322,6 @@ const handleError = (e: any) => {
 
 export function createOpenIDAuthRouter(providerName: string): Router {
 	const env = useEnv();
-
 	const router = Router();
 
 	router.get(
@@ -329,15 +330,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+			const redirect = req.query['redirect'];
 
-			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
-				env['SECRET'] as string,
-				{
-					expiresIn: '5m',
-					issuer: 'directus',
-				},
-			);
+			if (isLoginRedirectAllowed(redirect, providerName) === false) {
+				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
+			}
+
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, env['SECRET'] as string, {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
 
 			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,

@@ -134,6 +134,17 @@ AuthenticationService.login('email', 'password', { otp: 'otp-code', session: tru
 
 :::
 
+### Introduced Allow List for OAuth2/OpenID/SAML Redirects
+
+Due to an Open Redirect vulnerability with the OAuth2, OpenID and SAML SSO providers, we have introduced an allow list
+for these redirects.
+
+If your current workflow depends on redirecting to an external domain after successful SSO login using the
+`?redirect=http://example.com/login` query parameter, then you'll need to add this URL to the
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` config option.
+
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
+
 ## Version 10.9.0
 
 ### Updated Exif Tags
