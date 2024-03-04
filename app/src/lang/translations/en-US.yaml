@@ -1187,6 +1187,7 @@ install_extension: Install Extension
 uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
 uninstall: Uninstall
 installed: Installed
+open_in_marketplace: Open in Marketplace
 source_registry: Marketplace
 source_local: Local
 source_module: Node Module
