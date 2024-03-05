@@ -52,20 +52,6 @@ Enterprise Projects, and Premium Support adds 24/7 response times for critical s
 Cloud customers and Self-Hosted users interested in learning more about our monthly retainer agreements should contact
 us at [support@directus.io](mailto:support@directus.io).
 
-## Sponsored Work
-
-### Commissioned Features
-
-If you need a specific feature added to Directus faster than the normal development timeline,
-[reach out to us](https://directus.io/contact) for a quote. Our parent agency will often help subsidize the cost of
-developing new features if they pass our 80/20 Rule (supports 80% of our user's common use cases) and can be merged into
-the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
-
-### Expedited Fixes
-
-We triage all reported bugs based on priority and how long the fix is estimated to take. If you need a specific issue
-resolved sooner, [reach out to us](https://directus.io/contact) for a quote.
-
 ## Frequently Asked Questions
 
 ### Does Directus support Mongo/NoSQL?

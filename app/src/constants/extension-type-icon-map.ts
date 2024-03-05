@@ -1,6 +1,6 @@
 import type { ExtensionType } from '@directus/extensions';
 
-export const iconMap: Record<ExtensionType, string> = {
+export const extensionTypeIconMap: Record<ExtensionType, string> = {
 	interface: 'design_services',
 	display: 'label',
 	layout: 'dataset',

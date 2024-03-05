@@ -254,11 +254,10 @@ function onClick(event: PointerEvent) {
 	&.block {
 		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
-		--v-list-item-padding: var(--theme--form--field--input--padding);
-
+		padding: var(--v-list-item-padding, var(--theme--form--field--input--padding));
 		position: relative;
 		display: flex;
-		height: var(--theme--form--field--input--height);
+		min-height: var(--theme--form--field--input--height);
 		margin: 0;
 		background-color: var(
 			--v-list-item-background-color,
@@ -267,7 +266,8 @@ function onClick(event: PointerEvent) {
 		border: var(--theme--border-width) solid
 			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, border-color;
 
 		:slotted(.drag-handle) {
 			cursor: grab;
@@ -303,7 +303,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-top: 8px;
+			margin-top: var(--v-list-item-margin, 8px);
 		}
 
 		&.dense {
@@ -311,7 +311,7 @@ function onClick(event: PointerEvent) {
 			padding: 4px 8px;
 
 			& + & {
-				margin-top: 4px;
+				margin-top: var(--v-list-item-margin, 4px);
 			}
 		}
 	}

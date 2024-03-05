@@ -289,18 +289,21 @@ export class FieldsService {
 					schema: this.schema,
 				});
 
-				const hookAdjustedField = await emitter.emitFilter(
-					`fields.create`,
-					field,
-					{
-						collection: collection,
-					},
-					{
-						database: trx,
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				);
+				const hookAdjustedField =
+					opts?.emitEvents !== false
+						? await emitter.emitFilter(
+								`fields.create`,
+								field,
+								{
+									collection: collection,
+								},
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								},
+						  )
+						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
@@ -390,19 +393,22 @@ export class FieldsService {
 		}
 
 		try {
-			const hookAdjustedField = await emitter.emitFilter(
-				`fields.update`,
-				field,
-				{
-					keys: [field.field],
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			const hookAdjustedField =
+				opts?.emitEvents !== false
+					? await emitter.emitFilter(
+							`fields.update`,
+							field,
+							{
+								keys: [field.field],
+								collection: collection,
+							},
+							{
+								database: this.knex,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+					  )
+					: field;
 
 			const record = field.meta
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
@@ -519,18 +525,20 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await emitter.emitFilter(
-				'fields.delete',
-				[field],
-				{
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			if (opts?.emitEvents !== false) {
+				await emitter.emitFilter(
+					'fields.delete',
+					[field],
+					{
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				);
+			}
 
 			await this.knex.transaction(async (trx) => {
 				const relations = this.schema.relations.filter((relation) => {

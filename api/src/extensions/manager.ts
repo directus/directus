@@ -1,4 +1,3 @@
-import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type {
 	ApiExtension,
@@ -10,7 +9,7 @@ import type {
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -20,21 +19,22 @@ import type {
 	PromiseCallback,
 	ScheduleHandler,
 } from '@directus/types';
-import { isIn, isTypeIn, pluralize, toBoolean } from '@directus/utils';
-import { getNodeEnv } from '@directus/utils/node';
+import { isTypeIn, toBoolean } from '@directus/utils';
+import { getNodeEnv, pathToRelativeUrl, processId } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
-import { clone, debounce } from 'lodash-es';
+import { clone, debounce, isPlainObject } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
+import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
@@ -50,6 +50,8 @@ import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
 import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
+import { getInstallationManager } from './lib/installation/index.js';
+import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
@@ -78,10 +80,14 @@ export class ExtensionManager {
 	 */
 	private isLoaded = false;
 
-	/**
-	 * All extensions that are loaded within the current process
-	 */
-	private extensions: Extension[] = [];
+	// folder:Extension
+	private localExtensions: Map<string, Extension> = new Map();
+
+	// versionId:Extension
+	private registryExtensions: Map<string, Extension> = new Map();
+
+	// name:Extension
+	private moduleExtensions: Map<string, Extension> = new Map();
 
 	/**
 	 * Settings for the extensions that are loaded within the current process
@@ -140,6 +146,38 @@ export class ExtensionManager {
 	private watcher: FSWatcher | null = null;
 
 	/**
+	 * installation manager responsible for installing extensions from registries
+	 */
+
+	private installationManager: InstallationManager = getInstallationManager();
+
+	private messenger = useBus();
+
+	/**
+	 * channel to publish on registering extension from external registry
+	 */
+	private reloadChannel = `extensions.reload`;
+
+	private processId = processId();
+
+	public get extensions() {
+		return [...this.localExtensions.values(), ...this.registryExtensions.values(), ...this.moduleExtensions.values()];
+	}
+
+	public getExtension(source: string, folder: string) {
+		switch (source) {
+			case 'module':
+				return this.moduleExtensions.get(folder);
+			case 'registry':
+				return this.registryExtensions.get(folder);
+			case 'local':
+				return this.localExtensions.get(folder);
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Load and register all extensions
 	 *
 	 * @param {ExtensionManagerOptions} options - Extension manager configuration options
@@ -171,8 +209,29 @@ export class ExtensionManager {
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions(this.extensions);
+			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
 		}
+
+		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
+			// Ignore requests for reloading that were published by the current process
+			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
+			this.reload();
+		});
+	}
+
+	/**
+	 * Installs an external extension from registry
+	 */
+	public async install(versionId: string): Promise<void> {
+		await this.installationManager.install(versionId);
+		await this.reload();
+		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+	}
+
+	public async uninstall(folder: string) {
+		await this.installationManager.uninstall(folder);
+		await this.reload();
+		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
 	/**
@@ -181,25 +240,29 @@ export class ExtensionManager {
 	private async load(): Promise<void> {
 		const logger = useLogger();
 
-		try {
-			await syncExtensions();
-		} catch (error) {
-			logger.error(`Failed to sync extensions`);
-			logger.error(error);
-			process.exit(1);
+		if (env['EXTENSIONS_LOCATION']) {
+			try {
+				await syncExtensions();
+			} catch (error) {
+				logger.error(`Failed to sync extensions`);
+				logger.error(error);
+				process.exit(1);
+			}
 		}
 
 		try {
-			this.extensions = await getExtensions();
-			this.extensionsSettings = await getExtensionsSettings(this.extensions);
+			const { local, registry, module } = await getExtensions();
+
+			this.localExtensions = local;
+			this.registryExtensions = registry;
+			this.moduleExtensions = module;
+
+			this.extensionsSettings = await getExtensionsSettings({ local, registry, module });
 		} catch (error) {
 			this.handleExtensionError({ error, reason: `Couldn't load extensions` });
 		}
 
-		await this.registerHooks();
-		await this.registerEndpoints();
-		await this.registerOperations();
-		await this.registerBundles();
+		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
 			this.appExtensionsBundle = await this.generateExtensionBundle();
@@ -224,13 +287,21 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(): void {
+	public reload(): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
-			return;
+			return Promise.resolve();
 		}
 
 		const logger = useLogger();
+
+		let resolve: (val?: unknown) => void;
+		let reject: (val?: unknown) => void;
+
+		const promise = new Promise((res, rej) => {
+			resolve = res;
+			reject = rej;
+		});
 
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
@@ -261,10 +332,15 @@ export class ExtensionManager {
 				if (removedExtensions.length > 0) {
 					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 				}
+
+				resolve();
 			} else {
 				logger.warn('Extensions have to be loaded before they can be reloaded');
+				reject(new Error('Extensions have to be loaded before they can be reloaded'));
 			}
 		});
+
+		return promise;
 	}
 
 	/**
@@ -299,13 +375,6 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * Allow reading the installed extensions
-	 */
-	public getExtensions() {
-		return this.extensions;
-	}
-
-	/**
 	 * Start the chokidar watcher for extensions on the local filesystem
 	 */
 	private initializeWatcher(): void {
@@ -313,31 +382,17 @@ export class ExtensionManager {
 
 		logger.info('Watching extensions for changes...');
 
-		const extensionsDir = path.resolve(getExtensionsPath());
+		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
 
-		const rootPackageJson = path.resolve(env['PACKAGE_FILE_LOCATION'] as string, 'package.json');
-		const localExtensions = path.join(extensionsDir, '*', 'package.json');
-
-		const nestedExtensions = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.join(extensionsDir, pluralize(type));
-
-			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-				return [
-					path.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-					path.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
-				];
-			} else {
-				return path.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
-			}
-		});
-
-		this.watcher = chokidar.watch([rootPackageJson, localExtensions, ...nestedExtensions], {
-			ignoreInitial: true,
-			// dotdirs are watched by default and frequently found in 'node_modules'
-			ignored: `${extensionsDir}/**/node_modules/**`,
-			// on macOS dotdirs in linked extensions are watched too
-			followSymlinks: os.platform() === 'darwin' ? false : true,
-		});
+		this.watcher = chokidar.watch(
+			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
+			{
+				ignoreInitial: true, // dotdirs are watched by default and frequently found in 'node_modules'
+				ignored: `${extensionDirUrl}/**/node_modules/**`,
+				// on macOS dotdirs in linked extensions are watched too
+				followSymlinks: os.platform() === 'darwin' ? false : true,
+			},
+		);
 
 		this.watcher
 			.on(
@@ -371,15 +426,9 @@ export class ExtensionManager {
 	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
-			const extensionDir = path.resolve(getExtensionsPath());
-
-			const nestedExtensionDirs = NESTED_EXTENSION_TYPES.map((type) => {
-				return path.join(extensionDir, pluralize(type));
-			});
-
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
-					.filter((extension) => !nestedExtensionDirs.some((path) => extension.path.startsWith(path)))
+					.filter((extension) => !extension.local || extension.type === 'bundle')
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
@@ -411,7 +460,10 @@ export class ExtensionManager {
 			replacement: path,
 		}));
 
-		const entrypoint = generateExtensionsEntrypoint(this.extensions, this.extensionsSettings);
+		const entrypoint = generateExtensionsEntrypoint(
+			{ module: this.moduleExtensions, registry: this.registryExtensions, local: this.localExtensions },
+			this.extensionsSettings,
+		);
 
 		try {
 			const bundle = await rollup({
@@ -499,83 +551,191 @@ export class ExtensionManager {
 		});
 	}
 
-	/**
-	 * Import the hook module code for all hook extensions, and register them individually through
-	 * registerHook
-	 */
-	private async registerHooks(): Promise<void> {
-		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
+	private async registerApiExtensions(): Promise<void> {
+		const sources = {
+			module: this.moduleExtensions,
+			registry: this.registryExtensions,
+			local: this.localExtensions,
+		} as const;
 
-		for (const hook of hooks) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === hook.name) ?? { enabled: false };
+		await Promise.all(
+			Object.entries(sources).map(async ([source, extensions]) => {
+				await Promise.all(
+					Array.from(extensions.entries()).map(async ([folder, extension]) => {
+						const { id, enabled } = this.extensionsSettings.find(
+							(settings) => settings.source === source && settings.folder === folder,
+						) ?? { enabled: false };
 
-			if (!enabled) continue;
+						if (!enabled) return;
 
-			try {
-				if (hook.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(hook);
-				} else {
-					const hookPath = path.resolve(hook.path, hook.entrypoint);
+						switch (extension.type) {
+							case 'hook':
+								await this.registerHookExtension(extension);
+								break;
+							case 'endpoint':
+								await this.registerEndpointExtension(extension);
+								break;
+							case 'operation':
+								await this.registerOperationExtension(extension);
+								break;
+							case 'bundle':
+								await this.registerBundleExtension(extension, source as 'module' | 'registry' | 'local', id);
+								break;
+							default:
+								return;
+						}
+					}),
+				);
+			}),
+		);
+	}
 
-					const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
-						fresh: true,
-					});
+	private async registerHookExtension(hook: ApiExtension) {
+		try {
+			if (hook.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(hook);
+			} else {
+				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-					const config = getModuleDefault(hookInstance);
+				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+					fresh: true,
+				});
 
-					const unregisterFunctions = this.registerHook(config, hook.name);
+				const config = getModuleDefault(hookInstance);
 
-					this.unregisterFunctionMap.set(hook.name, async () => {
-						await Promise.all(unregisterFunctions.map((fn) => fn()));
+				const unregisterFunctions = this.registerHook(config, hook.name);
 
-						deleteFromRequireCache(hookPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register hook "${hook.name}"` });
+				this.unregisterFunctionMap.set(hook.name, async () => {
+					await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+					deleteFromRequireCache(hookPath);
+				});
 			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register hook "${hook.name}"` });
 		}
 	}
 
-	/**
-	 * Import the endpoint module code for all endpoint extensions, and register them individually through
-	 * registerEndpoint
-	 */
-	private async registerEndpoints(): Promise<void> {
-		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
+	private async registerEndpointExtension(endpoint: ApiExtension) {
+		try {
+			if (endpoint.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(endpoint);
+			} else {
+				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-		for (const endpoint of endpoints) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === endpoint.name) ?? { enabled: false };
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+					endpointPath,
+					import.meta.url,
+					{
+						fresh: true,
+					},
+				);
 
-			if (!enabled) continue;
+				const config = getModuleDefault(endpointInstance);
 
-			try {
-				if (endpoint.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(endpoint);
-				} else {
-					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				const unregister = this.registerEndpoint(config, endpoint.name);
 
-					const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
-						endpointPath,
-						import.meta.url,
-						{
-							fresh: true,
-						},
-					);
+				this.unregisterFunctionMap.set(endpoint.name, async () => {
+					await unregister();
 
-					const config = getModuleDefault(endpointInstance);
-
-					const unregister = this.registerEndpoint(config, endpoint.name);
-
-					this.unregisterFunctionMap.set(endpoint.name, async () => {
-						await unregister();
-
-						deleteFromRequireCache(endpointPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register endpoint "${endpoint.name}"` });
+					deleteFromRequireCache(endpointPath);
+				});
 			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register endpoint "${endpoint.name}"` });
+		}
+	}
+
+	private async registerOperationExtension(operation: HybridExtension) {
+		try {
+			if (operation.sandbox?.enabled) {
+				await this.registerSandboxedApiExtension(operation);
+			} else {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+					operationPath,
+					import.meta.url,
+					{
+						fresh: true,
+					},
+				);
+
+				const config = getModuleDefault(operationInstance);
+
+				const unregister = this.registerOperation(config);
+
+				this.unregisterFunctionMap.set(operation.name, async () => {
+					await unregister();
+
+					deleteFromRequireCache(operationPath);
+				});
+			}
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register operation "${operation.name}"` });
+		}
+	}
+
+	private async registerBundleExtension(
+		bundle: BundleExtension,
+		source: 'local' | 'registry' | 'module',
+		bundleId: string,
+	) {
+		const extensionEnabled = (extensionName: string) => {
+			const settings = this.extensionsSettings.find(
+				(settings) => settings.source === source && settings.folder === extensionName && settings.bundle === bundleId,
+			);
+
+			if (!settings) return false;
+			return settings.enabled;
+		};
+
+		try {
+			const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+
+			const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+				bundlePath,
+				import.meta.url,
+				{
+					fresh: true,
+				},
+			);
+
+			const configs = getModuleDefault(bundleInstances);
+
+			const unregisterFunctions: PromiseCallback[] = [];
+
+			for (const { config, name } of configs.hooks) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregisters = this.registerHook(config, name);
+
+				unregisterFunctions.push(...unregisters);
+			}
+
+			for (const { config, name } of configs.endpoints) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregister = this.registerEndpoint(config, name);
+
+				unregisterFunctions.push(unregister);
+			}
+
+			for (const { config, name } of configs.operations) {
+				if (!extensionEnabled(name)) continue;
+
+				const unregister = this.registerOperation(config);
+
+				unregisterFunctions.push(unregister);
+			}
+
+			this.unregisterFunctionMap.set(bundle.name, async () => {
+				await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+				deleteFromRequireCache(bundlePath);
+			});
+		} catch (error) {
+			this.handleExtensionError({ error, reason: `Couldn't register bundle "${bundle.name}"` });
 		}
 	}
 
@@ -583,7 +743,7 @@ export class ExtensionManager {
 	 * Import the operation module code for all operation extensions, and register them individually through
 	 * registerOperation
 	 */
-	private async registerOperations(): Promise<void> {
+	private async registerInternalOperations(): Promise<void> {
 		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
 
 		for (const operation of internalOperations) {
@@ -594,108 +754,6 @@ export class ExtensionManager {
 			const config = getModuleDefault(operationInstance);
 
 			this.registerOperation(config);
-		}
-
-		const operations = this.extensions.filter(
-			(extension): extension is HybridExtension => extension.type === 'operation',
-		);
-
-		for (const operation of operations) {
-			const { enabled } = this.extensionsSettings.find(({ name }) => name === operation.name) ?? { enabled: false };
-
-			if (!enabled) continue;
-
-			try {
-				if (operation.sandbox?.enabled) {
-					await this.registerSandboxedApiExtension(operation);
-				} else {
-					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
-
-					const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
-						operationPath,
-						import.meta.url,
-						{
-							fresh: true,
-						},
-					);
-
-					const config = getModuleDefault(operationInstance);
-
-					const unregister = this.registerOperation(config);
-
-					this.unregisterFunctionMap.set(operation.name, async () => {
-						await unregister();
-
-						deleteFromRequireCache(operationPath);
-					});
-				}
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register operation "${operation.name}"` });
-			}
-		}
-	}
-
-	/**
-	 * Import the module code for all hook, endpoint, and operation extensions registered within a
-	 * bundle, and register them with their respective registration function
-	 */
-	private async registerBundles(): Promise<void> {
-		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
-
-		const extensionEnabled = (extensionName: string) => {
-			const settings = this.extensionsSettings.find(({ name }) => name === extensionName);
-			if (!settings) return false;
-			return settings.enabled;
-		};
-
-		for (const bundle of bundles) {
-			try {
-				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
-					bundlePath,
-					import.meta.url,
-					{
-						fresh: true,
-					},
-				);
-
-				const configs = getModuleDefault(bundleInstances);
-
-				const unregisterFunctions: PromiseCallback[] = [];
-
-				for (const { config, name } of configs.hooks) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregisters = this.registerHook(config, name);
-
-					unregisterFunctions.push(...unregisters);
-				}
-
-				for (const { config, name } of configs.endpoints) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregister = this.registerEndpoint(config, name);
-
-					unregisterFunctions.push(unregister);
-				}
-
-				for (const { config, name } of configs.operations) {
-					if (!extensionEnabled(`${bundle.name}/${name}`)) continue;
-
-					const unregister = this.registerOperation(config);
-
-					unregisterFunctions.push(unregister);
-				}
-
-				this.unregisterFunctionMap.set(bundle.name, async () => {
-					await Promise.all(unregisterFunctions.map((fn) => fn()));
-
-					deleteFromRequireCache(bundlePath);
-				});
-			} catch (error) {
-				this.handleExtensionError({ error, reason: `Couldn't register bundle "${bundle.name}"` });
-			}
 		}
 	}
 
