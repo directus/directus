@@ -14,14 +14,20 @@ export async function up(knex: Knex): Promise<void> {
 	const idMap = new Map<string, string>();
 
 	for (const { name } of installedExtensions) {
-		const id = randomUUID();
-		/*
-		 * Set all extensions to 'local' type, as there's no way to differentiate between
-		 * 'local' and 'module' extensions  at this point.
-		 * This will be cleaned-up after first start when settings are requested (get-extensions-settings.ts).
-		 */
-		await knex('directus_extensions').update({ id, source: 'local' }).where({ name });
-		idMap.set(name, id);
+		// Delete extension meta status that used the legacy `${name}:${type}` name syntax for
+		// extension-folder scoped extensions
+		if (name.includes(':')) {
+			await knex('directus_extensions').delete().where({ name });
+		} else {
+			const id = randomUUID();
+			/*
+			 * Set all extensions to 'local' type, as there's no way to differentiate between
+			 * 'local' and 'module' extensions  at this point.
+			 * This will be cleaned-up after first start when settings are requested (get-extensions-settings.ts).
+			 */
+			await knex('directus_extensions').update({ id, source: 'local' }).where({ name });
+			idMap.set(name, id);
+		}
 	}
 
 	for (const { name } of installedExtensions) {
