@@ -9,7 +9,7 @@ defineProps<{ license: string | null }>();
 
 <template>
 	<MetadataItem icon="policy" :class="{ known: !!license }">
-		{{ license ?? t('unknown') }}
+		{{ license ?? t('unknown_license') }}
 	</MetadataItem>
 </template>
 

@@ -104,6 +104,7 @@ compatibility_not_guaranteed: Compatibility not guaranteed
 compatibility_not_guaranteed_copy:
   The author has indicated the compatibility of this extension to be {hostVersion}, which doesn't match your project's
   version ({currentVersion})
+unknown_license: Unknown license
 enable: Enable
 disable: Disable
 custom: Custom
@@ -1188,9 +1189,8 @@ uninstall_locked: Cannot uninstall extensions that weren't installed through the
 uninstall: Uninstall
 installed: Installed
 open_in_marketplace: Open in Marketplace
-source_registry: Marketplace
-source_local: Local
-source_module: Node Module
+local_extension: Local Extension
+module_extension: Node Module Extension
 collection: Collection
 collections: Collections
 content: Content
