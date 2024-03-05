@@ -20,7 +20,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
 removed in favor of relying on the `package.json` file for metadata including extension type.
 
-The extension type directories must be removed or no extensions will not be loaded, even those in the root extensions
+The extension type directories must be removed or no extensions will be loaded, even those in the root extensions
 directory.
 
 If your extension is already in the root `extensions` directory and has a `package.json` file with a
