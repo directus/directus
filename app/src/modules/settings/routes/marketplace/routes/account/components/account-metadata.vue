@@ -32,8 +32,10 @@ const npmLink = computed(() => {
 		</div>
 		<v-list class="list">
 			<div class="grid">
-				<MetadataItem v-if="account.username" icon="npm" :href="npmLink" monospace>{{ account.username }}</MetadataItem>
-				<MetadataItem v-if="account.github_username" icon="github" :href="githubLink" monospace>
+				<MetadataItem v-if="account.username" icon="npm" :href="npmLink" title="NPM" monospace>
+					{{ account.username }}
+				</MetadataItem>
+				<MetadataItem v-if="account.github_username" icon="github" title="GitHub" :href="githubLink" monospace>
 					{{ account.github_username }}
 				</MetadataItem>
 				<MetadataItem v-if="account.github_blog" icon="link" :href="account.github_blog">

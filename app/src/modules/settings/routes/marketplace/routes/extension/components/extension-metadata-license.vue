@@ -2,13 +2,13 @@
 import MetadataItem from '../../../components/metadata-item.vue';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
-
 defineProps<{ license: string | null }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
-	<MetadataItem icon="policy" :class="{ known: !!license }">
+	<MetadataItem icon="policy" :title="t('license')" :class="{ known: !!license }">
 		{{ license ?? t('unknown') }}
 	</MetadataItem>
 </template>

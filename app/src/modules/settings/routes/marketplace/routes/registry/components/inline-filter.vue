@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { watchDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const type = defineModel<string | null>('type');
@@ -15,6 +15,10 @@ const props = defineProps<{
 }>();
 
 const searchInputValue = ref(search.value);
+
+watch(search, (value) => {
+	if (searchInputValue.value !== value) searchInputValue.value = value;
+});
 
 watchDebounced(
 	searchInputValue,
