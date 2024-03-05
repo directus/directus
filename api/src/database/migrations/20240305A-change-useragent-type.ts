@@ -11,12 +11,12 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const helper = await getHelpers(knex).schema
+	const helper = await getHelpers(knex).schema;
 
 	const opts = {
 		nullable: false,
 		length: 255,
-	}
+	};
 
 	await Promise.all([
 		helper.changeToType('directus_activity', 'user_agent', 'string', opts),
