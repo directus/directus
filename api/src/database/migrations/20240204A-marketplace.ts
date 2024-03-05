@@ -1,5 +1,10 @@
+import { resolvePackage } from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
@@ -20,12 +25,19 @@ export async function up(knex: Knex): Promise<void> {
 			await knex('directus_extensions').delete().where({ name });
 		} else {
 			const id = randomUUID();
-			/*
-			 * Set all extensions to 'local' type, as there's no way to differentiate between
-			 * 'local' and 'module' extensions  at this point.
-			 * This will be cleaned-up after first start when settings are requested (get-extensions-settings.ts).
-			 */
-			await knex('directus_extensions').update({ id, source: 'local' }).where({ name });
+
+			let source;
+
+			try {
+				// The NPM package name is the name used in the database. If we can resolve the
+				// extension as a node module it's safe to assume it's a npm-module source
+				resolvePackage(name, __dirname);
+				source = 'module';
+			} catch {
+				source = 'local';
+			}
+
+			await knex('directus_extensions').update({ id, source }).where({ name });
 			idMap.set(name, id);
 		}
 	}
