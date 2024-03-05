@@ -71,26 +71,8 @@ export const getExtensionsSettings = async ({
 	}
 
 	for (const [folder, extension] of module.entries()) {
-		const moduleSettingsExist = moduleSettings.some((settings) => settings.folder === folder);
-		const localExtensionSettings = localSettings.find((settings) => settings.folder === folder);
-
-		/*
-		 * TODO: Consider removing this in follow-up versions after v10.0.0
-		 *
-		 * In the marketplace migration (20240204A-marketplace.ts, v10.0.0) there was no way to differentiate
-		 * between 'local' and 'module' extensions which is why all previous extensions were set to 'local' type.
-		 * For the first start after migrating to v10.0.0, existing local settings which do not belong to a local extension,
-		 * but have a matching module extension are moved over to module settings.
-		 * If there's a local extension with that name, a new setting entry will be created for the module instead.
-		 */
-		if (!moduleSettingsExist && localExtensionSettings) {
-			if (!local.has(folder)) {
-				await service.extensionsItemService.updateOne(localExtensionSettings.id, { source: 'module' });
-				continue;
-			}
-		}
-
-		if (!moduleSettingsExist) generateSettingsEntry(folder, extension, 'module');
+		const settingsExist = moduleSettings.some((settings) => settings.folder === folder);
+		if (!settingsExist) generateSettingsEntry(folder, extension, 'module');
 	}
 
 	for (const [folder, extension] of registry.entries()) {
