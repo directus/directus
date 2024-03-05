@@ -88,8 +88,6 @@ function sanitizeLink(node: HTMLAnchorElement, options: Options) {
 }
 
 function sanitizeImage(node: HTMLImageElement, options: Options) {
-	node.setAttribute('loading', 'lazy');
-
 	if (node.getAttribute('alt')?.trim() === '') node.removeAttribute('alt');
 
 	const url = node.getAttribute('src');
@@ -102,6 +100,8 @@ function sanitizeImage(node: HTMLImageElement, options: Options) {
 		node.removeAttribute('src');
 		return;
 	}
+
+	node.setAttribute('loading', 'lazy');
 
 	let isAbsolute = true;
 
