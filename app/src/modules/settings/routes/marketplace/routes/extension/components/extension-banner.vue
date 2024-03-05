@@ -7,11 +7,11 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatName } from '../../../utils/format-name';
 
-const { t } = useI18n();
-
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
 }>();
+
+const { t } = useI18n();
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
 const newestVersion = computed(() => props.extension.versions.at(0)!);

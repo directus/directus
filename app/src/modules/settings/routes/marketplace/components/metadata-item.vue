@@ -2,6 +2,7 @@
 withDefaults(
 	defineProps<{
 		icon: string;
+		title?: string;
 		color?: 'primary' | 'subdued' | 'foreground' | 'warning';
 		href?: string;
 		to?: string;
@@ -15,9 +16,15 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item :class="[color, { 'has-tooltip': hasTooltip }]" :clickable="!!href || !!to" :href="href" :to="to">
+	<v-list-item
+		:title="!hasTooltip ? title : undefined"
+		:class="[color, { 'has-tooltip': hasTooltip }]"
+		:clickable="!!href || !!to"
+		:href="href"
+		:to="to"
+	>
 		<v-list-item-icon>
-			<slot name="icon"><v-icon :name="icon" small /></slot>
+			<slot name="icon"><v-icon :name="icon" small :title="hasTooltip ? title : undefined" /></slot>
 		</v-list-item-icon>
 		<v-list-item-content :class="{ monospace }"><slot /></v-list-item-content>
 	</v-list-item>

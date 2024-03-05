@@ -71,7 +71,7 @@ const maintainers = computed(() => {
 				<ExtensionMetadataDate :publish-date="latestVersion.publish_date" />
 				<ExtensionMetadataLicense :license="extension.license" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
-				<MetadataItem icon="npm" :href="`https://www.npmjs.com/package/${extension.name}`">
+				<MetadataItem icon="npm" title="NPM" :href="`https://www.npmjs.com/package/${extension.name}`">
 					<v-text-overflow :text="extension.name" />
 				</MetadataItem>
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
