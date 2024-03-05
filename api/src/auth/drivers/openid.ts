@@ -205,7 +205,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			let emitPayload = {
+			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
 			};
 
