@@ -71,7 +71,7 @@ const navigateBack = () => {
 					<div class="grid">
 						<ExtensionBanner class="banner" :extension="extension" />
 						<ExtensionMetadata class="metadata" :extension="extension" />
-						<ExtensionReadme class="readme" :extension="extension" />
+						<ExtensionReadme class="readme" :readme="extension.readme" />
 					</div>
 				</div>
 			</template>

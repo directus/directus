@@ -4,8 +4,6 @@ import { useExtensionsStore } from '@/stores/extensions';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { abbreviateNumber } from '@directus/utils';
-import { fromMarkdown } from 'mdast-util-from-markdown';
-import { toString } from 'mdast-util-to-string';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatName } from '../utils/format-name';
@@ -21,15 +19,6 @@ const props = defineProps<{
 
 const icon = computed(() => extensionTypeIconMap[props.extension.type]);
 const chip = computed(() => t(`extension_${props.extension.type}`));
-
-/* TODO: Handle this in registry */
-const description = computed(() => {
-	if (!props.extension.description || props.extension.description === 'Please enter a description for your extension')
-		return null;
-
-	const mdast = fromMarkdown(props.extension.description);
-	return toString(mdast);
-});
 </script>
 
 <template>
@@ -38,8 +27,8 @@ const description = computed(() => {
 		<v-list-item-content>
 			<div class="name">
 				{{ formatName(extension) }}
-				<v-chip v-if="showType" outlined x-small class="chip type">{{ chip }}</v-chip>
-				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip installed">
+				<v-chip v-if="showType" outlined x-small class="chip">{{ chip }}</v-chip>
+				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
 					{{ t('installed') }}
 				</v-chip>
 			</div>
@@ -47,7 +36,7 @@ const description = computed(() => {
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
-			<div v-if="description" class="description">{{ description }}</div>
+			<div v-if="extension.description" class="description">{{ extension.description }}</div>
 			<div v-else class="description">{{ t('no_description') }}</div>
 		</v-list-item-content>
 		<div class="meta">
@@ -69,7 +58,7 @@ const description = computed(() => {
 	</v-list-item>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .extension-list-item {
 	--v-list-item-padding: 20px;
 }
@@ -114,16 +103,8 @@ const description = computed(() => {
 .chip {
 	margin-inline-start: 4px;
 	vertical-align: 2px;
-
-	&.type {
-		--v-chip-color: var(--theme--primary);
-		--v-chip-background-color: var(--theme--primary-subdued);
-	}
-
-	&.installed {
-		--v-chip-color: var(--theme--success);
-		--v-chip-background-color: var(--theme--success-subdued);
-	}
+	--v-chip-color: var(--theme--primary);
+	--v-chip-background-color: var(--theme--primary-subdued);
 }
 
 .license.known {

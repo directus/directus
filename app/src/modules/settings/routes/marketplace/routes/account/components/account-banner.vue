@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import VBanner from '@/components/v-banner.vue';
 import type { RegistryAccountResponse } from '@directus/extensions-registry';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	account: RegistryAccountResponse['data'];
 }>();
-
-const avatarImgError = ref(false);
 
 const hasMeta = computed(() => {
 	const account = props.account;
@@ -17,13 +15,9 @@ const hasMeta = computed(() => {
 
 <template>
 	<VBanner icon="person">
-		<template v-if="account.github_avatar_url && !avatarImgError" #avatar>
+		<template v-if="account.github_avatar_url" #avatar>
 			<div class="avatar">
-				<img
-					:src="account.github_avatar_url"
-					:alt="account.github_name ?? account.username"
-					@error="avatarImgError = true"
-				/>
+				<img :src="account.github_avatar_url" :alt="account.github_name ?? account.username" />
 			</div>
 		</template>
 

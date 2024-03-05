@@ -8,5 +8,5 @@ const { t, n } = useI18n();
 </script>
 
 <template>
-	<MetadataItem icon="save_alt" :title="t('Downloads')">{{ t('n_downloads', { n: n(downloads) }) }}</MetadataItem>
+	<MetadataItem icon="save_alt">{{ t('n_downloads', { n: n(downloads) }) }}</MetadataItem>
 </template>
