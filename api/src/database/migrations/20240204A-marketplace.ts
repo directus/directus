@@ -45,7 +45,17 @@ export async function up(knex: Knex): Promise<void> {
 	for (const { name } of installedExtensions) {
 		if (!name.includes('/')) continue;
 
-		const bundleParentName = name.split('/')[0];
+		const splittedName = name.split('/');
+
+		const isScopedModuleBundleParent = name.startsWith('@') && splittedName.length == 2;
+
+		if (isScopedModuleBundleParent) continue;
+
+		const isScopedModuleBundleChild = name.startsWith('@') && splittedName.length > 2;
+
+		const bundleParentName =
+			isScopedModuleBundleParent || isScopedModuleBundleChild ? splittedName.slice(0, 2).join('/') : splittedName[0];
+
 		const bundleParentId = idMap.get(bundleParentName);
 
 		if (!bundleParentId) continue;
