@@ -15,8 +15,11 @@ const { t } = useI18n();
 
 const perPage = 10;
 
+const page = useRouteQuery('page', 1, {
+	transform: (value) => Number(Array.isArray(value) ? value[0] : value) || 1,
+});
+
 const search = useRouteQuery('search');
-const page = useRouteQuery('page', 1);
 const type = useRouteQuery('type');
 const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
 
