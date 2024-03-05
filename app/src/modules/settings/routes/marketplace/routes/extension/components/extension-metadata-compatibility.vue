@@ -33,7 +33,6 @@ const label = computed(() =>
 						hostVersion: hostVersion,
 				  })
 		"
-		:title="t('compatibility')"
 		:icon="icon"
 		:color="isCompatible ? 'subdued' : 'warning'"
 		has-tooltip

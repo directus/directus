@@ -15,24 +15,10 @@ const { t } = useI18n();
 
 const perPage = 10;
 
-const search = useRouteQuery<string | null>('search', null, {
-	transform: (value) => (Array.isArray(value) ? value[0] : value),
-});
-
-const page = useRouteQuery<number>('page', 1, {
-	transform: (value) => Number(Array.isArray(value) ? value[0] : value) || 1,
-	mode: 'push',
-});
-
-const type = useRouteQuery<string | null>('type', null, {
-	transform: (value) => (Array.isArray(value) ? value[0] : value),
-	mode: 'push',
-});
-
-const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular', {
-	transform: (value) => (Array.isArray(value) ? value[0] : value),
-	mode: 'push',
-});
+const search = useRouteQuery('search');
+const page = useRouteQuery('page', 1);
+const type = useRouteQuery('type');
+const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
 
 watch([search, sort, type], (newVal, oldVal) => {
 	if (isEqual(newVal, oldVal) === false) {

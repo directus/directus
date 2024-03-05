@@ -1,18 +1,35 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps<{
-	/** Currently selected page */
-	modelValue: number;
-	/** The amount of pages to render */
-	length: number;
+const props = defineProps({
 	/** Disables the pagination */
-	disabled?: boolean;
+	disabled: {
+		type: Boolean,
+		default: false,
+	},
+	/** The amount of pages to render */
+	length: {
+		type: Number,
+		required: true,
+		validator: Number.isInteger,
+	},
 	/** Specify the max total visible pagination numbers */
-	totalVisible?: number;
+	totalVisible: {
+		type: Number,
+		default: undefined,
+		validator: (val: number) => val >= 0,
+	},
+	/** Currently selected page */
+	modelValue: {
+		type: Number,
+		default: null,
+	},
 	/** Show first/last buttons */
-	showFirstLast?: boolean;
-}>();
+	showFirstLast: {
+		type: Boolean,
+		default: false,
+	},
+});
 
 const emit = defineEmits(['update:modelValue']);
 

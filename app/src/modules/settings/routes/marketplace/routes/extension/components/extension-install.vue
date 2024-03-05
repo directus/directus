@@ -5,9 +5,9 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{ extensionId: string; versionId: string }>();
-
 const { t } = useI18n();
+
+const props = defineProps<{ extensionId: string; versionId: string }>();
 
 const extensionsStore = useExtensionsStore();
 const serverStore = useServerStore();
