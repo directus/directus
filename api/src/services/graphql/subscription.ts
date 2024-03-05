@@ -1,4 +1,3 @@
-import { EventEmitter, on } from 'events';
 import { useBus } from '../../bus/index.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -8,22 +7,82 @@ import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
-const messages = createPubSub(new EventEmitter());
+class DeferredSubscription<T = Record<string, any>> {
+	public active: boolean = true;
+	public promise: Promise<T>;
+
+	private resolver: ((value: T) => void) | null = null;
+
+	constructor() {
+		this.promise = new Promise((res) => (this.resolver = res));
+		this.promise.then(() => (this.active = false));
+	}
+
+	reset() {
+		this.active = true;
+		this.resolver = null;
+		this.promise = new Promise((res) => (this.resolver = res));
+		this.promise.then(() => (this.active = false));
+	}
+
+	resolve(value: T) {
+		if (this.resolver) this.resolver(value);
+	}
+}
+
+class SubscriptionGenerator {
+	deferred: Set<DeferredSubscription> = new Set([]);
+
+	[Symbol.asyncIterator]() {
+		const deferred = new DeferredSubscription();
+		this.deferred.add(deferred);
+		return {
+			next: async () => {
+				const value = await deferred.promise;
+				deferred.reset();
+
+				return { value, done: false };
+			},
+		};
+	}
+
+	async *subscribe(collection: string) {
+		for await (const msg of this) {
+			if (msg['collection'] === collection) {
+				yield msg;
+			}
+		}
+	}
+
+	publish(message: Record<string, any>) {
+		this.deferred.forEach((deferred) => {
+			if (deferred.active) {
+				deferred.resolve(message);
+			} else {
+				this.deferred.delete(deferred);
+			}
+		});
+	}
+}
+
+const messageGenerator = new SubscriptionGenerator();
 
 export function bindPubSub() {
 	const messenger = useBus();
 
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-		messages.publish(`${message['collection']}_mutated`, message);
+		messageGenerator.publish(message);
 	});
 }
 
-export function createSubscriptionGenerator(self: GraphQLService, event: string) {
+export function createSubscriptionGenerator(self: GraphQLService, collection: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
+		const event = collection + '_mutated';
 		const fields = parseFields(self, request);
 		const args = parseArguments(request);
+		const messages = messageGenerator.subscribe(collection);
 
-		for await (const payload of messages.subscribe(event)) {
+		for await (const payload of messages) {
 			const eventData = payload as WebSocketEvent;
 
 			if ('event' in args && eventData['action'] !== args['event']) {
@@ -82,20 +141,6 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				}
 			}
 		}
-	};
-}
-
-function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitter) {
-	return {
-		publish: <T extends Extract<keyof P, string>>(event: T, payload: P[T]) =>
-			void emitter.emit(event as string, payload),
-		subscribe: async function* <T extends Extract<keyof P, string>>(event: T): AsyncIterableIterator<P[T]> {
-			const asyncIterator = on(emitter, event);
-
-			for await (const [value] of asyncIterator) {
-				yield value;
-			}
-		},
 	};
 }
 
