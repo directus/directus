@@ -35,15 +35,14 @@ const maintainers = computed(() => {
 <template>
 	<div class="metadata">
 		<v-list class="list">
-			<div class="grid">
-				<ExtensionInstall class="install" :extension-id="extension.id" :version-id="latestVersion.id" />
+			<div class="grid buttons">
+				<ExtensionInstall :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
 					:id="latestVersion.publisher.id"
 					:verified="latestVersion.publisher.verified"
 					:username="latestVersion.publisher.username"
 					:github-name="latestVersion.publisher.github_name"
 					:github-avatar-url="latestVersion.publisher.github_avatar_url"
-					class="author"
 				/>
 
 				<ExtensionMetadataAuthor
@@ -54,7 +53,6 @@ const maintainers = computed(() => {
 					:username="maintainer.username"
 					:github-name="maintainer.github_name"
 					:github-avatar-url="maintainer.github_avatar_url"
-					class="author"
 				/>
 			</div>
 		</v-list>
@@ -92,10 +90,6 @@ const maintainers = computed(() => {
 }
 
 .grid {
-	.install {
-		margin-bottom: 8px !important;
-	}
-
 	@container metadata (width > 580px) {
 		--v-list-item-margin: 0;
 
@@ -107,19 +101,22 @@ const maintainers = computed(() => {
 			grid-column: 1 / span 2;
 			margin-block-start: 16px;
 		}
+	}
 
-		.install {
-			margin-bottom: 0 !important;
+	&.buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		@container metadata (width > 580px) {
+			display: grid;
+			gap: 8px 16px;
 		}
 	}
 }
 
 .divider {
 	margin: 16px 0;
-}
-
-.author {
-	margin-block-start: 8px;
 }
 
 .sparkline {
