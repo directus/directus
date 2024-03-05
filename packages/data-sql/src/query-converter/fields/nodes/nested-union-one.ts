@@ -71,7 +71,7 @@ export const getNestedUnionOne = (
 		parameters.push('foreignCollection', foreignTableName);
 		conditions.push(collectionCondition);
 
-		for (const idField of collection.relational.fields) {
+		for (const [idx, idField] of collection.relational.fields.entries()) {
 			const collectionCondition: AbstractSqlQueryConditionNode = {
 				type: 'condition',
 				negate: false,
@@ -82,7 +82,7 @@ export const getNestedUnionOne = (
 						type: 'json',
 						columnName: unionRelational.field,
 						tableIndex,
-						path: [indexGen.parameter.next().value],
+						path: [indexGen.parameter.next().value, indexGen.parameter.next().value],
 						dataType: idField.type,
 					},
 					compareTo: {
@@ -93,7 +93,7 @@ export const getNestedUnionOne = (
 				},
 			};
 
-			parameters.push('foreignKey');
+			parameters.push('foreignKey', idx);
 			conditions.push(collectionCondition);
 		}
 
