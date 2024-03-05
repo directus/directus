@@ -72,7 +72,7 @@ export const getExtensionsSettings = async ({
 		const settingsForName = localSettings.find((settings) => settings.folder === extension.name);
 
 		/*
-		 * TODO: Consider removing this in follow-up versions after v10.0.0
+		 * TODO: Consider removing this in follow-up versions after v10.10.0
 		 *
 		 * Previously, the package name (from package.json) was used to identify
 		 * local extensions - now it's the folder name.
