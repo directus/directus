@@ -67,6 +67,24 @@ export const getExtensionsSettings = async ({
 
 	for (const [folder, extension] of local.entries()) {
 		const settingsExist = localSettings.some((settings) => settings.folder === folder);
+		if (settingsExist) continue;
+
+		const settingsForName = localSettings.find((settings) => settings.folder === extension.name);
+
+		/*
+		 * TODO: Consider removing this in follow-up versions after v10.10.0
+		 *
+		 * Previously, the package name (from package.json) was used to identify
+		 * local extensions - now it's the folder name.
+		 * If those two are different, we need to check for existing settings
+		 * with the package name, too. On a match and if there's no other local extension
+		 * with such a folder name, these settings can be taken over with the folder updated.
+		 */
+		if (settingsForName && !local.has(extension.name)) {
+			await service.extensionsItemService.updateOne(settingsForName.id, { folder });
+			continue;
+		}
+
 		if (!settingsExist) generateSettingsEntry(folder, extension, 'local');
 	}
 
