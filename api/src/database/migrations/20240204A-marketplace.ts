@@ -15,21 +15,25 @@ export async function up(knex: Knex): Promise<void> {
 
 	for (const { name } of installedExtensions) {
 		const id = randomUUID();
+		/*
+		 * Set all extensions to 'local' type, as there's no way to differentiate between
+		 * 'local' and 'module' extensions  at this point.
+		 * This will be cleaned-up after first start when settings are requested (get-extensions-settings.ts).
+		 */
 		await knex('directus_extensions').update({ id, source: 'local' }).where({ name });
 		idMap.set(name, id);
 	}
 
-	// This will also include flat extensions with an NPM org scope, but there's no way to identify
-	// those
-	const bundleNames = Array.from(idMap.keys()).filter((name) => name.includes('/'));
-
 	for (const { name } of installedExtensions) {
-		const bundleParent = bundleNames.find((bundleName) => name.startsWith(bundleName + '/'));
+		if (!name.includes('/')) continue;
 
-		if (!bundleParent) continue;
+		const bundleParentName = name.split('/')[0];
+		const bundleParentId = idMap.get(bundleParentName);
+
+		if (!bundleParentId) continue;
 
 		await knex('directus_extensions')
-			.update({ bundle: idMap.get(bundleParent), name: name.substring(bundleParent.length + 1) })
+			.update({ bundle: bundleParentId, name: name.substring(bundleParentName.length + 1) })
 			.where({ name });
 	}
 
