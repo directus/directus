@@ -970,7 +970,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.4
-        version: 5.1.4(@types/node@18.19.21)
+        version: 5.1.4(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.3
         version: 3.7.3(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4)
@@ -1356,8 +1356,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ky:
-        specifier: 1.2.0
-        version: 1.2.0
+        specifier: 1.2.2
+        version: 1.2.2
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1945,7 +1945,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.1.4
-        version: 5.1.4(@types/node@18.19.21)
+        version: 5.1.4(sass@1.71.1)
       vite-plugin-dts:
         specifier: 3.7.3
         version: 3.7.3(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4)
@@ -13563,8 +13563,8 @@ packages:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
     dev: true
 
-  /ky@1.2.0:
-    resolution: {integrity: sha512-dnPW+T78MuJ9tLAiF/apJV7bP7RRRCARXQxsCmsWiKLXqGtMBOgDVOFRYzCAfNe/OrRyFyor5ESgvvC+QWEqOA==}
+  /ky@1.2.2:
+    resolution: {integrity: sha512-gYA2QOI3uIaImJPJjaBbLCdvKHzwxsuB03s7PjrXmoO6tcn6k53rwYoSRgqrmVsEV6wFFegOXDVjABxFZ0aRSg==}
     engines: {node: '>=18'}
     dev: false
 
