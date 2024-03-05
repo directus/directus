@@ -15,13 +15,17 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.10.0
 
-### Removed Local Extension Folders
+### Deprecated Typed Extension Folders
 
-Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
+Legacy extension type directory-based structure (`/interfaces/my-interface/`, `/endpoints/my-endpoint`, etc) are being
 removed in favor of relying on the `package.json` file for metadata including extension type.
 
-If your extension is already in the root `extensions` directory and has a `package.json` file with a
-`directus:extension` object, there is no action required.
+If your extensions are already relying on the up-to-date extensions folder paradigm (extensions in the root of your
+extensions folder prefixed with `directus-extension-`) no action is required at this point. If you're currently relying
+on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
+`hooks`, etc, you will have to update your extensions before upgrading to this version.
+
+Directus will ignore extensions altogether if the extensions folder contains the legacy typed folders starting in 10.10.
 
 ::: details Migration/Mitigation
 
@@ -30,7 +34,7 @@ Move all extension directories from their extension type subdirectory one level 
 - `./extensions/modules/module-a/` becomes `./extensions/module-a/`.
 - `./extensions/panels/panel-b/` becomes `./extensions/panel-b/`.
 
-If your project does not already have one, add a `directus:extension` object to your `package.json` file:
+If your extension does not already have one, add a `directus:extension` object to your `package.json` file:
 
 ```json
 {
