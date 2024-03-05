@@ -1,6 +1,6 @@
 import type { ExtensionType } from '@directus/extensions';
 
-export const extensionTypeIconMap: Record<ExtensionType, string> = {
+export const extensionTypeIconMap: Record<ExtensionType | 'missing', string> = {
 	interface: 'design_services',
 	display: 'label',
 	layout: 'dataset',
@@ -11,4 +11,5 @@ export const extensionTypeIconMap: Record<ExtensionType, string> = {
 	endpoint: 'api',
 	operation: 'flowsheet',
 	bundle: 'hub',
+	missing: 'warning',
 };

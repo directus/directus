@@ -6,12 +6,12 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	type: ExtensionType;
+	type: ExtensionType | 'missing';
 }>();
 
 const { t } = useI18n();
 
-const label = computed(() => t(`extension_${pluralize(props.type)}`));
+const label = computed(() => t(`extension_${props.type !== 'missing' ? pluralize(props.type) : props.type}`));
 
 const icon = computed(() => extensionTypeIconMap[props.type]);
 </script>
