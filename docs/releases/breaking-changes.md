@@ -162,9 +162,9 @@ If your current workflow depends on redirecting to an external domain after succ
 ### Moved Migrations Out of Extensions
 
 Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
-removed.
+migrated.
 
-Place extensions in any directory on the local file system, and set the `MIGRATIONS_PATH` environment variable to the
+Place migrations in the `./migrations` directory, or the location set in the `MIGRATIONS_PATH` environment variable.
 new directory path.
 
 ## Version 10.9.0
