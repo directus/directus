@@ -8,7 +8,8 @@ readTime: 2 min read
 > Directus allows adding custom migration files that run whenever the `directus database migrate:*` commands are
 > executed.
 
-Migrations should be placed in the `./migrations` directory, or the location set in the `MIGRATIONS_PATH` environment variable.
+Migrations should be placed in the `./migrations` directory, or the location set in the `MIGRATIONS_PATH` environment
+variable.
 
 ## File Name
 
