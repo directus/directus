@@ -332,10 +332,6 @@ function sidebarDeveloperReference() {
 									text: 'Layouts',
 								},
 								{
-									link: '/extensions/migrations',
-									text: 'Migrations',
-								},
-								{
 									link: '/extensions/modules',
 									text: 'Modules',
 								},
@@ -465,6 +461,10 @@ function sidebarDeveloperReference() {
 				{
 					link: '/self-hosted/cli',
 					text: 'CLI',
+				},
+				{
+					link: '/self-hosted/migrations',
+					text: 'Migrations',
 				},
 				{
 					text: 'Single Sign-On (SSO)',
