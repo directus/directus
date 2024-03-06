@@ -19,6 +19,8 @@ const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) =>
 
 const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
 
+type ExtensionsMap = Record<ExtensionType | 'missing', typeof extensionsStore.extensions>;
+
 const extensionsByType = computed(() => {
 	const groups = groupBy(regular.value, 'schema.type');
 
@@ -27,7 +29,7 @@ const extensionsByType = computed(() => {
 		delete groups['undefined'];
 	}
 
-	return groups;
+	return groups as ExtensionsMap;
 });
 </script>
 
@@ -52,7 +54,7 @@ const extensionsByType = computed(() => {
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type as ExtensionType" />
+					<extension-group-divider class="group-divider" :type="type" />
 
 					<v-list>
 						<template v-for="ext in list" :key="ext.name">

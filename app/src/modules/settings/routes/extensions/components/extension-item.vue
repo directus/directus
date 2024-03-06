@@ -109,6 +109,18 @@ const uninstall = async () => {
 		saving.value = false;
 	}
 };
+
+const removeMissing = async () => {
+	saving.value = true;
+
+	try {
+		await extensionsStore.remove(props.extension.id);
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+};
 </script>
 
 <template>
@@ -119,7 +131,7 @@ const uninstall = async () => {
 				<router-link
 					v-if="extension.schema?.name && extension.meta.source === 'registry'"
 					v-tooltip="t('open_in_marketplace')"
-					class="link"
+					class="market-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>
 					{{ extension.schema?.name }}
@@ -150,6 +162,29 @@ const uninstall = async () => {
 				@uninstall="uninstall"
 			/>
 		</template>
+		<template v-else>
+			<span v-if="saving" class="spinner">
+				<v-progress-circular indeterminate small />
+			</span>
+
+			<div class="options">
+				<v-menu placement="bottom-start" show-arrow>
+					<template #activator="{ toggle }">
+						<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
+					</template>
+					<v-list>
+						<v-list-item clickable @click="removeMissing">
+							<v-list-item-icon>
+								<v-icon name="delete" />
+							</v-list-item-icon>
+							<v-list-item-content>
+								{{ t('remove') }}
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</div>
+		</template>
 	</v-list-item>
 
 	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
@@ -178,7 +213,7 @@ const uninstall = async () => {
 	margin-left: 12px;
 }
 
-.link {
+.market-link {
 	&:hover {
 		text-decoration: underline;
 	}
