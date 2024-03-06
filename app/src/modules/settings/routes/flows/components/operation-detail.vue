@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 import { useExtensions } from '@/extensions';
 import { useExtension } from '@/composables/use-extension';
 import { customAlphabet } from 'nanoid/non-secure';
+import { useShortcut } from '@/composables/use-shortcut';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
@@ -113,6 +114,12 @@ const operationOptions = computed(() => {
 	}
 
 	return undefined;
+});
+
+useShortcut('meta+s', () => {
+	if (!saveDisabled.value) {
+		saveOperation();
+	}
 });
 
 function saveOperation() {

@@ -42,6 +42,10 @@ useShortcut('meta+s', () => {
 	saveChanges();
 });
 
+useShortcut('meta+e', () => {
+	editMode.value = true;
+});
+
 // ------------- Manage Current Flow ------------- //
 
 const flowsStore = useFlowsStore();
@@ -386,6 +390,7 @@ function duplicatePanel(panel: OperationRaw) {
 }
 
 function editPanel(panel: AppTile) {
+	editMode.value = true;
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }

@@ -180,6 +180,7 @@ function pointerLeave() {
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position
+		@dblclick="$emit('edit', panel)"
 		@edit="$emit('edit', panel)"
 		@update="$emit('update', { edits: $event, id: panel.id })"
 		@move="$emit('move', panel.id)"

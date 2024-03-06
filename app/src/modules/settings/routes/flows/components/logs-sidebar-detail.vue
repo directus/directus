@@ -7,6 +7,7 @@ import { computed, ref, toRefs, unref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { abbreviateNumber } from '@directus/utils';
+import { useEventListener } from '@/composables/use-event-listener';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -41,6 +42,12 @@ watch(
 		refresh(newPage);
 	},
 );
+
+useEventListener(window, 'visibilitychange', () => {
+	if (!document.hidden && page.value === 1) {
+		refresh(page.value);
+	}
+});
 
 onMounted(() => {
 	getRevisionsCount();
