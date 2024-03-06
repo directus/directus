@@ -62,6 +62,13 @@ Notes:
 
 :::
 
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+migrated.
+
+Place migrations in the `./migrations` directory, or the location set in the `MIGRATIONS_PATH` environment variable.
+
 ### Content Versioning Output
 
 Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
