@@ -1,14 +1,14 @@
 import { Command } from 'commander';
-import { version } from 'directus/version';
 import add from './commands/add.js';
 import build from './commands/build.js';
 import create from './commands/create.js';
 import link from './commands/link.js';
+import getSdkVersion from './utils/get-sdk-version.js';
 
 const program = new Command();
 
 program.name('directus-extension').usage('[command] [options]');
-program.version(version, '-v, --version');
+program.version(getSdkVersion(), '-v, --version');
 
 program
 	.command('create')
