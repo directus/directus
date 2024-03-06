@@ -20,7 +20,7 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
 import getPackageManager from '../utils/get-package-manager.js';
-import getSdkVersion from '../utils/get-sdk-version.js';
+import { version } from 'directus/version';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
@@ -95,7 +95,7 @@ async function createBundleExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath);
 
-	const host = `^${getSdkVersion()}`;
+	const host = `^${version}`;
 	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
@@ -143,7 +143,7 @@ async function createExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath, 'src', language);
 
-	const host = `^${getSdkVersion()}`;
+	const host = `^${version}`;
 
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {

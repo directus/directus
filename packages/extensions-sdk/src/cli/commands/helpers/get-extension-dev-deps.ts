@@ -3,7 +3,6 @@ import type { ExtensionType } from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import type { Language } from '../../types.js';
 import getPackageVersion from '../../utils/get-package-version.js';
-import getSdkVersion from '../../utils/get-sdk-version.js';
 
 export default async function getExtensionDevDeps(
 	type: ExtensionType | ExtensionType[],
