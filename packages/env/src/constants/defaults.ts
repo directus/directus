@@ -85,6 +85,7 @@ export const DEFAULTS = {
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
+	EMAIL_TEMPLATES_PATH: './templates',
 
 	MARKETPLACE_TRUST: 'sandbox',
 
