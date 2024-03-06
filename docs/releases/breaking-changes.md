@@ -159,6 +159,14 @@ If your current workflow depends on redirecting to an external domain after succ
 
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
 
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+removed.
+
+Place extensions in any directory on the local file system, and set the `MIGRATIONS_PATH` environment variable to the
+new directory path.
+
 ## Version 10.9.0
 
 ### Updated Exif Tags

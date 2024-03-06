@@ -70,6 +70,16 @@
 	to = "/guides/headless-cms/build-static-website/next"
 	status = 301
 
+[[redirects]]
+	from = "/guides/headless-cms/build-static-website/next-13.html"
+	to = "/guides/headless-cms/build-static-website/next"
+	status = 301
+
+[[redirects]]
+	from = "/extensions/migrations.html"
+	to = "/self-hosted/migrations"
+	status = 301
+
 #####
 ##### User Guide
 #####
