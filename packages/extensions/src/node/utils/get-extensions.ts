@@ -72,25 +72,27 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 
 	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
-	const extensionMap = (await Promise.all(
-		extensionFolders
-			.map(async (folder) => {
-				const path = join(root, folder);
+	const extensionMap = await Promise.all(
+		extensionFolders.map(async (folder) => {
+			const path = join(root, folder);
 
-				try {
-					const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
-					return { name: folder, path, manifest };
-				} catch {
-					// Ignore invalid extensions or non-extension folders
-					return undefined;
-				}
-			})
-			.filter((e) => e),
-	)) as { name: string; path: string; manifest: Record<string, any> }[];
+			try {
+				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
+				return { name: folder, path, manifest };
+			} catch {
+				// Ignore invalid extensions or non-extension folders
+				return undefined;
+			}
+		}),
+	);
 
 	const extensions = new Map();
 
-	for (const { name, path, manifest } of extensionMap.values()) {
+	for (const extension of extensionMap.values()) {
+		if (!extension) continue;
+
+		const { name, path, manifest } = extension;
+
 		let parsedManifest;
 
 		try {
