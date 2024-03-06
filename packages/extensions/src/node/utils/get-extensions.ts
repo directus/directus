@@ -72,9 +72,8 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 
 	const extensionFolders = await listFolders(root, { ignoreHidden: true });
 
-	const extensionMap = await Promise.all(
+	const extensionMap = (await Promise.all(
 		extensionFolders
-			.filter((folder) => folder !== 'templates')
 			.map(async (folder) => {
 				const path = join(root, folder);
 
@@ -82,10 +81,12 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 					const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
 					return { name: folder, path, manifest };
 				} catch {
-					throw new Error(`Extension "${folder}" (${path}) does not contain a package.json file.`);
+					// Ignore invalid extensions or non-extension folders
+					return undefined;
 				}
 			})
-	);
+			.filter((e) => e),
+	)) as { name: string; path: string; manifest: Record<string, any> }[];
 
 	const extensions = new Map();
 
