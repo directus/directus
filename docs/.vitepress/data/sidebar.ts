@@ -1,8 +1,8 @@
-import { readItems } from '@directus/sdk';
 import { formatTitle } from '@directus/format-title';
-import { client } from '../lib/directus.js';
+import { readItems } from '@directus/sdk';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
+import { client } from '../lib/directus.js';
 import { sections as guideSections } from './guides.js';
 
 export default {
@@ -312,10 +312,6 @@ function sidebarDeveloperReference() {
 									text: 'Displays',
 								},
 								{
-									link: '/extensions/email-templates',
-									text: 'Email Templates',
-								},
-								{
 									link: '/extensions/endpoints',
 									text: 'Endpoints',
 								},
@@ -465,6 +461,10 @@ function sidebarDeveloperReference() {
 				{
 					link: '/self-hosted/migrations',
 					text: 'Migrations',
+				},
+				{
+					link: '/self-hosted/email-templates',
+					text: 'Email Templates',
 				},
 				{
 					text: 'Single Sign-On (SSO)',

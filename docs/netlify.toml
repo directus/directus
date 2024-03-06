@@ -80,6 +80,11 @@
 	to = "/self-hosted/migrations"
 	status = 301
 
+[[redirects]]
+	from = "/extensions/email-templates.html"
+	to = "/self-hosted/email-templates"
+	status = 301
+
 #####
 ##### User Guide
 #####

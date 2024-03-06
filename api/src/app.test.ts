@@ -22,6 +22,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EXTENSIONS_PATH: './extensions',
 		STORAGE_LOCATIONS: ['local'],
+		EMAIL_TEMPLATES_PATH: './templates',
 	}),
 }));
 

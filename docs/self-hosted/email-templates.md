@@ -10,8 +10,9 @@ readTime: 1 min read
 
 ## 1. Create a template file
 
-Custom email templates are stored in the `templates` folder in your extensions folder. Every template is a
-[`liquid`](https://liquidjs.com) file that can render whatever you want!
+Custom email templates are stored in the configured `EMAIL_TEMPLATES_PATH` location, which defaults to the `./templates`
+folder relative to your project. Every template is a [`liquid`](https://liquidjs.com) file that can render whatever you
+want!
 
 ```
 /extensions/templates/<template-name>.liquid

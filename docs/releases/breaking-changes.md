@@ -67,7 +67,15 @@ Notes:
 Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
 migrated.
 
-Place migrations in the `./migrations` directory, or the location set in the `MIGRATIONS_PATH` environment variable.
+Place migrations in the `./migrations` directory, or set the new location in the `MIGRATIONS_PATH` environment variable.
+
+### Moved Email Templates Out of Extensions
+
+Email Templates are no longer considered an extension type as of this release. The `templates` extensions directory must
+be migrated.
+
+Place email templates in the `./templates` directory, or set the new location in the `EMAIL_TEMPLATES_PATH` environment
+variable.
 
 ### Content Versioning Output
 
