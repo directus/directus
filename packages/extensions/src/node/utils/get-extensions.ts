@@ -81,7 +81,7 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 				return { name: folder, path, manifest };
 			} catch {
 				// Ignore invalid extensions or non-extension folders
-				return undefined;
+				return;
 			}
 		}),
 	);
