@@ -6,81 +6,25 @@ import { refreshAccountability } from '../../websocket/authenticate.js';
 import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
-
-class DeferredSubscription<T = Record<string, any>> {
-	public active: boolean = true;
-	public promise: Promise<T>;
-
-	private resolver: ((value: T) => void) | null = null;
-
-	constructor() {
-		this.promise = new Promise((res) => (this.resolver = res));
-		this.promise.then(() => (this.active = false));
-	}
-
-	reset() {
-		this.active = true;
-		this.resolver = null;
-		this.promise = new Promise((res) => (this.resolver = res));
-		this.promise.then(() => (this.active = false));
-	}
-
-	resolve(value: T) {
-		if (this.resolver) this.resolver(value);
-	}
-}
-
-class SubscriptionGenerator {
-	deferred: Set<DeferredSubscription> = new Set([]);
-
-	[Symbol.asyncIterator]() {
-		const deferred = new DeferredSubscription();
-		this.deferred.add(deferred);
-		return {
-			next: async () => {
-				const value = await deferred.promise;
-				deferred.reset();
-
-				return { value, done: false };
-			},
-		};
-	}
-
-	async *subscribe(collection: string) {
-		for await (const msg of this) {
-			if (msg['collection'] === collection) {
-				yield msg;
-			}
-		}
-	}
-
-	publish(message: Record<string, any>) {
-		this.deferred.forEach((deferred) => {
-			if (deferred.active) {
-				deferred.resolve(message);
-			} else {
-				this.deferred.delete(deferred);
-			}
-		});
-	}
-}
-
-const messageGenerator = new SubscriptionGenerator();
+import { useSubscriptionIterator } from './utils/subscription-iterator.js';
 
 export function bindPubSub() {
 	const messenger = useBus();
+	const subscriptions = useSubscriptionIterator();
 
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-		messageGenerator.publish(message);
+		subscriptions.publish(message);
 	});
 }
 
 export function createSubscriptionGenerator(self: GraphQLService, collection: string) {
+	const subscriptions = useSubscriptionIterator();
+
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
 		const event = collection + '_mutated';
 		const fields = parseFields(self, request);
 		const args = parseArguments(request);
-		const messages = messageGenerator.subscribe(collection);
+		const messages = subscriptions.subscribe(collection);
 
 		for await (const payload of messages) {
 			const eventData = payload as WebSocketEvent;
