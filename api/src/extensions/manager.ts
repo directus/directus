@@ -224,7 +224,7 @@ export class ExtensionManager {
 	 */
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
-		await this.reload();
+		await this.reload({ forceSync: true });
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
@@ -237,12 +237,12 @@ export class ExtensionManager {
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(): Promise<void> {
+	private async load(options?: { forceSync: boolean }): Promise<void> {
 		const logger = useLogger();
 
 		if (env['EXTENSIONS_LOCATION']) {
 			try {
-				await syncExtensions();
+				await syncExtensions({ force: options?.forceSync ?? false });
 			} catch (error) {
 				logger.error(`Failed to sync extensions`);
 				logger.error(error);
@@ -287,7 +287,7 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(): Promise<unknown> {
+	public reload(options?: { forceSync: boolean }): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
 			return Promise.resolve();
@@ -308,7 +308,7 @@ export class ExtensionManager {
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
-				await this.load();
+				await this.load(options);
 
 				logger.info('Extensions reloaded');
 

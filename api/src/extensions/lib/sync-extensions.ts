@@ -12,7 +12,12 @@ import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
-export const syncExtensions = async (): Promise<void> => {
+export const syncExtensions = async (options?: { force: boolean }): Promise<void> => {
+	if (!options?.force) {
+		const isDone = (await getSyncStatus()) === SyncStatus.DONE;
+		if (isDone) return;
+	}
+
 	const env = useEnv();
 	const logger = useLogger();
 
@@ -29,10 +34,6 @@ export const syncExtensions = async (): Promise<void> => {
 	const message = `extensions-sync/${id}`;
 
 	if (isPrimaryProcess === false) {
-		const isDone = (await getSyncStatus()) === SyncStatus.DONE;
-
-		if (isDone) return;
-
 		logger.trace('Extensions already being synced to this machine from another process.');
 
 		/**
