@@ -35,9 +35,11 @@ const props = defineProps<{
 const saving = ref(false);
 
 useShortcut('meta+s', () => {
-	// If currentOperation exists, the operation edit drawer is opened and we should prevent the
-	// saving of the top level flow from the shortcut #19104
-	if (unref(currentOperation)) return;
+	/*
+	 * Prevent saving of the Flow via shortcut when the  "Create Operation",
+	 * "Edit Operation" or "Edit Trigger" drawer is opened
+	 */
+	if (props.operationId || unref(triggerDetailOpen)) return;
 
 	saveChanges();
 });
