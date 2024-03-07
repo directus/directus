@@ -3,14 +3,53 @@
  *
  * This is needed as isolated-vm doesn't allow the isolate to catch errors that are thrown in the
  * host. Instead, we'll wrap the output in a known shape which allows the isolated sdk context to
- * re-throw the error in the correct context
+ * re-throw the error in the correct context.
  */
-export function wrap(util: (...args: any[]) => any) {
+export function wrap(name: string, util: (...args: any[]) => any) {
 	return async (...args: any[]) => {
 		try {
 			return { result: await util(...args), error: false };
-		} catch (e) {
-			return { result: e, error: true };
+		} catch (error) {
+			// isolated-vm requires the error thrown from within the vm to be an instance of `Error`
+			let data: Error;
+
+			if (error instanceof Error) {
+				// Don't expose the stack trace to the vm
+				delete error.stack;
+
+				// Serialize the error properties
+				for (const key of Object.getOwnPropertyNames(error)) {
+					const value = error[key as keyof Error];
+
+					if (!value || typeof value !== 'object') continue;
+
+					error[key as keyof Error] = JSON.stringify(value, getCircularReplacer());
+				}
+
+				data = error;
+			} else if (typeof error === 'string') {
+				data = new Error(error);
+			} else {
+				data = new Error(`Unknown error in "${name}" Sandbox SDK function`);
+			}
+
+			return { result: data, error: true };
 		}
+	};
+}
+
+function getCircularReplacer() {
+	const seen = new WeakSet();
+
+	return (_key: string, value: unknown) => {
+		if (value !== null && typeof value === 'object') {
+			if (seen.has(value)) {
+				return '[Circular]';
+			}
+
+			seen.add(value);
+		}
+
+		return value;
 	};
 }
