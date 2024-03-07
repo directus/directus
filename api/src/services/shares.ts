@@ -170,8 +170,8 @@ ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 					to: email,
 					subject: `${userName(userInfo)} has shared an item with you`,
 				})
-				.catch((error: any) => {
-					logger.error(`Could not send email`, error);
+				.catch((error) => {
+					logger.error(error, `Could not send share notification mail`);
 				});
 		}
 	}

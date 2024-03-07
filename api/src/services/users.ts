@@ -420,8 +420,8 @@ export class UsersService extends ItemsService {
 							},
 						},
 					})
-					.catch((error: any) => {
-						logger.error(`Could not send email`, error);
+					.catch((error) => {
+						logger.error(error, `Could not send user invitation mail`);
 					});
 			}
 		}
@@ -492,8 +492,8 @@ export class UsersService extends ItemsService {
 					},
 				},
 			})
-			.catch((error: any) => {
-				logger.error(`Could not send email`, error);
+			.catch((error) => {
+				logger.error(error, `Could not send password reset mail`);
 			});
 
 		await stall(STALL_TIME, timeStart);

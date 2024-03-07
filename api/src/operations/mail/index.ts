@@ -32,8 +32,8 @@ export default defineOperationApi<Options>({
 			mailObject.html = type === 'wysiwyg' ? safeBody : md(safeBody);
 		}
 
-		mailService.send(mailObject).catch((error: any) => {
-			logger.error(error.message);
+		mailService.send(mailObject).catch((error) => {
+			logger.error(error, 'Could not send mail in "mail" operation');
 		});
 	},
 });

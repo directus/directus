@@ -61,8 +61,8 @@ export class NotificationsService extends ItemsService {
 						to: user['email'],
 						subject: data.subject,
 					})
-					.catch((error: any) => {
-						logger.error(`Could not send email`, error);
+					.catch((error) => {
+						logger.error(error, `Could not send notification via mail`);
 					});
 			}
 		}
