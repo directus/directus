@@ -37,7 +37,8 @@ const saving = ref(false);
 useShortcut('meta+s', () => {
 	// If currentOperation exists, the operation edit drawer is opened and we should prevent the
 	// saving of the top level flow from the shortcut #19104
-	if (unref(currentOperation)) return;
+	// Prevent saving operations while the "Add a new operation" and "Edit Trigger" panels are open. #21735
+	if (unref(currentOperation) || props.operationId === '+' || unref(triggerDetailOpen)) return;
 
 	saveChanges();
 });
