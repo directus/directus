@@ -12,8 +12,8 @@ export function wrap(name: string, util: (...args: any[]) => any) {
 		try {
 			return { result: await util(...args), error: false };
 		} catch (error) {
-			// isolated-vm requires the error thrown from within the vm to be an instance of `Error`
-			let data: Error;
+			// isolated-vm expects objects thrown from within the vm to be an instance of `Error`
+			let data;
 
 			if (error instanceof Error) {
 				// Don't expose the stack trace to the vm
@@ -29,8 +29,8 @@ export function wrap(name: string, util: (...args: any[]) => any) {
 				}
 
 				data = error;
-			} else if (typeof error === 'string') {
-				data = new Error(error);
+			} else if (error && typeof error !== 'object') {
+				data = error;
 			} else {
 				data = new Error(`Unknown error in "${name}" Sandbox SDK function`);
 			}
