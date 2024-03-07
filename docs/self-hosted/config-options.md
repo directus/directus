@@ -919,13 +919,14 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                               | Description                                             | Default Value  |
-| -------------------------------------- | ------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                   | `./extensions` |
-| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.   | `false`        |
-| `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed. | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
-| `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
+| Variable                               | Description                                                                    | Default Value  |
+| -------------------------------------- | ------------------------------------------------------------------------------ | -------------- |
+| `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                                          | `./extensions` |
+| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.                          | `false`        |
+| `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed.                        | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.                         | --             |
+| `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions.                        | --             |
+| `EXTENSIONS_LIMIT`                     | Maximum number of extensions you allow to be installed through the marketplace |                |
 
 <sup>[1]</sup> If `EXTENSIONS_LOCATION` is configured, this is the path to the extensions folder within the selected
 storage location.
@@ -959,12 +960,11 @@ extensions from a storage location instead. Under the hood, they are synced into
 
 ## Email
 
-| Variable               | Description                                                                          | Default Value          |
-| ---------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                                         | `true`                 |
-| `EMAIL_FROM`           | Email address from which emails are sent.                                            | `no-reply@example.com` |
-| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
-| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                                   | `./templates`          |
+| Variable             | Description                                                                          | Default Value          |
+| -------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP` | Check if email setup is properly configured.                                         | `true`                 |
+| `EMAIL_FROM`         | Email address from which emails are sent.                                            | `no-reply@example.com` |
+| `EMAIL_TRANSPORT`    | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
