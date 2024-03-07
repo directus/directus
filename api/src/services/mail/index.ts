@@ -79,7 +79,7 @@ export class MailService {
 				.join('\n');
 		}
 
-		this.mailer.sendMail({ ...emailOptions, from, html }).catch((error) => {
+		return this.mailer.sendMail({ ...emailOptions, from, html }).catch((error) => {
 			logger.warn(`Email send failed:`);
 			logger.warn(error);
 		});
