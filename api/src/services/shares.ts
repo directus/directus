@@ -19,8 +19,10 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+import { useLogger } from '../logger.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -157,7 +159,7 @@ ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 `;
 
 		for (const email of payload.emails) {
-			await mailService.send({
+			mailService.send({
 				template: {
 					name: 'base',
 					data: {
@@ -166,6 +168,8 @@ ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 				},
 				to: email,
 				subject: `${userName(userInfo)} has shared an item with you`,
+			}).catch((error: any) => {
+				logger.error(`Could not send email`, error);
 			});
 		}
 	}

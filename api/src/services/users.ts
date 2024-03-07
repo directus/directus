@@ -16,8 +16,10 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { useLogger } from '../logger.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -406,7 +408,7 @@ export class UsersService extends ItemsService {
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
-				await mailService.send({
+				mailService.send({
 					to: user?.email ?? email,
 					subject: subjectLine,
 					template: {
@@ -416,6 +418,8 @@ export class UsersService extends ItemsService {
 							email: user?.email ?? email,
 						},
 					},
+				}).catch((error: any) => {
+					logger.error(`Could not send email`, error);
 				});
 			}
 		}
@@ -474,7 +478,7 @@ export class UsersService extends ItemsService {
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		await mailService.send({
+		mailService.send({
 			to: user.email,
 			subject: subjectLine,
 			template: {
@@ -484,6 +488,8 @@ export class UsersService extends ItemsService {
 					email: user.email,
 				},
 			},
+		}).catch((error: any) => {
+			logger.error(`Could not send email`, error);
 		});
 
 		await stall(STALL_TIME, timeStart);
