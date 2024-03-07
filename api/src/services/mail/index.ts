@@ -79,10 +79,8 @@ export class MailService {
 				.join('\n');
 		}
 
-		return this.mailer.sendMail({ ...emailOptions, from, html }).catch((error) => {
-			logger.warn(`Email send failed:`);
-			logger.warn(error);
-		});
+		const info = await this.mailer.sendMail({ ...emailOptions, from, html });
+		return info;
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
