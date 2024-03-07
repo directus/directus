@@ -52,16 +52,18 @@ export class NotificationsService extends ItemsService {
 			const html = data.message ? md(data.message) : '';
 
 			if (user['email'] && user['email_notifications'] === true) {
-				this.mailService.send({
-					template: {
-						name: 'base',
-						data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
-					},
-					to: user['email'],
-					subject: data.subject,
-				}).catch((error: any) => {
-					logger.error(`Could not send email`, error);
-				});
+				this.mailService
+					.send({
+						template: {
+							name: 'base',
+							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
+						},
+						to: user['email'],
+						subject: data.subject,
+					})
+					.catch((error: any) => {
+						logger.error(`Could not send email`, error);
+					});
 			}
 		}
 	}

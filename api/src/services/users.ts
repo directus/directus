@@ -408,19 +408,21 @@ export class UsersService extends ItemsService {
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
-				mailService.send({
-					to: user?.email ?? email,
-					subject: subjectLine,
-					template: {
-						name: 'user-invitation',
-						data: {
-							url: this.inviteUrl(user?.email ?? email, url),
-							email: user?.email ?? email,
+				mailService
+					.send({
+						to: user?.email ?? email,
+						subject: subjectLine,
+						template: {
+							name: 'user-invitation',
+							data: {
+								url: this.inviteUrl(user?.email ?? email, url),
+								email: user?.email ?? email,
+							},
 						},
-					},
-				}).catch((error: any) => {
-					logger.error(`Could not send email`, error);
-				});
+					})
+					.catch((error: any) => {
+						logger.error(`Could not send email`, error);
+					});
 			}
 		}
 	}
@@ -478,19 +480,21 @@ export class UsersService extends ItemsService {
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		mailService.send({
-			to: user.email,
-			subject: subjectLine,
-			template: {
-				name: 'password-reset',
-				data: {
-					url: acceptURL,
-					email: user.email,
+		mailService
+			.send({
+				to: user.email,
+				subject: subjectLine,
+				template: {
+					name: 'password-reset',
+					data: {
+						url: acceptURL,
+						email: user.email,
+					},
 				},
-			},
-		}).catch((error: any) => {
-			logger.error(`Could not send email`, error);
-		});
+			})
+			.catch((error: any) => {
+				logger.error(`Could not send email`, error);
+			});
 
 		await stall(STALL_TIME, timeStart);
 	}

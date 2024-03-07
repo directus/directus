@@ -159,18 +159,20 @@ ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 `;
 
 		for (const email of payload.emails) {
-			mailService.send({
-				template: {
-					name: 'base',
-					data: {
-						html: md(message),
+			mailService
+				.send({
+					template: {
+						name: 'base',
+						data: {
+							html: md(message),
+						},
 					},
-				},
-				to: email,
-				subject: `${userName(userInfo)} has shared an item with you`,
-			}).catch((error: any) => {
-				logger.error(`Could not send email`, error);
-			});
+					to: email,
+					subject: `${userName(userInfo)} has shared an item with you`,
+				})
+				.catch((error: any) => {
+					logger.error(`Could not send email`, error);
+				});
 		}
 	}
 }
