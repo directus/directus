@@ -195,11 +195,6 @@ test('getNestedUnionOne with a single identifier', () => {
 		],
 		aliasMapping: [
 			{
-				type: 'root',
-				alias: relationalColumn,
-				columnIndex: 0,
-			},
-			{
 				type: 'nested',
 				alias: foreignTable,
 				children: [

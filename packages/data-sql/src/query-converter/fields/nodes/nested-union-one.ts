@@ -31,8 +31,7 @@ export const getNestedUnionOne = (
 	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
 
 	const relationalFieldResult = getSelectForRelationalField(tableIndex, indexGen, unionRelational.field);
-	selects.push(relationalFieldResult.select);
-	aliasMapping.push(...relationalFieldResult.aliasMapping);
+	selects.push(relationalFieldResult);
 
 	for (const collection of unionRelational.collections) {
 		const conditions: AbstractSqlQueryConditionNode[] = [];
@@ -151,22 +150,13 @@ function getSelectForRelationalField(
 	tableIndex: number,
 	indexGen: IndexGenerators,
 	relationalField: string,
-): { select: AbstractSqlQuerySelectPrimitiveNode; aliasMapping: AliasMapping } {
+): AbstractSqlQuerySelectPrimitiveNode {
 	const jsonColumnIndex = indexGen.column.next().value;
 
 	return {
-		select: {
-			type: 'primitive',
-			tableIndex,
-			columnName: relationalField,
-			columnIndex: jsonColumnIndex,
-		},
-		aliasMapping: [
-			{
-				type: 'root',
-				alias: relationalField,
-				columnIndex: jsonColumnIndex,
-			},
-		],
+		type: 'primitive',
+		tableIndex,
+		columnName: relationalField,
+		columnIndex: jsonColumnIndex,
 	};
 }
