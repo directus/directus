@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Ensured extension auto reload functionality works with all local extensions
+Ensured extensions auto reloading works for all local extensions
