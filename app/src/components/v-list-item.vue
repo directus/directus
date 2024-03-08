@@ -6,7 +6,7 @@ import { isEqual } from 'lodash';
 
 interface Props {
 	block?: boolean;
-	/** Makes the item height grow (if !!block) */
+	/** Makes the item height grow, if 'block' is enabled */
 	grow?: boolean;
 	/** Makes the item smaller */
 	dense?: boolean;
