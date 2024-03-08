@@ -58,6 +58,7 @@ const props = withDefaults(
 		multiplePreviewThreshold?: number;
 		/** The direction the menu should open */
 		placement?: Placement;
+		menuFullHeight?: boolean;
 	}>(),
 	{
 		itemText: 'text',
@@ -245,6 +246,7 @@ function useDisplayValue() {
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
+		:full-height="menuFullHeight"
 	>
 		<template #activator="{ toggle, active }">
 			<div
@@ -392,7 +394,7 @@ function useDisplayValue() {
 */
 
 .list {
-	--v-list-min-width: 0;
+	--v-list-min-width: 180px;
 }
 
 .v-input {

@@ -41,4 +41,21 @@ export interface DocsTag {
 export interface Schema {
 	developer_articles: DeveloperArticle[];
 	docs_tags: DocsTag[];
+	dplus_docs_sections: DplusDocsSection[];
+	dplus_docs_articles: DplusDocsArticle[];
+}
+
+export interface DplusDocsArticle {
+	title: string;
+	slug: string;
+	status: string;
+	summary: string;
+	content: string;
+	section?: string | DplusDocsSection;
+}
+
+export interface DplusDocsSection {
+	title: string;
+	slug: string;
+	articles: DplusDocsArticle[];
 }

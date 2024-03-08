@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { usePermissions } from '@/composables/use-permissions';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
+import { isSystemCollection } from '@directus/system-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -13,7 +14,7 @@ import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { Ref, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -62,7 +63,7 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelation
 const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
-const { collection } = toRefs(props);
+const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
@@ -101,15 +102,15 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: relatedCollectionFields } = usePermissions(
-	relatedCollection as any,
-	computed(() => initialValues.value && initialValues.value[props.junctionField as any]),
+const { fields: fieldsWithPermissions } = useItemPermissions(
+	collection,
+	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: fieldsWithPermissions } = usePermissions(
-	collection,
-	initialValues,
+const { fields: relatedCollectionFields } = useItemPermissions(
+	relatedCollection as Ref<string>,
+	relatedPrimaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
@@ -228,7 +229,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(props.collection);
 
-		const endpoint = props.collection.startsWith('directus_')
+		const endpoint = isSystemCollection(props.collection)
 			? `${baseEndpoint}/${props.primaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
 
@@ -258,7 +259,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(collection);
 
-		const endpoint = collection.startsWith('directus_')
+		const endpoint = isSystemCollection(collection)
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 

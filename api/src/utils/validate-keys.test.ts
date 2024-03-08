@@ -1,5 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { validateKeys } from './validate-keys.js';
 
@@ -90,20 +90,22 @@ describe('validate keys', () => {
 
 		it('Throws an error when provided with an array containing an invalid uuid key', () => {
 			expect(() =>
-				validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'fakeuuid-62d9-434d-a7c7-878c8376782e', uuid()]),
+				validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), 'fakeuuid-62d9-434d-a7c7-878c8376782e', randomUUID()]),
 			).toThrowError();
 
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'invalid', uuid()])).toThrowError();
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), NaN, uuid()])).toThrowError();
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), 111, uuid()])).toThrowError();
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), 'invalid', randomUUID()])).toThrowError();
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), NaN, randomUUID()])).toThrowError();
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), 111, randomUUID()])).toThrowError();
 		});
 
 		it('Does not throw an error when provided with a valid uuid key', () => {
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', uuid())).not.toThrowError();
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', randomUUID())).not.toThrowError();
 		});
 
 		it('Does not throw an error when provided with an array of valid uuid keys', () => {
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), uuid(), uuid()])).not.toThrowError();
+			expect(() =>
+				validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), randomUUID(), randomUUID()]),
+			).not.toThrowError();
 		});
 	});
 });

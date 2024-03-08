@@ -679,15 +679,17 @@ query {
 ```js
 import { createDirectus, rest, readItems } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
-		filter: {
-			authors: {
-				name: {
-					_eq: 'John',
-				},
+		deep: {
+			translations: {
+				_filter: {
+					languages_code: {
+						_eq: 'en-US',
+					},
+				}
 			},
 		},
 	})

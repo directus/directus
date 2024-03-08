@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useI18n } from 'vue-i18n';
-import { Dashboard } from '@/types/insights';
-import { router } from '@/router';
-import { Sort, Header } from '@/components/v-table/types';
-import { sortBy } from 'lodash';
-import InsightsNavigation from '../components/navigation.vue';
-import DashboardDialog from '../components/dashboard-dialog.vue';
-import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@directus/utils';
+import { Header, Sort } from '@/components/v-table/types';
+import { useCollectionPermissions } from '@/composables/use-permissions';
+import { router } from '@/router';
+import { useInsightsStore } from '@/stores/insights';
+import { Dashboard } from '@/types/insights';
 import { getPublicURL } from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
+import { getEndpoint } from '@directus/utils';
+import { sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import DashboardDialog from '../components/dashboard-dialog.vue';
+import InsightsNavigation from '../components/navigation.vue';
 
 const { t } = useI18n();
 
 const insightsStore = useInsightsStore();
-const permissionsStore = usePermissionsStore();
 
 const confirmDelete = ref<string | null>(null);
 const deletingDashboard = ref(false);
@@ -29,21 +28,8 @@ const search = ref<string | null>(null);
 
 const createDialogActive = ref(false);
 
-const createAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_dashboards', 'create');
-});
-
-const updateAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_dashboards', 'update');
-});
-
-const deleteAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_dashboards', 'delete');
-});
-
-const batchDeleteAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_dashboards', 'delete');
-});
+const { createAllowed, updateAllowed, deleteAllowed } = useCollectionPermissions('directus_dashboards');
+const batchDeleteAllowed = deleteAllowed;
 
 const internalSort = ref<Sort>({ by: 'name', desc: false });
 
@@ -132,7 +118,6 @@ function exportDasboard(ids: string[]) {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: 'json',
 		fields: [
 			'name',
@@ -196,7 +181,7 @@ async function batchDelete() {
 		});
 
 		selection.value = [];
-		await refresh();
+		refresh();
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -220,6 +205,7 @@ async function batchDelete() {
 
 		<template #actions>
 			<v-input
+				v-if="insightsStore.dashboards.length > 0"
 				v-model="search"
 				class="search"
 				:autofocus="insightsStore.dashboards.length > 25"
@@ -381,10 +367,18 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
-			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
+		<v-info v-else-if="search" icon="search" :title="t('no_results')" center>
+			{{ t('no_results_copy') }}
 
-			<template v-if="createAllowed && !search" #append>
+			<template #append>
+				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
+		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
+			{{ t('no_dashboards_copy') }}
+
+			<template v-if="createAllowed" #append>
 				<dashboard-dialog v-model="createDialogActive">
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')" @click="on">

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import type { File } from '@directus/types';
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 
 export interface Props {
 	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;
@@ -18,10 +17,11 @@ defineEmits<{
 }>();
 
 const file = toRef(props, 'file');
-const imgError = ref(false);
 
 const src = computed(
-	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`,
+	() =>
+		getRootPath() +
+		`assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`,
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {
@@ -48,21 +48,19 @@ const isSVG = computed(() => file.value.type?.includes('svg'));
 
 const maxHeight = computed(() => (props.inModal ? '85vh' : Math.min(file.value.height ?? 528, 528) + 'px'));
 const isSmall = computed(() => file.value.height && file.value.height < 528);
-
-const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value));
 </script>
 
 <template>
 	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
-		<div v-if="type === 'image' && !imgError" class="image">
-			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" @error="imgError = true" />
+		<div v-if="type === 'image'" class="image">
+			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
-			<video controls :src="authenticatedSrc" />
+			<video controls :src="src" />
 		</div>
 
-		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
+		<audio v-else-if="type === 'audio'" controls :src="src" />
 
 		<div v-else class="fallback">
 			<v-icon-file :ext="type" />

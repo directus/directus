@@ -23,9 +23,12 @@ const serverStore = useServerStore();
 const themeStore = useThemeStore();
 
 const systemTheme = computed(() => {
-	return props.appearance === 'dark'
-		? serverStore.info.project!.default_theme_dark
-		: serverStore.info.project!.default_theme_light;
+	const theme =
+		props.appearance === 'dark'
+			? serverStore.info.project?.default_theme_dark
+			: serverStore.info.project?.default_theme_light;
+
+	return theme ?? null;
 });
 
 const items = computed(() => themeStore.themes[props.appearance].map((theme) => ({ id: theme.id, name: theme.name })));

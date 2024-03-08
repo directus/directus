@@ -37,7 +37,7 @@ Learn more about [Headless CMS Concepts](/use-cases/headless-cms/concepts).
 
 ### Build Your Project
 
-- [Build a Website with Directus and Next.js](/guides/headless-cms/build-static-website/next-13)
+- [Build a Website with Directus and Next.js](/guides/headless-cms/build-static-website/next)
 - [Build a Website with Directus and Nuxt.js](/guides/headless-cms/build-static-website/nuxt-3)
 
 ### Deployment & Best Practice

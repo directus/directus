@@ -1,8 +1,8 @@
 import type { RestCommand } from '../../types.js';
 
 /**
- * Retrieve the OpenAPI spec for the current project.
- * @returns Object conforming to the OpenAPI Specification
+ * Retrieve the GraphQL SDL for the current project.
+ * @returns GraphQL SDL.
  */
 export const readGraphqlSdl =
 	<Schema extends object>(scope: 'item' | 'system' = 'item'): RestCommand<string, Schema> =>

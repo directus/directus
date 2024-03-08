@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { usePermissions } from '@/composables/use-permissions';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -21,6 +17,8 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -43,8 +41,6 @@ const { t, te } = useI18n();
 const router = useRouter();
 
 const form = ref<HTMLElement>();
-
-const { hasPermission } = usePermissionsStore();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -71,6 +67,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	error,
@@ -85,24 +82,14 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey, query);
 
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
+} = permissions;
+
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const isSavable = computed(() => {
-	if (saveAllowed.value === false && currentVersion.value === null) return false;
-	if (hasEdits.value === true) return true;
-
-	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
-	}
-
-	if (isNew.value === true) {
-		return Object.keys(defaults.value).length > 0 || hasEdits.value;
-	}
-
-	return hasEdits.value;
-});
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
@@ -166,22 +153,35 @@ useShortcut(
 	form,
 );
 
-const {
-	createAllowed,
-	deleteAllowed,
-	archiveAllowed,
-	saveAllowed,
-	updateAllowed,
-	shareAllowed,
-	fields,
-	revisionsAllowed,
-} = usePermissions(collection, item, isNew);
+const isSavable = computed(() => {
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
+	if (hasEdits.value === true) return true;
+
+	if (
+		primaryKeyField.value &&
+		!primaryKeyField.value?.schema?.has_auto_increment &&
+		!primaryKeyField.value?.meta?.special?.includes('uuid')
+	) {
+		return !!edits.value?.[primaryKeyField.value.field];
+	}
+
+	if (isNew.value === true) {
+		return Object.keys(defaults.value).length > 0 || hasEdits.value;
+	}
+
+	return hasEdits.value;
+});
+
+const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
+	'directus_versions',
+	computed(() => currentVersion.value?.id ?? null),
+	computed(() => !currentVersion.value),
+);
 
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
-	const updateVersionsAllowed = hasPermission('directus_versions', 'update');
-	if (currentVersion.value !== null && updateVersionsAllowed) return false;
+	if (currentVersion.value !== null && updateVersionsAllowed.value) return false;
 	return true;
 });
 

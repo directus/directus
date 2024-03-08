@@ -4,6 +4,7 @@ import { parseJSON, toArray } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { isEmpty, pick, set, omitBy, isUndefined, transform } from 'lodash';
 import { extractFieldFromFunction } from './extract-field-from-function';
+import { isSystemCollection } from '@directus/system-data';
 
 type QueryInfo = { collection: string; key: string; query: Query };
 
@@ -24,7 +25,7 @@ export function queryToGqlString(queries: QueryInfo | QueryInfo[]): string | nul
 export function formatQuery({ collection, query }: QueryInfo): Record<string, any> {
 	const queryKeysInArguments: (keyof Query)[] = ['limit', 'sort', 'filter', 'offset', 'page', 'search'];
 
-	const alias = collection.startsWith('directus_') ? collection.substring(9) : collection;
+	const alias = isSystemCollection(collection) ? collection.substring(9) : collection;
 
 	const formattedQuery: Record<string, any> = {
 		__args: omitBy(pick(query, ...queryKeysInArguments), isUndefined),

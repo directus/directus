@@ -29,7 +29,7 @@ test('getNestedMany with a single identifier', () => {
 			},
 		],
 		nesting: {
-			type: 'relational-many',
+			type: 'relational-single',
 			local: {
 				fields: [keyColumnName],
 			},
@@ -133,7 +133,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 			},
 		],
 		nesting: {
-			type: 'relational-many',
+			type: 'relational-single',
 			local: {
 				fields: [keyColumn1Name, keyColumn2Name],
 			},
@@ -268,7 +268,7 @@ test('getNestedMany with modifiers', () => {
 			},
 		],
 		nesting: {
-			type: 'relational-many',
+			type: 'relational-single',
 			local: {
 				fields: [keyColumnName],
 			},
@@ -449,7 +449,7 @@ test('getNestedMany with nested modifiers', () => {
 		],
 		alias: randomIdentifier(),
 		nesting: {
-			type: 'relational-many',
+			type: 'relational-single',
 			local: {
 				fields: [keyColumnName],
 			},
@@ -472,7 +472,7 @@ test('getNestedMany with nested modifiers', () => {
 							field: nestedColumnName,
 						},
 						nesting: {
-							type: 'relational-many',
+							type: 'relational-single',
 							local: {
 								fields: [externalNestedForeignKeyColumnName],
 							},

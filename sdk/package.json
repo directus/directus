@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "14.0.0",
+	"version": "15.0.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,33 +14,11 @@
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
-		},
-		"./auth": {
-			"import": "./dist/auth/index.js",
-			"require": "./dist/auth/index.cjs",
-			"types": "./dist/auth/index.d.ts"
-		},
-		"./graphql": {
-			"import": "./dist/graphql/index.js",
-			"require": "./dist/graphql/index.cjs",
-			"types": "./dist/graphql/index.d.ts"
-		},
-		"./realtime": {
-			"import": "./dist/realtime/index.js",
-			"require": "./dist/realtime/index.cjs",
-			"types": "./dist/realtime/index.d.ts"
-		},
-		"./rest": {
-			"import": "./dist/rest/index.js",
-			"require": "./dist/rest/index.cjs",
-			"types": "./dist/rest/index.d.ts"
+			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"files": [
 		"dist"
 	],
@@ -49,12 +27,15 @@
 		"dev": "NODE_ENV=development tsup",
 		"test": "vitest --watch=false"
 	},
+	"dependencies": {
+		"@directus/system-data": "workspace:*"
+	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/node-fetch": "2.6.11",
-		"tsup": "8.0.1",
+		"tsup": "8.0.2",
 		"typescript": "5.3.3",
-		"vitest": "1.1.1"
+		"vitest": "1.3.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
