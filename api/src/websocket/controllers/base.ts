@@ -22,6 +22,7 @@ import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 import { registerWebSocketEvents } from './hooks.js';
+import cookieParser from 'cookie-parser';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -132,7 +133,16 @@ export default abstract class SocketController {
 			return;
 		}
 
+		const env = useEnv();
+		const cookies  = parseCookie(request);
 		const context: UpgradeContext = { request, socket, head };
+		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
+
+		if (cookies[sessionCookieName]) {
+			await this.handleSessionUpgrade(context, cookies[sessionCookieName]!);
+			return;
+		}
+
 
 		if (this.authentication.mode === 'strict') {
 			await this.handleStrictUpgrade(context, query);
@@ -147,6 +157,31 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability: null, expires_at: null } as AuthenticationState;
+			this.server.emit('connection', ws, state);
+		});
+	}
+
+	protected async handleSessionUpgrade({ request, socket, head }: UpgradeContext, token: string) {
+		let accountability: Accountability | null, expires_at: number | null;
+
+		try {
+			accountability = await getAccountabilityForToken(token);
+			expires_at = getExpiresAtForToken(token);
+		} catch {
+			accountability = null;
+			expires_at = null;
+		}
+
+		if (!accountability || !accountability.user) {
+			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+			socket.destroy();
+			return;
+		}
+
+		this.server.handleUpgrade(request, socket, head, async (ws) => {
+			this.catchInvalidMessages(ws);
+			const state = { accountability, expires_at } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
 	}
@@ -372,4 +407,16 @@ export default abstract class SocketController {
 			ws.terminate();
 		});
 	}
+}
+
+type CPParams = Parameters<ReturnType<typeof cookieParser>>;
+
+function parseCookie(request: IncomingMessage): Record<string, string> {
+	cookieParser()(
+		request as CPParams[0],
+		{} as CPParams[1],
+		(() => {}) as CPParams[2]
+	);
+
+	return (request as CPParams[0]).cookies ?? {};
 }
