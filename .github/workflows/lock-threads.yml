@@ -2,9 +2,7 @@ name: Lock Threads
 
 on:
   schedule:
-    - cron: '0 * * * *'
-    # Reduce to daily execution once initial backlog has been processed
-    # - cron: '30 2 * * *'
+    - cron: '30 2 * * *'
 
 permissions:
   issues: write
