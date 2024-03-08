@@ -107,7 +107,8 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [2, 3],
+									path: [2, 0],
+									pathIsIndex: true,
 									dataType: 'string',
 								},
 								compareTo: {
@@ -139,11 +140,11 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [4],
+									path: [3],
 								},
 								compareTo: {
 									type: 'value',
-									parameterIndex: 5,
+									parameterIndex: 4,
 								},
 							},
 						},
@@ -157,7 +158,8 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [6, 7],
+									path: [5, 0],
+									pathIsIndex: true,
 									dataType: 'string',
 								},
 								compareTo: {
@@ -220,16 +222,7 @@ test('getNestedUnionOne with a single identifier', () => {
 				],
 			},
 		],
-		parameters: [
-			'foreignCollection',
-			foreignTable,
-			'foreignKey',
-			0,
-			'foreignCollection',
-			foreignTable2,
-			'foreignKey',
-			0,
-		],
+		parameters: ['foreignCollection', foreignTable, 'foreignKey', 'foreignCollection', foreignTable2, 'foreignKey'],
 	};
 
 	expect(result).toStrictEqual(expected);

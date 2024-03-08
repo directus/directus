@@ -82,7 +82,8 @@ export const getNestedUnionOne = (
 						type: 'json',
 						columnName: unionRelational.field,
 						tableIndex,
-						path: [indexGen.parameter.next().value, indexGen.parameter.next().value],
+						path: [indexGen.parameter.next().value, idx],
+						pathIsIndex: true,
 						dataType: idField.type,
 					},
 					compareTo: {
@@ -93,7 +94,7 @@ export const getNestedUnionOne = (
 				},
 			};
 
-			parameters.push('foreignKey', idx);
+			parameters.push('foreignKey');
 			conditions.push(collectionCondition);
 		}
 

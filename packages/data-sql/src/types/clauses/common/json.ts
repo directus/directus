@@ -8,5 +8,7 @@ export interface AbstractSqlQueryJsonNode {
 	/* The index of the value in the list of parameter */
 	path: AtLeastOneElement<number>;
 
+	pathIsIndex?: boolean;
+
 	dataType?: 'string' | 'number' | 'object' | 'geo';
 }
