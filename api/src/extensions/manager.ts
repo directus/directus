@@ -230,7 +230,7 @@ export class ExtensionManager {
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
-		await this.reload();
+		await this.reload({ forceSync: true });
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
