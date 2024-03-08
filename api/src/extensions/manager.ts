@@ -387,7 +387,8 @@ export class ExtensionManager {
 		this.watcher = chokidar.watch(
 			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
 			{
-				ignoreInitial: true, // dotdirs are watched by default and frequently found in 'node_modules'
+				ignoreInitial: true,
+				// dotdirs are watched by default and frequently found in 'node_modules'
 				ignored: `${extensionDirUrl}/**/node_modules/**`,
 				// on macOS dotdirs in linked extensions are watched too
 				followSymlinks: os.platform() === 'darwin' ? false : true,
@@ -425,25 +426,28 @@ export class ExtensionManager {
 	 * removed
 	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
-		if (this.watcher) {
-			const toPackageExtensionPaths = (extensions: Extension[]) =>
-				extensions
-					.filter((extension) => !extension.local || extension.type === 'bundle')
-					.flatMap((extension) =>
-						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
-							? [
-									path.resolve(extension.path, extension.entrypoint.app),
-									path.resolve(extension.path, extension.entrypoint.api),
-							  ]
-							: path.resolve(extension.path, extension.entrypoint),
-					);
+		if (!this.watcher) return;
 
-			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
-			const removedPackageExtensionPaths = toPackageExtensionPaths(removed);
+		const extensionDir = path.resolve(getExtensionsPath());
+		const registryDir = path.join(extensionDir, '.registry');
 
-			this.watcher.add(addedPackageExtensionPaths);
-			this.watcher.unwatch(removedPackageExtensionPaths);
-		}
+		const toPackageExtensionPaths = (extensions: Extension[]) =>
+			extensions
+				.filter(
+					(extension) =>
+						extension.local && extension.path.startsWith(extensionDir) && !extension.path.startsWith(registryDir),
+				)
+				.flatMap((extension) =>
+					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
+						? [
+								path.resolve(extension.path, extension.entrypoint.app),
+								path.resolve(extension.path, extension.entrypoint.api),
+						  ]
+						: path.resolve(extension.path, extension.entrypoint),
+				);
+
+		this.watcher.add(toPackageExtensionPaths(added));
+		this.watcher.unwatch(toPackageExtensionPaths(removed));
 	}
 
 	/**
