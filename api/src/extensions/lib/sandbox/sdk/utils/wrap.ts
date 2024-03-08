@@ -13,29 +13,29 @@ export function wrap(name: string, util: (...args: any[]) => any) {
 			return { result: await util(...args), error: false };
 		} catch (error) {
 			// isolated-vm expects objects thrown from within the vm to be an instance of `Error`
-			let data;
+			let result;
 
 			if (error instanceof Error) {
 				// Don't expose the stack trace to the vm
 				delete error.stack;
 
-				// Serialize the error properties
+				// Serialize the remaining error properties
 				for (const key of Object.getOwnPropertyNames(error)) {
-					const value = error[key as keyof Error];
+					const value = error[key as keyof typeof error];
 
 					if (!value || typeof value !== 'object') continue;
 
-					error[key as keyof Error] = JSON.stringify(value, getCircularReplacer());
+					error[key as keyof typeof error] = JSON.stringify(value, getCircularReplacer());
 				}
 
-				data = error;
+				result = error;
 			} else if (error && typeof error !== 'object') {
-				data = error;
+				result = error;
 			} else {
-				data = new Error(`Unknown error in "${name}" Sandbox SDK function`);
+				result = new Error(`Unknown error in "${name}" Sandbox SDK function`);
 			}
 
-			return { result: data, error: true };
+			return { result, error: true };
 		}
 	};
 }
