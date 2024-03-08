@@ -106,3 +106,22 @@
 .plugin-tabs--tab {
 	border-width: 1px;
 }
+
+/**
+* Sidebar Badge
+* -------------------------------------------------------------------------- */
+.VPSidebarItem span.badge {
+	border: 1px solid var(--vp-c-divider);
+	background-color: var(--vp-c-bg-alt);
+	font-size: 0.75em;
+	padding: 0.1rem 0.4rem;
+	border-radius: 10rem;
+	vertical-align: top;
+	transition: background-color 0.25s;
+}
+
+.VPSidebarItem.is-active span.badge {
+	border: 1px solid var(--vp-custom-block-tip-border);
+	color: var(--vp-custom-block-tip-text);
+	background-color: var(--vp-custom-block-tip-bg);
+}

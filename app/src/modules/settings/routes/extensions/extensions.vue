@@ -1,97 +1,34 @@
 <script setup lang="ts">
-import api from '@/api';
-import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
+import { useExtensionsStore } from '@/stores/extensions';
+import { ExtensionType } from '@directus/extensions';
 import { groupBy } from 'lodash';
-import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
-import VNotice from '@/components/v-notice.vue';
-import { useReloadGuard } from '@/composables/use-reload-guard';
 
 const { t } = useI18n();
 
-const error = ref();
-const loading = ref(false);
-const extensions = ref<ApiOutput[]>([]);
-const needsReload = ref(false);
+const extensionsStore = useExtensionsStore();
+const { extensions, loading } = storeToRefs(extensionsStore);
 
-const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
-const regular = computed(() => extensions.value.filter(({ bundle }) => !bundle));
-const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
+const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
 
-const { confirmLeave, leaveTo } = useReloadGuard(needsReload);
+const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
 
-const currentPageLink = () => document.location.href;
+const extensionsByType = computed(() => {
+	const groups = groupBy(regular.value, 'schema.type');
 
-const leavePage = () => {
-	needsReload.value = false;
-	// navigate to new page using a full page reload
-	document.location.href = leaveTo.value ?? currentPageLink();
-};
-
-const fetchExtensions = async () => {
-	loading.value = true;
-
-	try {
-		const response = await api.get<{ data: ApiOutput[] }>('/extensions');
-
-		// Only render extensions that are both installed _and_ configured
-		extensions.value = response.data.data.filter((extension) => extension?.schema?.type !== undefined);
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
-};
-
-const isBrowserExtension = (type: string) => {
-	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
-};
-
-const refreshExtensions = async ({
-	enabled,
-	extension,
-	children,
-}: {
-	enabled: boolean;
-	extension: ApiOutput;
-	children: ApiOutput[];
-}) => {
-	await fetchExtensions();
-
-	if (!extension.schema?.type) {
-		return;
+	if ('undefined' in groups) {
+		groups['missing'] = groups['undefined'];
+		delete groups['undefined'];
 	}
 
-	if (isBrowserExtension(extension.schema.type)) {
-		needsReload.value = true;
-	}
-
-	if (extension.schema.type !== 'bundle') {
-		return;
-	}
-
-	if (extension.schema.partial === false) {
-		// A non partial bundles entries can only be toggled all at once.
-		// Only type needs to be checked as status will be in sync
-		if (children.some((e) => e.schema?.type && isBrowserExtension(e.schema?.type))) {
-			needsReload.value = true;
-		}
-
-		return;
-	}
-
-	if (children.some((e) => e.meta.enabled !== enabled && e.schema?.type && isBrowserExtension(e.schema.type))) {
-		// A partial bundle can have entries already be in the desired state so we need to check the status and type
-		needsReload.value = true;
-		return;
-	}
-};
-
-fetchExtensions();
+	return groups;
+});
 </script>
 
 <template>
@@ -112,26 +49,16 @@ fetchExtensions();
 			<extensions-info-sidebar-detail />
 		</template>
 
-		<div v-if="needsReload" class="page-container">
-			<v-notice type="warning">
-				{{ t('extension_reload_required_copy') }}&nbsp;
-				<a :href="currentPageLink()">{{ t('extension_reload_now') }}</a>
-			</v-notice>
-		</div>
-
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
 					<extension-group-divider class="group-divider" :type="type as ExtensionType" />
 
 					<v-list>
-						<template v-for="extension in list" :key="extension.name">
+						<template v-for="ext in list" :key="ext.name">
 							<extension-item
-								:extension="extension"
-								:children="
-									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
-								"
-								@refresh="refreshExtensions"
+								:extension="ext"
+								:children="ext.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === ext.id) : []"
 							/>
 						</template>
 					</v-list>
@@ -142,17 +69,6 @@ fetchExtensions();
 				{{ t('no_extensions_copy') }}
 			</v-info>
 		</div>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('extension_reload_required') }}</v-card-title>
-				<v-card-text>{{ t('extension_reload_required_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="confirmLeave = false">{{ t('back') }}</v-button>
-					<v-button @click="leavePage">{{ t('extension_reload_now') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
 	</private-view>
 </template>
 
@@ -167,6 +83,7 @@ fetchExtensions();
 .page-container {
 	padding: var(--content-padding);
 	padding-top: 0;
+	max-width: 1200px;
 }
 
 .group-divider {

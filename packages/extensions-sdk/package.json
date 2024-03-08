@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "10.3.4",
+	"version": "11.0.1",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -55,7 +55,7 @@
 		"rollup-plugin-esbuild": "5.0.0",
 		"rollup-plugin-styles": "4.0.0",
 		"vite": "4.5.2",
-		"vue": "3.4.19"
+		"vue": "3.4.21"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",

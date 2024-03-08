@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "15.0.1",
+	"version": "15.0.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,13 +14,11 @@
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"files": [
 		"dist"
 	],

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/system-data",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Definitions and types for Directus system collections",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -13,7 +13,10 @@
 	"author": "Tim de Heiden <tim@directus.io>",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -26,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"esbuild": "0.20.0",
+		"esbuild": "0.20.1",
 		"esbuild-yaml": "1.1.1",
 		"tsup": "8.0.2",
 		"typescript": "5.3.3"

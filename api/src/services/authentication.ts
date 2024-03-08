@@ -50,7 +50,10 @@ export class AuthenticationService {
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
-		otp?: string,
+		options?: Partial<{
+			otp: string;
+			session: boolean;
+		}>,
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
@@ -174,15 +177,15 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		if (user.tfa_secret && !otp) {
+		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
 			throw new InvalidOtpError();
 		}
 
-		if (user.tfa_secret && otp) {
+		if (user.tfa_secret && options?.otp) {
 			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
-			const otpValid = await tfaService.verifyOTP(user.id, otp);
+			const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
@@ -191,12 +194,19 @@ export class AuthenticationService {
 			}
 		}
 
-		const tokenPayload = {
+		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
 			role: user.role,
 			app_access: user.app_access,
 			admin_access: user.admin_access,
 		};
+
+		const refreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
+		if (options?.session) {
+			tokenPayload.session = refreshToken;
+		}
 
 		const customClaims = await emitter.emitFilter(
 			'auth.jwt',
@@ -214,13 +224,12 @@ export class AuthenticationService {
 			},
 		);
 
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
+			expiresIn: TTL,
 			issuer: 'directus',
 		});
-
-		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -258,12 +267,12 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 			id: user.id,
 		};
 	}
 
-	async refresh(refreshToken: string): Promise<Record<string, any>> {
+	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
@@ -347,12 +356,19 @@ export class AuthenticationService {
 			});
 		}
 
+		const newRefreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
 			role: record.role_id,
 			app_access: record.role_app_access,
 			admin_access: record.role_admin_access,
 		};
+
+		if (options?.session) {
+			tokenPayload.session = newRefreshToken;
+		}
 
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
@@ -385,13 +401,12 @@ export class AuthenticationService {
 			},
 		);
 
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'] as number,
+			expiresIn: TTL,
 			issuer: 'directus',
 		});
-
-		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -407,7 +422,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 			id: record.user_id,
 		};
 	}
