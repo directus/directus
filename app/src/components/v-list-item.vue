@@ -6,6 +6,8 @@ import { isEqual } from 'lodash';
 
 interface Props {
 	block?: boolean;
+	/** Makes the item height grow, if 'block' is enabled */
+	grow?: boolean;
 	/** Makes the item smaller */
 	dense?: boolean;
 	/** Where the item should link to */
@@ -36,6 +38,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	block: false,
+	grow: false,
 	dense: false,
 	to: '',
 	href: undefined,
@@ -116,6 +119,7 @@ function onClick(event: PointerEvent) {
 		class="v-list-item"
 		:class="{
 			active: isActiveRoute,
+			grow,
 			dense,
 			link: isLink,
 			disabled,
@@ -257,7 +261,7 @@ function onClick(event: PointerEvent) {
 		padding: var(--v-list-item-padding, var(--theme--form--field--input--padding));
 		position: relative;
 		display: flex;
-		min-height: var(--theme--form--field--input--height);
+		height: var(--theme--form--field--input--height);
 		margin: 0;
 		background-color: var(
 			--v-list-item-background-color,
@@ -304,6 +308,11 @@ function onClick(event: PointerEvent) {
 
 		& + & {
 			margin-top: var(--v-list-item-margin, 8px);
+		}
+
+		&.grow {
+			height: auto;
+			min-height: var(--theme--form--field--input--height);
 		}
 
 		&.dense {
