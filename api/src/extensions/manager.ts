@@ -547,7 +547,7 @@ export class ExtensionManager {
 		this.unregisterFunctionMap.set(extension.name, async () => {
 			await unregisterFunction();
 
-			isolate.dispose();
+			if (!isolate.isDisposed) isolate.dispose();
 		});
 	}
 
