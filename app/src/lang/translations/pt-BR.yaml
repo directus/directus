@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -27,6 +7,7 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
+extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
 logs: Registros
@@ -56,10 +37,28 @@ modifier: Modificador
 extension_interface: Interface
 extension_display: Exibir
 extension_layout: Layout
+extension_module: Módulo
 extension_panel: Painel
+extension_theme: Tema
 extension_hook: Gancho
+extension_endpoint: Endpoint
+extension_operation: Operação
+extension_bundle: Pacote
+extension_interfaces: Interfaces
+extension_displays: Telas
+extension_layouts: Layouts
 extension_modules: Módulos
+extension_panels: Painéis
+extension_themes: Temas
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operações
+extension_bundles: Pacotes
+extension_reload_required: Atualização de página necessária
+extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
+extension_reload_now: Recarregar agora
 enable: Habilitar
+disable: Desabilitar
 custom: Personalizado
 hook: Gancho
 fill_width: Preencher Largura
@@ -91,6 +90,7 @@ create_webhook: Criar Webhook
 create_custom_translation: Criar tradução personalizada
 edit_custom_translation: Criar tradução personalizada
 no_custom_translations: Traduções personalizadas
+no_custom_translations_copy: Ainda não há traduções personalizadas.
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
@@ -106,7 +106,31 @@ rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
+keep: Manter
+version: Versão
+version_key: Chave da Versão
+version_name: Nome da Versão
+main_version: Main
+switch_version: Trocar versão
+switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? As alterações não salvas serão perdidas.
+create_version: Criar versão
+rename_version: Renomear versão
+compare_version: Comparar versão
+save_version: Salvar versão
+promote_version: Promover versão
+promote_version_disabled: Sem alterações
+promote_version_drawer_title: Promover {version} para a Main
+promote_version_changes: Mudanças
 promote_version_preview: Pré-visualizar
+outdated_notice: >-
+  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
+promote_notice: >-
+  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
+delete_version: Deletar Versão
+delete_version_copy: >-
+  Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
+delete_on_promote_copy: >-
+  Você quer apagar ou manter a versão "{version}" após a promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -152,7 +176,16 @@ validationError:
   nnull: O valor não pode ser nulo
   required: O valor é obrigatório
   unique: O valor deve ser único
+  email: Valor tem de ser um endereço de e-mail válido
   regex: O valor não tem o formato correto
+  starts_with: O valor tem de começar com {substring}
+  istarts_with: O valor tem de começar com {substring}
+  nstarts_with: Valor não pode começar com {substring}
+  nistarts_with: Valor não pode começar com {substring}
+  ends_with: O valor tem que terminar com {substring}
+  iends_with: O valor tem que terminar com {substring}
+  nends_with: O valor não pode terminar com {substring}
+  niends_with: O valor não pode terminar com {substring}
 all_access: Acesso Total
 no_access: Sem Acesso
 use_custom: Usar Personalizado
@@ -235,6 +268,7 @@ bigInteger: Big Integer
 boolean: Booleano
 date: Data
 date_range: Período
+translation_key_placeholder: Insira uma chave...
 datetime: Data e Hora
 dateTime: Data e Hora
 precision: Precisão
@@ -577,38 +611,38 @@ auto_fill: Preench. automático
 corresponding_field: Campo correspondente
 errors:
   COLLECTION_NOT_FOUND: "A coleção não existe"
+  CONTAINS_NULL_VALUES: O campo contém valores nulos
+  CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Não permitido
+  ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
+  INTERNAL_SERVER_ERROR: Erro inesperado
+  INVALID_CONFIG: Configuração inválida
   INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
+  INVALID_FOREIGN_KEY: Chave estrangeira inválida
+  INVALID_IP: Endereço IP não permitido
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
   INVALID_PROVIDER: Usuário pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
-  INVALID_CONFIG: Configuração inválida
   INVALID_TOKEN: Token inválido
-  INVALID_IP: Endereço IP não permitido
   INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
-  ROUTE_NOT_FOUND: Não encontrado
-  RECORD_NOT_UNIQUE: Valor duplicado detectado
-  USER_SUSPENDED: Usuário suspenso
-  CONTAINS_NULL_VALUES: O campo contém valores nulos
-  INTERNAL_SERVER_ERROR: Erro inesperado
-  NOT_NULL_VIOLATION: O valor não pode ser nulo
-  ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
-  VALUE_TOO_LONG: Valor é muito longo
-  VALUE_OUT_OF_RANGE: Valor fora de alcance
-  INVALID_FOREIGN_KEY: Chave estrangeira inválida
-  UNKNOWN: Erro inesperado
-  SERVICE_UNAVAILABLE: Serviço indisponível
-  UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
-  UNEXPECTED_RESPONSE: Resposta inesperada
-  TOKEN_EXPIRED: Token expirado
-  RANGE_NOT_SATISFIABLE: Intervalo inválido
   METHOD_NOT_ALLOWED: Método não permitido
+  NOT_NULL_VIOLATION: O valor não pode ser nulo
+  RANGE_NOT_SATISFIABLE: Intervalo inválido
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
   REQUESTS_EXCEEDED: Limite de requisições atingido
-  CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
+  ROUTE_NOT_FOUND: Não encontrado
+  SERVICE_UNAVAILABLE: Serviço indisponível
+  TOKEN_EXPIRED: Token expirado
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  UNKNOWN: Erro inesperado
+  UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
+  USER_SUSPENDED: Usuário suspenso
+  VALUE_OUT_OF_RANGE: Valor fora de alcance
+  VALUE_TOO_LONG: Valor é muito longo
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
