@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Indentificador
 avatar: Foto
 application: Aplicació
@@ -557,37 +537,37 @@ auto_fill: Omple automàticament
 corresponding_field: Camp corresponent
 errors:
   COLLECTION_NOT_FOUND: "La col·lecció no existeix"
+  CONTAINS_NULL_VALUES: El camp conté valors nuls
   FIELD_NOT_FOUND: Camp no trobat
   FORBIDDEN: Prohibit
+  ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
+  INTERNAL_SERVER_ERROR: Error inesperat
+  INVALID_CONFIG: Configuració invàlida
   INVALID_CREDENTIALS: Identificador o contrasenya incorrectes
+  INVALID_FOREIGN_KEY: Clau forana invàlida
+  INVALID_IP: Adreça IP no permesa
   INVALID_OTP: Contrasenya d'un sol ús errònia
   INVALID_PAYLOAD: Payload invàlid
   INVALID_PROVIDER: Aquest usuari pertany a un proveïdor d'autenticació diferent
   INVALID_QUERY: Consulta invàlida
-  INVALID_CONFIG: Configuració invàlida
   INVALID_TOKEN: Token invàlid
-  INVALID_IP: Adreça IP no permesa
   INVALID_USER: No s’ha pogut autenticar l’usuari
   ITEM_LIMIT_REACHED: Límit d'elements assolit
   ITEM_NOT_FOUND: Element no trobat
-  ROUTE_NOT_FOUND: No trobat
-  RECORD_NOT_UNIQUE: Valor duplicat detectat
-  USER_SUSPENDED: Usuari suspès
-  CONTAINS_NULL_VALUES: El camp conté valors nuls
-  INTERNAL_SERVER_ERROR: Error inesperat
-  NOT_NULL_VIOLATION: El valor no pot ser null
-  ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
-  VALUE_TOO_LONG: El valor és massa gran
-  VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
-  INVALID_FOREIGN_KEY: Clau forana invàlida
-  UNKNOWN: Error inesperat
-  SERVICE_UNAVAILABLE: Servei no disponible
-  UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
-  UNEXPECTED_RESPONSE: Resposta inesperada
-  TOKEN_EXPIRED: Token expirat
-  RANGE_NOT_SATISFIABLE: Interval no vàlid
   METHOD_NOT_ALLOWED: Mètode no permès
+  NOT_NULL_VIOLATION: El valor no pot ser null
+  RANGE_NOT_SATISFIABLE: Interval no vàlid
+  RECORD_NOT_UNIQUE: Valor duplicat detectat
   REQUESTS_EXCEEDED: Límit de peticions assolit
+  ROUTE_NOT_FOUND: No trobat
+  SERVICE_UNAVAILABLE: Servei no disponible
+  TOKEN_EXPIRED: Token expirat
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  UNKNOWN: Error inesperat
+  UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
+  USER_SUSPENDED: Usuari suspès
+  VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
+  VALUE_TOO_LONG: El valor és massa gran
 security: Seguretat
 value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...
