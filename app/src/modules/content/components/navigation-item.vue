@@ -112,7 +112,6 @@ function getChildBookmarks(collection: Collection) {
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
-		query
 	>
 		<navigation-item-content
 			:search="search"
