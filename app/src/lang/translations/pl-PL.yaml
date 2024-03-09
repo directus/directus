@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
@@ -642,39 +622,39 @@ auto_fill: Automatyczne wypełnianie
 corresponding_field: Odpowiednie pole
 errors:
   COLLECTION_NOT_FOUND: "Kolekcja nie istnieje"
+  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
+  CONTENT_TOO_LARGE: Przedłożony element/plik jest zbyt duży
   FIELD_NOT_FOUND: Nie znaleziono pola
   FORBIDDEN: Zabronione
+  ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
+  INVALID_CONFIG: Nieprawidłowa konfiguracja
   INVALID_CREDENTIALS: Nieprawidłowa nazwa użytkownika lub hasło
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
+  INVALID_IP: Adres IP niedozwolony
   INVALID_OTP: Złe hasło jednorazowe
   INVALID_PAYLOAD: Błędny payload
   INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
-  INVALID_CONFIG: Nieprawidłowa konfiguracja
   INVALID_TOKEN: Nieprawidłowy token
-  INVALID_IP: Adres IP niedozwolony
   INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
-  ROUTE_NOT_FOUND: Nie znaleziono
-  RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
-  USER_SUSPENDED: Użytkownik zawieszony
-  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNPROCESSABLE_CONTENT: Zawartość niemożliwa do przetworzenia
-  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
-  NOT_NULL_VIOLATION: Wartość nie może być pusta
-  ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
-  VALUE_TOO_LONG: Wartość jest zbyt długa
-  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
-  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
-  UNKNOWN: Nieoczekiwany błąd
-  SERVICE_UNAVAILABLE: Serwis niedostępny
-  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
-  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
-  TOKEN_EXPIRED: Token wygasł
-  RANGE_NOT_SATISFIABLE: Błędny zakres
   METHOD_NOT_ALLOWED: Metoda niedozwolona
+  NOT_NULL_VIOLATION: Wartość nie może być pusta
+  RANGE_NOT_SATISFIABLE: Błędny zakres
+  RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   REQUESTS_EXCEEDED: Osiągnięto limit żądań
-  CONTENT_TOO_LARGE: Przedłożony element/plik jest zbyt duży
+  ROUTE_NOT_FOUND: Nie znaleziono
+  SERVICE_UNAVAILABLE: Serwis niedostępny
+  TOKEN_EXPIRED: Token wygasł
+  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
+  UNKNOWN: Nieoczekiwany błąd
+  UNPROCESSABLE_CONTENT: Zawartość niemożliwa do przetworzenia
+  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
+  USER_SUSPENDED: Użytkownik zawieszony
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  VALUE_TOO_LONG: Wartość jest zbyt długa
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
