@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Идентификатор
 avatar: Аватар
 application: Приложение
@@ -562,37 +542,37 @@ auto_fill: Автоматично попълване
 corresponding_field: Кореспондиращо поле
 errors:
   COLLECTION_NOT_FOUND: "Колекцията не съществува"
+  CONTAINS_NULL_VALUES: Полето съдържа null стойност
   FIELD_NOT_FOUND: Полето не е намерено
   FORBIDDEN: Забранен
+  ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
+  INTERNAL_SERVER_ERROR: Неочаквана грешка
+  INVALID_CONFIG: Невалидна конфигурация
   INVALID_CREDENTIALS: Грешно потребителско име или парола
+  INVALID_FOREIGN_KEY: Невалиден външен ключ
+  INVALID_IP: IP адресът е невалиден
   INVALID_OTP: Грешна еднократна парола
   INVALID_PAYLOAD: Невалидно съдържание
   INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
-  INVALID_CONFIG: Невалидна конфигурация
   INVALID_TOKEN: Невалиден токен
-  INVALID_IP: IP адресът е невалиден
   INVALID_USER: Неуспешно удостоверение на потребителя
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
-  ROUTE_NOT_FOUND: Не е намерен
-  RECORD_NOT_UNIQUE: Вече съществува такава стойност
-  USER_SUSPENDED: Потребителя е деактивиран
-  CONTAINS_NULL_VALUES: Полето съдържа null стойност
-  INTERNAL_SERVER_ERROR: Неочаквана грешка
-  NOT_NULL_VIOLATION: Стойността не трябва да е null
-  ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
-  VALUE_TOO_LONG: Стойността е твърде дълга
-  VALUE_OUT_OF_RANGE: Стойността е извън границите
-  INVALID_FOREIGN_KEY: Невалиден външен ключ
-  UNKNOWN: Неочаквана грешка
-  SERVICE_UNAVAILABLE: Услугата е недостъпна
-  UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
-  UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
-  TOKEN_EXPIRED: Изтекъл токен
-  RANGE_NOT_SATISFIABLE: Невалиден диапазон
   METHOD_NOT_ALLOWED: Методът не е разрешен
+  NOT_NULL_VIOLATION: Стойността не трябва да е null
+  RANGE_NOT_SATISFIABLE: Невалиден диапазон
+  RECORD_NOT_UNIQUE: Вече съществува такава стойност
   REQUESTS_EXCEEDED: Лимитът на заявките е достигнат
+  ROUTE_NOT_FOUND: Не е намерен
+  SERVICE_UNAVAILABLE: Услугата е недостъпна
+  TOKEN_EXPIRED: Изтекъл токен
+  UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
+  UNKNOWN: Неочаквана грешка
+  UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
+  USER_SUSPENDED: Потребителя е деактивиран
+  VALUE_OUT_OF_RANGE: Стойността е извън границите
+  VALUE_TOO_LONG: Стойността е твърде дълга
 security: Сигурност
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметката...
