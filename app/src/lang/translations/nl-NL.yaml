@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -625,38 +605,38 @@ auto_fill: Automatisch vullen
 corresponding_field: Corresponderende veld
 errors:
   COLLECTION_NOT_FOUND: "Collectie bestaat niet"
+  CONTAINS_NULL_VALUES: Veld bevat NULL waarden
+  CONTENT_TOO_LARGE: Verstuurd item/bestand is te groot
   FIELD_NOT_FOUND: Veld niet gevonden
   FORBIDDEN: Verboden
+  ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
+  INTERNAL_SERVER_ERROR: Onverwachte fout
+  INVALID_CONFIG: Ongeldige configuratie
   INVALID_CREDENTIALS: Verkeerde gebruikersnaam of wachtwoord
+  INVALID_FOREIGN_KEY: Ongeldige Foreign Key
+  INVALID_IP: IP-adres niet toegestaan
   INVALID_OTP: Verkeerd eenmalig wachtwoord
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: Gebruiker behoort tot een andere autorisatieprovider
   INVALID_QUERY: Ongeldige zoekopdracht
-  INVALID_CONFIG: Ongeldige configuratie
   INVALID_TOKEN: Ongeldige token
-  INVALID_IP: IP-adres niet toegestaan
   INVALID_USER: Authenticatie van gebruiker mislukt
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
-  ROUTE_NOT_FOUND: Niet gevonden
-  RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
-  USER_SUSPENDED: Gebruiker geschorst
-  CONTAINS_NULL_VALUES: Veld bevat NULL waarden
-  INTERNAL_SERVER_ERROR: Onverwachte fout
-  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
-  ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
-  VALUE_TOO_LONG: Waarde is te lang
-  VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
-  INVALID_FOREIGN_KEY: Ongeldige Foreign Key
-  UNKNOWN: Onverwachte fout
-  SERVICE_UNAVAILABLE: Dienst onbeschikbaar
-  UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
-  UNEXPECTED_RESPONSE: Onverwachte resultaat
-  TOKEN_EXPIRED: Token verlopen
-  RANGE_NOT_SATISFIABLE: Ongeldig bereik
   METHOD_NOT_ALLOWED: Methode niet toegestaan
+  NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  RANGE_NOT_SATISFIABLE: Ongeldig bereik
+  RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
   REQUESTS_EXCEEDED: Limiet aantal verzoeken bereikt
-  CONTENT_TOO_LARGE: Verstuurd item/bestand is te groot
+  ROUTE_NOT_FOUND: Niet gevonden
+  SERVICE_UNAVAILABLE: Dienst onbeschikbaar
+  TOKEN_EXPIRED: Token verlopen
+  UNEXPECTED_RESPONSE: Onverwachte resultaat
+  UNKNOWN: Onverwachte fout
+  UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
+  USER_SUSPENDED: Gebruiker geschorst
+  VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
+  VALUE_TOO_LONG: Waarde is te lang
 security: Beveiliging
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
