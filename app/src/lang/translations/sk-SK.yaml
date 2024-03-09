@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikácia
@@ -304,11 +284,18 @@ time: Čas
 timestamp: Časová pečiatka
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (Všetko)
+  Point: Bod
+  Polygon: Polygón
+  MultiPoint: MultiPoint
+  MultiPolygon: MultiPolygón
 theme_auto: Automaticky (podľa systému)
 theme_light: Svetlý režim
 theme_dark: Tmavý režim
 theme_directus_default: Directus predvolené
 theme_directus_minimal: Directus minimum
+theme_directus_colormatch: Zosúladenie farieb Directus
 not_available_for_type: Nedostupné pre tento typ
 create_translations: Vytvoriť preklady
 auto_refresh: Auto obnovenie
@@ -638,6 +625,10 @@ select_an_item: Vyberte položku...
 edit: Upraviť
 edit_item: Upraviť položku
 enabled: Zapnuté
+partially_enabled: Čiastočne zapnuté
+enable_all: Zapnúť všetko
+disable_all: Vypnúť všetko
+enabled_dev_tooltip: V dev režime sú rozšírenia vždy zapnuté
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
@@ -649,39 +640,40 @@ auto_fill: Automatické vypĺňanie
 corresponding_field: Zodpovedajúce pole
 errors:
   COLLECTION_NOT_FOUND: "Zbierka neexistuje"
+  CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
+  CONTENT_TOO_LARGE: Odoslaná položka/súbor je príliš veľký
   FIELD_NOT_FOUND: Pole sa nenašlo
   FORBIDDEN: Zakázané
+  GRAPHQL_VALIDATION: Validácia GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
+  INTERNAL_SERVER_ERROR: Neočakávaná chyba
+  INVALID_CONFIG: Neplatná konfigurácia
   INVALID_CREDENTIALS: Nesprávne používateľské meno alebo heslo
+  INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
+  INVALID_IP: IP Adresa nie je povolená
   INVALID_OTP: Nesprávne jednorazové heslo
   INVALID_PAYLOAD: Neplatný payload
   INVALID_PROVIDER: Používateľ patrí k inému auth poskytovateľovi
   INVALID_QUERY: Neplatný dotaz
-  INVALID_CONFIG: Neplatná konfigurácia
   INVALID_TOKEN: Neplatný token
-  INVALID_IP: IP Adresa nie je povolená
   INVALID_USER: Nepodarilo sa overiť používateľa
   ITEM_LIMIT_REACHED: Dosiahnutý limit položiek
   ITEM_NOT_FOUND: Položka nenájdená
-  ROUTE_NOT_FOUND: Nenájdené
-  RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
-  USER_SUSPENDED: Používateľ pozastavený
-  CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_CONTENT: Nespracovateľný obsah
-  INTERNAL_SERVER_ERROR: Neočakávaná chyba
-  NOT_NULL_VIOLATION: Hodnota nemôže byť null
-  ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
-  VALUE_TOO_LONG: Hodnota je príliš dlhá
-  VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
-  INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
-  UNKNOWN: Neočakávaná chyba
-  SERVICE_UNAVAILABLE: Služba je nedostupná
-  UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
-  UNEXPECTED_RESPONSE: Neočakávaná odpoveď
-  TOKEN_EXPIRED: Platnosť tokenu vypršala
-  RANGE_NOT_SATISFIABLE: Neplatný rozsah
   METHOD_NOT_ALLOWED: Metóda nie je povolená
+  NOT_NULL_VIOLATION: Hodnota nemôže byť null
+  RANGE_NOT_SATISFIABLE: Neplatný rozsah
+  RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
   REQUESTS_EXCEEDED: Dosiahnutý limit požiadaviek
-  CONTENT_TOO_LARGE: Odoslaná položka/súbor je príliš veľký
+  ROUTE_NOT_FOUND: Nenájdené
+  SERVICE_UNAVAILABLE: Služba je nedostupná
+  TOKEN_EXPIRED: Platnosť tokenu vypršala
+  UNEXPECTED_RESPONSE: Neočakávaná odpoveď
+  UNKNOWN: Neočakávaná chyba
+  UNPROCESSABLE_CONTENT: Nespracovateľný obsah
+  UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
+  USER_SUSPENDED: Používateľ pozastavený
+  VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
+  VALUE_TOO_LONG: Hodnota je príliš dlhá
 security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
@@ -1379,6 +1371,7 @@ field_options:
   directus_roles:
     name: Unikátny názov tejto role...
     description: Popis tejto role...
+    ip_access: Pridajte IP adresy, IP rozsahy a CIDR bloky. Nechajte prázdne pre povolenie všetkých...
     fields:
       icon_name: Ikona
       name_name: Názov
@@ -1847,7 +1840,9 @@ interfaces:
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
     custom_formats: Vlastné formáty
+    custom_formats_note: Zoznam TinyMCE formátov obsahu. Pre viac info pozrite TinyMCE dokumentáciu [Formátovanie obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Prepísanie nastavení
+    options_override_note: Klávesy na používateľské formátovanie TinyMCE. Pre viac info pozrite TinyMCE dokumentáciu [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
@@ -1988,6 +1983,7 @@ displays:
     description: Zobrazí formátovanú hodnotu objektu
   hash:
     hash: Hash
+    description: Zobrazí redigovanú verziu hodnoty
   icon:
     icon: Ikona
     description: Zobraziť ikonu
