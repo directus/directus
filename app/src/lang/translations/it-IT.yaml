@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -304,6 +284,14 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (tutte)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
@@ -639,6 +627,10 @@ select_an_item: Seleziona un elemento...
 edit: Modifica
 edit_item: Modifica elemento
 enabled: Abilitato
+partially_enabled: Parzialmente Abilitato
+enable_all: Attiva tutto
+disable_all: Disabilita tutto
+enabled_dev_tooltip: Le estensioni sono sempre abilitate in modalità sviluppatore
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
 tfa_setup: Configura l'autenticazione a due fattori
@@ -650,40 +642,40 @@ auto_fill: Auto-completamento
 corresponding_field: Campo Corrispondente
 errors:
   COLLECTION_NOT_FOUND: "La Raccolta non esiste"
+  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
+  CONTENT_TOO_LARGE: L'oggetto/file inviato è troppo grande
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
+  GRAPHQL_VALIDATION: Validazione GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  INTERNAL_SERVER_ERROR: Errore Imprevisto
+  INVALID_CONFIG: Configurazione non valida
   INVALID_CREDENTIALS: Nome utente o password sbagliati
+  INVALID_FOREIGN_KEY: Chiave esterna non valida
+  INVALID_IP: Indirizzo IP non consentito
   INVALID_OTP: Password monouso errata
   INVALID_PAYLOAD: Payload non valido
   INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
-  INVALID_CONFIG: Configurazione non valida
   INVALID_TOKEN: Token non valido
-  INVALID_IP: Indirizzo IP non consentito
   INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
-  ROUTE_NOT_FOUND: Non trovato
-  RECORD_NOT_UNIQUE: Rilevato valore duplicato
-  USER_SUSPENDED: Utente sospeso
-  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNPROCESSABLE_CONTENT: Contenuto non elaborabile
-  INTERNAL_SERVER_ERROR: Errore Imprevisto
-  NOT_NULL_VIOLATION: Il valore non può essere nullo
-  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
-  VALUE_TOO_LONG: Il valore è troppo lungo
-  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
-  INVALID_FOREIGN_KEY: Chiave esterna non valida
-  UNKNOWN: Errore Imprevisto
-  GRAPHQL_VALIDATION: Validazione GraphQL
-  SERVICE_UNAVAILABLE: Servizio non disponibile
-  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
-  UNEXPECTED_RESPONSE: Risposta inattesa
-  TOKEN_EXPIRED: Token scaduto
-  RANGE_NOT_SATISFIABLE: Intervallo non valido
   METHOD_NOT_ALLOWED: Metodo non consentito
+  NOT_NULL_VIOLATION: Il valore non può essere nullo
+  RANGE_NOT_SATISFIABLE: Intervallo non valido
+  RECORD_NOT_UNIQUE: Rilevato valore duplicato
   REQUESTS_EXCEEDED: Limite di richieste raggiunto
-  CONTENT_TOO_LARGE: L'oggetto/file inviato è troppo grande
+  ROUTE_NOT_FOUND: Non trovato
+  SERVICE_UNAVAILABLE: Servizio non disponibile
+  TOKEN_EXPIRED: Token scaduto
+  UNEXPECTED_RESPONSE: Risposta inattesa
+  UNKNOWN: Errore Imprevisto
+  UNPROCESSABLE_CONTENT: Contenuto non elaborabile
+  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
+  USER_SUSPENDED: Utente sospeso
+  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
+  VALUE_TOO_LONG: Il valore è troppo lungo
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -1383,6 +1375,7 @@ field_options:
   directus_roles:
     name: Nome unico per questo ruolo...
     description: Una descrizione per questo ruolo...
+    ip_access: Aggiungi indirizzi IP consentiti, intervalli di IP e blocchi CIDR. Lascia vuoto per consentire tutti...
     fields:
       icon_name: Icona
       name_name: Nome
