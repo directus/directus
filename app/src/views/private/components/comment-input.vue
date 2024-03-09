@@ -114,7 +114,7 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 		const result = await api.get('/users', {
 			params: {
 				filter: name === '' || !name ? undefined : filter,
-				fields: ['first_name', 'last_name', 'email', 'id', 'avatar'],
+				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
 			},
 			cancelToken: cancelToken.token,
 		});
@@ -142,7 +142,6 @@ function cancel() {
 	}
 }
 
-// Why are selections so weird?
 function saveCursorPosition() {
 	if (document.getSelection) {
 		const selection = document.getSelection();

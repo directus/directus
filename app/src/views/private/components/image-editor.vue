@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -81,7 +81,7 @@ watch(internalActive, (isActive) => {
 const randomId = ref<string>(nanoid());
 
 const imageURL = computed(() => {
-	return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
+	return `${getRootPath()}assets/${props.id}?${randomId.value}`;
 });
 
 const dimensionsString = computed(() => {

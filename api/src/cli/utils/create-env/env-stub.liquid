@@ -204,20 +204,35 @@ STORAGE_LOCAL_ROOT="./uploads"
 # The duration that the access token is valid ["15m"]
 ACCESS_TOKEN_TTL="15m"
 
-# The duration that the refresh token is valid, and also how long users stay logged-in to the App ["7d"]
+# The duration that the refresh token is valid. This value should be higher than ACCESS_TOKEN_TTL resp. SESSION_COOKIE_TTL. ["7d"]
 REFRESH_TOKEN_TTL="7d"
 
-# Whether or not to use a secure cookie for the refresh token in cookie mode [false]
+# Whether or not to set the secure attribute for the refresh token cookie [false]
 REFRESH_TOKEN_COOKIE_SECURE=false
 
-# Value for sameSite in the refresh token cookie when in cookie mode ["lax"]
+# Value for sameSite in the refresh token cookie ["lax"]
 REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
 
-# Name of refresh token cookie ["directus_refresh_token"]
+# Name of the refresh token cookie ["directus_refresh_token"]
 REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 
 # Which domain to use for the refresh cookie. Useful for development mode.
 # REFRESH_TOKEN_COOKIE_DOMAIN
+
+# The duration that the session cookie/token is valid, and also how long users stay logged-in to the App ["1d"]
+SESSION_COOKIE_TTL="1d"
+
+# Whether or not to set the secure attribute for the session cookie [false]
+SESSION_COOKIE_SECURE=false
+
+# Value of sameSite for the session cookie ["lax"]
+SESSION_COOKIE_SAME_SITE="lax"
+
+# Name of the session cookie ["directus_refresh_token"]
+SESSION_COOKIE_NAME="directus_session_token"
+
+# Which domain to use for the session cookie. Useful for development mode.
+# SESSION_COOKIE_DOMAIN
 
 # The duration in milliseconds that a login request will be stalled for,
 # and it should be greater than the time taken for a login request with an invalid password [500]

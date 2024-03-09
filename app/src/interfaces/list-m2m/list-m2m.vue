@@ -565,11 +565,11 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
-
 			<v-list v-else>
+				<v-notice v-if="displayItems.length === 0">
+					{{ t('no_items') }}
+				</v-notice>
+
 				<draggable
 					:model-value="displayItems"
 					item-key="id"
@@ -726,10 +726,6 @@ function getLinkForItem(item: DisplayItem) {
 	.deselect.deleted {
 		color: var(--danger-75);
 	}
-}
-
-.v-notice {
-	margin-top: 8px;
 }
 
 .actions {

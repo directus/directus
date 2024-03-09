@@ -29,15 +29,33 @@ beforeEach(() => {
 });
 
 test('intersects', () => {
-	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`ST_Intersects("t${tableIndex}"."${columnName}", ST_GeomFromText($${parameterIndex + 1}))`,
-	);
+	const result = geoCondition(sampleCondition);
+	const expected = `ST_Intersects("t${tableIndex}"."${columnName}", ST_GeomFromText($${parameterIndex + 1}))`;
+	expect(result).toStrictEqual(expected);
+});
+
+test('intersects with json target', () => {
+	const pathParameter = randomInteger(0, 100);
+
+	sampleCondition.target = {
+		type: 'json',
+		columnName,
+		tableIndex,
+		path: [pathParameter],
+	};
+
+	const result = geoCondition(sampleCondition);
+
+	const expected = `ST_Intersects(CAST("t${tableIndex}"."${columnName}" ->> $${
+		pathParameter + 1
+	} AS geometry), ST_GeomFromText($${parameterIndex + 1}))`;
+
+	expect(result).toStrictEqual(expected);
 });
 
 test('intersects_bbox', () => {
 	sampleCondition.operation = 'intersects_bbox';
-
-	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`"t${tableIndex}"."${columnName}" && ST_GeomFromText($${parameterIndex + 1}))`,
-	);
+	const result = geoCondition(sampleCondition);
+	const expected = `"t${tableIndex}"."${columnName}" && ST_GeomFromText($${parameterIndex + 1}))`;
+	expect(result).toStrictEqual(expected);
 });

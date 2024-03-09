@@ -106,8 +106,7 @@ services:
       - 8055:8055
     volumes:
       - ./uploads:/directus/uploads
-      # If you want to load extensions from the host
-      # - ./extensions:/directus/extensions
+      - ./extensions:/directus/extensions
     depends_on:
       - cache
       - database
