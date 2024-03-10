@@ -11,15 +11,15 @@ export function registerOperationGenerator() {
 
 	const registerOperation = (
 		id: Reference<string>,
-		cb: Reference<(data: Record<string, unknown>) => unknown | Promise<unknown> | void>,
+		cb: Reference<(options: Record<string, unknown>) => unknown | Promise<unknown> | void>,
 	) => {
 		if (id.typeof !== 'string') throw new TypeError('Operation config id has to be of type string');
 		if (cb.typeof !== 'function') throw new TypeError('Operation config handler has to be of type function');
 
 		const idCopied = id.copySync();
 
-		const handler: OperationHandler = async (payload) => {
-			const response = await callReference(cb, [payload]);
+		const handler: OperationHandler = async (options) => {
+			const response = await callReference(cb, [options]);
 
 			return response.copy();
 		};
