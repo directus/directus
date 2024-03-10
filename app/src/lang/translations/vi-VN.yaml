@@ -15,7 +15,6 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 location: Vị trí
-collection_names_are_case_sensitive:
 condition_rules: Điều kiện
 input: Nhập
 maps: Bản đồ
