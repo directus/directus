@@ -154,7 +154,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					fetchOptions.credentials = authConfig.credentials;
 				}
 
-				const body: Record<string, any> = { mode };
+				const body: Record<string, string> = { mode };
 
 				if (mode === 'json' && authData?.refresh_token) {
 					body['refresh_token'] = authData.refresh_token;
