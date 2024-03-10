@@ -18,7 +18,11 @@ export function registerOperationGenerator() {
 
 		const idCopied = id.copySync();
 
-		const handler: OperationHandler = async (data) => callReference(cb, [data]);
+		const handler: OperationHandler = async (payload) => {
+			const response = await callReference(cb, [payload]);
+
+			return response.copy();
+		};
 
 		flowManager.addOperation(idCopied, handler);
 
