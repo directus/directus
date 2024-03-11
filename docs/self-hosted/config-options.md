@@ -326,6 +326,7 @@ WebSockets work reliably across multiple containers of Directus.
 
 | Variable         | Description                                                                                                                                                | Default Value |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS_ENABLED`  | Whether or not Redis should be used. Defaults to whether or not you have any of the vars below configured                                                  | --            |
 | `REDIS`          | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
 | `REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
 | `REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
