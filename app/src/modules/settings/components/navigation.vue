@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useFeatureFlagStore } from '@/stores/feature-flags';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
+const { showWebhooks } = storeToRefs(useFeatureFlagStore());
 
 const links: { icon: string; name: string; to?: string; href?: string; chip?: string }[][] = [
 	[
@@ -18,11 +20,15 @@ const links: { icon: string; name: string; to?: string; href?: string; chip?: st
 			name: t('settings_permissions'),
 			to: `/settings/roles`,
 		},
-		{
-			icon: 'anchor',
-			name: t('settings_webhooks'),
-			to: `/settings/webhooks`,
-		},
+		...(showWebhooks.value
+			? [
+					{
+						icon: 'anchor',
+						name: t('settings_webhooks'),
+						to: `/settings/webhooks`,
+					},
+			  ]
+			: []),
 		{
 			icon: 'bolt',
 			name: t('settings_flows'),
