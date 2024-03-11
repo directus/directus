@@ -15,13 +15,17 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.10.0
 
-### Removed Local Extension Folders
+### Deprecated Typed Extension Folders
 
-Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
+Legacy extension type directory-based structure (`/interfaces/my-interface/`, `/endpoints/my-endpoint`, etc) are being
 removed in favor of relying on the `package.json` file for metadata including extension type.
 
-If your extension is already in the root `extensions` directory and has a `package.json` file with a
-`directus:extension` object, there is no action required.
+If your extensions are already relying on the up-to-date extensions folder paradigm (extensions in the root of your
+extensions folder prefixed with `directus-extension-`) no action is required at this point. If you're currently relying
+on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
+`hooks`, etc, you will have to update your extensions before upgrading to this version.
+
+Directus will ignore extensions that use the legacy format starting in this version.
 
 ::: details Migration/Mitigation
 
@@ -30,7 +34,7 @@ Move all extension directories from their extension type subdirectory one level 
 - `./extensions/modules/module-a/` becomes `./extensions/module-a/`.
 - `./extensions/panels/panel-b/` becomes `./extensions/panel-b/`.
 
-If your project does not already have one, add a `directus:extension` object to your `package.json` file:
+If your extension does not already have one, add a `directus:extension` object to your `package.json` file:
 
 ```json
 {
@@ -57,6 +61,31 @@ Notes:
   `^10.0.0`)
 
 :::
+
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+migrated.
+
+Place migrations in the `./migrations` directory, or set the new location in the `MIGRATIONS_PATH` environment variable.
+
+### Moved Email Templates Out of Extensions
+
+Email Templates are no longer considered an extension type as of this release. The `templates` extensions directory must
+be migrated.
+
+Place email templates in the `./templates` directory, or set the new location in the `EMAIL_TEMPLATES_PATH` environment
+variable.
+
+### Content Versioning Output
+
+Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
+resolved rather than returned as a raw changes object (see [#20890](https://github.com/directus/directus/issues/20890)
+for more information).
+
+The change makes the output for a versioned record match the format of the `Main` record more closely, which then
+natively supports other features like Live Preview. To retrieve the raw staged version (pre-10.10.0 behavior), just add
+the new `?versionRaw=true` query parameter to the request.
 
 ### Session Cookie Based Authentication
 

@@ -89,7 +89,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					fetchOptions.credentials = authConfig.credentials;
 				}
 
-				const body: Record<string, any> = { mode };
+				const body: Record<string, string> = { mode };
 
 				if (mode === 'json' && authData?.refresh_token) {
 					body['refresh_token'] = authData.refresh_token;
@@ -153,13 +153,16 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					fetchOptions.credentials = authConfig.credentials;
 				}
 
+				const body: Record<string, string> = { mode };
+
 				if (mode === 'json' && authData?.refresh_token) {
-					fetchOptions.body = JSON.stringify({
-						refresh_token: authData.refresh_token,
-					});
+					body['refresh_token'] = authData.refresh_token;
 				}
 
-				await request(fetchOptions, client.globals.fetch, client.hooks);
+				fetchOptions.body = JSON.stringify(body);
+
+				const requestUrl = getRequestUrl(client.url, '/auth/logout');
+				await request(requestUrl.toString(), fetchOptions, client.globals.fetch, client.hooks);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
