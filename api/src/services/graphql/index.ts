@@ -180,9 +180,9 @@ export class GraphQLService {
 	getSchema(type: 'schema' | 'sdl' = 'schema'): GraphQLSchema | string {
 		const key = `${type}_${this.accountability?.role}_${this.accountability?.user}`;
 
-		if (cache.has(key)) {
-			return cache.get(key)!;
-		}
+		const cachedSchema = cache.get(key);
+
+		if (cachedSchema) return cachedSchema;
 
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const self = this;
