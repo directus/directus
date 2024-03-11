@@ -17,7 +17,7 @@ import usersPasswd from './commands/users/passwd.js';
 import { loadExtensions } from './load-extensions.js';
 
 export async function createCli(): Promise<Command> {
-	const program = new Command().option('--no-extensions', 'exclude extensions on cli use');
+	const program = new Command();
 
 	await loadExtensions();
 
