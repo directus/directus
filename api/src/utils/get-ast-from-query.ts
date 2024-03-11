@@ -5,7 +5,7 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash-es';
+import { cloneDeep, mapKeys, omitBy, uniq } from 'lodash-es';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { getRelationType } from './get-relation-type.js';
 
@@ -97,14 +97,19 @@ export default async function getASTFromQuery(
 		delete query.sort;
 	}
 
-	ast.children = await parseFields(collection, fields, deep);
+	ast.children = parseFields(collection, fields, deep, query.alias);
 
 	return ast;
 
-	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
+	function parseFields(
+		parentCollection: string,
+		fields: string[] | null,
+		deep?: Record<string, any>,
+		alias?: Record<string, string> | null,
+	) {
 		if (!fields) return [];
 
-		fields = await convertWildcards(parentCollection, fields);
+		fields = convertWildcards(parentCollection, fields, alias);
 
 		if (!fields || !Array.isArray(fields)) return [];
 
@@ -115,10 +120,10 @@ export default async function getASTFromQuery(
 		for (const fieldKey of fields) {
 			let name = fieldKey;
 
-			if (query.alias) {
+			if (alias) {
 				// check for field alias (is is one of the key)
-				if (name in query.alias) {
-					name = query.alias[fieldKey]!;
+				if (name in alias) {
+					name = alias[fieldKey]!;
 				}
 			}
 
@@ -196,8 +201,8 @@ export default async function getASTFromQuery(
 		for (const [fieldKey, nestedFields] of Object.entries(relationalStructure)) {
 			let fieldName = fieldKey;
 
-			if (query.alias && fieldKey in query.alias) {
-				fieldName = query.alias[fieldKey]!;
+			if (alias && fieldKey in alias) {
+				fieldName = alias[fieldKey]!;
 			}
 
 			const relatedCollection = getRelatedCollection(parentCollection, fieldName);
@@ -233,7 +238,7 @@ export default async function getASTFromQuery(
 				};
 
 				for (const relatedCollection of allowedCollections) {
-					child.children[relatedCollection] = await parseFields(
+					child.children[relatedCollection] = parseFields(
 						relatedCollection,
 						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || [],
 						deep?.[`${fieldKey}:${relatedCollection}`],
@@ -250,7 +255,6 @@ export default async function getASTFromQuery(
 
 				// update query alias for children parseFields
 				const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.['alias'];
-				if (!isEmpty(deepAlias)) query.alias = deepAlias;
 
 				child = {
 					type: relationType,
@@ -260,7 +264,7 @@ export default async function getASTFromQuery(
 					relatedKey: schema.collections[relatedCollection]!.primary,
 					relation: relation,
 					query: getDeepQuery(deep?.[fieldKey] || {}),
-					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[fieldKey] || {}),
+					children: parseFields(relatedCollection, nestedFields as string[], deep?.[fieldKey] || {}, deepAlias),
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {
@@ -287,7 +291,7 @@ export default async function getASTFromQuery(
 		});
 	}
 
-	async function convertWildcards(parentCollection: string, fields: string[]) {
+	function convertWildcards(parentCollection: string, fields: string[], alias?: Record<string, string> | null) {
 		fields = cloneDeep(fields);
 
 		const fieldsInCollection = Object.entries(schema.collections[parentCollection]!.fields).map(([name]) => name);
@@ -310,7 +314,7 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
-				const aliases = Object.keys(query.alias ?? {});
+				const aliases = Object.keys(alias ?? {});
 
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
@@ -318,7 +322,7 @@ export default async function getASTFromQuery(
 				} else {
 					// Set to all allowed fields
 					const allowedAliases = aliases.filter((fieldKey) => {
-						const name = query.alias![fieldKey]!;
+						const name = alias![fieldKey]!;
 						return allowedFields!.includes(name);
 					});
 
@@ -344,8 +348,8 @@ export default async function getASTFromQuery(
 
 				const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
-				const aliasFields = Object.keys(query.alias ?? {}).map((fieldKey) => {
-					const name = query.alias![fieldKey];
+				const aliasFields = Object.keys(alias ?? {}).map((fieldKey) => {
+					const name = alias![fieldKey];
 
 					if (relationalFields.includes(name)) {
 						return `${fieldKey}.${parts.slice(1).join('.')}`;
