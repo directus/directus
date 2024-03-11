@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Informazioni
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -7,10 +28,12 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+marketplace: Marketplace
 extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
+unknown: Sconosciuto
 reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
@@ -28,6 +51,8 @@ duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
+popular: Popolari
+recent: Recenti
 export_items: Esporta elementi
 and: E
 or: O
@@ -54,9 +79,27 @@ extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
 extension_bundles: Pacchetti
+extension_missing: Mancanti
 extension_reload_required: È necessario ricaricare la pagina
 extension_reload_required_copy: È necessario ricaricare la pagina per vedere le modifiche dopo aver abilitato o disabilitato le estensioni.
 extension_reload_now: Ricarica ora
+published_relative: Pubblicate {relativeTime}
+compatible_with_your_project: Compatibili con il tuo progetto
+compatible_with_your_project_copy: L'autore ha indicato che la compatibilità di questa estensione è {hostVersion}, che è compatibile con la versione del tuo progetto ({currentVersion})
+last_updated_relative: Ultimo aggiornamento {relativeTime}
+n_files: '{n} File'
+verified: Verificata
+homepage: Pagina iniziale
+repository: Repository
+reload_required: Ricaricamento necessario
+report_an_issue: Segnala un problema
+website: Sito web
+github: GitHub
+beta: Beta
+n_downloads: '{n} Download'
+downloads: Download
+compatibility_not_guaranteed: Compatibilità non garantita
+compatibility_not_guaranteed_copy: L'autore ha indicato che la compatibilità di questa estensione è {hostVersion}, che non è compatibile con la versione del tuo progetto ({currentVersion})
 enable: Attivato
 disable: Disattiva
 custom: Personalizzato
@@ -145,6 +188,8 @@ logoutReason:
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
+no_description: Nessuna descrizione...
+reached_maximum_number_of_extensions: Hai raggiunto il numero massimo di estensioni per questo progetto ({n}). Contatta l'amministratore di sistema per maggiori informazioni.
 not_allowed: Non consentito
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
@@ -309,6 +354,7 @@ auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
 to_manually_setup_translations: per configurare manualmente le traduzioni.
+manage: Gestisci
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
@@ -478,7 +524,11 @@ months:
   november: Novembre
   december: Dicembre
 drag_mode: Modalità Di Trascinamento
+move_tool: Sposta
+crop_tool: Ritaglia
+focal_point_tool: Punto Focale
 cancel_crop: Annulla Ritaglio
+cancel_selection: Deseleziona tutto
 original: Originale
 url: URL
 import_label: Importa
@@ -546,6 +596,7 @@ collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
 search_items: Cerca Elementi...
+search_extensions: Cerca Estensioni...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
@@ -661,6 +712,7 @@ errors:
   INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
+  LIMIT_EXCEEDED: 'Limite superato'
   METHOD_NOT_ALLOWED: Metodo non consentito
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   RANGE_NOT_SATISFIABLE: Intervallo non valido
@@ -784,6 +836,7 @@ operators:
   regex: Corrisponde all'espressione regolare
 custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
+extension_readme_missing: Questa estensione non ha un file README.
 drop_to_upload: Rilascia per caricare
 item: Elemento
 items: Elementi
@@ -1090,6 +1143,9 @@ page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
 page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
 page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
+page_help_marketplace_account: '**Account** — Editore o responsabile di un''estensione pubblicata.'
+page_help_marketplace_registry: '**Registry** — Estensioni disponibili nel Marketplace di Directus.'
+page_help_marketplace_extension: '**Estensione** — Estensione nel Marketplace di Directus.'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -1102,6 +1158,14 @@ cancel: Annulla
 no_upscale: Non ingrandire le immagini
 no_extensions: Nessuna estensione
 no_extensions_copy: Non sono ancora state installate estensioni.
+install_extension: Installa estensione
+uninstall_locked: Impossibile disinstallare le estensioni che non sono state installate attraverso il Marketplace
+uninstall: Disinstalla
+installed: Installata
+open_in_marketplace: Apri nel Marketplace
+source_registry: Marketplace
+source_local: Locali
+source_module: Node module
 collection: Raccolta
 collections: Raccolte
 content: Contenuti
@@ -1370,6 +1434,7 @@ field_options:
     description: Una descrizione opzionale...
     location: Una posizione opzionale...
     storage_divider: Denominazione File
+    focal_point_divider: Punto Focale
     filename_disk: Nome sul disco...
     filename_download: Nome al download...
   directus_roles:
@@ -1824,6 +1889,7 @@ interfaces:
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
     enable: Attivato
+    default_split_view_state: Stato predefinito della vista divisa
     user_language: Usa la lingua dell'utente corrente
     default_language: Lingua predefinita
     language_field: Campo indicatore della lingua
