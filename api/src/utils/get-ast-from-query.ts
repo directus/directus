@@ -19,12 +19,12 @@ type anyNested = {
 	[collectionScope: string]: string[];
 };
 
-export default async function getASTFromQuery(
+export default function getASTFromQuery(
 	collection: string,
 	query: Query,
 	schema: SchemaOverview,
 	options?: GetASTOptions,
-): Promise<AST> {
+): AST {
 	query = cloneDeep(query);
 
 	const accountability = options?.accountability;

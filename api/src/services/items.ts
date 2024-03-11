@@ -418,7 +418,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				  )
 				: query;
 
-		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
+		let ast = getASTFromQuery(this.collection, updatedQuery, this.schema, {
 			accountability: this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
 			// operation's permissions. This is used to dynamically check if you have update/delete

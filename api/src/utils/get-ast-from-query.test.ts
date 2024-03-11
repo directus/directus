@@ -205,7 +205,7 @@ const options: { action: PermissionsAction } = {
 
 describe('getASTFromQuery', () => {
 	test('should return the complete AST for nested alias fields', async () => {
-		const ast = await getASTFromQuery(collection, query, schema, options);
+		const ast = getASTFromQuery(collection, query, schema, options);
 
 		expect(ast).toEqual(
 			expect.objectContaining({
