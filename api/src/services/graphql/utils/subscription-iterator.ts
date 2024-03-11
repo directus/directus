@@ -56,7 +56,6 @@ export class SubscriptionIterator {
 	}
 }
 
-
 let messageIterator: SubscriptionIterator | null = null;
 
 export function useSubscriptionIterator(): SubscriptionIterator {
