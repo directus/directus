@@ -134,6 +134,12 @@ function clearFilters() {
 				</v-button>
 			</template>
 
+			<div class="deprecation-notice-wrapper">
+				<v-notice type="danger">
+					<span v-md="t('webhooks_deprecation_notice')"></span>
+				</v-notice>
+			</div>
+
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
@@ -170,6 +176,13 @@ function clearFilters() {
 </template>
 
 <style lang="scss" scoped>
+.deprecation-notice-wrapper {
+	padding: var(--content-padding);
+	:deep(a) {
+		text-decoration: underline;
+	}
+}
+
 .header-icon {
 	--v-button-background-color-disabled: var(--theme--primary-background);
 	--v-button-color-disabled: var(--theme--primary);
