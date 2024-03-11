@@ -174,6 +174,16 @@ If your current workflow depends on redirecting to an external domain after succ
 
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
 
+### Email Flow Operation No Longer Waits for Emails to Be Sent
+
+Previously, the [Send Email](https://docs.directus.io/app/flows/operations.html#send-email) Flow Operation has waited
+until emails have been sent out before proceeding to the next step.
+
+This is no longer the case, which also means that the operation can no longer be used to receive information about
+dispatched emails.
+
+If this is a requirement, it can still be achieved by building a custom operation which directly uses the `MailService`.
+
 ## Version 10.9.0
 
 ### Updated Exif Tags
