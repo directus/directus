@@ -32,7 +32,7 @@
 		"@vueuse/shared": "10.9.0",
 		"pinia": "2.1.7",
 		"tsup": "8.0.2",
-		"typescript": "5.3.3",
+		"typescript": "5.4.2",
 		"vue": "3.4.21"
 	},
 	"peerDependencies": {
