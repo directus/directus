@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf, describe, test, expect } from 'vitest';
-import { createDirectus } from './client.js';
+import { createDirectus } from '../src/client.js';
 import {
 	staticToken,
 	type DirectusClient,
@@ -8,18 +8,18 @@ import {
 	type AuthenticationClient,
 	rest,
 	type RestClient,
-} from './index.js';
+} from '../src/index.js';
 
 describe('test client composability', () => {
 	test('basic client', async () => {
-		const client = createDirectus<any>('http://localhost:8055');
+		const client = createDirectus('http://localhost:8055');
 		expectTypeOf(client).toHaveProperty('with');
 
 		assertType<DirectusClient<any>>(client);
 	});
 
 	test('static token', async () => {
-		const client = createDirectus<any>('http://localhost:8055').with(staticToken('test'));
+		const client = createDirectus('http://localhost:8055').with(staticToken('test'));
 
 		expectTypeOf(client).toHaveProperty('getToken');
 		expectTypeOf(client).toHaveProperty('setToken');
@@ -32,7 +32,7 @@ describe('test client composability', () => {
 	});
 
 	test('authentication', async () => {
-		const client = createDirectus<any>('http://localhost:8055').with(authentication('json', { autoRefresh: false }));
+		const client = createDirectus('http://localhost:8055').with(authentication('json', { autoRefresh: false }));
 
 		expectTypeOf(client).toHaveProperty('getToken');
 		expectTypeOf(client).toHaveProperty('setToken');
@@ -48,14 +48,14 @@ describe('test client composability', () => {
 	});
 
 	test('rest', async () => {
-		const client = createDirectus<any>('http://localhost:8055').with(rest());
+		const client = createDirectus('http://localhost:8055').with(rest());
 
 		expectTypeOf(client).toHaveProperty('request');
 		assertType<DirectusClient<any> & RestClient<any>>(client);
 	});
 
 	test('auth + rest', async () => {
-		const client = createDirectus<any>('http://localhost:8055')
+		const client = createDirectus('http://localhost:8055')
 			.with(authentication('json', { autoRefresh: false }))
 			.with(rest());
 
