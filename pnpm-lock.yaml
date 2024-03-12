@@ -159,8 +159,8 @@ importers:
         specifier: 4.9.0
         version: 4.9.0
       date-fns:
-        specifier: 3.3.1
-        version: 3.3.1
+        specifier: 3.4.0
+        version: 3.4.0
       deep-diff:
         specifier: 1.0.2
         version: 1.0.2
@@ -266,6 +266,9 @@ importers:
       minimatch:
         specifier: 9.0.3
         version: 9.0.3
+      mnemonist:
+        specifier: 0.39.8
+        version: 0.39.8
       ms:
         specifier: 2.1.3
         version: 2.1.3
@@ -752,8 +755,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1
       date-fns:
-        specifier: 3.3.1
-        version: 3.3.1
+        specifier: 3.4.0
+        version: 3.4.0
       diacritics:
         specifier: 1.3.0
         version: 1.3.0
@@ -779,8 +782,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       happy-dom:
-        specifier: 13.6.2
-        version: 13.6.2
+        specifier: 13.7.7
+        version: 13.7.7
       histoire:
         specifier: 0.17.9
         version: 0.17.9(sass@1.71.1)(vite@5.1.4)
@@ -846,7 +849,7 @@ importers:
         version: 5.1.4(sass@1.71.1)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -976,7 +979,7 @@ importers:
         version: 3.7.3(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -1034,7 +1037,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -1272,7 +1275,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/extensions:
     dependencies:
@@ -1388,7 +1391,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/extensions-sdk:
     dependencies:
@@ -1485,7 +1488,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/memory:
     dependencies:
@@ -1550,7 +1553,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/random:
     devDependencies:
@@ -1692,7 +1695,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1726,7 +1729,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1757,7 +1760,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -1822,7 +1825,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1856,7 +1859,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   packages/stores:
     dependencies:
@@ -2038,8 +2041,8 @@ importers:
         specifier: workspace:*
         version: link:../system-data
       date-fns:
-        specifier: 3.3.1
-        version: 3.3.1
+        specifier: 3.4.0
+        version: 3.4.0
       fs-extra:
         specifier: 11.2.0
         version: 11.2.0
@@ -2125,7 +2128,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   sdk:
     dependencies:
@@ -2147,7 +2150,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
 
   tests/blackbox:
     devDependencies:
@@ -2228,7 +2231,7 @@ importers:
         version: 4.3.1(typescript@5.3.3)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.6.2)(sass@1.71.1)
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.71.1)
       ws:
         specifier: 8.16.0
         version: 8.16.0
@@ -10344,8 +10347,8 @@ packages:
     resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
     dev: false
 
-  /date-fns@3.3.1:
-    resolution: {integrity: sha512-y8e109LYGgoQDveiEBD3DYXKba1jWf5BA8YU1FL5Tvm0BTdEfy54WLCwnuYWZNnzzvALy/QQ4Hov+Q9RVRv+Zw==}
+  /date-fns@3.4.0:
+    resolution: {integrity: sha512-Akz4R8J9MXBsOgF1QeWeCsbv6pntT5KCPjU0Q9prBxVmWJYPLhwAIsNg3b0QAdr0ttiozYLD3L/af7Ra0jqYXw==}
 
   /date-format@4.0.3:
     resolution: {integrity: sha512-7P3FyqDcfeznLZp2b+OMitV9Sz2lUnsT87WaTat9nVwqsBkTzPG3lPLNwW3en6F4pHUiWzr6vb8CLhjdK9bcxQ==}
@@ -12304,8 +12307,8 @@ packages:
       - supports-color
     dev: false
 
-  /happy-dom@13.6.2:
-    resolution: {integrity: sha512-Ku+wDqcF/KwFA0dI+xIMZd9Jn020RXjuSil/Vz7gu2yhDC3FsDYZ55qqV9k+SGC4opwb4acisXqVSRxUJMlPbQ==}
+  /happy-dom@13.7.7:
+    resolution: {integrity: sha512-JPwbDUBXhb9jIf6+Wat0QFhTsbSKFq2DYK4wIK27F508gV8qU5tLScpQaNznV1b4MUgLQlN9xogaHJpCFyt89Q==}
     engines: {node: '>=16.0.0'}
     dependencies:
       entities: 4.5.0
@@ -14718,6 +14721,12 @@ packages:
       ufo: 1.3.2
     dev: true
 
+  /mnemonist@0.39.8:
+    resolution: {integrity: sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==}
+    dependencies:
+      obliterator: 2.0.4
+    dev: false
+
   /mri@1.1.4:
     resolution: {integrity: sha512-6y7IjGPm8AzlvoUrwAaw1tLnUBudaS3752vcd8JtrpGGQn+rXIe63LFVHm/YMwtqAuh+LJPCFdlLYPWM1nYn6w==}
     engines: {node: '>=4'}
@@ -15275,6 +15284,10 @@ packages:
       define-properties: 1.2.1
       es-abstract: 1.22.5
     dev: true
+
+  /obliterator@2.0.4:
+    resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
+    dev: false
 
   /obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
@@ -19962,7 +19975,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.3.1(happy-dom@13.6.2)(sass@1.71.1):
+  /vitest@1.3.1(happy-dom@13.7.7)(sass@1.71.1):
     resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19996,7 +20009,7 @@ packages:
       chai: 4.4.1
       debug: 4.3.4
       execa: 8.0.1
-      happy-dom: 13.6.2
+      happy-dom: 13.7.7
       local-pkg: 0.5.0
       magic-string: 0.30.7
       pathe: 1.1.2
