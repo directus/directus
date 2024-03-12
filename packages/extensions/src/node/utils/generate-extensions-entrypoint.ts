@@ -1,6 +1,6 @@
-import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import path from 'path';
+import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import type {
 	AppExtension,
 	BundleExtension,
@@ -9,27 +9,48 @@ import type {
 	HybridExtension,
 } from '../../shared/types/index.js';
 
-export function generateExtensionsEntrypoint(extensions: Extension[], settings: ExtensionSettings[]): string {
-	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension => {
-		if (!isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])) return false;
-		const { enabled } = settings.find(({ name }) => name === extension.name) ?? { enabled: false };
-		return enabled;
-	});
+export function generateExtensionsEntrypoint(
+	extensionMaps: { local: Map<string, Extension>; registry: Map<string, Extension>; module: Map<string, Extension> },
+	settings: ExtensionSettings[],
+): string {
+	const appOrHybridExtensions: (AppExtension | HybridExtension)[] = [];
+	const bundleExtensions: BundleExtension[] = [];
 
-	const bundleExtensions = extensions
-		.filter(
-			(extension): extension is BundleExtension =>
-				extension.type === 'bundle' &&
-				extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])),
-		)
-		.map((bundle) => ({
-			...bundle,
-			entries: bundle.entries.filter(({ name }) => {
-				const entryName = `${bundle.name}/${name}`;
-				const { enabled } = settings.find(({ name }) => name === entryName) ?? { enabled: false };
-				return enabled;
-			}),
-		}));
+	for (const [source, extensions] of Object.entries(extensionMaps)) {
+		for (const [folder, extension] of extensions.entries()) {
+			const settingsForExtension = settings.find((setting) => setting.source === source && setting.folder === folder);
+
+			if (!settingsForExtension) continue;
+
+			if (isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]) && settingsForExtension.enabled) {
+				appOrHybridExtensions.push(extension as AppExtension | HybridExtension);
+			}
+
+			if (extension.type === 'bundle') {
+				const appBundle: BundleExtension = {
+					...extension,
+					entries: extension.entries.filter((entry) => {
+						const isApp = isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]);
+						if (isApp === false) return false;
+
+						const enabled =
+							settings.find(
+								(setting) =>
+									setting.source === source &&
+									setting.folder === entry.name &&
+									setting.bundle === settingsForExtension.id,
+							)?.enabled ?? false;
+
+						return enabled;
+					}),
+				};
+
+				if (appBundle.entries.length > 0) {
+					bundleExtensions.push(appBundle);
+				}
+			}
+		}
+	}
 
 	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions

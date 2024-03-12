@@ -127,7 +127,7 @@ services:
     shm_size: '1gb' # more like smh-size amirite 🥁
 
   cockroachdb:
-    image: cockroachdb/cockroach:latest-v21.1
+    image: cockroachdb/cockroach:latest-v23.2
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 5113:26257

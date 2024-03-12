@@ -24,6 +24,7 @@ export interface Query<Schema extends object, Item> {
  */
 export interface QueryItem<Schema extends object, Item> extends Query<Schema, Item> {
 	readonly version?: string | undefined;
+	readonly versionRaw?: boolean | undefined;
 }
 
 /**

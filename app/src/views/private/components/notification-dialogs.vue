@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { DEFAULT_REPORT_BUG_URL } from '@/constants';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+import { Snackbar } from '@/types/notifications';
 import { render } from 'micromustache';
 import { storeToRefs } from 'pinia';
-import { DEFAULT_REPORT_BUG_URL } from '@/constants';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n();
 
@@ -64,9 +65,13 @@ function getErrorUrl(error: undefined | Error) {
 	return render(settings.value.report_error_url, renderScope);
 }
 
-function done(id: string) {
-	notificationsStore.remove(id);
-}
+const done = async (notification: Snackbar) => {
+	if (notification.dismissAction) {
+		await notification.dismissAction();
+	}
+
+	notificationsStore.remove(notification.id);
+};
 </script>
 
 <template>
@@ -85,7 +90,7 @@ function done(id: string) {
 							{{ t('report_error') }}
 						</a>
 					</v-button>
-					<v-button @click="done(notification.id)">{{ t('dismiss') }}</v-button>
+					<v-button @click="done(notification)">{{ notification.dismissText ?? t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

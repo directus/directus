@@ -52,18 +52,18 @@ export class NotificationsService extends ItemsService {
 			const html = data.message ? md(data.message) : '';
 
 			if (user['email'] && user['email_notifications'] === true) {
-				try {
-					await this.mailService.send({
+				this.mailService
+					.send({
 						template: {
 							name: 'base',
 							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
 						to: user['email'],
 						subject: data.subject,
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send notification via mail`);
 					});
-				} catch (error: any) {
-					logger.error(error.message);
-				}
 			}
 		}
 	}

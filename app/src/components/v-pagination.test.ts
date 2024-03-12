@@ -25,6 +25,7 @@ test('Mount component', () => {
 test('length prop', async () => {
 	const wrapper = mount(VPagination, {
 		props: {
+			modelValue: 1,
 			length: 5,
 		},
 		global,
@@ -40,6 +41,7 @@ test('length prop', async () => {
 test('totalVisible prop', async () => {
 	const wrapper = mount(VPagination, {
 		props: {
+			modelValue: 1,
 			length: 5,
 			totalVisible: 3,
 		},

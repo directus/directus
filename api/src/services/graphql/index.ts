@@ -1,6 +1,7 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
@@ -44,15 +45,22 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
+import {
+	DEFAULT_AUTH_PROVIDER,
+	GENERATE_SPECIAL,
+	REFRESH_COOKIE_OPTIONS,
+	SESSION_COOKIE_OPTIONS,
+} from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { getService } from '../../utils/get-service.js';
+import isDirectusJWT from '../../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../../utils/jwt.js';
+import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-version-data.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
@@ -71,6 +79,7 @@ import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
 import { VersionsService } from '../versions.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
+import { cache } from './schema-cache.js';
 import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
 import { GraphQLDate } from './types/date.js';
@@ -80,7 +89,6 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 
@@ -170,6 +178,12 @@ export class GraphQLService {
 	getSchema(type: 'schema'): GraphQLSchema;
 	getSchema(type: 'sdl'): GraphQLSchema | string;
 	getSchema(type: 'schema' | 'sdl' = 'schema'): GraphQLSchema | string {
+		const key = `${this.scope}_${type}_${this.accountability?.role}_${this.accountability?.user}`;
+
+		const cachedSchema = cache.get(key);
+
+		if (cachedSchema) return cachedSchema;
+
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const self = this;
 
@@ -360,10 +374,14 @@ export class GraphQLService {
 		}
 
 		if (type === 'sdl') {
-			return schemaComposer.toSDL();
+			const sdl = schemaComposer.toSDL();
+			cache.set(key, sdl);
+			return sdl;
 		}
 
-		return schemaComposer.buildSchema();
+		const gqlSchema = schemaComposer.buildSchema();
+		cache.set(key, gqlSchema);
+		return gqlSchema;
 
 		/**
 		 * Construct an object of types for every collection, using the permitted fields per action type
@@ -537,6 +555,15 @@ export class GraphQLService {
 					CollectionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection]!,
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? relation.field];
+							},
+						},
+					});
+
+					VersionTypes[relation.collection]?.addFields({
+						[relation.field]: {
+							type: GraphQLJSON,
 							resolve: (obj: Record<string, any>, _, __, info) => {
 								return obj[info?.path?.key ?? relation.field];
 							},
@@ -1175,6 +1202,7 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
+							version: GraphQLString,
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1487,6 +1515,7 @@ export class GraphQLService {
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0]!.arguments || [], info.variableValues);
 
 		let query: Query;
+		let versionRaw = false;
 
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
@@ -1502,6 +1531,7 @@ export class GraphQLService {
 
 			if (collection.endsWith('_by_version') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -11);
+				versionRaw = true;
 			}
 		}
 
@@ -1536,10 +1566,15 @@ export class GraphQLService {
 
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
-					return assign(result, ...saves);
+					return versionRaw
+						? mergeVersionsRaw(result, saves)
+						: mergeVersionsRecursive(result, saves, collection, this.schema);
 				} else {
 					if (result?.[0] === undefined) return null;
-					return assign(result[0], ...saves);
+
+					return versionRaw
+						? mergeVersionsRaw(result[0], saves)
+						: mergeVersionsRecursive(result[0], saves, collection, this.schema);
 				}
 			}
 		}
@@ -1993,6 +2028,7 @@ export class GraphQLService {
 			values: {
 				json: { value: 'json' },
 				cookie: { value: 'cookie' },
+				session: { value: 'session' },
 			},
 		});
 
@@ -2208,23 +2244,34 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+					const { accessToken, refreshToken, expires } = await authenticationService.login(
+						DEFAULT_AUTH_PROVIDER,
+						args,
+						{
+							session: mode === 'session',
+							otp: args?.otp,
+						},
+					);
+
+					const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
+
+					if (mode === 'json') {
+						payload.refresh_token = refreshToken;
+						payload.access_token = accessToken;
 					}
 
-					return {
-						access_token: result['accessToken'],
-						expires: result['expires'],
-						refresh_token: result['refreshToken'],
-					};
+					if (mode === 'cookie') {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+						payload.access_token = accessToken;
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					}
+
+					return payload;
 				},
 			},
 			auth_refresh: {
@@ -2249,39 +2296,58 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
+					let currentRefreshToken: string | undefined;
+
+					if (mode === 'json') {
+						currentRefreshToken = args['refresh_token'];
+					} else if (mode === 'cookie') {
+						currentRefreshToken = req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					} else if (mode === 'session') {
+						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
+
+						if (isDirectusJWT(token)) {
+							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							currentRefreshToken = payload.session;
+						}
+					}
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
-							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+							reason: `The refresh token is required in either the payload or cookie`,
 						});
 					}
 
-					const result = await authenticationService.refresh(currentRefreshToken);
+					const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, {
+						session: mode === 'session',
+					});
 
-					if (args['mode'] === 'cookie') {
-						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, result['refreshToken'], {
-							httpOnly: true,
-							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-							maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-							secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-						});
+					const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
+
+					if (mode === 'json') {
+						payload.refresh_token = refreshToken;
+						payload.access_token = accessToken;
 					}
 
-					return {
-						access_token: result['accessToken'],
-						expires: result['expires'],
-						refresh_token: result['refreshToken'],
-					};
+					if (mode === 'cookie') {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+						payload.access_token = accessToken;
+					}
+
+					if (mode === 'session') {
+						res?.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					}
+
+					return payload;
 				},
 			},
 			auth_logout: {
 				type: GraphQLBoolean,
 				args: {
 					refresh_token: GraphQLString,
+					mode: AuthMode,
 				},
-				resolve: async (_, args, { req }) => {
+				resolve: async (_, args, { req, res }) => {
 					const accountability: Accountability = { role: null };
 
 					if (req?.ip) accountability.ip = req.ip;
@@ -2297,15 +2363,38 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					const mode: AuthenticationMode = args['mode'] ?? 'json';
+					let currentRefreshToken: string | undefined;
+
+					if (mode === 'json') {
+						currentRefreshToken = args['refresh_token'];
+					} else if (mode === 'cookie') {
+						currentRefreshToken = req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+					} else if (mode === 'session') {
+						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
+
+						if (isDirectusJWT(token)) {
+							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							currentRefreshToken = payload.session;
+						}
+					}
 
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadError({
-							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+							reason: `The refresh token is required in either the payload or cookie`,
 						});
 					}
 
 					await authenticationService.logout(currentRefreshToken);
+
+					if (req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
+						res?.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, REFRESH_COOKIE_OPTIONS);
+					}
+
+					if (req?.cookies[env['SESSION_COOKIE_NAME'] as string]) {
+						res?.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
+					}
+
 					return true;
 				},
 			},
@@ -2970,8 +3059,7 @@ export class GraphQLService {
 				update_extensions_item: {
 					type: Extension,
 					args: {
-						bundle: GraphQLString,
-						name: new GraphQLNonNull(GraphQLString),
+						id: GraphQLID,
 						data: toInputObjectType(
 							schemaComposer.createObjectTC({
 								name: 'update_directus_extensions_input',
@@ -2992,8 +3080,8 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						await extensionsService.updateOne(args['bundle'], args['name'], args['data']);
-						return await extensionsService.readOne(args['bundle'], args['name']);
+						await extensionsService.updateOne(args['id'], args['data']);
+						return await extensionsService.readOne(args['id']);
 					},
 				},
 			});

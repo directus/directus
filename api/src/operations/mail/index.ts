@@ -2,6 +2,7 @@ import { defineOperationApi } from '@directus/extensions';
 import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
+import { useLogger } from '../../logger.js';
 
 export type Options = {
 	body?: string;
@@ -11,6 +12,8 @@ export type Options = {
 	type: 'wysiwyg' | 'markdown' | 'template';
 	subject: string;
 };
+
+const logger = useLogger();
 
 export default defineOperationApi<Options>({
 	id: 'mail',
@@ -29,6 +32,8 @@ export default defineOperationApi<Options>({
 			mailObject.html = type === 'wysiwyg' ? safeBody : md(safeBody);
 		}
 
-		await mailService.send(mailObject);
+		mailService.send(mailObject).catch((error) => {
+			logger.error(error, 'Could not send mail in "mail" operation');
+		});
 	},
 });

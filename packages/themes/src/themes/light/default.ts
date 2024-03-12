@@ -276,5 +276,39 @@ export default defineTheme({
 				boxShadow: '0px 0px 6px 0px rgb(23, 41, 64, 0.2), 0px 0px 12px 2px rgb(23, 41, 64, 0.05)',
 			},
 		},
+
+		banner: {
+			background: '#0e1c2f',
+			padding: '40px',
+			borderRadius: 'var(--theme--border-radius)',
+
+			avatar: {
+				borderRadius: '50%',
+				foreground: 'var(--theme--primary)',
+				background: '#ffffff',
+			},
+
+			headline: {
+				foreground: '#ffffff',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
+				fontWeight: 'var(--theme--fonts--sans--font-weight)',
+			},
+
+			title: {
+				foreground: '#ffffff',
+				fontFamily: 'var(--theme--fonts--display--font-family)',
+				fontWeight: 'var(--theme--fonts--display--font-weight)',
+			},
+
+			subtitle: {
+				foreground: '#a2b5cd',
+				fontFamily: 'var(--theme--fonts--monospace--font-family)',
+				fontWeight: 'var(--theme--fonts--monospace--font-weight)',
+			},
+
+			art: {
+				foreground: '#2e3a4d',
+			},
+		},
 	},
 });

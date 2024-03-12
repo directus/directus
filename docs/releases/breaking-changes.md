@@ -13,6 +13,167 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.10.0
+
+### Deprecated Typed Extension Folders
+
+Legacy extension type directory-based structure (`/interfaces/my-interface/`, `/endpoints/my-endpoint`, etc) are being
+removed in favor of relying on the `package.json` file for metadata including extension type.
+
+If your extensions are already relying on the up-to-date extensions folder paradigm (extensions in the root of your
+extensions folder prefixed with `directus-extension-`) no action is required at this point. If you're currently relying
+on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
+`hooks`, etc, you will have to update your extensions before upgrading to this version.
+
+Directus will ignore extensions that use the legacy format starting in this version.
+
+::: details Migration/Mitigation
+
+Move all extension directories from their extension type subdirectory one level up. For example:
+
+- `./extensions/modules/module-a/` becomes `./extensions/module-a/`.
+- `./extensions/panels/panel-b/` becomes `./extensions/panel-b/`.
+
+If your extension does not already have one, add a `directus:extension` object to your `package.json` file:
+
+```json
+{
+	"name": "directus-extension-hello-world",
+	"version": "1.0.0",
+	"type": "module",
+	"directus:extension": {
+		"type": "endpoint",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^10.0.0"
+	}
+}
+```
+
+Notes:
+
+- Make sure `type` matches the JS type of your `dist` file (cjs or esm).
+- Make sure `directus:extension.type` matches the type of extension. This should match the legacy type folder name.
+- Make sure `directus:extension.path`points to your extensions’ `dist` file.
+- Make sure `directus:extension.source` points to your extensions’ source code entry point or set to an empty string
+  `""` when the source code is not stored alongside the `package.json` file.
+- Make sure `directus:extension.host` is set to a Directus version range your extension is compatible with (for example:
+  `^10.0.0`)
+
+:::
+
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+migrated.
+
+Place migrations in the `./migrations` directory, or set the new location in the `MIGRATIONS_PATH` environment variable.
+
+### Moved Email Templates Out of Extensions
+
+Email Templates are no longer considered an extension type as of this release. The `templates` extensions directory must
+be migrated.
+
+Place email templates in the `./templates` directory, or set the new location in the `EMAIL_TEMPLATES_PATH` environment
+variable.
+
+### Content Versioning Output
+
+Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
+resolved rather than returned as a raw changes object (see [#20890](https://github.com/directus/directus/issues/20890)
+for more information).
+
+The change makes the output for a versioned record match the format of the `Main` record more closely, which then
+natively supports other features like Live Preview. To retrieve the raw staged version (pre-10.10.0 behavior), just add
+the new `?versionRaw=true` query parameter to the request.
+
+### Session Cookie Based Authentication
+
+For improved security and ease of use we have implemented session based authentication and have updated the App to use
+this method over the previous token based authentication. This impacts `oauth2`, `open-id` and `saml` SSO installations
+as they too will now default to the new session based authentication in order to work with the App out-of-the-box. The
+new session cookie can be configured using the `SESSION_COOKIE_*` environment variables.
+
+To keep using the previous SSO behavior setting the refresh token instead of session token for use in external
+applications, you can set `AUTH_<PROVIDER>_MODE=cookie`. This will however not work with the Directus app.
+
+#### Extensions Extracting the Current Token from `axios`
+
+This affects App extensions that are currently extracting the token from `axios`. This will no longer be either possible
+or necessary, as the App now uses a session cookie, which will be sent with each request from the browser.
+
+This also means that the `<v-image>` component being deprecated as it does not add any value over using the native
+`<img>` tag anymore.
+
+::: details Migration/Mitigation
+
+::: code-group
+
+```js [Before]
+function addQueryToPath(path, query) {
+	const queryParams = [];
+
+	for (const [key, value] of Object.entries(query)) {
+		queryParams.push(`${key}=${value}`);
+	}
+
+	return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
+}
+
+function getToken() {
+	return (
+		directusApi.defaults?.headers?.['Authorization']?.split(' ')[1] ||
+		directusApi.defaults?.headers?.common?.['Authorization']?.split(' ')[1] ||
+		null
+	);
+}
+
+function addTokenToURL(url) {
+	const accessToken = getToken();
+	if (!accessToken) return url;
+	return addQueryToPath(url, {
+		access_token: accessToken,
+	});
+}
+
+const authenticatedURL = addTokenToURL('/assets/<uuid>')
+```
+
+```js [After]
+// no extra logic needed to be authenticated
+const authenticatedURL = '/assets/<uuid>';
+```
+
+:::
+
+#### Extensions using `AuthenticationService`
+
+In the `AuthenticationService` the `login` function signature has been changed to have an `options` object as the third
+argument for any extra options:
+
+::: code-group
+
+```js [Before]
+AuthenticationService.login('email', 'password', 'otp-code');
+```
+
+```js [After]
+AuthenticationService.login('email', 'password', { otp: 'otp-code', session: true });
+```
+
+:::
+
+### Introduced Allow List for OAuth2/OpenID/SAML Redirects
+
+Due to an Open Redirect vulnerability with the OAuth2, OpenID and SAML SSO providers, we have introduced an allow list
+for these redirects.
+
+If your current workflow depends on redirecting to an external domain after successful SSO login using the
+`?redirect=http://example.com/login` query parameter, then you'll need to add this URL to the
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` config option.
+
+`AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
+
 ## Version 10.9.0
 
 ### Updated Exif Tags
