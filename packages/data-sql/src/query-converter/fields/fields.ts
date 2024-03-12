@@ -91,7 +91,7 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			const nestedUnionResult = getNestedUnionOne(abstractField.nesting, tableIndex, indexGen);
+			const nestedUnionResult = getNestedUnionOne(abstractField, tableIndex, indexGen);
 			joins.push(...nestedUnionResult.joins);
 			select.push(...nestedUnionResult.selects);
 			parameters.push(...nestedUnionResult.parameters);

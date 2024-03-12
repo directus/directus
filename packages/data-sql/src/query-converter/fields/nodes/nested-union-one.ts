@@ -1,6 +1,6 @@
 import type {
 	AbstractQueryFieldNodeNestedRelationalAnyCollection,
-	AbstractQueryFieldNodeNestedUnionRelational,
+	AbstractQueryFieldNodeNestedUnionOne,
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
@@ -21,7 +21,7 @@ export type NestedUnionOneResult = {
 };
 
 export const getNestedUnionOne = (
-	unionRelational: AbstractQueryFieldNodeNestedUnionRelational,
+	node: AbstractQueryFieldNodeNestedUnionOne,
 	tableIndex: number,
 	indexGen: IndexGenerators,
 ): NestedUnionOneResult => {
@@ -30,21 +30,14 @@ export const getNestedUnionOne = (
 	const aliasMapping: AliasMapping = [];
 	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
 
-	const relationalFieldResult = getSelectForRelationalField(tableIndex, indexGen, unionRelational.field);
+	const relationalFieldResult = getSelectForRelationalField(tableIndex, indexGen, node.nesting.field);
 	selects.push(relationalFieldResult);
 
-	for (const collection of unionRelational.collections) {
+	for (const collection of node.nesting.collections) {
 		const conditions: AbstractSqlQueryConditionNode[] = [];
 		const foreignTableIndex = indexGen.table.next().value;
 		const foreignTableName = collection.relational.collectionName;
-
-		const nestedSelectResult = getNestedSelects(
-			collection,
-			foreignTableIndex,
-			indexGen,
-			collection.relational.collectionName,
-		);
-
+		const nestedSelectResult = getNestedSelects(collection, foreignTableIndex, indexGen, node.alias);
 		aliasMapping.push(...nestedSelectResult.aliasMapping);
 		selects.push(...nestedSelectResult.selects);
 
@@ -56,7 +49,7 @@ export const getNestedUnionOne = (
 				operation: 'eq',
 				target: {
 					type: 'json',
-					columnName: unionRelational.field,
+					columnName: node.nesting.field,
 					tableIndex,
 					path: [indexGen.parameter.next().value],
 				},
@@ -79,7 +72,7 @@ export const getNestedUnionOne = (
 					operation: 'eq',
 					target: {
 						type: 'json',
-						columnName: unionRelational.field,
+						columnName: node.nesting.field,
 						tableIndex,
 						path: [indexGen.parameter.next().value, idx],
 						pathIsIndex: true,
@@ -124,7 +117,7 @@ function getNestedSelects(
 	c: AbstractQueryFieldNodeNestedRelationalAnyCollection,
 	foreignTableIndex: number,
 	indexGen: IndexGenerators,
-	foreignTableName: string,
+	alias: string,
 ) {
 	const aliasMapping: AliasMapping = [];
 	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
@@ -135,7 +128,7 @@ function getNestedSelects(
 
 		aliasMapping.push({
 			type: 'nested',
-			alias: foreignTableName,
+			alias,
 			children: [{ type: 'root', alias: nestedField.alias, columnIndex: newColIndex }],
 		});
 

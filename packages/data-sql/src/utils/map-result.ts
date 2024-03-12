@@ -55,7 +55,18 @@ export function mapResult(
 		} else if (aliasObject.type === 'sub') {
 			result[aliasObject.alias] = subResult[aliasObject.index];
 		} else {
-			result[aliasObject.alias] = mapResult(aliasObject.children, rootRow, subResult, columnIndexToIdentifier);
+			const nestedResult = mapResult(aliasObject.children, rootRow, subResult, columnIndexToIdentifier);
+			let keysAreAllNull = true;
+
+			for (const key in nestedResult) {
+				if (nestedResult[key] !== null) {
+					keysAreAllNull = false;
+				}
+			}
+
+			if (!keysAreAllNull) {
+				result[aliasObject.alias] = nestedResult;
+			}
 		}
 	}
 

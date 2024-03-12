@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeNestedUnionRelational } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedUnionOne } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
 import { getNestedUnionOne, type NestedUnionOneResult } from './nested-union-one.js';
@@ -17,52 +17,57 @@ test('getNestedUnionOne with a single identifier', () => {
 	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2 = randomIdentifier();
 	const foreignStore2 = randomIdentifier();
+	const alias = randomIdentifier();
 
-	const field: AbstractQueryFieldNodeNestedUnionRelational = {
-		type: 'relational-union',
-		field: relationalColumn,
-		collections: [
-			{
-				fields: [
-					{
-						type: 'primitive',
-						field: foreignDesiredField1,
-						alias: foreignIdFieldAlias,
-					},
-				],
-				relational: {
-					store: foreignStore,
-					collectionName: foreignTable,
-					collectionIdentifier: randomIdentifier(),
+	const field: AbstractQueryFieldNodeNestedUnionOne = {
+		type: 'nested-union-one',
+		alias,
+		nesting: {
+			type: 'relational-union',
+			field: relationalColumn,
+			collections: [
+				{
 					fields: [
 						{
-							name: foreignIdField,
-							type: 'string',
+							type: 'primitive',
+							field: foreignDesiredField1,
+							alias: foreignIdFieldAlias,
 						},
 					],
-				},
-			},
-			{
-				fields: [
-					{
-						type: 'primitive',
-						field: foreignDesiredField2,
-						alias: foreignIdFieldAlias2,
+					relational: {
+						store: foreignStore,
+						collectionName: foreignTable,
+						collectionIdentifier: randomIdentifier(),
+						fields: [
+							{
+								name: foreignIdField,
+								type: 'string',
+							},
+						],
 					},
-				],
-				relational: {
-					store: foreignStore2,
-					collectionName: foreignTable2,
-					collectionIdentifier: randomIdentifier(),
+				},
+				{
 					fields: [
 						{
-							name: foreignIdField2,
-							type: 'string',
+							type: 'primitive',
+							field: foreignDesiredField2,
+							alias: foreignIdFieldAlias2,
 						},
 					],
+					relational: {
+						store: foreignStore2,
+						collectionName: foreignTable2,
+						collectionIdentifier: randomIdentifier(),
+						fields: [
+							{
+								name: foreignIdField2,
+								type: 'string',
+							},
+						],
+					},
 				},
-			},
-		],
+			],
+		},
 	};
 
 	const indexGenerators = createIndexGenerators();
@@ -196,7 +201,7 @@ test('getNestedUnionOne with a single identifier', () => {
 		aliasMapping: [
 			{
 				type: 'nested',
-				alias: foreignTable,
+				alias,
 				children: [
 					{
 						type: 'root',
@@ -207,7 +212,7 @@ test('getNestedUnionOne with a single identifier', () => {
 			},
 			{
 				type: 'nested',
-				alias: foreignTable2,
+				alias,
 				children: [
 					{
 						type: 'root',
