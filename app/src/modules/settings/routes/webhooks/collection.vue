@@ -6,7 +6,7 @@ import { useFeatureFlagStore } from '@/stores/feature-flags';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 
@@ -20,7 +20,6 @@ const layoutRef = ref();
 const selection = ref<Item[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
-const { addNewLink, batchLink } = useLinks();
 const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 const { layoutWrapper } = useLayout(layout);
@@ -57,19 +56,6 @@ function useBatchDelete() {
 		deleting.value = false;
 		confirmDelete.value = false;
 	}
-}
-
-function useLinks() {
-	const addNewLink = computed<string>(() => {
-		return `/settings/webhooks/+`;
-	});
-
-	const batchLink = computed<string>(() => {
-		const batchPrimaryKeys = selection.value;
-		return `/settings/webhooks/${batchPrimaryKeys}`;
-	});
-
-	return { addNewLink, batchLink };
 }
 
 function clearFilters() {
@@ -131,11 +117,7 @@ function clearFilters() {
 					</v-card>
 				</v-dialog>
 
-				<v-button v-if="selection.length > 0" v-tooltip.bottom="t('edit')" rounded icon secondary :to="batchLink">
-					<v-icon name="edit" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
+				<v-button v-tooltip.bottom="t('create_webhook')" rounded icon to="/settings/webhooks/+">
 					<v-icon name="add" />
 				</v-button>
 			</template>
