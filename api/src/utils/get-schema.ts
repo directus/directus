@@ -1,19 +1,21 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { systemCollectionRows } from '@directus/system-data';
 import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
+import { useBus } from '../bus/index.js';
 import { getSchemaCache, setSchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
+import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
-import getLocalType from './get-local-type.js';
-import { systemCollectionRows } from '@directus/system-data';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
+import getLocalType from './get-local-type.js';
 
 const logger = useLogger();
 
@@ -31,33 +33,44 @@ export async function getSchema(options?: {
 	const database = options?.database || getDatabase();
 	const schemaInspector = createInspector(database);
 
-	let result: SchemaOverview;
-
-	if (!options?.bypassCache && env['CACHE_SCHEMA'] !== false) {
-		let cachedSchema;
-
-		try {
-			cachedSchema = await getSchemaCache();
-		} catch (err: any) {
-			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
-		}
-
-		if (cachedSchema) {
-			result = cachedSchema;
-		} else {
-			result = await getDatabaseSchema(database, schemaInspector);
-
-			try {
-				await setSchemaCache(result);
-			} catch (err: any) {
-				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
-			}
-		}
-	} else {
-		result = await getDatabaseSchema(database, schemaInspector);
+	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
+		return await getDatabaseSchema(database, schemaInspector);
 	}
 
-	return result;
+	const cached = await getSchemaCache();
+
+	if (cached) {
+		return cached;
+	}
+
+	const lock = useLock();
+	const bus = useBus();
+
+	const lockKey = 'schemaCache--preparing';
+	const messageKey = 'schemaCache--done';
+	const processId = await lock.increment(lockKey);
+
+	const currentProcessShouldHandleOperation = processId === 1;
+
+	if (currentProcessShouldHandleOperation === false) {
+		logger.trace('Schema cache is prepared elsewhere, waiting for result.');
+
+		return new Promise((resolve) => {
+			bus.subscribe(messageKey, async () => {
+				const schema = await getSchema(options);
+				resolve(schema);
+			});
+		});
+	}
+
+	try {
+		const schema = await getDatabaseSchema(database, schemaInspector);
+		await setSchemaCache(schema);
+		bus.publish(messageKey, { ready: true });
+		return schema;
+	} finally {
+		await lock.delete(lockKey);
+	}
 }
 
 async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {
