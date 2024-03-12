@@ -8,6 +8,7 @@ export type Role = {
 	ip_access: string[];
 	app_access: boolean;
 	admin_access: boolean;
+	users: string[];
 };
 
 export type Avatar = {

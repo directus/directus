@@ -1,8 +1,8 @@
-import { readItems } from '@directus/sdk';
 import { formatTitle } from '@directus/format-title';
-import { client } from '../lib/directus.js';
+import { readItems } from '@directus/sdk';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
+import { client } from '../lib/directus.js';
 import { sections as guideSections } from './guides.js';
 
 export default {
@@ -293,10 +293,6 @@ function sidebarDeveloperReference() {
 							link: '/extensions/installing-extensions',
 							text: 'Installing Extensions',
 						},
-						{
-							link: '/extensions/creating-extensions',
-							text: 'Creating Extensions',
-						},
 					],
 				},
 				{
@@ -304,16 +300,16 @@ function sidebarDeveloperReference() {
 					collapsed: true,
 					items: [
 						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
+						{
 							text: 'Extension Types',
 							collapsed: true,
 							items: [
 								{
 									link: '/extensions/displays',
 									text: 'Displays',
-								},
-								{
-									link: '/extensions/email-templates',
-									text: 'Email Templates',
 								},
 								{
 									link: '/extensions/endpoints',
@@ -330,10 +326,6 @@ function sidebarDeveloperReference() {
 								{
 									link: '/extensions/layouts',
 									text: 'Layouts',
-								},
-								{
-									link: '/extensions/migrations',
-									text: 'Migrations',
 								},
 								{
 									link: '/extensions/modules',
@@ -421,6 +413,10 @@ function sidebarDeveloperReference() {
 						},
 					],
 				},
+				{
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing',
+				},
 			],
 		},
 		{
@@ -461,6 +457,14 @@ function sidebarDeveloperReference() {
 				{
 					link: '/self-hosted/cli',
 					text: 'CLI',
+				},
+				{
+					link: '/self-hosted/migrations',
+					text: 'Migrations',
+				},
+				{
+					link: '/self-hosted/email-templates',
+					text: 'Email Templates',
 				},
 				{
 					text: 'Single Sign-On (SSO)',
@@ -616,6 +620,16 @@ function sidebarUserGuide() {
 				{
 					text: 'Charts',
 					link: '/user-guide/insights/charts',
+				},
+			],
+		},
+		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview',
 				},
 			],
 		},

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "15.0.1",
+	"version": "15.0.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,13 +14,11 @@
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"files": [
 		"dist"
 	],
@@ -37,7 +35,7 @@
 		"@types/node-fetch": "2.6.11",
 		"tsup": "8.0.2",
 		"typescript": "5.3.3",
-		"vitest": "1.2.2"
+		"vitest": "1.3.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"

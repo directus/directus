@@ -38,18 +38,20 @@ router.post(
 
 		const mode: AuthenticationMode = req.body.mode ?? 'json';
 
-		const { accessToken, refreshToken, expires } = await service.login(req.body);
+		const { accessToken, refreshToken, expires } = await service.login(req.body, {
+			session: mode === 'session',
+		});
 
-		const payload: Record<string, any> = { expires };
+		const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
 
 		if (mode === 'json') {
-			payload['access_token'] = accessToken;
-			payload['refresh_token'] = refreshToken;
+			payload.refresh_token = refreshToken;
+			payload.access_token = accessToken;
 		}
 
 		if (mode === 'cookie') {
 			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-			payload['access_token'] = accessToken;
+			payload.access_token = accessToken;
 		}
 
 		if (mode === 'session') {

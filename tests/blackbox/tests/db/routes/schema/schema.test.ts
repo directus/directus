@@ -5,8 +5,8 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { load as loadYaml } from 'js-yaml';
 import { cloneDeep } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { describe, expect, it } from 'vitest';
 import { version as currentDirectusVersion } from '../../../../../../api/package.json';
 import {
@@ -607,9 +607,9 @@ describe('Schema Snapshots', () => {
 						const item = await CreateItem(vendor, {
 							collection: `${collectionAll}_${pkType}`,
 							item: {
-								id: pkType === 'string' ? uuid() : undefined,
-								all_id: { id: pkType === 'string' ? uuid() : undefined },
-								o2m: [{ id: pkType === 'string' ? uuid() : undefined }],
+								id: pkType === 'string' ? randomUUID() : undefined,
+								all_id: { id: pkType === 'string' ? randomUUID() : undefined },
+								o2m: [{ id: pkType === 'string' ? randomUUID() : undefined }],
 							},
 						});
 

@@ -16,7 +16,6 @@ jobs:
           days-before-stale: -1
           days-before-close: 7
           remove-stale-when-updated: false
-          stale-issue-label: Needs More Info
+          stale-issue-label: ':detective: Needs More Info'
           close-issue-message:
-            "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll
-            be closed until more information becomes available. Thanks!"
+            "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll be closed until more information becomes available. Thanks!"

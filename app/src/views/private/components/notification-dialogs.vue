@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { Snackbar } from '@/types/notifications';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -11,9 +12,13 @@ const { isAdmin } = useUserStore();
 
 const notifications = computed(() => notificationsStore.dialogs);
 
-function done(id: string) {
-	notificationsStore.remove(id);
-}
+const done = async (notification: Snackbar) => {
+	if (notification.dismissAction) {
+		await notification.dismissAction();
+	}
+
+	notificationsStore.remove(notification.id);
+};
 </script>
 
 <template>
@@ -32,7 +37,7 @@ function done(id: string) {
 							{{ t('report_error') }}
 						</a>
 					</v-button>
-					<v-button @click="done(notification.id)">{{ t('dismiss') }}</v-button>
+					<v-button @click="done(notification)">{{ notification.dismissText ?? t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

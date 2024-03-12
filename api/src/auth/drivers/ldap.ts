@@ -20,7 +20,7 @@ import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
-import type { AuthDriverOptions, User } from '../../types/index.js';
+import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { AuthDriver } from '../auth.js';
@@ -439,21 +439,21 @@ export function createLDAPAuthRouter(provider: string): Router {
 				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode = req.body.mode || 'json';
+			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
-			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				provider,
-				req.body,
-				req.body?.otp,
-				mode === 'session',
-			);
+			const { accessToken, refreshToken, expires } = await authenticationService.login(provider, req.body, {
+				session: mode === 'session',
+				otp: req.body?.otp,
+			});
 
-			const payload = {
-				data: { access_token: accessToken, expires },
-			} as Record<string, Record<string, any>>;
+			const payload = { access_token: accessToken, expires } as {
+				access_token: string;
+				expires: number;
+				refresh_token?: string;
+			};
 
 			if (mode === 'json') {
-				payload['data']!['refresh_token'] = refreshToken;
+				payload.refresh_token = refreshToken;
 			}
 
 			if (mode === 'cookie') {
@@ -464,7 +464,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 			}
 
-			res.locals['payload'] = payload;
+			res.locals['payload'] = { data: payload };
 
 			return next();
 		}),

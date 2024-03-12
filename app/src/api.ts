@@ -1,7 +1,7 @@
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { type QueueAddOptions, type Options } from 'p-queue';
+import PQueue, { type Options } from 'p-queue';
 
 const api = axios.create({
 	baseURL: getRootPath(),

@@ -5,11 +5,11 @@ import { SeedFunctions } from '@common/seed-functions';
 import { requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import { findIndex, without } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { beforeAll, describe, expect, it, test } from 'vitest';
+import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	collectionCircles,
 	collectionShapes,
@@ -23,11 +23,11 @@ import {
 
 function createShape(pkType: PrimaryKeyType) {
 	const item: Shape = {
-		name: 'shape-' + uuid(),
+		name: 'shape-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'shape-' + uuid();
+		item.id = 'shape-' + randomUUID();
 	}
 
 	return item;
@@ -35,12 +35,12 @@ function createShape(pkType: PrimaryKeyType) {
 
 function createCircle(pkType: PrimaryKeyType) {
 	const item: Circle = {
-		name: 'circle-' + uuid(),
+		name: 'circle-' + randomUUID(),
 		radius: SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
-		item.id = 'circle-' + uuid();
+		item.id = 'circle-' + randomUUID();
 	}
 
 	return item;
@@ -48,12 +48,12 @@ function createCircle(pkType: PrimaryKeyType) {
 
 function createSquare(pkType: PrimaryKeyType) {
 	const item: Square = {
-		name: 'square-' + uuid(),
+		name: 'square-' + randomUUID(),
 		width: SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
-		item.id = 'square-' + uuid();
+		item.id = 'square-' + randomUUID();
 	}
 
 	return item;
@@ -337,7 +337,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const shape = createShape(pkType);
-						shape.name = 'shape-m2a-top-' + uuid();
+						shape.name = 'shape-m2a-top-' + randomUUID();
 
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
@@ -412,11 +412,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const circle = createCircle(pkType);
-						circle.name = 'circle-m2a-' + uuid();
+						circle.name = 'circle-m2a-' + randomUUID();
 						const square = createSquare(pkType);
-						square.name = 'square-m2a-' + uuid();
+						square.name = 'square-m2a-' + randomUUID();
 						const shape = createShape(pkType);
-						shape.name = 'shape-m2a-' + uuid();
+						shape.name = 'shape-m2a-' + randomUUID();
 
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
@@ -523,11 +523,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const circle = createCircle(pkType);
-						circle.name = 'circle-m2a-top-fn-' + uuid();
+						circle.name = 'circle-m2a-top-fn-' + randomUUID();
 						const square = createSquare(pkType);
-						square.name = 'square-m2a-top-fn-' + uuid();
+						square.name = 'square-m2a-top-fn-' + randomUUID();
 						const shape = createShape(pkType);
-						shape.name = 'shape-m2a-top-fn-' + uuid();
+						shape.name = 'shape-m2a-top-fn-' + randomUUID();
 
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
@@ -542,7 +542,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						});
 
 						const shape2 = createShape(pkType);
-						shape2.name = 'shape-m2a-top-fn-' + uuid();
+						shape2.name = 'shape-m2a-top-fn-' + randomUUID();
 
 						const insertedShape2 = await CreateItem(vendor, {
 							collection: localCollectionShapes,
@@ -657,10 +657,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const year of years) {
 							const circle = createCircle(pkType);
-							circle.name = 'circle-m2a-fn-' + uuid();
+							circle.name = 'circle-m2a-fn-' + randomUUID();
 							circle.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 							const shape = createShape(pkType);
-							shape.name = 'shape-m2a-fn-' + uuid();
+							shape.name = 'shape-m2a-fn-' + randomUUID();
 
 							const insertedShape = await CreateItem(vendor, {
 								collection: localCollectionShapes,
@@ -992,7 +992,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const circle = createCircle(pkType);
 								circle.name = 'circle-m2a-sort-' + val;
 								const shape = createShape(pkType);
-								shape.name = 'shape-m2a-sort-' + uuid();
+								shape.name = 'shape-m2a-sort-' + randomUUID();
 
 								await CreateItem(vendor, {
 									collection: localCollectionShapes,
@@ -1272,7 +1272,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const shape = createShape(pkType);
-								shape.name = 'shape-m2a-top-sort-fn-' + uuid();
+								shape.name = 'shape-m2a-top-sort-fn-' + randomUUID();
 
 								shape.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
@@ -1456,14 +1456,14 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const circle = createCircle(pkType);
-								circle.name = 'circle-m2a-sort-fn-' + uuid();
+								circle.name = 'circle-m2a-sort-fn-' + randomUUID();
 
 								circle.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
 
 								const shape = createCircle(pkType);
-								shape.name = 'shape-m2a-sort-fn-' + uuid();
+								shape.name = 'shape-m2a-sort-fn-' + randomUUID();
 
 								await CreateItem(vendor, {
 									collection: localCollectionShapes,

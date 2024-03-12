@@ -1,28 +1,57 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, Filter, Query } from '@directus/types';
+import { useRouteQuery } from '@vueuse/router';
 import { Ref, computed, ref, unref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
-	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
-
 	const currentVersion = ref<ContentVersion | null>(null);
 	const versions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
+
+	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
+
+	const queryVersion = useRouteQuery<string | null>('version', null, {
+		transform: (value) => (Array.isArray(value) ? value[0] : value),
+		mode: 'push',
+	});
+
+	watch(
+		[queryVersion, versions],
+		([newQueryVersion, newVersions]) => {
+			if (!newVersions) return;
+
+			let version;
+
+			if (queryVersion) {
+				version = newVersions.find((version) => version.key === newQueryVersion);
+			}
+
+			if (version?.key === currentVersion.value?.key) return;
+
+			currentVersion.value = version ?? null;
+		},
+		{ immediate: true },
+	);
+
+	watch(currentVersion, (newCurrentVersion) => {
+		queryVersion.value = newCurrentVersion?.key ?? null;
+	});
 
 	const query = computed<Query>(() => {
 		if (!currentVersion.value) return {};
 
 		return {
 			version: currentVersion.value.key,
+			versionRaw: true,
 		};
 	});
 
 	watch(
 		[collection, isSingleton, primaryKey],
-		([newCollection, _newIsSingleton, _newPrimaryKey], [oldCollection, _oldIsSingleton, _oldPrimaryKey]) => {
+		([newCollection], [oldCollection]) => {
 			if (newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
 		},

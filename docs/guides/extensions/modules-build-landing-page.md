@@ -500,9 +500,11 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ### Work With Images
 
-::: tip
+::: warning DEPRECATED
 
-[DEPRECATED] The query parameter approach used here is deprecated, make use of session cookies instead.
+Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) the query parameter authentication is
+no longer required and considered deprecated, you can rely on
+[session cookies](/reference/authentication.html#access-tokens) instead.
 
 :::
 

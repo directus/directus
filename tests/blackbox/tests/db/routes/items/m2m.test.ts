@@ -4,11 +4,11 @@ import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import { findIndex, without } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { beforeAll, describe, expect, it, test } from 'vitest';
+import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	collectionFoods,
 	collectionIngredients,
@@ -22,12 +22,12 @@ import {
 
 function createFood(pkType: PrimaryKeyType) {
 	const item: Food = {
-		name: 'food-' + uuid(),
+		name: 'food-' + randomUUID(),
 		ingredients: [],
 	};
 
 	if (pkType === 'string') {
-		item.id = 'food-' + uuid();
+		item.id = 'food-' + randomUUID();
 	}
 
 	return item;
@@ -35,11 +35,11 @@ function createFood(pkType: PrimaryKeyType) {
 
 function createIngredient(pkType: PrimaryKeyType) {
 	const item: Ingredient = {
-		name: 'ingredient-' + uuid(),
+		name: 'ingredient-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'ingredient-' + uuid();
+		item.id = 'ingredient-' + randomUUID();
 	}
 
 	return item;
@@ -47,11 +47,11 @@ function createIngredient(pkType: PrimaryKeyType) {
 
 function createSupplier(pkType: PrimaryKeyType) {
 	const item: Supplier = {
-		name: 'supplier-' + uuid(),
+		name: 'supplier-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'supplier-' + uuid();
+		item.id = 'supplier-' + randomUUID();
 	}
 
 	return item;
@@ -173,7 +173,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-top-' + uuid();
+						ingredient.name = 'ingredient-m2m-top-' + randomUUID();
 
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
@@ -248,9 +248,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const food = createFood(pkType);
-						food.name = 'food-m2m-' + uuid();
+						food.name = 'food-m2m-' + randomUUID();
 						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-' + uuid();
+						ingredient.name = 'ingredient-m2m-' + randomUUID();
 
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
@@ -348,7 +348,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-top-fn-' + uuid();
+						ingredient.name = 'ingredient-m2m-top-fn-' + randomUUID();
 
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
@@ -363,7 +363,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						});
 
 						const ingredient2 = createIngredient(pkType);
-						ingredient2.name = 'ingredient-m2m-top-fn-' + uuid();
+						ingredient2.name = 'ingredient-m2m-top-fn-' + randomUUID();
 
 						const insertedIngredient2 = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
@@ -474,10 +474,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const year of years) {
 							const food = createFood(pkType);
-							food.name = 'food-m2m-fn-' + uuid();
+							food.name = 'food-m2m-fn-' + randomUUID();
 							food.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-fn-' + uuid();
+							ingredient.name = 'ingredient-m2m-fn-' + randomUUID();
 
 							const insertedIngredient = await CreateItem(vendor, {
 								collection: localCollectionIngredients,
@@ -805,7 +805,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const food = createFood(pkType);
 								food.name = 'food-m2m-sort-' + val;
 								const ingredient = createIngredient(pkType);
-								ingredient.name = 'ingredient-m2m-sort-' + uuid();
+								ingredient.name = 'ingredient-m2m-sort-' + randomUUID();
 
 								await CreateItem(vendor, {
 									collection: localCollectionIngredients,
@@ -1079,7 +1079,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const ingredient = createIngredient(pkType);
-								ingredient.name = 'ingredient-m2m-top-sort-fn-' + uuid();
+								ingredient.name = 'ingredient-m2m-top-sort-fn-' + randomUUID();
 
 								ingredient.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
@@ -1263,10 +1263,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const food = createFood(pkType);
-								food.name = 'food-m2m-sort-fn-' + uuid();
+								food.name = 'food-m2m-sort-fn-' + randomUUID();
 								food.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
 								const ingredient = createIngredient(pkType);
-								ingredient.name = 'ingredient-m2m-sort-fn-' + uuid();
+								ingredient.name = 'ingredient-m2m-sort-fn-' + randomUUID();
 
 								await CreateItem(vendor, {
 									collection: localCollectionIngredients,
