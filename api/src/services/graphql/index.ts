@@ -178,7 +178,7 @@ export class GraphQLService {
 	getSchema(type: 'schema'): GraphQLSchema;
 	getSchema(type: 'sdl'): GraphQLSchema | string;
 	getSchema(type: 'schema' | 'sdl' = 'schema'): GraphQLSchema | string {
-		const key = `${type}_${this.accountability?.role}_${this.accountability?.user}`;
+		const key = `${this.scope}_${type}_${this.accountability?.role}_${this.accountability?.user}`;
 
 		const cachedSchema = cache.get(key);
 
