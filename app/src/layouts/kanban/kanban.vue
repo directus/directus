@@ -6,7 +6,7 @@ export default {
 
 <script setup lang="ts">
 import { getItemRoute } from '@/utils/get-route';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import type { Field } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -64,7 +64,7 @@ function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
 
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
+	const url = getAssetUrl(`${file.id}?modified=${file.modified_on}&key=system-small-cover`);
 	return url;
 }
 
