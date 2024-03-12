@@ -66,9 +66,9 @@ export async function getSchema(options?: {
 	try {
 		const schema = await getDatabaseSchema(database, schemaInspector);
 		await setSchemaCache(schema);
-		bus.publish(messageKey, { ready: true });
 		return schema;
 	} finally {
+		bus.publish(messageKey, { ready: true });
 		await lock.delete(lockKey);
 	}
 }
