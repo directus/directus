@@ -71,7 +71,7 @@ const src = computed(() => {
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}&test=1`);
+		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`);
 		return url;
 	}
 
