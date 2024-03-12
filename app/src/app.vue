@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
@@ -48,7 +49,7 @@ useHead({
 		let href: string;
 
 		if (serverStore.info?.project?.public_favicon) {
-			href = `/assets/${serverStore.info.project.public_favicon}`;
+			href = getAssetUrl(serverStore.info.project.public_favicon);
 		} else if (serverStore.info?.project?.project_color) {
 			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
 		} else {
