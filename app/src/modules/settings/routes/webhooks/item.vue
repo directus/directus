@@ -136,6 +136,12 @@ function discardAndStay() {
 			<settings-navigation />
 		</template>
 
+		<div class="deprecation-notice-wrapper">
+			<v-notice type="danger">
+				<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
+			</v-notice>
+		</div>
+
 		<v-form
 			v-model="edits"
 			:loading="loading"
@@ -173,6 +179,13 @@ function discardAndStay() {
 </template>
 
 <style lang="scss" scoped>
+.deprecation-notice-wrapper {
+	padding: var(--content-padding);
+	:deep(a) {
+		text-decoration: underline;
+	}
+}
+
 .action-delete {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--theme--danger);
