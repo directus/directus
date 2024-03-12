@@ -2,6 +2,7 @@
 import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
+import { useFeatureFlagStore } from '@/stores/feature-flags';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
@@ -33,6 +34,7 @@ async function refresh() {
 function useBatchDelete() {
 	const confirmDelete = ref(false);
 	const deleting = ref(false);
+	const featureFlagStore = useFeatureFlagStore();
 
 	return { confirmDelete, deleting, batchDelete };
 
@@ -46,6 +48,8 @@ function useBatchDelete() {
 		await api.delete(`/webhooks/${batchPrimaryKeys}`);
 
 		await refresh();
+
+		void featureFlagStore.refreshShowWebhooks();
 
 		selection.value = [];
 		deleting.value = false;
@@ -136,7 +140,7 @@ function clearFilters() {
 
 			<div class="deprecation-notice-wrapper">
 				<v-notice type="danger">
-					<span v-md="t('webhooks_deprecation_notice')"></span>
+					<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
 				</v-notice>
 			</div>
 

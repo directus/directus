@@ -631,9 +631,8 @@ user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 webhooks_deprecation_notice:
-  Webhooks are deprecated and further use is discouraged. Please migrate to using [Flows](./flows) with the <a
-  target="_blank" href="https://docs.directus.io/app/flows/operations.html#webhook-request-url">Webhook / Request URL
-  operation</a>.
+  Webhooks are deprecated and further use is discouraged. Please migrate to using **Flows** with the [Webhook / Request
+  URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!

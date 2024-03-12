@@ -9,9 +9,22 @@ export const useFeatureFlagStore = defineStore('featureFlagStore', () => {
 
 	return {
 		showWebhooks,
+		refreshShowWebhooks,
 		hydrate,
 		dehydrate,
 	};
+
+	async function refreshShowWebhooks() {
+		try {
+			const response = await api.get(getEndpoint('directus_webhooks'), {
+				params: { limit: 1, fields: 'id' },
+			});
+
+			showWebhooks.value = response.data?.data?.length > 0;
+		} catch (err) {
+			showWebhooks.value = false;
+		}
+	}
 
 	async function hydrate() {
 		const { hasPermission } = usePermissionsStore();
@@ -19,15 +32,7 @@ export const useFeatureFlagStore = defineStore('featureFlagStore', () => {
 		if (!hasPermission('directus_webhooks', 'read')) {
 			showWebhooks.value = false;
 		} else {
-			try {
-				const response = await api.get(getEndpoint('directus_webhooks'), {
-					params: { limit: 1, fields: 'id' },
-				});
-
-				showWebhooks.value = response.data?.data?.length > 0;
-			} catch (err) {
-				showWebhooks.value = false;
-			}
+			await refreshShowWebhooks();
 		}
 	}
 
