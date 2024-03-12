@@ -45,7 +45,9 @@ function useBatchDelete() {
 
 		const batchPrimaryKeys = selection.value;
 
-		await api.delete(`/webhooks/${batchPrimaryKeys}`);
+		await api.delete(`/webhooks`, {
+			data: batchPrimaryKeys,
+		});
 
 		await refresh();
 
