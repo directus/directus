@@ -18,9 +18,8 @@ defineEmits<{
 
 const file = toRef(props, 'file');
 
-const src = computed(
-	() =>
-		getAssetUrl(`${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`),
+const src = computed(() =>
+	getAssetUrl(`${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`),
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {

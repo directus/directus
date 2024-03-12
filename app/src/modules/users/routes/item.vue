@@ -90,7 +90,9 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() => (item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null));
+const avatarSrc = computed(() =>
+	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
+);
 
 const avatarError = ref(null);
 
