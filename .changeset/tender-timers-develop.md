@@ -2,7 +2,7 @@
 '@directus/types': patch
 'docs': patch
 '@directus/api': minor
-'@directus/app': minor
+'@directus/app': major
 '@directus/sdk': patch
 ---
 
