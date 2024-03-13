@@ -133,7 +133,7 @@ export default abstract class SocketController {
 		}
 
 		const env = useEnv();
-		const cookies  = request.headers.cookie ? cookie.parse(request.headers.cookie): {};
+		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
 		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
