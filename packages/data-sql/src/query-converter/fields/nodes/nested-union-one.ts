@@ -6,6 +6,8 @@ import type {
 import type {
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
+	AbstractSqlQuerySelectJsonNode,
+	AbstractSqlQuerySelectNode,
 	AbstractSqlQuerySelectPrimitiveNode,
 	AliasMapping,
 	ParameterTypes,
@@ -17,7 +19,7 @@ export type NestedUnionOneResult = {
 	joins: AbstractSqlQueryJoinNode[];
 	parameters: ParameterTypes[];
 	aliasMapping: AliasMapping;
-	selects: AbstractSqlQuerySelectPrimitiveNode[];
+	selects: AbstractSqlQuerySelectNode[];
 };
 
 export const getNestedUnionOne = (
@@ -28,10 +30,11 @@ export const getNestedUnionOne = (
 	const parameters = [];
 	const unionJoins: AbstractSqlQueryJoinNode[] = [];
 	const aliasMapping: AliasMapping = [];
-	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
+	const selects: AbstractSqlQuerySelectNode[] = [];
 
 	const relationalFieldResult = getSelectForRelationalField(tableIndex, indexGen, node.nesting.field);
-	selects.push(relationalFieldResult);
+	selects.push(relationalFieldResult.json);
+	parameters.push(relationalFieldResult.parameter);
 
 	for (const collection of node.nesting.collections) {
 		const conditions: AbstractSqlQueryConditionNode[] = [];
@@ -143,13 +146,21 @@ function getSelectForRelationalField(
 	tableIndex: number,
 	indexGen: IndexGenerators,
 	relationalField: string,
-): AbstractSqlQuerySelectPrimitiveNode {
+): {
+	json: AbstractSqlQuerySelectJsonNode;
+	parameter: ParameterTypes;
+} {
 	const jsonColumnIndex = indexGen.column.next().value;
+	const pathIndex = indexGen.parameter.next().value;
 
 	return {
-		type: 'primitive',
-		tableIndex,
-		columnName: relationalField,
-		columnIndex: jsonColumnIndex,
+		json: {
+			type: 'json',
+			tableIndex,
+			columnIndex: jsonColumnIndex,
+			columnName: relationalField,
+			path: [pathIndex],
+		},
+		parameter: 'foreignCollection',
 	};
 }

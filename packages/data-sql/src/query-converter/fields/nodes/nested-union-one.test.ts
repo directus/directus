@@ -94,11 +94,11 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [0],
+									path: [1],
 								},
 								compareTo: {
 									type: 'value',
-									parameterIndex: 1,
+									parameterIndex: 2,
 								},
 							},
 						},
@@ -112,7 +112,7 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [2, 0],
+									path: [3, 0],
 									pathIsIndex: true,
 									dataType: 'string',
 								},
@@ -145,11 +145,11 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [3],
+									path: [4],
 								},
 								compareTo: {
 									type: 'value',
-									parameterIndex: 4,
+									parameterIndex: 5,
 								},
 							},
 						},
@@ -163,7 +163,7 @@ test('getNestedUnionOne with a single identifier', () => {
 									type: 'json',
 									tableIndex: rootTableIndex,
 									columnName: relationalColumn,
-									path: [5, 0],
+									path: [6, 0],
 									pathIsIndex: true,
 									dataType: 'string',
 								},
@@ -180,10 +180,11 @@ test('getNestedUnionOne with a single identifier', () => {
 		],
 		selects: [
 			{
-				type: 'primitive',
+				type: 'json',
 				tableIndex: rootTableIndex,
 				columnName: relationalColumn,
 				columnIndex: 0,
+				path: [0],
 			},
 			{
 				type: 'primitive',
@@ -222,7 +223,15 @@ test('getNestedUnionOne with a single identifier', () => {
 				],
 			},
 		],
-		parameters: ['foreignCollection', foreignTable, 'foreignKey', 'foreignCollection', foreignTable2, 'foreignKey'],
+		parameters: [
+			'foreignCollection',
+			'foreignCollection',
+			foreignTable,
+			'foreignKey',
+			'foreignCollection',
+			foreignTable2,
+			'foreignKey',
+		],
 	};
 
 	expect(result).toStrictEqual(expected);
