@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 const props = withDefaults(
 	defineProps<{
 		modelValue: string | null;
-		showFilter: boolean;
+		showFilter?: boolean;
 		collection?: string;
 		filter?: Filter | null;
 	}>(),
