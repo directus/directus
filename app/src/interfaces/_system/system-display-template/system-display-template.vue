@@ -98,7 +98,7 @@ const tree = computed(() => {
 <template>
 	<div class="system-display-template">
 		<v-notice v-if="tree === null">
-			{{ t('interfaces.system-display-template.select_a_collection_or_tree_fields') }}
+			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
 		<v-field-template
 			v-else
