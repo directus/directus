@@ -4,7 +4,6 @@ import type { Accountability } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import { randomUUID } from 'node:crypto';
-import type { ParsedUrlQuery } from 'querystring';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type internal from 'stream';
 import { parse } from 'url';
@@ -22,7 +21,7 @@ import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 import { registerWebSocketEvents } from './hooks.js';
-import cookieParser from 'cookie-parser';
+import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -134,18 +133,19 @@ export default abstract class SocketController {
 		}
 
 		const env = useEnv();
-		const cookies  = parseCookie(request);
+		const cookies  = request.headers.cookie ? cookie.parse(request.headers.cookie): {};
 		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
 		if (cookies[sessionCookieName]) {
-			await this.handleSessionUpgrade(context, cookies[sessionCookieName]!);
+			const token = cookies[sessionCookieName] as string;
+			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
-
 		if (this.authentication.mode === 'strict') {
-			await this.handleStrictUpgrade(context, query);
+			const token = query['access_token'] as string;
+			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
@@ -161,36 +161,10 @@ export default abstract class SocketController {
 		});
 	}
 
-	protected async handleSessionUpgrade({ request, socket, head }: UpgradeContext, token: string) {
+	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string) {
 		let accountability: Accountability | null, expires_at: number | null;
 
 		try {
-			accountability = await getAccountabilityForToken(token);
-			expires_at = getExpiresAtForToken(token);
-		} catch {
-			accountability = null;
-			expires_at = null;
-		}
-
-		if (!accountability || !accountability.user) {
-			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
-			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-			socket.destroy();
-			return;
-		}
-
-		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			this.catchInvalidMessages(ws);
-			const state = { accountability, expires_at } as AuthenticationState;
-			this.server.emit('connection', ws, state);
-		});
-	}
-
-	protected async handleStrictUpgrade({ request, socket, head }: UpgradeContext, query: ParsedUrlQuery) {
-		let accountability: Accountability | null, expires_at: number | null;
-
-		try {
-			const token = query['access_token'] as string;
 			accountability = await getAccountabilityForToken(token);
 			expires_at = getExpiresAtForToken(token);
 		} catch {
@@ -407,16 +381,4 @@ export default abstract class SocketController {
 			ws.terminate();
 		});
 	}
-}
-
-type CPParams = Parameters<ReturnType<typeof cookieParser>>;
-
-function parseCookie(request: IncomingMessage): Record<string, string> {
-	cookieParser()(
-		request as CPParams[0],
-		{} as CPParams[1],
-		(() => {}) as CPParams[2]
-	);
-
-	return (request as CPParams[0]).cookies ?? {};
 }
