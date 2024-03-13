@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { flattenFieldGroups } from '@/utils/flatten-field-groups';
-import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import type { FieldNode } from '@/composables/use-field-tree';
+import { flattenFieldGroups } from '@/utils/flatten-field-groups';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 
@@ -32,12 +32,10 @@ const contentEl = ref<HTMLElement | null>(null);
 
 const menuActive = ref(false);
 
-const { tree, loadPathLevel } = toRefs(props);
-
 watch(() => props.modelValue, setContent, { immediate: true });
 
 const grouplessTree = computed(() => {
-	return flattenFieldGroups(tree.value);
+	return flattenFieldGroups(props.tree);
 });
 
 onMounted(() => {
@@ -242,7 +240,7 @@ function setContent() {
 				const fieldPath = fieldKey.split('.');
 
 				for (let i = 0; i < fieldPath.length; i++) {
-					loadPathLevel.value?.(fieldPath.slice(0, i).join('.'));
+					props.loadPathLevel?.(fieldPath.slice(0, i).join('.'));
 				}
 
 				const field = findTree(grouplessTree.value, fieldPath);
