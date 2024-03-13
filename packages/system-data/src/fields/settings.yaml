@@ -356,7 +356,7 @@ fields:
   - field: reporting_divider
     interface: presentation-divider
     options:
-      icon: link
+      icon: feedback
       title: $t:fields.directus_settings.reporting
     special:
       - alias
