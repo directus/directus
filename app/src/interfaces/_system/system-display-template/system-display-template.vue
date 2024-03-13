@@ -80,6 +80,8 @@ const injectValue = computed(() => {
 	return { fields: [fakeVersionField] };
 });
 
+const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
+
 const tree = computed(() => {
 	if (props.fields) {
 		return { list: props.fields };
@@ -88,8 +90,6 @@ const tree = computed(() => {
 	if (collection.value === null) {
 		return null;
 	}
-
-	const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
 
 	return { list: treeList.value, pathLoader: loadFieldRelations };
 });
