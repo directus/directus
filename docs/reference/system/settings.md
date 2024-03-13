@@ -23,6 +23,12 @@ Descriptor of the project, shown in the Admin App.
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
+`report_feature_url` **string**\
+Link to the feature request page.
+
+`report_bug_url` **string**\
+Link to the bug report page.
+
 `report_error_url` **string**\
 Link to the error report page. This is a template URL that has access to the following object
 
@@ -58,12 +64,6 @@ Link to the error report page. This is a template URL that has access to the fol
   };
 }
 ```
-
-`report_bug_url` **string**\
-Link to the bug report page.
-
-`report_feature_url` **string**\
-Link to the feature request page.
 
 `project_color` **string**\
 Brand color for the current project.
