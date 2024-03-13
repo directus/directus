@@ -161,8 +161,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				fetchOptions.body = JSON.stringify(body);
 
-				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), fetchOptions, client.globals.fetch, client.hooks);
+				await request(fetchOptions, client.globals.fetch, client.hooks);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
