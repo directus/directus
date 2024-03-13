@@ -12,8 +12,8 @@
 	"devDependencies": {
 		"@changesets/cli": "2.27.1",
 		"@directus/release-notes-generator": "workspace:*",
-		"@typescript-eslint/eslint-plugin": "7.1.0",
-		"@typescript-eslint/parser": "7.1.0",
+		"@typescript-eslint/eslint-plugin": "7.1.1",
+		"@typescript-eslint/parser": "7.1.1",
 		"eslint": "8.57.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-vue": "9.22.0",

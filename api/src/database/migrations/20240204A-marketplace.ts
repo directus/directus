@@ -9,7 +9,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.uuid('id').nullable();
-		table.string('source', 255);
+		table.string('folder');
+		table.string('source');
 		table.uuid('bundle');
 	});
 
@@ -37,7 +38,7 @@ export async function up(knex: Knex): Promise<void> {
 				source = 'local';
 			}
 
-			await knex('directus_extensions').update({ id, source }).where({ name });
+			await knex('directus_extensions').update({ id, source, folder: name }).where({ name });
 			idMap.set(name, id);
 		}
 	}
@@ -61,25 +62,51 @@ export async function up(knex: Knex): Promise<void> {
 		if (!bundleParentId) continue;
 
 		await knex('directus_extensions')
-			.update({ bundle: bundleParentId, name: name.substring(bundleParentName.length + 1) })
-			.where({ name });
+			.update({ bundle: bundleParentId, folder: name.substring(bundleParentName.length + 1) })
+			.where({ folder: name });
 	}
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
-		table.dropPrimary();
+		table.dropColumn('name');
 		table.uuid('id').alter().primary().notNullable();
-		table.string('source', 255).alter().notNullable().defaultTo('local');
-		table.renameColumn('name', 'folder');
+		table.string('source').alter().notNullable();
+		table.string('folder').alter().notNullable();
 	});
 }
 
+/*
+ * Note: For local extensions having a different package & folder name,
+ * we aren't able to revert to the exact same state as before.
+ * But we still need to do the name convertion, in order for the migration to succeed.
+ */
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_extensions', (table) => {
-		table.dropColumns('id', 'source', 'bundle');
-		table.renameColumn('folder', 'name');
+		table.string('name');
 	});
 
+	const installedExtensions = await knex.select(['id', 'folder', 'bundle']).from('directus_extensions');
+
+	const idMap = new Map<string, string>(installedExtensions.map((extension) => [extension.id, extension.folder]));
+
+	for (const { id, folder, bundle, source } of installedExtensions) {
+		if (source === 'registry') {
+			await knex('directus_extensions').delete().where({ id });
+			continue;
+		}
+
+		let name = folder;
+
+		if (bundle) {
+			const bundleParentName = idMap.get(bundle);
+
+			name = `${bundleParentName}/${name}`;
+		}
+
+		await knex('directus_extensions').update({ name }).where({ id });
+	}
+
 	await knex.schema.alterTable('directus_extensions', (table) => {
-		table.string('name', 255).primary().alter();
+		table.dropColumns('id', 'folder', 'source', 'bundle');
+		table.string('name').alter().primary().notNullable();
 	});
 }
