@@ -138,6 +138,11 @@ function getLinkForItem(item: any) {
 		background-color: var(--theme--background-accent);
 	}
 }
+.render-template {
+	> .v-menu {
+		display: inline;
+	}
+}
 
 .disabled {
 	color: var(--theme--foreground-subdued);
