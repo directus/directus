@@ -16,7 +16,7 @@ import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getAuthProviders } from '../utils/get-auth-providers.js';
+import { getAuthProviders, getSessionAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
@@ -263,7 +263,7 @@ router.get(
 	'/',
 	asyncHandler(async (_req, res, next) => {
 		res.locals['payload'] = {
-			data: getAuthProviders(),
+			data: getSessionAuthProviders(),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 
