@@ -57,7 +57,7 @@ export function mapResult(
 		} else if (aliasObject.type === 'nested') {
 			result[aliasObject.alias] = mapResult(aliasObject.children, rootRow, subResults, columnIndexToIdentifier);
 		} else if (aliasObject.type === 'nested-a2o') {
-			const foreignCollection = rootRow[columnIndexToIdentifier(99999)];
+			const foreignCollection = rootRow[columnIndexToIdentifier(1)];
 			const childObjIndex = aliasObject.children.findIndex((i) => i.collection === foreignCollection);
 			const specificChild = aliasObject.children[childObjIndex];
 			if (specificChild === undefined) throw new Error();
