@@ -134,9 +134,7 @@ async function authenticate() {
 	}
 }
 
-useHead({
-	title: title,
-});
+useHead({ title });
 </script>
 
 <template>
