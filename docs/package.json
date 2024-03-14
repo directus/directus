@@ -17,7 +17,7 @@
 		"node-fetch": "3.3.2"
 	},
 	"devDependencies": {
-		"@directus/format-title": "10.1.0",
+		"@directus/format-title": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@pnpm/find-workspace-dir": "6.0.3",
