@@ -376,8 +376,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       oracledb:
-        specifier: 6.3.0
-        version: 6.3.0
+        specifier: 6.4.0
+        version: 6.4.0
       pg:
         specifier: 8.11.3
         version: 8.11.3
@@ -15444,8 +15444,8 @@ packages:
       strip-ansi: 7.1.0
     dev: false
 
-  /oracledb@6.3.0:
-    resolution: {integrity: sha512-fr3U66QxgGXb5cs/ozLBQU50TMbZcBQEWvSaj2rJAXG8KRrsZcGOK8JTlZL1yJHeW8cSjOm6n/wTw3SJksGjDg==}
+  /oracledb@6.4.0:
+    resolution: {integrity: sha512-TJI08qzQlf/l7T49VojP9BoQpjEr14NXZmpSzzcLrbNs7qSl0QA/Mc9gGiEdkg5WmwH0wqUjtMC7jlf1WamlYA==}
     engines: {node: '>=14.6'}
     requiresBuild: true
     dev: false
