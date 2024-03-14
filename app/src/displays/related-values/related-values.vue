@@ -80,7 +80,7 @@ function getLinkForItem(item: any) {
 		:disabled="value?.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ subdued: value?.length === 0 }" @click.stop="toggle">
+			<span class="toggle" :class="{ disabled: value?.length === 0 }" @click.stop="toggle">
 				<span class="label">
 					{{ value?.length }}
 					<template v-if="value?.length >= 100">+</template>
@@ -130,17 +130,18 @@ function getLinkForItem(item: any) {
 		z-index: 2;
 	}
 
-	&:not(.subdued):hover::before {
+	&:not(.disabled):hover::before {
 		opacity: 1;
 	}
 
-	&:not(.subdued):active::before {
+	&:not(.disabled):active::before {
 		background-color: var(--theme--background-accent);
 	}
 }
 
-.subdued {
+.disabled {
 	color: var(--theme--foreground-subdued);
+	pointer-events: none;
 }
 
 .links {
