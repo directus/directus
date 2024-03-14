@@ -109,7 +109,7 @@ function getLinkForItem(item: any) {
 
 <style lang="scss" scoped>
 $toggle-px: 6px;
-$toggle-py: $toggle-px;
+$toggle-py: 4px;
 
 .toggle {
 	position: relative;
