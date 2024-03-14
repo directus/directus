@@ -44,7 +44,7 @@ import type { AliasMapping } from '../types/abstract-sql.js';
 export function mapResult(
 	aliasMapping: AliasMapping,
 	rootRow: Record<string, unknown>,
-	subResult: Record<string, unknown>[][],
+	subResults: Record<string, unknown>[][],
 	columnIndexToIdentifier: (columnIndex: number) => string,
 ): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
@@ -53,20 +53,15 @@ export function mapResult(
 		if (aliasObject.type === 'root') {
 			result[aliasObject.alias] = rootRow[columnIndexToIdentifier(aliasObject.columnIndex)];
 		} else if (aliasObject.type === 'sub') {
-			result[aliasObject.alias] = subResult[aliasObject.index];
-		} else {
-			const nestedResult = mapResult(aliasObject.children, rootRow, subResult, columnIndexToIdentifier);
-			let keysAreAllNull = true;
-
-			for (const key in nestedResult) {
-				if (nestedResult[key] !== null) {
-					keysAreAllNull = false;
-				}
-			}
-
-			if (!keysAreAllNull) {
-				result[aliasObject.alias] = nestedResult;
-			}
+			result[aliasObject.alias] = subResults[aliasObject.index];
+		} else if (aliasObject.type === 'nested') {
+			result[aliasObject.alias] = mapResult(aliasObject.children, rootRow, subResults, columnIndexToIdentifier);
+		} else if (aliasObject.type === 'nested-a2o') {
+			const foreignCollection = rootRow[columnIndexToIdentifier(99999)];
+			const childObjIndex = aliasObject.children.findIndex((i) => i.collection === foreignCollection);
+			const specificChild = aliasObject.children[childObjIndex];
+			if (specificChild === undefined) throw new Error();
+			result[aliasObject.alias] = mapResult(specificChild.mapping, rootRow, subResults, columnIndexToIdentifier);
 		}
 	}
 

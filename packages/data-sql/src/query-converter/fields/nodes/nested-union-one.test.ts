@@ -201,24 +201,28 @@ test('getNestedUnionOne with a single identifier', () => {
 		],
 		aliasMapping: [
 			{
-				type: 'nested',
+				type: 'nested-a2o',
 				alias,
 				children: [
 					{
-						type: 'root',
-						alias: foreignIdFieldAlias,
-						columnIndex: 1,
+						collection: foreignTable,
+						mapping: [
+							{
+								type: 'root',
+								alias: foreignIdFieldAlias,
+								columnIndex: 0,
+							},
+						],
 					},
-				],
-			},
-			{
-				type: 'nested',
-				alias,
-				children: [
 					{
-						type: 'root',
-						alias: foreignIdFieldAlias2,
-						columnIndex: 2,
+						collection: foreignTable2,
+						mapping: [
+							{
+								type: 'root',
+								alias: foreignIdFieldAlias2,
+								columnIndex: 1,
+							},
+						],
 					},
 				],
 			},

@@ -4,6 +4,7 @@ import type {
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
+	A2oChild,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryJoinNode,
 	AbstractSqlQuerySelectJsonNode,
@@ -36,13 +37,19 @@ export const getNestedUnionOne = (
 	selects.push(relationalFieldResult.json);
 	parameters.push(relationalFieldResult.parameter);
 
+	const children: A2oChild[] = [];
+
 	for (const collection of node.nesting.collections) {
 		const conditions: AbstractSqlQueryConditionNode[] = [];
 		const foreignTableIndex = indexGen.table.next().value;
 		const foreignTableName = collection.relational.collectionName;
-		const nestedSelectResult = getNestedSelects(collection, foreignTableIndex, indexGen, node.alias);
-		aliasMapping.push(...nestedSelectResult.aliasMapping);
+		const nestedSelectResult = getNestedSelects(collection, foreignTableIndex, indexGen);
 		selects.push(...nestedSelectResult.selects);
+
+		children.push({
+			collection: foreignTableName,
+			mapping: nestedSelectResult.aliasMapping,
+		});
 
 		const collectionCondition: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -66,7 +73,7 @@ export const getNestedUnionOne = (
 		parameters.push('foreignCollection', foreignTableName);
 		conditions.push(collectionCondition);
 
-		for (const [idx, idField] of collection.relational.fields.entries()) {
+		for (const [fkFieldIdx, idField] of collection.relational.fields.entries()) {
 			const collectionCondition: AbstractSqlQueryConditionNode = {
 				type: 'condition',
 				negate: false,
@@ -77,7 +84,7 @@ export const getNestedUnionOne = (
 						type: 'json',
 						columnName: node.nesting.field,
 						tableIndex,
-						path: [indexGen.parameter.next().value, idx],
+						path: [indexGen.parameter.next().value, fkFieldIdx],
 						pathIsIndex: true,
 						dataType: idField.type,
 					},
@@ -108,6 +115,8 @@ export const getNestedUnionOne = (
 		unionJoins.push(join);
 	}
 
+	aliasMapping.push({ type: 'nested-a2o', children, alias: node.alias });
+
 	return {
 		joins: unionJoins,
 		parameters,
@@ -120,19 +129,21 @@ function getNestedSelects(
 	c: AbstractQueryFieldNodeNestedRelationalAnyCollection,
 	foreignTableIndex: number,
 	indexGen: IndexGenerators,
-	alias: string,
 ) {
 	const aliasMapping: AliasMapping = [];
 	const selects: AbstractSqlQuerySelectPrimitiveNode[] = [];
 
 	for (const nestedField of c.fields) {
+		if (nestedField.type !== 'primitive') {
+			throw new Error('functions in a2o not yet supported');
+		}
+
 		const newColIndex = indexGen.column.next().value;
-		if (nestedField.type !== 'primitive') throw new Error('functions in a2o not yet supported');
 
 		aliasMapping.push({
-			type: 'nested',
-			alias,
-			children: [{ type: 'root', alias: nestedField.alias, columnIndex: newColIndex }],
+			type: 'root',
+			alias: nestedField.alias,
+			columnIndex: newColIndex,
 		});
 
 		const select = createPrimitiveSelect(foreignTableIndex, nestedField.field, newColIndex);
@@ -150,16 +161,15 @@ function getSelectForRelationalField(
 	json: AbstractSqlQuerySelectJsonNode;
 	parameter: ParameterTypes;
 } {
-	const jsonColumnIndex = indexGen.column.next().value;
-	const pathIndex = indexGen.parameter.next().value;
+	// const jsonColumnIndex = indexGen.column.next().value;
 
 	return {
 		json: {
 			type: 'json',
 			tableIndex,
-			columnIndex: jsonColumnIndex,
+			columnIndex: 99999,
 			columnName: relationalField,
-			path: [pathIndex],
+			path: [indexGen.parameter.next().value],
 		},
 		parameter: 'foreignCollection',
 	};
