@@ -14,6 +14,7 @@ const defaultConfigValues: GraphqlConfig = {};
 export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): GraphqlClient<Schema> => {
 		const gqlConfig = { ...defaultConfigValues, ...config };
+		client.features.push('graphql');
 		return {
 			async query<Output extends object = Record<string, any>>(
 				query: string,

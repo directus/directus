@@ -40,6 +40,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
 export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
+		client.features.push('realtime');
 		let uid = generateUid();
 
 		let state: ConnectionState = {

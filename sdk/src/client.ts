@@ -26,6 +26,7 @@ export const createDirectus = <Schema extends object = any>(
 	return {
 		globals,
 		url: new globals.URL(url),
+		features: [],
 		with(createExtension) {
 			return {
 				...this,

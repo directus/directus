@@ -21,6 +21,7 @@ const defaultConfigValues: AuthenticationConfig = {
 export const authentication = (mode: AuthenticationMode = 'cookie', config: Partial<AuthenticationConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		const authConfig = { ...defaultConfigValues, ...config };
+		client.features.push('authentication');
 		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
 		const storage = authConfig.storage ?? memoryStorage();
