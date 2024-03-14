@@ -3,13 +3,13 @@ import { useFieldTree } from '@/composables/use-field-tree';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+const value = defineModel<string>();
+
 const props = defineProps<{
 	placeholder?: string | null;
 	disabled?: boolean;
 	collection: string | null;
 }>();
-
-const value = defineModel<string>();
 
 const { t } = useI18n();
 
