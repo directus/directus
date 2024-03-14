@@ -108,16 +108,19 @@ function getLinkForItem(item: any) {
 </template>
 
 <style lang="scss" scoped>
+$toggle-px: 6px;
+$toggle-py: $toggle-px;
+
 .toggle {
 	position: relative;
 
 	&::before {
 		position: absolute;
-		top: -6px;
-		left: -6px;
+		top: #{$toggle-py * -1};
+		left: #{$toggle-px * -1};
 		z-index: 1;
-		width: calc(100% + 12px);
-		height: calc(100% + 12px);
+		width: calc(100% + #{$toggle-px * 2});
+		height: calc(100% + #{$toggle-py * 2});
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -138,9 +141,14 @@ function getLinkForItem(item: any) {
 		background-color: var(--theme--background-accent);
 	}
 }
+
 .render-template {
 	> .v-menu {
 		display: inline;
+
+		.toggle {
+			margin: $toggle-py $toggle-px;
+		}
 	}
 }
 
