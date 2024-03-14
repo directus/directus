@@ -63,8 +63,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/extensions-sdk
       '@directus/format-title':
-        specifier: 10.1.0
-        version: 10.1.0
+        specifier: workspace:*
+        version: link:../packages/format-title
       '@directus/memory':
         specifier: workspace:*
         version: link:../packages/memory
@@ -533,8 +533,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/extensions-sdk
       '@directus/format-title':
-        specifier: 10.1.0
-        version: 10.1.0
+        specifier: workspace:*
+        version: link:../packages/format-title
       '@directus/random':
         specifier: workspace:*
         version: link:../packages/random
@@ -885,8 +885,8 @@ importers:
         version: 3.3.2
     devDependencies:
       '@directus/format-title':
-        specifier: 10.1.0
-        version: 10.1.0
+        specifier: workspace:*
+        version: link:../packages/format-title
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -1483,6 +1483,21 @@ importers:
       '@vitest/coverage-v8':
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vitest:
+        specifier: 1.3.1
+        version: 1.3.1(happy-dom@13.7.7)(sass@1.72.0)
+
+  packages/format-title:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(typescript@5.3.3)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -4103,10 +4118,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@directus/format-title@10.1.0:
-    resolution: {integrity: sha512-5TmkYfDCKPh/Xy9qYiVO4y6bxPIAFb8dnBn4RgXBQyndffq9GVuCX66FdxdjGqn+ti2t4yuQOGZ+E9a/GjmWcw==}
-    engines: {node: '>=6.0.0'}
 
   /@docsearch/css@3.5.2:
     resolution: {integrity: sha512-SPiDHaWKQZpwR2siD0KQUwlStvIAnEyK6tAE2h2Wuoq8ue9skzhlyVQ1ddzOxX6khULnAALDiR/isSF3bnuciA==}
