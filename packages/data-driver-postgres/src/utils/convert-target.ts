@@ -8,24 +8,28 @@ import {
 } from './json-path.js';
 import { applyFunction } from './functions.js';
 
+type conditionNodeTypes = 'number' | 'geo' | 'object';
+
 /**
  *
  * @param targetNode
  * @param cast if the target node is json, there might be casting needed
  * @returns
  */
-export function convertTarget(targetNode: AbstractSqlQueryTargetNode, cast?: 'number' | 'geo' | 'object'): string {
+export function convertTarget(targetNode: AbstractSqlQueryTargetNode, cast?: conditionNodeTypes): string {
 	const tableAlias = tableIndexToIdentifier(targetNode.tableIndex);
 	const wrappedColumn = wrapColumn(tableAlias, targetNode.columnName);
 
 	if (targetNode.type === 'primitive') {
 		return wrappedColumn;
 	} else if (targetNode.type === 'json') {
-		if (cast === 'number' || targetNode.dataType === 'number') {
+		const isForType = (type: string): boolean => cast === type || targetNode.dataType === type;
+
+		if (isForType('number')) {
 			return applyJsonPathAsNumber(wrappedColumn, targetNode.path, targetNode.pathIsIndex);
-		} else if (cast === 'geo' || targetNode.dataType === 'geo') {
+		} else if (isForType('geo')) {
 			return applyJsonPathAsGeometry(wrappedColumn, targetNode.path);
-		} else if (cast === 'object' || targetNode.dataType === 'object') {
+		} else if (isForType('object')) {
 			return applyJsonPathAsObject(wrappedColumn, targetNode.path);
 		} else {
 			return applyJsonPathAsString(wrappedColumn, targetNode.path, targetNode.pathIsIndex);
