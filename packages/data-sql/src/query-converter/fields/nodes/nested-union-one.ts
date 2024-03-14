@@ -161,13 +161,13 @@ function getSelectForRelationalField(
 	json: AbstractSqlQuerySelectJsonNode;
 	parameter: ParameterTypes;
 } {
-	// const jsonColumnIndex = indexGen.column.next().value;
+	const jsonColumnIndex = indexGen.column.next().value;
 
 	return {
 		json: {
 			type: 'json',
 			tableIndex,
-			columnIndex: 99999,
+			columnIndex: jsonColumnIndex,
 			columnName: relationalField,
 			path: [indexGen.parameter.next().value],
 		},
