@@ -1,9 +1,11 @@
-import type { LoginOptions } from '../index.js';
+import type { LoginOptions, RemoveEventHandler, WebSocketClient } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
+
+type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
 const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
@@ -24,6 +26,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		client.features.push('authentication');
 		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
+		let realtimeHandler: RemoveEventHandler | null = null;
+		let realtimeRefresh: string | null = null;
 		const storage = authConfig.storage ?? memoryStorage();
 
 		const resetStorage = () => {
@@ -139,6 +143,32 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				setCredentials(data);
+
+				// websocket
+				if (client.features.includes('realtime')) {
+					const wsClient = this as AuthWSClient<Schema>;
+
+					realtimeHandler = wsClient.onWebSocket("message", (msg) => {
+						if (msg?.type === 'auth') {
+							if (msg?.status === 'ok') {
+								realtimeRefresh = msg?.refresh_token ?? null;
+							} else if (msg?.status === 'error' && msg?.error?.code === 'TOKEN_EXPIRED') {
+								if (realtimeRefresh) {
+									wsClient.sendMessage({ type: "auth", refresh_token: realtimeRefresh });
+								}
+							}
+						}
+					});
+
+					try {
+						wsClient.sendMessage({ type: "auth", email, password });
+					} catch (err) {
+						wsClient.connect().then(() => {
+							wsClient.sendMessage({ type: "auth", email, password });
+						});
+					}
+				}
+
 				return data;
 			},
 			async logout() {
@@ -166,6 +196,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
 				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
+				if (realtimeHandler) realtimeHandler();
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
 			},
