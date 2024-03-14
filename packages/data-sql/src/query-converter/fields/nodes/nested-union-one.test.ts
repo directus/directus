@@ -183,20 +183,20 @@ test('getNestedUnionOne with a single identifier', () => {
 				type: 'json',
 				tableIndex: rootTableIndex,
 				columnName: relationalColumn,
-				columnIndex: 0,
+				columnIndex: 99999,
 				path: [0],
 			},
 			{
 				type: 'primitive',
 				tableIndex: 0,
 				columnName: foreignDesiredField1,
-				columnIndex: 1,
+				columnIndex: 0,
 			},
 			{
 				type: 'primitive',
 				tableIndex: 1,
 				columnName: foreignDesiredField2,
-				columnIndex: 2,
+				columnIndex: 1,
 			},
 		],
 		aliasMapping: [
