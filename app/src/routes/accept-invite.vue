@@ -50,7 +50,7 @@ async function onSubmit() {
 }
 
 useHead({
-	title: t('invite'),
+	title: t('create_account'),
 });
 </script>
 
