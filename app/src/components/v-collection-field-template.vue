@@ -4,20 +4,21 @@ import type { Field, Relation } from '@directus/types';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-	value: string | null;
-	placeholder?: string | null;
-	disabled?: boolean;
-	collection: string | null;
-	inject: {
-		fields: Field[];
-		relations?: Relation[];
-	} | null;
-}>();
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string | null;
+		placeholder?: string | null;
+		disabled?: boolean;
+		collection: string | null;
+		inject?: {
+			fields: Field[];
+			relations?: Relation[];
+		} | null;
+	}>(),
+	{ inject: null },
+);
 
-defineEmits<{
-	(e: 'input', value: string | null): void;
-}>();
+defineEmits(['update:modelValue']);
 
 const { t } = useI18n();
 
@@ -34,11 +35,11 @@ const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 		<v-field-template
 			v-else
 			:tree="treeList"
-			:model-value="value"
+			:model-value="modelValue"
 			:disabled="disabled"
 			:placeholder="placeholder"
 			:load-path-level="loadFieldRelations"
-			@update:model-value="$emit('input', $event)"
+			@update:model-value="$emit('update:modelValue', $event)"
 		/>
 	</div>
 </template>
