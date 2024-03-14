@@ -81,6 +81,7 @@ export const ExtensionOptionsBundle = z.object({
 	partial: z.boolean().optional(),
 	path: SplitEntrypoint,
 	entries: z.array(ExtensionOptionsBundleEntry),
+	sandbox: ExtensionSandboxOptions,
 });
 
 export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry);

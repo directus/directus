@@ -50,6 +50,7 @@ export type BundleExtension = ExtensionBase & {
 	partial: boolean | undefined;
 	entrypoint: SplitEntrypoint;
 	entries: BundleExtensionEntry[];
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export type Extension = AppExtension | ApiExtension | HybridExtension | BundleExtension;
