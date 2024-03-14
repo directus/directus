@@ -192,7 +192,8 @@ const result = await client.request(
 
 #### Custom endpoints
 
-To call custom endpoints using the SDK you can either manually write a command or use the `customEndpoint` helper which allows you to type the output of the custom endpoint.
+To call custom endpoints using the SDK you can either manually write a command or use the `customEndpoint` helper which
+allows you to type the output of the custom endpoint.
 
 ```ts
 import { createDirectus, rest, customEndpoint } from '@directus/sdk';
