@@ -2,11 +2,17 @@
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/stores/settings';
+import { DEFAULT_REPORT_BUG_URL, DEFAULT_REPORT_FEATURE_URL } from '@/constants.js';
+import { computed } from 'vue';
+
+type Link = { icon: string; name: string; to?: string; href?: string; chip?: string };
 
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
+const { settings } = storeToRefs(useSettingsStore());
 
-const links: { icon: string; name: string; to?: string; href?: string; chip?: string }[][] = [
+const links = computed<Link[][]>(() => [
 	[
 		{
 			icon: 'database',
@@ -68,15 +74,15 @@ const links: { icon: string; name: string; to?: string; href?: string; chip?: st
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
-			href: 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
+			href: settings.value?.report_bug_url ?? DEFAULT_REPORT_BUG_URL,
 		},
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
-			href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
+			href: settings.value?.report_feature_url ?? DEFAULT_REPORT_FEATURE_URL,
 		},
 	],
-];
+]);
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
@@ -13,17 +14,16 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { ItemsService } from './items.js';
-import { PayloadService } from './payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
@@ -497,6 +497,43 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
+			if (shouldClearCache(this.cache, opts)) {
+				await this.cache.clear();
+			}
+
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+			}
+
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
+
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
+			}
+		}
+	}
+
+	async updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
+		try {
+			const fieldNames = [];
+
+			for (const field of fields) {
+				fieldNames.push(
+					await this.updateField(collection, field, {
+						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+					}),
+				);
+			}
+
+			return fieldNames;
+		} finally {
 			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}

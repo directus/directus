@@ -26,7 +26,7 @@ export type FieldTreeContext = {
 
 export function useFieldTree(
 	collection: Ref<string | null>,
-	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
+	inject?: Ref<{ fields: Field[]; relations?: Relation[] } | null>,
 	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();

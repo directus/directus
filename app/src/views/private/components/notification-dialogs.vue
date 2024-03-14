@@ -1,16 +1,69 @@
 <script setup lang="ts">
+import { DEFAULT_REPORT_BUG_URL } from '@/constants';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Snackbar } from '@/types/notifications';
+import { render } from 'micromustache';
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
-const { isAdmin } = useUserStore();
+const { isAdmin, currentUser } = useUserStore();
+const { settings } = storeToRefs(useSettingsStore());
 
 const notifications = computed(() => notificationsStore.dialogs);
+
+function getErrorUrl(error: undefined | Error) {
+	if (!settings.value?.report_error_url) {
+		return DEFAULT_REPORT_BUG_URL;
+	}
+
+	const route = useRoute();
+
+	const renderScope = {
+		error: {
+			name: error?.name,
+			message: error?.message,
+		},
+		route: {
+			fullPath: route.fullPath,
+			hash: route.hash,
+			name: route.name,
+			path: route.path,
+			query: route.query,
+		},
+		navigator: {
+			language: navigator.language,
+			userAgent: navigator.userAgent,
+		},
+		user: {},
+		role: {},
+	};
+
+	if (currentUser !== null && 'id' in currentUser) {
+		renderScope.user = {
+			id: currentUser.id,
+			first_name: currentUser.first_name,
+			last_name: currentUser.last_name,
+			title: currentUser.title,
+			description: currentUser.description,
+			location: currentUser.location,
+			status: currentUser.status,
+		};
+
+		renderScope.role = {
+			id: currentUser.role?.id,
+			name: currentUser.role?.name,
+		};
+	}
+
+	return render(settings.value.report_error_url, renderScope);
+}
 
 const done = async (notification: Snackbar) => {
 	if (notification.dismissAction) {
@@ -33,7 +86,7 @@ const done = async (notification: Snackbar) => {
 				</v-card-text>
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
-						<a target="_blank" href="https://github.com/directus/directus/issues/new?template=bug_report.yml">
+						<a target="_blank" :href="getErrorUrl(notification.error)">
 							{{ t('report_error') }}
 						</a>
 					</v-button>
