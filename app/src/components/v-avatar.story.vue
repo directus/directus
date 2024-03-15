@@ -4,10 +4,8 @@ import VAvatar from './v-avatar.vue';
 
 <template>
 	<Story title="VAvatar">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-avatar v-bind="state">
-				<v-icon name="person" />
-			</v-avatar>
-		</template>
+		<v-avatar>
+			<v-icon name="person" />
+		</v-avatar>
 	</Story>
 </template>

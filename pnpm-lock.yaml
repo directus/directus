@@ -629,8 +629,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
-        specifier: 0.17.12
-        version: 0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
+        specifier: 0.17.14
+        version: 0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -951,8 +951,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@histoire/plugin-vue':
-        specifier: 0.17.12
-        version: 0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
+        specifier: 0.17.14
+        version: 0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.4)(vue@3.4.21)
@@ -5247,31 +5247,15 @@ packages:
       - vite
     dev: true
 
-  /@histoire/controls@0.17.9(vite@5.1.4):
-    resolution: {integrity: sha512-1f1cE1NZ2emzGMRnGfAb/gCKDtBT3bUZzj3aAcDmhm3MA2Vy5tGYSb9j+KuTTj7+exhOrKefmedr9a0q1/5g2w==}
-    dependencies:
-      '@codemirror/commands': 6.3.2
-      '@codemirror/lang-json': 6.0.1
-      '@codemirror/language': 6.9.3
-      '@codemirror/lint': 6.4.2
-      '@codemirror/state': 6.3.3
-      '@codemirror/theme-one-dark': 6.1.2
-      '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.14(vite@5.1.4)
-      '@histoire/vendors': 0.17.14
-    transitivePeerDependencies:
-      - vite
-    dev: true
-
-  /@histoire/plugin-vue@0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21):
-    resolution: {integrity: sha512-mpx2uwHq/qemnX+ARQtDR3M9kIt1y4kBCmzBkOquhJTp61mtHMu4hZKSzzQpQWA2QxEyuuwpaNiU7Mlms13EaQ==}
+  /@histoire/plugin-vue@0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21):
+    resolution: {integrity: sha512-TRw5Ba9loqiPr82hxzk86ojZmxu5GlXiCE7ezbTZSOYJGYNp9lnBjZtjZQgDRCdINiqoXocfQ3gyiUD3fk2b/A==}
     peerDependencies:
-      histoire: ^0.17.9
+      histoire: ^0.17.14
       vue: ^3.2.47
     dependencies:
-      '@histoire/controls': 0.17.9(vite@5.1.4)
-      '@histoire/shared': 0.17.10(vite@5.1.4)
-      '@histoire/vendors': 0.17.8
+      '@histoire/controls': 0.17.14(vite@5.1.4)
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
       change-case: 4.1.2
       globby: 13.2.2
       histoire: 0.17.14(sass@1.72.0)(vite@5.1.4)
@@ -5280,20 +5264,6 @@ packages:
       vue: 3.4.21(typescript@5.3.3)
     transitivePeerDependencies:
       - vite
-    dev: true
-
-  /@histoire/shared@0.17.10(vite@5.1.4):
-    resolution: {integrity: sha512-8hzk/WKASrYfaJ+UtR6Mv7aZlP8IZvQ5POoHAi+JvHMJTtzCXZeuL0qdQAXg0zdk3vWIH20oSl6N8hZE1AP7yA==}
-    peerDependencies:
-      vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-    dependencies:
-      '@histoire/vendors': 0.17.14
-      '@types/fs-extra': 9.0.13
-      '@types/markdown-it': 12.2.3
-      chokidar: 3.6.0
-      pathe: 1.1.2
-      picocolors: 1.0.0
-      vite: 5.1.4(sass@1.72.0)
     dev: true
 
   /@histoire/shared@0.17.14(vite@5.1.4):
@@ -5312,10 +5282,6 @@ packages:
 
   /@histoire/vendors@0.17.14:
     resolution: {integrity: sha512-glYgomCTptoV6W90Km7+a3BoTFWfugARChBFk0/BnswXZLGwBFp/mPDhBDVmBDaLyRzQ9bdBDqvz9a92SShftQ==}
-    dev: true
-
-  /@histoire/vendors@0.17.8:
-    resolution: {integrity: sha512-kyNy1yvA8tuEXVuUUdO5k8yQgp1XkcktcLAM4XB3B0mk9qUge7n85bUfGJYPk3ovLeX4RBJHsxh4RzzQ4LBCvg==}
     dev: true
 
   /@humanwhocodes/config-array@0.11.14:
@@ -8508,7 +8474,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.3.1(@types/node@18.19.24)
+      vitest: 1.3.1(happy-dom@13.7.7)(sass@1.72.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
