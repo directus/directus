@@ -262,7 +262,8 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const sessionOnly = 'sessionOnly' in req.query && (req.query['sessionOnly'] === '' || Boolean(req.query['sessionOnly']));
+		const sessionOnly =
+			'sessionOnly' in req.query && (req.query['sessionOnly'] === '' || Boolean(req.query['sessionOnly']));
 
 		res.locals['payload'] = {
 			data: getAuthProviders({ sessionOnly }),
