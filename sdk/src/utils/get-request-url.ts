@@ -1,4 +1,4 @@
-import { queryToParams } from '../index.js';
+import { queryToParams, type DirectusClient } from '../index.js';
 
 const SEPARATOR = '/';
 
@@ -16,9 +16,9 @@ const mergePaths = (a: string, b: string) => {
  *
  * @returns URL
  */
-export const getRequestUrl = (baseUrl: URL, path: string, params?: Record<string, any>): URL => {
-	const newPath = baseUrl.pathname === SEPARATOR ? path : mergePaths(baseUrl.pathname, path);
-	const url = new globalThis.URL(newPath, baseUrl);
+export const getRequestUrl = (client: DirectusClient<any>, path: string, params?: Record<string, any>): URL => {
+	const newPath = client.url.pathname === SEPARATOR ? path : mergePaths(client.url.pathname, path);
+	const url = new client.globals.URL(newPath, client.url);
 
 	if (params) {
 		for (const [k, v] of Object.entries(queryToParams(params))) {

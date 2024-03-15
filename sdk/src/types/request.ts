@@ -1,15 +1,16 @@
+import type { RequestHooks } from './hooks.js';
+
 export type HttpMethod = 'GET' | 'SEARCH' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-export interface RequestOptions {
+export type RequestOptions = {
 	path: string;
 	method?: HttpMethod;
 	params?: Record<string, any>;
 	headers?: Record<string, string>;
 	body?: string | FormData;
-	onRequest?: RequestTransformer;
-	onResponse?: ResponseTransformer;
-}
+} & Partial<RequestHooks>;
 
-export type RequestTransformer = (options: RequestInit) => RequestInit | Promise<RequestInit>;
-
-export type ResponseTransformer<Output = any> = (data: any, request: RequestInit) => Output | Promise<Output>;
+export type RequestConfig = {
+	url: URL;
+	headers: Record<string, string>;
+} & Omit<RequestInit, 'headers'>;

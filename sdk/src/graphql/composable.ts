@@ -3,6 +3,7 @@ import type { GraphqlClient, GraphqlConfig } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import type { AuthenticationClient } from '../auth/types.js';
+import type { RequestConfig } from '../index.js';
 
 const defaultConfigValues: GraphqlConfig = {};
 
@@ -20,34 +21,32 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 				variables?: Record<string, unknown>,
 				scope: 'items' | 'system' = 'items',
 			): Promise<Output> {
-				const fetchOptions: RequestInit = {
+				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
+
+				const fetchOptions: RequestConfig = {
+					url: getRequestUrl(client, requestPath),
 					method: 'POST',
 					body: JSON.stringify({ query, variables }),
+					headers: {},
 				};
 
 				if ('credentials' in gqlConfig) {
 					fetchOptions.credentials = gqlConfig.credentials;
 				}
 
-				const headers: Record<string, string> = {};
-
 				if ('getToken' in this) {
 					const token = await (this.getToken as AuthenticationClient<Schema>['getToken'])();
 
 					if (token) {
-						headers['Authorization'] = `Bearer ${token}`;
+						fetchOptions.headers['Authorization'] = `Bearer ${token}`;
 					}
 				}
 
-				if ('Content-Type' in headers === false) {
-					headers['Content-Type'] = 'application/json';
+				if ('Content-Type' in fetchOptions.headers === false) {
+					fetchOptions.headers['Content-Type'] = 'application/json';
 				}
 
-				fetchOptions.headers = headers;
-				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
-				const requestUrl = getRequestUrl(client.url, requestPath);
-
-				return await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				return await request<Output>(fetchOptions, client.globals.fetch, client.hooks);
 			},
 		};
 	};

@@ -353,6 +353,134 @@ fields:
       - cast-json
     width: full
 
+  - field: reporting_divider
+    interface: presentation-divider
+    options:
+      icon: feedback
+      title: $t:fields.directus_settings.reporting
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: report_feature_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com/feature
+    width: half
+
+  - field: report_bug_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com/bug
+    width: half
+
+  - field: report_error_url
+    interface: system-display-template
+    options:
+      placeholder: https://example.com/error
+      fields:
+        - name: Error
+          field: error
+          key: error
+          path: error
+          children:
+            - name: Name
+              field: name
+              key: error.name
+              path: error.name
+            - name: Message
+              field: message
+              key: error.message
+              path: error.message
+        - name: Navigator
+          field: navigator
+          key: navigator
+          path: navigator
+          children:
+            - name: Language
+              field: language
+              key: navigator.language
+              path: navigator.language
+            - name: User Agent
+              field: userAgent
+              key: navigator.userAgent
+              path: navigator.userAgent
+        - name: Route
+          field: route
+          key: route
+          path: route
+          children:
+            - name: Full Path
+              field: fullPath
+              key: route.fullPath
+              path: route.fullPath
+            - name: Hash
+              field: hash
+              key: route.hash
+              path: route.hash
+            - name: Name
+              field: name
+              key: route.name
+              path: route.name
+            - name: Path
+              field: path
+              key: route.path
+              path: route.path
+            - name: Query
+              field: query
+              key: route.query
+              path: route.query
+        - name: User
+          field: user
+          key: user
+          path: user
+          children:
+            - name: ID
+              field: id
+              key: user.id
+              path: user.id
+            - name: First Name
+              field: first_name
+              key: user.first_name
+              path: user.first_name
+            - name: Last Name
+              field: last_name
+              key: user.last_name
+              path: user.last_name
+            - name: Status
+              field: status
+              key: user.status
+              path: user.status
+            - name: Title
+              field: title
+              key: user.title
+              path: user.title
+            - name: Description
+              field: description
+              key: user.description
+              path: user.description
+            - name: Location
+              field: location
+              key: user.location
+              path: user.location
+        - name: Role
+          field: role
+          key: role
+          path: role
+          children:
+            - name: ID
+              field: id
+              key: role.id
+              path: role.id
+            - name: Name
+              field: name
+              key: role.name
+              path: role.name
+    width: full
+
   - field: map_divider
     interface: presentation-divider
     options:

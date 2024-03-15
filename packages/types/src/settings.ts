@@ -36,6 +36,9 @@ export type Settings = {
 	project_name: string;
 	project_descriptor: string | null;
 	project_url: string | null;
+	report_error_url: string | null;
+	report_bug_url: string | null;
+	report_feature_url: string | null;
 	default_language: string | null;
 	project_color: string | null;
 	project_logo: string | null;

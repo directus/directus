@@ -22,7 +22,7 @@ export const readAssetRaw =
 			path: `/assets/${key}`,
 			params: query ?? {},
 			method: 'GET',
-			onResponse: (response) => response.body,
+			onResponse: (response) => (response as Response).body,
 		};
 	};
 
@@ -42,7 +42,7 @@ export const readAssetBlob =
 			path: `/assets/${key}`,
 			params: query ?? {},
 			method: 'GET',
-			onResponse: (response) => response.blob(),
+			onResponse: (response) => (response as Response).blob(),
 		};
 	};
 
@@ -62,6 +62,6 @@ export const readAssetArrayBuffer =
 			path: `/assets/${key}`,
 			params: query ?? {},
 			method: 'GET',
-			onResponse: (response) => response.arrayBuffer(),
+			onResponse: (response) => (response as Response).arrayBuffer(),
 		};
 	};

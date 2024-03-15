@@ -1,3 +1,4 @@
+import type { RequestHooksList } from './types/hooks.js';
 import type { ClientGlobals, ClientOptions, DirectusClient } from './types/client.js';
 
 /**
@@ -23,8 +24,15 @@ export const createDirectus = <Schema extends object = any>(
 	options: ClientOptions = {},
 ): DirectusClient<Schema> => {
 	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals;
+	const hooks: RequestHooksList = { onRequest: [], onResponse: [], onError: [] };
+
+	if (options.hooks?.onRequest) hooks.onRequest.push(options.hooks.onRequest);
+	if (options.hooks?.onResponse) hooks.onResponse.push(options.hooks.onResponse);
+	if (options.hooks?.onError) hooks.onError.push(options.hooks.onError);
+
 	return {
 		globals,
+		hooks,
 		url: new globals.URL(url),
 		with(createExtension) {
 			return {

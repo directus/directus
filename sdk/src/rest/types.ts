@@ -1,4 +1,5 @@
-import type { RequestOptions, RequestTransformer, ResponseTransformer } from '../types/request.js';
+import type { RequestHooks } from '../types/hooks.js';
+import type { RequestOptions } from '../types/request.js';
 
 export interface RestCommand<_Output extends object | unknown, _Schema extends object> {
 	(): RequestOptions;
@@ -8,9 +9,6 @@ export interface RestClient<Schema extends object> {
 	request<Output>(options: RestCommand<Output, Schema>): Promise<Output>;
 }
 
-export interface RestConfig {
+export type RestConfig = Partial<RequestHooks> & {
 	credentials?: RequestCredentials;
-	// onError?: (error: any) => any;
-	onRequest?: RequestTransformer;
-	onResponse?: ResponseTransformer;
-}
+};
