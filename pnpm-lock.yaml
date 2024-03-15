@@ -630,7 +630,7 @@ importers:
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.12
-        version: 0.17.12(histoire@0.17.9)(vite@5.1.4)(vue@3.4.21)
+        version: 0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -785,8 +785,8 @@ importers:
         specifier: 13.7.7
         version: 13.7.7
       histoire:
-        specifier: 0.17.9
-        version: 0.17.9(sass@1.72.0)(vite@5.1.4)
+        specifier: 0.17.14
+        version: 0.17.14(sass@1.72.0)(vite@5.1.4)
       html-entities:
         specifier: 2.5.2
         version: 2.5.2
@@ -952,7 +952,7 @@ importers:
         version: link:../tsconfig
       '@histoire/plugin-vue':
         specifier: 0.17.12
-        version: 0.17.12(histoire@0.17.9)(vite@5.1.4)(vue@3.4.21)
+        version: 0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.4)(vue@3.4.21)
@@ -960,8 +960,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
       histoire:
-        specifier: 0.17.9
-        version: 0.17.9(sass@1.72.0)(vite@5.1.4)
+        specifier: 0.17.14
+        version: 0.17.14(sass@1.72.0)(vite@5.1.4)
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.3.3)(vue@3.4.21)
@@ -5223,15 +5223,31 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
-  /@histoire/app@0.17.9(vite@5.1.4):
-    resolution: {integrity: sha512-JoSGbsoo1/JY5TtTiMBUSPllIEJLvC6jHIGruvwPG/cJ3niqa3EyEMOsOWtcu+xjtx1uETgL9Yj5RJMJjC+OBA==}
+  /@histoire/app@0.17.14(vite@5.1.4):
+    resolution: {integrity: sha512-LuYJ/JbX9XPFmTkT/A/yfOCX+jcqaSUbyLo/r3W3csRi3iIaZuNIuCSL8MtWWsxUMXrhBWHcytSw14clCQqGcg==}
     dependencies:
-      '@histoire/controls': 0.17.9(vite@5.1.4)
-      '@histoire/shared': 0.17.10(vite@5.1.4)
-      '@histoire/vendors': 0.17.8
+      '@histoire/controls': 0.17.14(vite@5.1.4)
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.21
       shiki-es: 0.2.0
+    transitivePeerDependencies:
+      - vite
+    dev: true
+
+  /@histoire/controls@0.17.14(vite@5.1.4):
+    resolution: {integrity: sha512-mNxp6mAi8671py/4AOjoJjN/EVDxPI43axQdDN/9MDAuMPaXWGiL113CvHvbqCL1WG5eOtpyvckiBUsCFV+k4g==}
+    dependencies:
+      '@codemirror/commands': 6.3.2
+      '@codemirror/lang-json': 6.0.1
+      '@codemirror/language': 6.9.3
+      '@codemirror/lint': 6.4.2
+      '@codemirror/state': 6.3.3
+      '@codemirror/theme-one-dark': 6.1.2
+      '@codemirror/view': 6.22.3
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
     transitivePeerDependencies:
       - vite
     dev: true
@@ -5246,13 +5262,13 @@ packages:
       '@codemirror/state': 6.3.3
       '@codemirror/theme-one-dark': 6.1.2
       '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.10(vite@5.1.4)
-      '@histoire/vendors': 0.17.8
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
     transitivePeerDependencies:
       - vite
     dev: true
 
-  /@histoire/plugin-vue@0.17.12(histoire@0.17.9)(vite@5.1.4)(vue@3.4.21):
+  /@histoire/plugin-vue@0.17.12(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21):
     resolution: {integrity: sha512-mpx2uwHq/qemnX+ARQtDR3M9kIt1y4kBCmzBkOquhJTp61mtHMu4hZKSzzQpQWA2QxEyuuwpaNiU7Mlms13EaQ==}
     peerDependencies:
       histoire: ^0.17.9
@@ -5263,7 +5279,7 @@ packages:
       '@histoire/vendors': 0.17.8
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.9(sass@1.72.0)(vite@5.1.4)
+      histoire: 0.17.14(sass@1.72.0)(vite@5.1.4)
       launch-editor: 2.6.1
       pathe: 1.1.2
       vue: 3.4.21(typescript@5.3.3)
@@ -5276,7 +5292,7 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
-      '@histoire/vendors': 0.17.8
+      '@histoire/vendors': 0.17.14
       '@types/fs-extra': 9.0.13
       '@types/markdown-it': 12.2.3
       chokidar: 3.6.0
@@ -5285,18 +5301,22 @@ packages:
       vite: 5.1.4(sass@1.72.0)
     dev: true
 
-  /@histoire/shared@0.17.9(vite@5.1.4):
-    resolution: {integrity: sha512-E/l4EzYc69/bOImUnvfi7h4/DHGl1rc96lkuMYulL5hjRjuNhSy5AlN5bG0nkVOG4RVIAnLGevMaMi207wtvLw==}
+  /@histoire/shared@0.17.14(vite@5.1.4):
+    resolution: {integrity: sha512-/3qYlTgYeolafiIqg0iXgYWXGjGCRGDGu0tKafsjlBP9Cn1gCRvyvYuP7MMf3YrsYMNDOIdyjcSPBIT9fMuX7Q==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
-      '@histoire/vendors': 0.17.8
+      '@histoire/vendors': 0.17.14
       '@types/fs-extra': 9.0.13
       '@types/markdown-it': 12.2.3
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
       vite: 5.1.4(sass@1.72.0)
+    dev: true
+
+  /@histoire/vendors@0.17.14:
+    resolution: {integrity: sha512-glYgomCTptoV6W90Km7+a3BoTFWfugARChBFk0/BnswXZLGwBFp/mPDhBDVmBDaLyRzQ9bdBDqvz9a92SShftQ==}
     dev: true
 
   /@histoire/vendors@0.17.8:
@@ -12832,17 +12852,17 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.9(sass@1.72.0)(vite@5.1.4):
-    resolution: {integrity: sha512-z5Jb9QwbOw0TKvpkU0v7+CxJG6hIljIKMhWXzOfteteRZGDFElpTEwbr5/8EdPI6VTdF/k76fqZ07nmS9YdUvA==}
+  /histoire@0.17.14(sass@1.72.0)(vite@5.1.4):
+    resolution: {integrity: sha512-w3RXzkwbcBpiDLlfdsUHUx9ABclbC3+ub1TsM7Pi5xfkbAy5xCkRS9FpFBo7JSbHZ91cjVRXj8CosQ7HlDDDzw==}
     hasBin: true
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
       '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.9(vite@5.1.4)
-      '@histoire/controls': 0.17.9(vite@5.1.4)
-      '@histoire/shared': 0.17.9(vite@5.1.4)
-      '@histoire/vendors': 0.17.8
+      '@histoire/app': 0.17.14(vite@5.1.4)
+      '@histoire/controls': 0.17.14(vite@5.1.4)
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
       '@types/flexsearch': 0.7.6
       '@types/markdown-it': 12.2.3
       birpc: 0.1.1
@@ -12863,7 +12883,7 @@ packages:
       markdown-it-emoji: 2.0.2
       micromatch: 4.0.5
       mrmime: 1.0.1
-      pathe: 1.1.1
+      pathe: 1.1.2
       picocolors: 1.0.0
       sade: 1.8.1
       shiki-es: 0.2.0
@@ -16166,10 +16186,6 @@ packages:
     dependencies:
       process: 0.11.10
       util: 0.10.4
-    dev: true
-
-  /pathe@1.1.1:
-    resolution: {integrity: sha512-d+RQGp0MAYTIaDBIMmOfMwz3E+LOZnxx1HZd5R18mmCZY0QBlK0LDZfPc8FW8Ed2DlvsuE6PRjroDY+wg4+j/Q==}
     dev: true
 
   /pathe@1.1.2:
