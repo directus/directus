@@ -3,7 +3,7 @@
  * Database responses are mocked and '@directus/data-sql' is partially mocked to know the generated aliases.
  */
 
-import type { A2ORelation, AbstractQuery } from '@directus/data';
+import type { AbstractQuery } from '@directus/data';
 import { readToEnd } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 import { ReadableStream } from 'node:stream/web';
@@ -127,7 +127,7 @@ test('nested m2o field', async () => {
 					},
 				],
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [foreignKeyColumn],
 					},
@@ -238,7 +238,7 @@ test('nested o2m field', async () => {
 					},
 				],
 				nesting: {
-					type: 'relational-many',
+					type: 'relational-single',
 					local: {
 						fields: [localRelationalColumn],
 					},
@@ -350,78 +350,39 @@ test('nested o2m field', async () => {
 	expect(actualResult).toStrictEqual(expectedResult);
 });
 
-// on hold until a deterministic alias generation is implemented
-test.todo('nested a2o field', async () => {
-	const localDesiredField = randomIdentifier();
-	const localDesiredFieldId = randomIdentifier();
-	const localDesiredFieldAlias = randomIdentifier();
-	const localPkFieldId = randomIdentifier();
-	const foreignCollectionAlias = randomIdentifier();
-	const localRelationalField = randomIdentifier();
-
-	// first collection
-	const foreignTable1 = randomIdentifier();
-	const foreignField1 = randomIdentifier();
-	const foreignField1Id = randomIdentifier();
-	const foreignField1Alias = randomIdentifier();
-	const foreignIdField11 = randomIdentifier();
-	const foreignIdField12 = randomIdentifier();
-
-	// second collection
-	const foreignTable2 = randomIdentifier();
-	const foreignField2 = randomIdentifier();
-	const foreignField2Id = randomIdentifier();
-	const foreignField2Alias = randomIdentifier();
-	const foreignIdField2 = randomIdentifier();
+test('Select a single properties from a json field', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+	const column1 = randomIdentifier();
+	const column1Alias = randomIdentifier();
+	const jsonColumn = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+	const jsonProp = randomIdentifier();
+	const jsonPropAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
-		collection: randomIdentifier(),
-		store: randomIdentifier(),
+		collection: rootCollection,
+		store: dataStore,
 		fields: [
 			{
 				type: 'primitive',
-				field: localDesiredField,
-				alias: localDesiredFieldAlias,
+				field: column1,
+				alias: column1Alias,
 			},
 			{
-				type: 'nested-union-one',
-				alias: foreignCollectionAlias,
+				type: 'nested-single-one',
 				nesting: {
-					type: 'relational-any',
-					field: localRelationalField,
-					collections: [
-						{
-							fields: [
-								{
-									type: 'primitive',
-									field: foreignField1,
-									alias: foreignField1Alias,
-								},
-							],
-							relational: {
-								store: randomIdentifier(),
-								collectionName: foreignTable1,
-								collectionIdentifier: randomIdentifier(),
-								identifierFields: [foreignIdField11, foreignIdField12],
-							},
-						},
-						{
-							fields: [
-								{
-									type: 'primitive',
-									field: foreignField2,
-									alias: foreignField2Alias,
-								},
-							],
-							relational: {
-								store: randomIdentifier(),
-								collectionName: foreignTable2,
-								collectionIdentifier: randomIdentifier(),
-								identifierFields: [foreignIdField2],
-							},
-						},
-					],
+					type: 'object-single',
+					fieldName: jsonColumn,
 				},
+				fields: [
+					{
+						type: 'primitive',
+						field: jsonProp,
+						alias: jsonPropAlias,
+					},
+				],
+				alias: jsonColumnAlias,
 			},
 		],
 		modifiers: {},
@@ -432,55 +393,24 @@ test.todo('nested a2o field', async () => {
 	});
 
 	// define database response mocks
-	const localDesiredFieldValue1 = randomIdentifier();
-	const localPkFieldValue1 = randomIdentifier();
-	const localDesiredFieldValue2 = randomIdentifier();
-	const localPkFieldValue2 = randomIdentifier();
-	const foreignField1Value1 = randomIdentifier();
-	const foreignField2Value1 = randomIdentifier();
-	const foreignField1Value2 = randomIdentifier();
-	const foreignField2Value2 = randomIdentifier();
 
-	vi.spyOn(driver, 'getDataFromSource')
-		.mockResolvedValueOnce(
-			getMockedStream([
-				{
-					[localDesiredFieldId]: localDesiredFieldValue1,
-					[localPkFieldId]: localPkFieldValue1,
-					[localRelationalField]: {
-						foreignKey: [
-							{ column: foreignIdField11, value: 1 },
-							{ column: foreignIdField12, value: 2 },
-						],
-						foreignCollection: foreignTable1,
-					} as A2ORelation,
-				},
-				{
-					[localDesiredFieldId]: localDesiredFieldValue2,
-					[localPkFieldId]: localPkFieldValue2,
-					[localRelationalField]: {
-						foreignKey: [{ column: foreignIdField2, value: 1 }],
-						foreignCollection: foreignTable2,
-					} as A2ORelation,
-				},
-			]),
-		)
-		.mockResolvedValueOnce(
-			getMockedStream([
-				{
-					[foreignField1Id]: foreignField1Value1,
-					[foreignField2Id]: foreignField2Value1,
-				},
-			]),
-		)
-		.mockResolvedValueOnce(
-			getMockedStream([
-				{
-					[foreignField1Id]: foreignField1Value2,
-					[foreignField2Id]: foreignField2Value2,
-				},
-			]),
-		);
+	const column1Value1 = randomIdentifier();
+	const column1Value2 = randomIdentifier();
+	const jsonColumnValue1 = randomIdentifier();
+	const jsonColumnValue2 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
+		getMockedStream([
+			{
+				c0: column1Value1,
+				c1: jsonColumnValue1,
+			},
+			{
+				c0: column1Value2,
+				c1: jsonColumnValue2,
+			},
+		]),
+	);
 
 	const readableStream = await driver.query(query);
 	const actualResult = await readToEnd(readableStream);
@@ -488,15 +418,112 @@ test.todo('nested a2o field', async () => {
 
 	const expectedResult = [
 		{
-			[localDesiredFieldAlias]: localDesiredFieldValue1,
-			[foreignCollectionAlias]: {
-				[foreignField1Alias]: foreignField1Value1,
+			[column1Alias]: column1Value1,
+			[jsonColumnAlias]: {
+				[jsonPropAlias]: jsonColumnValue1,
 			},
 		},
 		{
-			[localDesiredFieldAlias]: localDesiredFieldValue2,
-			[foreignCollectionAlias]: {
-				[foreignField2Alias]: foreignField2Value2,
+			[column1Alias]: column1Value2,
+			[jsonColumnAlias]: {
+				[jsonPropAlias]: jsonColumnValue2,
+			},
+		},
+	];
+
+	expect(actualResult).toStrictEqual(expectedResult);
+});
+
+test('Select multiple properties from json field', async () => {
+	const rootCollection = randomIdentifier();
+	const dataStore = randomIdentifier();
+	const column1 = randomIdentifier();
+	const column1Alias = randomIdentifier();
+	const jsonColumn = randomIdentifier();
+	const jsonColumnAlias = randomIdentifier();
+	const jsonProp1 = randomIdentifier();
+	const jsonProp1Alias = randomIdentifier();
+	const jsonProp2 = randomIdentifier();
+	const jsonProp2Alias = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: column1,
+				alias: column1Alias,
+			},
+			{
+				type: 'nested-single-one',
+				nesting: {
+					type: 'object-single',
+					fieldName: jsonColumn,
+				},
+				fields: [
+					{
+						type: 'primitive',
+						field: jsonProp1,
+						alias: jsonProp1Alias,
+					},
+					{
+						type: 'primitive',
+						field: jsonProp2,
+						alias: jsonProp2Alias,
+					},
+				],
+				alias: jsonColumnAlias,
+			},
+		],
+		modifiers: {},
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	// define database response mocks
+
+	const column1Value1 = randomIdentifier();
+	const column1Value2 = randomIdentifier();
+	const prop1Value1 = randomIdentifier();
+	const prop1Value2 = randomIdentifier();
+	const prop2Value1 = randomIdentifier();
+	const prop2Value2 = randomIdentifier();
+
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(
+		getMockedStream([
+			{
+				c0: column1Value1,
+				c1: prop1Value1,
+				c2: prop2Value1,
+			},
+			{
+				c0: column1Value2,
+				c1: prop1Value2,
+				c2: prop2Value2,
+			},
+		]),
+	);
+
+	const readableStream = await driver.query(query);
+	const actualResult = await readToEnd(readableStream);
+	await driver.destroy();
+
+	const expectedResult = [
+		{
+			[column1Alias]: column1Value1,
+			[jsonColumnAlias]: {
+				[jsonProp1Alias]: prop1Value1,
+				[jsonProp2Alias]: prop2Value1,
+			},
+		},
+		{
+			[column1Alias]: column1Value2,
+			[jsonColumnAlias]: {
+				[jsonProp1Alias]: prop1Value2,
+				[jsonProp2Alias]: prop2Value2,
 			},
 		},
 	];

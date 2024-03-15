@@ -113,6 +113,7 @@ function handleClick() {
 						:src="imageInfo?.source"
 						:alt="item?.title"
 						role="presentation"
+						@error="imgError = true"
 					/>
 					<v-icon v-else large :name="icon" />
 				</template>

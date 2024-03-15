@@ -58,6 +58,11 @@ export type AliasMapping = (
 			alias: string;
 			children: AliasMapping;
 	  }
+	| {
+			type: 'nested-a2o';
+			alias: string;
+			children: A2oChild[];
+	  }
 
 	/** The alias map for a sub result which was fetched using a separate sub query */
 	| {
@@ -68,6 +73,11 @@ export type AliasMapping = (
 			index: number;
 	  }
 )[];
+
+export interface A2oChild {
+	mapping: AliasMapping;
+	collection: string;
+}
 
 export interface ConverterResult {
 	rootQuery: AbstractSqlQuery;

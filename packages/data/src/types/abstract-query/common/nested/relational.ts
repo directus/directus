@@ -21,8 +21,8 @@ import type { AbstractQueryFieldNode } from '../../fields.js';
  * };
  * ```
  */
-export interface AbstractQueryFieldNodeNestedRelationalMany {
-	type: 'relational-many';
+export interface AbstractQueryFieldNodeNestedSingleRelational {
+	type: 'relational-single';
 
 	/**
 	 * The field names which identify an item in the...
@@ -58,8 +58,8 @@ export interface AbstractQueryFieldNodeNestedRelationalMany {
 /**
  * Used to build a relational query for a2o and o2a relations.
  */
-export interface AbstractQueryFieldNodeNestedRelationalAny {
-	type: 'relational-any';
+export interface AbstractQueryFieldNodeNestedUnionRelational {
+	type: 'relational-union';
 
 	/** The field name which holds the relational information */
 	field: string;
@@ -86,7 +86,7 @@ export interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 		collectionIdentifier: string;
 
 		/** The column name(s) of the foreign collection which store the primary key(s) */
-		identifierFields: AtLeastOneElement<string>;
+		fields: AtLeastOneElement<{ name: string; type: 'string' | 'number' }>;
 	};
 }
 

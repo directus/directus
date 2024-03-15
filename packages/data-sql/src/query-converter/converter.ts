@@ -21,9 +21,7 @@ import { createIndexGenerators } from './utils/create-index-generators.js';
 export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	const parameters: ParameterTypes[] = [];
 	const subQueries: SubQuery[] = [];
-
 	const indexGen = createIndexGenerators();
-
 	const tableIndex = indexGen.table.next().value;
 
 	let clauses: AbstractSqlClauses;

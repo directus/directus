@@ -40,8 +40,8 @@ const authData = await client.request(refresh(mode, refresh_token));
 await client.request(logout(refresh_token));
 ```
 
-The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
-the token in your cookie will automatically be used.
+The `mode` will either be `'json'`, `'cookie'` or `'session'`. If cookies are used, you don't need to set the second
+parameter, as the token in your cookie will automatically be used.
 
 This approach is manually sending API requests, the SDK does not store the returned tokens. You must store the access
 token and provide it to following requests and the same for the refresh token if using authentication mode `'json'`.
@@ -152,10 +152,19 @@ class LocalStorage {
   }
 }
 
+const storage = new LocalStorage();
 const client = createDirectus('http://directus.example.com')
-  .with(authentication('json', { storage: new LocalStorage() }));
+  .with(authentication('json', { storage }));
 
+// set a long term or static token without expiry information
 client.setToken('TOKEN');
+
+// set custom credentials to the storage
+storage.set({
+	access_token: 'token',
+	refresh_token: 'token',
+	expires_at: 123456789
+});
 ```
 
 Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store

@@ -12,7 +12,6 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';
@@ -24,6 +23,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { RelationsService } from './relations.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
+
+const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 export class FieldsService {
 	knex: Knex;
@@ -287,18 +289,21 @@ export class FieldsService {
 					schema: this.schema,
 				});
 
-				const hookAdjustedField = await emitter.emitFilter(
-					`fields.create`,
-					field,
-					{
-						collection: collection,
-					},
-					{
-						database: trx,
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				);
+				const hookAdjustedField =
+					opts?.emitEvents !== false
+						? await emitter.emitFilter(
+								`fields.create`,
+								field,
+								{
+									collection: collection,
+								},
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								},
+						  )
+						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
@@ -381,20 +386,29 @@ export class FieldsService {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		// 'type' is required for further checks on schema update
+		if (field.schema && !field.type) {
+			const existingType = this.schema.collections[collection]?.fields[field.field]?.type;
+			if (existingType) field.type = existingType;
+		}
+
 		try {
-			const hookAdjustedField = await emitter.emitFilter(
-				`fields.update`,
-				field,
-				{
-					keys: [field.field],
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			const hookAdjustedField =
+				opts?.emitEvents !== false
+					? await emitter.emitFilter(
+							`fields.update`,
+							field,
+							{
+								keys: [field.field],
+								collection: collection,
+							},
+							{
+								database: this.knex,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+					  )
+					: field;
 
 			const record = field.meta
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
@@ -511,18 +525,20 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await emitter.emitFilter(
-				'fields.delete',
-				[field],
-				{
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			if (opts?.emitEvents !== false) {
+				await emitter.emitFilter(
+					'fields.delete',
+					[field],
+					{
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				);
+			}
 
 			await this.knex.transaction(async (trx) => {
 				const relations = this.schema.relations.filter((relation) => {

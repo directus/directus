@@ -1,6 +1,7 @@
-import { randomAlpha } from '@directus/random';
+import { randomAlpha, randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import { mapResult } from './map-result.js';
+import type { AliasMapping } from '../index.js';
 
 test('response with no relation', () => {
 	const title = randomAlpha(25);
@@ -128,7 +129,7 @@ test('response with one sub result', () => {
 	});
 });
 
-test('response with multiple sub result', () => {
+test('response with multiple sub results', () => {
 	const result = mapResult(
 		[
 			{ type: 'root', alias: 'id', columnIndex: 1 },
@@ -158,7 +159,7 @@ test('response with multiple sub result', () => {
 	});
 });
 
-test('response with one nested table and one sub result', () => {
+test('response with one nested table and a nested sub result', () => {
 	const result = mapResult(
 		[
 			{ type: 'root', alias: 'id', columnIndex: 1 },
@@ -192,4 +193,56 @@ test('response with one nested table and one sub result', () => {
 			children: [{ id: 1, first_name: 'John', last_name: 'Doe' }],
 		},
 	});
+});
+
+test('response with one nested table and a nested sub result', () => {
+	const collection1 = randomIdentifier();
+	const collection2 = randomIdentifier();
+
+	const mapping: AliasMapping = [
+		{ type: 'root', alias: 'id', columnIndex: 2 },
+		{
+			type: 'nested-a2o',
+			alias: 'a2o',
+			children: [
+				{
+					collection: collection1,
+					mapping: [
+						{ type: 'root', alias: 'first_name', columnIndex: 3 },
+						{ type: 'root', alias: 'last_name', columnIndex: 4 },
+					],
+				},
+				{
+					collection: collection2,
+					mapping: [
+						{ type: 'root', alias: 'some', columnIndex: 5 },
+						{ type: 'root', alias: 'thing', columnIndex: 6 },
+						{ type: 'root', alias: 'else', columnIndex: 7 },
+					],
+				},
+			],
+		},
+	];
+
+	const rotRow = {
+		c1: collection1,
+		c2: 1,
+		c3: 'John',
+		c4: 'Doe',
+		c5: null,
+		c6: null,
+		c7: null,
+	};
+
+	const result = mapResult(mapping, rotRow, [], (columnIndex) => `c${columnIndex}`);
+
+	const expected = {
+		id: 1,
+		a2o: {
+			first_name: 'John',
+			last_name: 'Doe',
+		},
+	};
+
+	expect(result).toEqual(expected);
 });

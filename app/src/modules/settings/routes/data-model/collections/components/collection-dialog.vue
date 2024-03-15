@@ -72,7 +72,7 @@ async function save() {
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card>
+		<v-card class="allow-drawer">
 			<v-card-title v-if="!collection">{{ t('create_folder') }}</v-card-title>
 			<v-card-title v-else>{{ t('edit_folder') }}</v-card-title>
 

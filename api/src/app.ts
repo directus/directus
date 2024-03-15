@@ -136,7 +136,7 @@ export default async function createApp(): Promise<express.Application> {
 				{
 					useDefaults: true,
 					directives: {
-						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						// Unsafe-eval is required for app extensions
 						scriptSrc: ["'self'", "'unsafe-eval'"],
 
 						// Even though this is recommended to have enabled, it breaks most local
@@ -147,7 +147,13 @@ export default async function createApp(): Promise<express.Application> {
 						// These are required for MapLibre
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:'],
+						imgSrc: [
+							"'self'",
+							'data:',
+							'blob:',
+							'https://raw.githubusercontent.com',
+							'https://avatars.githubusercontent.com',
+						],
 						mediaSrc: ["'self'"],
 						connectSrc: ["'self'", 'https://*'],
 					},

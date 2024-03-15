@@ -14,6 +14,7 @@ import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { getIPFromReq } from './utils/get-ip-from-req.js';
 import {
 	createSubscriptionController,
 	createWebSocketController,
@@ -79,7 +80,7 @@ export async function createServer(): Promise<http.Server> {
 					size: metrics.out,
 					headers: res.getHeaders(),
 				},
-				ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress,
+				ip: getIPFromReq(req),
 				duration: elapsedMilliseconds.toFixed(),
 			};
 

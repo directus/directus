@@ -1,8 +1,7 @@
-import type { AtLeastOneElement } from '../../misc.js';
+import type { AbstractQueryFieldNodeNestedSingleObject } from '../common/nested/object.js';
 import type {
-	AbstractQueryFieldNodeNestedRelationalAny,
-	AbstractQueryFieldNodeNestedRelationalAnys,
-	AbstractQueryFieldNodeNestedRelationalMany,
+	AbstractQueryFieldNodeNestedSingleRelational,
+	AbstractQueryFieldNodeNestedUnionRelational,
 } from '../common/nested/relational.js';
 import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
@@ -14,12 +13,12 @@ import type { AbstractQueryModifiers } from '../modifiers.js';
 export interface AbstractQueryFieldNodeNestedSingleOne {
 	type: 'nested-single-one';
 
-	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
+	/* From the nested collection/object the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedRelationalMany;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational | AbstractQueryFieldNodeNestedSingleObject;
 }
 
 /**
@@ -31,7 +30,7 @@ export interface AbstractQueryFieldNodeNestedUnionOne {
 
 	alias: string;
 
-	nesting: AbstractQueryFieldNodeNestedRelationalAny;
+	nesting: AbstractQueryFieldNodeNestedUnionRelational;
 }
 
 /**
@@ -49,7 +48,7 @@ export interface AbstractQueryFieldNodeNestedSingleMany {
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
 
-	nesting: AbstractQueryFieldNodeNestedRelationalMany;
+	nesting: AbstractQueryFieldNodeNestedSingleRelational;
 }
 
 /**
@@ -63,8 +62,5 @@ export interface AbstractQueryFieldNodeNestedUnionMany {
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
 
-	/** The field which identifies an item in the root collection, like the primary key column in SQL. */
-	localIdentifierFields: AtLeastOneElement<string>;
-
-	nesting: AbstractQueryFieldNodeNestedRelationalAnys;
+	nesting: AbstractQueryFieldNodeNestedUnionRelational;
 }

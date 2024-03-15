@@ -5,13 +5,8 @@ export type AtLeastOneElement<T> = [T, ...T[]];
  */
 export type A2ORelation = {
 	/** One or multiple foreign key relations */
-	foreignKey: AtLeastOneElement<FkEntry>;
+	foreignKey: AtLeastOneElement<string | number>;
 
 	/** The related collection */
 	foreignCollection: string;
 };
-
-export interface FkEntry {
-	column: string;
-	value: string | number;
-}
