@@ -64,6 +64,21 @@ extension_reload_required_copy: Aby sa prejavili zmeny alebo vyplo rozšírenie,
 extension_reload_now: Obnoviť teraz
 published_relative: Zverejnené {relativeTime}
 compatible_with_your_project: Kompatibilné s vaším Projektov
+compatible_with_your_project_copy: Autor uviedol kompatibilitu tohoto rozšírenia ako {hostVersion}, čo sedí s verziou vášho projektu ({currentVersion})
+last_updated_relative: Naposledy aktualizované {relativeTime}
+n_files: '{n} súborov'
+verified: Overené
+homepage: Domovská stránka
+repository: Repozitár
+reload_required: Treba obnoviť stránku
+report_an_issue: Nahlásiť problém
+website: Webstránka
+github: GitHub
+beta: Beta
+n_downloads: '{n} stiahnutí'
+downloads: Stiahnutia
+compatibility_not_guaranteed: Kompatibilita nezaručená
+compatibility_not_guaranteed_copy: Autor uviedol kompatibilitu tohoto rozšírenia ako {hostVersion}, čo nesedí s verziou vášho projektu ({currentVersion})
 enable: Zapnúť
 disable: Vypnúť
 custom: Vlastné
@@ -152,6 +167,8 @@ logoutReason:
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
+no_description: Žiadny popis...
+reached_maximum_number_of_extensions: Dosiahli ste maximálny počet rozšírení pre váš projekt ({n}). Kontaktujte správcu tohoto systému pre viac informácií.
 not_allowed: Nepovolené
 archive: Archív
 archive_confirm: Naozaj chcete archivovať túto položku?
@@ -483,7 +500,11 @@ months:
   november: November
   december: December
 drag_mode: Spôsob pretiahnutia
+move_tool: Nájstroj presunu
+crop_tool: Nástroj orezania
+focal_point_tool: Nástroj ústredného bodu
 cancel_crop: Zrušiť orezanie
+cancel_selection: Zrušiť výber
 original: Pôvodné
 url: URL
 import_label: Importovať
@@ -551,6 +572,7 @@ collapse: Zbaliť
 select_item: Vybrať položku
 no_items: Žiadne položky
 search_items: Hľadať položky...
+search_extensions: Hľadať rozšírenia...
 disabled: Vypnuté
 information: Informácia
 report_bug: Nahlásiť chybu
@@ -666,6 +688,7 @@ errors:
   INVALID_USER: Nepodarilo sa overiť používateľa
   ITEM_LIMIT_REACHED: Dosiahnutý limit položiek
   ITEM_NOT_FOUND: Položka nenájdená
+  LIMIT_EXCEEDED: 'Prekročený limit'
   METHOD_NOT_ALLOWED: Metóda nie je povolená
   NOT_NULL_VIOLATION: Hodnota nemôže byť null
   RANGE_NOT_SATISFIABLE: Neplatný rozsah
@@ -789,6 +812,7 @@ operators:
   regex: Vyhovuje RegExp
 custom_validation_message: Vlastná validačná správa
 loading: Načítavanie...
+extension_readme_missing: Toto rozšírenie nemá README súbor.
 drop_to_upload: Pustením sem nahráte
 item: Položka
 items: Položky
@@ -1095,6 +1119,9 @@ page_help_users_item: >-
   **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
 page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte prístup.'
 page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
+page_help_marketplace_account: '**Účet** — Vydavateľ alebo správca zverejneného rozšírenia.'
+page_help_marketplace_registry: '**Register** — Rozšírenie dostupné v Directus trhovisku.'
+page_help_marketplace_extension: '**Rozšírenie** — Rozšírenie v Directus trhovisku.'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nové
