@@ -11,8 +11,9 @@ interface AuthProvider {
 export function getAuthProviders({ sessionOnly } = { sessionOnly: false }): AuthProvider[] {
 	const env = useEnv();
 
-	let providers = toArray(env['AUTH_PROVIDERS'] as string)
-		.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`]);
+	let providers = toArray(env['AUTH_PROVIDERS'] as string).filter(
+		(provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`],
+	);
 
 	if (sessionOnly) {
 		providers = providers.filter((provider) => {
