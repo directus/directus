@@ -7,10 +7,12 @@ method: Metóda
 published: Zverejnené
 draft: Koncept
 archived: Archivované
+marketplace: Trhovisko
 extensions: Rozšírenia
 modules: Moduly
 module_bar: Panel modulov
 logs: Logy
+unknown: Neznáme
 reset_width: Obnoviť šírku
 tile_size: Veľkosť dlaždice
 edit_field: Upraviť pole
@@ -28,6 +30,8 @@ duplicate_field: Duplicitné pole
 half_width: Polovičná šírka
 full_width: Plná šírka
 group: Skupina
+popular: Populárne
+recent: Posledné
 export_items: Exportovať položky
 and: A
 or: Alebo
@@ -54,9 +58,12 @@ extension_hooks: Háky
 extension_endpoints: Koncové body
 extension_operations: Operácie
 extension_bundles: Balíky
+extension_missing: Chýbajúce
 extension_reload_required: Treba obnoviť stránku
 extension_reload_required_copy: Aby sa prejavili zmeny alebo vyplo rozšírenie, treba obnoviť stránku.
 extension_reload_now: Obnoviť teraz
+published_relative: Zverejnené {relativeTime}
+compatible_with_your_project: Kompatibilné s vaším Projektov
 enable: Zapnúť
 disable: Vypnúť
 custom: Vlastné
@@ -1100,6 +1107,7 @@ cancel: Zrušiť
 no_upscale: Nezväčšovať obrázky
 no_extensions: Žiadne rozšírenia
 no_extensions_copy: Zatiaľ nie je nainštalované žiadne rozšírenie.
+source_registry: Trhovisko
 collection: Zbierka
 collections: Zbierky
 content: Obsah
