@@ -5,9 +5,9 @@ import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
-import { idleTracker } from './idle';
 import { type LoginOptions } from '@directus/sdk';
 import { useServerStore } from './stores/server';
+import emitter, { Events } from './events';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -51,25 +51,13 @@ let idle = false;
 let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
-idleTracker.on('idle', () => {
+emitter.on(Events.tabIdle, () => {
 	sdk.stopRefreshing();
 	idle = true;
-});
-
-idleTracker.on('hide', () => {
-	sdk.stopRefreshing();
-	idle = true;
-});
+})
 
 // Restart the autorefresh process when the app is used (again)
-idleTracker.on('active', () => {
-	if (idle === true) {
-		refresh();
-		idle = false;
-	}
-});
-
-idleTracker.on('show', () => {
+emitter.on(Events.tabActive, () => {
 	if (idle === true) {
 		refresh();
 		idle = false;
