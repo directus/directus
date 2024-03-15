@@ -53,7 +53,7 @@ export async function getSchema(options?: {
 	const currentProcessShouldHandleOperation = processId === 1;
 
 	if (currentProcessShouldHandleOperation === false) {
-		logger.trace('Schema cache is prepared elsewhere, waiting for result.');
+		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
 		return new Promise((resolve) => {
 			bus.subscribe(messageKey, async () => {
