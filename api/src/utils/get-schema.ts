@@ -68,8 +68,8 @@ export async function getSchema(options?: {
 		await setSchemaCache(schema);
 		return schema;
 	} finally {
-		bus.publish(messageKey, { ready: true });
 		await lock.delete(lockKey);
+		bus.publish(messageKey, { ready: true });
 	}
 }
 
