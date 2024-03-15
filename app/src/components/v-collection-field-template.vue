@@ -6,9 +6,9 @@ import { useI18n } from 'vue-i18n';
 const value = defineModel<string>();
 
 const props = defineProps<{
+	collection: string | null;
 	placeholder?: string | null;
 	disabled?: boolean;
-	collection: string | null;
 }>();
 
 const { t } = useI18n();
