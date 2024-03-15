@@ -1134,7 +1134,14 @@ cancel: Zrušiť
 no_upscale: Nezväčšovať obrázky
 no_extensions: Žiadne rozšírenia
 no_extensions_copy: Zatiaľ nie je nainštalované žiadne rozšírenie.
+install_extension: Inštalovať rozšírenie
+uninstall_locked: Nedá sa odinštalovať rozšírenie, ktoré nebolo nainštalované cez Trhovisko
+uninstall: Odinštalovať
+installed: Nainštalované
+open_in_marketplace: Otvoriť na Trhovisku
 source_registry: Trhovisko
+source_local: Lokálny
+source_module: Node modul
 collection: Zbierka
 collections: Zbierky
 content: Obsah
