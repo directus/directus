@@ -258,7 +258,10 @@ function onClick(event: PointerEvent) {
 	&.block {
 		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
-		padding: var(--v-list-item-padding, calc(var(--theme--form--field--input--height) * 0.13333) var(--theme--form--field--input--padding));
+		padding: var(
+			--v-list-item-padding,
+			calc(var(--theme--form--field--input--height) * 0.13333) var(--theme--form--field--input--padding)
+		);
 		position: relative;
 		display: flex;
 		height: var(--theme--form--field--input--height);
