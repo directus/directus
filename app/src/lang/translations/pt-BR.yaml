@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Sobre
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -11,6 +32,7 @@ extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
 logs: Registros
+unknown: Desconhecido
 reset_width: Redefinir largura
 tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
@@ -28,6 +50,8 @@ duplicate_field: Duplicar Campo
 half_width: Meia Largura
 full_width: Largura Total
 group: Grupo
+popular: Popular
+recent: Recente
 export_items: Exportar itens
 and: E
 or: Ou
@@ -54,9 +78,22 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operações
 extension_bundles: Pacotes
+extension_missing: Faltando
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
+published_relative: Publicado em {relativeTime}
+compatible_with_your_project: Compatível com seu projeto
+last_updated_relative: Última atualização em {relativeTime}
+n_files: '{n} Arquivos'
+verified: Verificado
+homepage: Página inicial
+repository: Repositório
+website: Site
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
 enable: Habilitar
 disable: Desabilitar
 custom: Personalizado
@@ -145,6 +182,7 @@ logoutReason:
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
+no_description: Sem descrição...
 not_allowed: Não Permitido
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
@@ -284,6 +322,8 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+theme_light: Modo Claro
+theme_dark: Modo Escuro
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -295,6 +335,7 @@ auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
 to_manually_setup_translations: to manually setup translations.
+manage: Gerenciar
 click_to_manage_translated_fields: >-
   Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
@@ -963,6 +1004,9 @@ choices: Escolhas
 choices_option_configured_incorrectly: Opções configuradas incorretamente
 deselect: Desmarcar
 deselect_all: Desmarcar tudo
+theme: Tema
+appearance_light: Claro
+appearance_dark: Escuro
 other: Outros...
 adding_user: Adicionando usuário
 unknown_user: Usuário desconhecido
@@ -975,6 +1019,7 @@ editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_project: Configurações
+settings_appearance: Aparência
 settings_webhooks: Webhooks
 settings_flows: Fluxos
 settings_presets: Favoritos
@@ -1042,6 +1087,8 @@ batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
 no_upscale: Não ampliar imagens
+uninstall: Desinstalar
+installed: Instalado
 collection: Coleção
 collections: Coleções
 content: Conteúdo
@@ -1149,6 +1196,9 @@ fields:
     last_page: Última página
     last_access: Último acesso
     email_notifications: Notificações por Email
+    appearance: Aparência
+    theme_light: Tema Claro
+    theme_dark: Tema Escuro
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1174,6 +1224,7 @@ fields:
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
+    default_appearance: Aparência padrão
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
     files_and_thumbnails: Arquivos e armazenamento
