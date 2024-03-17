@@ -1102,3 +1102,11 @@ For more information on what these options do, please refer to
 | `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`     |
 
 <sup>[1]</sup> [Redis](#redis) is required in case of multiple instances.
+
+---
+
+## Update checks
+
+| Variable                  | Description                                                       | Default Value                    |
+| ------------------------- | ----------------------------------------------------------------- | -------------------------------- |
+| `UPDATE_CHECK_DISABLE`    | Disable the update check at startup.                              | `false`                          |

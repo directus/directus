@@ -184,6 +184,14 @@ To count the amount of items in a given collection, run
 npx directus count <collection-name>
 ```
 
+### Disable check for updates
+
+Everytime you use Directus CLI, it checks for updates, you can disable this by setting the environment variable
+
+```bash
+UPDATE_CHECK_DISABLE=true npx directus <command>
+```
+
 ---
 
 ## Client
