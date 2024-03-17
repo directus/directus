@@ -186,7 +186,7 @@ npx directus count <collection-name>
 
 ### Disable check for updates
 
-Everytime you use Directus CLI, it checks for updates, you can disable this by setting the environment variable
+Each time you run Directus CLI, it checks for updates. You can disable this by setting the `UPDATE_CHECK_DISABLE` environment variable:
 
 ```bash
 UPDATE_CHECK_DISABLE=true npx directus <command>
