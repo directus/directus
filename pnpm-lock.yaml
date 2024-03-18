@@ -1108,8 +1108,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
       dependency-cruiser:
-        specifier: 16.2.2
-        version: 16.2.2
+        specifier: 16.2.3
+        version: 16.2.3
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1157,8 +1157,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
       dependency-cruiser:
-        specifier: 16.2.2
-        version: 16.2.2
+        specifier: 16.2.3
+        version: 16.2.3
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1197,8 +1197,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1(vitest@1.3.1)
       dependency-cruiser:
-        specifier: 16.2.2
-        version: 16.2.2
+        specifier: 16.2.3
+        version: 16.2.3
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -8474,7 +8474,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.3.1(happy-dom@13.7.7)(sass@1.72.0)
+      vitest: 1.3.1(@types/node@18.19.24)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10921,8 +10921,8 @@ packages:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
 
-  /dependency-cruiser@16.2.2:
-    resolution: {integrity: sha512-h4jPGhELJLXdX7Ka+K9ydIvKLqjgSej/So5k/0BICGgVqsHqUekjOk7FogcEGDFTgoDZkyBY6qkGvHSaytlPRg==}
+  /dependency-cruiser@16.2.3:
+    resolution: {integrity: sha512-Zxf9i577VF7NbLaiCmMUnItskrehfNKogH39YtuDJfiLNF94FqTuAoWeFFx3WPAGclUZBMBT5HyL8cgoQn6jiw==}
     engines: {node: ^18.17||>=20}
     hasBin: true
     dependencies:
@@ -10935,7 +10935,7 @@ packages:
       chalk: 5.3.0
       commander: 12.0.0
       enhanced-resolve: 5.15.1
-      figures: 6.0.1
+      figures: 6.1.0
       ignore: 5.3.1
       indent-string: 5.0.0
       interpret: 3.1.1
@@ -11993,8 +11993,8 @@ packages:
       escape-string-regexp: 1.0.5
     dev: false
 
-  /figures@6.0.1:
-    resolution: {integrity: sha512-0oY/olScYD4IhQ8u//gCPA4F3mlTn2dacYmiDm/mbDQvpmLjV4uH+zhsQ5IyXRyvqkvtUkXkNdGvg5OFJTCsuQ==}
+  /figures@6.1.0:
+    resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
     engines: {node: '>=18'}
     dependencies:
       is-unicode-supported: 2.0.0
