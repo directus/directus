@@ -15,15 +15,12 @@ test('getNestedUnionMany', () => {
 	const foreignIdField = randomIdentifier();
 	const foreignTable1Name = randomIdentifier();
 	const foreignRelationalField1 = randomIdentifier();
-	const foreignTable1Index = randomInteger(0, 100);
 
 	// second foreign collection
 	const foreignField2 = randomIdentifier();
 	const foreignField2Alias = randomIdentifier();
 	const foreignIdField2 = randomIdentifier();
-	const foreignIdFieldAlias2 = randomIdentifier();
 	const foreignTable2Name = randomIdentifier();
-	const foreignTable2Index = randomInteger(0, 100);
 	const foreignRelationalField2 = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedUnionMany = {
@@ -169,7 +166,7 @@ test('getNestedUnionMany', () => {
 				parameters: ['foreignCollection', foreignTable1Name, 'foreignKey', rootIdValue],
 			},
 			subQueries: [],
-			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
+			aliasMapping: [{ type: 'root', alias: foreignFieldAlias, columnIndex: 0 }],
 		},
 		{
 			rootQuery: {
@@ -235,7 +232,7 @@ test('getNestedUnionMany', () => {
 				parameters: ['foreignCollection', foreignTable2Name, 'foreignKey', rootIdValue],
 			},
 			subQueries: [],
-			aliasMapping: [{ type: 'root', alias: foreignIdFieldAlias2, columnIndex: 0 }],
+			aliasMapping: [{ type: 'root', alias: foreignField2Alias, columnIndex: 0 }],
 		},
 	];
 
