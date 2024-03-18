@@ -111,14 +111,14 @@ test('getNestedUnionMany', () => {
 					select: [
 						{
 							type: 'primitive',
-							tableIndex: foreignTable1Index,
+							tableIndex: 0,
 							columnName: foreignField,
 							columnIndex: 0,
 						},
 					],
 					from: {
 						tableName: foreignTable1Name,
-						tableIndex: foreignTable1Index,
+						tableIndex: 0,
 					},
 					joins: [],
 					where: {
@@ -133,13 +133,13 @@ test('getNestedUnionMany', () => {
 									operation: 'eq',
 									target: {
 										type: 'json',
-										tableIndex: foreignTable2Index,
+										tableIndex: 0,
 										columnName: foreignRelationalField1,
 										path: [0],
 									},
 									compareTo: {
 										type: 'value',
-										parameterIndex: 1,
+										parameterIndex: 0,
 									},
 								},
 								negate: false,
@@ -151,9 +151,9 @@ test('getNestedUnionMany', () => {
 									operation: 'eq',
 									target: {
 										type: 'json',
-										tableIndex: foreignTable1Index,
+										tableIndex: 0,
 										columnName: foreignRelationalField1,
-										path: [2, 0],
+										path: [1, 0],
 										pathIsIndex: true,
 									},
 									compareTo: {
@@ -177,14 +177,14 @@ test('getNestedUnionMany', () => {
 					select: [
 						{
 							type: 'primitive',
-							tableIndex: foreignTable2Index,
+							tableIndex: 0,
 							columnName: foreignField2,
 							columnIndex: 0,
 						},
 					],
 					from: {
 						tableName: foreignTable2Name,
-						tableIndex: foreignTable2Index,
+						tableIndex: 0,
 					},
 					joins: [],
 					where: {
@@ -199,7 +199,7 @@ test('getNestedUnionMany', () => {
 									operation: 'eq',
 									target: {
 										type: 'json',
-										tableIndex: foreignTable2Index,
+										tableIndex: 0,
 										columnName: foreignRelationalField2,
 										path: [0],
 									},
@@ -217,7 +217,7 @@ test('getNestedUnionMany', () => {
 									operation: 'eq',
 									target: {
 										type: 'json',
-										tableIndex: foreignTable2Index,
+										tableIndex: 0,
 										columnName: foreignRelationalField2,
 										path: [2, 0],
 										pathIsIndex: true,

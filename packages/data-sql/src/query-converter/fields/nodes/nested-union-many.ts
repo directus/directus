@@ -1,5 +1,4 @@
 import type {
-	AbstractQueryFieldNode,
 	AbstractQueryFieldNodeNestedRelationalUnionsCollection,
 	AbstractQueryFieldNodeNestedUnionMany,
 	AtLeastOneElement,
