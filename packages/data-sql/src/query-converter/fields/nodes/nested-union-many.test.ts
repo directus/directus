@@ -139,7 +139,7 @@ test('getNestedUnionMany', () => {
 									},
 									compareTo: {
 										type: 'value',
-										parameterIndex: 0,
+										parameterIndex: 1,
 									},
 								},
 								negate: false,
@@ -153,12 +153,12 @@ test('getNestedUnionMany', () => {
 										type: 'json',
 										tableIndex: 0,
 										columnName: foreignRelationalField1,
-										path: [1, 0],
+										path: [2, 0],
 										pathIsIndex: true,
 									},
 									compareTo: {
 										type: 'value',
-										parameterIndex: 1,
+										parameterIndex: 3,
 									},
 								},
 								negate: false,
@@ -224,7 +224,7 @@ test('getNestedUnionMany', () => {
 									},
 									compareTo: {
 										type: 'value',
-										parameterIndex: 1,
+										parameterIndex: 3,
 									},
 								},
 								negate: false,

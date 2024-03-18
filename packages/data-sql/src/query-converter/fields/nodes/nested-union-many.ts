@@ -3,7 +3,7 @@ import type {
 	AbstractQueryFieldNodeNestedUnionMany,
 	AtLeastOneElement,
 } from '@directus/data';
-import { createIndexGenerators } from '../../utils/create-index-generators.js';
+import { createIndexGenerators, type IndexGenerators } from '../../utils/create-index-generators.js';
 import { convertFieldNodes } from '../fields.js';
 import type { SubQueries, ConverterResult, AliasMapping } from '../../../types/abstract-sql.js';
 import type {
@@ -67,6 +67,7 @@ function createFunctionsToGenerateSubQueries(
 				tableIndex,
 				nestedCollection.relational.collectionName,
 				rootRow[`c${idFieldIndex}`] as string | number,
+				indexGenerators,
 			);
 
 			return {
@@ -112,6 +113,7 @@ function createCondition(
 	tableIndex: number,
 	foreignCollection: string,
 	foreignKeyValue: string | number,
+	indexGens: IndexGenerators,
 ): { conditions: AbstractSqlQueryLogicalNode; parameters: ParameterTypes[] } {
 	const conditions: AbstractSqlQueryLogicalNode = {
 		type: 'logical',
@@ -127,11 +129,11 @@ function createCondition(
 						type: 'json',
 						tableIndex: tableIndex,
 						columnName: collection.relational.relationalField,
-						path: [0],
+						path: [indexGens.parameter.next().value],
 					},
 					compareTo: {
 						type: 'value',
-						parameterIndex: 0,
+						parameterIndex: indexGens.parameter.next().value,
 					},
 					operation: 'eq',
 				},
@@ -145,12 +147,12 @@ function createCondition(
 						type: 'json',
 						tableIndex: tableIndex,
 						columnName: collection.relational.relationalField,
-						path: [0, 0],
+						path: [indexGens.parameter.next().value, 0],
 						pathIsIndex: true,
 					},
 					compareTo: {
 						type: 'value',
-						parameterIndex: 0,
+						parameterIndex: indexGens.parameter.next().value,
 					},
 					operation: 'eq',
 				},
