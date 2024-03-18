@@ -56,14 +56,14 @@ CONFIG_PATH="/path/to/config.json"
 
 ```json
 {
-        "HOST": "0.0.0.0",
-        "PORT": 8055,
+	"HOST": "0.0.0.0",
+	"PORT": 8055,
 
-        "DB_CLIENT": "pg",
-        "DB_HOST": "localhost",
-        "DB_PORT": 5432
+	"DB_CLIENT": "pg",
+	"DB_HOST": "localhost",
+	"DB_PORT": 5432
 
-        // etc
+	// etc
 }
 ```
 
@@ -100,27 +100,27 @@ environment variable name:
 
 ```js [config.js]
 export default {
-        HOST: '0.0.0.0',
-        PORT: 8055,
+	HOST: '0.0.0.0',
+	PORT: 8055,
 
-        DB_CLIENT: 'pg',
-        DB_HOST: 'localhost',
-        DB_PORT: 5432,
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
 
-        // etc
+	// etc
 };
 ```
 
 ```js [config.cjs]
 module.exports = {
-        HOST: '0.0.0.0',
-        PORT: 8055,
+	HOST: '0.0.0.0',
+	PORT: 8055,
 
-        DB_CLIENT: 'pg',
-        DB_HOST: 'localhost',
-        DB_PORT: 5432,
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
 
-        // etc
+	// etc
 };
 ```
 
@@ -133,31 +133,31 @@ parameter.
 
 ```js [config.js]
 export default function (env) {
-        return {
-                HOST: '0.0.0.0',
-                PORT: 8055,
+	return {
+		HOST: '0.0.0.0',
+		PORT: 8055,
 
-                DB_CLIENT: 'pg',
-                DB_HOST: 'localhost',
-                DB_PORT: 5432,
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
 
-                // etc
-        };
+		// etc
+	};
 }
 ```
 
 ```js [config.cjs]
 module.exports = function (env) {
-        return {
-                HOST: '0.0.0.0',
-                PORT: 8055,
+	return {
+		HOST: '0.0.0.0',
+		PORT: 8055,
 
-                DB_CLIENT: 'pg',
-                DB_HOST: 'localhost',
-                DB_PORT: 5432,
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
 
-                // etc
-        };
+		// etc
+	};
 };
 ```
 
@@ -201,11 +201,11 @@ DB_CONNECTION_STRING="postgresql://postgres:example@127.0.0.1"
 DB_SSL__REJECT_UNAUTHORIZED="false"
 
 {
-        client: "pg",
-        connectionString: "postgresql://postgres:example@127.0.0.1",
-        ssl: {
-                rejectUnauthorized: false
-        }
+	client: "pg",
+	connectionString: "postgresql://postgres:example@127.0.0.1",
+	ssl: {
+		rejectUnauthorized: false
+	}
 }
 ```
 
