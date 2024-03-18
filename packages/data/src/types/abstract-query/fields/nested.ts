@@ -2,6 +2,7 @@ import type { AbstractQueryFieldNodeNestedSingleObject } from '../common/nested/
 import type {
 	AbstractQueryFieldNodeNestedSingleRelational,
 	AbstractQueryFieldNodeNestedUnionRelational,
+	AbstractQueryFieldNodeNestedUnionsRelational,
 } from '../common/nested/relational.js';
 import type { AbstractQueryFieldNode } from '../fields.js';
 import type { AbstractQueryModifiers } from '../modifiers.js';
@@ -62,5 +63,5 @@ export interface AbstractQueryFieldNodeNestedUnionMany {
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers: AbstractQueryModifiers;
 
-	nesting: AbstractQueryFieldNodeNestedUnionRelational;
+	nesting: AbstractQueryFieldNodeNestedUnionsRelational;
 }

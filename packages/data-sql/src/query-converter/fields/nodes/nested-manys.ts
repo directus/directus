@@ -98,7 +98,7 @@ function getFilter(
 	return getRelationConditions(tableIndex, nestedForeignFields, indexGen);
 }
 
-function getRelationConditions(
+export function getRelationConditions(
 	tableIndex: number,
 	foreignFields: AtLeastOneElement<string>,
 	indexGen: IndexGenerators,

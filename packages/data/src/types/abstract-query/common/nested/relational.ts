@@ -92,23 +92,28 @@ export interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 
 /**
  * Used to build a relational query for a2o and o2a relations.
+ * Main difference is that the name of the relational json column is specified one level deeper, so based on a specific collection.
  */
-export interface AbstractQueryFieldNodeNestedRelationalAnys {
-	type: 'relational-anys';
+export interface AbstractQueryFieldNodeNestedUnionsRelational {
+	type: 'relational-unions';
 
-	collections: AbstractQueryFieldNodeNestedRelationalAnysCollection[];
+	/** The fields which identify an item in the root collection. */
+	identifierFields: AtLeastOneElement<string>;
+
+	collections: AbstractQueryFieldNodeNestedRelationalUnionsCollection[];
 }
 
-export interface AbstractQueryFieldNodeNestedRelationalAnysCollection {
+/**
+ * Used to specify the fields which should be returned for a specific collection.
+ * It also contains information about how the two collections are related.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalUnionsCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
 	/** The relational data which defines how the two collection are related. */
 	relational: {
 		store: string;
-
-		/** The field name which holds the relational information */
-		field: string;
 
 		/** The name of the foreign collection */
 		collectionName: string;
@@ -117,6 +122,9 @@ export interface AbstractQueryFieldNodeNestedRelationalAnysCollection {
 		collectionIdentifier: string;
 
 		/** The column name(s) of the foreign collection which store the primary key(s) */
-		identifierFields: AtLeastOneElement<string>;
+		fields: AtLeastOneElement<{ name: string; type: 'string' | 'number' }>;
+
+		/** The field name which holds the relational information */
+		relationalField: string;
 	};
 }
