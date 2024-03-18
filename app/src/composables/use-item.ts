@@ -210,7 +210,7 @@ export function useItem<T extends Record<string, any>>(
 			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
 				const fieldsToFetch = fields
 					.filter((field) => field.startsWith(relation.meta!.one_field!))
-					.map((field) => field.split('.').slice(1).join('.'));
+					.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
 
 				if (Array.isArray(newItem[relation.meta.one_field])) {
 					const existingItems = await findExistingRelatedItems(
