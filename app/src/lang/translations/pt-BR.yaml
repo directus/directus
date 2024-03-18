@@ -28,6 +28,7 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
+marketplace: marketplace
 extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
@@ -84,16 +85,21 @@ extension_reload_required_copy: É necessário recarregar a página para ver as 
 extension_reload_now: Recarregar agora
 published_relative: Publicado em {relativeTime}
 compatible_with_your_project: Compatível com seu projeto
+compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização em {relativeTime}
 n_files: '{n} Arquivos'
 verified: Verificado
 homepage: Página inicial
 repository: Repositório
+reload_required: Atualização de página necessária
+report_an_issue: Reportar um problema
 website: Site
 github: GitHub
 beta: Beta
 n_downloads: '{n} Downloads'
 downloads: Downloads
+compatibility_not_guaranteed: Compatibilidade não garantida
+compatibility_not_guaranteed_copy: O autor indicou a compatibilidade desta extensão para ser {hostVersion}, que não corresponde à versão do seu projeto ({currentVersion})
 enable: Habilitar
 disable: Desabilitar
 custom: Personalizado
@@ -183,6 +189,7 @@ public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
 no_description: Sem descrição...
+reached_maximum_number_of_extensions: Você atingiu o número máximo de extensões para este projeto ({n}). Entre em contato com o administrador do sistema para obter mais informações.
 not_allowed: Não Permitido
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
@@ -322,8 +329,18 @@ time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (Todos)
+  Point: Ponto
+  LineString: Linha de Texto
+  Polygon: Polígono
+  MultiPoint: Multiponto
+theme_auto: Automático (Baseado no Sistema)
 theme_light: Modo Claro
 theme_dark: Modo Escuro
+theme_directus_default: Padrão Directus
+theme_directus_minimal: Mínimo Directus
+theme_directus_colormatch: Correspondência de cor Directus
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_refresh: Atualização automática
@@ -367,6 +384,7 @@ dialog: Diálogo
 modal: Modal
 confirmation_dialog: Diálogos de confirmação
 confirmation_description: Descrição da confirmação
+confirmation_input_fields: Campo de confirmação
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -385,6 +403,7 @@ updated_on: Atualizado em
 updated_by: Atualizado por
 primary_key: Chave primária
 foreign_key: Chave Extrangeira
+field_key: Chave do campo
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 toggle_raw_editor: Alternar Editor Raw
@@ -405,6 +424,7 @@ clear_items: Excluir itens
 reset_to_default: Restaurar Padrões
 undo_changes: Desfazer Alterações
 notifications: Notificações
+archive_all: Arquivar Todos
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada
 page_not_found_body: A página que você está procurando não existe.
@@ -417,6 +437,7 @@ revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
+revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) | Salvar Versão (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
@@ -501,7 +522,11 @@ months:
   november: Novembro
   december: Dezembro
 drag_mode: Modo de arrastar
+move_tool: Ferramenta Mover
+crop_tool: Ferramenta de Corte
+focal_point_tool: Ferramenta de Ponto Focal
 cancel_crop: Cancelar Recorte
+cancel_selection: Cancelar seleção
 original: Original
 url: URL
 import_label: Importar
@@ -527,12 +552,18 @@ import_from_url: Importar arquivo de URL
 replace_from_device: Substituir Arquivo do Dispositivo
 replace_from_library: Substituir Arquivo da Biblioteca
 replace_from_url: Substituir Arquivo da URL
+no_image_selected: Nenhuma imagem selecionada
 no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
 open_file_in_tab: Abrir em nova guia
 start_export: Iniciar Exportação
 not_available_for_local_downloads: Não disponível para downloads locais
 exporting_all_items_in_collection: Exportando todos os {total} itens dentro de {collection}.
+exporting_limited_items_in_collection: '{count} de {total} itens dentro de {collection} serão exportados.'
+exporting_no_items_to_export: Nenhum item para exportar. Ajuste a configuração de exportação e/ou adicione itens à coleção.
+exporting_download_hint: Depois de criar o arquivo {format} , ele será baixado para o seu dispositivo.
+exporting_library_hint: Depois de criar o arquivo {format}, ele será salvo na Biblioteca de Arquivos.
+exporting_library_hint_forced: Esta exportação será processada em lotes e, assim que concluída, o arquivo {format} será salvo na Biblioteca de Arquivos.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -548,6 +579,7 @@ generated_uuid: UUID gerado
 manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
+save_and_quit: Salvar e sair
 save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
 creating_items: Criando Itens
@@ -561,6 +593,8 @@ expand: Expandir
 collapse: Recolher
 select_item: Selecionar item
 no_items: Nenhum item
+search_items: Pesquisar Itens...
+search_extensions: Pesquisar extensões
 disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
@@ -640,7 +674,12 @@ bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde
 bookmark_doesnt_exist_cta: Voltar à coleção
 select_an_item: Selecione um item...
 edit: Editar
+edit_item: Editar Item
 enabled: Habilitado
+partially_enabled: Parcialmente habilitado
+enable_all: Habilitar todos
+disable_all: Desabilitar todos
+enabled_dev_tooltip: As extensões do aplicativo são sempre ativadas no modo de desenvolvimento
 disable_tfa: Desativar verificação em duas etapas
 admin_disable_tfa_text: Tem certeza de que deseja desativar a 2FA para este usuário?
 tfa_setup: Configurar 2FA
@@ -656,6 +695,7 @@ errors:
   CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Não permitido
+  GRAPHQL_VALIDATION: Validação do GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   INTERNAL_SERVER_ERROR: Erro inesperado
   INVALID_CONFIG: Configuração inválida
@@ -670,6 +710,7 @@ errors:
   INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
+  LIMIT_EXCEEDED: 'Limite excedido'
   METHOD_NOT_ALLOWED: Método não permitido
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   RANGE_NOT_SATISFIABLE: Intervalo inválido
@@ -680,6 +721,7 @@ errors:
   TOKEN_EXPIRED: Token expirado
   UNEXPECTED_RESPONSE: Resposta inesperada
   UNKNOWN: Erro inesperado
+  UNPROCESSABLE_CONTENT: Conteúdo não processável
   UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
   USER_SUSPENDED: Usuário suspenso
   VALUE_OUT_OF_RANGE: Valor fora de alcance
@@ -773,8 +815,12 @@ operators:
   icontains: Contém (insensível)
   starts_with: Começa com
   nstarts_with: Não começa com
+  istarts_with: Começa com (insensível)
+  nistarts_with: Não começar com (insensível)
   ends_with: Termina com
   nends_with: Não termina com
+  iends_with: Termina com (insensível)
+  niends_with: Não terminar com (insensível)
   between: Está entre
   nbetween: Não está entre
   empty: Está vazio
@@ -788,6 +834,7 @@ operators:
   regex: Coincide RegExp
 custom_validation_message: Mensagem personalizada de validação
 loading: Carregando...
+extension_readme_missing: Esta extensão não tem um arquivo README.
 drop_to_upload: Solte para enviar
 item: Item
 items: Itens
@@ -800,10 +847,12 @@ upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
 interface_options: Opções de Interface
+display_options: Opções de exibição
 layout_options: Opções de Layout
 rows: Linhas
 columns: Colunas
 collection_setup: Configurando coleção
+optional_system_fields: Campos opcionais
 value_unique: O valor deve ser único
 all_activity: Todas as atividades
 create_item: Criar item
@@ -858,9 +907,11 @@ run_flow_confirm: Tem certeza que deseja excluir este fluxo?
 run_flow_on_current_collection: Executar fluxo na coleção atual
 run_flow_on_current: Executar fluxo no Item atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
+run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
 run_flow_success: Fluxo "{flow}" executado com sucesso
 field_name_placeholder: Inserir nome do campo...
+field_key_placeholder: Inserir a chave do campo...
 trigger: Acionar
 trigger_options: Opções de ativação
 view_trigger: Ver gatilho
@@ -999,12 +1050,17 @@ wysiwyg_options:
   source_code: Editar o código-fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
+  lazy_loading: Carregar imagens por demanda
+  lazy_loading_label: Habilitar carregamento lento
 dropdown: Seleção
 choices: Escolhas
 choices_option_configured_incorrectly: Opções configuradas incorretamente
 deselect: Desmarcar
 deselect_all: Desmarcar tudo
 theme: Tema
+select_a_theme: Selecione um Tema
+default_sync_with_project: Padrão (Sincronizar com o Projeto)
+appearance_auto: Automático (Sincronizar com Sistema)
 appearance_light: Claro
 appearance_dark: Escuro
 other: Outros...
@@ -1018,6 +1074,7 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
+settings_permissions: Controle de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_webhooks: Webhooks
@@ -1025,6 +1082,7 @@ settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
+configure_field_key_to_continue: Configure a chave do campo para continuar
 scope: Escopo
 actions: Ações
 select: Selecionar...
@@ -1037,6 +1095,7 @@ editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
 layout_setup: Configuração de Layout
 data: Dados
+theme-overrides: Substituições do tema
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
@@ -1089,6 +1148,7 @@ cancel: Cancelar
 no_upscale: Não ampliar imagens
 uninstall: Desinstalar
 installed: Instalado
+source_registry: marketplace
 collection: Coleção
 collections: Coleções
 content: Conteúdo
@@ -1204,6 +1264,8 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
+    reporting: Relatar erro
     mapping: Mapeamento
     basemaps: Basemaps
     basemaps_raster: Rasterizar
@@ -1221,10 +1283,14 @@ fields:
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
     default_language: Idioma padrão
+    branding: Marca
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
+    theming: Padrões de Temas
     default_appearance: Aparência padrão
+    default_theme_light: Tema Padrão Claro
+    default_theme_dark: Tema Padrão Escuro
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
     files_and_thumbnails: Arquivos e armazenamento
@@ -1239,6 +1305,8 @@ fields:
     transformations_presets: Limitar transformações às predefinições abaixo
     image_editor: Editor de imagem
     custom_aspect_ratios: Proporção de tela personalizada
+    theme_light_overrides: Personalização de tema claro
+    theme_dark_overrides: Personalização de tema escuro
   directus_shares:
     name: Nome
     role: Função
@@ -1281,6 +1349,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_color_note: Fundo de Login & Logo
+    project_logo_note: 40x40 SVG/PNG (Branco)
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
@@ -1335,6 +1405,8 @@ field_options:
     accountability_divider: Responsabilidade
     duplication_divider: Duplicação
     preview_divider: Pré-visualizar
+    content_versioning_divider: Versionamento de conteúdo
+    enable_versioning: Habilitar o controle de versão
   directus_files:
     title: Um título único...
     description: Uma descrição opcional...
@@ -1654,6 +1726,8 @@ interfaces:
     description: Um modal para selecionar opções de uma interface
   system-display:
     display: Exibir
+  system-display-options:
+    display-options: Opções de exibição
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
@@ -1718,6 +1792,7 @@ interfaces:
     field_note_placeholder: Insira a nota de campo...
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
     interface_group: Opções de Interface
+    display_group: Opções de exibição
   slider:
     slider: Slider
     description: Selecione um número usando um controle deslizante
