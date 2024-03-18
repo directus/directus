@@ -4,8 +4,9 @@ export const emitter = mitt();
 
 export enum Events {
 	upload = 'upload',
-	tabIdle = 'tab-idle',
 	tabActive = 'tab-active',
+	tabHidden = 'tab-hidden',
+	tabIdle = 'tab-idle',
 }
 
 export default emitter;
