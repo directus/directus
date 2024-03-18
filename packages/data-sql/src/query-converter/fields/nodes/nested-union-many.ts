@@ -21,7 +21,7 @@ export interface NestedUnionResult {
 	subQueries: SubQueries;
 
 	/** The selection of the primary key field */
-	select: AbstractSqlQuerySelectPrimitiveNode[];
+	selects: AbstractSqlQuerySelectPrimitiveNode[];
 }
 
 /**
@@ -39,11 +39,10 @@ export function getNestedUnionMany(
 ): NestedUnionResult {
 	const firstIdField = field.nesting.identifierFields[0];
 	const firstIdFieldIndex = findIndexForColumn(rootAliasMapping, firstIdField);
-
 	const subQueries = createFunctionsToGenerateSubQueries(field.nesting.collections, firstIdFieldIndex);
-	const select = createPrimitiveSelects(rootTableIndex, field.nesting.identifierFields, currentColumnIndexGenerator);
+	const selects = getIdFieldSelects(rootTableIndex, field.nesting.identifierFields, currentColumnIndexGenerator);
 
-	return { subQueries, select };
+	return { subQueries, selects };
 }
 
 /**
@@ -61,17 +60,8 @@ function createFunctionsToGenerateSubQueries(
 		return nestedCollections.map((nestedCollection) => {
 			const indexGenerators = createIndexGenerators();
 			const tableIndex = indexGenerators.table.next().value;
-			const foreignPkFields = nestedCollection.relational.fields;
-
-			const idFields: AbstractQueryFieldNode[] = foreignPkFields.map((idField) => ({
-				type: 'primitive',
-				field: idField.name,
-				alias: idField.name,
-			}));
-
 			const desiredFields = nestedCollection.fields;
-			const allFields = [...idFields, ...desiredFields];
-			const nestedFieldNodes = convertFieldNodes(allFields, tableIndex, indexGenerators);
+			const nestedFieldNodes = convertFieldNodes(desiredFields, tableIndex, indexGenerators);
 
 			const condition = createCondition(
 				nestedCollection,
@@ -101,17 +91,14 @@ function createFunctionsToGenerateSubQueries(
 }
 
 /**
- * To ensure that the primary key column is part of the query to.
- *
- * @remarks
- * Since the primary key column is always needed in the root query to construct the filter condition,
- * we need to make sure that the pk column is also part of the select statement.
+ * Creates selects for the primary key columns.
+ * Those need to be queries because it contain the primary key values.
  *
  * @param rootCollection
  * @param rootIdentifierFields
  * @returns The abstract select part for the primary key field.
  */
-function createPrimitiveSelects(
+function getIdFieldSelects(
 	tableIndex: number,
 	rootIdentifierFields: AtLeastOneElement<string>,
 	columnIndexGenerator: NumberGenerator,

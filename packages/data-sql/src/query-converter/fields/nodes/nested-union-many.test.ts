@@ -85,7 +85,7 @@ test('getNestedUnionMany', () => {
 
 	const expected: NestedUnionResult = {
 		subQueries: expect.any(Function),
-		select: [
+		selects: [
 			{
 				type: 'primitive',
 				tableIndex: rootCollectionIndex,
