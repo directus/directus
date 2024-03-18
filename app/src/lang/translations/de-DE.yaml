@@ -57,6 +57,7 @@ extension_bundles: Pakete
 extension_reload_required: Neuladen der Seite erforderlich
 extension_reload_required_copy: Um die Änderungen nach Aktivierung oder Deaktivierung von App-Erweiterungen sehen zu können, ist ein Neuladen der Seite erforderlich.
 extension_reload_now: Jetzt neu laden
+homepage: Hello world
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
