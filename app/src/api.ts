@@ -8,8 +8,12 @@ const api = axios.create({
 	withCredentials: true,
 });
 
-export let requestQueue: PQueue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
-
+export let requestQueue: PQueue = new PQueue({
+	concurrency: 5,
+	intervalCap: 5,
+	interval: 500,
+	carryoverConcurrencyCount: true,
+});
 
 type RequestConfig = InternalAxiosRequestConfig & { id: string };
 type Response = AxiosResponse & { config: RequestConfig };
