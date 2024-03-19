@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: دەربارە
 identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
@@ -7,14 +28,18 @@ method: ڕێگە
 published: بڵاوکراوە
 draft: ڕەشنوس
 archived: ئەرشیفکراو
+marketplace: کۆگا
+extensions: زیادکراوەکان
 modules: یەکەکان
 module_bar: شریتی یەکەکان
 logs: تۆمارەکان
+unknown: نەناسراو
 reset_width: ڕێکخستنەوەی پانی
 tile_size: قەبارەی خشت
 edit_field: دەستکاری خانە
 conditions: مەرجەکان
 location: شوێن
+collection_names_are_case_sensitive: گەورە و بچووکی پیتەکانی ناوی کۆمەڵەکان حسابە
 condition_rules: یاسای ئەگەرەکان
 input: تێچون
 maps: نەخشەکان
@@ -26,6 +51,8 @@ duplicate_field: لەبەرگرتنەوەی خانە
 half_width: نیوەی پانی
 full_width: پانی تەواو
 group: دەستە
+popular: بڵاوترین
+recent: دواین
 export_items: هەناردەکردنی مادەکان
 and: و
 or: یان
@@ -35,8 +62,14 @@ modifier: گۆڕەر
 extension_interface: ڕوکار
 extension_display: پیشاندان
 extension_layout: خشتە
+extension_module: یەکە
 extension_panel: پانێڵ
+extension_theme: ڕووکار
 extension_hook: قولاپ
+extension_endpoint: ئێندپۆینت
+extension_operation: کردار
+extension_bundle: کۆمەڵە
+extension_interfaces: ڕووکار
 extension_modules: یەکەکان
 enable: کاراکردن
 custom: تایبەتمەند
@@ -966,6 +999,7 @@ batch_delete_confirm: >-
   هیچ ماددەیەک دیاری نەکراوە | ئایا دڵنیای دەتەوێت ئەم ماددەیە بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە. | ئایا دڵنیای لەوەی کە {count} ماددە بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
 cancel: پاشگەزبوونەوە
 no_upscale: ئاستی وێنەکان بەرزمەکەوە
+source_registry: کۆگا
 collection: کۆمەڵە
 collections: کۆمەڵەکان
 content: ناوەڕۆک
