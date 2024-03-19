@@ -4,7 +4,7 @@ import { omit } from 'lodash';
 import { requestQueue } from '@/api';
 
 defineOptions({
-	inheritAttrs: false
+	inheritAttrs: false,
 });
 
 interface Props {
