@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,7 +18,7 @@ const { t } = useI18n();
 
 const logoURL = computed<string | null>(() => {
 	if (!serverStore.info?.project?.project_logo) return null;
-	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
+	return getAssetUrl(serverStore.info.project?.project_logo);
 });
 </script>
 

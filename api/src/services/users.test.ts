@@ -22,7 +22,7 @@ vi.mock('../../src/database/index', () => ({
 
 vi.mock('./mail', () => {
 	const MailService = vi.fn();
-	MailService.prototype.send = vi.fn();
+	MailService.prototype.send = vi.fn().mockImplementation(() => Promise.resolve());
 
 	return { MailService };
 });

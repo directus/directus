@@ -16,8 +16,19 @@ const extensionsStore = useExtensionsStore();
 const { extensions, loading } = storeToRefs(extensionsStore);
 
 const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
+
 const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
-const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
+
+const extensionsByType = computed(() => {
+	const groups = groupBy(regular.value, 'schema.type');
+
+	if ('undefined' in groups) {
+		groups['missing'] = groups['undefined'];
+		delete groups['undefined'];
+	}
+
+	return groups;
+});
 </script>
 
 <template>

@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"lib": ["DOM"]
 	},
-	"include": ["src"],
+	"include": ["src", "tests"],
 	"typedocOptions": {
 		"entryPoints": ["./src/client.ts", "./src/*/index.ts"]
 	}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
@@ -22,7 +22,7 @@ const signOutActive = ref(false);
 
 const avatarURL = computed<string | null>(() => {
 	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-	return `${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
+	return getAssetUrl(`${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 });
 
 const avatarError = ref<null | Event>(null);

@@ -22,7 +22,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 </script>
 
 <template>
-	<v-list-item class="extension-list-item" block clickable :to="`/settings/marketplace/extension/${extension.id}`">
+	<v-list-item class="extension-list-item" block grow clickable :to="`/settings/marketplace/extension/${extension.id}`">
 		<div class="icon"><v-icon :name="icon" /></div>
 		<v-list-item-content>
 			<div class="name">

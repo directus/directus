@@ -29,8 +29,16 @@ const devMode = import.meta.env.DEV;
 
 const saving = ref(false);
 
-const type = computed(() => props.extension.schema?.type);
-const icon = computed(() => (type.value ? extensionTypeIconMap[type.value] : 'warning'));
+const type = computed(() => props.extension.schema?.type ?? 'missing');
+const icon = computed(() => extensionTypeIconMap[type.value]);
+
+const disabled = computed(() => {
+	if (type.value === 'missing') return true;
+	if (devMode) return false;
+
+	return !props.extension.meta.enabled;
+});
+
 const disableLocked = computed(() => devMode && isOrHasAppExtension.value);
 const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
 
@@ -52,11 +60,13 @@ const isPartiallyEnabled = computed(() => {
 });
 
 const isOrHasAppExtension = computed(() => {
-	if (type.value === 'bundle') {
+	const type = props.extension.schema?.type;
+
+	if (type === 'bundle') {
 		return props.children.some((e) => isAppExtension(e.schema?.type));
 	}
 
-	return isAppExtension(type.value);
+	return isAppExtension(type);
 });
 
 const state = computed<{ text: string; status: ExtensionStatus }>(() => {
@@ -102,7 +112,7 @@ const uninstall = async () => {
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled: devMode ? false : !extension.meta.enabled }">
+	<v-list-item block :class="{ disabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
 			<span class="monospace">
@@ -120,24 +130,26 @@ const uninstall = async () => {
 			</span>
 		</v-list-item-content>
 
-		<span v-if="saving" class="spinner">
-			<v-progress-circular indeterminate small />
-		</span>
+		<template v-if="type !== 'missing'">
+			<span v-if="saving" class="spinner">
+				<v-progress-circular indeterminate small />
+			</span>
 
-		<v-chip class="state" :class="state.status" small>
-			{{ state.text }}
-		</v-chip>
+			<v-chip class="state" :class="state.status" small>
+				{{ state.text }}
+			</v-chip>
 
-		<extension-item-options
-			class="options"
-			:type="type"
-			:status="state.status"
-			:disable-locked="disableLocked"
-			:uninstall-locked="uninstallLocked"
-			:bundle-entry="bundleEntry"
-			@toggle-status="toggleState"
-			@uninstall="uninstall"
-		/>
+			<extension-item-options
+				class="options"
+				:type="type"
+				:status="state.status"
+				:disable-locked="disableLocked"
+				:uninstall-locked="uninstallLocked"
+				:bundle-entry="bundleEntry"
+				@toggle-status="toggleState"
+				@uninstall="uninstall"
+			/>
+		</template>
 	</v-list-item>
 
 	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">

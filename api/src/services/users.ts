@@ -16,8 +16,10 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { useLogger } from '../logger.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -406,17 +408,21 @@ export class UsersService extends ItemsService {
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
-				await mailService.send({
-					to: user?.email ?? email,
-					subject: subjectLine,
-					template: {
-						name: 'user-invitation',
-						data: {
-							url: this.inviteUrl(user?.email ?? email, url),
-							email: user?.email ?? email,
+				mailService
+					.send({
+						to: user?.email ?? email,
+						subject: subjectLine,
+						template: {
+							name: 'user-invitation',
+							data: {
+								url: this.inviteUrl(user?.email ?? email, url),
+								email: user?.email ?? email,
+							},
 						},
-					},
-				});
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send user invitation mail`);
+					});
 			}
 		}
 	}
@@ -474,17 +480,21 @@ export class UsersService extends ItemsService {
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		await mailService.send({
-			to: user.email,
-			subject: subjectLine,
-			template: {
-				name: 'password-reset',
-				data: {
-					url: acceptURL,
-					email: user.email,
+		mailService
+			.send({
+				to: user.email,
+				subject: subjectLine,
+				template: {
+					name: 'password-reset',
+					data: {
+						url: acceptURL,
+						email: user.email,
+					},
 				},
-			},
-		});
+			})
+			.catch((error) => {
+				logger.error(error, `Could not send password reset mail`);
+			});
 
 		await stall(STALL_TIME, timeStart);
 	}

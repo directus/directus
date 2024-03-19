@@ -44,7 +44,7 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 <template>
 	<div class="field">
 		<div class="type-label">{{ t('display_template') }}</div>
-		<v-field-template v-model="templateWritable" :collection="collection" />
+		<v-collection-field-template v-model="templateWritable" :collection="collection" />
 	</div>
 
 	<div class="field">

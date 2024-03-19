@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { formatFilesize } from '@/utils/format-filesize';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { localizedFormat } from '@/utils/localized-format';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
@@ -28,7 +28,7 @@ const size = computed(() => {
 const fileLink = computed(() => {
 	if (!props.file?.id) return;
 
-	return `${getRootPath()}assets/${props.file.id}`;
+	return getAssetUrl(props.file.id);
 });
 
 const creationDate = computed(() => {

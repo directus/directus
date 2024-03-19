@@ -118,7 +118,9 @@ export class ExtensionsService {
 
 			if (!parentBundle) continue;
 
-			const schema = (parentBundle.schema as BundleExtension).entries.find((entry) => entry.name === meta.folder);
+			const schema = (parentBundle.schema as BundleExtension | null)?.entries.find(
+				(entry) => entry.name === meta.folder,
+			);
 
 			if (!schema) continue;
 

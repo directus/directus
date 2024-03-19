@@ -1,6 +1,7 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
@@ -57,6 +58,8 @@ import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams, Item } 
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getService } from '../../utils/get-service.js';
+import isDirectusJWT from '../../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../../utils/jwt.js';
 import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-version-data.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
@@ -76,6 +79,7 @@ import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
 import { VersionsService } from '../versions.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
+import { cache } from './schema-cache.js';
 import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
 import { GraphQLDate } from './types/date.js';
@@ -85,9 +89,6 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-import { isSystemCollection } from '@directus/system-data';
-import isDirectusJWT from '../../utils/is-directus-jwt.js';
-import { verifyAccessJWT } from '../../utils/jwt.js';
 
 const env = useEnv();
 
@@ -177,6 +178,12 @@ export class GraphQLService {
 	getSchema(type: 'schema'): GraphQLSchema;
 	getSchema(type: 'sdl'): GraphQLSchema | string;
 	getSchema(type: 'schema' | 'sdl' = 'schema'): GraphQLSchema | string {
+		const key = `${this.scope}_${type}_${this.accountability?.role}_${this.accountability?.user}`;
+
+		const cachedSchema = cache.get(key);
+
+		if (cachedSchema) return cachedSchema;
+
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		const self = this;
 
@@ -367,10 +374,14 @@ export class GraphQLService {
 		}
 
 		if (type === 'sdl') {
-			return schemaComposer.toSDL();
+			const sdl = schemaComposer.toSDL();
+			cache.set(key, sdl);
+			return sdl;
 		}
 
-		return schemaComposer.buildSchema();
+		const gqlSchema = schemaComposer.buildSchema();
+		cache.set(key, gqlSchema);
+		return gqlSchema;
 
 		/**
 		 * Construct an object of types for every collection, using the permitted fields per action type
