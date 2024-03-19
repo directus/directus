@@ -12,7 +12,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
@@ -38,14 +37,10 @@ watch(
 	() => loadImage(),
 );
 
-async function loadImage() {
-	try {
-		await requestQueue.add(() => {
-			srcData.value = props.src;
-		});
-	} catch (err) {
-		emit('error', err);
-	}
+function loadImage() {
+	requestQueue.add(() => {
+		srcData.value = props.src;
+	});
 }
 
 onMounted(() => {
