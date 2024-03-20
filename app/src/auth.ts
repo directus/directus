@@ -1,11 +1,13 @@
-import api, { resumeQueue } from '@/api';
+import { resumeQueue } from '@/api';
+import { sdk } from '@/sdk';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
-import { idleTracker } from './idle';
 import { useServerStore } from './stores/server';
+import emitter, { Events } from './events';
+import { type LoginOptions } from '@directus/sdk';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -21,31 +23,22 @@ type LoginParams = {
 	share?: boolean;
 };
 
-function getAuthEndpoint(provider?: string, share?: boolean) {
-	if (share) return '/shares/auth';
-	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
-	return `/auth/login/${provider}`;
-}
-
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
-	const response = await api.post<any>(getAuthEndpoint(provider, share), {
-		...credentials,
-		mode: 'session',
-	});
-
-	// Refresh the token 10 seconds before the access token expires. This means the user will stay
-	// logged in without any noticeable hiccups or delays
-
-	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-	// for tokens that last > 24 days. Ref #4054
-	if (response.data.data.expires <= 2100000000) {
-		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
-	}
-
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
-	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+	const password = credentials.password;
+	const email = share ? credentials.share : credentials.email;
+	if (!password || !email) throw new Error('test');
+
+	const options: LoginOptions = {};
+	if (share) options.share = share;
+	if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
+	if (credentials.otp) options.otp = credentials.otp;
+
+	const response = await sdk.login(email, password, options);
+
+	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	appStore.authenticated = true;
 
 	// Reload server store to get authenticated data
@@ -54,31 +47,17 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	await hydrate();
 }
 
-let refreshTimeout: any;
 let idle = false;
-let isRefreshing = false;
 let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
-idleTracker.on('idle', () => {
-	clearTimeout(refreshTimeout);
-	idle = true;
-});
-
-idleTracker.on('hide', () => {
-	clearTimeout(refreshTimeout);
+emitter.on(Events.tabIdle, () => {
+	sdk.stopRefreshing();
 	idle = true;
 });
 
 // Restart the autorefresh process when the app is used (again)
-idleTracker.on('active', () => {
-	if (idle === true) {
-		refresh();
-		idle = false;
-	}
-});
-
-idleTracker.on('show', () => {
+emitter.on(Events.tabActive, () => {
 	if (idle === true) {
 		refresh();
 		idle = false;
@@ -87,50 +66,31 @@ idleTracker.on('show', () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
+	const serverStore = useServerStore();
 
-	// Allow refresh during initial page load
-	if (firstRefresh) firstRefresh = false;
-	// Skip if not logged in
-	else if (!appStore.authenticated) return;
-
-	// Prevent concurrent refreshes
-	if (isRefreshing) return;
-
-	// Skip refresh if access token is still fresh
-	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
-		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
-		clearTimeout(refreshTimeout);
-		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
-		return;
-	}
-
-	isRefreshing = true;
+	// Allow refresh during initial page load, skip if not logged in
+	if (!firstRefresh && !appStore.authenticated) return;
 
 	try {
-		const response = await api.post<any>('/auth/refresh', { mode: 'session' });
+		const response = await sdk.refresh();
 
-		// Refresh the token 10 seconds before the access token expires. This means the user will stay
-		// logged in without any notable hiccups or delays
-		clearTimeout(refreshTimeout);
-
-		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-		// for tokens that last > 24 days. Ref #4054
-		if (response.data.data.expires <= 2100000000) {
-			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
-		}
-
-		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 		appStore.authenticated = true;
 
-		return;
+		if (firstRefresh) {
+			firstRefresh = false;
+			appStore.authenticated = true;
+
+			// Reload server store to get authenticated data
+			serverStore.hydrate();
+
+			await hydrate();
+		}
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
-		isRefreshing = false;
 		resumeQueue();
 	}
-
-	return;
 }
 
 export enum LogoutReason {
@@ -154,15 +114,15 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	clearTimeout(refreshTimeout);
+	sdk.stopRefreshing();
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
 		try {
-			await api.post(`/auth/logout`, { mode: 'session' });
-		} catch {
+			await sdk.logout();
+		} catch (err) {
 			// User already signed out
 		}
 	}

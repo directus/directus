@@ -1,11 +1,11 @@
-import type { DirectusClient, RestClient } from '@directus/sdk';
+import type { AuthenticationClient, DirectusClient, RestClient } from '@directus/sdk';
 import { createDirectus, rest, authentication } from '@directus/sdk';
-import { getPublicURL } from './utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
 
-type SdkClient = DirectusClient<any> & RestClient<any>;
+export type SdkClient = DirectusClient<any> & AuthenticationClient<any> & RestClient<any>;
 
-const sdk: SdkClient = createDirectus(getPublicURL())
-	.with(authentication('session', { autoRefresh: false }))
-	.with(rest());
+export const sdk: SdkClient = createDirectus(getPublicURL())
+	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: 10_000 }))
+	.with(rest({ credentials: 'include' }));
 
 export default sdk;
