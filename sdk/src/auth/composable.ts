@@ -102,11 +102,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch)
-					.then((data) => {
-						setCredentials(data);
-						return data;
-					});
+				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) => {
+					setCredentials(data);
+					return data;
+				});
 			};
 
 			refreshPromise = awaitRefresh();
@@ -179,7 +178,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			async getToken() {
 				await refreshIfExpired().catch(() => {
 					/* fail gracefully */
-				})
+				});
 
 				const data = await storage.get();
 				return data?.access_token ?? null;

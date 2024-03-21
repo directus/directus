@@ -19,7 +19,7 @@ export const request = async <Output = any>(
 			? (options.headers as Record<string, string>)
 			: {};
 
-	return fetcher(url, options).then(response => {
+	return fetcher(url, options).then((response) => {
 		return extractData(response).catch((reason) => {
 			const errors = typeof reason === 'object' && 'errors' in reason ? reason.errors : reason;
 			return Promise.reject({ errors, response });
