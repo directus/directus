@@ -158,7 +158,7 @@ Twitter does not provide "email" so we define "username" as the identifier.
 
 ```
 AUTH_AWS_DRIVER="saml"
-AUTH_AWS_IDP_metadata="{Your IAM Identity Center SAML metadata file}""
+AUTH_AWS_IDP_metadata="{Your IAM Identity Center SAML metadata file}"
 AUTH_AWS_SP_metadata=""
 AUTH_AWS_ALLOW_PUBLIC_REGISTRATION="true"
 AUTH_AWS_DEFAULT_ROLE_ID="{Needs to be a valid role on the instance}"
@@ -189,14 +189,14 @@ Maps the email address into Directus as `external_identifier`:
 **Config:**
 
 - Relay state: `admin/login`
-- Application ACS URL: `https://your-directus-instance/auth/login/awssso/acs`
+- Application ACS URL: `https://your-directus-instance/auth/login/aws/acs`
 
 ### Google
 
 ```
 AUTH_GOOGLE_DRIVER="saml"
-AUTH_GOOGLE_IDP_metadata="{Your SAML metadata file from Google}""
-AUTH_GOOGLE_SP_metadata="{Create your own SAML metadata file, see example below}""
+AUTH_GOOGLE_IDP_metadata="{Your SAML metadata file from Google}"
+AUTH_GOOGLE_SP_metadata="{Create your own SAML metadata file, see example below}"
 AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
 AUTH_GOOGLE_DEFAULT_ROLE_ID="{Needs to be a valid role on the instance}"
 AUTH_GOOGLE_IDENTIFIER_KEY="email"
@@ -207,7 +207,7 @@ AUTH_GOOGLE_EMAIL_KEY="email"
 
 - The `entityID` should be the same as the one configured in Google in the `EntityDescriptor` tag
 - The `Location` should be the ACS URL of your Directus instance in the format of
-  `https://your-directus-instance/auth/login/sso/acs`
+  `https://your-directus-instance/auth/login/google/acs`
 - Directus expects `<?xml version="1.0" encoding="UTF-8"?>` to be removed from the start of the XML.
 
 Example:
@@ -216,7 +216,7 @@ Example:
 <EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="SHOULD_MATCH_GOOGLE_CONFIG">
   <SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
-    <AssertionConsumerService isDefault="true" index="0" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="YOUR_DOMAIN/auth/login/sso/acs"/>
+    <AssertionConsumerService isDefault="true" index="0" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="YOUR_DOMAIN/auth/login/google/acs"/>
   </SPSSODescriptor>
 </EntityDescriptor>
 ```

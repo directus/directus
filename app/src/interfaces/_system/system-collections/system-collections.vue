@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -29,7 +30,7 @@ const collections = computed(() => {
 	}
 
 	if (!props.includeSystem) {
-		collections = collections.filter((collection) => !collection.collection.startsWith('directus_'));
+		collections = collections.filter((collection) => isSystemCollection(collection.collection) === false);
 	}
 
 	return collections;

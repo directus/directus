@@ -17,4 +17,9 @@ export interface AbstractSqlQueryFnNode {
 	 * Same as will all user input, the arguments are passed via parameters.
 	 */
 	arguments?: ValuesNode;
+
+	/**
+	 * Used to specify a path to a nested value.
+	 */
+	path?: string[];
 }

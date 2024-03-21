@@ -4,11 +4,11 @@ import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import { without } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { describe, expect, it, test } from 'vitest';
 import { collectionArtists } from './no-relation.seed';
-import { without } from 'lodash-es';
 
 type Artist = {
 	id?: number | string;
@@ -18,11 +18,11 @@ type Artist = {
 
 function createArtist(pkType: PrimaryKeyType): Artist {
 	const item: Artist = {
-		name: 'artist-' + uuid(),
+		name: 'artist-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'artist-' + uuid();
+		item.id = 'artist-' + randomUUID();
 	}
 
 	return item;
@@ -1955,7 +1955,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						async (vendor) => {
 							// Setup
 							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
-							const company = uuid();
+							const company = randomUUID();
 
 							for (let i = 0; i < count; i++) {
 								const artist = createArtist(pkType);
@@ -1989,7 +1989,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						async (vendor) => {
 							// Setup
 							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
-							const company = uuid();
+							const company = randomUUID();
 
 							for (let i = 0; i < count; i++) {
 								const artist = createArtist(pkType);
@@ -2207,7 +2207,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						async (vendor) => {
 							// Setup
 							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
-							const company = uuid();
+							const company = randomUUID();
 
 							for (let i = 0; i < count; i++) {
 								const artist = createArtist(pkType);
@@ -2239,7 +2239,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						async (vendor) => {
 							// Setup
 							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
-							const company = uuid();
+							const company = randomUUID();
 
 							for (let i = 0; i < count; i++) {
 								const artist = createArtist(pkType);

@@ -1,4 +1,3 @@
-import { addTokenToURL } from '@/api';
 import { getPublicURL } from '@/utils/get-root-path';
 
 export function getAssetUrl(filename: string, isDownload?: boolean): string {
@@ -8,5 +7,5 @@ export function getAssetUrl(filename: string, isDownload?: boolean): string {
 		assetUrl.searchParams.set('download', '');
 	}
 
-	return addTokenToURL(assetUrl.href);
+	return assetUrl.href;
 }

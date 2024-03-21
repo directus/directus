@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import ContinueAs from './components/continue-as.vue';
 import { LdapForm, LoginForm } from './components/login-form/';
 import SsoLinks from './components/sso-links.vue';
+import { useHead } from '@unhead/vue';
 
 withDefaults(
 	defineProps<{
@@ -38,6 +39,10 @@ const providerSelect = computed({
 });
 
 const authenticated = computed(() => appStore.authenticated);
+
+useHead({
+	title: t('sign_in'),
+});
 </script>
 
 <template>
