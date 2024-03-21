@@ -103,10 +103,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
-
-				setCredentials(data);
-				return data;
+				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) => {
+					setCredentials(data);
+					return data;
+				});
 			};
 
 			refreshPromise = awaitRefresh().catch((err) => {

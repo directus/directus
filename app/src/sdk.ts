@@ -1,7 +1,7 @@
 import type { AuthenticationClient, DirectusClient, RestClient } from '@directus/sdk';
 import { createDirectus, rest, authentication } from '@directus/sdk';
 import { getPublicURL } from '@/utils/get-root-path';
-import { ofetch, type FetchContext  } from 'ofetch';
+import { ofetch, type FetchContext } from 'ofetch';
 import { useRequestsStore } from './stores/requests';
 import { requestQueue } from './api';
 
@@ -44,9 +44,9 @@ const baseClient = ofetch.create({
 		const id = (options as OptionsWithId).id;
 		if (id) requestsStore.endRequest(id);
 	},
-})
+});
 
-export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient }})
+export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: 10_000 }))
 	.with(rest({ credentials: 'include' }));
 
@@ -56,7 +56,7 @@ function getUrlPath(request: FetchContext['request']): string | null {
 	const uri = typeof request === 'string' ? request : request.url;
 
 	try {
-		return (new URL(uri)).pathname;
+		return new URL(uri).pathname;
 	} catch (e) {
 		return null;
 	}
