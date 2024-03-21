@@ -20,7 +20,7 @@
 		"argon2": "0.40.1",
 		"autocannon": "7.15.0",
 		"axios": "1.6.7",
-		"get-port": "7.0.0",
+		"get-port": "7.1.0",
 		"globby": "14.0.1",
 		"graphql-ws": "5.15.0",
 		"js-yaml": "4.1.0",
