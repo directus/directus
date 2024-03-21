@@ -225,16 +225,16 @@ export class ExtensionManager {
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
 		await this.reload({ forceSync: true });
-		await this.notifyOthers();
+		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
 		await this.reload({ forceSync: true });
-		await this.notifyOthers();
+		await this.broadcastReloadNotification();
 	}
 
-	public async notifyOthers() {
+	public async broadcastReloadNotification() {
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
