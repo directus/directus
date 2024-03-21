@@ -3,12 +3,15 @@ import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
 import { requestQueue } from '@/api';
 
+defineOptions({
+	inheritAttrs: false,
+});
+
 interface Props {
 	src: string;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
@@ -34,15 +37,10 @@ watch(
 	() => loadImage(),
 );
 
-async function loadImage() {
-	try {
-		requestQueue.add(async () => {
-			srcData.value = props.src;
-			return;
-		});
-	} catch (err) {
-		emit('error', err);
-	}
+function loadImage() {
+	requestQueue.add(() => {
+		srcData.value = props.src;
+	});
 }
 
 onMounted(() => {
@@ -55,14 +53,6 @@ onUnmounted(() => {
 });
 
 const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-});
 </script>
 
 <template>
