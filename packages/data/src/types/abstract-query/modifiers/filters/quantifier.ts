@@ -8,6 +8,6 @@ export interface AbstractQueryQuantifierNode {
 	/** An alias to reference the o2m item */
 	alias: string;
 
-	/** the values for the the operation. */
+	/** the values for the operation. */
 	// childNode: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate;
 }

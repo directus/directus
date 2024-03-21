@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n';
 const props = withDefaults(
 	defineProps<{
 		modelValue: string | null;
-		showFilter: boolean;
+		showFilter?: boolean;
 		collection?: string;
 		filter?: Filter | null;
 	}>(),
@@ -142,7 +142,7 @@ function emitValue() {
 				/>
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
-					<div v-show="filterActive" ref="filterElement" class="filter">
+					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
 						<interface-system-filter
 							class="filter-input"
 							inline
@@ -222,6 +222,10 @@ function emitValue() {
 
 		.icon-filter {
 			margin-left: 0;
+		}
+
+		input {
+			opacity: 1;
 		}
 	}
 
@@ -318,6 +322,10 @@ function emitValue() {
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
+
+	&.active {
+		border-color: var(--theme--form--field--input--border-color-focus);
+	}
 }
 
 .filter-input {

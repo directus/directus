@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -10,6 +11,10 @@ const { t } = useI18n();
 const route = useRoute();
 
 const resetToken = computed(() => (Array.isArray(route.query.token) ? route.query.token[0] : route.query.token));
+
+useHead({
+	title: t('reset_password'),
+});
 </script>
 
 <template>
