@@ -48,7 +48,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 }
 
 let idle = false;
-let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
 emitter.on(Events.tabIdle, () => {
@@ -66,26 +65,15 @@ emitter.on(Events.tabActive, () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
-	const serverStore = useServerStore();
 
 	// Allow refresh during initial page load, skip if not logged in
-	if (!firstRefresh && !appStore.authenticated) return;
+	if (!appStore.authenticated) return;
 
 	try {
 		const response = await sdk.refresh();
 
 		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 		appStore.authenticated = true;
-
-		if (firstRefresh) {
-			firstRefresh = false;
-			appStore.authenticated = true;
-
-			// Reload server store to get authenticated data
-			serverStore.hydrate();
-
-			await hydrate();
-		}
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {

@@ -30,13 +30,13 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 	};
 
 	return new Promise((resolve) => {
-		if (config.url && config.url === '/auth/refresh') {
-			requestQueue.pause();
-			return resolve(requestConfig);
-		}
+		requestQueue.add(async () => {
+			// use getToken to await currently active refreshes
+			await sdk.getToken().catch(() => {
+				/* fail gracefully */
+			});
 
-		requestQueue.add(() => {
-			return sdk.getToken().then(() => resolve(requestConfig));
+			return resolve(requestConfig);
 		});
 	});
 };
