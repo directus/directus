@@ -2,6 +2,7 @@ import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import PQueue, { type QueueAddOptions, type Options } from 'p-queue';
+import sdk from './sdk';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -35,7 +36,7 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 		}
 
 		requestQueue.add(() => {
-			return resolve(requestConfig);
+			return sdk.getToken().then(() => resolve(requestConfig));
 		});
 	});
 };
