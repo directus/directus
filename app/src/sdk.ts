@@ -10,6 +10,8 @@ export type SdkClient = DirectusClient<any> & AuthenticationClient<any> & RestCl
 type OptionsWithId = FetchContext['options'] & { id: string };
 
 const baseClient = ofetch.create({
+	retry: 0,
+	ignoreResponseError: true,
 	async onRequest({ request, options }) {
 		const requestsStore = useRequestsStore();
 		const id = requestsStore.startRequest();
@@ -46,7 +48,7 @@ const baseClient = ofetch.create({
 	},
 });
 
-export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient } })
+export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient.native } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: 10_000 }))
 	.with(rest({ credentials: 'include' }));
 
