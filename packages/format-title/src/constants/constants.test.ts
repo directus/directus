@@ -11,6 +11,7 @@ test('Words should not be duplicated in lists', () => {
 	for (const list of lists) {
 		for (const word of list) {
 			if (words.includes(word)) {
+				// eslint-disable-next-line no-console
 				console.log(`Duplicated word: "${word}"`);
 				hasDuplicate = true;
 			} else {
