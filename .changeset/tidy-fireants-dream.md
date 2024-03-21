@@ -2,4 +2,4 @@
 "@directus/format-title": patch
 ---
 
-Added new acronyms and duplicates clean-up
+Added new acronyms and cleaned-up duplicates
