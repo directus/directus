@@ -1,6 +1,5 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, createError, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -16,39 +15,13 @@ router.use(useCollection('directus_webhooks'));
 
 router.post(
 	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new WebhooksService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const savedKeys: PrimaryKey[] = [];
-
-		if (Array.isArray(req.body)) {
-			const keys = await service.createMany(req.body);
-			savedKeys.push(...keys);
-		} else {
-			const key = await service.createOne(req.body);
-			savedKeys.push(key);
-		}
-
-		try {
-			if (Array.isArray(req.body)) {
-				const items = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals['payload'] = { data: items };
-			} else {
-				const item = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
-				res.locals['payload'] = { data: item };
-			}
-		} catch (error: any) {
-			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				return next();
-			}
-
-			throw error;
-		}
-
-		return next();
+	asyncHandler(async (_req, _res, _next) => {
+		// Disallow creation of new Webhooks as part of the deprecation, see https://github.com/directus/directus/issues/15553
+		throw new (createError(
+			ErrorCode.MethodNotAllowed,
+			'Webhooks are deprecated, please migrate to using Flows',
+			405,
+		))();
 	}),
 	respond,
 );
