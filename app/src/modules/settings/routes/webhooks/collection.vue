@@ -116,10 +116,6 @@ function clearFilters() {
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
-
-				<v-button v-tooltip.bottom="t('create_webhook')" rounded icon to="/settings/webhooks/+">
-					<v-icon name="add" />
-				</v-button>
 			</template>
 
 			<div class="deprecation-notice-wrapper">
