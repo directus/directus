@@ -177,7 +177,7 @@ export class ExtensionsService {
 		});
 
 		this.extensionsManager.reload().then(() => {
-			this.extensionsManager.notifyOthers();
+			this.extensionsManager.broadcastReloadNotification();
 		});
 
 		return result;
