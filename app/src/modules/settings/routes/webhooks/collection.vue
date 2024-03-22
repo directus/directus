@@ -134,10 +134,6 @@ function clearFilters() {
 				<template #no-items>
 					<v-info :title="t('webhooks_count', 0)" icon="anchor" center>
 						{{ t('no_webhooks_copy') }}
-
-						<template #append>
-							<v-button :to="{ path: '/settings/webhooks/+' }">{{ t('create_webhook') }}</v-button>
-						</template>
 					</v-info>
 				</template>
 			</component>
