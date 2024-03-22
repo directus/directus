@@ -119,7 +119,7 @@ export async function up(knex: Knex): Promise<void> {
  */
 export async function down(knex: Knex): Promise<void> {
 	// Set existing migrated flows to inactive
-	// Note: Here we assume that they have not been expanded upon!
+	// Note: Here we assume that they have not been expanded upon i.e. only disable not delete just in case
 	const migratedFlowIds = (await knex(TABLE_WEBHOOKS).select(NEW_COLUMN_FLOW).whereNotNull(NEW_COLUMN_FLOW)).map(
 		(col) => col[NEW_COLUMN_FLOW],
 	);
