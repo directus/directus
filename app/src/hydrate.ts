@@ -16,7 +16,6 @@ import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@directus/stores';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
-import { useFeatureFlagStore } from './stores/feature-flags';
 
 type GenericStore = {
 	$id: string;
@@ -41,7 +40,6 @@ export function useStores(
 		useInsightsStore,
 		useFlowsStore,
 		useNotificationsStore,
-		useFeatureFlagStore,
 	],
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];

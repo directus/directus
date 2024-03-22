@@ -2,7 +2,6 @@
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
-import { useFeatureFlagStore } from '@/stores/feature-flags';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { computed, ref, toRefs } from 'vue';
@@ -17,7 +16,6 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const router = useRouter();
-const featureFlagStore = useFeatureFlagStore();
 
 const { primaryKey } = toRefs(props);
 
@@ -48,31 +46,26 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function saveAndQuit() {
 	await save();
-	featureFlagStore.showWebhooks = true;
 	router.push(`/settings/webhooks`);
 }
 
 async function saveAndStay() {
 	await save();
-	featureFlagStore.showWebhooks = true;
 	revisionsDrawerDetailRef.value?.refresh?.();
 }
 
 async function saveAndAddNew() {
 	await save();
-	featureFlagStore.showWebhooks = true;
 	router.push(`/settings/webhooks/+`);
 }
 
 async function saveAsCopyAndNavigate() {
 	const newPrimaryKey = await saveAsCopy();
-	featureFlagStore.showWebhooks = true;
 	if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
 }
 
 async function deleteAndQuit() {
 	await remove();
-	void featureFlagStore.refreshShowWebhooks();
 	edits.value = {};
 	router.replace(`/settings/webhooks`);
 }
