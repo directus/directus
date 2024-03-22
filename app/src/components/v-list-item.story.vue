@@ -4,8 +4,6 @@ import VListItem from './v-list-item.vue';
 
 <template>
 	<Story title="VList/VListItem">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-list-item v-bind="state">List Item 1</v-list-item>
-		</template>
+		<v-list-item>List Item 1</v-list-item>
 	</Story>
 </template>

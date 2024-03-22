@@ -7,12 +7,10 @@ const value = ref(['item1']);
 
 <template>
 	<Story title="VItemGroup">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-item-group v-model="value" v-bind="state">
-				<v-item v-slot="{ active }" watch value="item1">First item is active: {{ active }}</v-item>
-				<v-item v-slot="{ active }" value="item2">Second item is active: {{ active }}</v-item>
-			</v-item-group>
-		</template>
+		<v-item-group v-model="value">
+			<v-item v-slot="{ active }" watch value="item1">First item is active: {{ active }}</v-item>
+			<v-item v-slot="{ active }" value="item2">Second item is active: {{ active }}</v-item>
+		</v-item-group>
 
 		<template #controls>
 			<HstJson v-model="value" title="Value" />
