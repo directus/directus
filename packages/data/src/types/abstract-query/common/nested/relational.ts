@@ -52,6 +52,7 @@ export interface AbstractQueryFieldNodeNestedSingleRelational {
 		 **/
 		fields: AtLeastOneElement<string>;
 	};
+	is2a?: boolean;
 }
 
 /**
@@ -63,10 +64,14 @@ export interface AbstractQueryFieldNodeNestedUnionRelational {
 	/** The field name which holds the relational information */
 	field: string;
 
-	collections: RelationalUnionCollection[];
+	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
 }
 
-interface RelationalUnionCollection {
+/**
+ * Used to specify the fields which should be returned for a specific collection.
+ * It also contains information about how the two collections are related.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
@@ -80,7 +85,46 @@ interface RelationalUnionCollection {
 		/** The UUID of the foreign collection */
 		collectionIdentifier: string;
 
-		/** The column(s) of the foreign collection which store the primary key(s) */
-		fields: AtLeastOneElement<string>;
+		/** The column name(s) of the foreign collection which store the primary key(s) */
+		fields: AtLeastOneElement<{ name: string; type: 'string' | 'number' }>;
+	};
+}
+
+/**
+ * Used to build a relational query for a2o and o2a relations.
+ * Main difference is that the name of the relational json column is specified one level deeper, so based on a specific collection.
+ */
+export interface AbstractQueryFieldNodeNestedUnionsRelational {
+	type: 'relational-unions';
+
+	/** The fields which identify an item in the root collection. */
+	identifierFields: AtLeastOneElement<string>;
+
+	collections: AbstractQueryFieldNodeNestedRelationalUnionsCollection[];
+}
+
+/**
+ * Used to specify the fields which should be returned for a specific collection.
+ * It also contains information about how the two collections are related.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalUnionsCollection {
+	/** The desired fields which should be returned. */
+	fields: AbstractQueryFieldNode[];
+
+	/** The relational data which defines how the two collection are related. */
+	relational: {
+		store: string;
+
+		/** The name of the foreign collection */
+		collectionName: string;
+
+		/** The UUID of the foreign collection */
+		collectionIdentifier: string;
+
+		/** The column name(s) of the foreign collection which store the primary key(s) */
+		fields: AtLeastOneElement<{ name: string; type: 'string' | 'number' }>;
+
+		/** The field name which holds the relational information */
+		relationalField: string;
 	};
 }

@@ -22,7 +22,7 @@ export function getMappedQueriesStream(
 	return new ReadableStream({
 		async start(controller) {
 			for await (const rootRow of rootStream) {
-				const subResult = await Promise.all(
+				const subResults = await Promise.all(
 					subQueries.map(async (subQuery) => {
 						const generatedSubQuery = subQuery(rootRow, columnIndexToIdentifier);
 						const subStream = await queryDatabase(generatedSubQuery.rootQuery);
@@ -39,7 +39,8 @@ export function getMappedQueriesStream(
 					}),
 				);
 
-				const result = mapResult(aliasMapping, rootRow, subResult, columnIndexToIdentifier);
+				// @TODO move the handling of the alias map into a separate transform stream
+				const result = mapResult(aliasMapping, rootRow, subResults, columnIndexToIdentifier);
 
 				controller.enqueue(result);
 			}

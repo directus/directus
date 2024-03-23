@@ -6,6 +6,7 @@ import { createJoin } from './nodes/join.js';
 import { convertJson } from './nodes/json-select.js';
 import { getNestedMany } from './nodes/nested-manys.js';
 import { createPrimitiveSelect } from './nodes/primitive-select.js';
+import { getNestedUnionOne } from './nodes/nested-union-one.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
@@ -47,14 +48,11 @@ export const convertFieldNodes = (
 
 			if (objectPath !== null) {
 				const newObjectPath: AtLeastOneElement<string> = [...objectPath, abstractField.field];
-
 				const conversionResult = convertJson(tableIndex, newObjectPath, columnIndex, indexGen);
-
 				select.push(conversionResult.jsonNode);
 				parameters.push(...conversionResult.parameters);
 			} else {
 				const selectNode = createPrimitiveSelect(tableIndex, abstractField.field, columnIndex);
-
 				select.push(selectNode);
 			}
 
@@ -64,20 +62,16 @@ export const convertFieldNodes = (
 
 		if (abstractField.type === 'nested-single-one') {
 			/**
+			 * @TODO
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
 			 * value is null
-			 *
-			 * @TODO
 			 */
 
 			if (abstractField.nesting.type === 'relational-single') {
 				const tableIndexRelational = indexGen.table.next().value;
-
 				const sqlJoinNode = createJoin(abstractField.nesting, tableIndex, tableIndexRelational);
-
 				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndexRelational, indexGen);
-
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				joins.push(sqlJoinNode);
 				select.push(...nestedOutput.clauses.select);
@@ -85,9 +79,7 @@ export const convertFieldNodes = (
 
 			if (abstractField.nesting.type === 'object-single') {
 				const newObjectPath: AtLeastOneElement<string> = [...(objectPath ?? []), abstractField.nesting.fieldName];
-
 				const nestedOutput = convertFieldNodes(abstractField.fields, tableIndex, indexGen, newObjectPath);
-
 				aliasMapping.push({ type: 'nested', alias: abstractField.alias, children: nestedOutput.aliasMapping });
 				select.push(...nestedOutput.clauses.select);
 				joins.push(...nestedOutput.clauses.joins);
@@ -99,7 +91,11 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-union-one') {
-			// @TODO convert node into a root query and a query in form of of a function which has the collection relation as parameters
+			const nestedUnionResult = getNestedUnionOne(abstractField, tableIndex, indexGen);
+			joins.push(...nestedUnionResult.joins);
+			select.push(...nestedUnionResult.selects);
+			parameters.push(...nestedUnionResult.parameters);
+			aliasMapping.push(...nestedUnionResult.aliasMapping);
 			continue;
 		}
 
@@ -112,23 +108,19 @@ export const convertFieldNodes = (
 			 */
 
 			const nestedManyResult = getNestedMany(abstractField, tableIndex);
-
 			aliasMapping.push({ type: 'sub', alias: abstractField.alias, index: subQueries.length });
 			subQueries.push(nestedManyResult.subQuery);
 			select.push(...nestedManyResult.select);
-
 			continue;
 		}
 
 		if (abstractField.type === 'fn') {
 			const columnIndex = indexGen.column.next().value;
-
-			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
-
 			aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
+			const fn = convertFieldFn(tableIndex, abstractField, columnIndex, indexGen);
+			// aliasMapping.push({ type: 'root', alias: abstractField.alias, columnIndex });
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
-
 			continue;
 		}
 	}

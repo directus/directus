@@ -44,11 +44,40 @@ export type SubQuery = (
 	columnIndexToIdentifier: (columnIndex: number) => string,
 ) => ConverterResult;
 
+export type SubQueries = (
+	rootRow: Record<string, unknown>,
+	columnIndexToIdentifier: (columnIndex: number) => string,
+) => ConverterResult[];
+
 export type AliasMapping = (
-	| { type: 'nested'; alias: string; children: AliasMapping }
 	| { type: 'root'; alias: string; columnIndex: number }
-	| { type: 'sub'; alias: string; index: number }
+
+	/** The alias mapping for a sub result which was fetched using a JOIN */
+	| {
+			type: 'nested';
+			alias: string;
+			children: AliasMapping;
+	  }
+	| {
+			type: 'nested-a2o';
+			alias: string;
+			children: A2oChild[];
+	  }
+
+	/** The alias map for a sub result which was fetched using a separate sub query */
+	| {
+			type: 'sub';
+			alias: string;
+
+			/** The index of the actual result from the sub query result array */
+			index: number;
+	  }
 )[];
+
+export interface A2oChild {
+	mapping: AliasMapping;
+	collection: string;
+}
 
 export interface ConverterResult {
 	rootQuery: AbstractSqlQuery;
