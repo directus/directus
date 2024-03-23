@@ -93,6 +93,13 @@ homepage: Naslovna Stranica
 repository: Repozitorij
 reload_required: Ponovi Učitavanje Stranice
 report_an_issue: Prijavi Problem
+website: Web stranica
+github: GitHub
+beta: Beta
+n_downloads: '{n} Preuzimanja'
+downloads: Preuzimanja
+compatibility_not_guaranteed: Kompatibilnost nije garantirana
+compatibility_not_guaranteed_copy: Autor je naznačio kompatibilnost ovog dodatka s verzijom {hostVersion}, koja se ne podudara s verzijom vašeg projekta ({currentVersion})
 enable: Omogući
 disable: Onemogući
 custom: Prilagođeno
@@ -144,7 +151,29 @@ prefix: Prefiks
 suffix: Sufiks
 keep: Zadrži
 version: Verzija
+version_key: Ključ Verzije
+version_name: Naziv Verzije
+main_version: Glavna
+switch_version: Promijeni Verziju
+switch_version_copy: Jeste li sigurni da želite preći na verziju "{version}"? Nespremljene promjene bit će izgubljene.
+create_version: Kreiraj Verziju
+rename_version: Preimenuj Verziju
+compare_version: Usporedi Verziju
+save_version: Spasi Verziju
+promote_version: Promoviraj Verziju
+promote_version_disabled: Bez promjena
+promote_version_drawer_title: Promoviraj {version} u Glavnu
+promote_version_changes: Promjene
 promote_version_preview: Pretpregled
+outdated_notice: >-
+  Glavna stavka je ažurirana otkako je ova verzija stvorena. Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
+promote_notice: >-
+  Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
+delete_version: Obriši Verziju
+delete_version_copy: >-
+  Jeste li sigurni da želite izbrisati verziju "{version}"? Ova se radnja ne može poništiti.
+delete_on_promote_copy: >-
+  Želite li izbrisati ili zadržati verziju "{version}" nakon promicanja?
 reset_bookmark: Poništi oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
@@ -159,6 +188,8 @@ logoutReason:
 public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
 admin_description: Početna administrativna uloga s neograničenim pristupom aplikaciji/API-ju.
+no_description: Nema opisa...
+reached_maximum_number_of_extensions: Dostigli ste maksimalni broj dodataka za ovaj projekt ({n}). Za više informacija kontaktirajte svog sistemskog administratora.
 not_allowed: Nije dopušteno
 archive: Arhiva
 archive_confirm: Jeste li sigurni da želite arhivirati ovu stavku?
@@ -298,6 +329,20 @@ time: Vrijeme
 timestamp: Vremenska oznaka
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometrija (sve)
+  Point: Točka
+  LineString: Linija
+  Polygon: Poligon
+  MultiPoint: VišestrukeTočke
+  MultiLineString: VišestrukaLinija
+  MultiPolygon: VišestrukiPoligon
+theme_auto: Automatski (na temelju sustava)
+theme_light: Svijetli Način
+theme_dark: Tamni Način
+theme_directus_default: Directus Zadano
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Podudaranje Boja
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
@@ -309,6 +354,7 @@ auto_generate: Automatsko generiranje
 this_will_auto_setup_fields_relations: Ovo će automatski postaviti sva potrebna polja i odnose.
 click_here: Kliknite ovdje
 to_manually_setup_translations: za ručno postavljanje prijevoda.
+manage: Upravljaj
 click_to_manage_translated_fields: >-
   187 / 5,000 Translation results Još nema prevedenih polja. Kliknite ovdje da biste ih stvorili. | Postoji jedno prevedeno polje. Kliknite ovdje za upravljanje. | Postoji {count} prevedenih polja. Kliknite ovdje za upravljanje poljima.
 fields_group: Grupno polje
@@ -393,6 +439,7 @@ revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
 revision_delta_deleted: Obrisano
+revision_delta_version_saved: 'Spremi verziju (Ažurirano 1 polje) | Spremi verziju (Ažurirano {count} polja)'
 revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
@@ -477,7 +524,11 @@ months:
   november: Studeni
   december: Prosinac
 drag_mode: Način povlačenja
+move_tool: Move Tool
+crop_tool: Crop Tool
+focal_point_tool: Focal Point Tool
 cancel_crop: Otkaži obrezivanje
+cancel_selection: Poništi Izbor
 original: Izvornik
 url: URL
 import_label: Uvoz
@@ -503,6 +554,7 @@ import_from_url: Uvezi datoteku s URL-a
 replace_from_device: Zamijenite datoteku s uređaja
 replace_from_library: Zamijenite datoteku iz biblioteke
 replace_from_url: Zamijenite datoteku s URL-a
+no_image_selected: Nije Odabrana Slika
 no_file_selected: Niti jedna datoteka nije odabrana
 download_file: Preuzmi datoteku
 open_file_in_tab: Otvori datoteku u novoj kartici
@@ -529,6 +581,7 @@ generated_uuid: Generiraj UUID
 manual_string: Ručno uneseni niz
 save_and_create_new: Spremi i kreiraj novo
 save_and_stay: Spremi i ostani
+save_and_quit: Spasi i Zatvori
 save_as_copy: Spremi kao kopiju
 add_existing: Dodaj postojeći
 creating_items: Izrada stavki
@@ -543,6 +596,7 @@ collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
 search_items: Pretraži Stavke...
+search_extensions: Pretraži Proširenja...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -624,6 +678,10 @@ select_an_item: Odaberi stavku...
 edit: Uredi
 edit_item: Uredi Stavku
 enabled: Omogućeno
+partially_enabled: Djelomično Omogućeno
+enable_all: Omogući Sve
+disable_all: Onesposobi Sve
+enabled_dev_tooltip: Proširenja aplikacije su uvijek omogućena u razvojnom načinu rada
 disable_tfa: Onemogući 2FA
 admin_disable_tfa_text: Jeste li sigurni da želite onemogućiti dvofaktorsku autentifikaciju "2FA" za ovog korisnika?
 tfa_setup: Postavi 2FA
@@ -639,6 +697,7 @@ errors:
   CONTENT_TOO_LARGE: Predmet koji ste poslali je prevelik
   FIELD_NOT_FOUND: Polje nije pronađeno
   FORBIDDEN: Zabranjeno
+  GRAPHQL_VALIDATION: GraphQL Validacija
   ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
   INTERNAL_SERVER_ERROR: Neočekivana greška
   INVALID_CONFIG: Neispravna konfiguracija
@@ -653,6 +712,7 @@ errors:
   INVALID_USER: Neuspjelo autenticiranje korisnika
   ITEM_LIMIT_REACHED: Dosegnuto je ograničenje stavke
   ITEM_NOT_FOUND: Stavka nije pronađena
+  LIMIT_EXCEEDED: 'Premašen limit'
   METHOD_NOT_ALLOWED: Metoda nije dozvoljena
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
   RANGE_NOT_SATISFIABLE: Nevažeći raspon
@@ -663,6 +723,7 @@ errors:
   TOKEN_EXPIRED: Token je istekao
   UNEXPECTED_RESPONSE: Neočekivani odgovor
   UNKNOWN: Neočekivana greška
+  UNPROCESSABLE_CONTENT: Sadržaj nije Obradiv
   UNSUPPORTED_MEDIA_TYPE: Nepodržan tip datoteke
   USER_SUSPENDED: Suspendirani korisnik
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
@@ -775,6 +836,7 @@ operators:
   regex: Podudara se s RegExp
 custom_validation_message: Prilagođena validacijska poruka
 loading: Učitavanje...
+extension_readme_missing: Ovo proširenje nema README datoteku.
 drop_to_upload: Ispustite za prijenos
 item: Stavka
 items: Stavke
@@ -792,6 +854,7 @@ layout_options: Mogućnosti izgleda
 rows: Retci
 columns: Stupci
 collection_setup: Postavljanje zbirke
+optional_system_fields: Neobvezna Polja
 value_unique: Vrijednost mora biti jedinsrvena
 all_activity: Sve aktivnosti
 create_item: Dodaj novu stavku
@@ -996,6 +1059,12 @@ choices: Izbori
 choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
 deselect: Odznači
 deselect_all: Odznači sve
+theme: Tema
+select_a_theme: Odaberi Temu
+default_sync_with_project: Zadano (Sinkroniziraj s projektom)
+appearance_auto: Automatski (Sinkroniziraj s sustavom)
+appearance_light: Svijetlo
+appearance_dark: Tamno
 other: Drugo...
 adding_user: Dodavanje korisnika
 unknown_user: Nepoznati korisnik
@@ -1007,7 +1076,9 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
+settings_permissions: Kontrola Pristupa
 settings_project: Postavke
+settings_appearance: Izgled
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
 settings_presets: Oznake
@@ -1026,6 +1097,7 @@ editing_preset: Uređivanje unaprijed postavljenih postavki
 layout_preview: Pretpregled rasporeda
 layout_setup: Postavljanje rasporeda
 data: Podaci
+theme-overrides: Pregazi Temu
 unsaved_changes: Nespremljene promjene
 unsaved_changes_copy: Jeste li sigurni da želite napustiti ovu stranicu?
 discard_changes: Odbaci promjene
@@ -1134,6 +1206,7 @@ fields:
     unarchive_value: Poništi arhiviranje vrijednosti
     sort_field: Polje za sortiranje
     accountability: Praćenje aktivnosti i revizija
+    versioning: Verzioniranje
     archive_field: Arhivsko polje
     item_duplication_fields: Polje za dupliciranje stavke
   directus_files:
@@ -1187,12 +1260,18 @@ fields:
     last_page: Zadnja stranica
     last_access: Zadnji pristup
     email_notifications: Obavijesti e-pošte
+    appearance: Izgled
+    theme_light: Svijetla Tema
+    theme_dark: Tamna Tema
+    theme_light_overrides: Prilagodba Svijetle Teme
+    theme_dark_overrides: Prilagodba Tamne Teme
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Prijavljivanje
     mapping: Mapiranje
     basemaps: Osnovne karte
     basemaps_raster: Raster
@@ -1210,9 +1289,14 @@ fields:
     project_color: Boja projekta
     project_logo: Logotip projekta
     default_language: Zadani jezik
+    branding: Brendiranje
     public_foreground: Javni prvi plan
     public_background: Javna pozadina
     public_note: Javna napomena
+    theming: Zadane Postavke Teme
+    default_appearance: Zadani Izgled
+    default_theme_light: Zadana Svijetla Tema
+    default_theme_dark: Zadana Tamna Tema
     auth_password_policy: Pravila za lozinku
     auth_login_attempts: Broj pokušava prijave
     files_and_thumbnails: Datoteke i pohrana
@@ -1227,6 +1311,8 @@ fields:
     transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
     image_editor: Uređivač slika
     custom_aspect_ratios: Prilagođeni omjeri
+    theme_light_overrides: Prilagodba Svijetle Teme
+    theme_dark_overrides: Prilagodba Tamne Teme
   directus_shares:
     name: Ime
     role: Uloge
@@ -1269,6 +1355,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Moj projekt...
     project_color_note: Pozadina i logotip za prijavu
+    project_logo_note: Bijela 40x40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
     security_divider_title: Sigurnost
     auth_password_policy:
@@ -1323,16 +1411,20 @@ field_options:
     accountability_divider: Odgovornost
     duplication_divider: Umnožavanje
     preview_divider: Pretpregled
+    content_versioning_divider: Verzioniranje Sadržaja
+    enable_versioning: Omogući Verzioniranje
   directus_files:
     title: Jedinstven naslov...
     description: Neobavezan opis...
     location: Neobavezna lokacija...
     storage_divider: Imenovanje datoteka
+    focal_point_divider: Fokusna Točka
     filename_disk: Naziv na disku...
     filename_download: Naziv prilikom preuzimanja...
   directus_roles:
     name: Jedinstveni naziv za ovu ulogu...
     description: Opis uloge...
+    ip_access: Dodajte dozvoljene IP adrese, raspon IP adresa i CIDR blokove. Ostavite prazno za dozvolu svih...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1781,6 +1873,7 @@ interfaces:
     no_collection: Nema zbirke
     toggle_split_view: Uključi/isključi podijeljeni prikaz
     enable: Omogući
+    default_split_view_state: Zadano Stanje Podijeljenog Prikaza
     user_language: Koristi jezik trenutnog korisnika
     default_language: Zadani jezik
     language_field: Polje indikatora jezika
@@ -1801,7 +1894,9 @@ interfaces:
     description: Uređivač bogatog teksta koji piše HTML sadržaj
     toolbar: Alatna traka
     custom_formats: Prilagođeni formati
+    custom_formats_note: Popis TinyMCE formata sadržaja. Za više informacija pogledajte TinyMCE dokumentaciju o [Formatiranje Sadržaja](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Nadjačavanje opcija
+    options_override_note: Korisnički ključevi i vrijednosti formatiranja za TinyMCE. Pogledajte TinyMCE dokumentaciju o [Korisnička Formatiranja](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) za više informacija.
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
@@ -1942,6 +2037,7 @@ displays:
     description: Prikaži formatiranu verziju objekta
   hash:
     hash: Hash
+    description: Prikaži formatiranu verziju vrijednosti
   icon:
     icon: Ikona
     description: Prikaži ikonu
@@ -2076,6 +2172,9 @@ panels:
     name: Metrički
     description: Prikaži jednu vrijednost na temelju upita
     field: Polje
+  metric_list:
+    name: Popis Jedinica
+    description: Izlistajte i prikažite agregatne metrike iz kolekcije
   time_series:
     name: Vremenske serije
     description: Izradite linijski grafikon na temelju vrijednosti tijekom vremena
@@ -2255,14 +2354,38 @@ operations:
     batch: Serija
     batch_size: Veličina Serije
     cache: Predmemorija
+unit: Jedinica
 standard: Standardno
+scientific: Znanstveno
+engineering: Inžinjerski
 compact: Kompaktno
+currency: Valuta
+notation: Zabilješka
 style: Stil
 fonts:
   thin: Tanak
+  extra_light: Ekstra Svijetlo
+  light: Svijetlo
   normal: Normalno
   medium: Srednji
+  semi_bold: Semi Bold
   bold: Podebljano
+  extra_bold: Extra Bold
   black: Crna
   italic: Kurziv
+  oblique: Prozirno
+  small: Malo
+  large: Veliko
   auto: Automatski
+text_wrap: Text Wrap
+center: Centriraj
+justify: Rasporedi
+text_align: Poravnanje Teksta
+font_weight: Debljina Fonta
+font_style: Stil Fonta
+font_size: Veličina Fonta
+minimum_fraction_digits: Minimum Decimala
+maximum_fraction_digits: Maksimum Decimala
+show_percentage: Prikaži Postotke
+aggregation: UkupanZbroj
+series_grouping: Grupiranje Serija
