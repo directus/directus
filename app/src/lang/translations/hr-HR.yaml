@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: O aplikaciji
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -7,10 +28,12 @@ method: Metoda
 published: Objavljeno
 draft: Skica
 archived: Arhivirano
+marketplace: Market
 extensions: Proširenja
 modules: Moduli
 module_bar: Bočni izbornik
 logs: Logovi
+unknown: Nepoznato
 reset_width: Resetiraj širinu
 tile_size: Veličina pločice
 edit_field: Uredi polje
@@ -28,6 +51,8 @@ duplicate_field: Dupliciraj polje
 half_width: Pola širine
 full_width: Puna širina
 group: Grupa
+popular: Popularno
+recent: Nedavno
 export_items: Izvoz stavki
 and: I
 or: Ili
@@ -39,15 +64,35 @@ extension_display: Prikaz
 extension_layout: Raspored
 extension_module: Modul
 extension_panel: Panel
+extension_theme: Tema
 extension_hook: Kuka
 extension_endpoint: Krajnja točka
 extension_operation: Operacija
 extension_bundle: Paket
 extension_interfaces: Sučelja
 extension_displays: Prikazi
+extension_layouts: Razmještaj
 extension_modules: Moduli
+extension_panels: Ploče
+extension_themes: Teme
+extension_hooks: Dojavnici (Hooks)
 extension_endpoints: Krajnje točke
 extension_operations: Radnje
+extension_bundles: Paketi
+extension_missing: Nedostaje
+extension_reload_required: Ponovi Učitavanje Stranice
+extension_reload_required_copy: Potrebno je ponovno učitati stranicu kako bi se vidjele promjene nakon omogućavanja ili onemogućavanja dodataka aplikacije.
+extension_reload_now: Ponovno učitaj sada
+published_relative: Objavljeno {relativeTime}
+compatible_with_your_project: Kompatibilno s vašim projektom
+compatible_with_your_project_copy: Autor je naznačio kompatibilnost ovog dodatka s verzijom {hostVersion}, koja se podudara s verzijom vašeg projekta ({currentVersion})
+last_updated_relative: Zadnje ažurirano {relativeTime}
+n_files: '{n} Datoteka'
+verified: Provjereno
+homepage: Naslovna Stranica
+repository: Repozitorij
+reload_required: Ponovi Učitavanje Stranice
+report_an_issue: Prijavi Problem
 enable: Omogući
 disable: Onemogući
 custom: Prilagođeno
@@ -1033,6 +1078,7 @@ batch_delete_confirm: >-
   Nije odabrana nijedna stavka | Jeste li sigurni da želite izbrisati ovu stavku? Ova se radnja ne može poništiti. | Jeste li sigurni da želite izbrisati ovih {count} stavki? Ova se radnja ne može poništiti.
 cancel: Odustani
 no_upscale: Ne povećavaj slike
+source_registry: Market
 collection: Zbirka
 collections: Zbirke
 content: Sadržaj
