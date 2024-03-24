@@ -1119,6 +1119,9 @@ page_help_files_collection: >-
   **Biblioteka datoteka** — Navodi sve datotečne materijale prenesene u ovaj projekt. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji datoteke** — Obrazac za upravljanje metapodacima datoteke, uređivanje izvornog materijala i ažuriranje postavki pristupa.
+page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
+page_help_settings_appearance: "**Prikaz** — Izgled vašeg projekta i tematske opcije."
+page_help_settings_extensions: '**Proširenja** — Instalirana proširenja ili ekstenzije u vašem projektu.'
 page_help_settings_datamodel_collections: >-
   **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
@@ -1140,6 +1143,9 @@ page_help_users_item: >-
   **Pojedinosti o korisniku** — Upravljajte podacima o svom računu ili pregledajte pojedinosti drugih korisnika.
 page_help_insights_overview: '**Uvidi** — Popis nadzornih ploča kojima imate pristup.'
 page_help_insights_dashboard: '**Nadzorna ploča** — Radni prostor za upravljanje jednom ili više ploča'
+page_help_marketplace_account: '**Račun** — Izdavač ili osoba koja održava objavljeno proširenje.'
+page_help_marketplace_registry: '**Registar** — Dostupna proširenja u Directus-ovom MarketPlace-u.'
+page_help_marketplace_extension: '**Proširenje** — Proširenje u Directusovom MarketPlace-u.'
 activity_feed: Sadržaj aktivnosti
 add_new: Dodaj novi
 create_new: Kreiraj novi
@@ -1150,6 +1156,9 @@ batch_delete_confirm: >-
   Nije odabrana nijedna stavka | Jeste li sigurni da želite izbrisati ovu stavku? Ova se radnja ne može poništiti. | Jeste li sigurni da želite izbrisati ovih {count} stavki? Ova se radnja ne može poništiti.
 cancel: Odustani
 no_upscale: Ne povećavaj slike
+no_extensions: Nema Proširenja
+no_extensions_copy: Nema još instaliranih ekstenzija.
+install_extension: Instaliraj Proširenje
 source_registry: Market
 collection: Zbirka
 collections: Zbirke
