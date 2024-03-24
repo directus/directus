@@ -7,10 +7,12 @@ method: Metoda
 published: Opublikowany
 draft: Szkic
 archived: Zarchiwizowany
+marketplace: Sklep
 extensions: Rozszerzenia
 modules: Moduły
 module_bar: Pasek modułu
 logs: Logi
+unknown: Nieznane
 reset_width: Zresetuj szerokość
 tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
@@ -28,6 +30,8 @@ duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 group: Grupa
+popular: Popularne
+recent: Najnowsze
 export_items: Eksportuj elementy
 and: I
 or: Lub
@@ -49,9 +53,31 @@ extension_displays: Wyświetlanie
 extension_layouts: Szablony
 extension_modules: Moduły
 extension_panels: Panele
+extension_themes: Motywy
+extension_hooks: Hooki
 extension_endpoints: Punkty końcowe
 extension_operations: Operacje
 extension_bundles: Pakiety
+extension_missing: Brakujące
+extension_reload_required: Wymagane przeładowanie strony
+extension_reload_required_copy: Aby zobaczyć zmiany po włączeniu lub wyłączeniu rozszerzeń aplikacji, wymagane jest przeładowanie strony.
+extension_reload_now: Załaduj ponownie teraz
+published_relative: Opublikowano {relativeTime}
+compatible_with_your_project: Kompatybilne z Twoim projektem
+compatible_with_your_project_copy: Autor wskazał kompatybilność tego rozszerzenia dla wersji {hostVersion}, która jest zgodna z wersją Twojego projektu ({currentVersion})
+last_updated_relative: Ostatnia aktualizacja {relativeTime}
+n_files: '{n} plików'
+verified: Zweryfikowano
+homepage: Strona główna
+repository: Repozytorium
+reload_required: Wymagane ponowne załadowanie
+report_an_issue: Zgłoś problem
+website: Strona internetowa
+github: GitHub
+beta: Beta
+n_downloads: '{n} pobrań'
+compatibility_not_guaranteed: Kompatybilność nie jest gwarantowana
+compatibility_not_guaranteed_copy: Autor wskazał kompatybilność tego rozszerzenia dla wersji {hostVersion}, która nie jest zgodna z wersją Twojego projektu ({currentVersion})
 enable: Włącz
 disable: Wyłącz
 custom: Własny
@@ -140,6 +166,8 @@ logoutReason:
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
+no_description: Brak opisu...
+reached_maximum_number_of_extensions: Osiągnięto maksymalną liczbę rozszerzeń dla tego projektu ({n}). Skontaktuj się z administratorem systemu, aby uzyskać więcej informacji.
 not_allowed: Niedozwolone
 archive: Archiwum
 archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
@@ -279,6 +307,14 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (wszystkie)
+  Point: Point (punkt)
+  LineString: LineString (ciąg linii)
+  Polygon: Polygon (wielokąt)
+  MultiPoint: MultiPoint (wielopunktowy)
+  MultiLineString: MultiLineString (ciąg wielu linii)
+  MultiPolygon: MultiPolygon (wielokąt złożony)
 theme_auto: Automatyczne (Oparte na systemie)
 theme_light: Tryb jasny
 theme_dark: Tryb ciemny
@@ -1075,6 +1111,7 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 no_extensions: Brak rozszerzeń
 no_extensions_copy: Nie zainstalowano jeszcze żadnych rozszerzeń.
+source_registry: Sklep
 collection: Kolekcja
 collections: Kolekcje
 content: Zawartość
