@@ -207,6 +207,10 @@ export class RelationsService {
 						if (relation.schema?.on_delete) {
 							builder.onDelete(relation.schema.on_delete);
 						}
+
+						if (relation.schema?.on_update) {
+							builder.onUpdate(relation.schema.on_update);
+						}
 					});
 				}
 
@@ -312,6 +316,10 @@ export class RelationsService {
 
 						if (relation.schema?.on_delete) {
 							builder.onDelete(relation.schema.on_delete);
+						}
+
+						if (relation.schema?.on_update) {
+							builder.onUpdate(relation.schema.on_update);
 						}
 					});
 				}
