@@ -261,9 +261,12 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (_req, res, next) => {
+	asyncHandler(async (req, res, next) => {
+		const sessionOnly =
+			'sessionOnly' in req.query && (req.query['sessionOnly'] === '' || Boolean(req.query['sessionOnly']));
+
 		res.locals['payload'] = {
-			data: getAuthProviders(),
+			data: getAuthProviders({ sessionOnly }),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 
