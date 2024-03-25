@@ -1,5 +1,7 @@
 import type { Knex } from 'knex';
 import { isEqual } from 'lodash-es';
+import { ItemsService } from '../../services/index.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 interface OldPermission {
 	id: number;
@@ -9,7 +11,7 @@ interface OldPermission {
 	permissions: null | Record<string, unknown>;
 	validation: null | Record<string, unknown>;
 	presets: null | Record<string, unknown>;
-	fields: string;
+	fields: null | string[];
 }
 
 interface NewPermission {
@@ -23,13 +25,11 @@ interface NewPermission {
 
 const types = ['access', 'fields', 'validation', 'presets'] as const;
 
-function jsonValueExists(val: null | Record<string, unknown> | string): boolean {
+function jsonValueExists(val: null | Record<string, unknown> | string[]): boolean {
 	try {
-		if (typeof val === 'string') {
-			val = JSON.parse(val);
-		}
-
 		if (val === null) return false;
+
+		if (Array.isArray(val)) return val.length > 0;
 
 		return Object.keys(val).length !== 0;
 	} catch {
@@ -67,7 +67,13 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	// Migrate existing permissions to new structure
-	const permissions = await knex.select<OldPermission[]>('*').from('directus_permissions');
+	// Gotta use the ItemsService to ensure JSON is cast back and forth to the DB format correctly
+	const permissions = (await new ItemsService('directus_permissions', {
+		knex: knex,
+		schema: await getSchema({ database: knex }),
+	}).readByQuery({
+		fields: ['id', 'role', 'collection', 'action', 'permissions', 'fields', 'validation', 'presets'],
+	})) as OldPermission[];
 
 	const newPermissions: Omit<NewPermission, 'id'>[] = [];
 
@@ -80,7 +86,7 @@ export async function up(knex: Knex): Promise<void> {
 					rule = jsonValueExists(oldPermission.permissions) ? oldPermission.permissions : null;
 					break;
 				case 'fields':
-					rule = oldPermission.fields?.split(',') ?? null;
+					rule = jsonValueExists(oldPermission.fields) ? oldPermission.fields : null;
 					break;
 				case 'validation':
 					rule = jsonValueExists(oldPermission.validation) ? oldPermission.validation : null;
@@ -142,16 +148,25 @@ export async function up(knex: Knex): Promise<void> {
 
 	// Add new structure to existing permissions
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.json('collections').notNullable().index();
-		table.json('actions').notNullable().index();
-		table.string('type').notNullable().index();
+		table.dropColumns('role', 'collection', 'action', 'permissions', 'validation', 'presets', 'fields');
+
+		table.json('collections').notNullable().defaultTo([]);
+		table.json('actions').notNullable().defaultTo([]);
+		table.string('type').index();
 		table.uuid('policy').references('directus_policies.id');
+		table.json('rule');
 	});
 
 	if (newPermissions.length > 0) {
 		// Yes this scares me too, be brave
 		await knex('directus_permissions').truncate();
-		await knex('directus_permissions').insert(newPermissions);
+
+		// Can't re-use the other ItemsService, as the Schema is out of date (we just changed it in
+		// the alterTable above)
+		await new ItemsService('directus_permissions', {
+			knex: knex,
+			schema: await getSchema({ database: knex, bypassCache: true }),
+		}).createMany(newPermissions);
 	}
 }
 
