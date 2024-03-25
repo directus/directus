@@ -51,11 +51,14 @@ export async function up(knex: Knex): Promise<void> {
 		table.boolean('app_access');
 	});
 
-	// // Copy existing roles 1-1 to policies
+	// Copy existing roles 1-1 to policies
 	const roles = await knex.select('*').from('directus_roles');
-	await knex('directus_policies').insert(roles);
 
-	// // Drop access control fields from roles
+	if (roles.length > 0) {
+		await knex('directus_policies').insert(roles);
+	}
+
+	// Drop access control fields from roles
 	await knex.schema.alterTable('directus_roles', (table) => {
 		table.dropColumn('ip_access');
 		table.dropColumn('enforce_tfa');
@@ -145,9 +148,11 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('policy').references('directus_policies.id');
 	});
 
-	// Yes this scares me too, be brave
-	await knex('directus_permissions').truncate();
-	await knex('directus_permissions').insert(newPermissions);
+	if (newPermissions.length > 0) {
+		// Yes this scares me too, be brave
+		await knex('directus_permissions').truncate();
+		await knex('directus_permissions').insert(newPermissions);
+	}
 }
 
 export async function down(_knex: Knex): Promise<void> {}
