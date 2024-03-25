@@ -86,41 +86,33 @@ function isAppExtension(type?: ExtensionType) {
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 }
 
-const toggleState = async () => {
+const requestHandler = (requestCallback: () => Promise<any>) => async () => {
 	saving.value = true;
 
 	try {
-		await extensionsStore.toggleState(props.extension.id);
+		await requestCallback();
 	} catch (err) {
 		unexpectedError(err);
 	} finally {
 		saving.value = false;
 	}
-};
+}
 
-const uninstall = async () => {
-	saving.value = true;
+const toggleState = requestHandler(
+	() => extensionsStore.toggleState(props.extension.id)
+);
 
-	try {
-		await extensionsStore.uninstall(props.extension.id);
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		saving.value = false;
-	}
-};
+const uninstall = requestHandler(
+	() => extensionsStore.uninstall(props.extension.id)
+);
 
-const removeMissing = async () => {
-	saving.value = true;
+const reinstall = requestHandler(
+	() => extensionsStore.reinstall(props.extension.id)
+);
 
-	try {
-		await extensionsStore.remove(props.extension.id);
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		saving.value = false;
-	}
-};
+const remove = requestHandler(
+	() => extensionsStore.remove(props.extension.id)
+);
 </script>
 
 <template>
@@ -173,7 +165,16 @@ const removeMissing = async () => {
 						<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 					</template>
 					<v-list>
-						<v-list-item clickable @click="removeMissing">
+						<v-list-item v-if="props.extension.meta.source === 'registry' && props.extension.bundle === null" clickable @click="reinstall">
+							<v-list-item-icon>
+								<v-icon name="install_desktop" />
+							</v-list-item-icon>
+							<v-list-item-content>
+								{{ t('re-install') }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-divider v-if="props.extension.meta.source === 'registry'" />
+						<v-list-item clickable @click="remove">
 							<v-list-item-icon>
 								<v-icon name="delete" />
 							</v-list-item-icon>
