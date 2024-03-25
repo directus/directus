@@ -96,23 +96,15 @@ const requestHandler = (requestCallback: () => Promise<any>) => async () => {
 	} finally {
 		saving.value = false;
 	}
-}
+};
 
-const toggleState = requestHandler(
-	() => extensionsStore.toggleState(props.extension.id)
-);
+const toggleState = requestHandler(() => extensionsStore.toggleState(props.extension.id));
 
-const uninstall = requestHandler(
-	() => extensionsStore.uninstall(props.extension.id)
-);
+const uninstall = requestHandler(() => extensionsStore.uninstall(props.extension.id));
 
-const reinstall = requestHandler(
-	() => extensionsStore.reinstall(props.extension.id)
-);
+const reinstall = requestHandler(() => extensionsStore.reinstall(props.extension.id));
 
-const remove = requestHandler(
-	() => extensionsStore.remove(props.extension.id)
-);
+const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 </script>
 
 <template>
@@ -165,7 +157,11 @@ const remove = requestHandler(
 						<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 					</template>
 					<v-list>
-						<v-list-item v-if="props.extension.meta.source === 'registry' && props.extension.bundle === null" clickable @click="reinstall">
+						<v-list-item
+							v-if="props.extension.meta.source === 'registry' && props.extension.bundle === null"
+							clickable
+							@click="reinstall"
+						>
 							<v-list-item-icon>
 								<v-icon name="install_desktop" />
 							</v-list-item-icon>
