@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fix update extension when having multiple instances running
+Fixed state of extensions after enabling/disabling in multiple instances setups
