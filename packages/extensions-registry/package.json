@@ -29,7 +29,7 @@
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"ky": "1.2.2",
+		"ky": "1.2.3",
 		"lodash-es": "4.17.21",
 		"validate-npm-package-name": "5.0.0",
 		"zod": "3.22.4"
