@@ -17,11 +17,7 @@ router.post(
 	'/',
 	asyncHandler(async (_req, _res, _next) => {
 		// Disallow creation of new Webhooks as part of the deprecation, see https://github.com/directus/directus/issues/15553
-		throw new (createError(
-			ErrorCode.MethodNotAllowed,
-			'Webhooks are deprecated, use Flows instead',
-			405,
-		))();
+		throw new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))();
 	}),
 	respond,
 );
