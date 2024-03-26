@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { isEqual } from 'lodash-es';
-import { ItemsService } from '../../services/index.js';
+import { PayloadService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 
 interface OldPermission {
@@ -66,14 +66,14 @@ export async function up(knex: Knex): Promise<void> {
 		table.dropColumn('app_access');
 	});
 
-	// Migrate existing permissions to new structure
-	// Gotta use the ItemsService to ensure JSON is cast back and forth to the DB format correctly
-	const permissions = (await new ItemsService('directus_permissions', {
-		knex: knex,
+	const permissionsRaw = await knex.select('*').from('directus_permissions');
+
+	const payloadService = new PayloadService('directus_permissions', {
+		knex,
 		schema: await getSchema({ database: knex }),
-	}).readByQuery({
-		fields: ['id', 'role', 'collection', 'action', 'permissions', 'fields', 'validation', 'presets'],
-	})) as OldPermission[];
+	});
+
+	const permissions = (await payloadService.processValues('read', permissionsRaw)) as OldPermission[];
 
 	const newPermissions: Omit<NewPermission, 'id'>[] = [];
 
@@ -161,12 +161,14 @@ export async function up(knex: Knex): Promise<void> {
 		// Yes this scares me too, be brave
 		await knex('directus_permissions').truncate();
 
-		// Can't re-use the other ItemsService, as the Schema is out of date (we just changed it in
-		// the alterTable above)
-		await new ItemsService('directus_permissions', {
-			knex: knex,
+		const payloadServicePostMigration = new PayloadService('directus_permissions', {
+			knex,
 			schema: await getSchema({ database: knex, bypassCache: true }),
-		}).createMany(newPermissions);
+		});
+
+		const toBeInserted = await payloadServicePostMigration.processValues('create', newPermissions);
+
+		await knex('directus_permissions').insert(toBeInserted);
 	}
 }
 
