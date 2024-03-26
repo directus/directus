@@ -112,15 +112,18 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
 - While `https://client.myserver.com/login` should be the address of your client application. The `/login` is not
   necessary, but helps to separate concerns
 
-3. On your login page, following the example should be `https://client.myserver.com/login` you need to call the refresh
-   endpoint either via REST API or via SDK in order to retrieve an `access_token`
+3. On your login page, following the example of `https://client.myserver.com/login`, you need to call the refresh
+   endpoint either via REST API or via SDK in order to have a session cookie or an `access_token`. Here's some examples
+   using `session` cookie:
 
    - via REST API / fetch
 
      ```js
      await fetch('https://directus.myserver.com/auth/refresh', {
      	method: 'POST',
-     	credentials: 'include', // this is required in order to send the refresh token cookie
+     	credentials: 'include', // this is required in order to send the refresh/session token cookie
+     	headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+     	body: JSON.stringify({ mode: 'session' }) // using 'session' mode, but can also be 'cookie' or 'json'
      });
      ```
 
@@ -129,7 +132,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
 
-     const client = createDirectus('https://directus.example.com')
+     const client = createDirectus('https://directus.myserver.com')
           .with(authentication('session', { credentials: 'include' }));
 
      await client.refresh();
@@ -140,7 +143,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
 
-     const client = createDirectus('https://directus.example.com')
+     const client = createDirectus('https://directus.myserver.com')
           .with(authentication('cookie', { credentials: 'include' }));
 
      await client.refresh();
