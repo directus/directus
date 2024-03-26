@@ -245,4 +245,6 @@ export async function down(knex: Knex): Promise<void> {
 			await knex('directus_permissions').insert(chunk);
 		});
 	}
+
+	await knex.schema.dropTable('directus_policies');
 }
