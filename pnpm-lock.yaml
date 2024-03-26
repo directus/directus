@@ -503,8 +503,8 @@ importers:
         specifier: 8.5.10
         version: 8.5.10
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -963,8 +963,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.4)(vue@3.4.21)
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       histoire:
         specifier: 0.17.14
         version: 0.17.14(sass@1.72.0)(vite@5.1.4)
@@ -1030,8 +1030,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       '@vue/test-utils':
         specifier: 2.4.4
         version: 2.4.4(vue@3.4.21)
@@ -1111,8 +1111,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       dependency-cruiser:
         specifier: 16.2.3
         version: 16.2.3
@@ -1160,8 +1160,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       dependency-cruiser:
         specifier: 16.2.3
         version: 16.2.3
@@ -1200,8 +1200,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       dependency-cruiser:
         specifier: 16.2.3
         version: 16.2.3
@@ -1240,8 +1240,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1271,8 +1271,8 @@ importers:
         specifier: 0.7.34
         version: 0.7.34
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1326,8 +1326,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.3)(sqlite3@5.1.7)(tedious@17.0.0)
@@ -1387,8 +1387,8 @@ importers:
         specifier: 4.0.2
         version: 4.0.2
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1487,8 +1487,8 @@ importers:
         specifier: 9.0.7
         version: 9.0.7
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1536,8 +1536,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1564,8 +1564,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1585,8 +1585,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1625,8 +1625,8 @@ importers:
         specifier: 7.5.8
         version: 7.5.8
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1675,8 +1675,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1706,8 +1706,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1740,8 +1740,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1771,8 +1771,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1799,8 +1799,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1836,8 +1836,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -1870,8 +1870,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -2038,8 +2038,8 @@ importers:
         specifier: 7.5.8
         version: 7.5.8
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
@@ -2102,8 +2102,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -2139,8 +2139,8 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
-        specifier: 1.3.1
-        version: 1.3.1(vitest@1.3.1)
+        specifier: 1.4.0
+        version: 1.4.0(vitest@1.3.1)
       tsup:
         specifier: 8.0.2
         version: 8.0.2(typescript@5.3.3)
@@ -2443,7 +2443,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
   /@antfu/utils@0.7.7:
@@ -3803,7 +3803,7 @@ packages:
     dependencies:
       '@babel/types': 7.23.9
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
     dev: true
 
@@ -5568,7 +5568,7 @@ packages:
     dependencies:
       '@jridgewell/set-array': 1.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.25
 
   /@jridgewell/resolve-uri@3.1.1:
     resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
@@ -5582,14 +5582,14 @@ packages:
     resolution: {integrity: sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==}
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.25
     dev: false
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
 
-  /@jridgewell/trace-mapping@0.3.22:
-    resolution: {integrity: sha512-Wf963MzWtA2sjrNt+g18IAln9lKnlRp+K2eH4jjIoF1wYeq3aMREpG09xhlhdzS0EjwU7qmUJYangWa+151vZw==}
+  /@jridgewell/trace-mapping@0.3.25:
+    resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -8619,22 +8619,23 @@ packages:
       vue: 3.4.21(typescript@5.3.3)
     dev: true
 
-  /@vitest/coverage-v8@1.3.1(vitest@1.3.1):
-    resolution: {integrity: sha512-UuBnkSJUNE9rdHjDCPyJ4fYuMkoMtnghes1XohYa4At0MS3OQSAo97FrbwSLRshYsXThMZy1+ybD/byK5llyIg==}
+  /@vitest/coverage-v8@1.4.0(vitest@1.3.1):
+    resolution: {integrity: sha512-4hDGyH1SvKpgZnIByr9LhGgCEuF9DKM34IBLCC/fVfy24Z3+PZ+Ii9hsVBsHvY1umM1aGPEjceRkzxCfcQ10wg==}
     peerDependencies:
-      vitest: 1.3.1
+      vitest: 1.4.0
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
       debug: 4.3.4
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 4.0.1
+      istanbul-lib-source-maps: 5.0.4
       istanbul-reports: 3.1.6
       magic-string: 0.30.7
       magicast: 0.3.3
       picocolors: 1.0.0
       std-env: 3.7.0
+      strip-literal: 2.0.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
       vitest: 1.3.1(@types/node@18.19.26)
@@ -13727,13 +13728,13 @@ packages:
       supports-color: 7.2.0
     dev: true
 
-  /istanbul-lib-source-maps@4.0.1:
-    resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
+  /istanbul-lib-source-maps@5.0.4:
+    resolution: {integrity: sha512-wHOoEsNJTVltaJp8eVkm8w+GVkVNHT2YDYo53YdzQEL2gWm1hBX5cGFR9hQJtuGLebidVX7et3+dmDZrmclduw==}
     engines: {node: '>=10'}
     dependencies:
+      '@jridgewell/trace-mapping': 0.3.25
       debug: 4.3.4
       istanbul-lib-coverage: 3.2.2
-      source-map: 0.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20024,7 +20025,7 @@ packages:
     resolution: {integrity: sha512-/EH/sDgxU2eGxajKdwLCDmQ4FWq+kpi3uCmBGpw1xJtnAxEjlD8j8PEiGWpCIMIs3ciNAgH0d3TTJiUkYzyZjA==}
     engines: {node: '>=10.12.0'}
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
     dev: true
