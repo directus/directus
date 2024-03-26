@@ -32,7 +32,7 @@ In this section, we provide some guides to help you set up SSO with OpenID.
 
 #### Google
 
-To be able to use Google OpenID as your external provider you will need to:
+To be able to use Google OpenID as your external provider you'll need to:
 
 1. Go into [Google Cloud Console](https://console.cloud.google.com)
 2. Select or Create a new project
@@ -78,49 +78,52 @@ AUTH_GOOGLE_DEFAULT_ROLE_ID="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" # Replace thi
 ## Seamless SSO
 
 While sometimes you want your users to directly have access to the Directus Application, in other cases you may need to
-fetch private data from Directus in your client using external providers. In this cases, it is needed a special
-configuration to work across domains, but is simple as:
+fetch private data from Directus in your client using external providers. For such cases, a special configuration is
+required to work across domains:
 
-1. Setup an external provider. You have some examples on [Supported SSO mechanisms](#supported-sso-mechanisms)
-2. Allow cookie to be accessible across domains. Put the following configuration on `.env`:
+1. Setup an external provider. You'll find some examples under [Supported SSO mechanisms](#supported-sso-mechanisms).
+2. Allow the cookie to be accessible across domains. For that, use the following configuration:
 
-**Authentication Mode: session**
+   **Authentication Mode: session**
 
-```sh
-AUTH_<PROVIDER>_MODE="session"
-SESSION_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
-SESSION_COOKIE_SECURE="true"
-SESSION_COOKIE_SAME_SITE="None"
-```
+   ```sh
+   AUTH_<PROVIDER>_MODE="session"
+   SESSION_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
+   SESSION_COOKIE_SECURE="true"
+   SESSION_COOKIE_SAME_SITE="None"
+   ```
 
-**Authentication Mode: cookie**
+   **Authentication Mode: cookie**
 
-```sh
-AUTH_<PROVIDER>_MODE="cookie"
-REFRESH_TOKEN_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
-REFRESH_TOKEN_COOKIE_SECURE="true"
-REFRESH_TOKEN_COOKIE_SAME_SITE="None"
-```
+   ```sh
+   AUTH_<PROVIDER>_MODE="cookie"
+   REFRESH_TOKEN_COOKIE_DOMAIN="XXXX" # Replace XXXX with the domain of your Directus instance. For example "directus.myserver.com"
+   REFRESH_TOKEN_COOKIE_SECURE="true"
+   REFRESH_TOKEN_COOKIE_SAME_SITE="None"
+   ```
 
-2. On your client, your login button should be something like
+3. On your client, the login button should conform to the following format:
 
-```html
-<a href="https://directus.myserver.com/auth/login/google?redirect=https://client.myserver.com/login">Login</a>
-```
+   ```html
+   <a href="https://directus.myserver.com/auth/login/google?redirect=https://client.myserver.com/login">Login</a>
+   ```
 
-- Where `https://directus.myserver.com` should be the address of your Directus instance
-- While `https://client.myserver.com/login` should be the address of your client application. The `/login` is not
-  necessary, but helps to separate concerns
+   - Where `https://directus.myserver.com` should be the address of your Directus instance
+   - While `https://client.myserver.com/login` should be the address of your client application. The `/login` path is
+     not necessary, but helps to separate concerns.
 
-3. On your login page, following the example should be `https://client.myserver.com/login` you need to call the refresh
-   endpoint either via REST API or via SDK in order to retrieve an `access_token`
+4. On your login page, following the example of `https://client.myserver.com/login`, you need to call the refresh
+   endpoint either via REST API or via SDK in order to have a session cookie or an `access_token`. Here are some
+   examples:
 
    - via REST API / fetch
 
      ```js
      await fetch('https://directus.myserver.com/auth/refresh', {
      	method: 'POST',
-     	credentials: 'include', // this is required in order to send the refresh token cookie
+     	credentials: 'include', // this is required in order to send the refresh/session token cookie
+     	headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+     	body: JSON.stringify({ mode: 'session' }) // using 'session' mode, but can also be 'cookie' or 'json'
      });
      ```
 
@@ -129,7 +132,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
 
-     const client = createDirectus('https://directus.example.com')
+     const client = createDirectus('https://directus.myserver.com')
           .with(authentication('session', { credentials: 'include' }));
 
      await client.refresh();
@@ -140,7 +143,7 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
 
-     const client = createDirectus('https://directus.example.com')
+     const client = createDirectus('https://directus.myserver.com')
           .with(authentication('cookie', { credentials: 'include' }));
 
      await client.refresh();
@@ -148,15 +151,15 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
 
 ::: tip Redirect Allow List
 
-To allow Directus to redirect to external domains like `https://client.myserver.com/` used above you'll need to include
+To allow Directus to redirect to external domains like `https://client.myserver.com/` used above, you'll need to include
 it in the `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` security setting.
 
 :::
 
 ### Testing Seamless SSO locally
 
-The above `REFRESH_TOKEN_*` configuration will likely fail for local testing, as you'll likely won't be serving Directus
-using a valid SSL certificate which are required for "Secure" cookies. Instead, for local testing purposes (**and local
+The above `REFRESH_TOKEN_*` configuration will likely fail for local testing, as usually Directus won't be served under
+a valid SSL certificate, which is a requirement for "Secure" cookies. Instead, for local testing purposes (**and local
 testing purposes only**), the following configuration can be used:
 
 **Authentication Mode: session**
@@ -177,7 +180,7 @@ Note that no `REFRESH_TOKEN_COOKIE_DOMAIN` or `SESSION_COOKIE_DOMAIN` value is s
 
 ::: warning Disabling secured cookies
 
-The configuration disable secured cookies and should only be used in local environment. Using it in production exposes
+The configuration disables secured cookies and should only be used in local environment. Using it in production exposes
 your instance to CSRF attacks.
 
 :::

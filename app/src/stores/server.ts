@@ -84,7 +84,10 @@ export const useServerStore = defineStore('serverStore', () => {
 	});
 
 	const hydrate = async (options?: HydrateOptions) => {
-		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
+		const [serverInfoResponse, authResponse] = await Promise.all([
+			api.get(`/server/info`),
+			api.get('/auth?sessionOnly'),
+		]);
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;

@@ -67,7 +67,7 @@ export function createLocalAuthRouter(provider: string): Router {
 				role: null,
 			};
 
-			const userAgent = req.get('user-agent');
+			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;
 
 			const origin = req.get('origin');
