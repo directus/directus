@@ -1,10 +1,8 @@
 import type { Knex } from 'knex';
-import { isEqual } from 'lodash-es';
 import { PayloadService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 
-interface OldPermission {
-	id: number;
+export interface OldPermission {
 	role: string;
 	collection: string;
 	action: string;
@@ -14,28 +12,15 @@ interface OldPermission {
 	fields: null | string;
 }
 
-interface NewPermission {
-	id: number;
+export interface NewPermission {
 	policy: string;
-	collections: string[];
-	actions: string[];
-	type: string;
+	collection: string;
+	action: string;
+	type: (typeof types)[number];
 	rule: null | Record<string, unknown> | string[];
 }
 
 const types = ['access', 'fields', 'validation', 'presets'] as const;
-
-function jsonValueExists(val: null | Record<string, unknown> | string[]): boolean {
-	try {
-		if (val === null) return false;
-
-		if (Array.isArray(val)) return val.length > 0;
-
-		return Object.keys(val).length !== 0;
-	} catch {
-		return false;
-	}
-}
 
 /**
  * Execute the callback for every chunk of the array of given size `size`
@@ -49,7 +34,6 @@ async function processChunk<T = unknown>(arr: T[], size: number, callback: (chun
 
 // NOTE: knex.schema.renameTable isn't reliable cross vendor, so can't be used here
 export async function up(knex: Knex): Promise<void> {
-	// Create policies table that's identical to roles
 	await knex.schema.createTable('directus_policies', (table) => {
 		table.uuid('id').primary();
 		table.string('name', 100).notNullable();
@@ -61,7 +45,6 @@ export async function up(knex: Knex): Promise<void> {
 		table.boolean('app_access');
 	});
 
-	// Copy existing roles 1-1 to policies
 	const roles = await knex.select('*').from('directus_roles');
 
 	if (roles.length > 0) {
@@ -85,92 +68,47 @@ export async function up(knex: Knex): Promise<void> {
 		schema: await getSchema({ database: knex }),
 	});
 
-	const permissions = (await payloadService.processValues('read', permissionsRaw)) as OldPermission[];
+	const oldPermissions = (await payloadService.processValues('read', permissionsRaw)) as OldPermission[];
 
-	const newPermissions: Omit<NewPermission, 'id'>[] = [];
+	const newPermissions: NewPermission[] = [];
 
-	for (const oldPermission of permissions) {
-		for (const type of types) {
-			let rule: NewPermission['rule'] = null;
-
-			switch (type) {
-				case 'access':
-					rule = jsonValueExists(oldPermission.permissions) ? oldPermission.permissions : null;
-					break;
-				case 'fields':
-					rule = oldPermission.fields?.split(',') || null;
-					break;
-				case 'validation':
-					rule = jsonValueExists(oldPermission.validation) ? oldPermission.validation : null;
-					break;
-				case 'presets':
-					rule = jsonValueExists(oldPermission.presets) ? oldPermission.presets : null;
-					break;
-			}
-
-			if (rule === null) continue;
-
-			const newPermission: Omit<NewPermission, 'id'> = {
+	for (const oldPermission of oldPermissions) {
+		const addNew = (type: (typeof types)[number], rule: Record<string, unknown> | string[]) => {
+			newPermissions.push({
 				policy: oldPermission.role,
-				collections: [oldPermission.collection],
-				actions: [oldPermission.action],
-				type: type,
-				rule: rule,
-			};
+				action: oldPermission.action,
+				collection: oldPermission.collection,
+				type,
+				rule,
+			});
+		};
 
-			newPermissions.push(newPermission);
+		if (oldPermission.permissions !== null) {
+			addNew('access', oldPermission.permissions);
+		}
+
+		if (oldPermission.validation !== null) {
+			addNew('validation', oldPermission.validation);
+		}
+
+		if (oldPermission.presets !== null) {
+			addNew('presets', oldPermission.presets);
+		}
+
+		if (oldPermission.fields !== null) {
+			addNew('fields', oldPermission.fields.split(','));
 		}
 	}
 
-	// Simplify the permissions per policy by combining permissions that have the same exact setup
-	// for multiple collections or rules.
-	for (let i = 0; i < newPermissions.length; i++) {
-		if (!newPermissions[i]) continue;
-
-		const parentPermission = newPermissions[i]!;
-
-		const collections = new Set(parentPermission.collections);
-		const actions = new Set(parentPermission.actions);
-
-		const indexesToRemove: number[] = [];
-
-		for (let j = i + 1; j < newPermissions.length; j++) {
-			if (!newPermissions[j]) continue;
-			const permission = newPermissions[j]!;
-
-			if (
-				permission.policy === parentPermission.policy &&
-				permission.type === parentPermission.type &&
-				isEqual(permission.rule, parentPermission.rule)
-			) {
-				permission.collections.forEach((collection) => collections.add(collection));
-				permission.actions.forEach((action) => actions.add(action));
-				indexesToRemove.push(j);
-			}
-		}
-
-		// Reverse loop over the to-be-removed indexes to preserve indexes during splices
-		for (let i = indexesToRemove.length - 1; i >= 0; i--) {
-			newPermissions.splice(indexesToRemove[i]!, 1);
-		}
-
-		parentPermission.collections = Array.from(collections);
-		parentPermission.actions = Array.from(actions);
-	}
-
-	// Add new structure to existing permissions
-	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.dropColumns('role', 'collection', 'action', 'permissions', 'validation', 'presets', 'fields');
-
-		table.json('collections').notNullable().defaultTo([]);
-		table.json('actions').notNullable().defaultTo([]);
-		table.string('type').index();
-		table.uuid('policy').references('directus_policies.id');
-		table.json('rule');
-	});
-
-	// Yes this scares me too, be brave
 	await knex('directus_permissions').truncate();
+
+	await knex.schema.alterTable('directus_permissions', (table) => {
+		table.dropColumns('role', 'permissions', 'validation', 'presets', 'fields');
+
+		table.string('type').notNullable();
+		table.uuid('policy').notNullable().references('directus_policies.id');
+		table.json('rule').notNullable();
+	});
 
 	if (newPermissions.length > 0) {
 		const payloadServicePostMigration = new PayloadService('directus_permissions', {
@@ -223,80 +161,71 @@ export async function down(knex: Knex): Promise<void> {
 		schema: await getSchema({ database: knex, bypassCache: true }),
 	});
 
-	const permissions = (await payloadService.processValues('read', permissionsRaw)) as NewPermission[];
+	const newPermissions = (await payloadService.processValues('read', permissionsRaw)) as NewPermission[];
 
-	type Collection = string;
-	type Action = string;
+	const oldPermissions: OldPermission[] = [];
 
-	const permissionsMap: Record<
-		Collection,
-		Record<
-			Action,
-			{
-				role: string;
-				fields: string | null;
-				validation: Record<string, unknown> | null;
-				permissions: Record<string, unknown> | null;
-				presets: Record<string, unknown> | null;
+	for (const newPermission of newPermissions) {
+		const existing = oldPermissions.find(
+			(oldPermission) =>
+				oldPermission.collection === newPermission.collection &&
+				oldPermission.action === newPermission.action &&
+				oldPermission.role === newPermission.policy,
+		);
+
+		if (existing) {
+			// Mutate the existing permission to merge the different types together
+			switch (newPermission.type) {
+				case 'access':
+					existing.permissions = newPermission.rule as Record<string, unknown> | null;
+					break;
+				case 'fields':
+					existing.fields = (newPermission.rule as string[] | null)?.join(',') || null;
+					break;
+				case 'validation':
+					existing.validation = newPermission.rule as Record<string, unknown> | null;
+					break;
+				case 'presets':
+					existing.presets = newPermission.rule as Record<string, unknown> | null;
+					break;
 			}
-		>
-	> = {};
+		} else {
+			// Create new permission record
+			const oldPermission: OldPermission = {
+				action: newPermission.action,
+				collection: newPermission.collection,
+				fields: null,
+				permissions: null,
+				presets: null,
+				role: newPermission.policy,
+				validation: null,
+			};
 
-	for (const permission of permissions) {
-		for (const collection of permission.collections as Collection[]) {
-			if (!permissionsMap[collection]) {
-				permissionsMap[collection] = {};
+			switch (newPermission.type) {
+				case 'access':
+					oldPermission.permissions = newPermission.rule as Record<string, unknown> | null;
+					break;
+				case 'fields':
+					oldPermission.fields = (newPermission.rule as string[] | null)?.join(',') || null;
+					break;
+				case 'validation':
+					oldPermission.validation = newPermission.rule as Record<string, unknown> | null;
+					break;
+				case 'presets':
+					oldPermission.presets = newPermission.rule as Record<string, unknown> | null;
+					break;
 			}
 
-			for (const action of permission.actions) {
-				if (!permissionsMap[collection]![action]) {
-					permissionsMap[collection]![action] = {
-						role: permission.policy,
-						fields: null,
-						permissions: null,
-						validation: null,
-						presets: null,
-					};
-				}
-
-				switch (permission.type) {
-					case 'access':
-						permissionsMap[collection]![action]!.permissions = permission.rule as Record<string, unknown> | null;
-						break;
-					case 'validation':
-						permissionsMap[collection]![action]!.validation = permission.rule as Record<string, unknown> | null;
-						break;
-					case 'fields':
-						permissionsMap[collection]![action]!.fields = (permission.rule as string[])?.join(',') || null;
-						break;
-					case 'presets':
-						permissionsMap[collection]![action]!.presets = permission.rule as Record<string, unknown> | null;
-						break;
-				}
-			}
-		}
-	}
-
-	const oldPermissions: Omit<OldPermission, 'id'>[] = [];
-
-	for (const [collection, actions] of Object.entries(permissionsMap)) {
-		for (const [action, rules] of Object.entries(actions)) {
-			oldPermissions.push({
-				collection,
-				action,
-				...rules,
-			});
+			oldPermissions.push(oldPermission);
 		}
 	}
 
 	await knex('directus_permissions').truncate();
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.dropColumns('collections', 'actions', 'type', 'policy', 'rule');
+		table.dropColumns('type', 'policy', 'rule');
 
 		table.uuid('role').references('directus_roles.id').nullable();
-		table.string('collection', 64).notNullable();
-		table.string('action', 10).notNullable();
 		table.json('permissions');
 		table.json('validation');
 		table.json('presets');
