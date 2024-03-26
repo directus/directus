@@ -1,54 +1,43 @@
 <script setup lang="ts">
 import type { FieldNode } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useEventListener } from '@vueuse/core';
+import { Ref, computed, onMounted, ref, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 
 const props = withDefaults(
 	defineProps<{
-		disabled?: boolean;
-		modelValue?: string | null;
-		nullable?: boolean;
 		tree: FieldNode[];
+		modelValue?: string | null;
+		disabled?: boolean;
+		nullable?: boolean;
 		loadPathLevel?: (fieldPath: string, root?: FieldNode | undefined) => void;
 		depth?: number;
-		placeholder?: string | null;
+		placeholder?: string;
 	}>(),
 	{
-		disabled: false,
 		modelValue: null,
 		nullable: true,
 		collection: null,
 		depth: undefined,
-		placeholder: null,
 		inject: null,
 	},
 );
 
 const emit = defineEmits(['update:modelValue']);
 
-const contentEl = ref<HTMLElement | null>(null);
-
+const contentEl: Ref<HTMLSpanElement | null> = ref(null);
 const menuActive = ref(false);
 
-watch(() => props.modelValue, setContent, { immediate: true });
+watch(() => props.modelValue, setContent);
+
+onMounted(setContent);
+
+useEventListener(contentEl, 'selectstart', onSelect);
 
 const grouplessTree = computed(() => {
 	return flattenFieldGroups(props.tree);
-});
-
-onMounted(() => {
-	if (contentEl.value) {
-		contentEl.value.addEventListener('selectstart', onSelect);
-		setContent();
-	}
-});
-
-onUnmounted(() => {
-	if (contentEl.value) {
-		contentEl.value.removeEventListener('selectstart', onSelect);
-	}
 });
 
 function onInput() {
@@ -59,7 +48,7 @@ function onInput() {
 }
 
 function onClick(event: MouseEvent) {
-	const target = event.target as HTMLElement;
+	const target = event.target as HTMLSpanElement;
 
 	if (target.tagName.toLowerCase() !== 'button') return;
 
@@ -69,7 +58,7 @@ function onClick(event: MouseEvent) {
 	const before = target.previousElementSibling;
 	const after = target.nextElementSibling;
 
-	if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+	if (!(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
 
 	target.remove();
 	joinElements(before, after);
@@ -88,16 +77,19 @@ function onKeyDown(event: KeyboardEvent) {
 	}
 
 	if (contentEl.value?.innerHTML === '') {
-		contentEl.value.innerHTML = '<span class="text"></span>';
+		contentEl.value.innerHTML = '<span class="text" />';
 	}
 }
 
 function onSelect() {
 	if (!contentEl.value) return;
+
 	const selection = window.getSelection();
 	if (!selection || selection.rangeCount <= 0) return;
+
 	const range = selection.getRangeAt(0);
 	if (!range) return;
+
 	const start = range.startContainer;
 
 	if (
@@ -106,15 +98,7 @@ function onSelect() {
 	) {
 		selection.removeAllRanges();
 		const range = new Range();
-		let textSpan = null;
-
-		for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
-			const child = contentEl.value.children[i];
-
-			if (child?.classList.contains('text')) {
-				textSpan = child;
-			}
-		}
+		let textSpan = Array.from(contentEl.value.querySelectorAll('span.text')).at(-1);
 
 		if (!textSpan) {
 			textSpan = document.createElement('span');
@@ -122,7 +106,7 @@ function onSelect() {
 			contentEl.value.appendChild(textSpan);
 		}
 
-		range.setStart(textSpan as Node, 0);
+		range.setStart(textSpan, 0);
 		selection.addRange(range);
 	}
 }
@@ -136,13 +120,17 @@ function addField(field: FieldTree) {
 	button.innerText = String(field.name);
 
 	if (window.getSelection()?.rangeCount == 0) {
+		const firstChild = contentEl.value.children[0];
+		if (!firstChild) return;
+
 		const range = document.createRange();
-		range.selectNodeContents(contentEl.value.children[0] as Node);
+		range.selectNodeContents(firstChild);
 		window.getSelection()?.addRange(range);
 	}
 
 	const range = window.getSelection()?.getRangeAt(0);
 	if (!range) return;
+
 	range.deleteContents();
 
 	const end = splitElements();
@@ -202,13 +190,9 @@ function getInputValue() {
 	if (!contentEl.value) return null;
 
 	const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
-		const el = node as HTMLElement;
-		const tag = el.tagName;
-
-		if (tag && tag.toLowerCase() === 'button') return (acc += `{{${el.dataset.field}}}`);
-		else if ('textContent' in el) return (acc += el.textContent);
-
-		return (acc += '');
+		if (node instanceof HTMLButtonElement) return (acc += `{{${node.dataset.field}}}`);
+		else if ('textContent' in node) return (acc += node.textContent);
+		return acc;
 	}, '');
 
 	if (props.nullable === true && value === '') {
@@ -222,7 +206,7 @@ function setContent() {
 	if (!contentEl.value) return;
 
 	if (props.modelValue === null || props.modelValue === '') {
-		contentEl.value.innerHTML = '<span class="text"></span>';
+		contentEl.value.innerHTML = '<span class="text" />';
 		return;
 	}
 
@@ -267,13 +251,14 @@ function setContent() {
 						ref="contentEl"
 						class="content"
 						:contenteditable="!disabled"
+						:placeholder="!modelValue ? placeholder : undefined"
+						spellcheck="false"
 						@keydown="onKeyDown"
 						@input="onInput"
 						@click="onClick"
 					>
 						<span class="text" />
 					</span>
-					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
@@ -297,47 +282,41 @@ function setContent() {
 	overflow: hidden;
 	font-size: 14px;
 	font-family: var(--theme--fonts--monospace--font-family);
-	white-space: nowrap;
+	white-space: pre;
 
-	:deep(span) {
-		min-width: 1px;
-		min-height: 1em;
-		white-space: pre;
+	> :deep(*) {
+		display: inline-block;
+		white-space: nowrap;
 	}
-}
 
-:deep(br) {
-	display: none;
-}
+	> :deep(span.text) {
+		white-space: pre;
 
-:deep(button) {
-	margin: -1px 4px 0;
-	padding: 2px 4px 0;
-	color: var(--theme--primary);
-	background-color: var(--theme--primary-background);
-	border-radius: var(--theme--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, color;
-	user-select: none;
-}
+		&:empty::before {
+			content: '\200b';
+		}
+	}
 
-:deep(button:not(:disabled):hover) {
-	color: var(--white);
-	background-color: var(--theme--danger);
-}
+	&[placeholder]:after {
+		content: attr(placeholder);
+		color: var(--theme--foreground-subdued);
+		pointer-events: none;
+	}
 
-.placeholder {
-	position: absolute;
-	top: 50%;
-	left: 14px;
-	color: var(--theme--foreground-subdued);
-	transform: translateY(-50%);
-	user-select: none;
-	pointer-events: none;
-}
+	:deep(button) {
+		margin: -1px 4px;
+		padding: 1px 4px;
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, color;
+		user-select: none;
+	}
 
-.content > :deep(*) {
-	display: inline-block;
-	white-space: nowrap;
+	:deep(button:not(:disabled):hover) {
+		color: var(--white);
+		background-color: var(--theme--danger);
+	}
 }
 </style>

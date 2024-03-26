@@ -2,7 +2,7 @@
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import type { Field } from '@directus/types';
-import { computed, inject, ref, unref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -28,35 +28,37 @@ const values = inject('values', ref<Record<string, any>>({}));
 const collection = computed(() => {
 	if (!props.collectionField) {
 		if (props.collectionName) return props.collectionName;
+
 		return null;
 	}
 
 	const collectionName = values.value[props.collectionField];
 
-	const collectionExists = !!collectionsStore.collections.find(
-		(collection) => collection.collection === collectionName,
-	);
+	const collectionExists =
+		typeof collectionName === 'string' &&
+		collectionsStore.collections.some((collection) => collection.collection === collectionName);
 
-	if (collectionExists === false) return null;
+	if (!collectionExists) return null;
+
 	return collectionName;
 });
 
 const injectValue = computed(() => {
-	if (!props.injectVersionField) return null;
+	if (!props.injectVersionField || !collection.value) return null;
 
 	const versioningEnabled = values.value['versioning'];
 
 	if (!versioningEnabled) return null;
 
 	const fakeVersionField: Field = {
-		collection: unref(collection),
+		collection: collection.value,
 		field: '$version',
 		schema: null,
 		name: t('version'),
 		type: 'integer',
 		meta: {
 			id: -1,
-			collection: unref(collection),
+			collection: collection.value,
 			field: '$version',
 			sort: null,
 			special: null,
@@ -83,13 +85,9 @@ const injectValue = computed(() => {
 const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
 
 const tree = computed(() => {
-	if (props.fields) {
-		return { list: props.fields };
-	}
+	if (props.fields) return { list: props.fields };
 
-	if (collection.value === null) {
-		return null;
-	}
+	if (collection.value === null) return null;
 
 	return { list: treeList.value, pathLoader: loadFieldRelations };
 });
