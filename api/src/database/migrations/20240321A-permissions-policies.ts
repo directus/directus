@@ -37,7 +37,6 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_policies', (table) => {
 		table.uuid('id').primary();
 		table.string('name', 100).notNullable();
-		table.string('icon', 30).notNullable();
 		table.text('description');
 		table.text('ip_access');
 		table.boolean('enforce_tfa');
@@ -45,7 +44,9 @@ export async function up(knex: Knex): Promise<void> {
 		table.boolean('app_access');
 	});
 
-	const roles = await knex.select('*').from('directus_roles');
+	const roles = await knex
+		.select('id', 'name', 'description', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
+		.from('directus_roles');
 
 	if (roles.length > 0) {
 		await processChunk(roles, 100, async (chunk) => {
