@@ -1365,8 +1365,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ky:
-        specifier: 1.2.2
-        version: 1.2.2
+        specifier: 1.2.3
+        version: 1.2.3
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -14179,8 +14179,8 @@ packages:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
     dev: true
 
-  /ky@1.2.2:
-    resolution: {integrity: sha512-gYA2QOI3uIaImJPJjaBbLCdvKHzwxsuB03s7PjrXmoO6tcn6k53rwYoSRgqrmVsEV6wFFegOXDVjABxFZ0aRSg==}
+  /ky@1.2.3:
+    resolution: {integrity: sha512-2IM3VssHfG2zYz2FsHRUqIp8chhLc9uxDMcK2THxgFfv8pQhnMfN8L0ul+iW4RdBl5AglF8ooPIflRm3yNH0IA==}
     engines: {node: '>=18'}
     dev: false
 
