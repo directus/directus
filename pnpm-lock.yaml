@@ -1154,8 +1154,8 @@ importers:
         specifier: 18.19.26
         version: 18.19.26
       '@types/pg':
-        specifier: 8.11.2
-        version: 8.11.2
+        specifier: 8.11.4
+        version: 8.11.4
       '@types/wellknown':
         specifier: 0.5.8
         version: 0.5.8
@@ -8252,8 +8252,8 @@ packages:
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
     dev: false
 
-  /@types/pg@8.11.2:
-    resolution: {integrity: sha512-G2Mjygf2jFMU/9hCaTYxJrwdObdcnuQde1gndooZSOHsNSaCehAuwc7EIuSA34Do8Jx2yZ19KtvW8P0j4EuUXw==}
+  /@types/pg@8.11.4:
+    resolution: {integrity: sha512-yw3Bwbda6vO+NvI1Ue/YKOwtl31AYvvd/e73O3V4ZkNzuGpTDndLSyc0dQRB2xrQqDePd20pEGIfqSp/GH3pRw==}
     dependencies:
       '@types/node': 18.19.26
       pg-protocol: 1.6.0
