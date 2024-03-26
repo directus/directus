@@ -96,7 +96,14 @@ async function onSubmit() {
 		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
 
 		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" autocomplete="one-time-code" :placeholder="t('otp')" autofocus />
+			<v-input
+				v-if="requiresTFA"
+				v-model="otp"
+				type="text"
+				autocomplete="one-time-code"
+				:placeholder="t('otp')"
+				autofocus
+			/>
 		</transition-expand>
 
 		<v-notice v-if="error" type="warning">
