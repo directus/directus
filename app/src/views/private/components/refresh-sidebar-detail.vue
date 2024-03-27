@@ -47,7 +47,7 @@ watch(
 		}
 
 		if (newInterval !== null && newInterval > 0) {
-			setRefreshInterval(newInterval * 1000);
+			setRefreshInterval(newInterval);
 		}
 	},
 	{ immediate: true },
