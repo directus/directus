@@ -18,13 +18,13 @@ html {
 }
 
 body {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 	line-height: 22px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
@@ -108,11 +108,11 @@ strong {
 }
 
 code {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 ::selection {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 dl > div {
@@ -134,13 +134,13 @@ dt {
 dd {
 	flex-grow: 1;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
 dd a {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .form-grid {

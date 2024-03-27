@@ -1,0 +1,25 @@
+post:
+  summary: Save to a Content Version
+  description: Save item changes to an existing Content Version.
+  operationId: saveContentVersion
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Versions

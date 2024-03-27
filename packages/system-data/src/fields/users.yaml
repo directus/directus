@@ -1,0 +1,224 @@
+table: directus_users
+
+fields:
+  - field: first_name
+    interface: input
+    options:
+      iconRight: account_circle
+    width: half
+
+  - field: last_name
+    interface: input
+    options:
+      iconRight: account_circle
+    width: half
+
+  - field: email
+    interface: input
+    options:
+      iconRight: email
+    width: half
+
+  - field: password
+    special:
+      - hash
+      - conceal
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+
+  - field: avatar
+    interface: file
+    width: full
+    display: image
+
+  - field: location
+    interface: input
+    options:
+      iconRight: place
+    width: half
+
+  - field: title
+    interface: input
+    options:
+      iconRight: work
+    width: half
+
+  - field: description
+    interface: input-multiline
+    width: full
+
+  - field: tags
+    interface: tags
+    special:
+      - cast-json
+    width: full
+    options:
+      iconRight: local_offer
+    display: labels
+    display_options:
+      choices: null
+      format: false
+
+  - field: preferences_divider
+    interface: presentation-divider
+    options:
+      icon: face
+      title: $t:fields.directus_users.user_preferences
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: language
+    interface: system-language
+    width: half
+    options:
+      includeProjectDefault: true
+
+  - field: tfa_secret
+    interface: system-mfa-setup
+    special:
+      - conceal
+    width: half
+
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special:
+      - cast-boolean
+
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:theme
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: appearance
+    interface: select-dropdown
+    options:
+      choices:
+        - value: null
+          text: $t:default_sync_with_project
+        - value: auto
+          text: $t:appearance_auto
+        - value: light
+          text: $t:appearance_light
+        - value: dark
+          text: $t:appearance_dark
+    width: half
+
+  - field: theme_light
+    width: full
+    interface: system-theme
+    options:
+      appearance: light
+      includeNull: true
+
+  - field: theme_light_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: light
+    special:
+      - cast-json
+
+  - field: theme_dark
+    width: full
+    interface: system-theme
+    options:
+      appearance: dark
+      includeNull: true
+
+  - field: theme_dark_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: dark
+    special:
+      - cast-json
+
+  - field: admin_divider
+    interface: presentation-divider
+    options:
+      icon: verified_user
+      title: $t:fields.directus_users.admin_options
+      color: 'var(--theme--danger)'
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: status
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:fields.directus_users.status_draft
+          value: draft
+        - text: $t:fields.directus_users.status_invited
+          value: invited
+        - text: $t:fields.directus_users.status_active
+          value: active
+        - text: $t:fields.directus_users.status_suspended
+          value: suspended
+        - text: $t:fields.directus_users.status_archived
+          value: archived
+    width: half
+
+  - field: role
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: token
+    interface: system-token
+    special:
+      - conceal
+    width: full
+
+  - field: id
+    special:
+      - uuid
+    interface: input
+    options:
+      iconRight: vpn_key
+    width: full
+
+  - field: last_page
+    width: half
+
+  - field: last_access
+    width: half
+    display: datetime
+    readonly: true
+    display_options:
+      relative: true
+
+  - field: provider
+    width: half
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:default_provider
+          value: default
+
+  - field: external_identifier
+    width: half
+    options:
+      iconRight: account_circle
+    interface: input
+
+  - field: auth_data
+    hidden: true

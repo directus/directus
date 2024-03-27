@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    labels:
+      - Dependencies
+    directory: '/'
+    schedule:
+      interval: daily
+    target-branch: main
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: '@directus/*'
+      - dependency-name: '*'
+        update-types:
+          - version-update:semver-major
+    open-pull-requests-limit: 3

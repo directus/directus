@@ -1,0 +1,30 @@
+table: directus_revisions
+
+fields:
+  - field: id
+    width: half
+
+  - field: activity
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: item
+    width: half
+
+  - field: data
+    hidden: true
+    special:
+      - cast-json
+
+  - field: delta
+    hidden: true
+    special:
+      - cast-json
+
+  - field: parent
+    width: half
+
+  - field: version
+    width: half

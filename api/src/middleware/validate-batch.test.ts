@@ -1,9 +1,8 @@
 import type { Request, Response } from 'express';
+import { beforeEach, expect, test, vi } from 'vitest';
+import '../types/express.d.ts';
+import { InvalidPayloadError } from '@directus/errors';
 import { validateBatch } from './validate-batch.js';
-import '../../src/types/express.d.ts';
-import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
-import { FailedValidationException } from '@directus/exceptions';
-import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
@@ -34,13 +33,13 @@ test(`Short circuits on singletons that aren't queried through SEARCH`, async ()
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 });
 
-test('Throws InvalidPayloadException on missing body', async () => {
+test('Throws InvalidPayloadError on missing body', async () => {
 	mockRequest.method = 'SEARCH';
 
 	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Short circuits on Array body in update/delete use`, async () => {
@@ -55,6 +54,7 @@ test(`Short circuits on Array body in update/delete use`, async () => {
 
 test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
 	mockRequest.method = 'SEARCH';
+
 	mockRequest.body = {
 		query: {
 			sort: 'id',
@@ -70,6 +70,7 @@ test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
 
 test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	mockRequest.method = 'DELETE';
+
 	mockRequest.body = {
 		keys: [1, 2, 3],
 		query: { filter: {} },
@@ -78,11 +79,12 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Requires 'data' on batch update`, async () => {
 	mockRequest.method = 'PATCH';
+
 	mockRequest.body = {
 		keys: [1, 2, 3],
 		query: { filter: {} },
@@ -91,7 +93,7 @@ test(`Requires 'data' on batch update`, async () => {
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Calls next when all is well`, async () => {

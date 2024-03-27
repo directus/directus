@@ -1,45 +1,50 @@
 {
 	"name": "@directus/types",
-	"version": "9.23.4",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --build",
-		"dev": "tsc --watch"
-	},
+	"version": "11.0.7",
 	"description": "Shared types for Directus",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/types"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@directus/tsconfig": "0.0.6",
-		"@types/express": "4.17.17",
-		"@types/geojson": "7946.0.10",
-		"express": "4.18.2",
-		"geojson": "0.5.0",
-		"knex": "2.4.2",
-		"pino": "8.11.0",
-		"typescript": "4.9.5",
-		"vue": "3.2.47",
-		"vue-router": "4.1.6",
-		"zod": "3.21.4"
+		"@types/geojson": "7946.0.14"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"knex": "3.1.0",
+		"typescript": "5.3.3",
+		"vue": "3.4.21"
+	},
+	"peerDependencies": {
+		"knex": "3",
+		"vue": "^3.4"
+	},
+	"peerDependenciesMeta": {
+		"knex": {
+			"optional": true
+		},
+		"vue": {
+			"optional": true
+		}
 	}
 }

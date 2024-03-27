@@ -1,4 +1,4 @@
-import type { EXTENSION_LANGUAGES } from '@directus/constants';
+import type { EXTENSION_LANGUAGES } from '@directus/extensions';
 import type { Plugin, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 
 export type Language = (typeof EXTENSION_LANGUAGES)[number];
@@ -10,3 +10,5 @@ export type Config = {
 
 export type RollupConfig = { rollupOptions: RollupOptions; rollupOutputOptions: RollupOutputOptions };
 export type RollupMode = 'browser' | 'node';
+
+export type Format = 'esm' | 'cjs';

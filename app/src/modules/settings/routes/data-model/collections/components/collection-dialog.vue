@@ -1,10 +1,78 @@
+<script setup lang="ts">
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { ref, reactive, watch } from 'vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash';
+import { Collection } from '@/types/collections';
+
+const props = defineProps<{
+	modelValue?: boolean;
+	collection?: Collection | null;
+}>();
+
+const emit = defineEmits(['update:modelValue']);
+
+const { t } = useI18n();
+
+const collectionsStore = useCollectionsStore();
+
+const values = reactive({
+	collection: props.collection?.collection ?? null,
+	icon: props.collection?.icon ?? 'folder',
+	note: props.collection?.meta?.note ?? null,
+	color: props.collection?.color ?? null,
+	translations: props.collection?.meta?.translations ?? null,
+});
+
+watch(
+	() => props.modelValue,
+	(newValue, oldValue) => {
+		if (isEqual(newValue, oldValue) === false) {
+			values.collection = props.collection?.collection ?? null;
+			values.icon = props.collection?.icon ?? 'folder';
+			values.note = props.collection?.meta?.note ?? null;
+			values.color = props.collection?.color ?? null;
+			values.translations = props.collection?.meta?.translations ?? null;
+		}
+	},
+);
+
+const saving = ref(false);
+
+function cancel() {
+	emit('update:modelValue', false);
+}
+
+async function save() {
+	saving.value = true;
+
+	try {
+		if (props.collection) {
+			await api.patch(`/collections/${props.collection.collection}`, { meta: values });
+			await collectionsStore.hydrate();
+		} else {
+			await api.post<any>('/collections', { collection: values.collection, meta: values });
+			await collectionsStore.hydrate();
+		}
+
+		emit('update:modelValue', false);
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		saving.value = false;
+	}
+}
+</script>
+
 <template>
 	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card>
+		<v-card class="allow-drawer">
 			<v-card-title v-if="!collection">{{ t('create_folder') }}</v-card-title>
 			<v-card-title v-else>{{ t('edit_folder') }}</v-card-title>
 
@@ -30,7 +98,7 @@
 						:fields="[
 							{
 								field: 'language',
-								name: '$t:language',
+								name: t('language'),
 								type: 'string',
 								schema: {
 									default_value: 'en-US',
@@ -42,7 +110,7 @@
 							},
 							{
 								field: 'translation',
-								name: '$t:field_options.directus_collections.collection_name',
+								name: t('field_options.directus_collections.collection_name'),
 								type: 'string',
 								meta: {
 									interface: 'input',
@@ -70,85 +138,6 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useCollectionsStore } from '@/stores/collections';
-import { useI18n } from 'vue-i18n';
-import { isEqual } from 'lodash';
-import { Collection } from '@/types/collections';
-
-export default defineComponent({
-	name: 'CollectionDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		collection: {
-			type: Object as PropType<Collection>,
-			default: null,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const collectionsStore = useCollectionsStore();
-
-		const values = reactive({
-			collection: props.collection?.collection ?? null,
-			icon: props.collection?.icon ?? 'folder',
-			note: props.collection?.meta?.note ?? null,
-			color: props.collection?.color ?? null,
-			translations: props.collection?.meta?.translations ?? null,
-		});
-
-		watch(
-			() => props.modelValue,
-			(newValue, oldValue) => {
-				if (isEqual(newValue, oldValue) === false) {
-					values.collection = props.collection?.collection ?? null;
-					values.icon = props.collection?.icon ?? 'folder';
-					values.note = props.collection?.meta?.note ?? null;
-					values.color = props.collection?.color ?? null;
-					values.translations = props.collection?.meta?.translations ?? null;
-				}
-			}
-		);
-
-		const saving = ref(false);
-
-		return { values, cancel, saving, save, t };
-
-		function cancel() {
-			emit('update:modelValue', false);
-		}
-
-		async function save() {
-			saving.value = true;
-
-			try {
-				if (props.collection) {
-					await api.patch(`/collections/${props.collection.collection}`, { meta: values });
-					await collectionsStore.hydrate();
-				} else {
-					await api.post<any>('/collections', { collection: values.collection, meta: values });
-					await collectionsStore.hydrate();
-				}
-
-				emit('update:modelValue', false);
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-	},
-});
-</script>
-
 <style scoped>
 .fields {
 	display: grid;
@@ -161,6 +150,6 @@ export default defineComponent({
 }
 
 .collection-key {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 </style>

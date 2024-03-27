@@ -1,3 +1,43 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { ArrayChange } from 'diff';
+
+export type Change = {
+	added?: boolean;
+	removed?: boolean;
+	updated?: boolean;
+	count?: number;
+	value: string;
+};
+
+const props = defineProps<{
+	changes: Change[] | ArrayChange<any>[];
+	added?: boolean;
+	deleted?: boolean;
+	updated?: boolean;
+}>();
+
+const { t } = useI18n();
+
+const changesFiltered = computed(() => {
+	return (props.changes as Change[]).filter((change: any) => {
+		if (props.updated) return true;
+
+		if (props.added === true) {
+			return change.removed !== true;
+		}
+
+		return change.added !== true;
+	});
+});
+
+// The whole value changed instead of parts, this should disable the highlighting
+const wholeThing = computed(() => {
+	return props.changes.length === 2; // before/after
+});
+</script>
+
 <template>
 	<div class="change-line" :class="{ added, deleted, updated, 'no-highlight': wholeThing }">
 		<v-icon :name="added ? 'add' : deleted ? 'remove' : 'warning'" />
@@ -13,68 +53,12 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
-import { ArrayChange } from 'diff';
-
-export type Change = {
-	added?: boolean;
-	removed?: boolean;
-	updated?: boolean;
-	count?: number;
-	value: string;
-};
-
-export default defineComponent({
-	props: {
-		changes: {
-			type: Array as PropType<Change[] | ArrayChange<any>[]>,
-			required: true,
-		},
-		added: {
-			type: Boolean,
-			default: false,
-		},
-		deleted: {
-			type: Boolean,
-			default: false,
-		},
-		updated: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
-		const changesFiltered = computed(() => {
-			return (props.changes as Change[]).filter((change: any) => {
-				if (props.updated) return true;
-
-				if (props.added === true) {
-					return change.removed !== true;
-				}
-
-				return change.added !== true;
-			});
-		});
-
-		// The whole value changed instead of parts, this should disable the highlighting
-		const wholeThing = computed(() => {
-			return props.changes.length === 2; // before/after
-		});
-
-		return { t, changesFiltered, wholeThing };
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .change-line {
 	position: relative;
 	width: 100%;
 	padding: 8px 12px 8px 40px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.v-icon {
 		position: absolute;
@@ -83,9 +67,9 @@ export default defineComponent({
 	}
 
 	&.added {
-		color: var(--success);
+		color: var(--theme--success);
 		background-color: var(--success-alt);
-		border-radius: 0 0 var(--border-radius) var(--border-radius);
+		border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
 
 		.changed {
 			background-color: var(--success-25);
@@ -93,9 +77,9 @@ export default defineComponent({
 	}
 
 	&.deleted {
-		color: var(--danger);
+		color: var(--theme--danger);
 		background-color: var(--danger-alt);
-		border-radius: var(--border-radius) var(--border-radius) 0 0;
+		border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
 
 		.changed {
 			background-color: var(--danger-25);
@@ -103,9 +87,9 @@ export default defineComponent({
 	}
 
 	&.updated {
-		color: var(--warning);
+		color: var(--theme--warning);
 		background-color: var(--warning-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 }
 
@@ -113,7 +97,7 @@ export default defineComponent({
 	position: relative;
 	margin-right: 0.2em;
 	padding: 2px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .no-value {

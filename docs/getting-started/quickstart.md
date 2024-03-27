@@ -1,97 +1,121 @@
 ---
 description:
-  Get up and running with Directus Cloud in minutes. Learn the basics of building your data model and managing
+  Get up and running with Directus in minutes. Learn the basics of building your data model and managing
   permissions.
 readTime: 7 min read
 ---
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Cloud Project in a snap. Along the way,
-> you will better understand what Directus is, setup your free Directus Cloud Account, get a _hands-on introduction_ to
-> the App and API, and find more resources to deep-dive into.
+> This quickstart guide is designed to get you up and running with a Directus Project in a few minutes. Along the way,
+> you will better understand what Directus is, setup your Directus project locally or with Directus Cloud, and get a
+> hands-on introduction to the App and API.
 
-## 1. Create Cloud Account and Login
+## 1. Create a Project
 
-First, you'll need to [create an Account and log in](/cloud/accounts#create-account-and-login) on
-[Directus Cloud](https://directus.cloud/login)
+::: tabs
 
-Your Directus Cloud Account allows you to create and manage any number of Projects. We've made life easier by giving you
-the option to create and log in to your free Cloud Account automatically with GitHub. If you don't have a GitHub account
-or prefer not to use this login method, email-and-password login is available as well.
+== Directus Cloud
 
-The very first time you log in to your cloud account, you will be prompted to create a Team. Teams are totally free to
-create. Each Directus Cloud Project exists within the scope of one Team. They allow you to organize Team Members,
-Projects and Project Billing as desired.
+1. Create and login to your [Directus Cloud account](https://directus.cloud)
 
-Once your Team is created, it's time to create your Directus Cloud Project!
+   The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud
+   Project exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as
+   desired.
 
-:::tip Learn More About Cloud
+2. Create a new project
 
-- [Overview](/cloud/overview)
-- [Cloud Accounts](/cloud/accounts)
-- [Cloud Teams](/cloud/teams)
+   Once started, it should take around 90 seconds for the Cloud Project to created. During this time, a link will be
+   sent to the email associated with your Cloud Account. The email will contain your Project URL as well as an email and
+   password to login. If you used GitHub to create your account, this will be your GitHub email.
+
+3. Access your new project
+
+   Login to your new project using the URL in your email inbox or on your Directus Cloud Dashboard.
+
+<sub>Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/projects).</sub>
+
+== Docker Installation
+
+1. Initialize and start a new Directus project
+
+   You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
+
+   Open up your terminal and run the following command:
+
+   ```shell
+   docker run \
+   -p 8055:8055 \
+   -e KEY=replace-with-random-value \
+   -e SECRET=replace-with-random-value \
+   directus/directus
+   ```
+
+2. Access your new project
+
+   The initial admin email address and password will be shown in the terminal. Directus should now be available at
+   http://localhost:8055 or http://127.0.0.1:8055.
+
+<sub>Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart).</sub>
+
+== NPM Installation
+
+1. Initialize a new Directus project using the CLI
+
+   Replace `<project-name>` with the name you want to use for the project directory.
+
+   ```shell
+   npm init directus-project@latest <project-name>
+   ```
+
+   Follow the prompts to configure your database and create your first admin user.
+
+2. Start your new project
+
+   Run the following commands to start the new project locally:
+
+   ```shell
+   cd <project-name>
+   npx directus start
+   ```
+
+<sub>Learn more about self-hosting Directus in our [Self-Hosted CLI Guide](/self-hosted/cli).</sub>
+
+:::danger Docker is Recommended
+
+While this method works and is maintained, it is not recommended. Docker removes environment-specific quirks that can
+lead to Directus not running properly in some contexts.
+
+Running Directus without Docker may result in errors as a result of environment-specific characteristics. In such a
+case, make sure you have the required system dependencies for `isolated-vm`, `sharp`, and `argon2` installed.
 
 :::
 
-## 2. Create and Access Project
+## 2. Create a Collection
 
-To create a Project, follow the steps below:
-
-1. Open the Team Menu in the Dashboard Header and select or [create](/cloud/teams#create-a-team) the desired Team.
-2. Navigate to **"Projects"** and click **"Create Project"**.
-3. Set the Project Name and tier.
-4. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
-   Note: The **"Demo Project"** adds in dummy data for in-depth feature demonstrations.
-5. Click **"Create Project"**.
-
-_It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
-associated with your Cloud Account. The email will contain your Project URL as well as an email and password to login.
-If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
-in!_
-
-7. You can [access a Project](/cloud/projects#access-a-project) from within the Cloud Dashboard or type the URL into
-   your browser.
-8. Log in with your username and password from the email.
-
-:::tip Check All Inbox Folders
-
-Due to the algorithms used by some email providers, it is possible the email containing your Project login information
-will end up in another folder like "Social" or "Promotions".
-
-:::
-
-:::tip Learn More About Cloud Projects
-
-- [Overview](/cloud/overview)
-- [Cloud Projects](/cloud/projects)
-
-:::
-
-## 3. Create a Collection
-
-Once logged in, you're greeted with the option to create your first [Collection](/getting-started/glossary#collections).
+Once logged in, you're greeted with the option to create your first
+[Collection](/user-guide/overview/glossary#collections).
 
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
 3. Fill in a **Name**.\
    For the sake of this demo, we'll call ours `articles`, but feel free to make it your own!
-4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional System Fields"** menu
-   will open.\
+4. Leave the other options at default. Click <span mi btn>arrow_forward</span> and the **"Optional Fields"** menu will
+   open.\
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 
-:::tip Learn More About Collections
+::: tip Learn More About Collections
 
-- [The Content Module](/app/content)
-- [Create and Manage a Collection](/configuration/data-model/collections.md)
-- [Build Relationships Between Collections](/configuration/data-model/relationships)
+- [The Content Module](/user-guide/content-module/content)
+- [Create and Manage a Collection](/app/data-model/collections)
+- [Build Relationships Between Collections](/app/data-model/relationships)
 
 :::
 
-## 4. Create a Field
+## 3. Create a Field
 
-With your first Collection created, it's time to start adding some [Fields](/getting-started/glossary#fields).
+With your first Collection created, it's time to start adding some [Fields](/user-guide/overview/glossary#fields).
 
 1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
 2. Click the **"Create Field"** button and select the **"Input"** Field type.
@@ -101,27 +125,27 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ::: tip Learn More About Fields
 
-- [Create and Manage Fields in the App](/configuration/data-model)
+- [Create and Manage Fields in the App](/app/data-model)
 
 :::
 
-## 5. Create an Item
+## 4. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to add an [Item](/getting-started/glossary#).
+Now that we have a Collection with a Field configured, it's time to add an [Item](/user-guide/overview/glossary#).
 
 1. Navigate to the Content Module.
 2. Click <span mi btn>add</span> in the page header to open the Item Page.
 3. Fill in the Field Value(s) as desired.
 4. Click <span mi btn>check</span> in the top-right to save your Item.
 
-:::tip Learn More About Items
+::: tip Learn More About Items
 
-- [The Content Module](/app/content)
-- [The Item Page](/app/content/items)
+- [The Content Module](/user-guide/content-module/content)
+- [The Item Page](/user-guide/content-module/content/items)
 
 :::
 
-## 6. Set Roles & Permissions
+## 5. Set Roles & Permissions
 
 Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
 non-authenticated users. Public comes with all permissions turned off and can be reconfigured with fully granular
@@ -134,25 +158,24 @@ of <span mi icon dngr>block</span> **No Access**, with full ability to reconfigu
 API return our Items, let's add some read permissions. For simplicity's sake, we'll do this on the Public Role, instead
 of creating a new Role.
 
-1. Navigate to **Settings Module > Roles & Permissions > Public**.
+1. Navigate to **Settings Module > Access Control > Public**.
 2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
-   In our case, the Collection name is `article`.
+   In our case, the Collection name is `articles`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.
 
 ::: tip Learn More About Roles & Permissions
 
-- [Users, Roles and Permissions](/configuration/users-roles-permissions).
+- [Users, Roles and Permissions](/user-guide/user-management/users-roles-permissions).
 
 :::
 
-## 7. Connect to the API
+## 6. Connect to the API
 
 Now that your Project has some content in it which is exposed to the Public, it's time to start using this content
 externally! Data can be accessed in a number of ways, including the REST and GraphQL API endpoints. In this case, we'll
 use the `/items/` [REST API endpoint](/reference/items) to retrieve the Item we just created.
 
-1. Open `http://your-project-url.directus.app/items/articles`.\
-   You can use the browser or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud)
+1. Open `http://your-project-url.directus.app/items/articles` in your browser.
 
 _And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
 everywhere!_
@@ -172,9 +195,9 @@ _In this example, we made a super-simple read request with the API, but there's 
 exhaustive endpoints for the data model and every single action that you can do in the App can be done via the API. In
 fact, the App is just a GUI powered by the API._
 
-:::tip Learn More About The API
+::: tip Learn More About The API
 
 - [Intro to the API](/reference/introduction)
-- [JS SDK](/reference/sdk)
+- [JavaScript SDK](/guides/sdk/getting-started)
 
 :::

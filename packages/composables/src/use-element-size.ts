@@ -1,5 +1,6 @@
 import { isNil } from 'lodash-es';
-import { isRef, onMounted, onUnmounted, Ref, ref } from 'vue';
+import type { Ref } from 'vue';
+import { isRef, onMounted, onUnmounted, ref } from 'vue';
 
 declare global {
 	interface Window {
@@ -8,7 +9,7 @@ declare global {
 }
 
 export function useElementSize<T extends Element>(
-	target: T | Ref<T> | Ref<undefined>
+	target: T | Ref<T> | Ref<undefined>,
 ): {
 	width: Ref<number>;
 	height: Ref<number>;

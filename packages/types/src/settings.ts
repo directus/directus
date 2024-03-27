@@ -36,11 +36,15 @@ export type Settings = {
 	project_name: string;
 	project_descriptor: string | null;
 	project_url: string | null;
+	report_error_url: string | null;
+	report_bug_url: string | null;
+	report_feature_url: string | null;
 	default_language: string | null;
 	project_color: string | null;
 	project_logo: string | null;
 	public_foreground: string | null;
-	public_background: string | null;
+	public_background: { id: string; type: string } | null;
+	public_favicon: string | null;
 	public_note: string | null;
 	auth_login_attempts: number;
 	auth_password_policy: string | null;
@@ -52,5 +56,9 @@ export type Settings = {
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
-	translation_strings: Record<string, any>[];
+	default_appearance: 'auto' | 'light' | 'dark';
+	default_theme_light: string | null;
+	default_theme_dark: string | null;
+	theme_light_overrides: Record<string, unknown> | null;
+	theme_dark_overrides: Record<string, unknown> | null;
 };

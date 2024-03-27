@@ -1,15 +1,15 @@
-type Job = () => Promise<void> | void;
+import type { PromiseCallback } from '@directus/types';
 
 export class JobQueue {
 	private running: boolean;
-	private jobs: Job[];
+	private jobs: PromiseCallback[];
 
 	constructor() {
 		this.running = false;
 		this.jobs = [];
 	}
 
-	public enqueue(job: Job): void {
+	public enqueue(job: PromiseCallback): void {
 		this.jobs.push(job);
 
 		if (!this.running) {
@@ -27,5 +27,9 @@ export class JobQueue {
 		}
 
 		this.running = false;
+	}
+
+	public get size(): number {
+		return this.jobs.length;
 	}
 }

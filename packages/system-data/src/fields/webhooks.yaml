@@ -1,0 +1,141 @@
+table: directus_webhooks
+
+fields:
+  - field: id
+    hidden: true
+
+  - field: name
+    interface: input
+    options:
+      iconRight: title
+    width: full
+
+  - field: method
+    interface: select-dropdown
+    display: labels
+    display_options:
+      choices:
+        - value: POST
+          foreground: 'var(--theme--primary)'
+          background: 'var(--theme--primary-subdued)'
+        - value: GET
+          foreground: 'var(--theme--secondary)'
+          background: 'var(--secondary-25)'
+      format: false
+    options:
+      choices:
+        - GET
+        - POST
+    width: half
+
+  - field: url
+    interface: input
+    options:
+      iconRight: link
+    width: half
+
+  - field: status
+    interface: select-dropdown
+    display: labels
+    display_options:
+      showAsDot: true
+      choices:
+        - text: $t:field_options.directus_webhooks.status_options_active
+          value: active
+          foreground: 'var(--theme--primary-background)'
+          background: 'var(--theme--primary)'
+        - text: $t:field_options.directus_webhooks.status_options_inactive
+          value: inactive
+          foreground: 'var(--theme--foreground)'
+          background: 'var(--background-normal-alt)'
+    options:
+      choices:
+        - text: $t:field_options.directus_webhooks.status_options_active
+          value: active
+        - text: $t:field_options.directus_webhooks.status_options_inactive
+          value: inactive
+    width: half
+
+  - field: data
+    interface: boolean
+    options:
+      label: $t:fields.directus_webhooks.data_label
+    special:
+      - cast-boolean
+    width: half
+    display: boolean
+
+  - field: headers
+    special:
+      - cast-json
+    interface: list
+    options:
+      template: '{{ header }}: {{ value }}'
+      addLabel: $t:field_options.directus_webhooks.headers.add
+      fields:
+        - field: header
+          name: $t:field_options.directus_webhooks.headers.header
+          type: string
+          meta:
+            interface: input
+            width: half
+        - field: value
+          name: $t:field_options.directus_webhooks.headers.value
+          type: string
+          meta:
+            interface: input
+            width: half
+    width: full
+
+  - field: triggers_divider
+    interface: presentation-divider
+    options:
+      icon: api
+      title: $t:fields.directus_webhooks.triggers
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: actions
+    interface: select-multiple-checkbox
+    options:
+      choices:
+        - text: $t:create
+          value: create
+        - text: $t:update
+          value: update
+        - text: $t:delete_label
+          value: delete
+    special:
+      - cast-csv
+    width: full
+    display: labels
+    display_options:
+      choices:
+        - text: $t:create
+          value: create
+          foreground: 'var(--theme--primary)'
+          background: 'var(--theme--primary-subdued)'
+        - text: $t:update
+          value: update
+          foreground: 'var(--blue)'
+          background: 'var(--blue-25)'
+        - text: $t:delete_label
+          value: delete
+          foreground: 'var(--theme--danger)'
+          background: 'var(--danger-25)'
+        - text: $t:login
+          value: login
+          foreground: 'var(--purple)'
+          background: 'var(--purple-25)'
+
+  - field: collections
+    interface: system-collections
+    special:
+      - cast-csv
+    width: full
+    display: labels
+    display_options:
+      choices: null
+      format: false

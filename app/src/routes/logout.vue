@@ -1,21 +1,17 @@
+<script setup lang="ts">
+import { logout } from '@/auth';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+	logout();
+});
+</script>
+
 <template>
 	<div class="logout">
 		<v-progress-circular indeterminate />
 	</div>
 </template>
-
-<script lang="ts">
-import { defineComponent, onMounted } from 'vue';
-import { logout } from '@/auth';
-
-export default defineComponent({
-	setup() {
-		onMounted(() => {
-			logout();
-		});
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .logout {

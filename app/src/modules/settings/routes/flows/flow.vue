@@ -1,211 +1,25 @@
-<template>
-	<settings-not-found v-if="!flow && !loading" />
-	<private-view v-else :title="flow?.name ?? t('loading')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/flows">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
-		</template>
-
-		<template #title:append>
-			<display-color
-				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
-				class="status-dot"
-				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
-			/>
-		</template>
-
-		<template #actions>
-			<template v-if="editMode">
-				<v-button
-					v-tooltip.bottom="t('clear_changes')"
-					class="clear-changes"
-					rounded
-					icon
-					outlined
-					@click="attemptCancelChanges"
-				>
-					<v-icon name="clear" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<template v-else>
-				<v-button
-					v-tooltip.bottom="t('delete_flow')"
-					class="delete-flow"
-					rounded
-					icon
-					secondary
-					@click="confirmDelete = true"
-				>
-					<v-icon name="delete" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
-					<v-icon name="edit" />
-				</v-button>
-			</template>
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
-			</sidebar-detail>
-
-			<logs-sidebar-detail v-if="flow" :flow="flow" />
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<div v-if="loading || !flow" class="container center">
-			<v-progress-circular indeterminate />
-		</div>
-		<div v-else class="container">
-			<arrows
-				:panels="panels"
-				:arrow-info="arrowInfo"
-				:parent-panels="parentPanels"
-				:edit-mode="editMode"
-				:hovered-panel="hoveredPanelID"
-				:subdued="flow.status === 'inactive'"
-			/>
-			<v-workspace :tiles="panels" :edit-mode="editMode">
-				<template #tile="{ tile }">
-					<operation
-						v-if="flow"
-						:edit-mode="editMode"
-						:panel="tile"
-						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
-						:parent="parentPanels[tile.id]"
-						:flow="flow"
-						:panels-to-be-deleted="panelsToBeDeleted"
-						:is-hovered="hoveredPanelID === tile.id"
-						:subdued="flow.status === 'inactive'"
-						@create="createPanel"
-						@edit="editPanel"
-						@move="movePanelID = $event"
-						@update="stageOperationEdits"
-						@delete="deletePanel"
-						@duplicate="duplicatePanel"
-						@arrow-move="arrowMove"
-						@arrow-stop="arrowStop"
-						@show-hint="hoveredPanelID = $event"
-						@hide-hint="hoveredPanelID = null"
-						@flow-status="stagedFlow.status = $event"
-					/>
-				</template>
-			</v-workspace>
-		</div>
-
-		<flow-drawer
-			v-if="flow"
-			:active="triggerDetailOpen"
-			:primary-key="flow.id"
-			:start-tab="'trigger_setup'"
-			@cancel="triggerDetailOpen = false"
-			@done="triggerDetailOpen = false"
-		/>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
-			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
-
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
-					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = undefined" @esc="movePanelID = undefined">
-			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
-
-				<v-card-text>
-					<v-notice v-if="movePanelChoices.length === 0">
-						{{ t('no_other_flows_copy') }}
-					</v-notice>
-					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="movePanelID = undefined">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button :loading="movePanelLoading" :disabled="movePanelChoices.length === 0" @click="movePanel">
-						{{ t('copy') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<router-view
-			:operation="currentOperation"
-			:existing-operation-keys="exitingOperationKeys"
-			:flow="flow"
-			@save="stageOperation"
-			@cancel="cancelOperation"
-		/>
-	</private-view>
-</template>
-
 <script setup lang="ts">
-import { FlowRaw, OperationRaw } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-
-import { computed, ref, watch } from 'vue';
-import { useFlowsStore } from '@/stores/flows';
-import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { isEmpty, merge, omit, cloneDeep } from 'lodash';
-import { router } from '@/router';
-import { nanoid, customAlphabet } from 'nanoid/non-secure';
-
-import SettingsNotFound from '../not-found.vue';
-import SettingsNavigation from '../../components/navigation.vue';
-import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { AppTile } from '@/components/v-workspace-tile.vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
-import Arrows from './components/arrows.vue';
-import { Vector2 } from '@/utils/vector2';
-import FlowDrawer from './flow-drawer.vue';
-
-import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import { useExtensions } from '@/extensions';
+import { router } from '@/router';
+import { useFlowsStore } from '@/stores/flows';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Vector2 } from '@/utils/vector2';
+import { FlowRaw, OperationRaw } from '@directus/types';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { customAlphabet, nanoid } from 'nanoid/non-secure';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import SettingsNotFound from '../not-found.vue';
+import Arrows from './components/arrows.vue';
+import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
+import Operation, { ArrowInfo, Target } from './components/operation.vue';
+import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import FlowDrawer from './flow-drawer.vue';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
@@ -221,6 +35,12 @@ const props = defineProps<{
 const saving = ref(false);
 
 useShortcut('meta+s', () => {
+	/*
+	 * Prevent saving of the Flow via shortcut when the  "Create Operation",
+	 * "Edit Operation" or "Edit Trigger" drawer is opened
+	 */
+	if (props.operationId || unref(triggerDetailOpen)) return;
+
 	saveChanges();
 });
 
@@ -229,11 +49,17 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
-const fetchedFlow = ref<FlowRaw>();
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		if (!fetchedFlow.value) return undefined;
-		return merge({}, fetchedFlow.value, stagedFlow.value);
+		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+
+		if (!existing) return undefined;
+
+		return merge({}, existing, {
+			status: stagedFlow.value?.status ?? existing.status,
+			operation: stagedFlow.value?.operation ?? existing.operation,
+			operations: stagedFlow.value?.operations ?? existing.operations,
+		});
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
@@ -241,33 +67,6 @@ const flow = computed<FlowRaw | undefined>({
 });
 
 const loading = ref(false);
-
-watch(
-	() => props.primaryKey,
-	() => {
-		loadCurrentFlow();
-	},
-	{ immediate: true }
-);
-
-async function loadCurrentFlow() {
-	if (!props.primaryKey) return;
-
-	loading.value = true;
-
-	try {
-		const response = await api.get(`/flows/${props.primaryKey}`, {
-			params: {
-				fields: ['*', 'operations.*'],
-			},
-		});
-		fetchedFlow.value = response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
 
 const exitingOperationKeys = computed(() => [
 	...(flow.value?.operations || []).map((operation) => operation.key),
@@ -287,8 +86,8 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deleting.value = false;
 		router.push('/settings/flows');
@@ -306,7 +105,7 @@ const hoveredPanelID = ref<string | null>(null);
 
 const panels = computed(() => {
 	const savedPanels = (flow.value?.operations || []).filter(
-		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+		(panel) => panelsToBeDeleted.value.includes(panel.id) === false,
 	);
 
 	const raw = [
@@ -361,18 +160,21 @@ const currentOperation = computed(() => {
 
 const parentPanels = computed(() => {
 	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
-		if (panel.resolve)
+		if (panel.resolve) {
 			acc[panel.resolve] = {
 				id: panel.id,
 				type: 'resolve',
 				loner: true,
 			};
-		if (panel.reject)
+		}
+
+		if (panel.reject) {
 			acc[panel.reject] = {
 				id: panel.id,
 				type: 'reject',
 				loner: true,
 			};
+		}
 
 		return acc;
 	}, {});
@@ -380,15 +182,17 @@ const parentPanels = computed(() => {
 	return Object.fromEntries(
 		Object.entries(parents).map(([key, value]) => {
 			return [key, { ...value, loner: !connectedToTrigger(key) }];
-		})
+		}),
 	);
 
 	function connectedToTrigger(id: string) {
 		let parent = parents[id];
+
 		while (parent?.id !== '$trigger') {
 			if (parent === undefined) return false;
 			parent = parents[parent.id];
 		}
+
 		return true;
 	}
 });
@@ -493,14 +297,13 @@ async function saveChanges() {
 		}
 
 		await flowsStore.hydrate();
-		await loadCurrentFlow();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
 		stagedFlow.value = {};
 		editMode.value = false;
 	} catch (error) {
-		unexpectedError(error as Error);
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -589,32 +392,32 @@ function editPanel(panel: AppTile) {
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }
 
-// ------------- Move Panel To ------------- //
+// ------------- Copy Panel To ------------- //
 
-const movePanelID = ref<string | undefined>();
-const movePanelTo = ref<string | undefined>();
-const movePanelLoading = ref(false);
+const copyPanelId = ref<string | undefined>();
+const copyPanelTo = ref<string | undefined>();
+const copyPanelLoading = ref(false);
 
-const movePanelChoices = computed(() => flowsStore.flows.filter((flow) => flow.id !== props.primaryKey));
+const copyPanelChoices = computed(() => flowsStore.flows.filter((flow) => flow.id !== props.primaryKey));
 
-async function movePanel() {
-	movePanelLoading.value = true;
+async function copyPanel() {
+	copyPanelLoading.value = true;
 
-	const currentPanel = panels.value.find((panel) => panel.id === movePanelID.value);
+	const currentPanel = panels.value.find((panel) => panel.id === copyPanelId.value);
 
 	try {
 		await api.post(`/operations`, {
-			...omit(currentPanel, ['id']),
-			flow: movePanelTo.value,
+			...omit(currentPanel, ['id', 'date_created', 'user_created', 'resolve', 'reject']),
+			flow: copyPanelTo.value,
 		});
 
 		await flowsStore.hydrate();
 
-		movePanelID.value = undefined;
-	} catch (err: any) {
-		unexpectedError(err);
+		copyPanelId.value = undefined;
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
-		movePanelLoading.value = false;
+		copyPanelLoading.value = false;
 	}
 }
 
@@ -631,6 +434,7 @@ function arrowStop() {
 		arrowInfo.value = undefined;
 		return;
 	}
+
 	const nearPanel = getNearAttachment(arrowInfo.value?.pos);
 
 	if (nearPanel && isLoop(arrowInfo.value.id, nearPanel)) {
@@ -639,9 +443,9 @@ function arrowStop() {
 	}
 
 	// make sure only one arrow can be connected to an attachment
-	if (nearPanel && parentPanels.value[nearPanel]) {
-		const currentlyConnected = parentPanels.value[nearPanel];
+	const currentlyConnected = nearPanel && parentPanels.value[nearPanel];
 
+	if (currentlyConnected) {
 		if (currentlyConnected.id === '$trigger') {
 			flow.value = merge({}, flow.value, { operation: null });
 		} else {
@@ -669,10 +473,11 @@ function arrowStop() {
 }
 
 function isLoop(currentId: string, attachTo: string) {
-	let parent = currentId;
+	let parent: string | undefined = currentId;
+
 	while (parent !== undefined) {
 		if (parent === attachTo) return true;
-		parent = parentPanels.value[parent]?.id ?? undefined;
+		parent = parentPanels.value[parent]?.id;
 	}
 
 	return false;
@@ -682,10 +487,12 @@ function getNearAttachment(pos: Vector2) {
 	for (const panel of panels.value) {
 		const attachmentPos = new Vector2(
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
-			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
+			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y,
 		);
+
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
+
 	return undefined;
 }
 
@@ -694,7 +501,7 @@ function getNearAttachment(pos: Vector2) {
 const hasEdits = computed(() => stagedPanels.value.length > 0 || panelsToBeDeleted.value.length > 0);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
-	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}/`),
+	ignorePrefix: computed(() => `/settings/flows/${props.primaryKey}`),
 });
 
 const confirmCancel = ref(false);
@@ -723,12 +530,195 @@ function discardAndLeave() {
 }
 </script>
 
+<template>
+	<settings-not-found v-if="!flow && !loading" />
+	<private-view v-else :title="flow?.name ?? t('loading')">
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact to="/settings/flows">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
+		</template>
+
+		<template #title:append>
+			<display-color
+				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
+				class="status-dot"
+				:value="flow?.status === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
+			/>
+		</template>
+
+		<template #actions>
+			<template v-if="editMode">
+				<v-button
+					v-tooltip.bottom="t('clear_changes')"
+					class="clear-changes"
+					rounded
+					icon
+					outlined
+					@click="attemptCancelChanges"
+				>
+					<v-icon name="clear" />
+				</v-button>
+
+				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<template v-else>
+				<v-button
+					v-tooltip.bottom="t('delete_flow')"
+					class="delete-flow"
+					rounded
+					icon
+					secondary
+					@click="confirmDelete = true"
+				>
+					<v-icon name="delete" />
+				</v-button>
+
+				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
+					<v-icon name="edit" />
+				</v-button>
+			</template>
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
+			</sidebar-detail>
+
+			<logs-sidebar-detail v-if="flow" :flow="flow" />
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<div v-if="loading || !flow" class="container center">
+			<v-progress-circular indeterminate />
+		</div>
+		<div v-else class="container">
+			<arrows
+				:panels="panels"
+				:arrow-info="arrowInfo"
+				:parent-panels="parentPanels"
+				:edit-mode="editMode"
+				:hovered-panel="hoveredPanelID"
+				:subdued="flow.status === 'inactive'"
+			/>
+			<v-workspace :tiles="panels" :edit-mode="editMode">
+				<template #tile="{ tile }">
+					<operation
+						v-if="flow"
+						:edit-mode="editMode"
+						:panel="tile"
+						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
+						:parent="parentPanels[tile.id]"
+						:flow="flow"
+						:panels-to-be-deleted="panelsToBeDeleted"
+						:is-hovered="hoveredPanelID === tile.id"
+						:subdued="flow.status === 'inactive'"
+						@create="createPanel"
+						@edit="editPanel"
+						@move="copyPanelId = $event"
+						@update="stageOperationEdits"
+						@delete="deletePanel"
+						@duplicate="duplicatePanel"
+						@arrow-move="arrowMove"
+						@arrow-stop="arrowStop"
+						@show-hint="hoveredPanelID = $event"
+						@hide-hint="hoveredPanelID = null"
+						@flow-status="stagedFlow.status = $event"
+					/>
+				</template>
+			</v-workspace>
+		</div>
+
+		<flow-drawer
+			v-if="flow"
+			:active="triggerDetailOpen"
+			:primary-key="flow.id"
+			:start-tab="'trigger_setup'"
+			@cancel="triggerDetailOpen = false"
+			@done="triggerDetailOpen = false"
+		/>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">{{ t('discard_changes') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelChanges">{{ t('discard_changes') }}</v-button>
+					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
+			<v-card>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
+
+				<v-card-actions>
+					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
+					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="!!copyPanelId" @update:model-value="copyPanelId = undefined" @esc="copyPanelId = undefined">
+			<v-card>
+				<v-card-title>{{ t('copy_to') }}</v-card-title>
+
+				<v-card-text>
+					<v-notice v-if="copyPanelChoices.length === 0">
+						{{ t('no_other_flows_copy') }}
+					</v-notice>
+					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="copyPanelId = undefined">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :loading="copyPanelLoading" :disabled="copyPanelChoices.length === 0" @click="copyPanel">
+						{{ t('copy') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<router-view
+			:operation="currentOperation"
+			:existing-operation-keys="exitingOperationKeys"
+			:flow="flow"
+			@save="stageOperation"
+			@cancel="cancelOperation"
+		/>
+	</private-view>
+</template>
+
 <style scoped lang="scss">
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .status-dot {
@@ -748,12 +738,12 @@ function discardAndLeave() {
 }
 
 .clear-changes {
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 }
 
 .delete-flow {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 

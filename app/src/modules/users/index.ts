@@ -1,4 +1,4 @@
-import { defineModule } from '@directus/utils';
+import { defineModule } from '@directus/extensions';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 
@@ -43,7 +43,7 @@ export default defineModule({
 		if (admin) return true;
 
 		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_users' && permission.action === 'read'
+			(permission) => permission.collection === 'directus_users' && permission.action === 'read',
 		);
 
 		return !!permission;

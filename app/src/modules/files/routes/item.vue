@@ -1,3 +1,224 @@
+<script setup lang="ts">
+import api from '@/api';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImageEditor from '@/views/private/components/image-editor.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import type { Field, File } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
+import FilesNotFound from './not-found.vue';
+
+const props = defineProps<{
+	primaryKey: string;
+}>();
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const form = ref<HTMLElement>();
+const { primaryKey } = toRefs(props);
+const { breadcrumb } = useBreadcrumb();
+
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	permissions,
+	saving,
+	loading,
+	save,
+	remove,
+	deleting,
+	saveAsCopy,
+	refresh,
+	validationErrors,
+} = useItem<File>(ref('directus_files'), primaryKey);
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, fields },
+} = permissions;
+
+const isSavable = computed(() => saveAllowed.value && hasEdits.value);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+const confirmDelete = ref(false);
+const editActive = ref(false);
+
+// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
+const fieldsDenyList: string[] = [
+	'type',
+	'width',
+	'height',
+	'filesize',
+	'uploaded_by',
+	'uploaded_on',
+	'modified_by',
+	'modified_on',
+	'duration',
+	'folder',
+	'charset',
+	'embed',
+];
+
+const to = computed(() => {
+	if (item.value && item.value?.folder) return `/files/folders/${item.value.folder}`;
+	else return '/files';
+});
+
+const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+
+useShortcut('meta+s', saveAndStay, form);
+
+const fieldsFiltered = computed(() => {
+	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+});
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	if (item?.value?.folder) {
+		router.push(`/files/folders/${item.value.folder}`);
+	} else {
+		router.push('/files');
+	}
+}
+
+function useBreadcrumb() {
+	const breadcrumb = computed(() => {
+		if (!item?.value?.folder) {
+			return [
+				{
+					name: t('file_library'),
+					to: '/files',
+				},
+			];
+		}
+
+		return [
+			{
+				name: t('file_library'),
+				to: { path: `/files/folders/${item.value.folder}` },
+			},
+		];
+	});
+
+	return { breadcrumb };
+}
+
+async function saveAndQuit() {
+	try {
+		await save();
+		router.push(to.value);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAndStay() {
+	try {
+		await save();
+		revisionsDrawerDetailRef.value?.refresh?.();
+		refresh();
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAsCopyAndNavigate() {
+	const newPrimaryKey = await saveAsCopy();
+	if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
+}
+
+async function deleteAndQuit() {
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(to.value);
+	} catch {
+		// `remove` will show the unexpected error dialog
+		confirmDelete.value = false;
+	}
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
+
+function useMovetoFolder() {
+	const moveToDialogActive = ref(false);
+	const moving = ref(false);
+	const selectedFolder = ref<string | null>(null);
+
+	watch(item, () => {
+		selectedFolder.value = item.value?.folder || null;
+	});
+
+	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+	async function moveToFolder() {
+		moving.value = true;
+
+		try {
+			const response = await api.patch(
+				`/files/${props.primaryKey}`,
+				{
+					folder: selectedFolder.value,
+				},
+				{
+					params: {
+						fields: 'folder.name',
+					},
+				},
+			);
+
+			refresh();
+			const folder = response.data.data.folder?.name || t('file_library');
+
+			notify({
+				title: t('file_moved', { folder }),
+				icon: 'folder_move',
+			});
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			moveToDialogActive.value = false;
+			moving.value = false;
+		}
+	}
+}
+</script>
+
 <template>
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? t('loading') : item.title">
@@ -77,7 +298,7 @@
 			</v-button>
 
 			<v-button
-				v-if="item && item.type.includes('image')"
+				v-if="item?.type?.includes('image')"
 				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
@@ -110,31 +331,13 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="item && item.folder" />
+			<files-navigation :current-folder="item?.folder ?? undefined" />
 		</template>
 
 		<div class="file-item">
-			<div class="preview">
-				<file-preview
-					v-if="isBatch === false && item"
-					:src="fileSrc"
-					:mime="item.type"
-					:width="item.width"
-					:height="item.height"
-					:title="item.title"
-				/>
+			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
 
-				<button v-if="isBatch === false && item" class="replace-toggle" @click="replaceFileDialogActive = true">
-					{{ t('replace_file') }}
-				</button>
-			</div>
-
-			<image-editor
-				v-if="item && item.type.startsWith('image')"
-				:id="item.id"
-				v-model="editActive"
-				@refresh="refresh"
-			/>
+			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
 			<v-form
 				ref="form"
@@ -142,7 +345,6 @@
 				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
-				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
@@ -163,265 +365,26 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" />
+			<file-info-sidebar-detail :file="item" :is-new="isNew" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 			/>
-			<comments-sidebar-detail
-				v-if="isBatch === false && isNew === false"
-				collection="directus_files"
-				:primary-key="primaryKey"
-			/>
+			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
-
-		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
 	</private-view>
 </template>
 
-<script lang="ts" setup>
-import api from '@/api';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import FilePreview from '@/views/private/components/file-preview.vue';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import ImageEditor from '@/views/private/components/image-editor.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
-import { Field } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNavigation from '../components/navigation.vue';
-import ReplaceFile from '../components/replace-file.vue';
-import FilesNotFound from './not-found.vue';
-
-interface Props {
-	primaryKey: string;
-}
-
-const props = defineProps<Props>();
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const form = ref<HTMLElement>();
-const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-const replaceFileDialogActive = ref(false);
-
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
-
-const {
-	isNew,
-	edits,
-	hasEdits,
-	item,
-	saving,
-	loading,
-	save,
-	remove,
-	deleting,
-	saveAsCopy,
-	isBatch,
-	refresh,
-	validationErrors,
-} = useItem(ref('directus_files'), primaryKey);
-
-const isSavable = computed(() => saveAllowed.value && hasEdits.value);
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const confirmDelete = ref(false);
-const editActive = ref(false);
-const fileSrc = computed(() => {
-	if (item.value && item.value.modified_on) {
-		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
-	}
-
-	return `assets/${props.primaryKey}?key=system-large-contain`;
-});
-
-// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
-const fieldsDenyList: string[] = [
-	'type',
-	'width',
-	'height',
-	'filesize',
-	'checksum',
-	'uploaded_by',
-	'uploaded_on',
-	'modified_by',
-	'modified_on',
-	'duration',
-	'folder',
-	'charset',
-	'embed',
-];
-
-const to = computed(() => {
-	if (item.value && item.value?.folder) return `/files/folders/${item.value.folder}`;
-	else return '/files';
-});
-
-const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
-
-useShortcut('meta+s', saveAndStay, form);
-
-const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-	ref('directus_files'),
-	item,
-	isNew
-);
-
-const fieldsFiltered = computed(() => {
-	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
-});
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	if (item?.value?.folder) {
-		router.push(`/files/folders/${item.value.folder}`);
-	} else {
-		router.push('/files');
-	}
-}
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!item?.value?.folder) {
-			return [
-				{
-					name: t('file_library'),
-					to: '/files',
-				},
-			];
-		}
-
-		return [
-			{
-				name: t('file_library'),
-				to: { path: `/files/folders/${item.value.folder}` },
-			},
-		];
-	});
-
-	return { breadcrumb };
-}
-
-async function saveAndQuit() {
-	try {
-		await save();
-		router.push(to.value);
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function saveAndStay() {
-	try {
-		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
-	} catch {
-		// `save` will show unexpected error dialog
-	}
-}
-
-async function saveAsCopyAndNavigate() {
-	const newPrimaryKey = await saveAsCopy();
-	if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
-}
-
-async function deleteAndQuit() {
-	try {
-		await remove();
-		edits.value = {};
-		router.replace(to.value);
-	} catch {
-		// `remove` will show the unexpected error dialog
-		confirmDelete.value = false;
-	}
-}
-
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	edits.value = {};
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
-
-function discardAndStay() {
-	edits.value = {};
-	confirmLeave.value = false;
-}
-
-function useMovetoFolder() {
-	const moveToDialogActive = ref(false);
-	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
-
-	watch(item, () => {
-		selectedFolder.value = item.value?.folder || null;
-	});
-
-	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
-
-	async function moveToFolder() {
-		moving.value = true;
-
-		try {
-			const response = await api.patch(
-				`/files/${props.primaryKey}`,
-				{
-					folder: selectedFolder.value,
-				},
-				{
-					params: {
-						fields: 'folder.name',
-					},
-				}
-			);
-
-			await refresh();
-			const folder = response.data.data.folder?.name || t('file_library');
-
-			notify({
-				title: t('file_moved', { folder }),
-				icon: 'folder_move',
-			});
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			moveToDialogActive.value = false;
-			moving.value = false;
-		}
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background-normal);
 }
 
 .file-item {
@@ -430,13 +393,6 @@ function useMovetoFolder() {
 }
 
 .preview {
-	margin-bottom: var(--form-vertical-gap);
-}
-
-.replace-toggle {
-	color: var(--primary);
-	cursor: pointer;
-	font-weight: 600;
-	margin-top: 12px;
+	margin-bottom: var(--theme--form--row-gap);
 }
 </style>

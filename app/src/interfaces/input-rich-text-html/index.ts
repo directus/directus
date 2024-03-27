@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -252,9 +252,6 @@ export default defineInterface({
 					interface: 'system-folder',
 					note: '$t:interfaces.input-rich-text-html.folder_note',
 				},
-				schema: {
-					default_value: undefined,
-				},
 			},
 			{
 				field: 'imageToken',
@@ -287,6 +284,7 @@ export default defineInterface({
 				type: 'json',
 				meta: {
 					interface: 'code',
+					note: '$t:interfaces.input-rich-text-html.custom_formats_note',
 					options: {
 						language: 'json',
 						template: JSON.stringify(
@@ -300,7 +298,7 @@ export default defineInterface({
 								},
 							],
 							null,
-							4
+							4,
 						),
 					},
 				},
@@ -311,8 +309,17 @@ export default defineInterface({
 				type: 'json',
 				meta: {
 					interface: 'code',
+					note: '$t:interfaces.input-rich-text-html.options_override_note',
 					options: {
 						language: 'json',
+						template: JSON.stringify(
+							{
+								font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+								font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace;',
+							},
+							null,
+							4,
+						),
 					},
 				},
 			},

@@ -36,19 +36,19 @@ describe('Operations / Item Read', () => {
 	])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, permissions } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService).toHaveBeenCalledWith(
 			testCollection,
-			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
+			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
 		);
 	});
 
 	test('should have fallback when query is not defined', async () => {
 		await config.handler(
 			{ collection: testCollection } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({}, expect.anything());
@@ -57,7 +57,7 @@ describe('Operations / Item Read', () => {
 	test.each([undefined, []])('should call readByQuery with correct query when key is $payload', async (key) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(testQuery, expect.anything());
@@ -68,7 +68,7 @@ describe('Operations / Item Read', () => {
 	test('should emit events for readByQuery when true', async () => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(testQuery, { emitEvents: true });
@@ -77,7 +77,7 @@ describe('Operations / Item Read', () => {
 	test.each([undefined, false])('should not emit events for readByQuery when %s', async (emitEvents) => {
 		await config.handler(
 			{ collection: testCollection, query: testQuery, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith(testQuery, { emitEvents: false });
@@ -86,7 +86,7 @@ describe('Operations / Item Read', () => {
 	test.each([1, [1]])('should call readOne when key is $payload', async (key) => {
 		await config.handler(
 			{ collection: testCollection, key } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).not.toHaveBeenCalled();
@@ -96,9 +96,10 @@ describe('Operations / Item Read', () => {
 
 	test('should emit events for readOne when true', async () => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readOne).toHaveBeenCalledWith(key, {}, { emitEvents: true });
@@ -106,9 +107,10 @@ describe('Operations / Item Read', () => {
 
 	test.each([undefined, false])('should not emit events for readOne when %s', async (emitEvents) => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readOne).toHaveBeenCalledWith(key, {}, { emitEvents: false });
@@ -117,7 +119,7 @@ describe('Operations / Item Read', () => {
 	test('should call readMany when key is an array with more than one item', async () => {
 		await config.handler(
 			{ collection: testCollection, key: [1, 2, 3] } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readByQuery).not.toHaveBeenCalled();
@@ -127,9 +129,10 @@ describe('Operations / Item Read', () => {
 
 	test('should emit events for readMany when true', async () => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readMany).toHaveBeenCalledWith(keys, {}, { emitEvents: true });
@@ -137,9 +140,10 @@ describe('Operations / Item Read', () => {
 
 	test.each([undefined, false])('should not emit events for readMany when %s', async (emitEvents) => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
+			{ accountability: testAccountability, getSchema } as any,
 		);
 
 		expect(ItemsService.prototype.readMany).toHaveBeenCalledWith(keys, {}, { emitEvents: false });

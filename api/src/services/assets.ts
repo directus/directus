@@ -1,53 +1,56 @@
+import { useEnv } from '@directus/env';
+import {
+	ForbiddenError,
+	IllegalAssetTransformationError,
+	RangeNotSatisfiableError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import type { Range, Stat } from '@directus/storage';
-import type { Accountability } from '@directus/types';
+import type { Accountability, File } from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
+import type { FailOnOptions } from 'sharp';
 import sharp from 'sharp';
-import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { ForbiddenException } from '../exceptions/forbidden.js';
-import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
-import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { getStorage } from '../storage/index.js';
-import type {
-	AbstractServiceOptions,
-	File,
-	Transformation,
-	TransformationParams,
-	TransformationPreset,
-} from '../types/index.js';
+import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { FilesService } from './files.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
+	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
+		this.filesService = new FilesService({ ...options, accountability: null });
 		this.authorizationService = new AuthorizationService(options);
 	}
 
 	async getAsset(
 		id: string,
-		transformation: TransformationParams | TransformationPreset,
-		range?: Range
+		transformation?: TransformationSet,
+		range?: Range,
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
-			.select('project_logo', 'public_background', 'public_foreground')
+			.select('project_logo', 'public_background', 'public_foreground', 'public_favicon')
 			.from('directus_settings')
 			.first();
 
@@ -58,21 +61,17 @@ export class AssetsService {
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
 		 */
-		const isValidUUID = validateUUID(id, 4);
-
-		if (isValidUUID === false) throw new ForbiddenException();
+		if (!isValidUuid(id)) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
-
-		if (!file) throw new ForbiddenException();
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
-		if (!exists) throw new ForbiddenException();
+		if (!exists) throw new ForbiddenError();
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;
@@ -81,7 +80,7 @@ export class AssetsService {
 			const endUnderflow = range.end !== undefined && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableException(range);
+				throw new RangeNotSatisfiableError({ range });
 			}
 
 			const lastByte = file.filesize - 1;
@@ -113,7 +112,7 @@ export class AssetsService {
 		}
 
 		const type = file.type;
-		const transforms = TransformationUtils.resolvePreset(transformation, file);
+		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
@@ -145,28 +144,28 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
-				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
+				width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
+				height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
 			) {
-				throw new IllegalAssetTransformation(
-					`Image is too large to be transformed, or image size couldn't be determined.`
-				);
+				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
+				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}
 
 			const { queue, process } = sharp.counters();
 
-			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
-				throw new ServiceUnavailableException('Server too busy', {
+			if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
+				throw new ServiceUnavailableError({
 					service: 'files',
+					reason: 'Server too busy',
 				});
 			}
 
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
 			const transformer = sharp({
-				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
+				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number, 2),
 				sequentialRead: true,
-				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
+				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'] as FailOnOptions,
 			});
 
 			transformer.timeout({
@@ -182,7 +181,21 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
-			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			try {
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			} catch (error) {
+				try {
+					await storage.location(file.storage).delete(assetFilename);
+				} catch {
+					// Ignored to prevent original error from being overwritten
+				}
+
+				if ((error as Error)?.message?.includes('timeout')) {
+					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
+				} else {
+					throw error;
+				}
+			}
 
 			return {
 				stream: await storage.location(file.storage).read(assetFilename, range),

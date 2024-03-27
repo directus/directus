@@ -1,13 +1,6 @@
 import type { Type } from '@directus/types';
-import {
-	GraphQLBoolean,
-	GraphQLFloat,
-	GraphQLInt,
-	GraphQLList,
-	GraphQLScalarType,
-	GraphQLString,
-	GraphQLType,
-} from 'graphql';
+import type { GraphQLType } from 'graphql';
+import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLScalarType, GraphQLString } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
 import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
 import { GraphQLDate } from '../services/graphql/types/date.js';
@@ -16,7 +9,7 @@ import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',
-	special: string[]
+	special: string[],
 ): GraphQLScalarType | GraphQLList<GraphQLType> {
 	if (special.includes('conceal')) {
 		return GraphQLHash;

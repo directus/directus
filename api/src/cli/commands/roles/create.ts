@@ -1,10 +1,11 @@
 import { getSchema } from '../../../utils/get-schema.js';
 import { RolesService } from '../../../services/roles.js';
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 export default async function rolesCreate({ role: name, admin }: { role: string; admin: boolean }): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	if (!name) {
 		logger.error('Name is required');

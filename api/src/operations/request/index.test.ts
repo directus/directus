@@ -31,16 +31,18 @@ test('no headers configured', async () => {
 			method,
 			data: body,
 			headers: {},
-		})
+		}),
 	);
 });
 
 test('headers array is converted to object', async () => {
 	const body = 'body';
+
 	const headers = [
 		{ header: 'header1', value: 'value1' },
 		{ header: 'header2', value: 'value2' },
 	];
+
 	await config.handler({ url, method, body, headers }, {} as any);
 
 	expect(axiosDefault).toHaveBeenCalledWith(
@@ -52,7 +54,7 @@ test('headers array is converted to object', async () => {
 				header1: 'value1',
 				header2: 'value2',
 			}),
-		})
+		}),
 	);
 });
 
@@ -69,7 +71,7 @@ test('should not automatically set Content-Type header when it is already define
 			headers: expect.objectContaining({
 				'Content-Type': expect.not.stringContaining('application/json'),
 			}),
-		})
+		}),
 	);
 });
 
@@ -86,7 +88,7 @@ test('should not automatically set Content-Type header to "application/json" whe
 			headers: expect.not.objectContaining({
 				'Content-Type': 'application/json',
 			}),
-		})
+		}),
 	);
 });
 
@@ -104,6 +106,6 @@ test('should automatically set Content-Type header to "application/json" when th
 				header1: 'value1',
 				'Content-Type': 'application/json',
 			}),
-		})
+		}),
 	);
 });

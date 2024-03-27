@@ -1,3 +1,73 @@
+<script setup lang="ts">
+import api from '@/api';
+import { router } from '@/router';
+import { useInsightsStore } from '@/stores/insights';
+import { Dashboard } from '@/types/insights';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { isEqual } from 'lodash';
+import { reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	modelValue?: boolean;
+	dashboard?: Dashboard;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const { t } = useI18n();
+
+const insightsStore = useInsightsStore();
+
+const values = reactive({
+	name: props.dashboard?.name ?? null,
+	icon: props.dashboard?.icon ?? 'dashboard',
+	color: props.dashboard?.color ?? null,
+	note: props.dashboard?.note ?? null,
+});
+
+watch(
+	() => props.modelValue,
+	(newValue, oldValue) => {
+		if (isEqual(newValue, oldValue) === false) {
+			values.name = props.dashboard?.name ?? null;
+			values.icon = props.dashboard?.icon ?? 'space_dashboard';
+			values.color = props.dashboard?.color ?? null;
+			values.note = props.dashboard?.note ?? null;
+		}
+	},
+);
+
+const saving = ref(false);
+
+function cancel() {
+	emit('update:modelValue', false);
+}
+
+async function save() {
+	saving.value = true;
+
+	try {
+		if (props.dashboard) {
+			await api.patch(`/dashboards/${props.dashboard.id}`, values, { params: { fields: ['id'] } });
+			await insightsStore.hydrate();
+		} else {
+			const response = await api.post('/dashboards', values, { params: { fields: ['id'] } });
+			await insightsStore.hydrate();
+			router.push(`/insights/${response.data.data.id}`);
+		}
+
+		emit('update:modelValue', false);
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		saving.value = false;
+	}
+}
+</script>
+
 <template>
 	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
@@ -28,84 +98,6 @@
 		</v-card>
 	</v-dialog>
 </template>
-
-<script lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
-import { router } from '@/router';
-import { Dashboard } from '@/types/insights';
-import { useI18n } from 'vue-i18n';
-import { isEqual } from 'lodash';
-
-export default defineComponent({
-	name: 'DashboardDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		dashboard: {
-			type: Object as PropType<Dashboard>,
-			default: null,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const insightsStore = useInsightsStore();
-
-		const values = reactive({
-			name: props.dashboard?.name ?? null,
-			icon: props.dashboard?.icon ?? 'dashboard',
-			color: props.dashboard?.color ?? null,
-			note: props.dashboard?.note ?? null,
-		});
-
-		watch(
-			() => props.modelValue,
-			(newValue, oldValue) => {
-				if (isEqual(newValue, oldValue) === false) {
-					values.name = props.dashboard?.name ?? null;
-					values.icon = props.dashboard?.icon ?? 'dashboard';
-					values.color = props.dashboard?.color ?? null;
-					values.note = props.dashboard?.note ?? null;
-				}
-			}
-		);
-
-		const saving = ref(false);
-
-		return { values, cancel, saving, save, t };
-
-		function cancel() {
-			emit('update:modelValue', false);
-		}
-
-		async function save() {
-			saving.value = true;
-
-			try {
-				if (props.dashboard) {
-					await api.patch(`/dashboards/${props.dashboard.id}`, values, { params: { fields: ['id'] } });
-					await insightsStore.hydrate();
-				} else {
-					const response = await api.post('/dashboards', values, { params: { fields: ['id'] } });
-					await insightsStore.hydrate();
-					router.push(`/insights/${response.data.data.id}`);
-				}
-				emit('update:modelValue', false);
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-	},
-});
-</script>
 
 <style scoped>
 .fields {

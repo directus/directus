@@ -26,14 +26,16 @@ type UsableLink = {
 
 export default function useLink(editor: Ref<any>): UsableLink {
 	const linkDrawerOpen = ref(false);
+
 	const defaultLinkSelection = {
 		url: null,
 		displayText: null,
 		title: null,
 		newTab: true,
 	};
+
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
-	const linkNode = ref<HTMLLinkElement | null>(null);
+	const linkNode: Ref<HTMLLinkElement | null> = ref(null);
 	const currentSelectionNode = ref<HTMLElement | null>(null);
 
 	const linkButton = {
@@ -65,8 +67,14 @@ export default function useLink(editor: Ref<any>): UsableLink {
 					newTab: target === '_blank',
 				};
 			} else {
-				const overrideLinkSelection = { displayText: editor.value.selection.getContent() || null };
-				setLinkSelection(overrideLinkSelection);
+				const selectedContent = editor.value.selection.getContent();
+
+				try {
+					const url = new URL(selectedContent).toString();
+					setLinkSelection({ url });
+				} catch {
+					setLinkSelection({ displayText: selectedContent || null });
+				}
 			}
 		},
 		onSetup: (buttonApi: any) => {
@@ -110,13 +118,16 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		editor.value.fire('focus');
 
 		const link = linkSelection.value;
+
 		if (link.url === null) {
 			if (linkNode.value) {
 				editor.value.selection.setContent(linkNode.value.innerText);
 				closeLinkDrawer();
 			}
+
 			return;
 		}
+
 		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} target="${
 			link.newTab ? '_blank' : '_self'
 		}" >${link.displayText || link.url}</a>`;

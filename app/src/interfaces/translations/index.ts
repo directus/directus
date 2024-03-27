@@ -1,7 +1,7 @@
-import { defineInterface } from '@directus/utils';
-import InterfaceTranslations from './translations.vue';
 import { useFieldsStore } from '@/stores/fields';
+import { defineInterface } from '@directus/extensions';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceTranslations from './translations.vue';
 
 export default defineInterface({
 	id: 'translations',
@@ -25,6 +25,7 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
+
 		return [
 			{
 				field: 'languageField',
@@ -75,6 +76,21 @@ export default defineInterface({
 					interface: 'boolean',
 					options: {
 						label: '$t:interfaces.translations.enable',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'defaultOpenSplitView',
+				name: '$t:interfaces.translations.default_split_view_state',
+				type: 'boolean',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'toggle',
+					options: {
+						label: '$t:start_open',
 					},
 					width: 'half',
 				},

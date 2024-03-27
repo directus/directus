@@ -1,10 +1,10 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect opacity=".25" x="103" y="52" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity=".25" x="19" y="52" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity=".25" x="131" y="52" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity=".25" x="47" y="52" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity=".25" x="75" y="52" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity=".25" x="18" y="42" width="120" height="2" rx="1" fill="var(--primary)"/>
-	<rect x="18" y="42" width="81" height="2" rx="1" fill="var(--primary)"/>
-	<circle cx="106" cy="43" r="5" fill="var(--primary)"/>
+	<rect opacity=".25" x="103" y="52" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity=".25" x="19" y="52" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity=".25" x="131" y="52" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity=".25" x="47" y="52" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity=".25" x="75" y="52" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity=".25" x="18" y="42" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
+	<rect x="18" y="42" width="81" height="2" rx="1" fill="var(--theme--primary)"/>
+	<circle cx="106" cy="43" r="5" fill="var(--theme--primary)"/>
 </svg>

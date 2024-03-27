@@ -16,7 +16,7 @@ beforeEach(() => {
 			createSpy: () => (collection) => {
 				return { collection, field: primaryKeyField };
 			},
-		})
+		}),
 	);
 });
 

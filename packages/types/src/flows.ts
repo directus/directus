@@ -1,4 +1,5 @@
 export type TriggerType = 'event' | 'schedule' | 'operation' | 'webhook' | 'manual';
+
 type Status = 'active' | 'inactive';
 
 export interface Flow {

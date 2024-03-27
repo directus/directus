@@ -28,10 +28,11 @@
 #   CockroachDB:
 #     User:          root
 
-version: '3.1'
+version: '3.8'
+
 services:
   postgres:
-    image: postgis/postgis:13-3.1-alpine
+    image: postgis/postgis:13-3.4-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -39,7 +40,7 @@ services:
       - 6100:5432
 
   postgres10:
-    image: postgis/postgis:10-3.1-alpine
+    image: postgis/postgis:10-3.2-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -66,7 +67,7 @@ services:
       - 6103:3306
 
   maria:
-    image: mariadb:10.7
+    image: mariadb:10
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -91,6 +92,7 @@ services:
     shm_size: '1gb' # more like smh-size ammirite 🥁
 
   cockroachdb:
+    # change in the YY.R component denotes a major release
     image: cockroachdb/cockroach:latest-v21.1
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
@@ -101,18 +103,9 @@ services:
     ports:
       - 6108:6379
 
-  auth-saml:
-    image: kristophjunge/test-saml-idp
-    ports:
-      - 8880:8080
-    environment:
-      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
-      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-
   minio:
-    image: minio/minio:latest
+    # should stay compatible via S3 driver
+    image: minio/minio
     command: server /data/minio/ --console-address :9001
     ports:
       - 8881:9000
@@ -130,3 +123,13 @@ services:
       directusminio/directus-blackbox-test; while true; do
           sleep 3600;
       done "
+
+  auth-saml:
+    image: kristophjunge/test-saml-idp
+    ports:
+      - 8880:8080
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

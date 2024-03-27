@@ -1,7 +1,8 @@
 import api from '@/api';
-import emitter, { Events } from '@/events';
+import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
+import type { AxiosProgressEvent } from 'axios';
 import { unexpectedError } from './unexpected-error';
 
 export async function uploadFile(
@@ -11,7 +12,7 @@ export async function uploadFile(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
-	}
+	},
 ): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
@@ -46,12 +47,12 @@ export async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 
-	function onUploadProgress(progressEvent: { loaded: number; total: number }) {
-		const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+	function onUploadProgress(progressEvent: AxiosProgressEvent) {
+		const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
 		progressHandler(percentCompleted);
 	}
 }

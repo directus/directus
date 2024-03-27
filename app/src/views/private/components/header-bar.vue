@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+import HeaderBarActions from './header-bar-actions.vue';
+
+withDefaults(
+	defineProps<{
+		title?: string;
+		showSidebarToggle?: boolean;
+		primaryActionIcon?: string;
+		small?: boolean;
+		shadow?: boolean;
+	}>(),
+	{
+		primaryActionIcon: 'menu',
+		shadow: true,
+	},
+);
+
+defineEmits<{
+	(e: 'primary'): void;
+	(e: 'toggle:sidebar'): void;
+}>();
+
+const headerEl = ref<Element>();
+
+const collapsed = ref(false);
+
+const observer = new IntersectionObserver(
+	([e]) => {
+		collapsed.value = e.boundingClientRect.y === -1;
+	},
+	{ threshold: [1] },
+);
+
+onMounted(() => {
+	observer.observe(headerEl.value as HTMLElement);
+});
+
+onUnmounted(() => {
+	observer.disconnect();
+});
+</script>
+
 <template>
 	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
@@ -16,7 +59,9 @@
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
-					<h1 class="type-title">{{ title }}</h1>
+					<h1 class="type-title">
+						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
+					</h1>
 					<slot name="title:append" />
 				</slot>
 			</div>
@@ -36,60 +81,6 @@
 	</header>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
-import HeaderBarActions from './header-bar-actions.vue';
-
-export default defineComponent({
-	components: { HeaderBarActions },
-	props: {
-		title: {
-			type: String,
-			default: null,
-		},
-		showSidebarToggle: {
-			type: Boolean,
-			default: false,
-		},
-		primaryActionIcon: {
-			type: String,
-			default: 'menu',
-		},
-		small: {
-			type: Boolean,
-			default: false,
-		},
-		shadow: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['primary', 'toggle:sidebar'],
-	setup() {
-		const headerEl = ref<Element>();
-
-		const collapsed = ref(false);
-
-		const observer = new IntersectionObserver(
-			([e]) => {
-				collapsed.value = e.boundingClientRect.y === -1;
-			},
-			{ threshold: [1] }
-		);
-
-		onMounted(() => {
-			observer.observe(headerEl.value as HTMLElement);
-		});
-
-		onUnmounted(() => {
-			observer.disconnect();
-		});
-
-		return { headerEl, collapsed };
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .header-bar {
 	position: sticky;
@@ -100,12 +91,15 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: var(--header-bar-height);
+	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	margin: 0;
 	padding: 0 10px;
-	background-color: var(--background-page);
+	background-color: var(--theme--header--background);
 	box-shadow: 0;
-	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
+	transition:
+		box-shadow var(--medium) var(--transition),
+		margin var(--fast) var(--transition);
+	border-bottom: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.nav-toggle {
 		@media (min-width: 960px) {
@@ -138,7 +132,6 @@ export default defineComponent({
 		&.full {
 			margin-right: 12px;
 			padding-right: 0;
-
 			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;
@@ -146,15 +139,17 @@ export default defineComponent({
 		}
 
 		.headline {
+			--v-breadcrumb-color: var(--theme--header--headline--foreground);
+
 			position: absolute;
 			top: 2px;
 			left: 0;
-			color: var(--foreground-subdued);
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
+			font-family: var(--theme--header--headline--font-family);
 
 			@media (min-width: 600px) {
 				top: -2px;
@@ -168,11 +163,14 @@ export default defineComponent({
 			overflow: hidden;
 
 			.type-title {
+				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
 				width: 100%;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
+				font-family: var(--theme--header--title--font-family);
+				font-weight: var(--theme--header--title--font-weight);
 			}
 
 			:deep(.type-title) {
@@ -195,8 +193,9 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&.collapsed.shadow {
-		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
+	&.collapsed.shadow,
+	&.small.shadow {
+		box-shadow: var(--theme--header--box-shadow);
 
 		.title-container {
 			.headline {
@@ -224,6 +223,19 @@ export default defineComponent({
 
 		&:not(.small) {
 			margin: 24px 0;
+
+			/* Somewhat hacky way to make sure we fill
+			the empty space caused by the margin with
+			the appropriate color*/
+			&::before {
+				content: '';
+				width: 100%;
+				height: 24px;
+				bottom: 100%;
+				left: 0;
+				background-color: var(--theme--header--background);
+				position: absolute;
+			}
 		}
 	}
 }

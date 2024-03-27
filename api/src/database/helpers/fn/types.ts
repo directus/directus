@@ -10,7 +10,10 @@ export type FnHelperOptions = {
 };
 
 export abstract class FnHelper extends DatabaseHelper {
-	constructor(knex: Knex, protected schema: SchemaOverview) {
+	constructor(
+		knex: Knex,
+		protected schema: SchemaOverview,
+	) {
 		super(knex);
 		this.schema = schema;
 	}
@@ -29,7 +32,7 @@ export abstract class FnHelper extends DatabaseHelper {
 		const collectionName = options?.originalCollectionName || table;
 
 		const relation = this.schema.relations.find(
-			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column
+			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column,
 		);
 
 		const currentPrimary = this.schema.collections[collectionName]!.primary;

@@ -13,8 +13,10 @@ export function flattenFieldGroups(tree: FieldNode[]): FieldNode[] {
 					item.children = flattenGroups(item.children);
 				}
 			}
+
 			return item;
 		});
 	}
+
 	return flattenGroups(tree);
 }

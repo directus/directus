@@ -43,8 +43,15 @@ PUBLIC_URL="/"
 # Whether or not to enable GraphQL Introspection [true]
 # GRAPHQL_INTROSPECTION=true
 
+# Limit the maximum amount of items that can get requested in one query.
+# QUERY_LIMIT_DEFAULT=100
+# QUERY_LIMIT_MAX=Infinity
+
 # The maximum number of items for batch mutations when creating, updating and deleting. ["Infinity"]
 # MAX_BATCH_MUTATION="Infinity"
+
+# Shared Redis server for things like caching, rate limiting, container synchronization, etc
+# REDIS="redis://@127.0.0.1:6379"
 
 ####################################################################################################
 ### Database
@@ -123,10 +130,8 @@ PUBLIC_URL="/"
 RATE_LIMITER_ENABLED=false
 
 # Where to store the rate limiter counts [memory]
-# memory, redis, memcache
+# memory, redis
 RATE_LIMITER_STORE=memory
-# RATE_LIMITER_REDIS="redis://@127.0.0.1:5105"
-# RATE_LIMITER_MEMCACHE="localhost:5109"
 
 # The amount of allowed hits per duration [50]
 RATE_LIMITER_POINTS=25
@@ -143,20 +148,20 @@ CACHE_ENABLED=false
 # How long the cache is persisted ["5m"]
 # CACHE_TTL="30m"
 
-# How to scope the cache data ["directus-cache"]
-# CACHE_NAMESPACE="directus-cache"
+# How to scope the cache data ["system-cache"]
+# CACHE_NAMESPACE="system-cache"
 
 # Automatically purge the cache on create, update, and delete actions. [false]
 # CACHE_AUTO_PURGE=true
 
-# memory | redis | memcache
+# List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled. ["directus_activity,directus_presets"]
+# CACHE_AUTO_PURGE_IGNORE_LIST="directus_activity,directus_presets"
+
+# memory | redis
 CACHE_STORE=memory
 
 # How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30d"]
 ASSETS_CACHE_TTL="30d"
-
-# CACHE_REDIS="redis://@127.0.0.1:5105"
-# CACHE_MEMCACHE="localhost:5109"
 
 ####################################################################################################
 ### File Storage
@@ -182,7 +187,7 @@ STORAGE_LOCAL_ROOT="./uploads"
 
 ## A comma-separated list of metadata keys to collect during file upload. Use * for all
 # Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
-# [ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO]
+# [ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings]
 # FILE_METADATA_ALLOW_LIST=
 
 ####################################################################################################
@@ -199,20 +204,35 @@ STORAGE_LOCAL_ROOT="./uploads"
 # The duration that the access token is valid ["15m"]
 ACCESS_TOKEN_TTL="15m"
 
-# The duration that the refresh token is valid, and also how long users stay logged-in to the App ["7d"]
+# The duration that the refresh token is valid. This value should be higher than ACCESS_TOKEN_TTL resp. SESSION_COOKIE_TTL. ["7d"]
 REFRESH_TOKEN_TTL="7d"
 
-# Whether or not to use a secure cookie for the refresh token in cookie mode [false]
+# Whether or not to set the secure attribute for the refresh token cookie [false]
 REFRESH_TOKEN_COOKIE_SECURE=false
 
-# Value for sameSite in the refresh token cookie when in cookie mode ["lax"]
+# Value for sameSite in the refresh token cookie ["lax"]
 REFRESH_TOKEN_COOKIE_SAME_SITE="lax"
 
-# Name of refresh token cookie ["directus_refresh_token"]
+# Name of the refresh token cookie ["directus_refresh_token"]
 REFRESH_TOKEN_COOKIE_NAME="directus_refresh_token"
 
 # Which domain to use for the refresh cookie. Useful for development mode.
 # REFRESH_TOKEN_COOKIE_DOMAIN
+
+# The duration that the session cookie/token is valid, and also how long users stay logged-in to the App ["1d"]
+SESSION_COOKIE_TTL="1d"
+
+# Whether or not to set the secure attribute for the session cookie [false]
+SESSION_COOKIE_SECURE=false
+
+# Value of sameSite for the session cookie ["lax"]
+SESSION_COOKIE_SAME_SITE="lax"
+
+# Name of the session cookie ["directus_refresh_token"]
+SESSION_COOKIE_NAME="directus_session_token"
+
+# Which domain to use for the session cookie. Useful for development mode.
+# SESSION_COOKIE_DOMAIN
 
 # The duration in milliseconds that a login request will be stalled for,
 # and it should be greater than the time taken for a login request with an invalid password [500]

@@ -1,3 +1,50 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import ModuleBarLogo from './module-bar-logo.vue';
+import ModuleBarAvatar from './module-bar-avatar.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { translate } from '@/utils/translate-object-values';
+import { MODULE_BAR_DEFAULT } from '@/constants';
+import { omit } from 'lodash';
+import { useExtensions } from '@/extensions';
+
+const settingsStore = useSettingsStore();
+const { modules: registeredModules } = useExtensions();
+
+const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
+
+const modules = computed(() => {
+	if (!settingsStore.settings) return [];
+
+	return (settingsStore.settings.module_bar ?? MODULE_BAR_DEFAULT)
+		.filter((modulePart) => {
+			if (modulePart.type === 'link') return true;
+			return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);
+		})
+		.map((modulePart) => {
+			if (modulePart.type === 'link') {
+				const link = omit<Record<string, any>>(modulePart, ['url']);
+
+				if (modulePart.url.startsWith('/')) {
+					link.to = modulePart.url;
+				} else {
+					link.href = modulePart.url;
+				}
+
+				return translate(link);
+			}
+
+			const module = registeredModules.value.find((module) => module.id === modulePart.id)!;
+
+			return {
+				...modulePart,
+				...registeredModules.value.find((module) => module.id === modulePart.id),
+				to: `/${module.id}`,
+			};
+		});
+});
+</script>
+
 <template>
 	<div class="module-bar">
 		<module-bar-logo />
@@ -12,13 +59,6 @@
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
-				:style="
-					modulePart.color
-						? {
-								'--v-button-color-active': modulePart.color,
-						  }
-						: null
-				"
 			>
 				<v-icon :name="modulePart.icon" />
 			</v-button>
@@ -28,70 +68,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import ModuleBarLogo from './module-bar-logo.vue';
-import ModuleBarAvatar from './module-bar-avatar.vue';
-import { useSettingsStore } from '@/stores/settings';
-import { translate } from '@/utils/translate-object-values';
-import { MODULE_BAR_DEFAULT } from '@/constants';
-import { omit } from 'lodash';
-import { useExtensions } from '@/extensions';
-
-export default defineComponent({
-	components: {
-		ModuleBarLogo,
-		ModuleBarAvatar,
-	},
-	setup() {
-		const settingsStore = useSettingsStore();
-		const { modules: registeredModules } = useExtensions();
-
-		const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
-
-		const modules = computed(() => {
-			if (!settingsStore.settings) return [];
-
-			return (settingsStore.settings.module_bar ?? MODULE_BAR_DEFAULT)
-				.filter((modulePart) => {
-					if (modulePart.type === 'link') return true;
-					return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);
-				})
-				.map((modulePart) => {
-					if (modulePart.type === 'link') {
-						const link = omit<Record<string, any>>(modulePart, ['url']);
-
-						if (modulePart.url.startsWith('/')) {
-							link.to = modulePart.url;
-						} else {
-							link.href = modulePart.url;
-						}
-
-						return translate(link);
-					}
-
-					const module = registeredModules.value.find((module) => module.id === modulePart.id)!;
-
-					return {
-						...modulePart,
-						...registeredModules.value.find((module) => module.id === modulePart.id),
-						to: `/${module.id}`,
-					};
-				});
-		});
-
-		return { modules };
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .module-bar {
 	display: flex;
 	flex-direction: column;
 	width: 60px;
 	height: 100%;
-	background-color: var(--module-background);
+	background-color: var(--theme--navigation--modules--background);
+	border-right: var(--theme--navigation--modules--border-width) solid var(--theme--navigation--modules--border-color);
+
+	/* Explicitly render the border outside of the width of the bar itself */
+	box-sizing: content-box;
 
 	.modules {
 		flex-grow: 1;
@@ -100,12 +87,12 @@ export default defineComponent({
 	}
 
 	.v-button {
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-button-color-active: var(--module-icon-alt);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
-		--v-button-background-color-active: var(--module-background-alt);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
+		--v-button-background-color: var(--theme--navigation--modules--button--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 }
 </style>

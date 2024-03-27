@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineProps<{
+	modelValue?: boolean;
+	saving?: boolean;
+}>();
+
+const emit = defineEmits<{
+	(e: 'save', value: { name: string | null; icon: string | null; color: string | null }): void;
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const { t } = useI18n();
+
+const bookmarkValue = reactive({
+	name: null,
+	icon: 'bookmark',
+	color: null,
+});
+
+function setIcon(icon: any) {
+	bookmarkValue.icon = icon;
+}
+
+function setColor(color: any) {
+	bookmarkValue.color = color;
+}
+
+function cancel() {
+	bookmarkValue.name = null;
+	bookmarkValue.icon = 'bookmark';
+	bookmarkValue.color = null;
+	emit('update:modelValue', false);
+}
+</script>
+
 <template>
 	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
 		<template #activator="slotBinding">
@@ -34,51 +72,6 @@
 		</v-card>
 	</v-dialog>
 </template>
-
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, reactive } from 'vue';
-
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		saving: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['save', 'update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const bookmarkValue = reactive({
-			name: null,
-			icon: 'bookmark_outline',
-			color: null,
-		});
-
-		return { t, bookmarkValue, setIcon, setColor, cancel };
-
-		function setIcon(icon: any) {
-			bookmarkValue.icon = icon;
-		}
-
-		function setColor(color: any) {
-			bookmarkValue.color = color;
-		}
-
-		function cancel() {
-			bookmarkValue.name = null;
-			bookmarkValue.icon = 'bookmark_outline';
-			bookmarkValue.color = null;
-			emit('update:modelValue', false);
-		}
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .fields {

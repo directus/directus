@@ -1,4 +1,4 @@
-import type { ExtensionType } from '@directus/types';
+import type { ExtensionType } from '@directus/extensions';
 import fse from 'fs-extra';
 import path from 'path';
 import type { Language } from '../../types.js';
@@ -64,7 +64,7 @@ export default async function copyTemplate(
 	type: ExtensionType,
 	extensionPath: string,
 	sourcePath?: string,
-	language?: Language
+	language?: Language,
 ): Promise<void> {
 	const templateFiles = await getTemplateFiles(type, language);
 

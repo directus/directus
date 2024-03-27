@@ -20,6 +20,7 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+about: About
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -28,14 +29,18 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+marketplace: Marketplace
+extensions: Extensions
 modules: Modules
 module_bar: Module Bar
 logs: Logs
+unknown: Unknown
 reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 location: Location
+collection_names_are_case_sensitive: Collection names are case sensitive
 condition_rules: Condition Rules
 input: Input
 maps: Maps
@@ -47,12 +52,61 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+popular: Popular
+recent: Recent
 export_items: Export Items
 and: And
 or: Or
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
 modifier: Modifier
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_module: Module
+extension_panel: Panel
+extension_theme: Theme
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operation
+extension_bundle: Bundle
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
+extension_modules: Modules
+extension_panels: Panels
+extension_themes: Themes
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operations
+extension_bundles: Bundles
+extension_missing: Missing
+extension_reload_required: Page Reload Required
+extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
+extension_reload_now: Reload now
+published_relative: Published {relativeTime}
+compatible_with_your_project: Compatible with your Project
+compatible_with_your_project_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which matches your project's version
+  ({currentVersion})
+last_updated_relative: Last updated {relativeTime}
+n_files: '{n} Files'
+verified: Verified
+homepage: Homepage
+repository: Repository
+reload_required: Reload Required
+report_an_issue: Report an Issue
+website: Website
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Compatibility not guaranteed
+compatibility_not_guaranteed_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which doesn't match your project's
+  version ({currentVersion})
+enable: Enable
+disable: Disable
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -81,14 +135,10 @@ create_user: Create User
 message: Message
 delete_panel: Delete Panel
 create_webhook: Create Webhook
-create_translation_string: Create Translation String
-no_translation_string: No Translation Strings
-no_translation_string_copy: There are no translation strings yet.
-translation_string_key_placeholder: Translation string key...
-translation_string_translations_placeholder: Add a new translation
-edit_translation_string: Edit Translation String
-delete_translation_string_copy: >-
-  Are you sure you want to delete the translation string "{key}"? This action can not be undone.
+create_custom_translation: Create Custom Translation
+edit_custom_translation: Edit Custom Translation
+no_custom_translations: No Custom Translations
+no_custom_translations_copy: There are no custom translations yet.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -104,6 +154,33 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Keep
+version: Version
+version_key: Version Key
+version_name: Version Name
+main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
+create_version: Create Version
+rename_version: Rename Version
+compare_version: Compare Version
+save_version: Save Version
+promote_version: Promote Version
+promote_version_disabled: No Changes
+promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
+outdated_notice: >-
+  The main item has been updated since this version was created. Please review all the field values below, and confirm
+  which version should be used when promoting this version into the main item.
+promote_notice: >-
+  Please review all the field values below, and confirm which version should be used when promoting this version into
+  the main item.
+delete_version: Delete Version
+delete_version_copy: >-
+  Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -118,14 +195,11 @@ logoutReason:
 public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
+no_description: No description...
+reached_maximum_number_of_extensions:
+  You've reached the maximum number of extensions for this project ({n}). Contact your system administrator for more
+  information.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
@@ -135,8 +209,8 @@ reset_system_permissions_to: 'Reset System Permissions to:'
 reset_system_permissions_copy:
   This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
 the_following_are_minimum_permissions:
-  The following are minimum permissions required when "App Access" is enabled. You can extend permissions beyond this,
-  but not below.
+  The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional
+  permissions if needed, but you cannot reduce permissions below this level.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive
@@ -160,7 +234,16 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
+  starts_with: Value has to start with {substring}
+  istarts_with: Value has to start with {substring}
+  nstarts_with: Value can't start with {substring}
+  nistarts_with: Value can't start with {substring}
+  ends_with: Value has to end with {substring}
+  iends_with: Value has to end with {substring}
+  nends_with: Value can't end with {substring}
+  niends_with: Value can't end with {substring}
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -187,6 +270,7 @@ permissions_for_role: 'Items the {role} Role can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
+presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
@@ -242,6 +326,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 date_range: Date Range
+translation_key_placeholder: Enter a key...
 datetime: DateTime
 dateTime: DateTime
 precision: Precision
@@ -257,13 +342,20 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
+geometry:
+  All: Geometry (All)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
+theme_auto: Automatic (Based on System)
+theme_light: Light Mode
+theme_dark: Dark Mode
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -275,6 +367,7 @@ auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here
 to_manually_setup_translations: to manually setup translations.
+manage: Manage
 click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
@@ -347,6 +440,7 @@ clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
+archive_all: Archive All
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
 page_not_found_body: The page you are looking for doesn't seem to exist.
@@ -359,11 +453,12 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
@@ -401,6 +496,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -442,7 +538,11 @@ months:
   november: November
   december: December
 drag_mode: Drag Mode
+move_tool: Move Tool
+crop_tool: Crop Tool
+focal_point_tool: Focal Point Tool
 cancel_crop: Cancel Crop
+cancel_selection: Cancel Selection
 original: Original
 url: URL
 import_label: Import
@@ -451,10 +551,10 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
+folders: Folders
 zoom: Zoom
 download: Download
 open: Open
@@ -468,20 +568,19 @@ import_from_url: Import File from URL
 replace_from_device: Replace File from Device
 replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
+no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
 open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
-exporting_all_items_in_collection: Exporting all {total} items within {collection}.
-exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
-exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint:
-  This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
-exporting_batch_hint_forced:
-  Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will
-  be saved to the File Library.
+exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
+exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.
+exporting_download_hint: Once the {format} file is created, it will be downloaded to your device.
+exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
+exporting_library_hint_forced:
+  This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -497,6 +596,7 @@ generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
+save_and_quit: Save and Quit
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items
@@ -506,10 +606,12 @@ enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
+expand: Expand
+collapse: Collapse
 select_item: Select Item
 no_items: No items
-search_items: Search items...
+search_items: Search Items...
+search_extensions: Search Extensions...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -589,7 +691,12 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Edit Item
 enabled: Enabled
+partially_enabled: Partially Enabled
+enable_all: Enable All
+disable_all: Disable All
+enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -601,39 +708,41 @@ auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
+  CONTAINS_NULL_VALUES: Field contains null values
+  CONTENT_TOO_LARGE: Submitted item/file is too large
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
+  GRAPHQL_VALIDATION: GraphQL Validation
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  INTERNAL_SERVER_ERROR: Unexpected Error
+  INVALID_CONFIG: Invalid config
   INVALID_CREDENTIALS: Wrong username or password
+  INVALID_FOREIGN_KEY: Invalid foreign key
+  INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
-  INVALID_CONFIG: Invalid config
   INVALID_TOKEN: Invalid token
-  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
-  ROUTE_NOT_FOUND: Not found
-  RECORD_NOT_UNIQUE: Duplicate value detected
-  USER_SUSPENDED: User Suspended
-  CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
-  INTERNAL_SERVER_ERROR: Unexpected Error
-  NOT_NULL_VIOLATION: Value can't be null
-  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
-  VALUE_TOO_LONG: Value is too long
-  VALUE_OUT_OF_RANGE: Value is out of range
-  INVALID_FOREIGN_KEY: Invalid foreign key
-  UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
-  SERVICE_UNAVAILABLE: Service Unavailable
-  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
-  UNEXPECTED_RESPONSE: Unexpected response
-  TOKEN_EXPIRED: Token expired
-  RANGE_NOT_SATISFIABLE: Invalid range
+  LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
+  NOT_NULL_VIOLATION: Value can't be null
+  RANGE_NOT_SATISFIABLE: Invalid range
+  RECORD_NOT_UNIQUE: Duplicate value detected
   REQUESTS_EXCEEDED: Requests limit reached
+  ROUTE_NOT_FOUND: Not found
+  SERVICE_UNAVAILABLE: Service Unavailable
+  TOKEN_EXPIRED: Token expired
+  UNEXPECTED_RESPONSE: Unexpected response
+  UNKNOWN: Unexpected Error
+  UNPROCESSABLE_CONTENT: Unprocessable Content
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  USER_SUSPENDED: User Suspended
+  VALUE_OUT_OF_RANGE: Value is out of range
+  VALUE_TOO_LONG: Value is too long
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -677,8 +786,13 @@ start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
 one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
-  Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
-delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
+  Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it.
+  This action is permanent.
+delete_folder_are_you_sure:
+  Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most
+  level.
+delete_collection_peer_dependencies:
+  The following fields will be deleted as well, as they are related to the current collection.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -722,8 +836,12 @@ operators:
   icontains: Contains (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
+  istarts_with: Starts with (insensitive)
+  nistarts_with: Doesn't start with (insensitive)
   ends_with: Ends with
   nends_with: Doesn't end with
+  iends_with: Ends with (insensitive)
+  niends_with: Doesn't end with (insensitive)
   between: Is between
   nbetween: Isn't between
   empty: Is empty
@@ -737,6 +855,7 @@ operators:
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
+extension_readme_missing: This extension does not have a README file.
 drop_to_upload: Drop to Upload
 item: Item
 items: Items
@@ -749,11 +868,12 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Display Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
-optional_system_fields: Optional System Fields
+optional_system_fields: Optional Fields
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
@@ -951,11 +1071,19 @@ wysiwyg_options:
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
+  lazy_loading: Lazy Load Image
+  lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
 deselect: Deselect
 deselect_all: Deselect All
+theme: Theme
+select_a_theme: Select a Theme
+default_sync_with_project: Default (Sync with Project)
+appearance_auto: Automatic (Sync with System)
+appearance_light: Light
+appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
@@ -967,13 +1095,15 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_permissions: Access Control
+settings_project: Settings
+settings_appearance: Appearance
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Presets & Bookmarks
-settings_translation_strings: Translation Strings
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
+configure_field_key_to_continue: Configure field key to continue
 scope: Scope
 actions: Actions
 select: Select...
@@ -986,6 +1116,7 @@ editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
 data: Data
+theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
@@ -1010,7 +1141,9 @@ page_help_files_collection: >-
   your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_project: "**Settings** — Your project's global configuration options."
+page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
+page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
@@ -1027,13 +1160,17 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webho
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
 page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translation_strings_collection:
-  '**Browse Translation Strings** — Lists all translation strings within the project.'
+page_help_settings_translations_collection:
+  '**Browse Custom Translations** — Lists all custom translations within the project.'
+page_help_settings_translations_item: '**Custom Translations Detail** — A form for viewing and managing this item.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
 page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
 page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
+page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
+page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -1045,6 +1182,16 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 no_upscale: Don't upscale images
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
+install_extension: Install Extension
+uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
+uninstall: Uninstall
+installed: Installed
+open_in_marketplace: Open in Marketplace
+source_registry: Marketplace
+source_local: Local
+source_module: Node Module
 collection: Collection
 collections: Collections
 content: Content
@@ -1073,6 +1220,9 @@ directus_collection:
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
+  directus_translations: Custom translations
+  directus_versions: Content Versions for items
+  directus_extensions: Configuration of extensions
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1099,6 +1249,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    versioning: Versioning
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1137,10 +1288,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -1156,12 +1303,18 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    appearance: Appearance
+    theme_light: Theme Light
+    theme_dark: Theme Dark
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Reporting
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster
@@ -1180,10 +1333,14 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
+    branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
+    theming: Theming Defaults
+    default_appearance: Default Appearance
+    default_theme_light: Default Theme Light
+    default_theme_dark: Default Theme Dark
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -1198,6 +1355,8 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_shares:
     name: Name
     role: Role
@@ -1240,7 +1399,8 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
+    project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1295,17 +1455,21 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
+    content_versioning_divider: Content Versioning
+    enable_versioning: Enable Versioning
   directus_files:
     title: A unique title...
     description: An optional description...
     location: An optional location...
     storage_divider: File Naming
+    focal_point_divider: Focal Point
     filename_disk: Name on disk storage...
     filename_download: Name when downloading...
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, leave empty to allow all...
+    ip_access: Add allowed IP addresses, IP ranges and CIDR blocks. Leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
@@ -1352,6 +1516,14 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  enable: Enable Preview
+  disable: Disable Preview
+  change_size: Change Display Dimensions
+  refresh: Refresh Preview
+  new_window: Open in New Window
+  close_window: Open in Split View
+  toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1363,6 +1535,7 @@ share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_passwordless_access: Leave blank for passwordless access
 shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
@@ -1449,6 +1622,7 @@ search: Search
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface
+select_display: Select a display
 settings: Settings
 sign_in: Sign In
 sign_out: Sign Out
@@ -1467,7 +1641,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: {}
 report_error: Report Error
 start: Start
 table: Table
@@ -1481,6 +1654,8 @@ undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
 interfaces:
+  list-m2a:
+    prefix_note: Uses the related item's collection name by default.
   filter:
     name: Filter
     description: Configure a filter object.
@@ -1616,6 +1791,13 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
+    description: Select an existing display
+    placeholder: Select an display...
+  system-display-options:
+    display-options: Display Options
+    description: A modal for selecting options of a display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1662,12 +1844,13 @@ interfaces:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
+    no_text: No text configured...
   list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
@@ -1686,6 +1869,9 @@ interfaces:
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
       repeater
+    interface_group: Interface Options
+    display_group: Display Options
+
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1723,9 +1909,9 @@ interfaces:
     description: Enter multiline plain-text
   input-translated-string:
     input-translated-string: Translated Strings
-    description: Select or add translation string
+    description: Select or add custom translation
     search_placeholder: Search...
-    new_translation_string: New Translation String
+    new_custom_translation: New Custom Translation
   boolean:
     toggle: Toggle
     description: Switch between on and off
@@ -1738,6 +1924,7 @@ interfaces:
     no_collection: No Collection
     toggle_split_view: Toggle Split View
     enable: Enable
+    default_split_view_state: Default Split View State
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
@@ -1758,10 +1945,37 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
+    custom_formats_note:
+      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
     options_override: Options Override
+    options_override_note:
+      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    input-block-editor: Block Editor
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      paragraph: Paragraph
+      code: Code
+      image: Image
+      attaches: Attaches
+      table: Table
+      quote: Quote
+      underline: Underline
+      inlinecode: Inline Code
+      delimiter: Delimiter
+      checklist: Checklist
+      toggle: Toggle Block
+      alignment: Alignment
+      raw: Raw HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -1788,7 +2002,9 @@ interfaces:
     value_securely_saved: Value Securely Saved
     generate: Generate Token
     regenerate: Regenerate Token
-    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    generate_success_copy:
+      Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again
+      after saving and navigate off this page.
     remove_token: Remove Token
   system-raw-editor:
     system-raw-editor: Raw Editor
@@ -1870,11 +2086,16 @@ displays:
     icon: Icon
     border: Border
     border_label: Show border
+    mask: Masked
+    mask_label: Hide the real value
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon
@@ -2011,6 +2232,9 @@ panels:
     name: Metric
     description: Show a single value based on a query
     field: Field
+  metric_list:
+    name: Metric List
+    description: List and visualize aggregate metrics from a collection
   time_series:
     name: Time Series
     description: Render a line chart based on values over time
@@ -2039,6 +2263,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2089,7 +2314,10 @@ triggers:
 a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operation_variables_note:
+  You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and
+  **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using
+  **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
@@ -2122,6 +2350,20 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: Sign and verify JSON Web Tokens
+    operation: Operation
+    secret: Secret
+    secret_placeholder: Enter a secret...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Options
+    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options
+    sign: Sign Token
+    verify: Verify Token
+    decode: Decode Token
   log:
     name: Log to Console
     description: Output something to the console
@@ -2133,16 +2375,20 @@ operations:
     to: To
     to_placeholder: Add e-mail addresses and press enter...
     body: Body
+    template: Template
+    data: Data
   notification:
     name: Send Notification
     description: Send an in-app notification to one or more users
     recipient: User
     recipient_placeholder: Enter a UUID...
     recipient_note: Add user UUID and press enter...
+    item_note: Item Key or Relative URL
     message: Message
+    subject: Subject
   request:
     name: Webhook / Request URL
-    description: "Make a request to a URL"
+    description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Method
@@ -2170,3 +2416,45 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
+    cache: Cache
+unit: Unit
+standard: Standard
+scientific: Scientific
+engineering: Engineering
+compact: Compact
+currency: Currency
+notation: Notation
+style: Style
+fonts:
+  thin: Thin
+  extra_light: Extra Light
+  light: Light
+  normal: Normal
+  medium: Medium
+  semi_bold: Semi Bold
+  bold: Bold
+  extra_bold: Extra Bold
+  black: Black
+  italic: Italic
+  oblique: Oblique
+  small: Small
+  large: Large
+  auto: Auto
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Text Align
+font_weight: Font Weight
+font_style: Font Style
+font_size: Font Size
+minimum_fraction_digits: Minimum Decimals
+maximum_fraction_digits: Maximum Decimals
+show_percentage: Show Percentage
+aggregation: Aggregation
+series_grouping: Series Grouping
+date_precision: Date Precision
+export_dashboard: Export Dashboard
+duplicate_dashboard: Duplicate Dashboard
+search_dashboard: Search Dashboard...
+search_flow: Search Flow...
+percent: Percent

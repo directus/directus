@@ -1,5 +1,7 @@
+import { isSystemCollection } from '@directus/system-data';
+
 export function getEndpoint(collection: string): string {
-	if (collection.startsWith('directus_')) {
+	if (isSystemCollection(collection)) {
 		return `/${collection.substring(9)}`;
 	}
 

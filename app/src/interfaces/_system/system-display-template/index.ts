@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceSystemDisplayTemplate from './system-display-template.vue';
 
 export default defineInterface({
@@ -17,9 +17,6 @@ export default defineInterface({
 			meta: {
 				width: 'full',
 				interface: 'input',
-			},
-			schema: {
-				default_value: null,
 			},
 		},
 	],

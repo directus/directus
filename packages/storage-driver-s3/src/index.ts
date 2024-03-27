@@ -2,8 +2,10 @@ import type {
 	CopyObjectCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
+	ObjectCannedACL,
 	PutObjectCommandInput,
 	S3ClientConfig,
+	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
@@ -17,6 +19,9 @@ import { Upload } from '@aws-sdk/lib-storage';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 
@@ -25,8 +30,8 @@ export type DriverS3Config = {
 	key?: string;
 	secret?: string;
 	bucket: string;
-	acl?: string;
-	serverSideEncryption?: string;
+	acl?: ObjectCannedACL;
+	serverSideEncryption?: ServerSideEncryption;
 	endpoint?: string;
 	region?: string;
 	forcePathStyle?: boolean;
@@ -44,7 +49,24 @@ export class DriverS3 implements Driver {
 	}
 
 	private getClient() {
-		const s3ClientConfig: S3ClientConfig = {};
+		/*
+		 * AWS' client default socket reusing can cause performance issues when using it very
+		 * often in rapid succession, hitting the maxSockets limit of 50.
+		 * The requestHandler is customized to get around this.
+		 */
+		const connectionTimeout = 5000;
+		const socketTimeout = 120000;
+		const maxSockets = 500;
+		const keepAlive = true;
+
+		const s3ClientConfig: S3ClientConfig = {
+			requestHandler: new NodeHttpHandler({
+				connectionTimeout,
+				socketTimeout,
+				httpAgent: new HttpAgent({ maxSockets, keepAlive }),
+				httpsAgent: new HttpsAgent({ maxSockets, keepAlive }),
+			}),
+		};
 
 		if ((this.config.key && !this.config.secret) || (this.config.secret && !this.config.key)) {
 			throw new Error('Both `key` and `secret` are required when defined');
@@ -58,7 +80,7 @@ export class DriverS3 implements Driver {
 		}
 
 		if (this.config.endpoint) {
-			const protocol = this.config.endpoint.startsWith('https://') ? 'https:' : 'http:';
+			const protocol = this.config.endpoint.startsWith('http://') ? 'http:' : 'https:';
 			const hostname = this.config.endpoint.replace('https://', '').replace('http://', '');
 
 			s3ClientConfig.endpoint = {
@@ -84,13 +106,6 @@ export class DriverS3 implements Driver {
 	}
 
 	async read(filepath: string, range?: Range): Promise<Readable> {
-		/*
-		 * AWS' client default socket reusing and keepalive can cause performance issues when using it
-		 * very often in rapid succession. For reads, where it's more likely to hit this limitation,
-		 * we'll use a new non-shared S3 client to get around this.
-		 */
-		const client = this.getClient();
-
 		const commandInput: GetObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Bucket: this.config.bucket,
@@ -100,13 +115,11 @@ export class DriverS3 implements Driver {
 			commandInput.Range = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
 		}
 
-		const { Body: stream } = await client.send(new GetObjectCommand(commandInput));
+		const { Body: stream } = await this.client.send(new GetObjectCommand(commandInput));
 
 		if (!stream || !isReadableStream(stream)) {
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
-
-		stream.on('finished', () => client.destroy());
 
 		return stream as Readable;
 	}
@@ -116,7 +129,7 @@ export class DriverS3 implements Driver {
 			new HeadObjectCommand({
 				Key: this.fullPath(filepath),
 				Bucket: this.config.bucket,
-			})
+			}),
 		);
 
 		return {
@@ -189,12 +202,17 @@ export class DriverS3 implements Driver {
 	}
 
 	async *list(prefix = '') {
+		let Prefix = this.fullPath(prefix);
+
+		// Current dir (`.`) isn't known to S3, needs to be an empty prefix instead
+		if (Prefix === '.') Prefix = '';
+
 		let continuationToken: string | undefined = undefined;
 
 		do {
 			const listObjectsV2CommandInput: ListObjectsV2CommandInput = {
 				Bucket: this.config.bucket,
-				Prefix: this.fullPath(prefix),
+				Prefix,
 				MaxKeys: 1000,
 			};
 
@@ -207,10 +225,14 @@ export class DriverS3 implements Driver {
 			continuationToken = response.NextContinuationToken;
 
 			if (response.Contents) {
-				for (const file of response.Contents) {
-					if (file.Key) {
-						yield file.Key.substring(this.root.length);
-					}
+				for (const object of response.Contents) {
+					if (!object.Key) continue;
+
+					const isDir = object.Key.endsWith('/');
+
+					if (isDir) continue;
+
+					yield object.Key.substring(this.root.length);
 				}
 			}
 		} while (continuationToken);

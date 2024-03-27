@@ -1,7 +1,7 @@
-import { afterAll, beforeAll, expect, SpyInstance, test, vi } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi, type MockInstance } from 'vitest';
 import { stall } from './stall.js';
 
-let performanceNowSpy: SpyInstance;
+let performanceNowSpy: MockInstance;
 
 beforeAll(() => {
 	vi.useFakeTimers();

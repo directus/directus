@@ -1,7 +1,825 @@
+af-ZA:
+  currency:
+    style: 'currency'
+    currency: 'ZAR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sq-AL:
+  currency:
+    style: 'currency'
+    currency: 'ALL'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ar-SA:
+  currency:
+    style: 'currency'
+    currency: 'SAR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+bn-IN:
+  currency:
+    style: 'currency'
+    currency: 'INR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+bs-BA:
+  currency:
+    style: 'currency'
+    currency: 'BAM'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+br-FR:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+bg-BG:
+  currency:
+    style: 'currency'
+    currency: 'BGN'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ca-ES:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+zh-CN:
+  currency:
+    style: 'currency'
+    currency: 'CNY'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+zh-TW:
+  currency:
+    style: 'currency'
+    currency: 'TWD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+hr-HR:
+  currency:
+    style: 'currency'
+    currency: 'HRK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+cs-CZ:
+  currency:
+    style: 'currency'
+    currency: 'CZK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+da-DK:
+  currency:
+    style: 'currency'
+    currency: 'DKK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+nl-NL:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+en-CA:
+  currency:
+    style: 'currency'
+    currency: 'CAD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+en-GB:
+  currency:
+    style: 'currency'
+    currency: 'GBP'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
 en-US:
   currency:
     style: 'currency'
     currency: 'USD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+eo-UY:
+  currency:
+    style: 'currency'
+    currency: 'UYU'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+et-EE:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+fo-FO:
+  currency:
+    style: 'currency'
+    currency: 'DKK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+fa-IR:
+  currency:
+    style: 'currency'
+    currency: 'IRR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+fi-FI:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+fr-CA:
+  currency:
+    style: 'currency'
+    currency: 'CAD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+fr-FR:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ka-GE:
+  currency:
+    style: 'currency'
+    currency: 'GEL'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+de-DE:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+el-GR:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+he-IL:
+  currency:
+    style: 'currency'
+    currency: 'ILS'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+hi-IN:
+  currency:
+    style: 'currency'
+    currency: 'INR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+hu-HU:
+  currency:
+    style: 'currency'
+    currency: 'HUF'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+is-IS:
+  currency:
+    style: 'currency'
+    currency: 'ISK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+id-ID:
+  currency:
+    style: 'currency'
+    currency: 'IDR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+it-IT:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ja-JP:
+  currency:
+    style: 'currency'
+    currency: 'JPY'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+km-KH:
+  currency:
+    style: 'currency'
+    currency: 'KHR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ko-KR:
+  currency:
+    style: 'currency'
+    currency: 'KRW'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+kmr-TR:
+  currency:
+    style: 'currency'
+    currency: 'TRY'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ckb-IR:
+  currency:
+    style: 'currency'
+    currency: 'IRR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+lt-LT:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ms-MY:
+  currency:
+    style: 'currency'
+    currency: 'MYR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+mn-MN:
+  currency:
+    style: 'currency'
+    currency: 'MNT'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+no-NO:
+  currency:
+    style: 'currency'
+    currency: 'NOK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+pl-PL:
+  currency:
+    style: 'currency'
+    currency: 'PLN'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+pt-BR:
+  currency:
+    style: 'currency'
+    currency: 'BRL'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+pt-PT:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ro-RO:
+  currency:
+    style: 'currency'
+    currency: 'RON'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+ru-RU:
+  currency:
+    style: 'currency'
+    currency: 'RUB'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sr-SP:
+  currency:
+    style: 'currency'
+    currency: 'RSD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sr-CS:
+  currency:
+    style: 'currency'
+    currency: 'RSD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+si-LK:
+  currency:
+    style: 'currency'
+    currency: 'LKR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sk-SK:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sl-SI:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+es-CL:
+  currency:
+    style: 'currency'
+    currency: 'CLP'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+es-419:
+  currency:
+    style: 'currency'
+    currency: 'USD'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+es-MX:
+  currency:
+    style: 'currency'
+    currency: 'MXN'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+es-ES:
+  currency:
+    style: 'currency'
+    currency: 'EUR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sw-KE:
+  currency:
+    style: 'currency'
+    currency: 'KES'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sw-TZ:
+  currency:
+    style: 'currency'
+    currency: 'TZS'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+sv-SE:
+  currency:
+    style: 'currency'
+    currency: 'SEK'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+tg-TJ:
+  currency:
+    style: 'currency'
+    currency: 'TJS'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+th-TH:
+  currency:
+    style: 'currency'
+    currency: 'THB'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+tr-TR:
+  currency:
+    style: 'currency'
+    currency: 'TRY'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+uk-UA:
+  currency:
+    style: 'currency'
+    currency: 'UAH'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
+
+vi-VN:
+  currency:
+    style: 'currency'
+    currency: 'VND'
     notation: standard
   decimal:
     style: 'decimal'

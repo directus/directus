@@ -1,18 +1,7 @@
-<template>
-	<div
-		ref="input"
-		class="v-template-input"
-		:class="{ multiline }"
-		contenteditable="true"
-		tabindex="1"
-		:placeholder="placeholder"
-		@input="processText"
-	/>
-</template>
-
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { useEventListener } from '@vueuse/core';
 import { position } from 'caret-pos';
+import { onMounted, ref, watch } from 'vue';
 
 interface Props {
 	captureGroup: string;
@@ -31,7 +20,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter']);
 
-const input = ref<HTMLDivElement>();
+type HTMLEditableDivElement = HTMLDivElement & Pick<HTMLInputElement, 'value'>;
+
+const input = ref<HTMLEditableDivElement | null>(null);
 
 let hasTriggered = false;
 let matchedPositions: number[] = [];
@@ -46,31 +37,41 @@ watch(
 		if (newText !== input.value.innerText) {
 			parseHTML(newText, true);
 		}
-	}
+	},
 );
 
 onMounted(() => {
-	if (props.modelValue && props.modelValue !== input.value!.innerText) {
+	if (props.modelValue && props.modelValue !== input.value?.innerText) {
 		parseHTML(props.modelValue);
 	}
-
-	if (input.value) {
-		input.value.addEventListener('click', checkClick);
-		input.value.addEventListener('keydown', checkKeyDown);
-		input.value.addEventListener('keyup', checkKeyUp);
-	}
 });
 
-onUnmounted(() => {
-	if (input.value) {
-		input.value.removeEventListener('click', checkClick);
-		input.value.removeEventListener('keydown', checkKeyDown);
-		input.value.removeEventListener('keyup', checkKeyUp);
-	}
-});
+useEventListener(input, 'click', checkClick);
+useEventListener(input, 'keydown', checkKeyDown);
+useEventListener(input, 'keyup', checkKeyUp);
 
-function checkKeyDown(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+function checkClick(event: MouseEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
+
+	const checkCaretPos = matchedPositions.indexOf(caretPos);
+
+	if (checkCaretPos !== -1) {
+		if (checkCaretPos % 2 === 0) {
+			position(input, caretPos - 1);
+		} else {
+			position(input, caretPos + 1);
+		}
+
+		event.preventDefault();
+	}
+}
+
+function checkKeyDown(event: KeyboardEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
 	if (event.code === 'Enter') {
 		event.preventDefault();
@@ -79,14 +80,13 @@ function checkKeyDown(event: any) {
 			emit('enter');
 		} else {
 			parseHTML(
-				input.value!.innerText.substring(0, caretPos) +
-					(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
-						? '\n\n'
-						: '\n') +
-					input.value!.innerText.substring(caretPos),
-				true
+				input.innerText.substring(0, caretPos) +
+					(caretPos === input.innerText.length && input.innerText.charAt(caretPos - 1) !== '\n' ? '\n\n' : '\n') +
+					input.innerText.substring(caretPos),
+				true,
 			);
-			position(input.value!, caretPos + 1);
+
+			position(input, caretPos + 1);
 		}
 	} else if (event.code === 'ArrowUp' && !event.shiftKey) {
 		if (hasTriggered) {
@@ -102,81 +102,76 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
+			position(input, matchedPositions[checkCaretPos - 1]! - 1);
 		}
 	} else if (event.code === 'ArrowRight' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
+			position(input, matchedPositions[checkCaretPos + 1]! + 1);
 		}
 	} else if (event.code === 'Backspace') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
 			const newCaretPos = matchedPositions[checkCaretPos - 1];
+
 			parseHTML(
-				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
+				(input.innerText.substring(0, newCaretPos) + input.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
-					' '
+					' ',
 				),
-				true
+				true,
 			);
-			position(input.value!, newCaretPos);
-			emit('update:modelValue', input.value!.innerText);
+
+			position(input, newCaretPos);
+			emit('update:modelValue', input.innerText);
 		}
 	} else if (event.code === 'Delete') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
 			parseHTML(
 				(
-					input.value!.innerText.substring(0, caretPos) +
-					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+					input.innerText.substring(0, caretPos) + input.innerText.substring(matchedPositions[checkCaretPos + 1]!)
 				).replaceAll(String.fromCharCode(160), ' '),
-				true
+				true,
 			);
-			position(input.value!, caretPos);
-			emit('update:modelValue', input.value!.innerText);
+
+			position(input, caretPos);
+			emit('update:modelValue', input.innerText);
 		}
 	}
 }
 
-function checkKeyUp(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+function checkKeyUp(event: KeyboardEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
 	if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
-			position(input.value!, matchedPositions[checkCaretPos] + 1);
+			position(input, matchedPositions[checkCaretPos]! + 1);
 		} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
-			position(input.value!, matchedPositions[checkCaretPos] - 1);
+			position(input, matchedPositions[checkCaretPos]! - 1);
 		}
-	}
-}
-
-function checkClick(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
-
-	const checkCaretPos = matchedPositions.indexOf(caretPos);
-	if (checkCaretPos !== -1) {
-		if (checkCaretPos % 2 === 0) {
-			position(input.value!, caretPos - 1);
-		} else {
-			position(input.value!, caretPos + 1);
-		}
-		event.preventDefault();
 	}
 }
 
 function processText(event: Event) {
-	const input = event.target as HTMLDivElement;
+	const input = event.target as HTMLEditableDivElement;
 
 	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
@@ -217,8 +212,13 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	let newHTML = input.value.innerText;
+	let caretPos = 0;
 
-	const caretPos = isDirectInput ? previousCaretPos : window.getSelection()?.rangeCount ? position(input.value).pos : 0;
+	if (isDirectInput) {
+		caretPos = previousCaretPos;
+	} else if (window.getSelection()?.rangeCount) {
+		caretPos = position(input.value).pos;
+	}
 
 	let lastMatchIndex = 0;
 	const matches = newHTML.match(new RegExp(`${props.captureGroup}(?!</mark>)`, 'gi'));
@@ -231,7 +231,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 			let addSpaceBefore = '';
 			let addSpaceAfter = '';
 
-			let htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
+			const htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
 			const charCodeBefore = newHTML.charCodeAt(htmlMatchIndex - 1);
 			const charCodeAfter = newHTML.charCodeAt(htmlMatchIndex + match.length);
 
@@ -249,8 +249,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 				addSpaceAfter = '&nbsp;';
 			}
 
-			let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
-			let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
+			const searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+
+			const replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
 				props.items[match.substring(props.triggerCharacter.length)]
 			}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
 
@@ -273,8 +274,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	lastMatchIndex = 0;
+
 	for (const match of matches ?? []) {
-		let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
+		const matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
 		matchedPositions.push(matchIndex, matchIndex + match.length);
 		lastMatchIndex = matchIndex + match.length;
 	}
@@ -284,25 +286,37 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 }
 </script>
 
+<template>
+	<div
+		ref="input"
+		class="v-template-input"
+		:class="{ multiline }"
+		contenteditable="true"
+		tabindex="1"
+		:placeholder="placeholder"
+		@input="processText"
+	/>
+</template>
+
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	color: var(--theme--foreground);
+	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
 		pointer-events: none;
 		content: attr(placeholder);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	&.multiline {
@@ -312,23 +326,23 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
-		border-radius: var(--border-radius);
+		background: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
 		user-select: text;
 
 		&::before {

@@ -1,5 +1,4 @@
 :root {
-	--brand: var(--primary); // will be overridden with directus_settings.project_color
 	--white: #fff;
 	--black: #090c0d;
 	--transition: cubic-bezier(0.4, 0, 0.2, 1);
@@ -10,15 +9,8 @@
 	--slow: 300ms;
 	--header-bar-height: 61px;
 	--content-padding: 12px;
-	--border-width: 2px;
-	--border-radius-outline: 6px;
-	--border-radius: 4px;
-	--input-height: 52px;
 	--input-height-tall: 168px;
 	--input-height-max: 500px;
-	--input-padding: 12px;
 	--form-column-width: 300px;
 	--form-column-max-width: 380px;
-	--form-horizontal-gap: 32px;
-	--form-vertical-gap: 40px;
 }

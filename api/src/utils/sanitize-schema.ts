@@ -27,6 +27,7 @@ export function sanitizeField(field: Field | undefined, sanitizeAllSchema = fals
 	if (!field) return field;
 
 	const defaultPaths = ['collection', 'field', 'type', 'meta', 'name', 'children'];
+
 	const pickedPaths = sanitizeAllSchema
 		? defaultPaths
 		: [

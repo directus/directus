@@ -1,17 +1,18 @@
+import { useEnv } from '@directus/env';
 import type { Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
-import { getHelpers } from '../database/helpers/index.js';
-import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query.js';
+import type { ColumnSortRecord } from '../utils/apply-query.js';
+import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
 import { stripFunction } from '../utils/strip-function.js';
+import { getHelpers } from './helpers/index.js';
 import getDatabase from './index.js';
 
 type RunASTOptions = {
@@ -42,7 +43,7 @@ type RunASTOptions = {
 export default async function runAST(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
-	options?: RunASTOptions
+	options?: RunASTOptions,
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
@@ -63,14 +64,16 @@ export default async function runAST(
 	async function run(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-		query: Query
+		query: Query,
 	) {
+		const env = useEnv();
+
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
 			collection,
 			children,
-			query
+			query,
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
@@ -101,7 +104,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: {
 							limit: env['RELATIONAL_BATCH_SIZE'],
-							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * (env['RELATIONAL_BATCH_SIZE'] as number),
 							page: null,
 						},
 					});
@@ -112,7 +115,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 					}
 
-					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
+					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
 						hasMore = false;
 					}
 
@@ -148,7 +151,7 @@ async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-	query: Query
+	query: Query,
 ) {
 	const primaryKeyField = schema.collections[collection]!.primary;
 	const columnsInCollection = Object.keys(schema.collections[collection]!.fields);
@@ -197,12 +200,12 @@ async function parseCurrentLevel(
 		(column: string) =>
 			children.find(
 				(childNode) =>
-					(childNode.type === 'field' || childNode.type === 'functionField') && childNode.fieldKey === column
+					(childNode.type === 'field' || childNode.type === 'functionField') && childNode.fieldKey === column,
 			) ?? {
 				type: 'field',
 				name: column,
 				fieldKey: column,
-			}
+			},
 	) as FieldNode[];
 
 	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
@@ -243,13 +246,14 @@ async function getDBQuery(
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
-	query: Query
+	query: Query,
 ): Promise<Knex.QueryBuilder> {
+	const env = useEnv();
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
 
-	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
+	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
@@ -265,7 +269,8 @@ async function getDBQuery(
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy, table, aliasMap, true);
+
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
 			hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
@@ -300,6 +305,7 @@ async function getDBQuery(
 				}
 
 				const sortAlias = `sort_${generateAlias()}`;
+
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
@@ -313,6 +319,7 @@ async function getDBQuery(
 					orderByString += `?? ${sortRecord.order}`;
 					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
+
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
@@ -325,13 +332,14 @@ async function getDBQuery(
 					table,
 					primaryKey,
 					orderByString,
-					orderByFields
+					orderByFields,
 				);
 			}
 		} else {
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
+
 					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
 						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 					}) as any;
@@ -368,7 +376,7 @@ async function getDBQuery(
 function applyParentFilters(
 	schema: SchemaOverview,
 	nestedCollectionNodes: NestedCollectionNode[],
-	parentItem: Item | Item[]
+	parentItem: Item | Item[],
 ) {
 	const parentItems = toArray(parentItem);
 
@@ -432,8 +440,9 @@ function mergeWithParentItems(
 	schema: SchemaOverview,
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
-	nestedNode: NestedCollectionNode
+	nestedNode: NestedCollectionNode,
 ) {
+	const env = useEnv();
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
 
@@ -469,7 +478,7 @@ function mergeWithParentItems(
 
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? 100) * (nestedNode.query.page - 1)
+					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1),
 				);
 			}
 
@@ -478,7 +487,10 @@ function mergeWithParentItems(
 			}
 
 			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
+					0,
+					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']),
+				);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
@@ -495,6 +507,7 @@ function mergeWithParentItems(
 				if (a[column] === b[column]) return 0;
 				if (a[column] === null) return 1;
 				if (b[column] === null) return -1;
+
 				if (order === 'asc') {
 					return a[column] < b[column] ? -1 : 1;
 				} else {
@@ -532,7 +545,7 @@ function removeTemporaryFields(
 	rawItem: Item | Item[],
 	ast: AST | NestedCollectionNode,
 	primaryKeyField: string,
-	parentItem?: Item
+	parentItem?: Item,
 ): null | Item | Item[] {
 	const rawItems = cloneDeep(toArray(rawItem));
 	const items: Item[] = [];
@@ -568,7 +581,7 @@ function removeTemporaryFields(
 					item[nestedNode.fieldKey],
 					nestedNode,
 					schema.collections[nestedNode.relation.collection]!.primary,
-					item
+					item,
 				);
 			}
 
@@ -615,7 +628,7 @@ function removeTemporaryFields(
 					nestedNode.type === 'm2o'
 						? schema.collections[nestedNode.relation.related_collection!]!.primary
 						: schema.collections[nestedNode.relation.collection]!.primary,
-					item
+					item,
 				);
 			}
 

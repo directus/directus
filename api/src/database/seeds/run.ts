@@ -58,7 +58,7 @@ export default async function runSeed(database: Knex): Promise<void> {
 				} else if (columnInfo.increments) {
 					column = tableBuilder.increments();
 				} else if (columnInfo.type === 'csv') {
-					column = tableBuilder.string(columnName);
+					column = tableBuilder.text(columnName);
 				} else if (columnInfo.type === 'hash') {
 					column = tableBuilder.string(columnName, 255);
 				} else if (columnInfo.type?.startsWith('geometry')) {

@@ -1,74 +1,70 @@
-import { BaseException } from '@directus/exceptions';
-import { toArray } from '@directus/utils';
+import { ErrorCode, MethodNotAllowedError, isDirectusError } from '@directus/errors';
+import { isObject, toArray } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { MethodNotAllowedException } from '../exceptions/index.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+	const logger = useLogger();
+
 	let payload: any = {
 		errors: [],
 	};
 
-	const errors = toArray(err);
+	const errors = toArray<unknown>(err);
 
-	if (errors.some((err) => err instanceof BaseException === false)) {
-		res.status(500);
-	} else {
-		let status = errors[0].status;
+	let status: number | null = null;
 
-		for (const err of errors) {
-			if (status !== err.status) {
-				// If there's multiple different status codes in the errors, use 500
-				status = 500;
-				break;
+	for (const error of errors) {
+		if (getNodeEnv() === 'development') {
+			if (isObject(error)) {
+				error['extensions'] = {
+					...(error['extensions'] || {}),
+					stack: error['stack'],
+				};
 			}
 		}
 
-		res.status(status);
-	}
+		if (isDirectusError(error)) {
+			logger.debug(error);
 
-	for (const err of errors) {
-		if (env['NODE_ENV'] === 'development') {
-			err.extensions = {
-				...(err.extensions || {}),
-				stack: err.stack,
-			};
-		}
-
-		if (err instanceof BaseException) {
-			logger.debug(err);
-
-			res.status(err.status);
+			if (!status) {
+				status = error.status;
+			} else if (status !== error.status) {
+				status = 500;
+			}
 
 			payload.errors.push({
-				message: err.message,
+				message: error.message,
 				extensions: {
-					code: err.code,
-					...err.extensions,
+					code: error.code,
+					...(error.extensions ?? {}),
 				},
 			});
 
-			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions['allow'].join(', '));
+			if (isDirectusError(error, ErrorCode.MethodNotAllowed)) {
+				res.header('Allow', (error as InstanceType<typeof MethodNotAllowedError>).extensions.allowed.join(', '));
 			}
 		} else {
-			logger.error(err);
+			logger.error(error);
 
-			res.status(500);
+			status = 500;
 
 			if (req.accountability?.admin === true) {
+				const localError = isObject(error) ? error : {};
+				const message = localError['message'] ?? typeof error === 'string' ? error : null;
+
 				payload = {
 					errors: [
 						{
-							message: err.message,
+							message: message || 'An unexpected error occurred.',
 							extensions: {
 								code: 'INTERNAL_SERVER_ERROR',
-								...err.extensions,
+								...(localError['extensions'] ?? {}),
 							},
 						},
 					],
@@ -88,6 +84,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 		}
 	}
 
+	res.status(status ?? 500);
+
 	emitter
 		.emitFilter(
 			'request.error',
@@ -97,7 +95,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				database: getDatabase(),
 				schema: req.schema,
 				accountability: req.accountability ?? null,
-			}
+			},
 		)
 		.then((updatedErrors) => {
 			return res.json({ ...payload, errors: updatedErrors });

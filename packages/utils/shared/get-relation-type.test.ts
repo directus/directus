@@ -18,6 +18,7 @@ describe('getRelationType', () => {
 				one_collection_field: 'testField',
 			},
 		} as Relation;
+
 		expect(getRelationType({ relation: mockRelation, collection: 'test', field: 'testField' })).toBe('m2a');
 	});
 
@@ -28,6 +29,7 @@ describe('getRelationType', () => {
 			field: 'testField',
 			meta: { one_field: 'testField' },
 		} as Relation;
+
 		expect(getRelationType({ relation: mockRelation, collection: 'test2', field: 'testField' })).toBe('o2m');
 	});
 });

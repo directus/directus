@@ -1,14 +1,15 @@
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import inquirer from 'inquirer';
 import Joi from 'joi';
 import type { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
 import ora from 'ora';
-import { v4 as uuid } from 'uuid';
 import runMigrations from '../../../database/migrations/run.js';
 import runSeed from '../../../database/seeds/run.js';
 import { generateHash } from '../../../utils/generate-hash.js';
-import createDBConnection, { Credentials } from '../../utils/create-db-connection.js';
+import type { Credentials } from '../../utils/create-db-connection.js';
+import createDBConnection from '../../utils/create-db-connection.js';
 import createEnv from '../../utils/create-env/index.js';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
@@ -39,8 +40,8 @@ export default async function init(): Promise<void> {
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
 			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
-				question({ client: dbClient, filepath: rootPath })
-			)
+				question({ client: dbClient, filepath: rootPath }),
+			),
 		);
 
 		const db = createDBConnection(dbClient, credentials!);
@@ -97,8 +98,8 @@ export default async function init(): Promise<void> {
 
 	firstUser.password = await generateHash(firstUser.password);
 
-	const userID = uuid();
-	const roleID = uuid();
+	const userID = randomUUID();
+	const roleID = randomUUID();
 
 	await db('directus_roles').insert({
 		id: roleID,

@@ -1,99 +1,84 @@
-import { randNumber, randSemver, randSentence, randWord } from '@ngneat/falso';
-import { URL } from 'node:url';
-import { gte } from 'semver';
-import type { Response } from 'undici';
-import { fetch } from 'undici';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { isUpToDate } from './index.js';
+import stripAnsi from 'strip-ansi';
+import { afterEach, beforeEach, expect, test, vi, type MockInstance } from 'vitest';
+import { updateCheck } from './index.js';
 
-vi.mock('semver');
-vi.mock('undici');
-vi.mock('node:url');
+vi.mock('./cache.js');
 
-let sample: {
-	name: string;
-	version: string;
-	latest: string;
-};
+const axiosMock = vi.hoisted(() => ({
+	get: vi.fn(),
+}));
 
-let mockResponse: { -readonly [P in keyof Response]: Response[P] };
-let mockResponseJson: { 'dist-tags': { latest: string } };
+vi.mock('axios', () => ({
+	default: {
+		create: () => ({
+			get: axiosMock.get,
+		}),
+	},
+}));
+
+let consoleMock: MockInstance;
 
 beforeEach(() => {
-	sample = {
-		name: randWord(),
-		version: randSemver(),
-		latest: randSemver(),
-	};
-
-	mockResponseJson = { 'dist-tags': { latest: sample.latest } };
-	mockResponse = { ok: true, json: vi.fn().mockResolvedValue(mockResponseJson) } as unknown as Response;
-
-	vi.mocked(fetch).mockResolvedValue(mockResponse);
+	consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
 afterEach(() => {
-	vi.resetAllMocks();
+	vi.clearAllMocks();
 });
 
-test('Creates URL for given package name', async () => {
-	await isUpToDate(sample.name, sample.version);
-	expect(URL).toHaveBeenCalledWith(sample.name, 'https://registry.npmjs.org');
+test('Print banner if update is available', async () => {
+	const manifest = {
+		'dist-tags': { latest: '10.6.1' },
+		versions: {
+			'10.4.3': {},
+			'10.5.0': {},
+			'10.5.1': {},
+			'10.5.2': {},
+			'10.5.3': {},
+			'10.6.0': {},
+			'10.6.1': {},
+			'10.7.0-beta.0': {},
+		},
+	};
+
+	axiosMock.get.mockResolvedValue({
+		data: manifest,
+	});
+
+	const currentVersion = '10.5.0';
+	await updateCheck(currentVersion);
+
+	const output = consoleMock.mock.calls?.[0]?.[0];
+
+	// TODO 'vi.StubEnv' doesn't seem to work, which means we cannot use
+	//      'FORCE_COLOR' to ensure output is the same on every platform.
+	//      Therefore stripping away ANSI codes for now.
+	const cleanOutput = output ? stripAnsi(output) : output;
+
+	expect(cleanOutput).toMatchInlineSnapshot(`
+		"
+		   ╭───────────────────────────────────────────────────╮
+		   │                                                   │
+		   │                 Update available!                 │
+		   │                                                   │
+		   │                  10.5.0 → 10.6.1                  │
+		   │                 5 versions behind                 │
+		   │                                                   │
+		   │                 More information:                 │
+		   │   https://github.com/directus/directus/releases   │
+		   │                                                   │
+		   ╰───────────────────────────────────────────────────╯
+		"
+	`);
 });
 
-test('Throws error if response is not ok', async () => {
-	mockResponse.ok = false;
-	mockResponse.status = randNumber({ min: 400, max: 599 });
-	mockResponse.statusText = randSentence();
+test('Do not fail on empty response', async () => {
+	axiosMock.get.mockResolvedValue({
+		data: null,
+	});
 
-	try {
-		await isUpToDate(sample.name, sample.version);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(
-			`Couldn't find latest version for package "${sample.name}": ${mockResponse.status} ${mockResponse.statusText}`
-		);
-	}
-});
+	const currentVersion = '10.5.0';
+	await updateCheck(currentVersion);
 
-test('Extracts latest version from package information', async () => {
-	await isUpToDate(sample.name, sample.version);
-	expect(mockResponse.json).toHaveBeenCalledOnce();
-});
-
-test('Throws error if latest version does not exist in json response', async () => {
-	mockResponseJson['dist-tags'] = {} as unknown as (typeof mockResponseJson)['dist-tags'];
-
-	try {
-		await isUpToDate(sample.name, sample.version);
-	} catch (err: any) {
-		expect(err).toBeInstanceOf(Error);
-		expect(err.message).toBe(`Couldn't find latest version for package "${sample.name}"`);
-	}
-});
-
-test('Uses semver.gte to check if passed version is bigger than latest', async () => {
-	sample.latest = '9.23.4';
-	sample.version = '10.0.0';
-	mockResponseJson['dist-tags'].latest = sample.latest;
-
-	await isUpToDate(sample.name, sample.version);
-
-	expect(gte).toHaveBeenCalledWith(sample.version, sample.latest);
-});
-
-test('Returns latest version if gte is false', async () => {
-	vi.mocked(gte).mockReturnValue(false);
-
-	const result = await isUpToDate(sample.name, sample.version);
-
-	expect(result).toBe(sample.latest);
-});
-
-test('Returns null if gte is true', async () => {
-	vi.mocked(gte).mockReturnValue(true);
-
-	const result = await isUpToDate(sample.name, sample.version);
-
-	expect(result).toBeNull();
+	expect(consoleMock).not.toHaveBeenCalled();
 });

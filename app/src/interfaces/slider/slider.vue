@@ -1,3 +1,23 @@
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		value: number | null;
+		disabled?: boolean;
+		minValue?: number;
+		maxValue?: number;
+		stepInterval?: number;
+		alwaysShowValue?: boolean;
+	}>(),
+	{
+		minValue: 0,
+		maxValue: 100,
+		stepInterval: 1,
+	},
+);
+
+defineEmits(['input']);
+</script>
+
 <template>
 	<v-slider
 		:model-value="value"
@@ -11,40 +31,6 @@
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {
-		value: {
-			type: Number,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		minValue: {
-			type: Number,
-			default: 0,
-		},
-		maxValue: {
-			type: Number,
-			default: 100,
-		},
-		stepInterval: {
-			type: Number,
-			default: 1,
-		},
-		alwaysShowValue: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-});
-</script>
 
 <style lang="scss" scoped>
 .v-slider {

@@ -52,6 +52,12 @@ or: หรือ
 init: ริเริ่ม
 dataset_too_large_currently_showing_n_items: ฐานข้อมูลใหญ่เกินไป. สามารถแสดงได้เพียง {n} รายการ.
 modifier: แก้ไขโดย
+extension_interface: อินเทอร์เฟซ
+extension_display: การแสดงผล
+extension_layout: เค้าโครง
+extension_panel: แพแนล
+extension_hook: ฮุก
+extension_modules: โมดูล
 custom: กำหนดเอง
 hook: ฮุก
 fill_width: กว้างเติมเต็ม
@@ -79,8 +85,6 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
-create_translation_string: สร้างสตริงการแปล
-no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -95,6 +99,7 @@ rename_folder: เปลี่ยนชื่อโฟลเดอร์
 delete_folder: ลบโฟลเดอร์
 prefix: คำนำหน้า
 suffix: คำต่อท้าย
+promote_version_preview: ดูตัวอย่าง
 reset_bookmark: รีเซ็ตบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
@@ -106,20 +111,12 @@ logoutReason:
 public_label: สาธารณะ
 public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
 not_allowed: ไม่อนุญาต
-directus_version: เวอร์ชั่น Directus
-node_version: เวอร์ชั่น Node
-node_uptime: เวลาออนไลน์ Node
-os_type: ประเภท OS
-os_version: เวอร์ชั่น OS
-os_uptime: เวลาออนไลน์ OS
-os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 archive_confirm_count: >-
   ไม่มีไอเท็มที่ถูกเลือก | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มเหล่านี้? | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มจำนวน {count} ไอเท็ม?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
 reset_system_permissions_copy: สิทธิ์การเข้าถึงคอลเลกชั่นที่เคยกำหนดไว้แล้วจะถูกบันทึกทับ ยังแน่ใจที่จะทำอยู่หรือไม่?
-the_following_are_minimum_permissions: นี่คือสิทธิ์ขั้นพื้นฐานเมื่อเปิดการใช้งานในระดับ "App Access" คุณสามารถเพิ่มเติมสิทธิ์ต่างๆ หลังจากนี้ แต่ยังไม่ใช่ตอนนี้
 app_access_minimum: เข้าถึงแอปได้ขั้นต่ำ
 recommended_defaults: ค่าตั้งต้นที่แนะนำ
 unarchive: ยกเลิกการเก็บ
@@ -218,12 +215,6 @@ time: เวลา
 timestamp: Timestamp
 uuid: UUID
 hash: ค่าแฮช
-geometry.Point: จุด
-geometry.LineString: เส้น
-geometry.Polygon: โพลิกอน
-geometry.MultiPoint: หลายจุด
-geometry.MultiLineString: หลายเส้น
-geometry.MultiPolygon: หลายโพลิกอน
 not_available_for_type: ไม่มีสำหรับชนิดนี้
 create_translations: สร้างการแปลใหม่
 auto_refresh: รีเฟรซอัตโนมัติ
@@ -335,6 +326,7 @@ move: ย้าย
 system: ระบบ
 add_field_related: เพิ่มฟิลด์ไปยังคอลเลกชันที่เกี่ยวข้อง
 interface_label: อินเทอร์เฟซ
+display_label: การแสดงผล
 today: วันนี้
 yesterday: เมื่อวาน
 delete_comment: ลบความคิดเห็น
@@ -385,7 +377,6 @@ dimensions: ขนาด
 size: ขนาด
 created: สร้างแล้ว
 modified: ถูกแก้ไข
-checksum: Checksum
 owner: เจ้าของ
 edited_by: แก้ไขโดย
 folder: โฟลเดอร์
@@ -426,10 +417,8 @@ selecting_items: เลือกรายการ
 enable_select_button: เปิดใช้งานปุ่มเลือก
 comments: ความคิดเห็น
 no_comments: ยังไม่มีความเห็น
-click_to_expand: คลิกเพื่อขยาย
 select_item: เลือกรายการ
 no_items: ไม่มีรายการ
-search_items: ค้นหารายการ
 disabled: ปิดใช้งาน
 information: ข้อมูล
 report_bug: รายงานข้อบกพร่อง
@@ -524,7 +513,6 @@ errors:
   RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
   USER_SUSPENDED: ผู้ใช้ถูกระงับ
   CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
-  UNPROCESSABLE_ENTITY: เอ็นติตี้ที่ประมวลผลไม่ได้
   INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   NOT_NULL_VIOLATION: ต้องไม่เป็นค่า null
   ILLEGAL_ASSET_TRANSFORMATION: ขนาดของภาพเกินกำหนด
@@ -631,7 +619,6 @@ layout_options: ตัวเลือกเค้าโครง
 rows: แถว
 columns: คอลัมน์
 collection_setup: การตั้งค่าคอลเลกชัน
-optional_system_fields: ฟิลด์ระบบอื่นๆ ที่ไม่จำเป็น
 value_unique: ค่าต้องไม่ซ้ำ
 all_activity: กิจกรรมทั้งหมด
 create_item: สร้างไอเท็ม
@@ -776,10 +763,10 @@ editing_unit: 'แก้ไข {unit}'
 editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
-settings_permissions: บทบาทและสิทธิ
-settings_project: การตั้งค่าโครงการ
+settings_project: การตั้งค่า
 settings_webhooks: Webhooks
-settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
+settings_presets: บุ๊กมาร์ก
+settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
 scope: ขอบเขต
 select: เลือก...
@@ -810,7 +797,6 @@ page_help_files_collection: >-
   **ไฟล์ไลบรารี** — แสดงทุกไฟล์ที่ถูกอัพโหลดมาที่โปรเจ็คนี้ สามารถแก้ไขเค้าโครง, การกรอง, และการเรียงลำดับให้สอดคล้องกับมุมมองที่ต้องการ และบันทึกเป็นบุ๊คมาร์กของการตั้งค่าแต่ละแบบเพื่อความรวดเร็วในการเข้าถึงได้
 page_help_files_item: >-
   **รายละเอียดไฟล์** — ฟอร์มสำหรับการจัดการ metadata ของไฟล์, แก้ไขไฟล์ต้นแบบ และปรับปรุงการตั้งค่าการเข้าถึง
-page_help_settings_project: "**การตั้งค่าโครงการ** — การตั้งค่าทั่วไปของโปรเจ็ค"
 page_help_settings_datamodel_collections: >-
   **คอลเลกชัน** — แสดงทุกคอลเลกชัน รวมถึงคอลเลกชันที่ซ่อน คอลเลกชันของระบบ และตารางในฐานข้อมูลที่ถูกเพิ่มเข้ามาภายหลัง
 page_help_settings_datamodel_fields: >-
@@ -901,7 +887,6 @@ fields:
     description: รายละเอียด
     tags: แท็ก
     language: ภาษา
-    theme: ธีม
     tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
     status: สถานะ
     status_draft: ฉบับร่าง
@@ -984,6 +969,7 @@ field_options:
     archive_divider: เก็บถาวร
     archive_field_placeholder: เลือกฟิลด์
     sort_divider: เรียง
+    preview_divider: ดูตัวอย่าง
   directus_roles:
     fields:
       icon_name: ไอคอน
@@ -1019,6 +1005,8 @@ always_open: เปิดตลอดเวลา
 block: ปิดกั้น
 inline: แบบอินไลน์
 comment: ความคิดเห็น
+live_preview:
+  new_window: เปิดในหน้าต่างใหม่
 relational_triggers: ทริกเกอร์เชิงสัมพันธ์
 referential_action_field_label_m2o: เมื่อลบ {collection}...
 referential_action_field_label_o2m: เมื่อยกเลิกการเลือก {collection}...
@@ -1200,6 +1188,8 @@ interfaces:
   system-interface-options:
     interface-options: ตัวเลือกอินเทอร์เฟส
     description: กล่องข้อความสำหรับเลือกตัวเลือกของอินเทอร์เฟส
+  system-display:
+    display: การแสดงผล
   list-m2m:
     many-to-many: Many to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
@@ -1231,7 +1221,6 @@ interfaces:
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบตาราง
   system-folder:
-    folder: โฟลเดอร์
     description: เลือกแฟ้ม
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
@@ -1243,6 +1232,7 @@ interfaces:
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
     sort: เรียง
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
+    interface_group: ตัวเลือกอินเทอร์เฟส
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
@@ -1306,6 +1296,16 @@ interfaces:
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
     options_override: ตัวเลือกแทนที่
+  input-block-editor:
+    tools: แถบเครื่องมือ
+    tools_options:
+      header: เฮดเดอร์
+      nestedlist: รายการ
+      embed: ฝัง
+      code: โค้ด
+      image: รูปภาพ
+      table: ตาราง
+      underline: ขีดเส้นใต้
   input-autocomplete-api:
     input-autocomplete-api: ป้อนข้อมูลอัตโนมัติ (API)
     description: การพิมพ์ล่วงหน้าสำหรับค่า API ภายนอก
@@ -1371,10 +1371,14 @@ displays:
     suffix: คำต่อท้าย
     color: สี
     icon: ไอคอน
+    mask: กำหนดหน้ากาก
+    mask_label: ซ่อนค่าจริง
     text: ข้อความแบบยาว
   formatted-json-value:
     formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
     description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว
+  hash:
+    hash: ค่าแฮช
   icon:
     icon: ไอคอน
     description: แสดงไอคอน
@@ -1473,8 +1477,14 @@ triggers:
   webhook:
     method: เมธอด
 operations:
+  json-web-token:
+    token: โทเค็น
+    options: ตัวเลือก
   log:
     message: ข้อความ
+  mail:
+    template: แม่แบบ
+    data: ข้อมูล
   notification:
     recipient: ผู้ใช้
     message: ข้อความ
@@ -1485,3 +1495,11 @@ operations:
     header: เฮดเดอร์
   trigger:
     data: ข้อมูล
+standard: มาตรฐาน
+compact: กระชับ
+style: สไตล์
+fonts:
+  normal: ปกติ
+  bold: ตัวหนา
+  italic: ตัวเอียง
+  auto: อัตโนมัติ

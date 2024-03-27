@@ -13,17 +13,18 @@ import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
 	randBoolean,
+	randGitBranch as randBucket,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
 	randFileType,
-	randGitBranch as randBucket,
-	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
 	randText,
+	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -184,7 +185,7 @@ describe('#getClient', () => {
 	test('Creates S3Client without key / secret (based on machine config)', () => {
 		const driver = new DriverS3({ bucket: 'bucket' });
 
-		expect(S3Client).toHaveBeenCalledWith({});
+		expect(S3Client).toHaveBeenCalledWith({ requestHandler: expect.any(NodeHttpHandler) });
 
 		expect(driver['client']).toBeInstanceOf(S3Client);
 	});
@@ -195,6 +196,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 
 		expect(driver['client']).toBeInstanceOf(S3Client);
@@ -221,6 +223,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -245,6 +248,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -262,6 +266,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -279,6 +284,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 });
@@ -314,6 +320,7 @@ describe('#read', () => {
 		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
@@ -365,7 +372,7 @@ describe('#read', () => {
 		vi.mocked(isReadableStream).mockReturnValue(false);
 
 		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
-			new Error(`No stream returned for file "${sample.path.input}"`)
+			new Error(`No stream returned for file "${sample.path.input}"`),
 		);
 	});
 
@@ -394,6 +401,7 @@ describe('#stat', () => {
 		await driver.stat(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
 		expect(HeadObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,

@@ -1,5 +1,9 @@
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
-import express, { Request, RequestHandler, Response } from 'express';
+import type { Request, RequestHandler, Response } from 'express';
+import express from 'express';
 import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';
@@ -7,7 +11,6 @@ import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
 import { registerAuthProviders } from './auth.js';
-import { flushCaches } from './cache.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
@@ -33,8 +36,10 @@ import schemaRouter from './controllers/schema.js';
 import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
+import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
+import versionsRouter from './controllers/versions.js';
 import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
@@ -43,11 +48,9 @@ import {
 	validateMigrations,
 } from './database/index.js';
 import emitter from './emitter.js';
-import env from './env.js';
-import { InvalidPayloadException } from './exceptions/invalid-payload.js';
-import { getExtensionManager } from './extensions.js';
+import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
-import logger, { expressLogger } from './logger.js';
+import { createExpressLogger, useLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import { checkIP } from './middleware/check-ip.js';
@@ -59,8 +62,8 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { collectTelemetry } from './utils/telemetry.js';
 import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -69,11 +72,13 @@ import { init as initWebhooks } from './webhooks.js';
 const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
+	const env = useEnv();
+	const logger = useLogger();
 	const helmet = await import('helmet');
 
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -91,8 +96,6 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn(`Database migrations have not all been run`);
 	}
 
-	await flushCaches();
-
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
@@ -107,13 +110,33 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
+	if (env['PRESSURE_LIMITER_ENABLED']) {
+		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
+
+		if (Number.isNaN(sampleInterval) === true || Number.isFinite(sampleInterval) === false) {
+			throw new Error(`Invalid value for PRESSURE_LIMITER_SAMPLE_INTERVAL environment variable`);
+		}
+
+		app.use(
+			handlePressure({
+				sampleInterval,
+				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'] as number,
+				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'] as number,
+				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'] as number,
+				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'] as number,
+				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
+				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'] as string,
+			}),
+		);
+	}
+
 	app.use(
 		helmet.contentSecurityPolicy(
 			merge(
 				{
 					useDefaults: true,
 					directives: {
-						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						// Unsafe-eval is required for app extensions
 						scriptSrc: ["'self'", "'unsafe-eval'"],
 
 						// Even though this is recommended to have enabled, it breaks most local
@@ -122,17 +145,22 @@ export default async function createApp(): Promise<express.Application> {
 						upgradeInsecureRequests: null,
 
 						// These are required for MapLibre
-						// https://cdn.directus.io is required for images/videos in the official docs
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
-						mediaSrc: ["'self'", 'https://cdn.directus.io'],
+						imgSrc: [
+							"'self'",
+							'data:',
+							'blob:',
+							'https://raw.githubusercontent.com',
+							'https://avatars.githubusercontent.com',
+						],
+						mediaSrc: ["'self'"],
 						connectSrc: ["'self'", 'https://*'],
 					},
 				},
-				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
-			)
-		)
+				getConfigFromEnv('CONTENT_SECURITY_POLICY_'),
+			),
+		),
 	);
 
 	if (env['HSTS_ENABLED']) {
@@ -143,7 +171,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('middlewares.before', { app });
 
-	app.use(expressLogger);
+	app.use(createExpressLogger());
 
 	app.use((_req, res, next) => {
 		res.setHeader('X-Powered-By', 'Directus');
@@ -157,11 +185,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env['MAX_PAYLOAD_SIZE'],
+				limit: env['MAX_PAYLOAD_SIZE'] as string,
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
-				return next(new InvalidPayloadException(err.message));
+				return next(new InvalidPayloadError({ reason: err.message }));
 			}
 
 			return next();
@@ -174,7 +202,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.get('/', (_req, res, next) => {
 		if (env['ROOT_REDIRECT']) {
-			res.redirect(env['ROOT_REDIRECT']);
+			res.redirect(env['ROOT_REDIRECT'] as string);
 		} else {
 			next();
 		}
@@ -188,16 +216,17 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 
 		// Set the App's base path according to the APIs public URL
 		const html = await readFile(adminPath, 'utf8');
+
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
-			.replace(/<embed-head \/>/, embeds.head)
-			.replace(/<embed-body \/>/, embeds.body);
+			.replace('<!-- directus-embed-head -->', embeds.head)
+			.replace('<!-- directus-embed-body -->', embeds.body);
 
 		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
@@ -219,6 +248,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
+
 	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}
@@ -260,6 +290,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
+	app.use('/translations', translationsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
@@ -269,6 +300,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
+	app.use('/versions', versionsRouter);
 	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
@@ -284,7 +316,7 @@ export default async function createApp(): Promise<express.Application> {
 	// Register all webhooks
 	await initWebhooks();
 
-	collectTelemetry();
+	initTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 

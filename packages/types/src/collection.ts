@@ -16,6 +16,8 @@ export type CollectionMeta = {
 	color: string | null;
 	translations: Translations[] | null;
 	display_template: string | null;
+	preview_url: string | null;
+	versioning: boolean;
 	sort_field: string | null;
 	archive_field: string | null;
 	archive_value: string | null;
@@ -23,6 +25,7 @@ export type CollectionMeta = {
 	archive_app_filter: boolean;
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'activity' | null;
+	system: boolean | null;
 	sort: number | null;
 	group: string | null;
 	collapse: 'open' | 'closed' | 'locked';

@@ -1,9 +1,3 @@
-<template>
-	<component :is="tag" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-		<slot v-bind="{ hover }" />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue';
 
@@ -43,3 +37,9 @@ function onMouseLeave() {
 	}, props.closeDelay);
 }
 </script>
+
+<template>
+	<component :is="tag" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+		<slot v-bind="{ hover }" />
+	</component>
+</template>

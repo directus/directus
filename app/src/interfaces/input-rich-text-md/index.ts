@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceInputRichTextMD from './input-rich-text-md.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -106,9 +106,6 @@ export default defineInterface({
 					width: 'half',
 					interface: 'system-folder',
 					note: '$t:interfaces.system-folder.field_hint',
-				},
-				schema: {
-					default_value: undefined,
 				},
 			},
 			{

@@ -1,37 +1,3 @@
-<template>
-	<div class="v-slider" :style="styles">
-		<div v-if="$slots.prepend" class="prepend">
-			<slot name="prepend" :value="modelValue" />
-		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
-			<input
-				:disabled="disabled"
-				type="range"
-				:value="modelValue"
-				:max="max"
-				:min="min"
-				:step="step"
-				@change="onChange"
-				@input="onInput"
-			/>
-			<div class="fill" />
-			<div v-if="showTicks" class="ticks">
-				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
-			</div>
-			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
-					<slot name="thumb-label type-text" :value="modelValue">
-						{{ modelValue }}
-					</slot>
-				</div>
-			</div>
-		</div>
-		<div v-if="$slots.append" class="append">
-			<slot name="append" :value="modelValue" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -86,15 +52,50 @@ function onInput(event: Event) {
 }
 </script>
 
-<style>
-body {
-	--v-slider-color: var(--border-normal);
-	--v-slider-thumb-color: var(--primary);
-	--v-slider-fill-color: var(--primary);
-}
-</style>
+<template>
+	<div class="v-slider" :style="styles">
+		<div v-if="$slots.prepend" class="prepend">
+			<slot name="prepend" :value="modelValue" />
+		</div>
+		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+			<input
+				:disabled="disabled"
+				type="range"
+				:value="modelValue"
+				:max="max"
+				:min="min"
+				:step="step"
+				@change="onChange"
+				@input="onInput"
+			/>
+			<div class="fill" />
+			<div v-if="showTicks" class="ticks">
+				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
+			</div>
+			<div v-if="showThumbLabel" class="thumb-label-wrapper">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+					<slot name="thumb-label type-text" :value="modelValue">
+						{{ modelValue }}
+					</slot>
+				</div>
+			</div>
+		</div>
+		<div v-if="$slots.append" class="append">
+			<slot name="append" :value="modelValue" />
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-slider-color        [var(--theme--form--field--input--border-color)]
+		--v-slider-thumb-color  [var(--theme--primary)]
+		--v-slider-fill-color   [var(--theme--primary)]
+
+*/
 .v-slider {
 	display: flex;
 	align-items: center;
@@ -109,8 +110,8 @@ body {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--foreground-subdued);
-			--v-slider-fill-color: var(--foreground-subdued);
+			--v-slider-thumb-color: var(--theme--foreground-subdued);
+			--v-slider-fill-color: var(--theme--foreground-subdued);
 		}
 
 		&.thumb-label-visible {
@@ -121,7 +122,7 @@ body {
 			width: 100%;
 			height: 4px;
 			padding: 8px 0;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
@@ -129,7 +130,7 @@ body {
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
-				background: var(--v-slider-color);
+				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
 				box-shadow: none;
@@ -137,7 +138,7 @@ body {
 
 			&::-moz-range-track {
 				height: 4px;
-				background: var(--v-slider-color);
+				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
 				box-shadow: none;
@@ -149,11 +150,11 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--background-page);
+				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 				transition: all var(--fast) var(--transition);
 				appearance: none;
 			}
@@ -164,11 +165,11 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--v-slider-thumb-color);
+				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 				transition: all var(--fast) var(--transition);
 				appearance: none;
 			}
@@ -182,7 +183,7 @@ body {
 			z-index: 2;
 			width: 100%;
 			height: 4px;
-			background-color: var(--v-slider-fill-color);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: 4px;
 			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
@@ -208,7 +209,7 @@ body {
 				display: inline-block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--v-slider-color);
+				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
 			}
 		}
@@ -231,8 +232,8 @@ body {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--primary);
-			border-radius: var(--border-radius);
+			background-color: var(--theme--primary);
+			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -251,7 +252,7 @@ body {
 					width: 12px;
 					height: 12px;
 					margin-top: -4px;
-					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
@@ -259,7 +260,7 @@ body {
 					width: 12px;
 					height: 12px;
 					margin-top: -4px;
-					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 			}

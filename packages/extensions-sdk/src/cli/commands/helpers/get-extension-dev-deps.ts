@@ -1,5 +1,5 @@
-import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
-import type { ExtensionType } from '@directus/types';
+import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import type { ExtensionType } from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import type { Language } from '../../types.js';
 import getPackageVersion from '../../utils/get-package-version.js';
@@ -7,7 +7,7 @@ import getSdkVersion from '../../utils/get-sdk-version.js';
 
 export default async function getExtensionDevDeps(
 	type: ExtensionType | ExtensionType[],
-	language: Language | Language[] = []
+	language: Language | Language[] = [],
 ): Promise<Record<string, string>> {
 	const types = Array.isArray(type) ? type : [type];
 	const languages = Array.isArray(language) ? language : [language];

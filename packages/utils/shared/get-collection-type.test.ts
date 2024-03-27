@@ -22,6 +22,7 @@ const AliasCollection: Collection = {
 		color: '#abcabc',
 		translations: null,
 		display_template: null,
+		preview_url: null,
 		sort_field: null,
 		archive_field: null,
 		archive_value: null,

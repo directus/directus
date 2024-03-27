@@ -1,58 +1,42 @@
+<script setup lang="ts">
+import { isHex } from '@/utils/is-hex';
+import { cssVar } from '@directus/utils/browser';
+import Color from 'color';
+import { computed } from 'vue';
+
+const props = defineProps({
+	value: {
+		type: String,
+		default: null,
+	},
+	defaultColor: {
+		type: String,
+		default: '#B0BEC5',
+		validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
+	},
+});
+
+const color = computed(() => props.value ?? props.defaultColor);
+
+const addBorder = computed(() => {
+	try {
+		const valueColor = Color(color.value);
+		const pageColor = Color(cssVar('--theme--background'));
+		return valueColor.contrast(pageColor) < 1.1;
+	} catch {
+		// There's a chance the color isn't supported by color-js (like with color-mix or other modern
+		// CSS), in which case we'll just show the dot as-is
+		return false;
+	}
+});
+</script>
+
 <template>
 	<div class="color-dot">
 		<value-null v-if="value === null && defaultColor === null" />
-		<div class="dot" :style="styles"></div>
+		<div class="dot" :class="{ 'with-border': addBorder }" />
 	</div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import Color from 'color';
-import { isHex } from '@/utils/is-hex';
-
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		defaultColor: {
-			type: String,
-			default: '#B0BEC5',
-			validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
-		},
-	},
-	setup(props) {
-		const displayValue = computed(() => {
-			return props.value;
-		});
-
-		const styles = computed(() => {
-			const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
-			const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
-
-			const style: Record<string, any> = { 'background-color': defaultColor };
-
-			if (value !== null) style['background-color'] = value;
-
-			const pageColorString = getVar('var(--background-page)');
-
-			const pageColorRGB = Color(pageColorString);
-			const colorRGB = value === null ? Color(defaultColor) : Color(value);
-
-			if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
-
-			return style;
-		});
-
-		return { displayValue, styles };
-
-		function getVar(cssVar: string) {
-			return getComputedStyle(document.body).getPropertyValue(cssVar.slice(4, -1)).trim();
-		}
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .color-dot {
@@ -60,11 +44,16 @@ export default defineComponent({
 	align-items: center;
 
 	.dot {
+		background-color: v-bind(color);
 		display: inline-block;
 		flex-shrink: 0;
 		width: 10px;
 		height: 10px;
 		border-radius: 5px;
+
+		&.with-border {
+			border: 1px solid var(--theme--form--field--input--border-color);
+		}
 	}
 }
 </style>

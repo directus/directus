@@ -1,0 +1,48 @@
+type: object
+properties:
+  id:
+    description: Primary key of the Content Version.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+  key:
+    description: Key of the Content Version, used as the value for the "version" query parameter.
+    example: draft
+    type: string
+  name:
+    description: Descriptive name of the Content Version.
+    example: My Draft
+    type: string
+  collection:
+    description: Name of the collection the Content Version is created on.
+    example: articles
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Collections'
+  item:
+    description: The item the Content Version is created on.
+    example: '168'
+    type: string
+  date_created:
+    description: When the Content Version was created.
+    type: string
+    example: '2022-05-11T13:14:52Z'
+    format: date-time
+    nullable: true
+  date_updated:
+    description: When the Content Version was updated.
+    type: string
+    example: '2022-05-11T13:14:53Z'
+    format: date-time
+    nullable: true
+  user_created:
+    description: User that created the Content Version.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'
+  user_updated:
+    description: User that updated the Content Version.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'

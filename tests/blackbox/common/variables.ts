@@ -1,6 +1,6 @@
-import { PrimaryKeyType } from './types';
+import type { PrimaryKeyType } from './types';
 
-export const DEFAULT_DB_TABLES: string[] = [
+export const DEFAULT_DB_TABLES = [
 	'tests_flow_data',
 	'tests_flow_completed',
 	'directus_activity',
@@ -22,7 +22,7 @@ export const DEFAULT_DB_TABLES: string[] = [
 	'directus_shares',
 	'directus_users',
 	'directus_webhooks',
-];
+] as const;
 
 // Role IDs
 export const ROLE = {
@@ -39,7 +39,7 @@ export const ROLE = {
 	API_ONLY: {
 		NAME: 'API Only Role',
 	},
-};
+} as const;
 
 type UserData = {
 	ID?: string;
@@ -54,7 +54,7 @@ type UserType = {
 	[key: string]: UserData;
 };
 
-export const USER: UserType = {
+export const USER = {
 	TESTS_FLOW: {
 		ID: '3d075128-c073-4f5d-891c-ed2eb2790a1c', // Created through migration
 		TOKEN: 'TestsFlowToken',
@@ -91,8 +91,8 @@ export const USER: UserType = {
 		NAME: 'No-Role User',
 		KEY: 'NO_ROLE',
 	},
-};
+} as const satisfies UserType;
 
-export const TEST_USERS = ['ADMIN', 'APP_ACCESS', 'API_ONLY', 'NO_ROLE']; // TESTS_FLOW is exluded
+export const TEST_USERS = ['ADMIN', 'APP_ACCESS', 'API_ONLY', 'NO_ROLE'] as const; // TESTS_FLOW is exluded
 
-export const PRIMARY_KEY_TYPES: PrimaryKeyType[] = ['integer', 'uuid', 'string'];
+export const PRIMARY_KEY_TYPES = ['integer', 'uuid', 'string'] as const satisfies readonly PrimaryKeyType[];

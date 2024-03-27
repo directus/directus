@@ -1,15 +1,21 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
-import Keyv, { Options } from 'keyv';
-import env from './env.js';
-import logger from './logger.js';
-import { getMessenger } from './messenger.js';
+import type { Options } from 'keyv';
+import Keyv from 'keyv';
+import { useBus } from './bus/index.js';
+import { useLogger } from './logger.js';
+import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
+
+const logger = useLogger();
+const env = useEnv();
+
 const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
@@ -19,19 +25,22 @@ let sharedSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
 
-type Store = 'memory' | 'redis' | 'memcache';
+type Store = 'memory' | 'redis';
 
-const messenger = getMessenger();
+const messenger = useBus();
 
-if (
-	env['MESSENGER_STORE'] === 'redis' &&
-	env['CACHE_STORE'] === 'memory' &&
-	env['CACHE_AUTO_PURGE'] &&
-	!messengerSubscribed
-) {
+interface CacheMessage {
+	autoPurgeCache: boolean | undefined;
+}
+
+interface CacheMessage {
+	autoPurgeCache: boolean | undefined;
+}
+
+if (redisConfigAvailable() && env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && !messengerSubscribed) {
 	messengerSubscribed = true;
 
-	messenger.subscribe('schemaChanged', async (opts) => {
+	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {
 		if (cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
@@ -47,17 +56,22 @@ export function getCache(): {
 } {
 	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_TTL']));
+		cache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_TTL']));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
+		systemCache = getKeyvInstance(env['CACHE_STORE'] as Store, getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (sharedSchemaCache === null) {
-		sharedSchemaCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema_shared');
+		sharedSchemaCache = getKeyvInstance(
+			env['CACHE_STORE'] as Store,
+			getMilliseconds(env['CACHE_SYSTEM_TTL']),
+			'_schema_shared',
+		);
+
 		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
 	}
 
@@ -67,7 +81,7 @@ export function getCache(): {
 	}
 
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(env['CACHE_STORE'], undefined, '_lock');
+		lockCache = getKeyvInstance(env['CACHE_STORE'] as Store, undefined, '_lock');
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
@@ -84,7 +98,7 @@ export async function clearSystemCache(opts?: {
 	forced?: boolean | undefined;
 	autoPurgeCache?: false | undefined;
 }): Promise<void> {
-	const { systemCache, localSchemaCache, lockCache } = getCache();
+	const { systemCache, localSchemaCache, lockCache, sharedSchemaCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
 	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
@@ -93,8 +107,9 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
+	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
-	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
+	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
@@ -137,7 +152,7 @@ export async function setCacheValue(
 	cache: Keyv,
 	key: string,
 	value: Record<string, any> | Record<string, any>[],
-	ttl?: number
+	ttl?: number,
 ) {
 	const compressed = await compress(value);
 	await cache.set(key, compressed, ttl);
@@ -154,8 +169,6 @@ function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?
 	switch (store) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
-		case 'memcache':
-			return new Keyv(getConfig('memcache', ttl, namespaceSuffix));
 		case 'memory':
 		default:
 			return new Keyv(getConfig('memory', ttl, namespaceSuffix));
@@ -170,19 +183,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
-	}
-
-	if (store === 'memcache') {
-		const KeyvMemcache = require('keyv-memcache');
-
-		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
-		// so we need to join array into a string when applicable. See #7986
-		const cacheMemcache = Array.isArray(env['CACHE_MEMCACHE'])
-			? env['CACHE_MEMCACHE'].join(',')
-			: env['CACHE_MEMCACHE'];
-
-		config.store = new KeyvMemcache(cacheMemcache);
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
 	}
 
 	return config;

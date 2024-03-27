@@ -1,12 +1,3 @@
-<template>
-	<div :class="type" class="v-skeleton-loader">
-		<template v-if="type === 'list-item-icon'">
-			<div class="icon" />
-			<div class="text" />
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Name of another component to mirror */
@@ -18,14 +9,24 @@ withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style>
-body {
-	--v-skeleton-loader-color: var(--background-page);
-	--v-skeleton-loader-background-color: var(--background-subdued);
-}
-</style>
+<template>
+	<div :class="type" class="v-skeleton-loader">
+		<template v-if="type === 'list-item-icon'">
+			<div class="icon" />
+			<div class="text" />
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-skeleton-loader-background-color  [var(--theme--form--field--input--background-subdued)]
+
+*/
+
 .v-skeleton-loader {
 	position: relative;
 	overflow: hidden;
@@ -35,7 +36,7 @@ body {
 @mixin loader {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--v-skeleton-loader-background-color);
+	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
 	&::after {
 		position: absolute;
@@ -44,7 +45,7 @@ body {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(90deg, transparent, var(--v-skeleton-loader-color), transparent);
+		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;
@@ -61,9 +62,10 @@ body {
 .input,
 .input-tall {
 	width: 100%;
-	height: var(--input-height);
-	border: var(--border-width) solid var(--v-skeleton-loader-background-color);
-	border-radius: var(--border-radius);
+	height: var(--theme--form--field--input--height);
+	border: var(--theme--border-width) solid
+		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
+	border-radius: var(--theme--border-radius);
 
 	@include loader;
 }
@@ -74,8 +76,8 @@ body {
 
 .block-list-item {
 	width: 100%;
-	height: var(--input-height);
-	border-radius: var(--border-radius);
+	height: var(--theme--form--field--input--height);
+	border-radius: var(--theme--border-radius);
 
 	@include loader;
 
@@ -87,7 +89,7 @@ body {
 .block-list-item-dense {
 	width: 100%;
 	height: 44px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	@include loader;
 

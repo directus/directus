@@ -10,23 +10,25 @@ export async function uploadFiles(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		folder?: string;
-	}
+	},
 ): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 
 	try {
-		const uploadedFiles = await Promise.all(
-			files.map((file, index) =>
-				uploadFile(file, {
-					...options,
-					onProgressChange: (percentage: number) => {
-						progressForFiles[index] = percentage;
-						progressHandler(progressForFiles);
-					},
-				})
+		const uploadedFiles = (
+			await Promise.all(
+				files.map((file, index) =>
+					uploadFile(file, {
+						...options,
+						onProgressChange: (percentage: number) => {
+							progressForFiles[index] = percentage;
+							progressHandler(progressForFiles);
+						},
+					}),
+				),
 			)
-		);
+		).filter((v) => v);
 
 		if (options?.notifications) {
 			notify({
@@ -35,7 +37,9 @@ export async function uploadFiles(
 		}
 
 		return uploadedFiles;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
+
+	return;
 }

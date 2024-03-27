@@ -1,3 +1,88 @@
+<script setup lang="ts">
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+
+const props = defineProps<{
+	primaryKey: string;
+}>();
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const { primaryKey } = toRefs(props);
+
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, validationErrors } = useItem(
+	ref('directus_webhooks'),
+	primaryKey,
+);
+
+const confirmDelete = ref(false);
+
+const title = computed(() => {
+	if (loading.value) return t('loading');
+	if (isNew.value) return t('creating_webhook');
+	return item.value?.name;
+});
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) saveAndStay();
+});
+
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function saveAndQuit() {
+	await save();
+	router.push(`/settings/webhooks`);
+}
+
+async function saveAndStay() {
+	await save();
+	revisionsDrawerDetailRef.value?.refresh?.();
+}
+
+async function saveAndAddNew() {
+	await save();
+	router.push(`/settings/webhooks/+`);
+}
+
+async function saveAsCopyAndNavigate() {
+	const newPrimaryKey = await saveAsCopy();
+	if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
+}
+
+async function deleteAndQuit() {
+	await remove();
+	edits.value = {};
+	router.replace(`/settings/webhooks`);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
+</script>
+
 <template>
 	<private-view :title="title">
 		<template #headline>
@@ -56,13 +141,12 @@
 			:loading="loading"
 			:initial-values="item"
 			collection="directus_webhooks"
-			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
@@ -88,143 +172,12 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref } from 'vue';
-
-import SettingsNavigation from '../../components/navigation.vue';
-import { useRouter } from 'vue-router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import { useItem } from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options.vue';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-
-export default defineComponent({
-	name: 'WebhooksItem',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
-
-		const router = useRouter();
-
-		const { primaryKey } = toRefs(props);
-
-		const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
-
-		const {
-			isNew,
-			edits,
-			hasEdits,
-			item,
-			saving,
-			loading,
-			error,
-			save,
-			remove,
-			deleting,
-			saveAsCopy,
-			isBatch,
-			validationErrors,
-		} = useItem(ref('directus_webhooks'), primaryKey);
-
-		const confirmDelete = ref(false);
-
-		const title = computed(() => {
-			if (loading.value) return t('loading');
-			if (isNew.value) return t('creating_webhook');
-			return item.value?.name;
-		});
-
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) saveAndStay();
-		});
-
-		useShortcut('meta+shift+s', () => {
-			if (hasEdits.value) saveAndAddNew();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			item,
-			loading,
-			error,
-			isNew,
-			edits,
-			hasEdits,
-			saving,
-			saveAndQuit,
-			deleteAndQuit,
-			confirmDelete,
-			deleting,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
-			discardAndStay,
-			isBatch,
-			title,
-			validationErrors,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-			revisionsDrawerDetailRef,
-		};
-
-		async function saveAndQuit() {
-			await save();
-			router.push(`/settings/webhooks`);
-		}
-
-		async function saveAndStay() {
-			await save();
-			revisionsDrawerDetailRef.value?.refresh?.();
-		}
-
-		async function saveAndAddNew() {
-			await save();
-			router.push(`/settings/webhooks/+`);
-		}
-
-		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
-		}
-
-		async function deleteAndQuit() {
-			await remove();
-			edits.value = {};
-			router.replace(`/settings/webhooks`);
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-
-		function discardAndStay() {
-			edits.value = {};
-			confirmLeave.value = false;
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .action-delete {
 	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .v-form {
@@ -233,9 +186,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 </style>

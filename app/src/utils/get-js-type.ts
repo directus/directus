@@ -4,8 +4,9 @@ export function getJSType(field: Field): string {
 	if (
 		Array.isArray(field.meta?.special) &&
 		field.meta!.special.some((special) => ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(special))
-	)
+	) {
 		return 'object';
+	}
 
 	switch (field.type) {
 		case 'bigInteger':

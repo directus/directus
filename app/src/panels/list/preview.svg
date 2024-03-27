@@ -1,0 +1,25 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_185)">
+        <g filter="url(#filter0_d_1280_185)">
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--theme--background)" class="glow" />
+            <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
+                stroke-width="2" />
+        </g>
+        <rect x="36" y="21" width="36" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="30" y="21" width="4" height="4" rx="2" fill="var(--theme--primary-subdued)" />
+        <rect x="36" y="38" width="68" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="30" y="38" width="4" height="4" rx="2" fill="var(--theme--primary-subdued)" />
+        <rect x="36" y="55" width="58" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="30" y="55" width="4" height="4" rx="2" fill="var(--theme--primary-subdued)" />
+        <rect x="36" y="72" width="70" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="30" y="72" width="4" height="4" rx="2" fill="var(--theme--primary-subdued)" />
+        <rect x="30" y="31" width="96" height="1" rx="0.5" fill="#E0DAFF" />
+        <rect x="30" y="48" width="96" height="1" rx="0.5" fill="#E0DAFF" />
+        <rect x="30" y="65" width="96" height="1" rx="0.5" fill="#E0DAFF" />
+    </g>
+    <defs>
+        <clipPath id="clip0_1280_185">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

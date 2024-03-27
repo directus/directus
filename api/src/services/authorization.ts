@@ -1,4 +1,4 @@
-import { FailedValidationException } from '@directus/exceptions';
+import { ForbiddenError } from '@directus/errors';
 import type {
 	Accountability,
 	Aggregate,
@@ -9,14 +9,14 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { validatePayload } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenException } from '../exceptions/index.js';
 import type {
-	AbstractServiceOptions,
 	AST,
+	AbstractServiceOptions,
 	FieldNode,
 	FunctionFieldNode,
 	Item,
@@ -38,6 +38,7 @@ export class AuthorizationService {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+
 		this.payloadService = new PayloadService('directus_permissions', {
 			knex: this.knex,
 			schema: this.schema,
@@ -55,14 +56,14 @@ export class AuthorizationService {
 						collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
 					);
 				}),
-				(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role
+				(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role,
 			) ?? [];
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
 
 		if (uniqueCollectionsRequestedCount !== permissionsForCollections.length) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		validateFields(ast);
@@ -122,7 +123,7 @@ export class AuthorizationService {
 			function checkFields(
 				collection: string,
 				children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-				aggregate?: Aggregate | null
+				aggregate?: Aggregate | null,
 			) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
@@ -134,7 +135,7 @@ export class AuthorizationService {
 
 						for (const column of Object.values(aliasMap)) {
 							if (column === '*') continue;
-							if (allowedFields.includes(column) === false) throw new ForbiddenException();
+							if (allowedFields.includes(column) === false) throw new ForbiddenError();
 						}
 					}
 				}
@@ -150,7 +151,7 @@ export class AuthorizationService {
 					const fieldKey = stripFunction(childNode.name);
 
 					if (allowedFields.includes(fieldKey) === false) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 				}
 			}
@@ -160,7 +161,7 @@ export class AuthorizationService {
 			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
 			schema: SchemaOverview,
 			action: PermissionsAction,
-			accountability: Accountability | null
+			accountability: Accountability | null,
 		) {
 			let requiredFieldPermissions: Record<string, Set<string>> = {};
 
@@ -169,7 +170,7 @@ export class AuthorizationService {
 					for (const collection of Object.keys(ast.children)) {
 						requiredFieldPermissions = mergeRequiredFieldPermissions(
 							requiredFieldPermissions,
-							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {})
+							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {}),
 						);
 
 						for (const child of ast.children[collection]!) {
@@ -179,7 +180,7 @@ export class AuthorizationService {
 								//Only add relational field if deep child has a filter
 								if (child.type !== 'field') {
 									(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
-										child.fieldKey
+										child.fieldKey,
 									);
 								}
 
@@ -190,7 +191,7 @@ export class AuthorizationService {
 				} else {
 					requiredFieldPermissions = mergeRequiredFieldPermissions(
 						requiredFieldPermissions,
-						extractRequiredFieldPermissions(ast.name, ast.query?.filter ?? {})
+						extractRequiredFieldPermissions(ast.name, ast.query?.filter ?? {}),
 					);
 
 					for (const child of ast.children) {
@@ -200,7 +201,7 @@ export class AuthorizationService {
 							// Only add relational field if deep child has a filter
 							if (child.type !== 'field') {
 								(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
-									child.fieldKey
+									child.fieldKey,
 								);
 							}
 
@@ -221,7 +222,7 @@ export class AuthorizationService {
 				collection: string,
 				filter: Filter,
 				parentCollection?: string,
-				parentField?: string
+				parentField?: string,
 			) {
 				return reduce(
 					filter,
@@ -234,13 +235,16 @@ export class AuthorizationService {
 											collection,
 											filter,
 											parentCollection,
-											parentField
+											parentField,
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
+
 								return result;
 							}
+
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
@@ -249,6 +253,7 @@ export class AuthorizationService {
 							(result[collection] || (result[collection] = new Set())).add(filterKey);
 							// add virtual relation to the required permissions
 							const { relation } = getRelationInfo([], collection, filterKey);
+
 							if (relation?.collection && relation?.field) {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}
@@ -272,7 +277,7 @@ export class AuthorizationService {
 								});
 
 								// Filter key not found in parent collection
-								if (!relation) throw new ForbiddenException();
+								if (!relation) throw new ForbiddenError();
 
 								const relatedCollectionName =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
@@ -299,10 +304,11 @@ export class AuthorizationService {
 								});
 
 								// Filter key not found in parent collection
-								if (!relation) throw new ForbiddenException();
+								if (!relation) throw new ForbiddenError();
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
 								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
@@ -319,8 +325,9 @@ export class AuthorizationService {
 														'',
 														filter,
 														parentCollection,
-														filterKey
+														filterKey,
 													);
+
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
 												}
 											}
@@ -330,8 +337,9 @@ export class AuthorizationService {
 											'',
 											filterValue,
 											parentCollection,
-											filterKey
+											filterKey,
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
@@ -340,7 +348,7 @@ export class AuthorizationService {
 
 						return result;
 					},
-					{}
+					{},
 				);
 			}
 
@@ -352,6 +360,7 @@ export class AuthorizationService {
 						current[collection] = new Set([...current[collection]!, ...child[collection]!]);
 					}
 				}
+
 				return current;
 			}
 
@@ -360,13 +369,13 @@ export class AuthorizationService {
 				schema: SchemaOverview,
 				action: PermissionsAction,
 				requiredPermissions: Record<string, Set<string>>,
-				aliasMap?: Record<string, string> | null
+				aliasMap?: Record<string, string> | null,
 			) {
 				if (accountability?.admin === true) return;
 
 				for (const collection of Object.keys(requiredPermissions)) {
 					const permission = accountability?.permissions?.find(
-						(permission) => permission.collection === collection && permission.action === 'read'
+						(permission) => permission.collection === collection && permission.action === 'read',
 					);
 
 					let allowedFields: string[];
@@ -374,18 +383,18 @@ export class AuthorizationService {
 					// Allow the filtering of top level ID for actions such as update and delete
 					if (action !== 'read' && collection === rootCollection) {
 						const actionPermission = accountability?.permissions?.find(
-							(permission) => permission.collection === collection && permission.action === action
+							(permission) => permission.collection === collection && permission.action === action,
 						);
 
 						if (!actionPermission || !actionPermission.fields) {
-							throw new ForbiddenException();
+							throw new ForbiddenError();
 						}
 
 						allowedFields = permission?.fields
 							? [...permission.fields, schema.collections[collection]!.primary]
 							: [schema.collections[collection]!.primary];
 					} else if (!permission || !permission.fields) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					} else {
 						allowedFields = permission.fields;
 					}
@@ -404,7 +413,7 @@ export class AuthorizationService {
 						}
 
 						if (!allowedFields.includes(originalFieldName)) {
-							throw new ForbiddenException();
+							throw new ForbiddenError();
 						}
 					}
 				}
@@ -413,7 +422,7 @@ export class AuthorizationService {
 
 		function applyFilters(
 			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
-			accountability: Accountability | null
+			accountability: Accountability | null,
 		): AST | NestedCollectionNode | FieldNode | FunctionFieldNode {
 			if (ast.type === 'functionField') {
 				const collection = ast.relatedCollection;
@@ -490,7 +499,7 @@ export class AuthorizationService {
 				return permission.collection === collection && permission.action === action;
 			});
 
-			if (!permission) throw new ForbiddenException();
+			if (!permission) throw new ForbiddenError();
 
 			// Check if you have permission to access the fields you're trying to access
 
@@ -501,7 +510,7 @@ export class AuthorizationService {
 				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
 				if (invalidKeys.length > 0) {
-					throw new ForbiddenException();
+					throw new ForbiddenError();
 				}
 			}
 		}
@@ -565,14 +574,14 @@ export class AuthorizationService {
 			}
 		}
 
-		const validationErrors: FailedValidationException[] = [];
+		const validationErrors: InstanceType<typeof FailedValidationError>[] = [];
 
 		validationErrors.push(
 			...flatten(
 				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
-					error.details.map((details) => new FailedValidationException(details))
-				)
-			)
+					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
+				),
+			),
 		);
 
 		if (validationErrors.length > 0) throw validationErrors;
@@ -580,7 +589,7 @@ export class AuthorizationService {
 		return payloadWithPresets;
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
+	async checkAccess(action: PermissionsAction, collection: string, pk?: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
 		const itemsService = new ItemsService(collection, {
@@ -595,11 +604,24 @@ export class AuthorizationService {
 
 		if (Array.isArray(pk)) {
 			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
-			if (result.length !== pk.length) throw new ForbiddenException();
-		} else {
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
+			if (result.length !== pk.length) throw new ForbiddenError();
+		} else if (pk) {
 			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
+			if (!result) throw new ForbiddenError();
+		} else {
+			query.limit = 1;
+			const result = await itemsService.readByQuery(query, { permissionsAction: action });
+
+			// for the unexpected case that the result is not an array (for example due to filter hook)
+			if (!isArray(result)) throw new ForbiddenError();
+
+			// for create action, an empty array is expected - for other actions, the first item is expected to be available
+			const access = action === 'create' ? result.length === 0 : !!result[0];
+			if (!access) throw new ForbiddenError();
 		}
 	}
 }

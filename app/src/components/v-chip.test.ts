@@ -1,8 +1,7 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VChip from './v-chip.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
@@ -31,7 +30,7 @@ test('active prop', async () => {
 
 	await wrapper.get('.close-outline').trigger('click');
 
-	expect(wrapper.emitted()['update:active'][0]).toEqual([false]);
+	expect(wrapper.emitted()['update:active']?.[0]).toEqual([false]);
 });
 
 test('close prop', async () => {

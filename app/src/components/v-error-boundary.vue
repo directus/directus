@@ -1,12 +1,3 @@
-<template>
-	<template v-if="hasError">
-		<template v-if="$slots.fallback">
-			<slot name="fallback" v-bind="{ error }" />
-		</template>
-	</template>
-	<slot v-else></slot>
-</template>
-
 <script setup lang="ts">
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { kebabCase } from 'lodash';
@@ -36,5 +27,16 @@ onErrorCaptured((err, vm, info) => {
 	// eslint-disable-next-line no-console
 	console.warn(err);
 	if (props.stopPropagation) return false;
+
+	return;
 });
 </script>
+
+<template>
+	<template v-if="hasError">
+		<template v-if="$slots.fallback">
+			<slot name="fallback" v-bind="{ error }" />
+		</template>
+	</template>
+	<slot v-else></slot>
+</template>

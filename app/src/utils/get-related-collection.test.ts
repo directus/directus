@@ -3,13 +3,14 @@ import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 
 import { cryptoStub } from '@/__utils__/crypto';
+
 vi.stubGlobal('crypto', cryptoStub);
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
-		})
+		}),
 	);
 });
 

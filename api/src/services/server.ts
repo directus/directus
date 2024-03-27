@@ -1,23 +1,24 @@
+import { useEnv } from '@directus/env';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { toArray, toBoolean } from '@directus/utils';
+import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
-import os from 'os';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { getOSInfo } from '../utils/get-os-info.js';
-import { version } from '../utils/package.js';
 import { SettingsService } from './settings.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class ServerService {
 	knex: Knex;
@@ -41,9 +42,16 @@ export class ServerService {
 				'project_descriptor',
 				'project_logo',
 				'project_color',
+				'default_appearance',
+				'default_theme_light',
+				'default_theme_dark',
+				'theme_light_overrides',
+				'theme_dark_overrides',
 				'default_language',
 				'public_foreground',
-				'public_background',
+				'public_background.id',
+				'public_background.type',
+				'public_favicon',
 				'public_note',
 				'custom_css',
 			],
@@ -60,6 +68,7 @@ export class ServerService {
 			} else {
 				info['rateLimit'] = false;
 			}
+
 			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
 				info['rateLimitGlobal'] = {
 					points: env['RATE_LIMITER_GLOBAL_POINTS'],
@@ -69,29 +78,40 @@ export class ServerService {
 				info['rateLimitGlobal'] = false;
 			}
 
-			info['flows'] = {
-				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
-			};
-		}
-
-		if (this.accountability?.admin === true) {
-			const { osType, osVersion } = getOSInfo();
-
-			info['directus'] = {
-				version,
+			info['extensions'] = {
+				limit: env['EXTENSIONS_LIMIT'] ?? null,
 			};
 
-			info['node'] = {
-				version: process.versions.node,
-				uptime: Math.round(process.uptime()),
+			info['queryLimit'] = {
+				default: env['QUERY_LIMIT_DEFAULT'],
+				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
 			};
 
-			info['os'] = {
-				type: osType,
-				version: osVersion,
-				uptime: Math.round(os.uptime()),
-				totalmem: os.totalmem(),
-			};
+			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
+				info['websocket'] = {};
+
+				info['websocket'].rest = toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+					? {
+							authentication: env['WEBSOCKETS_REST_AUTH'],
+							path: env['WEBSOCKETS_REST_PATH'],
+					  }
+					: false;
+
+				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+					? {
+							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
+							path: env['WEBSOCKETS_GRAPHQL_PATH'],
+					  }
+					: false;
+
+				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
+					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
+					: false;
+			} else {
+				info['websocket'] = false;
+			}
+
+			info['version'] = version;
 		}
 
 		return info;
@@ -124,7 +144,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['KEY'],
+			serviceId: env['KEY'] as string,
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),
@@ -133,7 +153,7 @@ export class ServerService {
 					testRateLimiterGlobal(),
 					testStorage(),
 					testEmail(),
-				]))
+				])),
 			),
 		};
 
@@ -145,8 +165,9 @@ export class ServerService {
 			for (const healthCheck of healthData) {
 				if (healthCheck.status === 'warn' && data.status === 'ok') {
 					logger.warn(
-						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
+						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`,
 					);
+
 					data.status = 'warn';
 					continue;
 				}
@@ -199,7 +220,8 @@ export class ServerService {
 			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				Number(checks[`${client}:responseTime`]![0]!.observedValue!) >
+					checks[`${client}:responseTime`]![0]!.threshold! &&
 				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
 				checks[`${client}:responseTime`]![0]!.status = 'warn';
@@ -354,16 +376,17 @@ export class ServerService {
 
 			const checks: Record<string, HealthCheck[]> = {};
 
-			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
+			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
+
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env[envThresholdKey] ? +env[envThresholdKey] : 750,
+						threshold: env[envThresholdKey] ? +(env[envThresholdKey] as string) : 750,
 					},
 				];
 
@@ -372,6 +395,7 @@ export class ServerService {
 				try {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
 					const fileStream = await disk.read(`health-${checkID}`);
+
 					fileStream.on('data', async () => {
 						fileStream.destroy();
 						await disk.delete(`health-${checkID}`);
@@ -384,7 +408,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
 							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
 						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {

@@ -1,3 +1,9 @@
+import type {
+	ApiExtensionType,
+	AppExtensionType,
+	ExtensionOptionsBundleEntry,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
 	APP_EXTENSION_TYPES,
@@ -7,42 +13,39 @@ import {
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
-import type {
-	ApiExtensionType,
-	AppExtensionType,
-	ExtensionOptionsBundleEntry,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/types';
+} from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
+import commonjsDefault from '@rollup/plugin-commonjs';
+import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
-import virtual from '@rollup/plugin-virtual';
+import replaceDefault from '@rollup/plugin-replace';
+import terserDefault from '@rollup/plugin-terser';
+import virtualDefault from '@rollup/plugin-virtual';
+import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import {
-	Plugin,
-	RollupError,
-	RollupOptions,
-	OutputOptions as RollupOutputOptions,
-	rollup,
-	watch as rollupWatch,
-} from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
-import styles from 'rollup-plugin-styles';
-import vue from 'rollup-plugin-vue';
-import type { Language, RollupConfig, RollupMode } from '../types.js';
-import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import { rollup, watch as rollupWatch } from 'rollup';
+import esbuildDefault from 'rollup-plugin-esbuild';
+import stylesDefault from 'rollup-plugin-styles';
+import type { Format, RollupConfig, RollupMode } from '../types.js';
+import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const esbuild = esbuildDefault as unknown as typeof esbuildDefault.default;
+const styles = stylesDefault as unknown as typeof stylesDefault.default;
+const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
+const json = jsonDefault as unknown as typeof jsonDefault.default;
+const replace = replaceDefault as unknown as typeof replaceDefault.default;
+const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
 	type?: string;
@@ -62,26 +65,42 @@ export default async function build(options: BuildOptions): Promise<void> {
 		const packagePath = path.resolve('package.json');
 
 		if (!(await fse.pathExists(packagePath))) {
-			log(`Current directory is not a valid package.`, 'error');
+			log(`Current directory is not a valid Directus extension:`, 'error');
+			log(`Missing "package.json" file.`, 'error');
+			process.exit(1);
+		}
+
+		let extensionManifestFile: string;
+
+		try {
+			extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		} catch {
+			log(`Failed to read "package.json" file from current directory.`, 'error');
 			process.exit(1);
 		}
 
 		let extensionManifest: TExtensionManifest;
 
 		try {
-			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
-		} catch (err) {
-			log(`Current directory is not a valid Directus extension.`, 'error');
+			extensionManifest = JSON.parse(extensionManifestFile);
+			ExtensionManifest.parse(extensionManifest);
+		} catch {
+			log(`Current directory is not a valid Directus extension:`, 'error');
+			log(`Invalid "package.json" file.`, 'error');
+
 			process.exit(1);
 		}
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
+
+		const format = extensionManifest.type === 'module' ? 'esm' : 'cjs';
 
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
 				entries: extensionOptions.entries,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -92,6 +111,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: extensionOptions.source.api,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -101,6 +121,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type: extensionOptions.type,
 				input: extensionOptions.source,
 				output: extensionOptions.path,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -119,10 +140,11 @@ export default async function build(options: BuildOptions): Promise<void> {
 		if (!isIn(type, EXTENSION_TYPES)) {
 			log(
 				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-					chalk.bold.magenta(t)
+					chalk.bold.magenta(t),
 				).join(', ')}.`,
-				'error'
+				'error',
 			);
+
 			process.exit(1);
 		}
 
@@ -130,11 +152,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 			log(`Extension entrypoint has to be specified using the ${chalk.blue('[-i, --input <file>]')} option.`, 'error');
 			process.exit(1);
 		}
+
 		if (!output) {
 			log(
 				`Extension output file has to be specified using the ${chalk.blue('[-o, --output <file>]')} option.`,
-				'error'
+				'error',
 			);
+
 			process.exit(1);
 		}
 
@@ -145,19 +169,22 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (entries.success === false) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
-						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
+						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`,
 					)}.`,
-					'error'
+					'error',
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
-						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
+
 				process.exit(1);
 			}
 
@@ -165,6 +192,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				entries: entries.data,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -176,19 +204,22 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (!validateSplitEntrypointOption(splitInput)) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
-						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
-						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
+
 				process.exit(1);
 			}
 
@@ -197,6 +228,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: splitInput.api,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -206,6 +238,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type,
 				input,
 				output,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -218,6 +251,7 @@ async function buildAppOrApiExtension({
 	type,
 	input,
 	output,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -225,6 +259,7 @@ async function buildAppOrApiExtension({
 	type: AppExtensionType | ApiExtensionType;
 	input: string;
 	output: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -239,20 +274,13 @@ async function buildAppOrApiExtension({
 		process.exit(1);
 	}
 
-	const language = getLanguageFromPath(input);
-
-	if (!isLanguage(language)) {
-		log(`Language ${chalk.bold(language)} is not supported.`, 'error');
-		process.exit(1);
-	}
-
 	const config = await loadConfig();
 	const plugins = config.plugins ?? [];
 
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
 
-	const rollupOptions = getRollupOptions({ mode, input, language, sourcemap, minify, plugins });
-	const rollupOutputOptions = getRollupOutputOptions({ mode, output, sourcemap });
+	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, plugins });
+	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
 
 	if (watch) {
 		await watchExtension({ rollupOptions, rollupOutputOptions });
@@ -266,6 +294,7 @@ async function buildHybridExtension({
 	inputApi,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -274,6 +303,7 @@ async function buildHybridExtension({
 	inputApi: string;
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -282,6 +312,7 @@ async function buildHybridExtension({
 		log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 		process.exit(1);
 	}
+
 	if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
 		log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 		process.exit(1);
@@ -291,20 +322,9 @@ async function buildHybridExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
-		process.exit(1);
-	}
-
-	const languageApp = getLanguageFromPath(inputApp);
-	const languageApi = getLanguageFromPath(inputApi);
-
-	if (!isLanguage(languageApp)) {
-		log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
-		process.exit(1);
-	}
-	if (!isLanguage(languageApi)) {
-		log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 		process.exit(1);
 	}
 
@@ -314,21 +334,21 @@ async function buildHybridExtension({
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: inputApp,
-		language: languageApp,
 		sourcemap,
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
-		language: languageApi,
 		sourcemap,
 		minify,
 		plugins,
 	});
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -346,6 +366,7 @@ async function buildBundleExtension({
 	entries,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -353,6 +374,7 @@ async function buildBundleExtension({
 	entries: ExtensionOptionsBundleEntry[];
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -361,63 +383,21 @@ async function buildBundleExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
 	}
 
-	const languagesApp = new Set<Language>();
-	const languagesApi = new Set<Language>();
+	const bundleEntryNames = new Set();
 
-	for (const entry of entries) {
-		if (isTypeIn(entry, HYBRID_EXTENSION_TYPES)) {
-			const inputApp = entry.source.app;
-			const inputApi = entry.source.api;
-
-			if (!(await fse.pathExists(inputApp)) || !(await fse.stat(inputApp)).isFile()) {
-				log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
-				process.exit(1);
-			}
-			if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
-				log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
-				process.exit(1);
-			}
-
-			const languageApp = getLanguageFromPath(inputApp);
-			const languageApi = getLanguageFromPath(inputApi);
-
-			if (!isLanguage(languageApp)) {
-				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
-				process.exit(1);
-			}
-			if (!isLanguage(languageApi)) {
-				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
-				process.exit(1);
-			}
-
-			languagesApp.add(languageApp);
-			languagesApi.add(languageApi);
-		} else {
-			const input = entry.source;
-
-			if (!(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
-				log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
-				process.exit(1);
-			}
-
-			const language = getLanguageFromPath(input);
-
-			if (!isLanguage(language)) {
-				log(`Language ${chalk.bold(language)} is not supported.`, 'error');
-				process.exit(1);
-			}
-
-			if (isIn(entry.type, APP_EXTENSION_TYPES)) {
-				languagesApp.add(language);
-			} else {
-				languagesApi.add(language);
-			}
+	for (const { name } of entries) {
+		if (bundleEntryNames.has(name)) {
+			log(`Duplicate extension found in bundle for ${chalk.bold(name)}.`, 'error');
+			process.exit(1);
 		}
+
+		bundleEntryNames.add(name);
 	}
 
 	const config = await loadConfig();
@@ -429,21 +409,21 @@ async function buildBundleExtension({
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: { entry: entrypointApp },
-		language: Array.from(languagesApp),
 		sourcemap,
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
-		language: Array.from(languagesApi),
 		sourcemap,
 		minify,
 		plugins,
 	});
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -474,7 +454,7 @@ async function buildExtension(config: RollupConfig | RollupConfig[]) {
 			}
 
 			return null;
-		})
+		}),
 	);
 
 	const resultErrors = result.filter((r) => r !== null);
@@ -522,7 +502,9 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 						spinner.succeed(chalk.bold('Done'));
 						log(chalk.bold.green('Watching files for changes...'));
 					}
+
 					break;
+
 				case 'ERROR': {
 					buildCount--;
 
@@ -532,6 +514,7 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 					if (buildCount > 0) {
 						spinner.start();
 					}
+
 					break;
 				}
 			}
@@ -542,55 +525,67 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 function getRollupOptions({
 	mode,
 	input,
-	language,
 	sourcemap,
 	minify,
 	plugins,
 }: {
 	mode: RollupMode;
 	input: string | Record<string, string>;
-	language: Language | Language[];
 	sourcemap: boolean;
 	minify: boolean;
 	plugins: Plugin[];
 }): RollupOptions {
-	const languages = Array.isArray(language) ? language : [language];
-
 	return {
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
-			typeof input !== 'string' ? virtual.default(input) : null,
-			mode === 'browser' ? (vue.default({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild.default({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
-			mode === 'browser' ? styles.default() : null,
+			typeof input !== 'string' ? virtual(input) : null,
+			mode === 'browser' ? vue({ isProduction: true }) : null,
+			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
+			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser' }),
-			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json.default(),
-			replace.default({
+			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
+			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json(),
+			replace({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser.default() : null,
+			minify ? terser() : null,
 		],
+		onwarn(warning, warn) {
+			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
+
+			warn(warning);
+		},
 	};
 }
 
 function getRollupOutputOptions({
 	mode,
 	output,
+	format,
 	sourcemap,
 }: {
 	mode: RollupMode;
 	output: string;
+	format: Format;
 	sourcemap: boolean;
 }): RollupOutputOptions {
+	const fileExtension = getFileExt(output);
+	let outputFormat = format;
+
+	if (mode === 'browser' || fileExtension === 'mjs') {
+		outputFormat = 'esm';
+	} else if (fileExtension === 'cjs') {
+		outputFormat = 'cjs';
+	}
+
 	return {
 		file: output,
-		format: mode === 'browser' ? 'es' : 'cjs',
+		format: outputFormat,
 		exports: 'auto',
 		inlineDynamicImports: true,
 		sourcemap,

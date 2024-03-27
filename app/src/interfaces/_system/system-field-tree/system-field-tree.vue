@@ -1,5 +1,32 @@
+<script setup lang="ts">
+import { useFieldTree } from '@/composables/use-field-tree';
+import { computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	collectionField?: string;
+	collectionName?: string;
+	value: string[] | null;
+	disabled?: boolean;
+	placeholder?: string;
+	allowNone?: boolean;
+}>();
+
+defineEmits<{
+	(e: 'input', value: string[] | null): void;
+}>();
+
+const { t } = useI18n();
+
+const values = inject('values', ref<Record<string, any>>({}));
+
+const chosenCollection = computed(() => values.value[props.collectionField!] || props.collectionName);
+
+const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
+</script>
+
 <template>
-	<v-notice v-if="!collectionField && !collection" type="warning">
+	<v-notice v-if="!collectionField && !collectionName" type="warning">
 		{{ t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!chosenCollection" type="warning">
@@ -19,56 +46,10 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref, PropType } from 'vue';
-import { useFieldTree } from '@/composables/use-field-tree';
-
-export default defineComponent({
-	props: {
-		collectionField: {
-			type: String,
-			default: null,
-		},
-		collection: {
-			type: String,
-			default: null,
-		},
-		value: {
-			type: Array as PropType<string[]>,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		allowNone: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
-
-		const values = inject('values', ref<Record<string, any>>({}));
-
-		const chosenCollection = computed(() => values.value[props.collectionField] || props.collection);
-
-		const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
-
-		return { t, values, treeList, chosenCollection, loadFieldRelations };
-	},
-});
-</script>
-
 <style scoped>
 .system-field-tree {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--form--field--input--background);
 }
 </style>

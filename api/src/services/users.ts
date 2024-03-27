@@ -1,13 +1,13 @@
-import { FailedValidationException } from '@directus/exceptions';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -16,6 +16,10 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { useLogger } from '../logger.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -36,10 +40,9 @@ export class UsersService extends ItemsService {
 		const duplicates = emails.filter((value, index, array) => array.indexOf(value) !== index);
 
 		if (duplicates.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0]!,
 			});
 		}
 
@@ -55,10 +58,9 @@ export class UsersService extends ItemsService {
 		const results = await query;
 
 		if (results.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: results[0].email,
 			});
 		}
 	}
@@ -86,14 +88,16 @@ export class UsersService extends ItemsService {
 
 		for (const password of passwords) {
 			if (!regex.test(password)) {
-				throw new FailedValidationException({
-					message: `Provided password doesn't match password policy`,
-					path: ['password'],
-					type: 'custom.pattern.base',
-					context: {
-						value: password,
-					},
-				});
+				throw new FailedValidationError(
+					joiValidationErrorItemToErrorExtensions({
+						message: `Provided password doesn't match password policy`,
+						path: ['password'],
+						type: 'custom.pattern.base',
+						context: {
+							value: password,
+						},
+					}),
+				);
 			}
 		}
 	}
@@ -111,7 +115,7 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
 		}
 	}
 
@@ -131,7 +135,53 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
+		}
+	}
+
+	/**
+	 * Get basic information of user identified by email
+	 */
+	private async getUserByEmail(
+		email: string,
+	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
+		return await this.knex
+			.select('id', 'role', 'status', 'password', 'email')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
+			.first();
+	}
+
+	/**
+	 * Create url for inviting users
+	 */
+	private inviteUrl(email: string, url: string | null): string {
+		const payload = { email, scope: 'invite' };
+
+		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite');
+		inviteURL.setQuery('token', token);
+
+		return inviteURL.toString();
+	}
+
+	/**
+	 * Validate array of emails. Intended to be used with create/update users
+	 */
+	private validateEmail(input: string | string[]) {
+		const emails = Array.isArray(input) ? input : [input];
+
+		const schema = Joi.string().email().required();
+
+		for (const email of emails) {
+			const { error } = schema.validate(email);
+
+			if (error) {
+				throw new FailedValidationError({
+					field: 'email',
+					type: 'email',
+				});
+			}
 		}
 	}
 
@@ -152,6 +202,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (emails.length) {
+				this.validateEmail(emails);
 				await this.checkUniqueEmails(emails);
 			}
 
@@ -159,7 +210,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.createMany(data, opts);
@@ -196,7 +247,7 @@ export class UsersService extends ItemsService {
 			});
 
 			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`User in update misses primary key.`);
+				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
 				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
 			}
 		});
@@ -210,10 +261,21 @@ export class UsersService extends ItemsService {
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
 			if (data['role']) {
-				// data['role'] will be an object with id with GraphQL mutations
-				const roleId = data['role']?.id ?? data['role'];
+				/*
+				 * data['role'] has the following cases:
+				 * - a string with existing role id
+				 * - an object with existing role id for GraphQL mutations
+				 * - an object with data for new role
+				 */
+				const role = data['role']?.id ?? data['role'];
 
-				const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
+				let newRole;
+
+				if (typeof role === 'string') {
+					newRole = await this.knex.select('admin_access').from('directus_roles').where('id', role).first();
+				} else {
+					newRole = role;
+				}
 
 				if (!newRole?.admin_access) {
 					await this.checkRemainingAdminExistence(keys);
@@ -226,12 +288,13 @@ export class UsersService extends ItemsService {
 
 			if (data['email']) {
 				if (keys.length > 1) {
-					throw new RecordNotUniqueException('email', {
+					throw new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
-						invalid: data['email'],
 					});
 				}
+
+				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
@@ -240,12 +303,12 @@ export class UsersService extends ItemsService {
 			}
 
 			if (data['tfa_secret'] !== undefined) {
-				throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+				throw new InvalidPayloadError({ reason: `You can't change the "tfa_secret" value manually` });
 			}
 
 			if (data['provider'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "provider" value manually` });
 				}
 
 				data['auth_data'] = null;
@@ -253,13 +316,13 @@ export class UsersService extends ItemsService {
 
 			if (data['external_identifier'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "external_identifier" value manually` });
 				}
 
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.updateMany(keys, data, opts);
@@ -280,10 +343,12 @@ export class UsersService extends ItemsService {
 		try {
 			await this.checkRemainingAdminExistence(keys);
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
+		// Manual constraint, see https://github.com/directus/directus/pull/19912
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
 		return keys;
@@ -312,40 +377,53 @@ export class UsersService extends ItemsService {
 		const opts: MutationOptions = {};
 
 		try {
-			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST']) === false) {
-				throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST'] as string) === false) {
+				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		const emails = toArray(email);
+
 		const mailService = new MailService({
 			schema: this.schema,
 			accountability: this.accountability,
 		});
 
 		for (const email of emails) {
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const subjectLine = subject ?? "You've been invited";
-			const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
-			inviteURL.setQuery('token', token);
+			// Check if user is known
+			const user = await this.getUserByEmail(email);
 
-			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' }, opts);
+			// Create user first to verify uniqueness if unknown
+			if (isEmpty(user)) {
+				await this.createOne({ email, role, status: 'invited' }, opts);
 
-			await mailService.send({
-				to: email,
-				subject: subjectLine,
-				template: {
-					name: 'user-invitation',
-					data: {
-						url: inviteURL.toString(),
-						email,
-					},
-				},
-			});
+				// For known users update role if changed
+			} else if (user.status === 'invited' && user.role !== role) {
+				await this.updateOne(user.id, { role }, opts);
+			}
+
+			// Send invite for new and already invited users
+			if (isEmpty(user) || user.status === 'invited') {
+				const subjectLine = subject ?? "You've been invited";
+
+				mailService
+					.send({
+						to: user?.email ?? email,
+						subject: subjectLine,
+						template: {
+							name: 'user-invitation',
+							data: {
+								url: this.inviteUrl(user?.email ?? email, url),
+								email: user?.email ?? email,
+							},
+						},
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send user invitation mail`);
+					});
+			}
 		}
 	}
 
@@ -355,12 +433,12 @@ export class UsersService extends ItemsService {
 			scope: string;
 		};
 
-		if (scope !== 'invite') throw new ForbiddenException();
+		if (scope !== 'invite') throw new ForbiddenError();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
+			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
 		}
 
 		// Allow unauthenticated update
@@ -376,19 +454,15 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex
-			.select('status', 'password')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
-			.first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
-		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
+			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({
@@ -397,24 +471,30 @@ export class UsersService extends ItemsService {
 			accountability: this.accountability,
 		});
 
-		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
+		const payload = { email: user.email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
+
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
+			: new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password').setQuery('token', token).toString();
+
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		await mailService.send({
-			to: email,
-			subject: subjectLine,
-			template: {
-				name: 'password-reset',
-				data: {
-					url: acceptURL,
-					email,
+		mailService
+			.send({
+				to: user.email,
+				subject: subjectLine,
+				template: {
+					name: 'password-reset',
+					data: {
+						url: acceptURL,
+						email: user.email,
+					},
 				},
-			},
-		});
+			})
+			.catch((error) => {
+				logger.error(error, `Could not send password reset mail`);
+			});
 
 		await stall(STALL_TIME, timeStart);
 	}
@@ -426,20 +506,20 @@ export class UsersService extends ItemsService {
 			hash: string;
 		};
 
-		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenError();
 
 		const opts: MutationOptions = {};
 
 		try {
 			await this.checkPasswordPolicy([password]);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
-		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		// Allow unauthenticated update

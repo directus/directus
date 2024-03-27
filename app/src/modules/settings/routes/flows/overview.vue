@@ -1,3 +1,131 @@
+<script setup lang="ts">
+import api from '@/api';
+import { Header, Sort } from '@/components/v-table/types';
+import { useCollectionPermissions } from '@/composables/use-permissions';
+import { router } from '@/router';
+import { useFlowsStore } from '@/stores/flows';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { FlowRaw } from '@directus/types';
+import { sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import FlowDrawer from './flow-drawer.vue';
+
+const { t } = useI18n();
+
+const { createAllowed } = useCollectionPermissions('directus_flows');
+
+const confirmDelete = ref<FlowRaw | null>(null);
+const deletingFlow = ref(false);
+const editFlow = ref<string | undefined>();
+
+const conditionalFormatting = ref([
+	{
+		operator: 'eq',
+		value: 'active',
+		text: t('active'),
+		color: 'var(--foreground-inverted)',
+		background: 'var(--theme--primary)',
+	},
+	{
+		operator: 'eq',
+		value: 'inactive',
+		text: t('inactive'),
+		color: 'var(--theme--foreground-subdued)',
+		background: 'var(--theme--background-normal)',
+	},
+]);
+
+const tableHeaders = ref<Header[]>([
+	{
+		text: '',
+		value: 'icon',
+		width: 42,
+		sortable: false,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('status'),
+		value: 'status',
+		width: 100,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		width: 240,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('description'),
+		value: 'description',
+		width: 360,
+		sortable: false,
+		align: 'left',
+		description: null,
+	},
+]);
+
+const internalSort = ref<Sort>({ by: 'name', desc: false });
+
+const flowsStore = useFlowsStore();
+
+const flows = computed(() => {
+	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
+	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
+});
+
+function updateSort(sort: Sort | null) {
+	internalSort.value = sort ?? { by: 'name', desc: false };
+}
+
+function navigateToFlow({ item: flow }: { item: FlowRaw }) {
+	router.push(`/settings/flows/${flow.id}`);
+}
+
+async function deleteFlow() {
+	if (!confirmDelete.value) return;
+
+	deletingFlow.value = true;
+
+	try {
+		await api.delete(`/flows/${confirmDelete.value.id}`);
+		await flowsStore.hydrate();
+		confirmDelete.value = null;
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		deletingFlow.value = false;
+	}
+}
+
+async function toggleFlowStatusById(id: string, value: string) {
+	try {
+		await api.patch(`/flows/${id}`, {
+			status: value === 'active' ? 'inactive' : 'active',
+		});
+
+		await flowsStore.hydrate();
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
+
+function onFlowDrawerCompletion(id: string) {
+	if (editFlow.value === '+') {
+		router.push(`/settings/flows/${id}`);
+	}
+
+	editFlow.value = undefined;
+}
+</script>
+
 <template>
 	<private-view :title="t('flows')">
 		<template #title-outer:prepend>
@@ -27,7 +155,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -51,7 +179,7 @@
 			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
+				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
@@ -129,137 +257,6 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
-import api from '@/api';
-import { Sort, Header } from '@/components/v-table/types';
-import { router } from '@/router';
-import { useFlowsStore } from '@/stores/flows';
-import { usePermissionsStore } from '@/stores/permissions';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { FlowRaw } from '@directus/types';
-import { sortBy } from 'lodash';
-import { computed, ref, Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import FlowDrawer from './flow-drawer.vue';
-
-const { t } = useI18n();
-
-const permissionsStore = usePermissionsStore();
-
-const confirmDelete = ref<FlowRaw | null>(null);
-const deletingFlow = ref(false);
-const editFlow = ref<string | undefined>();
-
-const createAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_flows', 'create');
-});
-
-const conditionalFormatting = ref([
-	{
-		operator: 'eq',
-		value: 'active',
-		text: t('active'),
-		color: 'var(--foreground-inverted)',
-		background: 'var(--primary)',
-	},
-	{
-		operator: 'eq',
-		value: 'inactive',
-		text: t('inactive'),
-		color: 'var(--foreground-subdued)',
-		background: 'var(--background-normal)',
-	},
-]);
-
-const tableHeaders = ref<Header[]>([
-	{
-		text: '',
-		value: 'icon',
-		width: 42,
-		sortable: false,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('status'),
-		value: 'status',
-		width: 100,
-		sortable: true,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('name'),
-		value: 'name',
-		width: 240,
-		sortable: true,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('description'),
-		value: 'description',
-		width: 360,
-		sortable: false,
-		align: 'left',
-		description: null,
-	},
-]);
-
-const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
-
-const flowsStore = useFlowsStore();
-
-const flows = computed(() => {
-	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
-	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
-});
-
-function updateSort(sort: Sort | null) {
-	internalSort.value = sort ?? { by: 'name', desc: false };
-}
-
-function navigateToFlow({ item: flow }: { item: FlowRaw }) {
-	router.push(`/settings/flows/${flow.id}`);
-}
-
-async function deleteFlow() {
-	if (!confirmDelete.value) return;
-
-	deletingFlow.value = true;
-
-	try {
-		await api.delete(`/flows/${confirmDelete.value.id}`);
-		await flowsStore.hydrate();
-		confirmDelete.value = null;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		deletingFlow.value = false;
-	}
-}
-
-async function toggleFlowStatusById(id: string, value: string) {
-	try {
-		await api.patch(`/flows/${id}`, {
-			status: value === 'active' ? 'inactive' : 'active',
-		});
-		await flowsStore.hydrate();
-	} catch (error) {
-		unexpectedError(error as Error);
-	}
-}
-
-function onFlowDrawerCompletion(id: string) {
-	if (editFlow.value === '+') {
-		router.push(`/settings/flows/${id}`);
-	}
-
-	editFlow.value = undefined;
-}
-</script>
-
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
@@ -267,18 +264,18 @@ function onFlowDrawerCompletion(id: string) {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
 }
 </style>

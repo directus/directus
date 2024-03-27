@@ -6,7 +6,7 @@ type GetFilterOperationsForTypeOptions = {
 
 export function getFilterOperatorsForType(
 	type: Type,
-	opts?: GetFilterOperationsForTypeOptions
+	opts?: GetFilterOperationsForTypeOptions,
 ): ClientFilterOperator[] {
 	const validationOnlyStringFilterOperators: ClientFilterOperator[] = opts?.includeValidation ? ['regex'] : [];
 
@@ -22,8 +22,12 @@ export function getFilterOperatorsForType(
 				'icontains',
 				'starts_with',
 				'nstarts_with',
+				'istarts_with',
+				'nistarts_with',
 				'ends_with',
 				'nends_with',
+				'iends_with',
+				'niends_with',
 				'eq',
 				'neq',
 				'empty',

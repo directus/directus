@@ -1,8 +1,7 @@
-import { test, expect } from 'vitest';
+import { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VPagination from './v-pagination.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-button'],
@@ -26,6 +25,7 @@ test('Mount component', () => {
 test('length prop', async () => {
 	const wrapper = mount(VPagination, {
 		props: {
+			modelValue: 1,
 			length: 5,
 		},
 		global,
@@ -41,6 +41,7 @@ test('length prop', async () => {
 test('totalVisible prop', async () => {
 	const wrapper = mount(VPagination, {
 		props: {
+			modelValue: 1,
 			length: 5,
 			totalVisible: 3,
 		},

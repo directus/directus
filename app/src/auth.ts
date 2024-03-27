@@ -1,12 +1,15 @@
-import api from '@/api';
+import { resumeQueue } from '@/api';
+import { sdk } from '@/sdk';
+import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
-import { useAppStore } from '@/stores/app';
+import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
-import { idleTracker } from './idle';
-import { DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { useServerStore } from './stores/server';
+import { emitter, Events } from './events';
+import { type LoginOptions } from '@directus/sdk';
+import { unexpectedError } from './utils/unexpected-error';
 
-import emitter from '@/events';
 type LoginCredentials = {
 	identifier?: string;
 	email?: string;
@@ -21,126 +24,66 @@ type LoginParams = {
 	share?: boolean;
 };
 
-function getAuthEndpoint(provider?: string, share?: boolean) {
-	if (share) return '/shares/auth';
-	if (provider === DEFAULT_AUTH_PROVIDER) return '/auth/login';
-	return `/auth/login/${provider}`;
-}
-
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
+	const serverStore = useServerStore();
 
-	const response = await api.post<any>(getAuthEndpoint(provider, share), {
-		...credentials,
-		mode: 'cookie',
-	});
+	const password = credentials.password;
+	const email = share ? credentials.share : credentials.email;
 
-	const accessToken = response.data.data.access_token;
-
-	// Add the header to the API handler for every request
-	api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-	// Refresh the token 10 seconds before the access token expires. This means the user will stay
-	// logged in without any noticeable hiccups or delays
-
-	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-	// for tokens that last > 24 days. Ref #4054
-	if (response.data.data.expires <= 2100000000) {
-		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
+	if (!password || !email) {
+		return unexpectedError('Missing email or password.');
 	}
 
-	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+	const options: LoginOptions = {};
+	if (share) options.share = share;
+	if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
+	if (credentials.otp) options.otp = credentials.otp;
+
+	const response = await sdk.login(email, password, options);
+
+	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	appStore.authenticated = true;
+
+	// Reload server store to get authenticated data
+	serverStore.hydrate();
 
 	await hydrate();
 }
 
-let refreshTimeout: any;
 let idle = false;
-let isRefreshing = false;
 let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
-idleTracker.on('idle', () => {
-	clearTimeout(refreshTimeout);
-	idle = true;
-});
-
-idleTracker.on('hide', () => {
-	clearTimeout(refreshTimeout);
-
+emitter.on(Events.tabIdle, () => {
+	sdk.stopRefreshing();
 	idle = true;
 });
 
 // Restart the autorefresh process when the app is used (again)
-idleTracker.on('active', () => {
+emitter.on(Events.tabActive, () => {
 	if (idle === true) {
 		refresh();
 		idle = false;
 	}
 });
 
-idleTracker.on('show', async () => {
-	if (idle === true) {
-		await refresh();
-		emitter.emit('token-refreshed');
-		idle = false;
-	}
-});
-
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
-	// Allow refresh during initial page load
-	if (firstRefresh) firstRefresh = false;
-	// Skip if not logged in
-	else if (!api.defaults.headers.common['Authorization']) return;
-
-	// Prevent concurrent refreshes
-	if (isRefreshing) return;
-
+export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
 
-	// Skip refresh if access token is still fresh
-	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - 10000) {
-		// Set a fresh timeout as it is cleared by idleTracker's idle or hide event
-		clearTimeout(refreshTimeout);
-		refreshTimeout = setTimeout(() => refresh(), appStore.accessTokenExpiry - 10000 - Date.now());
-		return;
-	}
-
-	isRefreshing = true;
+	// Allow refresh during initial page load, skip if not logged in
+	if (!firstRefresh && !appStore.authenticated) return;
 
 	try {
-		const response = await api.post<any>('/auth/refresh', undefined, {
-			transformRequest(data, headers) {
-				// Remove Authorization header from request
-				headers.set('Authorization');
-				return data;
-			},
-		});
+		const response = await sdk.refresh();
 
-		const accessToken = response.data.data.access_token;
-
-		// Add the header to the API handler for every request
-		api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-		// Refresh the token 10 seconds before the access token expires. This means the user will stay
-		// logged in without any notable hiccups or delays
-		clearTimeout(refreshTimeout);
-
-		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-		// for tokens that last > 24 days. Ref #4054
-		if (response.data.data.expires <= 2100000000) {
-			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
-		}
-
-		appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
+		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 		appStore.authenticated = true;
-
-		return accessToken;
+		firstRefresh = false;
 	} catch (error: any) {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
-		isRefreshing = false;
+		resumeQueue();
 	}
 }
 
@@ -165,16 +108,14 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
-	delete api.defaults.headers.common['Authorization'];
-
-	clearTimeout(refreshTimeout);
+	sdk.stopRefreshing();
 
 	const options = { ...defaultOptions, ...optionsRaw };
 
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
 		try {
-			await api.post(`/auth/logout`);
+			await sdk.logout();
 		} catch {
 			// User already signed out
 		}

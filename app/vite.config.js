@@ -1,68 +1,86 @@
-import {
-	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/constants';
-import {
-	ensureExtensionDirs,
-	generateExtensionsEntrypoint,
-	getLocalExtensions,
-	getPackageExtensions,
-} from '@directus/utils/node';
+import { APP_SHARED_DEPS } from '@directus/extensions';
+import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
+
+/*
+ * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
+ * as expected when extensions are read from a different location locally through the
+ * EXTENSIONS_LOCATION env var
+ */
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
+
+const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
+		UnheadVite(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
 			},
 		}),
-	],
-	resolve: {
-		alias: [
-			{ find: '@', replacement: path.resolve(__dirname, 'src') },
-			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
-		],
-	},
-	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
-	server: {
-		port: 8080,
-		proxy: {
-			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-				changeOrigin: true,
+		{
+			name: 'watch-directus-dependencies',
+			configureServer: (server) => {
+				server.watcher.options = {
+					...server.watcher.options,
+					ignored: [/node_modules\/(?!@directus\/).*/, '**/.git/**'],
+				};
 			},
 		},
-		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
-		},
+	],
+	define: {
+		__INTLIFY_JIT_COMPILATION__: true,
+		__VUE_I18N_LEGACY_API__: false,
 	},
+	resolve: {
+		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
+	},
+	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
+	...(!process.env.HISTOIRE && {
+		server: {
+			port: 8080,
+			proxy: {
+				'^/(?!admin)': {
+					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
+					changeOrigin: true,
+				},
+			},
+			fs: {
+				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+			},
+		},
+	}),
 	test: {
 		environment: 'happy-dom',
-		setupFiles: ['src/__setup__/mock-globals.ts'],
+		deps: {
+			optimizer: {
+				web: {
+					exclude: ['pinia', 'url'],
+				},
+			},
+		},
 	},
 });
 
 function getExtensionsRealPaths() {
-	return fs.existsSync(EXTENSIONS_PATH)
+	return extensionsPathExists
 		? fs
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
 					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
 					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
 				})
 				.filter((v) => v)
@@ -119,12 +137,56 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		// eslint-disable-next-line no-undef
+		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map();
+		const moduleExtensions = await resolveModuleExtensions(API_PATH);
 
-		const extensions = [...packageExtensions, ...localExtensions];
+		const registryExtensions = extensionsPathExists
+			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
+			: // eslint-disable-next-line no-undef
+			  new Map();
 
-		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
+		const mockSetting = (source, folder, extension) => {
+			const settings = [
+				{
+					id: extension.name,
+					enabled: true,
+					folder: folder,
+					bundle: null,
+					source: source,
+				},
+			];
+
+			if (extension.type === 'bundle') {
+				settings.push(
+					...extension.entries.map((entry) => ({
+						enabled: true,
+						folder: entry.name,
+						bundle: extension.name,
+						source: source,
+					})),
+				);
+			}
+
+			return settings;
+		};
+
+		// default to enabled for app extension in developer mode
+		const extensionSettings = [
+			...Array.from(localExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('local', folder, extension),
+			),
+			...Array.from(moduleExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('module', folder, extension),
+			),
+			...Array.from(registryExtensions.entries()).flatMap(([folder, extension]) =>
+				mockSetting('registry', folder, extension),
+			),
+		];
+
+		extensionsEntrypoint = generateExtensionsEntrypoint(
+			{ module: moduleExtensions, local: localExtensions, registry: registryExtensions },
+			extensionSettings,
+		);
 	}
 }

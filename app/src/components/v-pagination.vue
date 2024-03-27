@@ -1,3 +1,62 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = defineProps<{
+	/** Currently selected page */
+	modelValue: number;
+	/** The amount of pages to render */
+	length: number;
+	/** Disables the pagination */
+	disabled?: boolean;
+	/** Specify the max total visible pagination numbers */
+	totalVisible?: number;
+	/** Show first/last buttons */
+	showFirstLast?: boolean;
+}>();
+
+const emit = defineEmits(['update:modelValue']);
+
+const visiblePages = computed<number[]>(() => {
+	if (props.totalVisible === undefined) return [];
+
+	let startPage: number;
+	let endPage: number;
+
+	if (!Number.isInteger(props.totalVisible) || props.length <= props.totalVisible) {
+		startPage = 1;
+		endPage = props.length;
+	} else {
+		const pagesBeforeCurrentPage = Math.floor(props.totalVisible / 2);
+		const pagesAfterCurrentPage = Math.ceil(props.totalVisible / 2) - 1;
+
+		if (props.modelValue <= pagesBeforeCurrentPage) {
+			startPage = 1;
+			endPage = props.totalVisible;
+		} else if (props.modelValue + pagesAfterCurrentPage >= props.length) {
+			startPage = props.length - props.totalVisible + 1;
+			endPage = props.length;
+		} else {
+			startPage = props.modelValue - pagesBeforeCurrentPage;
+			endPage = props.modelValue + pagesAfterCurrentPage;
+		}
+	}
+
+	return Array.from(Array(endPage + 1 - startPage).keys()).map((i) => startPage + i);
+});
+
+function toPrev() {
+	toPage(props.modelValue - 1);
+}
+
+function toNext() {
+	toPage(props.modelValue + 1);
+}
+
+function toPage(page: number) {
+	emit('update:modelValue', page);
+}
+</script>
+
 <template>
 	<div class="v-pagination">
 		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
@@ -64,87 +123,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue';
-
-const props = defineProps({
-	/** Disables the pagination */
-	disabled: {
-		type: Boolean,
-		default: false,
-	},
-	/** The amount of pages to render */
-	length: {
-		type: Number,
-		required: true,
-		validator: Number.isInteger,
-	},
-	/** Specify the max total visible pagination numbers */
-	totalVisible: {
-		type: Number,
-		default: undefined,
-		validator: (val: number) => val >= 0,
-	},
-	/** Currently selected page */
-	modelValue: {
-		type: Number,
-		default: null,
-	},
-	/** Show first/last buttons */
-	showFirstLast: {
-		type: Boolean,
-		default: false,
-	},
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const visiblePages = computed<number[]>(() => {
-	if (props.totalVisible === undefined) return [];
-
-	let startPage: number;
-	let endPage: number;
-
-	if (!Number.isInteger(props.totalVisible) || props.length <= props.totalVisible) {
-		startPage = 1;
-		endPage = props.length;
-	} else {
-		const pagesBeforeCurrentPage = Math.floor(props.totalVisible / 2);
-		const pagesAfterCurrentPage = Math.ceil(props.totalVisible / 2) - 1;
-
-		if (props.modelValue <= pagesBeforeCurrentPage) {
-			startPage = 1;
-			endPage = props.totalVisible;
-		} else if (props.modelValue + pagesAfterCurrentPage >= props.length) {
-			startPage = props.length - props.totalVisible + 1;
-			endPage = props.length;
-		} else {
-			startPage = props.modelValue - pagesBeforeCurrentPage;
-			endPage = props.modelValue + pagesAfterCurrentPage;
-		}
-	}
-
-	return Array.from(Array(endPage + 1 - startPage).keys()).map((i) => startPage + i);
-});
-
-function toPrev() {
-	toPage(props.modelValue - 1);
-}
-
-function toNext() {
-	toPage(props.modelValue + 1);
-}
-
-function toPage(page: number) {
-	emit('update:modelValue', page);
-}
-</script>
-
 <style scoped>
-:global(body) {
-	--v-pagination-active-color: var(--primary);
-}
-
 .v-pagination {
 	display: flex;
 }
@@ -152,7 +131,7 @@ function toPage(page: number) {
 .gap {
 	display: none;
 	margin: 0 4px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 2em;
 }
 
@@ -163,9 +142,9 @@ function toPage(page: number) {
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--background-normal);
-	--v-button-background-color: var(--background-subdued);
-	--v-button-color: var(--foreground-normal);
+	--v-button-background-color-hover: var(--theme--background-normal);
+	--v-button-background-color: var(--theme--form--field--input--background-subdued);
+	--v-button-color: var(--theme--foreground);
 
 	margin: 0 2px;
 	vertical-align: middle;
@@ -194,9 +173,9 @@ function toPage(page: number) {
 }
 
 .v-button.active {
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--theme--primary);
 	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-background-color: var(--primary);
+	--v-button-background-color: var(--theme--primary);
 	--v-button-color: var(--foreground-inverted);
 }
 </style>

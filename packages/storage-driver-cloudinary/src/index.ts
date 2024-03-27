@@ -6,7 +6,7 @@ import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
 import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
-import { fetch, FormData } from 'undici';
+import { FormData, fetch } from 'undici';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
@@ -43,7 +43,7 @@ export class DriverCloudinary implements Driver {
 			entries = entries.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
 		}
 
-		return new URLSearchParams(entries).toString();
+		return decodeURIComponent(new URLSearchParams(entries).toString());
 	}
 
 	/**
@@ -54,7 +54,7 @@ export class DriverCloudinary implements Driver {
 		const denylist = ['file', 'cloud_name', 'resource_type', 'api_key'];
 
 		const signaturePayload = Object.fromEntries(
-			Object.entries(payload).filter(([key]) => denylist.includes(key) === false)
+			Object.entries(payload).filter(([key]) => denylist.includes(key) === false),
 		);
 
 		const signaturePayloadString = this.toFormUrlEncoded(signaturePayload, { sort: true });
@@ -95,17 +95,27 @@ export class DriverCloudinary implements Driver {
 	 * on the other hand requires the extension to be present.
 	 */
 	private getPublicId(filepath: string) {
+		const { base, name } = parse(filepath);
 		const resourceType = this.getResourceType(filepath);
-		if (resourceType === 'raw') return filepath;
-		return parse(filepath).name;
+		if (resourceType === 'raw') return base;
+		return name;
+	}
+
+	/**
+	 * Cloudinary sometimes treats the folder path leading up to the file ID as a separate request
+	 * entity. This method will return the folder path without the filename for those uses. The
+	 * leading slash is removed.
+	 */
+	private getFolderPath(filepath: string) {
+		return parse(filepath).dir;
 	}
 
 	/**
 	 * Generates the Authorization header value for Cloudinary's basic auth endpoints
 	 */
 	private getBasicAuth() {
-		const creds = `${this.apiKey}:${this.apiSecret}`;
-		const base64 = Buffer.from(creds).toString('base64');
+		const credentials = `${this.apiKey}:${this.apiSecret}`;
+		const base64 = Buffer.from(credentials).toString('base64');
 		return `Basic ${base64}`;
 	}
 
@@ -136,12 +146,30 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
-		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload/${publicId}`;
+		const folder = this.getFolderPath(fullPath);
+
+		const parameters = {
+			public_id: join(folder, publicId),
+			type: 'upload',
+			api_key: this.apiKey,
+			timestamp: this.getTimestamp(),
+		};
+
+		const signature = this.getFullSignature(parameters);
+
+		const body = this.toFormUrlEncoded({
+			signature,
+			...parameters,
+		});
+
+		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/explicit`;
+
 		const response = await fetch(url, {
-			method: 'GET',
+			method: 'POST',
 			headers: {
-				Authorization: this.getBasicAuth(),
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
+			body,
 		});
 
 		if (response.status >= 400) {
@@ -204,6 +232,7 @@ export class DriverCloudinary implements Driver {
 	async write(filepath: string, content: Readable) {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
+		const folderPath = this.getFolderPath(fullPath);
 
 		const uploadParameters = {
 			timestamp: this.getTimestamp(),
@@ -211,6 +240,12 @@ export class DriverCloudinary implements Driver {
 			type: 'upload',
 			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
+			...(folderPath
+				? {
+						asset_folder: folderPath,
+						use_asset_folder_as_public_id_prefix: 'true',
+				  }
+				: {}),
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
@@ -267,7 +302,7 @@ export class DriverCloudinary implements Driver {
 						signature,
 						...uploadParameters,
 					},
-				})
+				}),
 			)
 			.catch((err) => {
 				error = err;
@@ -324,13 +359,14 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
+		const folderPath = this.getFolderPath(fullPath);
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/destroy`;
 
 		const parameters = {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			resource_type: resourceType,
-			public_id: publicId,
+			public_id: join(folderPath, publicId),
 		};
 
 		const signature = this.getFullSignature(parameters);
@@ -349,25 +385,27 @@ export class DriverCloudinary implements Driver {
 
 	async *list(prefix = '') {
 		const fullPath = this.fullPath(prefix);
-		const publicId = this.getPublicId(fullPath);
 
 		let nextCursor = '';
 
 		do {
 			const response = await fetch(
-				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${publicId}*&next_cursor=${nextCursor}`,
+				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${fullPath}*&next_cursor=${nextCursor}`,
 				{
 					method: 'GET',
 					headers: {
 						Authorization: this.getBasicAuth(),
 					},
-				}
+				},
 			);
 
 			const json = (await response.json()) as {
 				next_cursor: string;
 				resources: {
 					public_id: string;
+					format: string;
+					resource_type: string;
+					filename: string;
 				}[];
 			};
 
@@ -379,7 +417,9 @@ export class DriverCloudinary implements Driver {
 			nextCursor = json.next_cursor;
 
 			for (const file of json.resources) {
-				yield file.public_id;
+				const filename = file.public_id.substring(this.root.length);
+				if (file.resource_type === 'image' || file.resource_type === 'video') yield `${filename}.${file.format}`;
+				else yield filename;
 			}
 		} while (nextCursor);
 	}

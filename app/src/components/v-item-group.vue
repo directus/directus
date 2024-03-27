@@ -1,9 +1,3 @@
-<template>
-	<div class="v-item-group">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import { useGroupableParent } from '@directus/composables';
@@ -32,6 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:modelValue']);
 
 const { modelValue: selection, multiple, max, mandatory } = toRefs(props);
+
 useGroupableParent(
 	{
 		selection: selection,
@@ -42,6 +37,12 @@ useGroupableParent(
 		max: max,
 		mandatory: mandatory,
 	},
-	props.scope
+	props.scope,
 );
 </script>
+
+<template>
+	<div class="v-item-group">
+		<slot />
+	</div>
+</template>

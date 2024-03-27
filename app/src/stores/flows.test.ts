@@ -7,7 +7,7 @@ beforeEach(() => {
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
 
@@ -120,7 +120,7 @@ test('getManualFlowsForCollection action returns active manual flows of specifie
 	expect(flowsStore.getManualFlowsForCollection(testCollection)).toEqual(
 		mockFlows.filter(
 			(flow) =>
-				flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(testCollection)
-		)
+				flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(testCollection),
+		),
 	);
 });

@@ -1,15 +1,14 @@
 import { throttle } from 'lodash';
-import mitt from 'mitt';
+import { emitter, Events } from './events';
 
 const events = ['pointermove', 'pointerdown', 'keydown'];
+
 export const time = 5 * 60 * 1000; // 5 min in ms
 
 let timeout: number | null;
 
 let visible = true;
 let idle = false;
-
-export const idleTracker = mitt();
 
 const throttledOnIdleEvents = throttle(onIdleEvents, 500);
 
@@ -34,7 +33,7 @@ export function stopIdleTracking(): void {
 function onIdleEvents() {
 	if (idle === true) {
 		idle = false;
-		idleTracker.emit('active');
+		emitter.emit(Events.tabActive);
 	}
 
 	resetTimeout();
@@ -43,12 +42,12 @@ function onIdleEvents() {
 function onVisibilityChange() {
 	if (document.visibilityState === 'hidden' && visible === true) {
 		visible = false;
-		idleTracker.emit('hide');
+		emitter.emit(Events.tabIdle);
 	}
 
 	if (document.visibilityState === 'visible' && visible === false) {
 		visible = true;
-		idleTracker.emit('show');
+		emitter.emit(Events.tabActive);
 	}
 }
 
@@ -60,6 +59,6 @@ function resetTimeout() {
 
 	timeout = window.setTimeout(() => {
 		idle = true;
-		idleTracker.emit('idle');
+		emitter.emit(Events.tabIdle);
 	}, time);
 }

@@ -1,0 +1,83 @@
+table: directus_activity
+
+fields:
+  - field: id
+    width: half
+
+  - field: item
+    width: half
+
+  - field: action
+    display: labels
+    display_options:
+      choices:
+        - text: $t:field_options.directus_activity.create
+          value: create
+          foreground: 'var(--theme--primary)'
+          background: 'var(--theme--primary-subdued)'
+        - text: $t:field_options.directus_activity.update
+          value: update
+          foreground: 'var(--blue)'
+          background: 'var(--blue-25)'
+        - text: $t:field_options.directus_activity.delete
+          value: delete
+          foreground: 'var(--theme--danger)'
+          background: 'var(--danger-25)'
+        - text: $t:field_options.directus_activity.login
+          value: login
+          foreground: 'var(--purple)'
+          background: 'var(--purple-25)'
+    width: half
+
+  - field: collection
+    display: collection
+    display_options:
+      icon: true
+    width: half
+
+  - field: timestamp
+    display: datetime
+    special:
+      - date-created
+      - cast-timestamp
+    options:
+      relative: true
+    width: half
+
+  - field: user
+    display: user
+    width: half
+
+  - field: comment
+    display: formatted-value
+    display_options:
+      color: 'var(--theme--foreground-subdued)'
+    width: half
+
+  - field: user_agent
+    display: formatted-value
+    display_options:
+      font: monospace
+    width: half
+
+  - field: origin
+    display: formatted-value
+    display_options:
+      font: monospace
+    width: half
+
+  - field: ip
+    display: formatted-value
+    display_options:
+      font: monospace
+    width: half
+
+  - field: revisions
+    interface: list-o2m
+    special:
+      - o2m
+    options:
+      fields:
+        - collection
+        - item
+    width: half

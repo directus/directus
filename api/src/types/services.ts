@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import type { Item, PrimaryKey } from './items.js';
 
 export type AbstractServiceOptions = {
-	knex?: Knex;
+	knex?: Knex | undefined;
 	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
 };

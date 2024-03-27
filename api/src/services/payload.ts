@@ -1,15 +1,16 @@
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
-import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/utils';
-import flat from 'flat';
+import { format, isValid, parseISO } from 'date-fns';
+import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { parse as wktToGeoJSON } from 'wellknown';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { getHelpers, Helpers } from '../database/helpers/index.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -58,6 +59,7 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
+
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
 			}
@@ -66,7 +68,7 @@ export class PayloadService {
 		},
 		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
-				return uuid();
+				return randomUUID();
 			}
 
 			return value;
@@ -148,7 +150,7 @@ export class PayloadService {
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
 	async processValues(
 		action: Action,
-		payload: Partial<Item> | Partial<Item>[]
+		payload: Partial<Item> | Partial<Item>[],
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
@@ -157,7 +159,7 @@ export class PayloadService {
 		const fieldsInPayload = Object.keys(processedPayload[0]!);
 
 		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields).filter(
-			([_name, field]) => field.special && field.special.length > 0
+			([_name, field]) => field.special && field.special.length > 0,
 		);
 
 		if (action === 'read') {
@@ -172,9 +174,9 @@ export class PayloadService {
 					specialFieldsInCollection.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[name] = newValue;
-					})
+					}),
 				);
-			})
+			}),
 		);
 
 		this.processGeometries(processedPayload, action);
@@ -205,9 +207,10 @@ export class PayloadService {
 
 	processAggregates(payload: Partial<Item>[]) {
 		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, flat.unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
@@ -217,7 +220,7 @@ export class PayloadService {
 		field: SchemaOverview['collections'][string]['fields'][string],
 		payload: Partial<Item>,
 		action: Action,
-		accountability: Accountability | null
+		accountability: Accountability | null,
 	): Promise<any> {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
@@ -265,6 +268,7 @@ export class PayloadService {
 
 		return payloads;
 	}
+
 	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
@@ -273,7 +277,7 @@ export class PayloadService {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
-			['dateTime', 'date', 'timestamp'].includes(field.type)
+			['dateTime', 'date', 'timestamp'].includes(field.type),
 		);
 
 		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
@@ -328,17 +332,21 @@ export class PayloadService {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
-								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
+								throw new InvalidPayloadError({ reason: `Invalid Date format in field "${dateColumn.field}"` });
 							}
+
 							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'dateTime') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
-								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
+								throw new InvalidPayloadError({ reason: `Invalid DateTime format in field "${dateColumn.field}"` });
 							}
+
 							payload[name] = parsedDate;
 						}
 
@@ -375,7 +383,7 @@ export class PayloadService {
 	 */
 	async processA2O(
 		data: Partial<Item>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
@@ -399,17 +407,17 @@ export class PayloadService {
 			const relatedCollection = payload[relation.meta.one_collection_field];
 
 			if (!relatedCollection) {
-				throw new InvalidPayloadException(
-					`Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`
-				);
+				throw new InvalidPayloadError({
+					reason: `Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`,
+				});
 			}
 
 			const allowedCollections = relation.meta.one_allowed_collections;
 
 			if (allowedCollections.includes(relatedCollection) === false) {
-				throw new InvalidPayloadException(
-					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`
-				);
+				throw new InvalidPayloadError({
+					reason: `"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`,
+				});
 			}
 
 			const itemsService = new ItemsService(relatedCollection, {
@@ -469,7 +477,7 @@ export class PayloadService {
 	 */
 	async processM2O(
 		data: Partial<Item>,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const payload = cloneDeep(data);
 
@@ -551,7 +559,7 @@ export class PayloadService {
 	async processO2M(
 		data: Partial<Item>,
 		parent: PrimaryKey,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const revisions: PrimaryKey[] = [];
 
@@ -592,8 +600,10 @@ export class PayloadService {
 
 			// Nested array of individual items
 			const field = payload[relation.meta!.one_field!];
+
 			if (!field || Array.isArray(field)) {
 				const updates = field || []; // treat falsey values as removing all children
+
 				for (let i = 0; i < updates.length; i++) {
 					const relatedRecord = updates[i];
 
@@ -607,7 +617,7 @@ export class PayloadService {
 							.first();
 
 						if (!!existingRecord === false) {
-							throw new ForbiddenException();
+							throw new ForbiddenError();
 						}
 
 						// If the related item is already associated to the current item, and there's no
@@ -643,7 +653,7 @@ export class PayloadService {
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
 						mutationTracker: opts?.mutationTracker,
-					}))
+					})),
 				);
 
 				const query: Query = {
@@ -682,7 +692,7 @@ export class PayloadService {
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
 							mutationTracker: opts?.mutationTracker,
-						}
+						},
 					);
 				}
 			}
@@ -690,7 +700,7 @@ export class PayloadService {
 			else {
 				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
-				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
+				if (error) throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
 
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
@@ -750,7 +760,7 @@ export class PayloadService {
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
 								mutationTracker: opts?.mutationTracker,
-							}
+							},
 						);
 					}
 				}
@@ -790,7 +800,7 @@ export class PayloadService {
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
 								mutationTracker: opts?.mutationTracker,
-							}
+							},
 						);
 					}
 				}

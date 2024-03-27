@@ -6,9 +6,10 @@ export function parsePreset(preset: Record<string, any> | null): Record<string, 
 	const { currentUser } = useUserStore();
 
 	if (!currentUser) return preset ?? {};
+	if (!('id' in currentUser)) return preset ?? {};
 
 	const accountability: Accountability = {
-		role: currentUser.role.id,
+		role: currentUser.role?.id ?? null,
 		user: currentUser.id,
 	};
 

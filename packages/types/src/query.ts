@@ -8,6 +8,8 @@ export type Query = {
 	offset?: number | null;
 	page?: number | null;
 	search?: string | null;
+	version?: string | null;
+	versionRaw?: boolean | null;
 	export?: 'json' | 'csv' | 'xml' | null;
 	group?: string[] | null;
 	aggregate?: Aggregate | null;

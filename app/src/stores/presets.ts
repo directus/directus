@@ -1,5 +1,6 @@
 import api from '@/api';
 import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
@@ -15,7 +16,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
-	icon: 'bookmark_outline',
+	icon: 'bookmark',
 	color: null,
 };
 
@@ -67,7 +68,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout_options: {
 			tabular: {
 				widths: {
-					action: 100,
+					action: 120,
 					collection: 210,
 					timestamp: 240,
 					user: 240,
@@ -130,7 +131,7 @@ export const usePresetsStore = defineStore({
 					(preset) => preset.user === null && preset.role === null,
 					(preset) => preset.user === null && preset.role !== null,
 					'bookmark',
-				]
+				],
 			);
 		},
 	},
@@ -144,31 +145,28 @@ export const usePresetsStore = defineStore({
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[user][_eq]': id,
-						limit: -1,
 					},
 				}),
 				// All role saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[role][_eq]': role.id,
 						'filter[user][_null]': true,
-						limit: -1,
 					},
 				}),
 				// All global saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[role][_null]': true,
 						'filter[user][_null]': true,
-						limit: -1,
 					},
 				}),
 			]);
 
-			const presets = values.map((response) => response.data.data).flat();
+			const presets = values.flat();
 
 			// Inject system defaults if they don't exist
 			for (const systemCollection of Object.keys(systemDefaults)) {
@@ -230,6 +228,7 @@ export const usePresetsStore = defineStore({
 			const userStore = useUserStore();
 
 			if (userStore.currentUser === null) return null;
+			if (!('id' in userStore.currentUser)) return null;
 
 			const { id: userID, role: userRole } = userStore.currentUser;
 

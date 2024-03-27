@@ -1,3 +1,47 @@
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
+</script>
+
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	value: string | null;
+	disabled?: boolean;
+	placeholder?: string;
+	masked?: boolean;
+}>();
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const isHashed = ref(false);
+const localValue = ref<string | null>(null);
+
+const internalPlaceholder = computed(() => {
+	return isHashed.value ? t('value_hashed') : props.placeholder;
+});
+
+watch(
+	() => props.value,
+	() => {
+		isHashed.value = !!(props.value && props.value.length > 0);
+	},
+	{ immediate: true },
+);
+
+function emitValue(newValue: string) {
+	emit('input', newValue);
+	localValue.value = newValue;
+}
+</script>
+
 <template>
 	<v-input
 		:placeholder="internalPlaceholder"
@@ -14,78 +58,25 @@
 	</v-input>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, watch } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		masked: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const isHashed = ref(false);
-		const localValue = ref<string | null>(null);
-
-		const internalPlaceholder = computed(() => {
-			return isHashed.value ? t('value_hashed') : props.placeholder;
-		});
-
-		watch(
-			() => props.value,
-			() => {
-				isHashed.value = !!(props.value && props.value.length > 0);
-			},
-			{ immediate: true }
-		);
-
-		return { internalPlaceholder, isHashed, localValue, emitValue };
-
-		function emitValue(newValue: string) {
-			emit('input', newValue);
-			localValue.value = newValue;
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
-	--v-icon-color: var(--warning);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+	--v-icon-color: var(--theme--warning);
 
 	&.hashed {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 
 .lock {
-	--v-icon-color: var(--warning);
+	--v-icon-color: var(--theme--warning);
 }
 
 .hashed {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 }
 
 .hashed .lock {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 </style>

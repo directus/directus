@@ -1,15 +1,9 @@
-<template>
-	<div ref="wrapper" class="v-date-picker">
-		<input class="input" type="text" data-input />
-	</div>
-</template>
-
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
-import Flatpickr from 'flatpickr';
-import { format, formatISO } from 'date-fns';
 import { getFlatpickrLocale } from '@/utils/get-flatpickr-locale';
+import { format, formatISO } from 'date-fns';
+import Flatpickr from 'flatpickr';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';
@@ -26,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 });
 
-const emit = defineEmits(['update:modelValue', 'close']);
+const emit = defineEmits<{ 'update:modelValue': [value: string | null]; close: [] }>();
 
 const { t } = useI18n();
 
@@ -35,8 +29,8 @@ let flatpickr: Flatpickr.Instance | null;
 
 onMounted(async () => {
 	if (wrapper.value) {
-		const flatpickrLocale = await getFlatpickrLocale();
-		flatpickr = Flatpickr(wrapper.value, { ...flatpickrOptions.value, locale: flatpickrLocale } as any);
+		const flatpickrLocale = getFlatpickrLocale();
+		flatpickr = Flatpickr(wrapper.value as Node, { ...flatpickrOptions.value, locale: flatpickrLocale } as any);
 	}
 
 	watch(
@@ -48,7 +42,7 @@ onMounted(async () => {
 				flatpickr?.clear();
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 });
 
@@ -69,11 +63,11 @@ const defaultOptions = {
 	wrap: true,
 
 	onChange(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
-		const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+		const selectedDate = selectedDates.length > 0 ? (selectedDates as [Date])[0] : null;
 		emitValue(selectedDate);
 	},
 	onClose(selectedDates: Date[], _dateStr: string, _instance: Flatpickr.Instance) {
-		const selectedDate = selectedDates.length > 0 ? selectedDates[0] : null;
+		const selectedDate = selectedDates.length > 0 ? (selectedDates as [Date])[0] : null;
 		emitValue(selectedDate);
 	},
 	onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
@@ -137,6 +131,12 @@ function enterToClose(e: any) {
 	emit('close');
 }
 </script>
+
+<template>
+	<div ref="wrapper" class="v-date-picker">
+		<input class="input" type="text" data-input />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-date-picker {

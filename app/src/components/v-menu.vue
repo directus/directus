@@ -1,65 +1,5 @@
-<template>
-	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
-		<div
-			ref="activator"
-			class="v-menu-activator"
-			:class="{ attached }"
-			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
-		>
-			<slot
-				name="activator"
-				v-bind="{
-					toggle: toggle,
-					active: isActive,
-					activate: activate,
-					deactivate: deactivate,
-				}"
-			/>
-		</div>
-
-		<teleport to="#menu-outlet">
-			<transition-bounce>
-				<div
-					v-if="isActive"
-					:id="id"
-					:key="id"
-					v-click-outside="{
-						handler: deactivate,
-						middleware: onClickOutsideMiddleware,
-						disabled: closeOnClick === false,
-						events: ['click'],
-					}"
-					class="v-menu-popper"
-					:class="{ active: isActive, attached }"
-					:data-placement="popperPlacement"
-					:style="styles"
-				>
-					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-					<div
-						class="v-menu-content"
-						:class="{ 'full-height': fullHeight, seamless }"
-						v-on="{
-							...(closeOnContentClick ? { click: onContentClick } : {}),
-							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
-						}"
-					>
-						<slot
-							v-bind="{
-								toggle: toggle,
-								active: isActive,
-								activate: activate,
-								deactivate: deactivate,
-							}"
-						/>
-					</div>
-				</div>
-			</transition-bounce>
-		</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
-import { Instance, Modifier, Placement } from '@popperjs/core';
+import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
 import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
@@ -70,7 +10,7 @@ import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
+import { Ref, computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -83,10 +23,10 @@ interface Props {
 	closeOnContentClick?: boolean;
 	/** Attach the menu to an input */
 	attached?: boolean;
-	/** Should the menu have the same width as the input when attached */
-	isSameWidth?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
+	/** Fixed arrow placement */
+	arrowPlacement?: 'start';
 	/** Menu does not appear */
 	disabled?: boolean;
 	/** Activate the menu on a trigger */
@@ -108,22 +48,26 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	closeOnClick: true,
 	closeOnContentClick: true,
-	attached: false,
-	isSameWidth: true,
-	showArrow: false,
-	disabled: false,
 	trigger: null,
 	delay: 0,
 	offsetY: 8,
 	offsetX: 0,
-	fullHeight: false,
-	seamless: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
 
 const activator = ref<HTMLElement | null>(null);
 const reference = ref<HTMLElement | null>(null);
+
+const forceMaxHeight = ref<number | null>(null);
+
+const maxHeight = computed(() => {
+	if (forceMaxHeight.value) return `${forceMaxHeight.value}px`;
+
+	if (props.fullHeight) return null;
+
+	return '30vh';
+});
 
 const virtualReference = ref({
 	getBoundingClientRect() {
@@ -148,16 +92,15 @@ const {
 	arrowStyles,
 	placement: popperPlacement,
 } = usePopper(
-	reference as any, // Fix as TS thinks Ref<HTMLElement | null> !== Ref<HTMLElement | null> 🙃
-	popper as any,
+	reference,
+	popper,
 	computed(() => ({
 		placement: props.placement,
 		attached: props.attached,
-		isSameWidth: props.isSameWidth,
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
-	}))
+	})),
 );
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
@@ -202,7 +145,7 @@ function useActiveState() {
 				stop();
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { isActive, activate, deactivate, toggle };
@@ -222,6 +165,7 @@ function useActiveState() {
 				},
 			};
 		}
+
 		isActive.value = true;
 	}
 
@@ -241,6 +185,7 @@ function onClickOutsideMiddleware(e: Event) {
 
 function onContentClick(e: Event) {
 	e.stopPropagation();
+
 	if (e.target !== e.currentTarget) {
 		deactivate();
 	}
@@ -257,7 +202,7 @@ function useEvents() {
 			} else {
 				deactivate();
 			}
-		}, props.delay)
+		}, props.delay),
 	);
 
 	return { onClick, onPointerLeave, onPointerEnter };
@@ -285,13 +230,12 @@ function usePopper(
 			Readonly<{
 				placement: Placement;
 				attached: boolean;
-				isSameWidth: boolean;
 				arrow: boolean;
 				offsetY: number;
 				offsetX: number;
 			}>
 		>
-	>
+	>,
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
@@ -312,7 +256,7 @@ function usePopper(
 				modifiers: getModifiers(),
 			});
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const observer = new MutationObserver(() => {
@@ -328,7 +272,9 @@ function usePopper(
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
+
 			popperInstance.value.forceUpdate();
+
 			observer.observe(popper.value!, {
 				attributes: false,
 				childList: true,
@@ -344,23 +290,94 @@ function usePopper(
 	}
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
+		const padding = 8;
+		const arrowPadding = 6;
+
 		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
+					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
 				},
 			},
 			{
 				...preventOverflow,
 				options: {
-					padding: 8,
+					padding,
 				},
 			},
 			computeStyles,
 			flip,
 			eventListeners,
+			{
+				...arrow,
+				enabled: options.value.arrow === true,
+				options: {
+					padding: arrowPadding,
+				},
+			},
+			{
+				name: 'minWidth',
+				enabled: options.value.attached === true,
+				fn: ({ state }) => {
+					if (state.styles.popper) state.styles.popper.minWidth = `${state.rects.reference.width}px`;
+				},
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+			},
+			{
+				name: 'maxHeight',
+				enabled: true,
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+				requiresIfExists: ['offset'],
+				fn({ state }) {
+					const overflow = detectOverflow(state, {
+						padding,
+					});
+
+					if (state.placement.startsWith('top') && overflow.top < 0) {
+						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.ceil(overflow.top);
+					} else if (state.placement.startsWith('bottom') && overflow.bottom > 0) {
+						forceMaxHeight.value = state.elements.popper.offsetHeight - Math.floor(overflow.bottom);
+					} else {
+						forceMaxHeight.value = null;
+					}
+				},
+			},
+			{
+				name: 'applyStyles',
+				enabled: true,
+				phase: 'write',
+				fn({ state }) {
+					if (state.styles.popper) styles.value = state.styles.popper;
+
+					if (state.styles.arrow) {
+						if (props.arrowPlacement === 'start') {
+							let x = 0;
+							let y = 0;
+
+							switch (state.placement) {
+								case 'top-start':
+								case 'bottom-start':
+									x = arrowPadding;
+									break;
+								case 'left-start':
+								case 'right-start':
+									y = arrowPadding;
+									break;
+							}
+
+							state.styles.arrow.transform = `translate3d(${x}px, ${y}px, 0)`;
+						}
+
+						arrowStyles.value = state.styles.arrow;
+					}
+
+					callback();
+				},
+			},
 			{
 				name: 'placementUpdater',
 				enabled: true,
@@ -369,49 +386,71 @@ function usePopper(
 					placement.value = state.placement;
 				},
 			},
-			{
-				name: 'applyStyles',
-				enabled: true,
-				phase: 'write',
-				fn({ state }) {
-					styles.value = state.styles.popper;
-					arrowStyles.value = state.styles.arrow;
-					callback();
-				},
-			},
 		];
-
-		if (options.value.arrow === true) {
-			modifiers.push({
-				...arrow,
-				options: {
-					padding: 6,
-				},
-			});
-		}
-
-		if (options.value.attached === true) {
-			modifiers.push({
-				name: 'sameWidth',
-				enabled: options.value.isSameWidth,
-				fn: ({ state }) => {
-					state.styles.popper.width = `${state.rects.reference.width}px`;
-				},
-				phase: 'beforeWrite',
-				requires: ['computeStyles'],
-			});
-		}
 
 		return modifiers;
 	}
 }
 </script>
 
-<style>
-body {
-	--v-menu-min-width: 100px;
-}
-</style>
+<template>
+	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
+		<div
+			ref="activator"
+			class="v-menu-activator"
+			:class="{ attached }"
+			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
+		>
+			<slot
+				name="activator"
+				v-bind="{
+					toggle: toggle,
+					active: isActive,
+					activate: activate,
+					deactivate: deactivate,
+				}"
+			/>
+		</div>
+
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					:id="id"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: closeOnClick === false,
+						events: ['click'],
+					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div
+						class="v-menu-content"
+						:class="{ seamless }"
+						v-on="{
+							...(closeOnContentClick ? { click: onContentClick } : {}),
+							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
+						}"
+					>
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
+				</div>
+			</transition-bounce>
+		</teleport>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-menu {
@@ -425,8 +464,8 @@ body {
 .v-menu-popper {
 	position: fixed;
 	left: -999px;
-	z-index: 500;
-	min-width: var(--v-menu-min-width);
+	z-index: 600;
+	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -443,12 +482,11 @@ body {
 	height: 10px;
 	overflow: hidden;
 	border-radius: 2px;
-	box-shadow: none;
 }
 
 .arrow {
 	&::after {
-		background: var(--card-face-color);
+		background: var(--theme--popover--menu--background);
 		transform: rotate(45deg) scale(0);
 		transition: transform var(--fast) var(--transition-out);
 		transition-delay: 0;
@@ -466,7 +504,6 @@ body {
 
 	&::after {
 		bottom: 3px;
-		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -475,7 +512,6 @@ body {
 
 	&::after {
 		top: 3px;
-		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -483,8 +519,7 @@ body {
 	left: -6px;
 
 	&::after {
-		left: 2px;
-		box-shadow: -2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		left: 4px;
 	}
 }
 
@@ -492,20 +527,19 @@ body {
 	right: -6px;
 
 	&::after {
-		right: 2px;
-		box-shadow: 2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		right: 4px;
 	}
 }
 
 .v-menu-content {
-	max-height: 30vh;
+	max-height: v-bind(maxHeight);
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background-color: var(--card-face-color);
+	background-color: var(--theme--popover--menu--background);
 	border: none;
-	border-radius: var(--border-radius);
-	box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgb(var(--card-shadow-color), 0.05);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;
@@ -514,10 +548,6 @@ body {
 	.v-list {
 		--v-list-background-color: transparent;
 	}
-}
-
-.v-menu-content.full-height {
-	max-height: none;
 }
 
 .v-menu-content.seamless {

@@ -1,8 +1,9 @@
-import type { Query } from '@directus/types';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import type { Query, User } from '@directus/types';
+import { getMatch } from 'ip-matching';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
+import { PermissionsService } from './permissions/index.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
 
@@ -20,70 +21,196 @@ export class RolesService extends ItemsService {
 			.andWhere({ admin_access: true })
 			.first();
 
-		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
-		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+		const otherAdminRolesCount = Number(otherAdminRoles?.count ?? 0);
+
+		if (otherAdminRolesCount === 0) {
+			throw new UnprocessableContentError({ reason: `You can't delete the last admin role` });
+		}
 	}
 
-	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
+	private async checkForOtherAdminUsers(
+		key: PrimaryKey,
+		users: Alterations<User, 'id'> | (string | Partial<User>)[],
+	): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
-		if (!role) throw new ForbiddenException();
+		if (!role) throw new ForbiddenError();
 
-		// The users that will now be in this new non-admin role
-		let userKeys: PrimaryKey[] = [];
+		const usersBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
+			(user) => user.id,
+		);
+
+		const usersAdded: (Partial<User> & Pick<User, 'id'>)[] = [];
+		const usersUpdated: (Partial<User> & Pick<User, 'id'>)[] = [];
+		const usersCreated: Partial<User>[] = [];
+		const usersRemoved: string[] = [];
 
 		if (Array.isArray(users)) {
-			userKeys = users.map((user) => (typeof user === 'string' ? user : user['id'])).filter((id) => id);
+			const usersKept: string[] = [];
+
+			for (const user of users) {
+				if (typeof user === 'string') {
+					if (usersBefore.includes(user)) {
+						usersKept.push(user);
+					} else {
+						usersAdded.push({ id: user });
+					}
+				} else if (user.id) {
+					if (usersBefore.includes(user.id)) {
+						usersKept.push(user.id);
+						usersUpdated.push(user as Partial<User> & Pick<User, 'id'>);
+					} else {
+						usersAdded.push(user as Partial<User> & Pick<User, 'id'>);
+					}
+				} else {
+					usersCreated.push(user);
+				}
+			}
+
+			usersRemoved.push(...usersBefore.filter((user) => !usersKept.includes(user)));
 		} else {
-			userKeys = users.update.map((user) => user['id']).filter((id) => id);
+			for (const user of users.update) {
+				if (usersBefore.includes(user['id'])) {
+					usersUpdated.push(user);
+				} else {
+					usersAdded.push(user);
+				}
+			}
+
+			usersCreated.push(...users.create);
+			usersRemoved.push(...users.delete);
 		}
 
-		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
-			(user) => user.id
-		);
-		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
-			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true
-		);
+		if (role.admin_access === false || role.admin_access === 0) {
+			// Admin users might have moved in from other role, thus becoming non-admin
+			if (usersAdded.length > 0) {
+				const otherAdminUsers = await this.knex
+					.count('*', { as: 'count' })
+					.from('directus_users')
+					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+					.whereNotIn(
+						'directus_users.id',
+						usersAdded.map((user) => user.id),
+					)
+					.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
+					.first();
 
-		const usersThatAreAdded = Array.isArray(users) ? users : users.create;
+				const otherAdminUsersCount = Number(otherAdminUsers?.count ?? 0);
 
-		// If the role the users are moved to is an admin-role, and there's at least 1 (new) admin
-		// user, we don't have to check for other admin
-		// users
-		if ((role.admin_access === true || role.admin_access === 1) && usersThatAreAdded.length > 0) return;
+				if (otherAdminUsersCount === 0) {
+					throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
+				}
+			}
+
+			return;
+		}
+
+		// Only added or created new users
+		if (usersUpdated.length === 0 && usersRemoved.length === 0) return;
+
+		// Active admin user(s) about to be created
+		if (usersCreated.some((user) => !('status' in user) || user.status === 'active')) return;
+
+		const usersDeactivated = [...usersAdded, ...usersUpdated]
+			.filter((user) => 'status' in user && user.status !== 'active')
+			.map((user) => user.id);
+
+		const usersAddedNonDeactivated = usersAdded
+			.filter((user) => !usersDeactivated.includes(user.id))
+			.map((user) => user.id);
+
+		// Active user(s) about to become admin
+		if (usersAddedNonDeactivated.length > 0) {
+			const userCount = await this.knex
+				.count('*', { as: 'count' })
+				.from('directus_users')
+				.whereIn('id', usersAddedNonDeactivated)
+				.andWhere({ status: 'active' })
+				.first();
+
+			if (Number(userCount?.count ?? 0) > 0) {
+				return;
+			}
+		}
 
 		const otherAdminUsers = await this.knex
 			.count('*', { as: 'count' })
 			.from('directus_users')
-			.whereNotIn('directus_users.id', [...userKeys, ...usersThatAreRemoved])
-			.andWhere({ 'directus_roles.admin_access': true })
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.whereNotIn('directus_users.id', [...usersDeactivated, ...usersRemoved])
+			.andWhere({ 'directus_roles.admin_access': true, status: 'active' })
 			.first();
 
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+		const otherAdminUsersCount = Number(otherAdminUsers?.count ?? 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the admin role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
 		}
 
 		return;
 	}
 
-	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
+	private isIpAccessValid(value?: any[] | null): boolean {
+		if (value === undefined) return false;
+		if (value === null) return true;
+		if (Array.isArray(value) && value.length === 0) return true;
+
+		for (const ip of value) {
+			if (typeof ip !== 'string' || ip.includes('*')) return false;
+
+			try {
+				const match = getMatch(ip);
+				if (match.type == 'IPMask') return false;
+			} catch {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private assertValidIpAccess(partialItem: Partial<Item>): void {
+		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
+			throw new InvalidPayloadError({
+				reason: 'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+			});
+		}
+	}
+
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
+		return super.createOne(data, opts);
+	}
+
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		for (const partialItem of data) {
+			this.assertValidIpAccess(partialItem);
+		}
+
+		return super.createMany(data, opts);
+	}
+
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
 		try {
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateOne(key, data, opts);
 	}
 
-	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		for (const partialItem of data) {
+			this.assertValidIpAccess(partialItem);
+		}
 
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const keys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
@@ -92,26 +219,34 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateBatch(data, opts);
 	}
 
-	override async updateMany(
-		keys: PrimaryKey[],
-		data: Record<string, any>,
-		opts?: MutationOptions
-	): Promise<PrimaryKey[]> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
+
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateMany(keys, data, opts);
+	}
+
+	override async updateByQuery(
+		query: Query,
+		data: Partial<Item>,
+		opts?: MutationOptions | undefined,
+	): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
+
+		return super.updateByQuery(query, data, opts);
 	}
 
 	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
@@ -125,7 +260,7 @@ export class RolesService extends ItemsService {
 		try {
 			await this.checkForOtherAdminRoles(keys);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -159,14 +294,14 @@ export class RolesService extends ItemsService {
 				{
 					filter: { role: { _in: keys } },
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await presetsService.deleteByQuery(
 				{
 					filter: { role: { _in: keys } },
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await usersService.updateByQuery(
@@ -177,7 +312,7 @@ export class RolesService extends ItemsService {
 					status: 'suspended',
 					role: null,
 				},
-				{ ...opts, bypassLimits: true }
+				{ ...opts, bypassLimits: true },
 			);
 
 			await itemsService.deleteMany(keys, opts);

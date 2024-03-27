@@ -7,27 +7,29 @@ export const keyMap: Record<string, string> = {
 	Command: 'meta',
 };
 
-export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab', 'capslock', 'enter'];
+export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab', 'capslock', 'enter', 'home', 'end'];
 
-const keysdown: Set<string> = new Set([]);
+const keysDown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
 
-	keysdown.add(mapKeys(event));
+	keysDown.add(mapKeys(event));
 	callHandlers(event);
 });
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
-	keysdown.clear();
+	keysDown.clear();
 });
 
 export function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(document.body)
+	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(
+		document.body,
+	) as Ref<HTMLElement>,
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
@@ -48,7 +50,7 @@ export function useShortcut(
 	onMounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
 			if (shortcut in handlers) {
-				handlers[shortcut].unshift(callback);
+				handlers[shortcut]?.unshift(callback);
 			} else {
 				handlers[shortcut] = [callback];
 			}
@@ -57,10 +59,14 @@ export function useShortcut(
 
 	onUnmounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
-			if (shortcut in handlers) {
-				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
+			const shortcutHandler = handlers[shortcut];
 
-				if (handlers[shortcut].length === 0) {
+			if (shortcutHandler) {
+				const filteredHandlers = shortcutHandler.filter((f) => f !== callback);
+
+				handlers[shortcut] = filteredHandlers;
+
+				if (filteredHandlers.length === 0) {
 					delete handlers[shortcut];
 				}
 			}
@@ -73,7 +79,9 @@ function mapKeys(key: KeyboardEvent) {
 
 	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
-	keyString = keyString in keyMap ? keyMap[keyString] : keyString;
+	const keyStringInMap = keyMap[keyString];
+
+	keyString = keyStringInMap ?? keyString;
 	keyString = keyString.toLowerCase();
 
 	return keyString;
@@ -83,18 +91,18 @@ function callHandlers(event: KeyboardEvent) {
 	Object.entries(handlers).forEach(([key, value]) => {
 		const keys = key.split('+');
 
-		for (key of keysdown) {
+		for (key of keysDown) {
 			if (keys.includes(key) === false) return;
 		}
 
 		for (key of keys) {
-			if (keysdown.has(key) === false) return;
+			if (keysDown.has(key) === false) return;
 		}
 
 		for (let i = 0; i < value.length; i++) {
 			let cancel = false;
 
-			value[i](event, () => {
+			value[i]?.(event, () => {
 				cancel = true;
 			});
 

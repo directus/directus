@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import type { Field, Width } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	field: Field;
+	noDelete?: boolean;
+}>();
+
+defineEmits<{
+	toggleVisibility: [];
+	duplicate: [];
+	delete: [];
+	setWidth: [Width];
+}>();
+
+const { t } = useI18n();
+
+const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
+const isPrimaryKey = computed(() => props.field.schema?.is_primary_key === true);
+
+const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey.value === false);
+</script>
+
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
@@ -76,42 +102,10 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-import { Field } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import { getLocalTypeForField } from '@/utils/get-local-type';
-
-export default defineComponent({
-	name: 'FieldSelectMenu',
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		noDelete: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['toggleVisibility', 'duplicate', 'delete', 'setWidth'],
-	setup(props) {
-		const { t } = useI18n();
-
-		const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
-		const isPrimaryKey = computed(() => props.field.schema?.is_primary_key === true);
-
-		const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey.value === false);
-
-		return { t, localType, isPrimaryKey, duplicable };
-	},
-});
-</script>
-
 <style scoped>
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 </style>

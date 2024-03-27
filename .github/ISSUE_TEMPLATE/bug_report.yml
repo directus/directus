@@ -25,6 +25,12 @@ body:
         the bug.
     validations:
       required: true
+  - type: input
+    attributes:
+      label: Directus Version
+      placeholder: v10.x.x
+    validations:
+      required: true
   - type: dropdown
     id: deployment
     attributes:

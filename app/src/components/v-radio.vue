@@ -1,19 +1,3 @@
-<template>
-	<button
-		class="v-radio"
-		type="button"
-		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
-		@click="emitValue"
-	>
-		<v-icon :name="icon" />
-		<span class="label type-text">
-			<slot name="label">{{ label }}</slot>
-		</span>
-	</button>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -58,14 +42,32 @@ function emitValue(): void {
 }
 </script>
 
-<style>
-body {
-	--v-radio-color: var(--primary);
-}
-</style>
+<template>
+	<button
+		class="v-radio"
+		type="button"
+		:aria-pressed="isChecked ? 'true' : 'false'"
+		:disabled="disabled"
+		:class="{ checked: isChecked, block }"
+		@click="emitValue"
+	>
+		<v-icon :name="icon" />
+		<span class="label type-text">
+			<slot name="label">{{ label }}</slot>
+		</span>
+	</button>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
+
+/*
+
+	Available Variables:
+
+		--v-radio-color  [var(--theme--primary)]
+
+*/
 
 .v-radio {
 	display: flex;
@@ -84,28 +86,28 @@ body {
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 	}
 
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&.block {
 		position: relative;
 		width: 100%;
-		height: var(--input-height);
-		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--background-subdued);
-		border-radius: var(--border-radius);
+		height: var(--theme--form--field--input--height);
+		padding: calc(14px - 2 * var(--theme--border-width));
+		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
+		border-radius: var(--theme--border-radius);
 
 		&::before {
 			position: absolute;
@@ -113,8 +115,8 @@ body {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
-			border-radius: var(--border-radius);
+			background-color: var(--theme--form--field--input--background-subdued);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 
@@ -125,24 +127,24 @@ body {
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--v-radio-color);
+			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}
 
 		&.block {
-			border-color: var(--v-radio-color);
+			border-color: var(--v-radio-color, var(--theme--primary));
 
 			.label {
-				color: var(--v-radio-color);
+				color: var(--v-radio-color, var(--theme--primary));
 			}
 
 			&::before {
-				background-color: var(--v-radio-color);
+				background-color: var(--v-radio-color, var(--theme--primary));
 				opacity: 0.1;
 			}
 		}

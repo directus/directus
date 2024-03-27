@@ -27,6 +27,7 @@ method: Metodă
 published: Publicat
 draft: Ciornă
 archived: Arhivat
+extensions: Extensii
 modules: Module
 module_bar: Bară module
 logs: Log-uri
@@ -35,6 +36,7 @@ tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 location: Locație
+collection_names_are_case_sensitive: Numele colecțiilor sunt sensibile la distincția dintre majuscule și minuscule
 condition_rules: Reguli
 input: Input
 maps: Hărți
@@ -52,6 +54,28 @@ or: Sau
 init: Inițializare
 dataset_too_large_currently_showing_n_items: Baza de date este prea mare. În prezent se afișează primele {n} elemente.
 modifier: Modificator
+extension_interface: Interfață
+extension_display: Afişare
+extension_layout: Aspect
+extension_module: Compartiment
+extension_panel: Panou
+extension_hook: Cârlig
+extension_endpoint: Punct final
+extension_operation: Operațiune
+extension_bundle: Pachet
+extension_interfaces: Interfețe
+extension_displays: Afișaje
+extension_layouts: Aranjamente
+extension_modules: Module
+extension_panels: Panouri
+extension_hooks: Cârlige
+extension_endpoints: Puncte finale
+extension_operations: Operațiuni
+extension_bundles: Pachete
+extension_reload_required_copy: Este necesară o reîncărcare a paginii pentru a vedea modificările după activarea sau dezactivarea extensiilor aplicației.
+extension_reload_now: Reîncarcă acum
+enable: Activare
+disable: Dezactivează
 custom: Personalizat
 hook: Cârlig
 fill_width: Umple lățimea
@@ -80,14 +104,10 @@ create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
-create_translation_string: Crează șirul de traducere
-no_translation_string: Nu există traducere
-no_translation_string_copy: Nu există traducere momentan.
-translation_string_key_placeholder: Cheie traducere șir...
-translation_string_translations_placeholder: Adauga o nouă traducere
-edit_translation_string: Editează Șirul de Traduceri
-delete_translation_string_copy: >-
-  Sunteţi sigur că doriţi să ştergeţi câmpul "{key}"? Această acţiune nu poate fi modificată ulterior.
+create_custom_translation: Creați traducere personalizată
+edit_custom_translation: Editați traducerea personalizată
+no_custom_translations: Fără Traduceri Personalizate
+no_custom_translations_copy: Nu există incă nicio traducere personalizată.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -103,6 +123,31 @@ rename_folder: Redenumește dosarul
 delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
+keep: Păstrează
+version: Versiune
+version_key: Cheie de versiune
+version_name: Nume Versiune
+main_version: Principal
+switch_version: Schimbă versiunea
+switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
+create_version: Creați versiune
+rename_version: Redenumiți versiunea
+compare_version: Comparați versiunile
+save_version: Salvează versiunea
+promote_version: Promovați versiunea
+promote_version_disabled: Fără modificări
+promote_version_drawer_title: Promovează {version} ca versiunea principală
+promote_version_changes: Modificări
+promote_version_preview: Previzualizare
+outdated_notice: >-
+  Elementul principal a fost actualizat de când a fost creată această versiune. Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+promote_notice: >-
+  Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+delete_version: Ștergeți versiunea
+delete_version_copy: >-
+  Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
+delete_on_promote_copy: >-
+  Vrei să ștergi sau să păstrezi versiunea "{version}" după promovare?
 reset_bookmark: Resetează semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
@@ -118,20 +163,13 @@ public_label: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
 admin_description: Rol administrativ inițial cu acces fără restricții la aplicație/API.
 not_allowed: Nu este permis
-directus_version: Versiune Directus
-node_version: Versiune Node
-node_uptime: Durată execuție Node
-os_type: Tip SO
-os_version: Versiune SO
-os_uptime: Durată execuție SO
-os_totalmem: Memorie SO
 archive: Arhivează
 archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
-the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
+the_following_are_minimum_permissions: Următoarele permisiuni minime sunt aplicate automat când "Acces aplicație" este activată. Puteți acorda permisiuni suplimentare dacă este necesar, dar nu puteți reduce permisiunile sub acest nivel.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -155,7 +193,12 @@ validationError:
   nnull: Valoarea nu poate fi nulă
   required: Valoarea este obligatorie
   unique: Valoarea trebuie să fie unică
+  email: Valoarea trebuie să fie o adresă de e-mail validă
   regex: Valoarea nu are formatul corect
+  starts_with: Valoarea trebuie să înceapă cu {substring}
+  istarts_with: Valoarea trebuie să înceapă cu {substring}
+  nstarts_with: Valoarea nu poate începe cu {substring}
+  nistarts_with: Valoarea nu poate începe cu {substring}
 all_access: Acces complet
 no_access: Fără acces
 use_custom: Acces personalizat
@@ -251,13 +294,6 @@ time: Timp
 timestamp: Marcă temporală
 uuid: UUID
 hash: Hash
-geometry: Geometrie (toate)
-geometry.Point: Punct
-geometry.LineString: Șir de linii (LineString)
-geometry.Polygon: Poligon
-geometry.MultiPoint: Multi-punct
-geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
-geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
 auto_refresh: Actualizare automată
@@ -383,6 +419,7 @@ move: Mutare
 system: Sistem
 add_field_related: Adaugă câmp la colecția conexă
 interface_label: Interfață
+display_label: Afişare
 today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
@@ -433,7 +470,6 @@ dimensions: Dimensiuni
 size: Mărime
 created: Creat
 modified: Modificat
-checksum: Sumă de control
 owner: Proprietar
 edited_by: Editat de
 folder: Dosar
@@ -476,10 +512,8 @@ selecting_items: Selectare elemente
 enable_select_button: Activează butonul de selectare
 comments: Comentarii
 no_comments: Nici un comentariu încă
-click_to_expand: Click pentru a extinde
 select_item: Selectaţi elementul
 no_items: Niciun element
-search_items: Caută elemente...
 disabled: Dezactivat
 information: Informaţii
 report_bug: Raportare eroare
@@ -577,7 +611,6 @@ errors:
   RECORD_NOT_UNIQUE: Valoare duplicat detectată
   USER_SUSPENDED: Utilizator suspendat
   CONTAINS_NULL_VALUES: Câmpul conține valori null
-  UNPROCESSABLE_ENTITY: Entitate neprocesabilă
   INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
   ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
@@ -689,7 +722,6 @@ layout_options: Opțiuni aspect
 rows: Rânduri
 columns: Coloane
 collection_setup: Configurare colecție
-optional_system_fields: Câmpuri de sistem opționale
 value_unique: Valoarea trebuie să fie unică
 all_activity: Toată activitatea
 create_item: Creează element
@@ -850,10 +882,10 @@ editing_unit: 'Editare {unit}'
 editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
-settings_permissions: Roluri şi permisiuni
-settings_project: Setările proiectului
+settings_project: Setări
 settings_webhooks: Webhook-uri
-settings_presets: Presetări și semne de carte
+settings_presets: Semne de carte
+settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
 scope: Scope
 actions: Acțiuni
@@ -888,7 +920,6 @@ page_help_files_collection: >-
   **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
 page_help_files_item: >-
   **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
-page_help_settings_project: "**Setări proiect** — Opțiuni de configurare globală a proiectului tău."
 page_help_settings_datamodel_collections: >-
   **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
 page_help_settings_datamodel_fields: >-
@@ -1005,10 +1036,6 @@ fields:
     tags: Etichete
     user_preferences: Preferințe utilizator
     language: Limba
-    theme: Temă
-    theme_auto: Automat (bazat pe sistem)
-    theme_light: Mod luminos
-    theme_dark: Mod întunecat
     tfa_secret: Autentificare în doi pași
     admin_options: Opţiuni Admin
     status: Stare
@@ -1029,7 +1056,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Mapare
     basemaps: Basemaps
     basemaps_raster: Raster
@@ -1047,7 +1073,6 @@ fields:
     project_color: Culoare proiect
     project_logo: Logo proiect
     default_language: Limba implicită
-    branding: Branding și stil
     public_foreground: Prim-plan public
     public_background: Fundal public
     public_note: Notă publică
@@ -1105,7 +1130,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Proiectul meu...
     project_color_note: Logo și fundal logo
-    project_logo_note: 'Alb: 40x40 SVG/PNG'
     public_note_placeholder: Un mesaj public scurt care acceptă formatarea markdown...
     security_divider_title: Securitate
     auth_password_policy:
@@ -1159,6 +1183,7 @@ field_options:
     sort_field: Alegeți un câmp...
     accountability_divider: Responsabilitate
     duplication_divider: Duplicare
+    preview_divider: Previzualizare
   directus_files:
     title: Un titlu unic...
     description: O descriere opțională...
@@ -1169,7 +1194,6 @@ field_options:
   directus_roles:
     name: Numele unic pentru acest rol...
     description: O descriere a acestui rol...
-    ip_access: Adaugă adresele IP permise, lasă gol pentru a le permite pe toate...
     fields:
       icon_name: Pictogramă
       name_name: Nume
@@ -1216,6 +1240,8 @@ start_collapsed: Începe închis
 block: Blochează
 inline: Pe aceeași linie
 comment: Comentariu
+live_preview:
+  new_window: Deschide în fereastră nouă
 shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
 uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
@@ -1456,6 +1482,8 @@ interfaces:
   system-interface-options:
     interface-options: Opțiuni interfață
     description: Un modal pentru selectarea opțiunilor unei interfețe
+  system-display:
+    display: Afişare
   list-m2m:
     many-to-many: Multe la multe
     description: Selectaţi mai multe elemente de joncţiune asociate
@@ -1503,7 +1531,6 @@ interfaces:
     description: Selectați mai multe elemente asociate
     no_collection: Colecția nu a putut fi găsită
   system-folder:
-    folder: Dosar
     description: Selectați un dosar
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
@@ -1518,6 +1545,7 @@ interfaces:
     sort: Sortează
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
+    interface_group: Opțiuni interfață
   slider:
     slider: Glisor
     description: Selectați un număr folosind un glisor
@@ -1557,7 +1585,6 @@ interfaces:
     input-translated-string: Șiruri traduse
     description: Selectați sau adăugați un șir de traducere
     search_placeholder: Caută...
-    new_translation_string: Șirul Traducător nou
   boolean:
     toggle: Comutare
     description: Comutare între pornit și oprit
@@ -1593,6 +1620,16 @@ interfaces:
     folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
     imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
+  input-block-editor:
+    tools: Bară de instrumente
+    tools_options:
+      header: Antet
+      nestedlist: Listă
+      embed: Încorporați
+      code: Cod
+      image: Imagine
+      table: Tabel
+      underline: Subliniat
   input-autocomplete-api:
     input-autocomplete-api: Autocompletare input (API)
     description: O căutare a literelor în avans pentru valori API externe.
@@ -1680,11 +1717,15 @@ displays:
     icon: Pictogramă
     border: Chenar
     border_label: Arată chenarul
+    mask: Mascat
+    mask_label: Ascunde valoarea reală
     text: Text
     text_placeholder: Suprascrie valoarea opțională...
   formatted-json-value:
     formatted-json-value: Valoare JSON formatată
     description: Afișează o versiune formatată a obiectului
+  hash:
+    hash: Hash
   icon:
     icon: Pictogramă
     description: Afișează o pictogramă
@@ -1789,11 +1830,18 @@ triggers:
   webhook:
     method: Metodă
 operations:
+  json-web-token:
+    token: Token
+    options: Opţiuni
   log:
     message: Mesaj
+  mail:
+    template: Șablon
+    data: Date
   notification:
     recipient: Utilizator
     message: Mesaj
+    subject: Subiect
   request:
     url: URL
     method: Metodă
@@ -1805,3 +1853,12 @@ operations:
     flows: Fluxuri
     flow: Flux
     data: Date
+standard: Standard
+compact: Compact
+style: Stil
+fonts:
+  normal: Normal
+  bold: Bold
+  black: Negru
+  italic: Cursiv
+  auto: Automat

@@ -7,6 +7,7 @@ get:
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Version'
   responses:
     '200':
       description: Successful request

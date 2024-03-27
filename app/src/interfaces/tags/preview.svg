@@ -1,13 +1,13 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="23" width="120" height="26" rx="6" fill="var(--background-page)" class="glow"/>
-	<rect x="19" y="24" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="28" y="33" width="30" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="18" y="57" width="30" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="66" y="57" width="40" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="42" y="67" width="30" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="52" y="57" width="10" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="110" y="57" width="20" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="76" y="67" width="10" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="90" y="67" width="20" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="18" y="67" width="20" height="6" rx="2" fill="var(--primary)"/>
+	<rect x="18" y="23" width="120" height="26" rx="6" fill="var(--theme--background)" class="glow"/>
+	<rect x="19" y="24" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="28" y="33" width="30" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="18" y="57" width="30" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="66" y="57" width="40" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="42" y="67" width="30" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="52" y="57" width="10" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="110" y="57" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="76" y="67" width="10" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="90" y="67" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="18" y="67" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
 </svg>

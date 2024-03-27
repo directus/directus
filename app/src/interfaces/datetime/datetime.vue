@@ -1,3 +1,77 @@
+<script setup lang="ts">
+import { localizedFormat } from '@/utils/localized-format';
+import { isValid, parse, parseISO } from 'date-fns';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		type: 'timestamp' | 'dateTime' | 'time' | 'date';
+		disabled?: boolean;
+		includeSeconds?: boolean;
+		use24?: boolean;
+	}>(),
+	{
+		use24: true,
+	},
+);
+
+const emit = defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
+
+const { t } = useI18n();
+
+const dateTimeMenu = ref();
+
+const { displayValue, isValidValue } = useDisplayValue();
+
+function useDisplayValue() {
+	const displayValue = ref<string | null>(null);
+
+	const isValidValue = computed(() => (props.value ? isValid(parseValue(props.value)) : false));
+
+	watch(() => props.value, setDisplayValue, { immediate: true });
+
+	return { displayValue, isValidValue };
+
+	function setDisplayValue() {
+		if (!props.value || !isValidValue.value) {
+			displayValue.value = null;
+			return;
+		}
+
+		let timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
+		if (props.use24) timeFormat = props.includeSeconds ? 'date-fns_time_24hour' : 'date-fns_time_no_seconds_24hour';
+		let format = `${t('date-fns_date')} ${t(timeFormat)}`;
+		if (props.type === 'date') format = String(t('date-fns_date'));
+		if (props.type === 'time') format = String(t(timeFormat));
+
+		displayValue.value = localizedFormat(parseValue(props.value), format);
+	}
+
+	function parseValue(value: string): Date {
+		switch (props.type) {
+			case 'dateTime':
+				return parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+			case 'date':
+				return parse(value, 'yyyy-MM-dd', new Date());
+			case 'time':
+				return parse(value, 'HH:mm:ss', new Date());
+			case 'timestamp':
+				return parseISO(value);
+		}
+	}
+}
+
+function unsetValue(e: any) {
+	e.preventDefault();
+	e.stopPropagation();
+	emit('input', null);
+}
+</script>
+
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
@@ -32,105 +106,19 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import { localizedFormat } from '@/utils/localized-format';
-import { isValid, parse, parseISO } from 'date-fns';
-
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: String,
-			default: null,
-		},
-		type: {
-			type: String as PropType<'timestamp' | 'dateTime' | 'time' | 'date'>,
-			required: true,
-			validator: (val: string) => ['dateTime', 'date', 'time', 'timestamp'].includes(val),
-		},
-		includeSeconds: {
-			type: Boolean,
-			default: false,
-		},
-		use24: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const dateTimeMenu = ref();
-
-		const { displayValue, isValidValue } = useDisplayValue();
-
-		function useDisplayValue() {
-			const displayValue = ref<string | null>(null);
-
-			const isValidValue = computed(() => isValid(parseValue(props.value)));
-
-			watch(() => props.value, setDisplayValue, { immediate: true });
-
-			return { displayValue, isValidValue };
-
-			function setDisplayValue() {
-				if (!props.value || !isValidValue.value) {
-					displayValue.value = null;
-					return;
-				}
-				let timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
-				if (props.use24) timeFormat = props.includeSeconds ? 'date-fns_time_24hour' : 'date-fns_time_no_seconds_24hour';
-				let format = `${t('date-fns_date')} ${t(timeFormat)}`;
-				if (props.type === 'date') format = String(t('date-fns_date'));
-				if (props.type === 'time') format = String(t(timeFormat));
-
-				displayValue.value = localizedFormat(parseValue(props.value), format);
-			}
-
-			function parseValue(value: string): Date {
-				switch (props.type) {
-					case 'dateTime':
-						return parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
-					case 'date':
-						return parse(value, 'yyyy-MM-dd', new Date());
-					case 'time':
-						return parse(value, 'HH:mm:ss', new Date());
-					case 'timestamp':
-						return parseISO(value);
-				}
-			}
-		}
-
-		function unsetValue(e: any) {
-			e.preventDefault();
-			e.stopPropagation();
-			emit('input', null);
-		}
-
-		return { t, displayValue, unsetValue, dateTimeMenu, isValidValue };
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .v-icon {
 	&.today-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 
 	&.clear-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--theme--danger);
 		}
 	}
 }

@@ -1,10 +1,9 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
-import VWorkspaceTile from './v-workspace-tile.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
+import { expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { Tooltip } from '../__utils__/tooltip';
+import VWorkspaceTile from './v-workspace-tile.vue';
 
 const i18n = createI18n({ legacy: false });
 

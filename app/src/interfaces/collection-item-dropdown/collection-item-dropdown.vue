@@ -1,34 +1,3 @@
-<template>
-	<div class="collection-item-dropdown">
-		<v-skeleton-loader v-if="loading" type="input" />
-		<v-input v-else clickable :placeholder="t('select_an_item')" :disabled="disabled" @click="selectDrawerOpen = true">
-			<template v-if="displayItem" #input>
-				<div class="preview">
-					<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
-				</div>
-			</template>
-
-			<template #append>
-				<template v-if="displayItem">
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
-				</template>
-				<template v-else>
-					<v-icon class="expand" name="expand_more" />
-				</template>
-			</template>
-		</v-input>
-
-		<drawer-collection
-			v-model:active="selectDrawerOpen"
-			:collection="selectedCollection"
-			:selection="value?.key ? [value.key] : []"
-			:filter="filter"
-			@input="onSelection"
-			@update:active="selectDrawerOpen = false"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -56,10 +25,9 @@ const props = withDefaults(
 	}>(),
 	{
 		value: () => ({ key: null, collection: '' }),
-		disabled: false,
-		template: () => null,
-		filter: () => null,
-	}
+		template: null,
+		filter: null,
+	},
 );
 
 const { t } = useI18n();
@@ -95,6 +63,7 @@ const displayTemplate = computed(() => {
 
 	return displayTemplate || `{{ ${primaryKey.value || ''} }}`;
 });
+
 const requiredFields = computed(() => {
 	if (!displayTemplate.value || !unref(selectedCollection)) return [];
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
@@ -124,21 +93,55 @@ async function getDisplayItem() {
 		});
 
 		displayItem.value = response.data.data?.[0] ?? null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
 }
 
-function onSelection(selectedIds: (number | string)[]) {
+function onSelection(selectedIds: (number | string)[] | null) {
 	selectDrawerOpen.value = false;
 	value.value = { key: Array.isArray(selectedIds) ? selectedIds[0] : null, collection: unref(selectedCollection) };
 }
 </script>
 
+<template>
+	<div class="collection-item-dropdown">
+		<v-skeleton-loader v-if="loading" type="input" />
+		<v-input v-else clickable :placeholder="t('select_an_item')" :disabled="disabled" @click="selectDrawerOpen = true">
+			<template v-if="displayItem" #input>
+				<div class="preview">
+					<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
+				</div>
+			</template>
+
+			<template #append>
+				<template v-if="displayItem">
+					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
+				</template>
+				<template v-else>
+					<v-icon class="expand" name="expand_more" />
+				</template>
+			</template>
+		</v-input>
+
+		<drawer-collection
+			v-model:active="selectDrawerOpen"
+			:collection="selectedCollection"
+			:selection="value?.key ? [value.key] : []"
+			:filter="filter!"
+			@input="onSelection"
+			@update:active="selectDrawerOpen = false"
+		/>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .preview {
+	display: block;
 	flex-grow: 1;
+	height: calc(100% - 16px);
+	overflow: hidden;
 }
 </style>

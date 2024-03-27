@@ -25,7 +25,7 @@ export default function (
 			| 'afterLeave'
 			| 'leaveCancelled',
 		...args: any[]
-	) => void
+	) => void,
 ): Record<string, any> {
 	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
 	const offsetProperty = `offset${capitalize(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
@@ -35,6 +35,7 @@ export default function (
 			emit('beforeEnter');
 
 			el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
+
 			el._initialStyle = {
 				transition: el.style.transition,
 				visibility: el.style.visibility,
@@ -84,6 +85,7 @@ export default function (
 			emit('beforeLeave');
 
 			el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
+
 			el._initialStyle = {
 				transition: el.style.transition,
 				visibility: el.style.visibility,

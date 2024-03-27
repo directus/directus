@@ -19,7 +19,7 @@ export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permiss
 export function mergePermission(
 	strategy: 'and' | 'or',
 	currentPerm: Permission,
-	newPerm: Permission
+	newPerm: Permission,
 ): Omit<Permission, 'id' | 'system'> {
 	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
 
@@ -100,6 +100,6 @@ export function mergePermission(
 			fields,
 			presets,
 		},
-		['id', 'system']
+		['id', 'system'],
 	);
 }

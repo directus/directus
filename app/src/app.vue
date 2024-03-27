@@ -1,5 +1,93 @@
+<script setup lang="ts">
+import { useSystem } from '@/composables/use-system';
+import { useServerStore } from '@/stores/server';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { generateFavicon } from '@/utils/generate-favicon';
+import { useAppStore } from '@directus/stores';
+import { ThemeProvider } from '@directus/themes';
+import { useHead } from '@unhead/vue';
+import { computed, onMounted, onUnmounted, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useThemeConfiguration } from './composables/use-theme-configuration';
+import { startIdleTracking, stopIdleTracking } from './idle';
+
+const { t } = useI18n();
+
+const appStore = useAppStore();
+const serverStore = useServerStore();
+
+const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
+
+const { hydrating } = toRefs(appStore);
+
+const brandStyleCss = computed(() => {
+	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--theme--primary)'} }`;
+});
+
+useHead({
+	style: [{ textContent: brandStyleCss }],
+	title: 'Directus',
+	titleTemplate: '%s · %projectName',
+	templateParams: {
+		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
+	},
+	meta: computed(() => {
+		const content = serverStore.info?.project?.project_color ?? '#6644ff';
+
+		return [
+			{
+				name: 'msapplication-TileColor',
+				content,
+			},
+			{
+				name: 'theme-color',
+				content,
+			},
+		];
+	}),
+	link: computed(() => {
+		let href: string;
+
+		if (serverStore.info?.project?.public_favicon) {
+			href = getAssetUrl(serverStore.info.project.public_favicon);
+		} else if (serverStore.info?.project?.project_color) {
+			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
+		} else {
+			href = '/favicon.ico';
+		}
+
+		return [
+			{
+				rel: 'icon',
+				href,
+			},
+		];
+	}),
+	bodyAttrs: computed(() => ({ class: [darkMode.value ? 'dark' : 'light'] })),
+});
+
+onMounted(() => startIdleTracking());
+onUnmounted(() => stopIdleTracking());
+
+const customCSS = computed(() => {
+	return serverStore.info?.project?.custom_css || '';
+});
+
+const error = computed(() => appStore.error);
+
+useSystem();
+</script>
+
 <template>
-	<div id="directus" :style="brandStyle">
+	<ThemeProvider
+		:dark-mode="darkMode"
+		:theme-light="themeLight"
+		:theme-dark="themeDark"
+		:theme-light-overrides="themeLightOverrides"
+		:theme-dark-overrides="themeDarkOverrides"
+	/>
+
+	<div id="directus">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
@@ -15,91 +103,10 @@
 		</v-info>
 
 		<router-view v-else-if="!hydrating" />
-
-		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
+
+	<teleport to="#custom-css">{{ customCSS }}</teleport>
 </template>
-
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted, StyleValue } from 'vue';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useServerStore } from '@/stores/server';
-import { startIdleTracking, stopIdleTracking } from './idle';
-import { useSystem } from '@/composables/use-system';
-
-import { setFavicon } from '@/utils/set-favicon';
-import { User } from '@directus/types';
-
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-
-		const appStore = useAppStore();
-		const userStore = useUserStore();
-		const serverStore = useServerStore();
-
-		const { hydrating } = toRefs(appStore);
-
-		const brandStyle = computed(() => {
-			return {
-				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
-			} as StyleValue;
-		});
-
-		onMounted(() => startIdleTracking());
-		onUnmounted(() => stopIdleTracking());
-
-		watch(
-			[() => serverStore.info?.project?.project_color ?? null, () => serverStore.info?.project?.project_logo ?? null],
-			() => {
-				const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-				setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => (userStore.currentUser as User)?.theme,
-			(theme) => {
-				document.body.classList.remove('dark');
-				document.body.classList.remove('light');
-				document.body.classList.remove('auto');
-
-				if (theme) {
-					document.body.classList.add(theme);
-					document
-						.querySelector('head meta[name="theme-color"]')
-						?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
-				} else {
-					// Default to auto mode
-					document.body.classList.add('auto');
-				}
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => serverStore.info?.project?.project_name,
-			(projectName) => {
-				document.title = projectName || 'Directus';
-			},
-			{ immediate: true }
-		);
-
-		const customCSS = computed(() => {
-			return serverStore.info?.project?.custom_css || '';
-		});
-
-		const error = computed(() => appStore.error);
-
-		useSystem();
-
-		return { t, hydrating, brandStyle, error, customCSS };
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 :global(#app) {

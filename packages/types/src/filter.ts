@@ -25,8 +25,12 @@ export type ClientFilterOperator =
 	| FilterOperator
 	| 'starts_with'
 	| 'nstarts_with'
+	| 'istarts_with'
+	| 'nistarts_with'
 	| 'ends_with'
 	| 'nends_with'
+	| 'iends_with'
+	| 'niends_with'
 	| 'regex';
 
 export type Filter = LogicalFilter | FieldFilter;
@@ -55,8 +59,12 @@ export type FieldFilterOperator = {
 	_icontains?: string;
 	_starts_with?: string;
 	_nstarts_with?: string;
+	_istarts_with?: string;
+	_nistarts_with?: string;
 	_ends_with?: string;
 	_nends_with?: string;
+	_iends_with?: string;
+	_niends_with?: string;
 	_between?: (string | number)[];
 	_nbetween?: (string | number)[];
 	_empty?: boolean;

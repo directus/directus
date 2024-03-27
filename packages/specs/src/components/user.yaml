@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_users
 properties:
   id:
     description: Unique identifier for the user.
@@ -79,7 +78,7 @@ properties:
     description: Static token for the user.
     type: string
     nullable: true
-  last_acces:
+  last_access:
     description: When this user used the API last.
     example: '2020-05-31T14:32:37Z'
     type: string

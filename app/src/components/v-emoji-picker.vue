@@ -1,9 +1,3 @@
-<template>
-	<v-button class="emoji-button" x-small secondary icon @click="emojiPicker.togglePicker($event.target as HTMLElement)">
-		<v-icon name="insert_emoticon" />
-	</v-button>
-</template>
-
 <script setup lang="ts">
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { onUnmounted } from 'vue';
@@ -14,6 +8,7 @@ const emojiPicker = new EmojiButton({
 	position: 'bottom',
 	emojisPerRow: 8,
 });
+
 const emit = defineEmits(['emoji-selected']);
 
 emojiPicker.on('emoji', (event) => {
@@ -24,3 +19,9 @@ onUnmounted(() => {
 	emojiPicker.destroyPicker();
 });
 </script>
+
+<template>
+	<v-button class="emoji-button" x-small secondary icon @click="emojiPicker.togglePicker($event.target as HTMLElement)">
+		<v-icon name="insert_emoticon" />
+	</v-button>
+</template>

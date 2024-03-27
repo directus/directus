@@ -1,9 +1,3 @@
-<template>
-	<div class="v-list-item-hint" :class="{ center }">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	center?: boolean;
@@ -14,6 +8,12 @@ withDefaults(defineProps<Props>(), {
 });
 </script>
 
+<template>
+	<div class="v-list-item-hint" :class="{ center }">
+		<slot />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-list-item-hint {
 	$this: &;
@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
 	display: inline-flex;
 	align-self: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	&:not(:only-child) {
 		&:first-child {

@@ -1,3 +1,230 @@
+<script setup lang="ts">
+import Color from 'color';
+import { isHex } from '@/utils/is-hex';
+import { cssVar } from '@directus/utils/browser';
+import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { i18n } from '@/lang';
+
+const { t } = useI18n();
+
+interface Props {
+	disabled?: boolean;
+	value?: string | null;
+	placeholder?: string;
+	presets?: { name: string; color: string }[];
+	width: string;
+	opacity?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	value: null,
+	placeholder: undefined,
+	opacity: false,
+	presets: () => [
+		{
+			name: i18n.global.t('colors.purple'),
+			color: '#6644FF',
+		},
+		{
+			name: i18n.global.t('colors.blue'),
+			color: '#3399FF',
+		},
+		{
+			name: i18n.global.t('colors.green'),
+			color: '#2ECDA7',
+		},
+		{
+			name: i18n.global.t('colors.yellow'),
+			color: '#FFC23B',
+		},
+		{
+			name: i18n.global.t('colors.orange'),
+			color: '#FFA439',
+		},
+		{
+			name: i18n.global.t('colors.red'),
+			color: '#E35169',
+		},
+		{
+			name: i18n.global.t('colors.black'),
+			color: '#18222F',
+		},
+		{
+			name: i18n.global.t('colors.gray'),
+			color: '#A2B5CD',
+		},
+		{
+			name: i18n.global.t('colors.white'),
+			color: '#FFFFFF',
+		},
+	],
+});
+
+const emit = defineEmits(['input']);
+
+const valueWithoutVariables = computed(() => {
+	if (!props.value) return null;
+	return props.value?.startsWith('var(--') ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+});
+
+const htmlColorInput = ref<ComponentPublicInstance | null>(null);
+type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
+
+const colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
+const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
+
+const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutVariables.value !== null);
+
+const lowContrast = computed(() => {
+	if (color.value === null) return true;
+
+	const pageColorString = cssVar('--theme--form--field--input--background');
+
+	try {
+		const pageColor = Color(pageColorString);
+		return color.value.contrast(pageColor) < 1.1;
+	} catch {
+		return true;
+	}
+});
+
+const getPresetContrast = (hex: string) => {
+	if (hex.startsWith('--')) hex = cssVar(hex);
+	const color = Color(hex);
+	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
+};
+
+const { hsl, rgb, hex, alpha, color } = useColor();
+
+function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
+	if (type === 'rgb') {
+		const newArray = [...rgb.value];
+		newArray[i] = val;
+		rgb.value = newArray;
+	} else if (type === 'hsl') {
+		const newArray = [...hsl.value];
+		newArray[i] = val;
+		hsl.value = newArray;
+	} else {
+		alpha.value = val;
+	}
+}
+
+function setSwatchValue(color: string) {
+	hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.slice(-2) : ''}`;
+}
+
+function unsetColor() {
+	emit('input', null);
+}
+
+function activateColorPicker() {
+	htmlColorInput.value?.$el.getElementsByTagName('input')[0]?.click();
+}
+
+function useColor() {
+	const color = ref<Color | null>(null);
+
+	const getHexa = (): string | null => {
+		if (color.value !== null) {
+			let alpha = Math.round(255 * color.value.alpha())
+				.toString(16)
+				.toUpperCase();
+
+			alpha = alpha.padStart(2, '0');
+			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
+		}
+
+		return null;
+	};
+
+	watch(
+		() => props.value,
+		() => {
+			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+		},
+		{ immediate: true },
+	);
+
+	const rgb = computed<number[]>({
+		get() {
+			if (color.value !== null) {
+				return roundColorValues(color.value.rgb().array());
+			}
+
+			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
+		},
+		set(newRGB) {
+			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
+		},
+	});
+
+	const hsl = computed<number[]>({
+		get() {
+			if (color.value !== null) {
+				return roundColorValues(color.value.hsl().array());
+			}
+
+			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
+		},
+		set(newHSL) {
+			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
+		},
+	});
+
+	const hex = computed<string | null>({
+		get() {
+			return getHexa();
+		},
+		set(newHex) {
+			if (newHex === null || newHex === '') {
+				unsetColor();
+			} else {
+				if (isHex(newHex) === false) return;
+				setColor(Color(newHex));
+			}
+		},
+	});
+
+	const alpha = computed<number>({
+		get() {
+			return color.value !== null ? Math.round(color?.value?.alpha() * 100) : 100;
+		},
+		set(newAlpha) {
+			if (newAlpha === null) {
+				return;
+			}
+
+			const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+			setColor(Color(newColor).alpha(newAlpha / 100));
+		},
+	});
+
+	return { rgb, hsl, hex, alpha, color };
+
+	function setColor(newColor: Color | null) {
+		color.value = newColor;
+
+		if (newColor === null) {
+			unsetColor();
+		} else {
+			emit('input', getHexa());
+		}
+	}
+
+	function roundColorValues(arr: number[]): number[] {
+		if (arr.length === 4) {
+			// Do not round the opacity
+			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]];
+		}
+
+		return arr.map((x) => Math.round(x));
+	}
+}
+</script>
+
 <template>
 	<v-menu attached :disabled="disabled" :close-on-content-click="false">
 		<template #activator="{ activate }">
@@ -20,10 +247,13 @@
 					/>
 					<v-button
 						class="swatch"
-						:icon="true"
+						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
+							border:
+								lowContrast === false
+									? 'none'
+									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
 						@click="activateColorPicker"
 					>
@@ -44,8 +274,8 @@
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
 					: width.startsWith('half')
-					? 'repeat(3, 1fr)'
-					: 'repeat(5, 1fr)',
+					  ? 'repeat(3, 1fr)'
+					  : 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width.startsWith('half') }"
 		>
@@ -57,8 +287,8 @@
 							? '1 / span 4'
 							: '1 / span 2'
 						: width.startsWith('half')
-						? '1 / span 3'
-						: '1 / span 2',
+						  ? '1 / span 3'
+						  : '1 / span 2',
 				}"
 			>
 				<v-select v-model="colorType" :items="colorTypes" />
@@ -128,9 +358,9 @@
 					:step="1"
 					:style="{
 						'--v-slider-color': 'none',
-						'--background-page': 'none',
+						'--theme--background': 'none',
 						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--v-slider-thumb-color': 'var(--theme--form--field--input--foreground)',
 						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
@@ -156,211 +386,6 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
-import Color from 'color';
-import { isHex } from '@/utils/is-hex';
-import { cssVar } from '@directus/utils/browser';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { i18n } from '@/lang';
-
-const { t } = useI18n();
-
-interface Props {
-	disabled?: boolean;
-	value?: string | null;
-	placeholder?: string;
-	presets?: { name: string; color: string }[];
-	width: string;
-	opacity?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	disabled: false,
-	value: () => null,
-	placeholder: undefined,
-	opacity: false,
-	presets: () => [
-		{
-			name: i18n.global.t('colors.purple'),
-			color: '#6644FF',
-		},
-		{
-			name: i18n.global.t('colors.blue'),
-			color: '#3399FF',
-		},
-		{
-			name: i18n.global.t('colors.green'),
-			color: '#2ECDA7',
-		},
-		{
-			name: i18n.global.t('colors.yellow'),
-			color: '#FFC23B',
-		},
-		{
-			name: i18n.global.t('colors.orange'),
-			color: '#FFA439',
-		},
-		{
-			name: i18n.global.t('colors.red'),
-			color: '#E35169',
-		},
-		{
-			name: i18n.global.t('colors.black'),
-			color: '#18222F',
-		},
-		{
-			name: i18n.global.t('colors.gray'),
-			color: '#A2B5CD',
-		},
-		{
-			name: i18n.global.t('colors.white'),
-			color: '#FFFFFF',
-		},
-	],
-});
-
-const emit = defineEmits(['input']);
-
-const valueWithoutVariables = computed(() => {
-	if (!props.value) return null;
-	return props.value?.startsWith('var(--') ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
-});
-
-const htmlColorInput = ref<ComponentPublicInstance | null>(null);
-type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
-
-let colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
-const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
-
-const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutVariables.value !== null);
-
-const lowContrast = computed(() => {
-	if (color.value === null) return true;
-
-	const pageColorString = cssVar('--background-page');
-	const pageColor = Color(pageColorString);
-
-	return color.value.contrast(pageColor) < 1.1;
-});
-
-const getPresetContrast = (hex: string) => {
-	if (hex.startsWith('--')) hex = cssVar(hex);
-	const color = Color(hex);
-	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
-};
-
-const { hsl, rgb, hex, alpha, color } = useColor();
-
-function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
-	if (type === 'rgb') {
-		const newArray = [...rgb.value];
-		newArray[i] = val;
-		rgb.value = newArray;
-	} else if (type === 'hsl') {
-		const newArray = [...hsl.value];
-		newArray[i] = val;
-		hsl.value = newArray;
-	} else {
-		alpha.value = val;
-	}
-}
-
-function setSwatchValue(color: string) {
-	hex.value = `${color}${hex.value !== null && hex.value.length === 9 ? hex.value.slice(-2) : ''}`;
-}
-
-function unsetColor() {
-	emit('input', null);
-}
-
-function activateColorPicker() {
-	(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
-}
-
-function useColor() {
-	const color = ref<Color | null>(null);
-
-	const getHexa = (): string | null => {
-		if (color.value !== null) {
-			let alpha = Math.round(255 * color.value.alpha())
-				.toString(16)
-				.toUpperCase();
-			alpha = alpha.padStart(2, '0');
-			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
-		}
-		return null;
-	};
-
-	watch(
-		() => props.value,
-		() => {
-			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
-		},
-		{ immediate: true }
-	);
-
-	const rgb = computed<number[]>({
-		get() {
-			const arr = color.value !== null ? color.value.rgb().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
-			return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
-		},
-		set(newRGB) {
-			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
-		},
-	});
-
-	const hsl = computed<number[]>({
-		get() {
-			const arr = color.value !== null ? color.value.hsl().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
-			return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
-		},
-		set(newHSL) {
-			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
-		},
-	});
-
-	const hex = computed<string | null>({
-		get() {
-			return getHexa();
-		},
-		set(newHex) {
-			if (newHex === null || newHex === '') {
-				unsetColor();
-			} else {
-				if (isHex(newHex) === false) return;
-				setColor(Color(newHex));
-			}
-		},
-	});
-
-	const alpha = computed<number>({
-		get() {
-			return color.value !== null ? Math.round(color?.value?.alpha() * 100) : 100;
-		},
-		set(newAlpha) {
-			if (newAlpha === null) {
-				return;
-			}
-			const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
-			setColor(Color(newColor).alpha(newAlpha / 100));
-		},
-	});
-
-	return { rgb, hsl, hex, alpha, color };
-
-	function setColor(newColor: Color | null) {
-		color.value = newColor;
-
-		if (newColor === null) {
-			unsetColor();
-		} else {
-			emit('input', getHexa());
-		}
-	}
-}
-</script>
-
 <style scoped lang="scss">
 .swatch {
 	--v-button-padding: 6px;
@@ -370,10 +395,10 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--input-height) - 20px);
-	max-height: calc(var(--input-height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 20px);
+	max-height: calc(var(--theme--form--field--input--height) - 20px);
 	overflow: hidden;
-	border-radius: calc(var(--border-radius) + 2px);
+	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -395,7 +420,7 @@ function useColor() {
 	&.low-contrast {
 		--v-button-height: 18px;
 		--v-button-width: 18px;
-		border: 1px solid var(--border-normal-alt);
+		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }
 
@@ -423,7 +448,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--border-radius: 0px;
+	--v-input-border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -435,40 +460,40 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--input-padding: 12px 8px;
+	--theme--form--field--input--padding: 12px 8px;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--border-radius: 4px 0px 0px 4px;
+	--v-input-border-radius: var(--theme--border-radius) 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--border-radius: 0px 4px 4px 0px;
+	--v-input-border-radius: 0px var(--theme--border-radius) var(--theme--border-radius) 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--border-width));
+	margin-top: calc(-2 * var(--theme--border-width));
 	margin-left: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--border-radius: 4px 4px 0px 0px;
+	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--border-radius: 0px 0px 0px 4px;
+	--v-input-border-radius: 0px 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--border-radius: 0px 0px 4px 0px;
+	--v-input-border-radius: 0px 0px var(--theme--border-radius) 0px;
 }
 
 .color-data-alphas {

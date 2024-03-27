@@ -1,11 +1,12 @@
 import api, { replaceQueue } from '@/api';
-import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
+import { useUserStore } from '@/stores/user';
+import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
-import { useUserStore } from '@/stores/user';
 
 type HydrateOptions = {
 	/**
@@ -21,23 +22,16 @@ export type Info = {
 		project_logo: string | null;
 		project_color: string | null;
 		default_language: string | null;
+		default_appearance: 'light' | 'dark' | 'auto';
+		default_theme_light: string | null;
+		default_theme_dark: string | null;
+		theme_light_overrides: Record<string, unknown> | null;
+		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
-		public_background: string | null;
+		public_background: { id: string; type: string } | null;
+		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
-	};
-	directus?: {
-		version: string;
-	};
-	node?: {
-		version: string;
-		uptime: number;
-	};
-	os?: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
 	};
 	rateLimit?:
 		| false
@@ -45,24 +39,27 @@ export type Info = {
 				points: number;
 				duration: number;
 		  };
-	flows?: {
-		execAllowedModules: string[];
+	queryLimit?: {
+		default: number;
+		max: number;
+	};
+	version?: string;
+	extensions?: {
+		limit: number | null;
 	};
 };
 
 export type Auth = {
-	providers: { driver: string; name: string }[];
+	providers: AuthProvider[];
 	disableDefault: boolean;
 };
 
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
-		directus: undefined,
-		node: undefined,
-		os: undefined,
+		extensions: undefined,
 		rateLimit: undefined,
-		flows: undefined,
+		queryLimit: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -76,7 +73,11 @@ export const useServerStore = defineStore('serverStore', () => {
 			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name, driver: provider.driver }));
 
 		if (!auth.disableDefault) {
-			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER, driver: 'default' });
+			options.unshift({
+				text: i18n.global.t('default_provider'),
+				value: DEFAULT_AUTH_PROVIDER,
+				driver: DEFAULT_AUTH_DRIVER,
+			});
 		}
 
 		return options;
@@ -84,15 +85,14 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const hydrate = async (options?: HydrateOptions) => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
-			api.get(`/server/info`, { params: { limit: -1 } }),
-			api.get('/auth'),
+			api.get(`/server/info`),
+			api.get('/auth?sessionOnly'),
 		]);
 
 		info.project = serverInfoResponse.data.data?.project;
-		info.directus = serverInfoResponse.data.data?.directus;
-		info.node = serverInfoResponse.data.data?.node;
-		info.os = serverInfoResponse.data.data?.os;
-		info.flows = serverInfoResponse.data.data?.flows;
+		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.extensions = serverInfoResponse.data.data?.extensions;
+		info.version = serverInfoResponse.data.data?.version;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
@@ -101,7 +101,11 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		// set language as default locale before login
 		// or reset language for admin when they update it without having their own language set
-		if (!currentUser || (options?.isLanguageUpdated === true && !currentUser?.language)) {
+		if (
+			!currentUser ||
+			(options?.isLanguageUpdated &&
+				(!('language' in currentUser) || ('language' in currentUser && !currentUser?.language)))
+		) {
 			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 		}
 
@@ -117,9 +121,6 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const dehydrate = () => {
 		info.project = null;
-		info.directus = undefined;
-		info.node = undefined;
-		info.os = undefined;
 
 		auth.providers = [];
 		auth.disableDefault = false;

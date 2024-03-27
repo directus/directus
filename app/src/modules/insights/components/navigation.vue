@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { useInsightsStore } from '@/stores/insights';
+import { Dashboard } from '@/types/insights';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineEmits(['create']);
+
+const { t } = useI18n();
+const insightsStore = useInsightsStore();
+
+const navItems = computed(() =>
+	insightsStore.dashboards.map((dashboard: Dashboard) => ({
+		icon: dashboard.icon,
+		color: dashboard.color,
+		name: dashboard.name,
+		to: `/insights/${dashboard.id}`,
+	})),
+);
+</script>
+
 <template>
 	<v-list nav>
 		<v-button v-if="navItems.length === 0" full-width outlined dashed @click="$emit('create')">
@@ -12,32 +33,3 @@
 		</v-list-item>
 	</v-list>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
-import { Dashboard } from '@/types/insights';
-import { useI18n } from 'vue-i18n';
-
-export default defineComponent({
-	name: 'InsightsNavigation',
-	emits: ['create'],
-	setup() {
-		const { t } = useI18n();
-		const insightsStore = useInsightsStore();
-
-		const createDialogActive = ref(false);
-
-		const navItems = computed(() =>
-			insightsStore.dashboards.map((dashboard: Dashboard) => ({
-				icon: dashboard.icon,
-				color: dashboard.color,
-				name: dashboard.name,
-				to: `/insights/${dashboard.id}`,
-			}))
-		);
-
-		return { navItems, createDialogActive, t };
-	},
-});
-</script>

@@ -30,6 +30,7 @@ export const DIRECTUS_LOGO = `
 export const COLLECTIONS_DENY_LIST = [
 	'directus_activity',
 	'directus_collections',
+	'directus_extensions',
 	'directus_fields',
 	'directus_migrations',
 	'directus_relations',
@@ -64,7 +65,7 @@ export const MODULE_BAR_DEFAULT = [
 		id: 'docs',
 		enabled: true,
 		name: '$t:documentation',
-		icon: 'help_outline',
+		icon: 'help',
 		url: 'https://docs.directus.io',
 	},
 	{
@@ -108,7 +109,7 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry',
+		text: '$t:geometry.All',
 		value: 'geometry',
 	},
 	{ divider: true },
@@ -151,3 +152,7 @@ export const DEFAULT_AUTH_PROVIDER = 'local';
 export const DEFAULT_AUTH_DRIVER = 'default';
 
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid', 'saml'];
+
+export const DEFAULT_REPORT_BUG_URL = 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
+export const DEFAULT_REPORT_FEATURE_URL =
+	'https://github.com/directus/directus/discussions/new?category=feature-requests';

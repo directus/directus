@@ -1,11 +1,11 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="18" y="35" width="120" height="26" rx="6" fill="var(--primary)" opacity=".25"/>
+  <rect x="18" y="35" width="120" height="26" rx="6" fill="var(--theme--primary)" opacity=".25"/>
   <mask id="a" maskUnits="userSpaceOnUse" x="26" y="40" width="26" height="16" fill="#000">
     <path fill="#fff" d="M26 40h26v16H26z"/>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M43 53.917V54h-8v-.083a6 6 0 1 1 0-11.834V42h8v.083a6 6 0 1 1 0 11.834Z"/>
   </mask>
-  <path d="m43 53.917.33-1.972-2.33-.391v2.363h2ZM43 54v2h2v-2h-2Zm-8 0h-2v2h2v-2Zm0-.083h2v-2.363l-2.33.39.33 1.973Zm0-11.834-.33 1.972 2.33.391v-2.363h-2ZM35 42v-2h-2v2h2Zm8 0h2v-2h-2v2Zm0 .083h-2v2.363l2.33-.39-.33-1.973Zm-2 11.834V54h4v-.083h-4ZM43 52h-8v4h8v-4Zm-6 2v-.083h-4V54h4Zm-2.33-2.055A4.04 4.04 0 0 1 34 52v4c.452 0 .897-.038 1.33-.11l-.66-3.945ZM34 52a4 4 0 0 1-4-4h-4a8 8 0 0 0 8 8v-4Zm-4-4a4 4 0 0 1 4-4v-4a8 8 0 0 0-8 8h4Zm4-4c.23 0 .453.02.67.055l.66-3.944A8.044 8.044 0 0 0 34 40v4Zm3-1.917V42h-4v.083h4ZM35 44h8v-4h-8v4Zm6-2v.083h4V42h-4Zm2.33 2.055A4.04 4.04 0 0 1 44 44v-4c-.452 0-.897.038-1.33.11l.66 3.945ZM44 44a4 4 0 0 1 4 4h4a8 8 0 0 0-8-8v4Zm4 4a4 4 0 0 1-4 4v4a8 8 0 0 0 8-8h-4Zm-4 4c-.23 0-.453-.02-.67-.055l-.66 3.944c.433.073.878.111 1.33.111v-4Z" fill="var(--primary)" mask="url(#a)"/>
-  <circle cx="34" cy="48" r="4" fill="var(--primary)"/>
-  <rect x="62" y="45" width="30" height="6" rx="2" fill="var(--primary)"/>
-  <rect x="96" y="45" width="20" height="6" rx="2" fill="var(--primary)"/>
+  <path d="m43 53.917.33-1.972-2.33-.391v2.363h2ZM43 54v2h2v-2h-2Zm-8 0h-2v2h2v-2Zm0-.083h2v-2.363l-2.33.39.33 1.973Zm0-11.834-.33 1.972 2.33.391v-2.363h-2ZM35 42v-2h-2v2h2Zm8 0h2v-2h-2v2Zm0 .083h-2v2.363l2.33-.39-.33-1.973Zm-2 11.834V54h4v-.083h-4ZM43 52h-8v4h8v-4Zm-6 2v-.083h-4V54h4Zm-2.33-2.055A4.04 4.04 0 0 1 34 52v4c.452 0 .897-.038 1.33-.11l-.66-3.945ZM34 52a4 4 0 0 1-4-4h-4a8 8 0 0 0 8 8v-4Zm-4-4a4 4 0 0 1 4-4v-4a8 8 0 0 0-8 8h4Zm4-4c.23 0 .453.02.67.055l.66-3.944A8.044 8.044 0 0 0 34 40v4Zm3-1.917V42h-4v.083h4ZM35 44h8v-4h-8v4Zm6-2v.083h4V42h-4Zm2.33 2.055A4.04 4.04 0 0 1 44 44v-4c-.452 0-.897.038-1.33.11l.66 3.945ZM44 44a4 4 0 0 1 4 4h4a8 8 0 0 0-8-8v4Zm4 4a4 4 0 0 1-4 4v4a8 8 0 0 0 8-8h-4Zm-4 4c-.23 0-.453-.02-.67-.055l-.66 3.944c.433.073.878.111 1.33.111v-4Z" fill="var(--theme--primary)" mask="url(#a)"/>
+  <circle cx="34" cy="48" r="4" fill="var(--theme--primary)"/>
+  <rect x="62" y="45" width="30" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect x="96" y="45" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
 </svg>

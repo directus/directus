@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { Liquid } from 'liquidjs';
+import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
-import { v4 as uuid } from 'uuid';
 import type { Credentials } from '../create-db-connection.js';
 import type { drivers } from '../drivers.js';
 
@@ -22,13 +22,13 @@ const liquidEngine = new Liquid({
 export default async function createEnv(
 	client: keyof typeof drivers,
 	credentials: Credentials,
-	directory: string
+	directory: string,
 ): Promise<void> {
 	const { nanoid } = await import('nanoid');
 
 	const config: Record<string, any> = {
 		security: {
-			KEY: uuid(),
+			KEY: randomUUID(),
 			SECRET: nanoid(32),
 		},
 		database: {

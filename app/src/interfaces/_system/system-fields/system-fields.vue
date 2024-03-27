@@ -1,39 +1,4 @@
-<template>
-	<template v-if="!collectionName">
-		<v-notice type="info">
-			{{ t('interfaces.system-fields.select_a_collection') }}
-		</v-notice>
-	</template>
-	<template v-else>
-		<v-list v-if="fields.length === 0">
-			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
-		</v-list>
-		<v-list v-else>
-			<draggable v-model="fields" :force-fallback="true" item-key="key" handle=".drag-handle">
-				<template #item="{ element: field }">
-					<v-list-item block>
-						<v-icon name="drag_handle" class="drag-handle" left />
-						<div class="name">{{ field.displayName }}</div>
-						<div class="spacer" />
-						<v-icon name="close" clickable @click="removeField(field.key)" />
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
-		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<button class="toggle" @click="toggle">
-					{{ t('add_field') }}
-					<v-icon name="expand_more" />
-				</button>
-			</template>
-
-			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
-		</v-menu>
-	</template>
-</template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { computed } from 'vue';
@@ -44,9 +9,13 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 interface Props {
 	collectionName: string;
 	value?: string[] | null;
+	allowSelectAll?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { value: () => null });
+const props = withDefaults(defineProps<Props>(), {
+	value: null,
+	allowSelectAll: false,
+});
 
 const emit = defineEmits(['input']);
 
@@ -100,24 +69,65 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
-function addField(fieldKey: string) {
-	emit('input', [...(props.value ?? []), fieldKey]);
-}
+const addFields = (fields: string[]) => {
+	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
+	emit('input', Array.from(uniqueFields));
+};
 
-function removeField(fieldKey: string) {
-	const newArray = props.value?.filter((val) => val !== fieldKey);
+const removeField = (field: string) => {
+	const newFields = props.value?.filter((val) => val !== field);
 
-	if (!newArray || newArray.length === 0) {
+	if (!newFields || newFields.length === 0) {
 		emit('input', null);
 	}
 
-	emit('input', newArray);
-}
+	emit('input', newFields);
+};
 </script>
+
+<template>
+	<template v-if="!collectionName">
+		<v-notice>
+			{{ t('interfaces.system-fields.select_a_collection') }}
+		</v-notice>
+	</template>
+	<template v-else>
+		<v-list v-if="fields.length === 0">
+			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
+		</v-list>
+		<v-list v-else>
+			<draggable v-model="fields" item-key="key" handle=".drag-handle" v-bind="{ 'force-fallback': true }">
+				<template #item="{ element: field }">
+					<v-list-item block>
+						<v-icon name="drag_handle" class="drag-handle" left />
+						<div class="name">{{ field.displayName }}</div>
+						<div class="spacer" />
+						<v-icon name="close" clickable @click="removeField(field.key)" />
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+		<v-menu placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<button class="toggle" @click="toggle">
+					{{ t('add_field') }}
+					<v-icon name="expand_more" />
+				</button>
+			</template>
+
+			<v-field-list
+				:disabled-fields="value"
+				:collection="collectionName"
+				:allow-select-all="allowSelectAll"
+				@add="addFields"
+			/>
+		</v-menu>
+	</template>
+</template>
 
 <style lang="scss" scoped>
 .toggle {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;
@@ -128,8 +138,8 @@ function removeField(fieldKey: string) {
 }
 
 .v-notice.no-fields {
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--v-list-item-border-color);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
 
 	&::after {
 		display: none;

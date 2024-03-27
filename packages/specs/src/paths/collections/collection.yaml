@@ -70,6 +70,10 @@ patch:
                   type: string
                   example: null
                   nullable: true
+                versioning:
+                  description: Whether or not Content Versioning is enabled for this collection.
+                  type: boolean
+                  example: false
                 archive_field:
                   description: What field holds the archive value.
                   type: string

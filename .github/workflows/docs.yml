@@ -1,15 +1,10 @@
 name: Docs
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - docs/**
-      - .github/workflows/docs.yml
   pull_request:
     branches:
       - main
+      - next
     paths:
       - docs/**
       - .github/workflows/docs.yml
@@ -24,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare

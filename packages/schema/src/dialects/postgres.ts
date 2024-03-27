@@ -53,6 +53,7 @@ export default class Postgres implements SchemaInspector {
 	constructor(knex: Knex) {
 		this.knex = knex;
 		const config = knex.client.config;
+
 		if (!config.searchPath) {
 			this.schema = 'public';
 			this.explodedSchema = [this.schema];
@@ -121,7 +122,7 @@ export default class Postgres implements SchemaInspector {
           t.table_type = 'BASE TABLE'
           AND c.table_schema IN (${bindings});
       `,
-				this.explodedSchema
+				this.explodedSchema,
 			),
 
 			this.knex.raw(
@@ -142,7 +143,7 @@ export default class Postgres implements SchemaInspector {
           AND indnatts = 1
 			 AND relkind != 'S'
       `,
-				this.explodedSchema
+				this.explodedSchema,
 			),
 		]);
 
@@ -172,7 +173,7 @@ export default class Postgres implements SchemaInspector {
 					AND t.table_type = 'BASE TABLE'
 				WHERE f_table_schema in (${bindings})
 				`,
-				this.explodedSchema
+				this.explodedSchema,
 			);
 
 			geometryColumns = result.rows;
@@ -190,15 +191,18 @@ export default class Postgres implements SchemaInspector {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
 			}
+
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
+
 			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
 			overview[table_name]!.primary = column_name;
 		}
+
 		for (const { table_name, column_name, data_type } of geometryColumns) {
 			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}
@@ -225,7 +229,7 @@ export default class Postgres implements SchemaInspector {
 			rel.relnamespace IN (${schemaIn})
 			AND rel.relkind = 'r'
 		 ORDER BY rel.relname
-	  `
+	  `,
 		);
 
 		return result.rows.map((row: { name: string }) => row.name);
@@ -258,7 +262,7 @@ export default class Postgres implements SchemaInspector {
 			AND rel.relkind = 'r'
 		 ORDER BY rel.relname
 	  `,
-			bindings
+			bindings,
 		);
 
 		if (table) return result.rows[0];
@@ -283,7 +287,7 @@ export default class Postgres implements SchemaInspector {
 			AND rel.relname = ?
 		 ORDER BY rel.relname
 	  `,
-			[table]
+			[table],
 		);
 
 		return result.rows.length > 0;
@@ -316,7 +320,7 @@ export default class Postgres implements SchemaInspector {
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,
-			bindings
+			bindings,
 		);
 
 		return result.rows;
@@ -406,7 +410,7 @@ export default class Postgres implements SchemaInspector {
 			  AND NOT att.attisdropped
 			ORDER BY rel.relname, att.attnum;
 		 `,
-				bindings
+				bindings,
 			),
 			knex.raw<{ rows: Constraint[] }>(
 				`
@@ -433,13 +437,13 @@ export default class Postgres implements SchemaInspector {
 			  ${table ? 'AND rel.relname = ?' : ''}
 			  ${column ? 'AND att.attname = ?' : ''}
 			`,
-				bindings
+				bindings,
 			),
 		]);
 
 		const parsedColumns: Column[] = columns.rows.map((col): Column => {
 			const constraintsForColumn = constraints.rows.filter(
-				(constraint) => constraint.table === col.table && constraint.column === col.name
+				(constraint) => constraint.table === col.table && constraint.column === col.name,
 			);
 
 			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
@@ -478,7 +482,7 @@ export default class Postgres implements SchemaInspector {
 				select * from geometry_columns
 				union
 				select * from geography_columns
-		`)
+		`),
 			)
 			.select<Column[]>({
 				table: 'f_table_name',
@@ -539,7 +543,7 @@ export default class Postgres implements SchemaInspector {
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,
-			[table, column]
+			[table, column],
 		);
 
 		return result.rows;
@@ -564,7 +568,7 @@ export default class Postgres implements SchemaInspector {
 			  AND array_length(con.conkey, 1) <= 1
 			  AND rel.relname = ?
 	  `,
-			[table]
+			[table],
 		);
 
 		return result.rows?.[0]?.column ?? null;
@@ -628,7 +632,7 @@ export default class Postgres implements SchemaInspector {
 			  AND con.contype = 'f'
 			  ${table ? 'AND rel.relname = ?' : ''}
 	  `,
-			bindings
+			bindings,
 		);
 
 		return result.rows;

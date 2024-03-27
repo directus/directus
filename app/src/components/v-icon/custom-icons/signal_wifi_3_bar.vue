@@ -1,3 +1,7 @@
+<script lang="ts">
+export default {};
+</script>
+
 <template>
 	<svg
 		viewBox="0 0 48 48"
@@ -17,7 +21,3 @@
 		/>
 	</svg>
 </template>
-
-<script lang="ts">
-export default {};
-</script>

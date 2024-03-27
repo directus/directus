@@ -1,24 +1,13 @@
 {
+	"extends": "@directus/tsconfig/vue3",
 	"compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
-		"strict": true,
-		"jsx": "preserve",
-		"importHelpers": true,
-		"skipLibCheck": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"sourceMap": true,
+		"verbatimModuleSyntax": false,
+		"exactOptionalPropertyTypes": false,
+		"noPropertyAccessFromIndexSignature": false,
 		"baseUrl": ".",
-		"types": ["vite/client"],
 		"paths": {
-			"@/*": ["src/*"],
-			"preact/*": ["stub/empty.d.ts"]
-		},
-		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+			"@/*": ["src/*"]
+		}
 	},
-	"include": ["src/**/*.ts", "src/**/*.vue"],
-	"exclude": ["node_modules"]
+	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"]
 }

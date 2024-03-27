@@ -1,3 +1,43 @@
+<script setup lang="ts">
+import { useRequestsStore } from '@/stores/requests';
+import { useSettingsStore } from '@/stores/settings';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { getAssetUrl } from '@/utils/get-asset-url';
+
+const { t } = useI18n();
+
+const requestsStore = useRequestsStore();
+const settingsStore = useSettingsStore();
+
+const customLogoPath = computed<string | null>(() => {
+	if (settingsStore.settings === null) return null;
+	if (!settingsStore.settings?.project_logo) return null;
+	return getAssetUrl(`${settingsStore.settings.project_logo}`);
+});
+
+const showLoader = ref(false);
+
+const { queueHasItems } = toRefs(requestsStore);
+
+watch(
+	() => queueHasItems.value,
+	(hasItems) => {
+		if (hasItems) showLoader.value = true;
+	},
+);
+
+const url = computed(() => settingsStore.settings?.project_url);
+
+const urlTooltip = computed(() => {
+	return settingsStore.settings?.project_url ? t('view_project') : false;
+});
+
+function stopSpinnerIfQueueIsEmpty() {
+	if (queueHasItems.value === false) showLoader.value = false;
+}
+</script>
+
 <template>
 	<component
 		:is="url ? 'a' : 'div'"
@@ -18,58 +58,6 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { useRequestsStore } from '@/stores/requests';
-import { useSettingsStore } from '@/stores/settings';
-import { computed, defineComponent, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { getRootPath } from '@/utils/get-root-path';
-
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-
-		const requestsStore = useRequestsStore();
-		const settingsStore = useSettingsStore();
-
-		const customLogoPath = computed<string | null>(() => {
-			if (settingsStore.settings === null) return null;
-			if (!settingsStore.settings?.project_logo) return null;
-			return `${getRootPath()}assets/${settingsStore.settings.project_logo}`;
-		});
-
-		const showLoader = ref(false);
-
-		const { queueHasItems } = toRefs(requestsStore);
-
-		watch(
-			() => queueHasItems.value,
-			(hasItems) => {
-				if (hasItems) showLoader.value = true;
-			}
-		);
-
-		const url = computed(() => settingsStore.settings?.project_url);
-
-		const urlTooltip = computed(() => {
-			return settingsStore.settings?.project_url ? t('view_project') : false;
-		});
-
-		return {
-			customLogoPath,
-			showLoader,
-			stopSpinnerIfQueueIsEmpty,
-			url,
-			urlTooltip,
-		};
-
-		function stopSpinnerIfQueueIsEmpty() {
-			if (queueHasItems.value === false) showLoader.value = false;
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .module-bar-logo {
 	--v-progress-linear-height: 2px;
@@ -83,7 +71,7 @@ export default defineComponent({
 	width: 60px;
 	height: 60px;
 	padding: 12px;
-	background-color: var(--brand);
+	background-color: var(--project-color);
 
 	.v-progress-linear {
 		position: absolute;

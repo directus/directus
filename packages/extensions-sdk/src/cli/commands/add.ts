@@ -1,21 +1,20 @@
-import {
-	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	ExtensionManifest,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
 import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntry,
 	NestedExtensionType,
 	ExtensionManifest as TExtensionManifest,
-} from '@directus/types';
+} from '@directus/extensions';
+import {
+	EXTENSION_LANGUAGES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	ExtensionManifest,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import inquirer from 'inquirer';
 import ora from 'ora';
@@ -28,26 +27,41 @@ import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-export default async function add(): Promise<void> {
+type AddOptions = { install?: boolean };
+
+export default async function add(options: AddOptions): Promise<void> {
+	const install = options.install ?? true;
 	const extensionPath = process.cwd();
 	const packagePath = path.resolve('package.json');
 
 	if (!(await fse.pathExists(packagePath))) {
-		log(`Current directory is not a valid package.`, 'error');
+		log(`Current directory is not a valid Directus extension:`, 'error');
+		log(`Missing "package.json" file.`, 'error');
+		process.exit(1);
+	}
+
+	let extensionManifestFile: string;
+
+	try {
+		extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+	} catch {
+		log(`Failed to read "package.json" file from current directory.`, 'error');
 		process.exit(1);
 	}
 
 	let extensionManifest: TExtensionManifest;
-	let indent: string | null = null;
 
 	try {
-		const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
-		extensionManifest = ExtensionManifest.passthrough().parse(JSON.parse(extensionManifestFile));
-		indent = detectJsonIndent(extensionManifestFile);
-	} catch (e) {
-		log(`Current directory is not a valid Directus extension.`, 'error');
+		extensionManifest = JSON.parse(extensionManifestFile);
+		ExtensionManifest.parse(extensionManifest);
+	} catch {
+		log(`Current directory is not a valid Directus extension:`, 'error');
+		log(`Invalid "package.json" file.`, 'error');
+
 		process.exit(1);
 	}
+
+	const indent = detectJsonIndent(extensionManifestFile);
 
 	const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
@@ -86,6 +100,13 @@ export default async function add(): Promise<void> {
 			},
 		]);
 
+		const bundleEntryNames = new Set(extensionOptions.entries.map((entry) => entry.name));
+
+		if (bundleEntryNames.has(name)) {
+			log(`Extension ${chalk.bold(name)} already exists for this bundle.`, 'error');
+			process.exit(1);
+		}
+
 		const spinner = ora(chalk.bold('Modifying Directus extension...')).start();
 
 		const source = alternativeSource ?? 'src';
@@ -114,22 +135,31 @@ export default async function add(): Promise<void> {
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				newEntries.map((entry) => entry.type),
-				getLanguageFromEntries(newEntries)
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					newEntries.map((entry) => entry.type),
+					getLanguageFromEntries(newEntries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	} else {
 		const { proceed } = await inquirer.prompt<{ proceed: boolean }>([
 			{
@@ -143,8 +173,6 @@ export default async function add(): Promise<void> {
 			log(`Extension has not been modified.`, 'info');
 			process.exit(1);
 		}
-
-		const oldName = extensionManifest.name.match(EXTENSION_NAME_REGEX)?.[1] ?? extensionManifest.name;
 
 		const { type, name, language, convertName, extensionName, alternativeSource } = await inquirer.prompt<{
 			type: NestedExtensionType;
@@ -176,14 +204,15 @@ export default async function add(): Promise<void> {
 				type: 'input',
 				name: 'convertName',
 				message: 'Choose a name for the extension that is converted to an entry',
-				default: oldName,
+				default: extensionManifest.name,
 				validate: (name: string) => (name.length === 0 ? 'Entry name can not be empty.' : true),
 			},
 			{
 				type: 'input',
 				name: 'extensionName',
 				message: 'Choose a name for the extension',
-				default: ({ convertName }: { convertName: string }) => (convertName !== oldName ? oldName : null),
+				default: ({ convertName }: { convertName: string }) =>
+					convertName !== extensionManifest.name ? extensionManifest.name : null,
 				validate: (name: string) => (name.length === 0 ? 'Extension name can not be empty.' : true),
 			},
 			{
@@ -204,7 +233,7 @@ export default async function add(): Promise<void> {
 		const convertFiles = await fse.readdir(source);
 
 		await Promise.all(
-			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file)))
+			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),
 		);
 
 		await fse.ensureDir(entrySourcePath);
@@ -251,24 +280,33 @@ export default async function add(): Promise<void> {
 			host: extensionOptions.host,
 			hidden: extensionOptions.hidden,
 		};
+
 		const newExtensionManifest = {
 			...extensionManifest,
-			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
-			keywords: ['directus', 'directus-extension', `directus-custom-bundle`],
+			name: extensionName,
+			keywords: ['directus', 'directus-extension', 'directus-extension-bundle'],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				entries.map((entry) => entry.type),
-				getLanguageFromEntries(entries)
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					entries.map((entry) => entry.type),
+					getLanguageFromEntries(entries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	}
 }
 
@@ -284,6 +322,7 @@ function getLanguageFromEntries(entries: ExtensionOptionsBundleEntry[]): Languag
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);

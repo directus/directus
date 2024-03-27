@@ -4,6 +4,7 @@ import { getJSType } from './get-js-type';
 
 test('Returns object for relational fields', () => {
 	const relationTypes = ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'];
+
 	for (const special of relationTypes) {
 		expect(
 			getJSType({
@@ -14,13 +15,14 @@ test('Returns object for relational fields', () => {
 				meta: {
 					special: [special],
 				},
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
 
 test('Returns number for numeric fields', () => {
 	const numericTypes = ['bigInteger', 'integer', 'float', 'decimal'];
+
 	for (const fieldType of numericTypes) {
 		expect(
 			getJSType({
@@ -28,13 +30,14 @@ test('Returns number for numeric fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('number');
 	}
 });
 
 test('Returns string for string fields', () => {
 	const stringTypes = ['string', 'text', 'uuid', 'hash'];
+
 	for (const fieldType of stringTypes) {
 		expect(
 			getJSType({
@@ -42,13 +45,14 @@ test('Returns string for string fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('string');
 	}
 });
 
 test('Returns boolean for boolean fields', () => {
 	const booleanTypes = ['boolean'];
+
 	for (const fieldType of booleanTypes) {
 		expect(
 			getJSType({
@@ -56,13 +60,14 @@ test('Returns boolean for boolean fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('boolean');
 	}
 });
 
 test('Returns string for datetime fields', () => {
 	const dateTypes = ['time', 'timestamp', 'date', 'dateTime'];
+
 	for (const fieldType of dateTypes) {
 		expect(
 			getJSType({
@@ -70,13 +75,14 @@ test('Returns string for datetime fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('string');
 	}
 });
 
 test('Returns object for json and csv fields', () => {
 	const objectTypes = ['json', 'csv'];
+
 	for (const fieldType of objectTypes) {
 		expect(
 			getJSType({
@@ -84,13 +90,14 @@ test('Returns object for json and csv fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
 
 test('Returns object for geometry fields', () => {
 	const geometryTypes = ['geometryPoint', 'geometryPolygon', 'geometryLineString'];
+
 	for (const fieldType of geometryTypes) {
 		expect(
 			getJSType({
@@ -98,13 +105,14 @@ test('Returns object for geometry fields', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('object');
 	}
 });
 
 test('Returns undefined as fallback', () => {
 	const errorTypes = ['non-existent', 'should also error', '🦄'];
+
 	for (const fieldType of errorTypes) {
 		expect(
 			getJSType({
@@ -112,7 +120,7 @@ test('Returns undefined as fallback', () => {
 				collection: 'test',
 				field: 'test',
 				type: fieldType,
-			} as Field)
+			} as Field),
 		).toBe('undefined');
 	}
 });

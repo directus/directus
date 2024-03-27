@@ -1,9 +1,9 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="18" width="120" height="60" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="19" y="19" width="118" height="58" rx="5" stroke="var(--primary)" stroke-width="2" />
-	<rect x="28" y="28" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="28" y="48" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="28" y="38" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="92" y="28" width="30" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="72" y="38" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="18" y="18" width="120" height="60" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="19" y="19" width="118" height="58" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+	<rect x="28" y="28" width="60" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="28" y="48" width="60" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="28" y="38" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="92" y="28" width="30" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="72" y="38" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
 </svg>

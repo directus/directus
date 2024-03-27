@@ -52,6 +52,11 @@ or: Ili
 init: Inicijalizuj
 dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno se prikazuje prvih {n} stavki.
 modifier: Modifikator
+extension_interface: Interfejs
+extension_display: Prikaz
+extension_layout: Izgled
+extension_hook: Hook
+extension_modules: Moduli
 custom: Prilagođeno
 hook: Hook
 fill_width: Popunjeno
@@ -80,14 +85,6 @@ create_user: Napravi korisnika
 message: Poruka
 delete_panel: Obriši Panel
 create_webhook: Napravi Webhook
-create_translation_string: Kreiraj String za Prevod
-no_translation_string: Nema Stringova za Prevod
-no_translation_string_copy: Još uvek nema Stringova za Prevod.
-translation_string_key_placeholder: Ključ stringa za prevod...
-translation_string_translations_placeholder: Dodaj prevod
-edit_translation_string: Izmeni String za Prevod
-delete_translation_string_copy: >-
-  Da li ste zigurni da želite da izbrišete String za Prevod "{key}"? Ova radnja se ne može opozvati.
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
@@ -117,20 +114,12 @@ logoutReason:
 public_label: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
-directus_version: Directus verzija
-node_version: Node Verzija
-node_uptime: Node Aktivno vrijeme rada
-os_type: OS tip
-os_version: OS Verzija
-os_uptime: OS Aktivno vrijeme rada
-os_totalmem: OS Memorija
 archive: Arhiviraj
 archive_confirm: Da li ste sigurni da želite da arhivirate ovu stavku?
 archive_confirm_count: >-
   Nema odabranih stavki | Da li ste sigurni da želite da arhivirate ovu stavku? | Da li ste sigurni da želite da arhivirate ovih {count} stavki?
 reset_system_permissions_to: 'Poništi Sistemske Dozvole na:'
 reset_system_permissions_copy: Ova operacija će prepisati sve prilagođene dozvole koje ste primjenili na sistemske kolekcije. Da li ste sigurni?
-the_following_are_minimum_permissions: Sljedeće su minimalne dozvole koje su potrebne kada je omogućen "Pristup Aplikaciji". Možete proširiti dozvole i izvan ovoga, ali ne i ispod.
 app_access_minimum: Minimalan pristup aplikaciji
 recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
@@ -312,6 +301,7 @@ move: Premjesti
 system: Sistem
 add_field_related: Dodaj Polje u Povezanu Kolekciju
 interface_label: Interfejs
+display_label: Prikaz
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -349,7 +339,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreiran
 modified: Izmijenjeno
-checksum: Kontrolni zbir
 owner: Vlasnik
 edited_by: Izmijenjeno od
 folder: Fascikla
@@ -389,10 +378,8 @@ selecting_items: Odabir stavki
 enable_select_button: Omogući Dugme za Odabir
 comments: Komentari
 no_comments: Nema komentara
-click_to_expand: Klikni za proširivanje
 select_item: Odaberi Stavku
 no_items: Nema stavki
-search_items: Pretraži Stavke...
 disabled: Isključeno
 information: Informacija
 report_bug: Prijavi Propust
@@ -563,7 +550,6 @@ layout_options: Opcije Izgleda
 rows: Redova
 columns: Kolona
 collection_setup: Podešavanje Kolekcije
-optional_system_fields: Neobavezna Sistemska Polja
 value_unique: Vrijednost mora biti jedinstvena
 all_activity: Sva Aktivnost
 create_item: Napravi Stavku
@@ -683,10 +669,10 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
-settings_permissions: Uloge & Dozvole
-settings_project: Podešavanje Projekta
+settings_project: Podešavanja
 settings_webhooks: Webhooks
-settings_presets: Izgledi & Oznake
+settings_presets: Oznake
+settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
 scope: Opseg
 select: Odaberite...
@@ -714,7 +700,6 @@ page_help_files_collection: >-
   **Biblioteka Fajlova** — Lista svih stavki koje su skladištene unutar ovog projekta. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak sačuvajte i oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji Fajla** — Forma za uređivanje metapodataka fajla, izmjena originalnog stanja, i ažuriranje podešavanja pristupa.
-page_help_settings_project: "**Podešavanje Projekta** — Globalna konfiguraciona podešavanja projekta."
 page_help_settings_datamodel_collections: >-
   **Model Podataka: Kolekcije** — Lista svih dostupnih kolekcija. Ovo uključuje vidljive, sakrivene, i sistemske kolekcije, kao i neuređene tabele baze podataka koje mogu biti dodane.
 page_help_settings_datamodel_fields: >-
@@ -804,7 +789,6 @@ fields:
     description: Opis
     tags: Tagovi
     language: Jezik
-    theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
     status_active: Aktivan
@@ -889,6 +873,8 @@ save_current_datetime: Sačuvaj Trenutni Datum/Vrijeme
 block: Blok
 inline: Linijski
 comment: Komentar
+live_preview:
+  new_window: Otvori u Novom Prozoru
 relational_triggers: Relacioni Okidači
 referential_action_field_label_m2o: Kod Brisanja {collection}...
 referential_action_field_label_o2m: Kod Poništenog odabira {collection}...
@@ -1052,6 +1038,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije Interfejsa
     description: Modalni prozor za odabir opcija interfejsa
+  system-display:
+    display: Prikaz
   list-m2m:
     many-to-many: Many to Many
     description: Odaberi više povezanih stavki
@@ -1077,8 +1065,6 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
-  system-folder:
-    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija
@@ -1089,6 +1075,7 @@ interfaces:
     add_label: '"Napravi Novi" Labela'
     sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
+    interface_group: Opcije Interfejsa
   slider:
     slider: Slajder
     description: Odaberi broj uz pomoć slajdera
@@ -1150,6 +1137,14 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+  input-block-editor:
+    tools: Traka sa alatkama
+    tools_options:
+      embed: Ugradi
+      code: Kod
+      image: Slika
+      table: Tabela
+      underline: Podvučeno
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.
@@ -1212,10 +1207,14 @@ displays:
     suffix: Sufiks
     color: Boja
     icon: Ikonica
+    mask: Maskirano
+    mask_label: Sakrij pravu vrijednost
     text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
+  hash:
+    hash: Hash
   icon:
     icon: Ikonica
     description: Prikaži ikonicu
@@ -1283,10 +1282,24 @@ panels:
   label:
     name: Oznaka
 operations:
+  json-web-token:
+    token: Token
+    options: Opcije
   log:
     message: Poruka
+  mail:
+    template: Šablon
   notification:
     recipient: Korisnik
     message: Poruka
+    subject: Naslov
   request:
     url: URL adresa
+standard: Uobičajeno
+compact: Kompaktno
+style: Stil
+fonts:
+  normal: Normalno
+  bold: Podebljano
+  italic: Kurziv
+  auto: Automatski

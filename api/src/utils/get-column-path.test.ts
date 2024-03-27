@@ -1,7 +1,8 @@
 import type { DeepPartial } from '@directus/types';
 import { expect, test } from 'vitest';
-import { InvalidQueryException } from '../../src/exceptions/index.js';
-import { ColPathProps, getColumnPath } from '../../src/utils/get-column-path.js';
+import { InvalidQueryError } from '@directus/errors';
+import type { ColPathProps } from './get-column-path.js';
+import { getColumnPath } from './get-column-path.js';
 
 /*
 {
@@ -40,7 +41,7 @@ test('Throws an error when the field path is not known in relations', () => {
 		relations: [],
 	};
 
-	expect(() => getColumnPath(input)).toThrowError(InvalidQueryException);
+	expect(() => getColumnPath(input)).toThrowError(InvalidQueryError);
 });
 
 test('Throws an error when an a2o is used without a collection scope', () => {
@@ -61,7 +62,7 @@ test('Throws an error when an a2o is used without a collection scope', () => {
 		],
 	} as ColPathProps;
 
-	expect(() => getColumnPath(input)).toThrowError(InvalidQueryException);
+	expect(() => getColumnPath(input)).toThrowError(InvalidQueryError);
 });
 
 test('Extracts path scope and returns correct alias for a2o', () => {

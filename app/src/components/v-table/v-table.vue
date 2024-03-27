@@ -1,3 +1,255 @@
+<script setup lang="ts">
+import { i18n } from '@/lang';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import type { ShowSelect } from '@directus/extensions';
+import { clone, forEach, pick } from 'lodash';
+import { computed, ref, useSlots } from 'vue';
+import Draggable from 'vuedraggable';
+import TableHeader from './table-header.vue';
+import TableRow from './table-row.vue';
+import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+
+const HeaderDefaults: Header = {
+	text: '',
+	value: '',
+	align: 'left',
+	sortable: true,
+	width: null,
+	description: null,
+};
+
+const props = withDefaults(
+	defineProps<{
+		headers: HeaderRaw[];
+		items: Item[];
+		itemKey?: string;
+		sort?: Sort | null;
+		mustSort?: boolean;
+		showSelect?: ShowSelect;
+		showResize?: boolean;
+		showManualSort?: boolean;
+		manualSortKey?: string;
+		allowHeaderReorder?: boolean;
+		modelValue?: any[];
+		fixedHeader?: boolean;
+		loading?: boolean;
+		loadingText?: string;
+		noItemsText?: string;
+		rowHeight?: number;
+		selectionUseKeys?: boolean;
+		inline?: boolean;
+		disabled?: boolean;
+		clickable?: boolean;
+	}>(),
+	{
+		itemKey: 'id',
+		sort: undefined,
+		mustSort: false,
+		showSelect: 'none',
+		showResize: false,
+		showManualSort: false,
+		manualSortKey: undefined,
+		allowHeaderReorder: false,
+		modelValue: () => [],
+		fixedHeader: false,
+		loading: false,
+		loadingText: i18n.global.t('loading'),
+		noItemsText: i18n.global.t('no_items'),
+		rowHeight: 48,
+		selectionUseKeys: false,
+		inline: false,
+		disabled: false,
+		clickable: true,
+	},
+);
+
+const emit = defineEmits([
+	'click:row',
+	'update:sort',
+	'update:items',
+	'item-selected',
+	'update:modelValue',
+	'manual-sort',
+	'update:headers',
+]);
+
+const slots = useSlots();
+
+const internalHeaders = computed({
+	get: () => {
+		return props.headers
+			.map((header: HeaderRaw) => ({
+				...HeaderDefaults,
+				...header,
+			}))
+			.map((header) => {
+				if (header.width && header.width < 24) {
+					header.width = 24;
+				}
+
+				return header;
+			});
+	},
+	set: (newHeaders: Header[]) => {
+		emit(
+			'update:headers',
+			// We'll return the original headers with the updated values, so we don't stage
+			// all the default values
+			newHeaders.map((header) => {
+				const keysThatAreNotAtDefaultValue: string[] = [];
+
+				forEach(header, (value, key: string) => {
+					const objKey = key as keyof Header;
+
+					if (value !== HeaderDefaults[objKey]) {
+						keysThatAreNotAtDefaultValue.push(key);
+					}
+				});
+
+				return pick(header, keysThatAreNotAtDefaultValue);
+			}),
+		);
+	},
+});
+
+// In case the sort prop isn't used, we'll use this local sort state as a fallback.
+// This allows the table to allow inline sorting on column out of the box without the need for
+const internalSort = computed<Sort>(
+	() =>
+		props.sort ?? {
+			by: null,
+			desc: false,
+		},
+);
+
+const reordering = ref<boolean>(false);
+
+const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
+const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
+const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+
+const fullColSpan = computed<string>(() => {
+	let length = internalHeaders.value.length + 1; // +1 account for spacer
+	if (props.showSelect !== 'none') length++;
+	if (props.showManualSort) length++;
+	if (hasItemAppendSlot.value) length++;
+
+	return `1 / span ${length}`;
+});
+
+const internalItems = computed({
+	get: () => {
+		return props.items;
+	},
+	set: (value: Item[]) => {
+		emit('update:items', value);
+	},
+});
+
+const allItemsSelected = computed<boolean>(() => {
+	return props.loading === false && props.items.length > 0 && props.modelValue.length === props.items.length;
+});
+
+const someItemsSelected = computed<boolean>(() => {
+	return props.modelValue.length > 0 && allItemsSelected.value === false;
+});
+
+const columnStyle = computed<{ header: string; rows: string }>(() => {
+	return {
+		header: generate('auto'),
+		rows: generate(),
+	};
+
+	function generate(useVal?: 'auto') {
+		let gridTemplateColumns = internalHeaders.value
+			.map((header) => {
+				return header.width ? useVal ?? `${header.width}px` : '160px';
+			})
+			.reduce((acc, val) => (acc += ' ' + val), '');
+
+		if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
+		if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
+
+		gridTemplateColumns = gridTemplateColumns + ' 1fr';
+
+		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
+
+		return gridTemplateColumns;
+	}
+});
+
+function onItemSelected(event: ItemSelectEvent) {
+	if (props.disabled) return;
+
+	emit('item-selected', event);
+
+	let selection = clone(props.modelValue) as any[];
+
+	if (event.value === true) {
+		if (props.selectionUseKeys) {
+			selection.push(event.item[props.itemKey]);
+		} else {
+			selection.push(event.item);
+		}
+	} else {
+		selection = selection.filter((item) => {
+			if (props.selectionUseKeys) {
+				return item !== event.item[props.itemKey];
+			}
+
+			return item[props.itemKey] !== event.item[props.itemKey];
+		});
+	}
+
+	if (props.showSelect === 'one') {
+		selection = selection.slice(-1);
+	}
+
+	emit('update:modelValue', selection);
+}
+
+function getSelectedState(item: Item) {
+	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
+
+	return selectedKeys.includes(item[props.itemKey]);
+}
+
+function onToggleSelectAll(value: boolean) {
+	if (props.disabled) return;
+
+	if (value === true) {
+		if (props.selectionUseKeys) {
+			emit(
+				'update:modelValue',
+				clone(props.items).map((item) => item[props.itemKey]),
+			);
+		} else {
+			emit('update:modelValue', clone(props.items));
+		}
+	} else {
+		emit('update:modelValue', []);
+	}
+}
+
+interface EndEvent extends CustomEvent {
+	oldIndex: number;
+	newIndex: number;
+}
+
+function onSortChange(event: EndEvent) {
+	if (props.disabled) return;
+
+	const item = internalItems.value[event.oldIndex][props.itemKey];
+	const to = internalItems.value[event.newIndex][props.itemKey];
+
+	emit('manual-sort', { item, to });
+}
+
+function updateSort(newSort: Sort) {
+	emit('update:sort', newSort?.by ? newSort : null);
+}
+</script>
+
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
@@ -48,26 +300,26 @@
 			<draggable
 				v-else
 				v-model="internalItems"
-				:force-fallback="true"
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				v-bind="{ 'force-fallback': true }"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
 					<table-row
 						:headers="internalHeaders"
 						:item="element"
-						:show-select="!disabled && showSelect"
+						:show-select="disabled ? 'none' : showSelect"
 						:show-manual-sort="!disabled && showManualSort"
 						:is-selected="getSelectedState(element)"
 						:subdued="loading || reordering"
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
-						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
+						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({
 								item: element,
@@ -90,263 +342,20 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/types';
-import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
-import TableHeader from './table-header.vue';
-import TableRow from './table-row.vue';
-import { clone, forEach, pick } from 'lodash';
-import { i18n } from '@/lang/';
-import Draggable from 'vuedraggable';
-import { hideDragImage } from '@/utils/hide-drag-image';
-
-const HeaderDefaults: Header = {
-	text: '',
-	value: '',
-	align: 'left',
-	sortable: true,
-	width: null,
-};
-
-interface Props {
-	headers: HeaderRaw[];
-	items: Item[];
-	itemKey?: string;
-	sort?: Sort | null;
-	mustSort?: boolean;
-	showSelect?: ShowSelect;
-	showResize?: boolean;
-	showManualSort?: boolean;
-	manualSortKey?: string;
-	allowHeaderReorder?: boolean;
-	modelValue?: any[];
-	fixedHeader?: boolean;
-	loading?: boolean;
-	loadingText?: string;
-	noItemsText?: string;
-	rowHeight?: number;
-	selectionUseKeys?: boolean;
-	inline?: boolean;
-	disabled?: boolean;
-	clickable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemKey: 'id',
-	sort: undefined,
-	mustSort: false,
-	showSelect: 'none',
-	showResize: false,
-	showManualSort: false,
-	manualSortKey: undefined,
-	allowHeaderReorder: false,
-	modelValue: () => [],
-	fixedHeader: false,
-	loading: false,
-	loadingText: i18n.global.t('loading'),
-	noItemsText: i18n.global.t('no_items'),
-	rowHeight: 48,
-	selectionUseKeys: false,
-	inline: false,
-	disabled: false,
-	clickable: true,
-});
-
-const emit = defineEmits([
-	'click:row',
-	'update:sort',
-	'update:items',
-	'item-selected',
-	'update:modelValue',
-	'manual-sort',
-	'update:headers',
-]);
-
-const slots = useSlots();
-
-const internalHeaders = computed({
-	get: () => {
-		return props.headers
-			.map((header: HeaderRaw) => ({
-				...HeaderDefaults,
-				...header,
-			}))
-			.map((header) => {
-				if (header.width && header.width < 24) {
-					header.width = 24;
-				}
-
-				return header;
-			});
-	},
-	set: (newHeaders: Header[]) => {
-		emit(
-			'update:headers',
-			// We'll return the original headers with the updated values, so we don't stage
-			// all the default values
-			newHeaders.map((header) => {
-				const keysThatAreNotAtDefaultValue: string[] = [];
-
-				forEach(header, (value, key: string) => {
-					const objKey = key as keyof Header;
-
-					if (value !== HeaderDefaults[objKey]) {
-						keysThatAreNotAtDefaultValue.push(key);
-					}
-				});
-
-				return pick(header, keysThatAreNotAtDefaultValue);
-			})
-		);
-	},
-});
-
-// In case the sort prop isn't used, we'll use this local sort state as a fallback.
-// This allows the table to allow inline sorting on column ootb without the need for
-const internalSort = computed<Sort>(
-	() =>
-		props.sort ?? {
-			by: null,
-			desc: false,
-		}
-);
-
-const reordering = ref<boolean>(false);
-
-const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
-const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
-const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
-
-const fullColSpan = computed<string>(() => {
-	let length = internalHeaders.value.length + 1; // +1 account for spacer
-	if (props.showSelect !== 'none') length++;
-	if (props.showManualSort) length++;
-	if (hasItemAppendSlot.value) length++;
-
-	return `1 / span ${length}`;
-});
-
-const internalItems = computed({
-	get: () => {
-		return props.items;
-	},
-	set: (value: Item[]) => {
-		emit('update:items', value);
-	},
-});
-
-const allItemsSelected = computed<boolean>(() => {
-	return props.loading === false && props.items.length > 0 && props.modelValue.length === props.items.length;
-});
-
-const someItemsSelected = computed<boolean>(() => {
-	return props.modelValue.length > 0 && allItemsSelected.value === false;
-});
-
-const columnStyle = computed<string>(() => {
-	return {
-		header: generate('auto'),
-		rows: generate(),
-	};
-
-	function generate(useVal?: 'auto') {
-		let gridTemplateColumns = internalHeaders.value
-			.map((header) => {
-				return header.width ? useVal ?? `${header.width}px` : '160px';
-			})
-			.reduce((acc, val) => (acc += ' ' + val), '');
-
-		if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
-		if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
-
-		gridTemplateColumns = gridTemplateColumns + ' 1fr';
-
-		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
-
-		return gridTemplateColumns;
-	}
-});
-
-function onItemSelected(event: ItemSelectEvent) {
-	if (props.disabled) return;
-
-	emit('item-selected', event);
-
-	let selection = clone(props.modelValue) as any[];
-
-	if (event.value === true) {
-		if (props.selectionUseKeys) {
-			selection.push(event.item[props.itemKey]);
-		} else {
-			selection.push(event.item);
-		}
-	} else {
-		selection = selection.filter((item) => {
-			if (props.selectionUseKeys) {
-				return item !== event.item[props.itemKey];
-			}
-
-			return item[props.itemKey] !== event.item[props.itemKey];
-		});
-	}
-
-	emit('update:modelValue', selection);
-}
-
-function getSelectedState(item: Item) {
-	const selectedKeys = props.selectionUseKeys
-		? props.modelValue
-		: props.modelValue.map((item: any) => item[props.itemKey]);
-	return selectedKeys.includes(item[props.itemKey]);
-}
-
-function onToggleSelectAll(value: boolean) {
-	if (props.disabled) return;
-
-	if (value === true) {
-		if (props.selectionUseKeys) {
-			emit(
-				'update:modelValue',
-				clone(props.items).map((item) => item[props.itemKey])
-			);
-		} else {
-			emit('update:modelValue', clone(props.items));
-		}
-	} else {
-		emit('update:modelValue', []);
-	}
-}
-
-interface EndEvent extends CustomEvent {
-	oldIndex: number;
-	newIndex: number;
-}
-
-function onSortChange(event: EndEvent) {
-	if (props.disabled) return;
-
-	const item = internalItems.value[event.oldIndex][props.itemKey];
-	const to = internalItems.value[event.newIndex][props.itemKey];
-
-	emit('manual-sort', { item, to });
-}
-function updateSort(newSort: Sort) {
-	emit('update:sort', newSort?.by ? newSort : null);
-}
-</script>
-
 <style scoped>
-:global(body) {
-	--v-table-height: auto;
-	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-input);
-}
+/*
+
+	Available Variables:
+
+		--v-table-sticky-offset-top  [0]
+		--v-table-color              [var(--theme--foreground)]
+		--v-table-background-color   [transparent]
+
+*/
 
 .v-table {
 	position: relative;
-	height: var(--v-table-height);
+	height: auto;
 	overflow-y: auto;
 }
 
@@ -370,7 +379,7 @@ table :deep(thead) {
 
 table :deep(td),
 table :deep(th) {
-	color: var(--v-table-color);
+	color: var(--v-table-color, var(--theme--foreground));
 }
 
 table :deep(tr),
@@ -407,7 +416,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .loading table {
@@ -422,7 +431,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator .v-progress-linear {
 	--v-progress-linear-height: 2px;
-	--v-progress-linear-color: var(--border-normal-alt);
+	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
 	top: -2px;
@@ -443,18 +452,18 @@ table :deep(.sortable-ghost .cell) {
 .loading-text,
 .no-items-text {
 	text-align: center;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 }
 
 .loading-text td,
 .no-items-text td {
 	padding: 16px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .inline {
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {
@@ -462,7 +471,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .disabled {
-	--v-table-color: var(--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-color: var(--theme--foreground-subdued);
+	--v-table-background-color: var(--theme--background-subdued);
 }
 </style>

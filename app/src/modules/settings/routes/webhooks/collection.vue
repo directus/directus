@@ -1,3 +1,77 @@
+<script setup lang="ts">
+import api from '@/api';
+import { useExtension } from '@/composables/use-extension';
+import { usePreset } from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+
+type Item = {
+	[field: string]: any;
+};
+
+const { t } = useI18n();
+
+const layoutRef = ref();
+const selection = ref<Item[]>([]);
+
+const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
+const { addNewLink, batchLink } = useLinks();
+const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+
+const { layoutWrapper } = useLayout(layout);
+
+const currentLayout = useExtension('layout', layout);
+
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
+
+function useBatchDelete() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	return { confirmDelete, deleting, batchDelete };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		confirmDelete.value = false;
+
+		const batchPrimaryKeys = selection.value;
+
+		await api.delete(`/webhooks/${batchPrimaryKeys}`);
+
+		await refresh();
+
+		selection.value = [];
+		deleting.value = false;
+		confirmDelete.value = false;
+	}
+}
+
+function useLinks() {
+	const addNewLink = computed<string>(() => {
+		return `/settings/webhooks/+`;
+	});
+
+	const batchLink = computed<string>(() => {
+		const batchPrimaryKeys = selection.value;
+		return `/settings/webhooks/${batchPrimaryKeys}`;
+	});
+
+	return { addNewLink, batchLink };
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
+</script>
+
 <template>
 	<component
 		:is="layoutWrapper"
@@ -72,7 +146,7 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('webhooks_count', 0)" icon="anchor" center type="info">
+					<v-info :title="t('webhooks_count', 0)" icon="anchor" center>
 						{{ t('no_webhooks_copy') }}
 
 						<template #append>
@@ -83,7 +157,7 @@
 			</component>
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
@@ -95,115 +169,16 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import SettingsNavigation from '../../components/navigation.vue';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@directus/composables';
-import api from '@/api';
-import SearchInput from '@/views/private/components/search-input.vue';
-import { useExtension } from '@/composables/use-extension';
-
-type Item = {
-	[field: string]: any;
-};
-
-export default defineComponent({
-	name: 'WebhooksCollection',
-	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
-	setup() {
-		const { t } = useI18n();
-
-		const layoutRef = ref();
-		const selection = ref<Item[]>([]);
-
-		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
-		const { addNewLink, batchLink } = useLinks();
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
-
-		const { layoutWrapper } = useLayout(layout);
-
-		const currentLayout = useExtension('layout', layout);
-
-		return {
-			t,
-			addNewLink,
-			batchDelete,
-			batchLink,
-			confirmDelete,
-			deleting,
-			layoutRef,
-			layoutWrapper,
-			filter,
-			selection,
-			layoutOptions,
-			layoutQuery,
-			layout,
-			search,
-			clearFilters,
-			currentLayout,
-		};
-
-		async function refresh() {
-			await layoutRef.value?.state?.refresh?.();
-		}
-
-		function useBatchDelete() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
-
-			return { confirmDelete, deleting, batchDelete };
-
-			async function batchDelete() {
-				deleting.value = true;
-
-				confirmDelete.value = false;
-
-				const batchPrimaryKeys = selection.value;
-
-				await api.delete(`/webhooks/${batchPrimaryKeys}`);
-
-				await refresh();
-
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
-			}
-		}
-
-		function useLinks() {
-			const addNewLink = computed<string>(() => {
-				return `/settings/webhooks/+`;
-			});
-
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value;
-				return `/settings/webhooks/${batchPrimaryKeys}`;
-			});
-
-			return { addNewLink, batchLink };
-		}
-
-		function clearFilters() {
-			filter.value = null;
-			search.value = null;
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 

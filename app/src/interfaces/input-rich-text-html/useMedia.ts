@@ -1,4 +1,3 @@
-import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { computed, Ref, ref, watch } from 'vue';
@@ -59,7 +58,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		onSetup: (buttonApi: any) => {
 			const onVideoNodeSelect = (eventApi: any) => {
 				buttonApi.setActive(
-					eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object')
+					eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object'),
 				);
 			};
 
@@ -80,7 +79,8 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 				...mediaSelection.value,
 				sourceUrl: newSource,
 			};
-			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
+
+			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value);
 		},
 	});
 
@@ -123,7 +123,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		if (newEmbed === '') {
 			mediaSelection.value = null;
 		} else {
-			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1];
+			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1] as 'video' | 'audio' | 'iframe' | undefined;
 			const sourceUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
@@ -132,10 +132,10 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 			if (sourceUrl === undefined) return;
 
 			// Add temporarily access token for preview
-			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value || getToken());
+			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value);
 
 			mediaSelection.value = {
-				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
+				tag,
 				sourceUrl,
 				width,
 				height,
@@ -178,7 +178,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 			height: media.height || 150,
 			tag,
 			type: media.type,
-			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value || getToken()),
+			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
 		};
 	}
 
@@ -193,6 +193,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		} else {
 			editor.value.selection.setContent(embed.value);
 		}
+
 		editor.value.undoManager.add();
 		closeMediaDrawer();
 	}
@@ -202,6 +203,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		if (!url.includes(getPublicURL() + 'assets/')) {
 			return url;
 		}
+
 		try {
 			const parsedUrl = new URL(url);
 			const params = new URLSearchParams(parsedUrl.search);

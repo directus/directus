@@ -1,23 +1,27 @@
 import { LocaleInput } from '@fullcalendar/core';
 
-export async function getFullcalendarLocale(lang: string): Promise<LocaleInput> {
-	const localesToTry = [lang, lang.split('-')[0], 'en-US'];
+export async function getFullcalendarLocale(lang: string): Promise<LocaleInput | undefined> {
+	lang = lang.toLowerCase();
 
-	let locale;
+	const localesToTry = [lang, lang.split('-')[0]];
 
-	for (const l of localesToTry) {
+	let localeMod;
+
+	for (const locale of localesToTry) {
+		if (!locale) continue;
+
 		try {
-			const mod = await importCalendarLocale(l);
+			const mod = await importCalendarLocale(locale);
 
 			// There's a problem in how @fullcalendar/core exports the language to "fake" ESM
-			locale = mod.default.default || mod.default;
+			localeMod = mod.default.default || mod.default;
 			break;
 		} catch {
 			continue;
 		}
 	}
 
-	return locale;
+	return localeMod;
 }
 
 export function importCalendarLocale(locale: string): Promise<any> {

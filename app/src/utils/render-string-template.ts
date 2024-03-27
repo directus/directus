@@ -1,11 +1,10 @@
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/utils';
-import { render, renderFn } from 'micromustache';
-import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { set } from 'lodash';
-import { useExtension } from '@/composables/use-extension';
+import { render, renderFn } from 'micromustache';
+import { ComputedRef, Ref, computed, unref } from 'vue';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -19,7 +18,7 @@ function resolve(path: string, scope: any) {
 
 export function renderStringTemplate(
 	template: Ref<string | null> | string,
-	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>
+	item: Record<string, any> | undefined | null | Ref<Record<string, any> | undefined | null>,
 ): StringTemplate {
 	const values = unref(item);
 
@@ -55,7 +54,7 @@ export function renderPlainStringTemplate(template: string, item?: Record<string
 export function renderDisplayStringTemplate(
 	collection: string,
 	template: string,
-	item: Record<string, any>
+	item: Record<string, any>,
 ): string | null {
 	const fieldsStore = useFieldsStore();
 
@@ -67,19 +66,14 @@ export function renderDisplayStringTemplate(
 		set(fieldsUsed, key, fieldsStore.getField(collection, key));
 	}
 
-	const { aliasFields } = useAliasFields(ref(fields));
-
 	const parsedItem: Record<string, any> = {};
 
 	for (const key of fields) {
-		const value =
-			!aliasFields.value?.[key] || get(item, key) !== undefined
-				? get(item, key)
-				: get(item, aliasFields.value[key].fullAlias);
+		const value = get(item, key);
 
 		const display = useExtension(
 			'display',
-			computed(() => fieldsUsed[key]?.meta?.display ?? null)
+			computed(() => fieldsUsed[key]?.meta?.display ?? null),
 		);
 
 		if (value !== undefined && value !== null) {
@@ -92,7 +86,7 @@ export function renderDisplayStringTemplate(
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
 					  })
-					: value
+					: value,
 			);
 		} else {
 			set(parsedItem, key, value);

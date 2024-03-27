@@ -26,8 +26,8 @@ export type FieldTreeContext = {
 
 export function useFieldTree(
 	collection: Ref<string | null>,
-	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
-	filter: (field: Field, parent?: FieldNode) => boolean = () => true
+	inject?: Ref<{ fields: Field[]; relations?: Relation[] } | null>,
+	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
@@ -59,7 +59,7 @@ export function useFieldTree(
 			.filter(
 				(field) =>
 					field.meta?.special?.includes('group') ||
-					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data')),
 			)
 			.filter((field) => filter(field, parent));
 
@@ -162,7 +162,7 @@ export function useFieldTree(
 		return relations.find(
 			(relation: Relation) =>
 				(relation.collection === field.collection && relation.field === field.field) ||
-				(relation.related_collection === field.collection && relation.meta?.one_field === field.field)
+				(relation.related_collection === field.collection && relation.meta?.one_field === field.field),
 		);
 	}
 
@@ -175,6 +175,7 @@ export function useFieldTree(
 					if (node.group === true && node.children && node.children.length > 0) {
 						acc.push(...node.children);
 					}
+
 					return acc;
 				}, [])
 				.find((node) => node.field === field);
@@ -195,7 +196,7 @@ export function useFieldTree(
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
 
-			if (node && node.children?.length === 1 && node.children[0]._loading) {
+			if (node && node.children?.length === 1 && (node.children as [FieldNode])[0]._loading) {
 				node.children = getTree(node.relatedCollection, node);
 			}
 

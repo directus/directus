@@ -1,26 +1,3 @@
-<template>
-	<div v-tooltip="panel.key" class="name">
-		{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
-	</div>
-	<dl class="options-overview selectable">
-		<div
-			v-for="{ label, text, copyable } of translate(currentOperation?.overview(panel.options ?? {}, { flow }))"
-			:key="label"
-		>
-			<dt>{{ label }}</dt>
-			<dd>{{ text }}</dd>
-			<v-icon
-				v-if="isCopySupported && copyable"
-				name="copy"
-				small
-				clickable
-				class="clipboard-icon"
-				@click="copyToClipboard(text)"
-			/>
-		</div>
-	</dl>
-</template>
-
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { translate } from '@/utils/translate-object-values';
@@ -38,6 +15,29 @@ const { t } = useI18n();
 const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
+<template>
+	<div v-tooltip="panel.key" class="name">
+		{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
+	</div>
+	<dl class="options-overview selectable">
+		<div
+			v-for="{ label, text, copyable } of translate(currentOperation?.overview(panel.options ?? {}, { flow }))"
+			:key="label"
+		>
+			<dt>{{ label }}</dt>
+			<dd>{{ text }}</dd>
+			<v-icon
+				v-if="isCopySupported && copyable"
+				name="content_copy"
+				small
+				clickable
+				class="clipboard-icon"
+				@click="copyToClipboard(text)"
+			/>
+		</div>
+	</dl>
+</template>
+
 <style lang="scss" scoped>
 .options-overview {
 	> div {
@@ -52,13 +52,13 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	}
 
 	dd {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 		flex-basis: 0;
 	}
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground);
 		margin-left: 4px;
 	}
 }

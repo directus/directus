@@ -1,38 +1,39 @@
+<script setup lang="ts">
+import { useNotificationsStore } from '@/stores/notifications';
+import { toRefs } from 'vue';
+import NotificationItem from './notification-item.vue';
+
+defineProps<{
+	sidebarOpen?: boolean;
+}>();
+
+const notificationsStore = useNotificationsStore();
+const queue = toRefs(notificationsStore).queue;
+</script>
+
 <template>
 	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
+			:id="notification.id"
 			:key="notification.id"
-			v-bind="notification"
+			:title="notification.title"
+			:text="notification.text"
+			:icon="notification.icon"
+			:type="notification.type"
+			:loading="notification.loading"
+			:progress="notification.progress"
 			:tail="index === queue.length - 1"
 			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
+			:always-show-text="notification.alwaysShowText"
+			:dismiss-icon="notification.dismissIcon"
+			:dismiss-text="notification.dismissText"
+			:dismiss-action="notification.dismissAction"
 		/>
 	</transition-group>
 </template>
-
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
-import { useNotificationsStore } from '@/stores/notifications';
-import NotificationItem from './notification-item.vue';
-
-export default defineComponent({
-	components: { NotificationItem },
-	props: {
-		sidebarOpen: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		const notificationsStore = useNotificationsStore();
-		const queue = toRefs(notificationsStore).queue;
-
-		return { queue };
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .notifications-group {

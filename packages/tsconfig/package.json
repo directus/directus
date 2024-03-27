@@ -1,0 +1,20 @@
+{
+	"name": "@directus/tsconfig",
+	"version": "1.0.1",
+	"description": "TSConfig files used in Directus projects",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/tsconfig"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		"./base": "./base/tsconfig.json",
+		"./node18-cjs": "./node18-cjs/tsconfig.json",
+		"./node18-esm": "./node18-esm/tsconfig.json",
+		"./vue3": "./vue3/tsconfig.json"
+	}
+}

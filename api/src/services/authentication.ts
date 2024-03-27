@@ -1,5 +1,13 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
 import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import {
+	InvalidCredentialsError,
+	InvalidOtpError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UserSuspendedError,
+} from '@directus/errors';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
@@ -8,20 +16,15 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import {
-	InvalidCredentialsException,
-	InvalidOTPException,
-	InvalidProviderException,
-	UserSuspendedException,
-} from '../exceptions/index.js';
-import { createRateLimiter } from '../rate-limiter.js';
+import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
 import { SettingsService } from './settings.js';
 import { TFAService } from './tfa.js';
+
+const env = useEnv();
 
 const loginAttemptsLimiter = createRateLimiter('RATE_LIMITER', { duration: 0 });
 
@@ -47,11 +50,14 @@ export class AuthenticationService {
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
-		otp?: string
+		options?: Partial<{
+			otp: string;
+			session: boolean;
+		}>,
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -79,7 +85,7 @@ export class AuthenticationService {
 				'u.tfa_secret',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				'u.auth_data',
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
@@ -98,7 +104,7 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -114,7 +120,7 @@ export class AuthenticationService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		};
 
@@ -123,14 +129,14 @@ export class AuthenticationService {
 
 			if (user?.status === 'suspended') {
 				await stall(STALL_TIME, timeStart);
-				throw new UserSuspendedException();
+				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 		} else if (user.provider !== providerName) {
 			await stall(STALL_TIME, timeStart);
-			throw new InvalidProviderException();
+			throw new InvalidProviderError();
 		}
 
 		const settingsService = new SettingsService({
@@ -147,12 +153,19 @@ export class AuthenticationService {
 
 			try {
 				await loginAttemptsLimiter.consume(user.id);
-			} catch {
-				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-				user.status = 'suspended';
+			} catch (error) {
+				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
+					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					user.status = 'suspended';
 
-				// This means that new attempts after the user has been re-activated will be accepted
-				await loginAttemptsLimiter.set(user.id, 0, 0);
+					// This means that new attempts after the user has been re-activated will be accepted
+					await loginAttemptsLimiter.set(user.id, 0, 0);
+				} else {
+					throw new ServiceUnavailableError({
+						service: 'authentication',
+						reason: 'Rate limiter unreachable',
+					});
+				}
 			}
 		}
 
@@ -164,29 +177,36 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		if (user.tfa_secret && !otp) {
+		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw new InvalidOTPException(`"otp" is required`);
+			throw new InvalidOtpError();
 		}
 
-		if (user.tfa_secret && otp) {
+		if (user.tfa_secret && options?.otp) {
 			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
-			const otpValid = await tfaService.verifyOTP(user.id, otp);
+			const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
 
 			if (otpValid === false) {
 				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidOTPException(`"otp" is invalid`);
+				throw new InvalidOtpError();
 			}
 		}
 
-		const tokenPayload = {
+		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
 			role: user.role,
 			app_access: user.app_access,
 			admin_access: user.admin_access,
 		};
+
+		const refreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
+		if (options?.session) {
+			tokenPayload.session = refreshToken;
+		}
 
 		const customClaims = await emitter.emitFilter(
 			'auth.jwt',
@@ -201,16 +221,15 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: TTL,
 			issuer: 'directus',
 		});
-
-		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -248,18 +267,18 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 			id: user.id,
 		};
 	}
 
-	async refresh(refreshToken: string): Promise<Record<string, any>> {
+	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
-		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const record = await this.knex
@@ -303,7 +322,7 @@ export class AuthenticationService {
 			.first();
 
 		if (!record || (!record.share_id && !record.user_id)) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (record.user_id && record.user_status !== 'active') {
@@ -311,10 +330,10 @@ export class AuthenticationService {
 
 			if (record.user_status === 'suspended') {
 				await stall(STALL_TIME, timeStart);
-				throw new UserSuspendedException();
+				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 		}
 
@@ -337,6 +356,9 @@ export class AuthenticationService {
 			});
 		}
 
+		const newRefreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
 			role: record.role_id,
@@ -344,13 +366,19 @@ export class AuthenticationService {
 			admin_access: record.role_admin_access,
 		};
 
+		if (options?.session) {
+			tokenPayload.session = newRefreshToken;
+		}
+
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
 			tokenPayload.role = record.share_role;
+
 			tokenPayload.share_scope = {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+
 			tokenPayload.app_access = false;
 			tokenPayload.admin_access = false;
 
@@ -370,16 +398,15 @@ export class AuthenticationService {
 				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
 		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
+			expiresIn: TTL,
 			issuer: 'directus',
 		});
-
-		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -395,7 +422,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 			id: record.user_id,
 		};
 	}
@@ -412,7 +439,7 @@ export class AuthenticationService {
 				'u.role',
 				'u.provider',
 				'u.external_identifier',
-				'u.auth_data'
+				'u.auth_data',
 			)
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
@@ -441,14 +468,14 @@ export class AuthenticationService {
 				'role',
 				'provider',
 				'external_identifier',
-				'auth_data'
+				'auth_data',
 			)
 			.from('directus_users')
 			.where('id', userID)
 			.first();
 
 		if (!user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const provider = getAuthProvider(user.provider);

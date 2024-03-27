@@ -10,7 +10,6 @@ test('Registers the event listener on mount, unregisters on unmount', () => {
 		removeEventListener: vi.fn(),
 	} as any;
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const testHandler = () => {};
 
 	const TestComponent = defineComponent({

@@ -1,5 +1,43 @@
+<script setup lang="ts">
+import { useNotificationsStore } from '@/stores/notifications';
+
+const props = withDefaults(
+	defineProps<{
+		id: string;
+		title: string;
+		text?: string;
+		icon?: string | null;
+		type?: 'info' | 'success' | 'warning' | 'error';
+		tail?: boolean;
+		dense?: boolean;
+		showClose?: boolean;
+		loading?: boolean;
+		progress?: number;
+		alwaysShowText?: boolean;
+		dismissText?: string;
+		dismissIcon?: string;
+		dismissAction?: () => void | Promise<void>;
+	}>(),
+	{
+		type: 'info',
+	},
+);
+
+const notificationsStore = useNotificationsStore();
+
+const done = async () => {
+	if (props.showClose === true) {
+		if (props.dismissAction) {
+			await props.dismissAction();
+		}
+
+		notificationsStore.remove(props.id);
+	}
+};
+</script>
+
 <template>
-	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
+	<div class="notification-item" :class="[type, { tail, dense, 'show-text': alwaysShowText }]" @click="done">
 		<div v-if="loading || progress || icon" class="icon">
 			<v-progress-circular v-if="loading" indeterminate small />
 			<v-progress-circular v-else-if="progress" small :value="progress" />
@@ -11,71 +49,16 @@
 			<p v-if="text" class="text selectable">{{ text }}</p>
 		</div>
 
-		<v-icon v-if="showClose" name="close" clickable class="close" @click="close" />
+		<v-icon
+			v-if="showClose"
+			v-tooltip="dismissText"
+			:name="dismissIcon ?? 'close'"
+			clickable
+			class="close"
+			@click="done"
+		/>
 	</div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useNotificationsStore } from '@/stores/notifications';
-
-export default defineComponent({
-	props: {
-		id: {
-			type: String,
-			required: true,
-		},
-		title: {
-			type: String,
-			required: true,
-		},
-		text: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		type: {
-			type: String,
-			default: 'info',
-			validator: (val: string) => ['info', 'success', 'warning', 'error'].includes(val),
-		},
-		tail: {
-			type: Boolean,
-			default: false,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		showClose: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		progress: {
-			type: Number,
-			default: undefined,
-		},
-	},
-	setup(props) {
-		const notificationsStore = useNotificationsStore();
-
-		return { close };
-
-		function close() {
-			if (props.showClose === true) {
-				notificationsStore.remove(props.id);
-			}
-		}
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .notification-item {
@@ -88,7 +71,7 @@ export default defineComponent({
 	margin-top: 4px;
 	padding: 12px;
 	color: var(--white);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.icon {
 		display: block;
@@ -101,6 +84,10 @@ export default defineComponent({
 		margin-right: 12px;
 		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
+	}
+
+	.text {
+		hyphens: auto;
 	}
 
 	.content {
@@ -142,28 +129,28 @@ export default defineComponent({
 			background-color: transparent;
 		}
 
-		.text {
+		&:not(.show-text) .text {
 			display: none;
 		}
 	}
 
 	&.info {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 
 		&.tail::after {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 
 		.text {
-			color: var(--primary-alt);
+			color: var(--theme--primary-background);
 		}
 	}
 
 	&.success {
-		background-color: var(--success);
+		background-color: var(--theme--success);
 
 		&.tail::after {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 
 		.text {
@@ -172,10 +159,10 @@ export default defineComponent({
 	}
 
 	&.warning {
-		background-color: var(--warning);
+		background-color: var(--theme--warning);
 
 		&.tail::after {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		.text {
@@ -184,16 +171,20 @@ export default defineComponent({
 	}
 
 	&.error {
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 
 		&.tail::after {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		.text {
 			color: var(--danger-alt);
 		}
 	}
+}
+
+.close {
+	margin-left: 12px;
 }
 
 .v-progress-circular {

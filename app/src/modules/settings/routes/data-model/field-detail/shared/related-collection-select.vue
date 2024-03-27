@@ -1,3 +1,33 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	modelValue?: string;
+	disabled?: boolean;
+}>();
+
+defineEmits(['update:modelValue']);
+
+const { t } = useI18n();
+const collectionsStore = useCollectionsStore();
+
+const collectionExists = computed(() => {
+	return !!collectionsStore.getCollection(props.modelValue);
+});
+
+const availableCollections = computed(() => {
+	return orderBy(
+		collectionsStore.databaseCollections.filter((collection) => collection.meta),
+		['meta.sort', 'collection'],
+	);
+});
+
+const systemCollections = collectionsStore.crudSafeSystemCollections;
+</script>
+
 <template>
 	<v-input
 		key="related-collection-select"
@@ -54,40 +84,3 @@
 		</template>
 	</v-input>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useCollectionsStore } from '@/stores/collections';
-import { orderBy } from 'lodash';
-
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const { t } = useI18n();
-		const collectionsStore = useCollectionsStore();
-
-		const collectionExists = computed(() => {
-			return !!collectionsStore.getCollection(props.modelValue);
-		});
-
-		const availableCollections = computed(() => {
-			return orderBy(collectionsStore.databaseCollections, ['sort', 'collection'], ['asc']);
-		});
-
-		const systemCollections = collectionsStore.crudSafeSystemCollections;
-
-		return { t, collectionExists, availableCollections, systemCollections };
-	},
-});
-</script>

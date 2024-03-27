@@ -1,11 +1,11 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="35" width="120" height="26" rx="6" fill="var(--background-page)"/>
-	<rect x="19" y="36" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="28" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="38" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="48" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="58" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="68" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="78" y="45" width="6" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<path d="M125.5 45.676h-.574V44.5A2.93 2.93 0 0 0 122 41.574a2.93 2.93 0 0 0-2.926 2.926v1.176h-.574c-.629 0-1.176.52-1.176 1.148v5.852c0 .629.547 1.148 1.176 1.148h7c.629 0 1.176-.52 1.176-1.148v-5.852c0-.629-.547-1.148-1.176-1.148Zm-5.25-1.176c0-.957.793-1.75 1.75-1.75s1.75.793 1.75 1.75v1.176h-3.5V44.5Zm5.25 8.176h-7v-5.852h7v5.852Zm-3.5-1.75c.629 0 1.176-.547 1.176-1.176 0-.629-.547-1.176-1.176-1.176-.629 0-1.176.547-1.176 1.176 0 .629.547 1.176 1.176 1.176Z" fill="var(--primary)"/>
+	<rect x="18" y="35" width="120" height="26" rx="6" fill="var(--theme--background)"/>
+	<rect x="19" y="36" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="28" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="38" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="48" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="58" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="68" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="78" y="45" width="6" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<path d="M125.5 45.676h-.574V44.5A2.93 2.93 0 0 0 122 41.574a2.93 2.93 0 0 0-2.926 2.926v1.176h-.574c-.629 0-1.176.52-1.176 1.148v5.852c0 .629.547 1.148 1.176 1.148h7c.629 0 1.176-.52 1.176-1.148v-5.852c0-.629-.547-1.148-1.176-1.148Zm-5.25-1.176c0-.957.793-1.75 1.75-1.75s1.75.793 1.75 1.75v1.176h-3.5V44.5Zm5.25 8.176h-7v-5.852h7v5.852Zm-3.5-1.75c.629 0 1.176-.547 1.176-1.176 0-.629-.547-1.176-1.176-1.176-.629 0-1.176.547-1.176 1.176 0 .629.547 1.176 1.176 1.176Z" fill="var(--theme--primary)"/>
 </svg>

@@ -10,7 +10,7 @@ const renderer = new marked.Renderer();
 /**
  * Render and sanitize a markdown string
  */
-export function md(str: string, options: Options = { target: '_self' }): string {
+export function md(value: string, options: Options = { target: '_self' }): string {
 	dompurify.addHook('afterSanitizeAttributes', (node) => {
 		if (node.tagName === 'A' && node.getAttribute('target') === '_blank') {
 			node.setAttribute('rel', 'noopener noreferrer');
@@ -22,10 +22,9 @@ export function md(str: string, options: Options = { target: '_self' }): string 
 		return link.replace('<a', `<a target="${options.target}"`);
 	};
 
-	return dompurify.sanitize(
-		marked(str, {
-			renderer,
-		}),
-		{ ADD_ATTR: ['target'] }
-	);
+	const markdown = marked.parse(value, {
+		renderer,
+	}) as string; /* Would only be a promise if used with async extensions */
+
+	return dompurify.sanitize(markdown, { ADD_ATTR: ['target'] });
 }

@@ -109,7 +109,7 @@ export default function getLocalType(
 		numeric_scale?: null | number;
 		max_length?: null | number;
 	},
-	field?: { special?: FieldMeta['special'] }
+	field?: { special?: FieldMeta['special'] },
 ): Type | 'unknown' {
 	if (!column) return 'alias';
 
@@ -125,6 +125,7 @@ export default function getLocalType(
 		if (special.includes('uuid') || special.includes('file')) return 'uuid';
 		if (special.includes('cast-timestamp')) return 'timestamp';
 		if (special.includes('cast-datetime')) return 'dateTime';
+
 		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}

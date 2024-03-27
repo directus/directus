@@ -1,18 +1,8 @@
-import { describe, expect, vi, test } from 'vitest';
-import { getAuthProviders } from '../../src/utils/get-auth-providers.js';
+import { useEnv } from '@directus/env';
+import { describe, expect, test, vi } from 'vitest';
+import { getAuthProviders } from './get-auth-providers.js';
 
-let factoryEnv: { [k: string]: any } = {};
-
-vi.mock('../../src/env', () => ({
-	default: new Proxy(
-		{},
-		{
-			get(_target, prop) {
-				return factoryEnv[prop as string];
-			},
-		}
-	),
-}));
+vi.mock('@directus/env');
 
 const scenarios = [
 	{
@@ -75,7 +65,8 @@ const scenarios = [
 describe('get auth providers', () => {
 	for (const scenario of scenarios) {
 		test(scenario.name, () => {
-			factoryEnv = scenario.input;
+			vi.mocked(useEnv).mockReturnValue(scenario.input);
+
 			expect(getAuthProviders()).toEqual(scenario.output);
 		});
 	}

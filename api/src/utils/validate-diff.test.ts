@@ -22,10 +22,11 @@ test('should fail on invalid hash', () => {
 		hash: 'abc',
 		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
 	} as SnapshotDiffWithHash;
+
 	const snapshot = { hash: 'xyz' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-		"Provided hash does not match the current instance's schema hash"
+		"Provided hash does not match the current instance's schema hash",
 	);
 });
 
@@ -41,6 +42,7 @@ describe('should throw accurate error', () => {
 			},
 		};
 	};
+
 	const baseSnapshot = (partialSnapshot?: Partial<Snapshot>) => {
 		return {
 			hash: 'xyz',
@@ -55,10 +57,11 @@ describe('should throw accurate error', () => {
 		const diff = baseDiff({
 			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as Collection }] }],
 		});
+
 		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as Collection] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create collection "test" but it already exists'
+			'Provided diff is trying to create collection "test" but it already exists',
 		);
 	});
 
@@ -68,7 +71,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete collection "test" but it does not exist'
+			'Provided diff is trying to delete collection "test" but it does not exist',
 		);
 	});
 
@@ -76,10 +79,11 @@ describe('should throw accurate error', () => {
 		const diff = baseDiff({
 			fields: [{ collection: 'test', field: 'test', diff: [{ kind: 'N', rhs: {} as SnapshotField }] }],
 		});
+
 		const snapshot = baseSnapshot({ fields: [{ collection: 'test', field: 'test' } as SnapshotField] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create field "test.test" but it already exists'
+			'Provided diff is trying to create field "test.test" but it already exists',
 		);
 	});
 
@@ -89,7 +93,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete field "test.test" but it does not exist'
+			'Provided diff is trying to delete field "test.test" but it does not exist',
 		);
 	});
 
@@ -104,12 +108,13 @@ describe('should throw accurate error', () => {
 				},
 			],
 		});
+
 		const snapshot = baseSnapshot({
 			relations: [{ collection: 'test', field: 'test', related_collection: 'relation' } as SnapshotRelation],
 		});
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
-			'Provided diff is trying to create relation "test.test-> relation" but it already exists'
+			'Provided diff is trying to create relation "test.test-> relation" but it already exists',
 		);
 	});
 
@@ -126,7 +131,7 @@ describe('should throw accurate error', () => {
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
-			'Provided diff is trying to delete relation "test.test-> relation" but it does not exist'
+			'Provided diff is trying to delete relation "test.test-> relation" but it does not exist',
 		);
 	});
 });
@@ -247,6 +252,7 @@ test('should not throw error for diffs with varying types of lhs/rhs', () => {
 			],
 		},
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
@@ -288,6 +294,7 @@ test('should not throw error for relation diff with null related_collection (app
 			],
 		},
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
@@ -298,6 +305,7 @@ test('should detect empty diff', () => {
 		hash: 'abc',
 		diff: { collections: [], fields: [], relations: [] },
 	};
+
 	const snapshot = {} as SnapshotWithHash;
 
 	expect(validateApplyDiff(diff, snapshot)).toBe(false);
@@ -308,6 +316,7 @@ test('should pass on valid diff', () => {
 		hash: 'abc',
 		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(validateApplyDiff(diff, snapshot)).toBe(true);

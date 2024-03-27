@@ -35,6 +35,7 @@ tile_size: Title størrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Placering
+collection_names_are_case_sensitive: Samlingsnavne skelner mellem store og små bogstaver
 condition_rules: Tilstandsregler
 input: Input
 maps: Kort
@@ -52,6 +53,18 @@ or: eller
 init: Initaliser
 dataset_too_large_currently_showing_n_items: Datasættet er for stort. Viser i øjeblikket de første {n} elementer.
 modifier: Modifikator
+extension_interface: Grænseflade
+extension_display: Vis
+extension_layout: Sideopsætning
+extension_panel: Stykke
+extension_hook: Krog
+extension_bundle: Bundt
+extension_interfaces: Grænseflader
+extension_displays: Viser
+extension_layouts: Layout
+extension_modules: Moduler
+extension_panels: Paneler
+enable: Aktiver
 custom: Brugertilpasset
 hook: Krog
 fill_width: Fuld bredde
@@ -80,14 +93,6 @@ create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
 create_webhook: Opret webhook
-create_translation_string: Opret oversættelsesstreng
-no_translation_string: Oversættelse mangler
-no_translation_string_copy: Der er ingen oversættelsesstrenge endnu.
-translation_string_key_placeholder: Oversættelse streng nøgle...
-translation_string_translations_placeholder: Tilføj en ny oversættelse
-edit_translation_string: Rediger oversættelsesstreng
-delete_translation_string_copy: >-
-  Er du sikker på du vil slette oversættelsesstrengen "{key}"? Denne handling kan ikke fortrydes.
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
@@ -103,6 +108,8 @@ rename_folder: Omdøb mappe
 delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
+switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
+promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
@@ -118,20 +125,13 @@ public_label: Offentlig
 public_description: Styrer, hvilke API-data der er tilgængelige uden godkendelse.
 admin_description: Oprindelig administrativ rolle med ubegrænset App/API-adgang.
 not_allowed: Ikke tilladt
-directus_version: Directus version
-node_version: Node version
-node_uptime: Node oppetid
-os_type: OS type
-os_version: OS version
-os_uptime: OS oppetid
-os_totalmem: OS hukommelse
 archive: Arkiver
 archive_confirm: Er du sikker på at du vil arkivere dette element?
 archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
 reset_system_permissions_to: 'Nulstil systemtilladelser til:'
 reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
-the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
+the_following_are_minimum_permissions: Følgende minimumstilladelser anvendes automatisk, når "Appadgang" er aktiveret. Du kan give yderligere tilladelser, hvis det er nødvendigt, men du kan ikke reducere tilladelser til under dette niveau.
 app_access_minimum: Minimum app-adgang
 recommended_defaults: Anbefalede standarder
 unarchive: Fjern fra arkiv
@@ -251,13 +251,6 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
-geometry: Geometri (Alle)
-geometry.Point: Punkt
-geometry.LineString: Linjestring
-geometry.Polygon: Polygon
-geometry.MultiPoint: Multipunkt
-geometry.MultiLineString: Stræng med linjeskift
-geometry.MultiPolygon: Multipolygon
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret oversættelser
 auto_refresh: Opdater automatisk
@@ -348,7 +341,7 @@ revision_delta_reverted: Omvendt
 revision_delta_update_message: Dette felt er blevet opdateret, men dets værdi bliver skjult af sikkerhedsmæssige årsager.
 revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
-presentation_text_values_cannot_be_reimported: "Bruger præsentationstekst, værdier kan ikke genimporteres."
+presentation_text_values_cannot_be_reimported: 'Bruger præsentationstekst, værdier kan ikke genimporteres.'
 download_page_as_csv: 'Hent side som CSV'
 private_user: Privat bruger
 creation_preview: Forhåndsvisning af oprettelse
@@ -386,6 +379,7 @@ move: Flyt
 system: System
 add_field_related: Tilføj felt til relateret samling
 interface_label: Grænseflade
+display_label: Vis
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
@@ -436,7 +430,6 @@ dimensions: Dimensioner
 size: Størrelse
 created: Oprettet
 modified: Ændret
-checksum: Kontrolsum
 owner: Ejer
 edited_by: Redigeret af
 folder: Mappe
@@ -459,11 +452,6 @@ open_file_in_tab: Åbn fil i nyt faneblad
 start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
-exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} elementer inden for {collection}.
-exporting_no_items_to_export: Ingen elementer at eksportere. Juster eksportkonfigurationen nedenfor.
-exporting_download_hint: Når den er færdig, vil denne {format}-fil automatisk blive hentet til din enhed.
-exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format}-filen blive gemt i filbiblioteket.
-exporting_batch_hint_forced: På grund af det stort antal elementer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format}-filen i Filbiblioteket.
 collection_key: Samlings nøgle
 name: Navn
 primary_key_field: Primær nøglefelt
@@ -488,10 +476,8 @@ enable_select_button: Aktivér vælg-knap
 allow_duplicates: Tillad gengangere
 comments: Kommentarer
 no_comments: Ingen kommentarer endnu
-click_to_expand: Klik for at udvide
 select_item: Vælg element
 no_items: Ingen elementer
-search_items: Søg efter emner...
 disabled: Deaktiveret
 information: Information
 report_bug: Rapportér fejl
@@ -599,7 +585,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
   USER_SUSPENDED: Bruger Suspenderet
   CONTAINS_NULL_VALUES: Feltet indeholder null værdier
-  UNPROCESSABLE_ENTITY: Ubehandlelig enhed
   INTERNAL_SERVER_ERROR: Uventet Fejl
   NOT_NULL_VIOLATION: Værdien kan ikke være null
   ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
@@ -607,7 +592,6 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
   UNKNOWN: Uventet Fejl
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-valideringsundtagelse
   SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
   UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
   UNEXPECTED_RESPONSE: Uventet serversvar
@@ -734,7 +718,6 @@ layout_options: Layout indstillinger
 rows: Rækker
 columns: Kolonner
 collection_setup: Opsætning af samling
-optional_system_fields: Valgfrie systemfelter
 value_unique: Værdien skal være unik
 all_activity: Al aktivitet
 create_item: Opret element
@@ -937,11 +920,10 @@ editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_data_model: Data model
-settings_permissions: Roller og tilladelser
-settings_project: Projektindstillinger
+settings_project: Indstillinger
 settings_webhooks: Webhooks
-settings_presets: Forudindstillinger og bogmærker
-settings_translation_strings: Oversættelsesstrenge
+settings_presets: Foretrukne
+settings_translations: Oversættelser
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
@@ -976,7 +958,6 @@ page_help_files_collection: >-
   **Fil Bibliotek** — Viser alle filer uploadet til dette projekt. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
 page_help_files_item: >-
   **Fildetaljer** — En formular til håndtering af filmetadata, redigering af det oprindelige aktiv og opdatering af adgangsindstillinger.
-page_help_settings_project: "**Projektindstillinger** — Dit projekts globale konfigurationsmuligheder."
 page_help_settings_datamodel_collections: >-
   **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
 page_help_settings_datamodel_fields: >-
@@ -991,7 +972,6 @@ page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle we
 page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
 page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
 page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
-page_help_settings_translation_strings_collection: '**Gennemse oversættelsesstrenge** — Viser alle oversættelsesstrenge i projektet.'
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
   **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
@@ -1099,10 +1079,6 @@ fields:
     tags: Tags
     user_preferences: Bruger præferencer
     language: Sprog
-    theme: Tema
-    theme_auto: Automatisk (Basseret på system)
-    theme_light: Lys Tilstand
-    theme_dark: Mørk Tilstand
     tfa_secret: Tofaktorgodkendelse
     admin_options: Admin indstillinger
     status: Status
@@ -1123,7 +1099,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Kortlægning
     basemaps: Grundkort
     basemaps_style: Mapbox stil
@@ -1138,7 +1113,6 @@ fields:
     project_color: Projekt farve
     project_logo: Projekt logo
     default_language: Standard sprog
-    branding: Branding og stil
     public_foreground: Offentlig forgrund
     public_background: Offentlig baggrund
     public_note: Offentlig note
@@ -1198,7 +1172,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
     project_color_note: Login- & logo baggrund
-    project_logo_note: Hvid 40x40 SVG/PNG
     public_note_placeholder: En kort offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -1249,6 +1222,7 @@ field_options:
     sort_field: Vælg et felt...
     accountability_divider: Ansvarlighed
     duplication_divider: Duplikering
+    preview_divider: Eksempelvisning
   directus_files:
     title: En unik titel...
     description: En valgfri beskrivelse...
@@ -1259,7 +1233,6 @@ field_options:
   directus_roles:
     name: Det unikke navn for denne rolle...
     description: En beskrivelse af denne rolle...
-    ip_access: Tilføj tilladte IP-adresser, efterlad blank for at tillade alle...
     fields:
       icon_name: Ikon
       name_name: Navn
@@ -1306,6 +1279,8 @@ start_collapsed: Start sammenbrudt
 block: Blokér
 inline: Indlejret
 comment: Kommenter
+live_preview:
+  new_window: Åbn i nyt vindue
 shares: Aktier
 unlimited_usage: Ubegrænset brug
 uses_left: Ingen anvendelser tilbage - 1 brug tilbage - {n} bruger venstre
@@ -1564,6 +1539,8 @@ interfaces:
   system-interface-options:
     interface-options: Grænsefladeindstillinger
     description: En modal til valg af indstillinger for en grænseflade
+  system-display:
+    display: Vis
   list-m2m:
     many-to-many: Mange til mange
     description: Vælg flere relaterede forbindelseselementer
@@ -1611,7 +1588,6 @@ interfaces:
     description: Vælg flere relaterede elementer
     no_collection: Samlingen kunne ikke findes
   system-folder:
-    folder: Mappe
     description: Vælg en mappe
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
@@ -1627,6 +1603,7 @@ interfaces:
     sort_placeholder: Manuel
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
+    interface_group: Grænsefladeindstillinger
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -1665,7 +1642,6 @@ interfaces:
     input-translated-string: Oversatte strenge
     description: Vælg eller tilføj oversættelsesstreng
     search_placeholder: Søg...
-    new_translation_string: Ny oversættelsesstreng
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
@@ -1702,6 +1678,16 @@ interfaces:
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
+  input-block-editor:
+    tools: Værktøjslinje
+    tools_options:
+      header: Overskrift
+      nestedlist: Liste
+      embed: Indlejr
+      code: Kode
+      image: Billede
+      table: Tabel
+      underline: Understreget
   input-autocomplete-api:
     input-autocomplete-api: Autofuldførelsesinput (API)
     description: En søgetype foran for eksterne API-værdier.
@@ -1808,11 +1794,15 @@ displays:
     icon: Ikon
     border: Kant
     border_label: Vis kant
+    mask: Maskeret
+    mask_label: Skjul den reelle værdi
     text: Tekst
     text_placeholder: Valgfri værdi tilsidesættelse...
   formatted-json-value:
     formatted-json-value: Formateret JSON værdi
     description: Vis en formateret version af objektet
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
     description: Vis et ikon
@@ -1952,6 +1942,7 @@ panels:
     smooth: Glat
     straight: Lige
     step_line: Trin linje
+    show_legend: Vis legende
   meter:
     name: Måler
     description: Måler til sporingsværdier
@@ -2029,6 +2020,10 @@ operations:
     emit_events: Udsende begivenheder
     key: ID
     payload: Nyttelast
+  json-web-token:
+    payload: Nyttelast
+    token: Nøgle
+    options: Valgmuligheder
   log:
     name: Log på konsol
     description: Output noget til konsollen
@@ -2039,13 +2034,16 @@ operations:
     description: Send en mail til en eller flere personer
     to: Til
     to_placeholder: Tilføj e-mail-adresser og tryk på enter...
+    template: Skabelon
+    data: Data
   notification:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere
     recipient: Bruger
     message: besked
+    subject: Emne
   request:
-    description: "Lav en anmodning til en URL"
+    description: 'Lav en anmodning til en URL'
     url: URL
     url_placeholder: https://eksempel.dk/eksempel
     method: Metode
@@ -2063,3 +2061,13 @@ operations:
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.
     serial: Seriel
+standard: Standard
+compact: Kompakt
+style: Stil
+fonts:
+  thin: tynd
+  normal: Normal
+  bold: Fed
+  black: Sort
+  italic: Kursiv
+  auto: Automatisk

@@ -4,14 +4,14 @@ import { Ref, ref, watch } from 'vue';
 let showHidden: Ref<boolean>;
 let activeGroups: Ref<string[]>;
 
-export function useNavigation(currentCollection: Ref<string | null>) {
+export function useNavigation(currentCollection?: Ref<string | undefined>) {
 	const collectionsStore = useCollectionsStore();
 
 	if (!activeGroups) {
 		activeGroups = ref(
 			collectionsStore.collections
 				.filter((collection) => collection.meta?.collapse === 'open' || collection.meta?.collapse === 'locked')
-				.map(({ collection }) => collection)
+				.map(({ collection }) => collection),
 		);
 	}
 
@@ -19,27 +19,29 @@ export function useNavigation(currentCollection: Ref<string | null>) {
 		showHidden = ref(false);
 	}
 
-	watch(
-		currentCollection,
-		(collectionKey) => {
-			if (collectionKey === null) return;
+	if (currentCollection) {
+		watch(
+			currentCollection,
+			(collectionKey) => {
+				if (collectionKey === undefined) return;
 
-			let collection = collectionsStore.getCollection(collectionKey);
+				let collection = collectionsStore.getCollection(collectionKey);
 
-			const collectionsToAdd: string[] = [];
+				const collectionsToAdd: string[] = [];
 
-			while (collection?.meta?.group) {
-				if (activeGroups.value.includes(collection.meta.group) === false) {
-					collectionsToAdd.push(collection.meta.group);
+				while (collection?.meta?.group) {
+					if (activeGroups.value.includes(collection.meta.group) === false) {
+						collectionsToAdd.push(collection.meta.group);
+					}
+
+					collection = collectionsStore.getCollection(collection.meta.group);
 				}
 
-				collection = collectionsStore.getCollection(collection.meta.group);
-			}
-
-			activeGroups.value = [...activeGroups.value, ...collectionsToAdd];
-		},
-		{ immediate: true }
-	);
+				activeGroups.value = [...activeGroups.value, ...collectionsToAdd];
+			},
+			{ immediate: true },
+		);
+	}
 
 	return { showHidden, activeGroups };
 }

@@ -1,31 +1,39 @@
 import type { CookieOptions } from 'express';
-import env from './env.js';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
+import { useEnv } from '@directus/env';
+
+const env = useEnv();
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
 		key: 'system-small-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 64, height: 64, fit: 'cover' }]],
 	},
 	{
 		key: 'system-small-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 64, fit: 'contain' }]],
 	},
 	{
 		key: 'system-medium-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 300, height: 300, fit: 'cover' }]],
 	},
 	{
 		key: 'system-medium-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 300, fit: 'contain' }]],
 	},
 	{
 		key: 'system-large-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 800, height: 800, fit: 'cover' }]],
 	},
 	{
 		key: 'system-large-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 800, fit: 'contain' }]],
 	},
 ];
@@ -39,7 +47,9 @@ export const ASSET_TRANSFORM_QUERY_KEYS = [
 	'fit',
 	'quality',
 	'withoutEnlargement',
-];
+	'focal_point_x',
+	'focal_point_y',
+] as const satisfies Readonly<(keyof TransformationParams)[]>;
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
@@ -53,15 +63,23 @@ export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-c
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
-export const COOKIE_OPTIONS: CookieOptions = {
+export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
-	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
-	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL'] as string),
+	secure: Boolean(env['REFRESH_TOKEN_COOKIE_SECURE']),
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
-export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+export const SESSION_COOKIE_OPTIONS: CookieOptions = {
+	httpOnly: true,
+	domain: env['SESSION_COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['SESSION_COOKIE_TTL'] as string),
+	secure: Boolean(env['SESSION_COOKIE_SECURE']),
+	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+};
+
+export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
 
 /** Formats from which transformation is supported */
 export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
@@ -75,5 +93,3 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/tiff',
 	'image/avif',
 ];
-
-export const REDACT_TEXT = '--redact--';

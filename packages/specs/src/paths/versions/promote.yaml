@@ -1,0 +1,34 @@
+post:
+  summary: Promote a Content Version
+  description:
+    Pass the current hash of the main version of the item (obtained from the `compare` endpoint) along with an optional
+    array of field names of which the values are to be promoted (by default, all fields are selected).
+  operationId: promoteContentVersion
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            mainHash:
+              description: Hash of the main version of the item to be promoted.
+              type: string
+            fields:
+              description: Optional array of field names of which the values are to be promoted.
+              type: string
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Versions

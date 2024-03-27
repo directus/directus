@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundException } from '../exceptions/index.js';
+import { RouteNotFoundError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
@@ -16,10 +16,10 @@ router.get(
 			schema: req.schema,
 		});
 
-		res.locals['payload'] = await service.oas.generate();
+		res.locals['payload'] = await service.oas.generate(req.headers.host);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -37,7 +37,7 @@ router.get(
 
 		const scope = req.params['scope'] || 'items';
 
-		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundException(req.path);
+		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
 
 		const info = await serverService.serverInfo();
 		const result = await service.graphql.generate(scope as 'items' | 'system');
@@ -45,7 +45,7 @@ router.get(
 
 		res.attachment(filename);
 		res.send(result);
-	})
+	}),
 );
 
 router.get(
@@ -55,11 +55,12 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const data = await service.serverInfo();
 		res.locals['payload'] = { data };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -79,7 +80,7 @@ router.get(
 		res.locals['cache'] = false;
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

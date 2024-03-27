@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import type { Folder } from '@/composables/use-folders';
+
+defineProps<{
+	folder: Folder;
+	currentFolder: string | null;
+	disabled?: boolean;
+	disabledFolders?: string[];
+}>();
+
+defineEmits<{
+	(e: 'click', folderId: Folder['id']): void;
+}>();
+</script>
+
 <template>
 	<v-list-item
 		v-if="!folder.children || folder.children.length === 0"
@@ -26,45 +41,12 @@
 		</template>
 		<folder-list-item
 			v-for="childFolder in folder.children"
-			:key="childFolder.id"
+			:key="childFolder.id!"
 			:folder="childFolder"
 			:current-folder="currentFolder"
-			:disabled="disabledFolders.includes(childFolder.id)"
+			:disabled="disabledFolders?.includes(childFolder.id!)"
 			:disabled-folders="disabledFolders"
 			@click="$emit('click', $event)"
 		/>
 	</v-list-group>
 </template>
-
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
-
-type Folder = {
-	id: string;
-	name: string;
-	children: Folder[];
-};
-
-export default defineComponent({
-	name: 'FolderListItem',
-	props: {
-		folder: {
-			type: Object as PropType<Folder>,
-			required: true,
-		},
-		currentFolder: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		disabledFolders: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-	},
-	emits: ['click'],
-});
-</script>

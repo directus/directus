@@ -3,7 +3,7 @@ name: CodeQL Analysis
 on:
   workflow_call:
   schedule:
-    - cron: '42 23 * * 5'
+    - cron: '0 0 * * *'
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
@@ -23,7 +23,7 @@ jobs:
           - javascript
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -31,24 +31,24 @@ jobs:
           build: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           upload: false
           output: sarif-results
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sarif-results
           path: sarif-results
           retention-days: 1
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: sarif-results/javascript.sarif

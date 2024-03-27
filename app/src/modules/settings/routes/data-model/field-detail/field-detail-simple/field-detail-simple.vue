@@ -1,3 +1,137 @@
+<script setup lang="ts">
+import { computed, toRefs, watch } from 'vue';
+import { Collection } from '@directus/types';
+import { useI18n } from 'vue-i18n';
+import { orderBy } from 'lodash';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
+import FieldConfiguration from './field-configuration.vue';
+import { useExtensions } from '@/extensions';
+
+const props = withDefaults(
+	defineProps<{
+		collection: Collection;
+		search: string | null;
+	}>(),
+	{
+		search: null,
+	},
+);
+
+defineEmits<{
+	(e: 'save'): void;
+	(e: 'toggleAdvanced'): void;
+}>();
+
+const { collection, search } = toRefs(props);
+
+const { t } = useI18n();
+
+const fieldDetail = useFieldDetailStore();
+watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
+
+const { interfaces } = useExtensions();
+
+const interfacesSorted = computed(() => {
+	return orderBy(
+		interfaces.value.filter((inter) => !inter.system),
+		['order'],
+	);
+});
+
+const groups = computed(() => {
+	const groupsWithInterfaces = [
+		{
+			key: 'standard',
+			name: t('interface_group_text_and_numbers'),
+			interfaces: filterInterfacesByGroup('standard'),
+		},
+		{
+			key: 'selection',
+			name: t('interface_group_selection'),
+			interfaces: filterInterfacesByGroup('selection'),
+		},
+		{
+			key: 'relational',
+			name: t('interface_group_relational'),
+			interfaces: filterInterfacesByGroup('relational'),
+		},
+		{
+			key: 'presentation',
+			name: t('interface_group_presentation'),
+			interfaces: filterInterfacesByGroup('presentation'),
+		},
+		{
+			key: 'group',
+			name: t('interface_group_groups'),
+			interfaces: filterInterfacesByGroup('group'),
+		},
+		{
+			key: 'other',
+			name: t('interface_group_other'),
+			interfaces: filterInterfacesByGroup('other'),
+		},
+	];
+
+	if (!search.value) return groupsWithInterfaces;
+
+	return groupsWithInterfaces.filter((group) => group.interfaces.length > 0);
+
+	function filterInterfacesByGroup(group: string) {
+		const filteredInterfaces = interfacesSorted.value.filter((inter) => (inter.group ?? 'other') === group);
+		if (!search.value) return filteredInterfaces;
+		const searchValue = search.value!.toLowerCase();
+		return filteredInterfaces.filter(
+			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue),
+		);
+	}
+});
+
+const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+
+const configRow = computed(() => {
+	if (!chosenInterface.value) return null;
+
+	let indexInGroup: number | null = null;
+
+	groups.value.forEach((group) => {
+		const index = group.interfaces.findIndex((inter) => inter.id === chosenInterface.value);
+		if (index !== -1) indexInGroup = index;
+	});
+
+	if (indexInGroup === null) return null;
+
+	const windowWidth = window.innerWidth;
+
+	let columns = 1;
+
+	if (windowWidth > 400) {
+		columns = 2;
+	}
+
+	if (windowWidth > 600) {
+		columns = 3;
+	}
+
+	if (windowWidth > 840) {
+		columns = 4;
+	}
+
+	return Math.ceil((indexInGroup + 1) / columns) + 1;
+});
+
+function isSVG(path: string) {
+	return path.startsWith('<svg');
+}
+
+function toggleInterface(id: string) {
+	if (chosenInterface.value === id) {
+		chosenInterface.value = null;
+	} else {
+		chosenInterface.value = id;
+	}
+}
+</script>
+
 <template>
 	<div class="content">
 		<div v-for="group of groups" :key="group.key" class="group">
@@ -38,144 +172,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
-import { Collection } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import { orderBy } from 'lodash';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
-import { syncRefProperty } from '@/utils/sync-ref-property';
-import FieldConfiguration from './field-configuration.vue';
-import { useExtensions } from '@/extensions';
-
-export default defineComponent({
-	components: { FieldConfiguration },
-	props: {
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
-		},
-		search: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['save', 'toggleAdvanced'],
-	setup(props) {
-		const { collection, search } = toRefs(props);
-
-		const { t } = useI18n();
-
-		const fieldDetail = useFieldDetailStore();
-		watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
-
-		const { interfaces } = useExtensions();
-
-		const interfacesSorted = computed(() => {
-			return orderBy(
-				interfaces.value.filter((inter) => !inter.system),
-				['order']
-			);
-		});
-
-		const groups = computed(() => {
-			const groupsWithInterfaces = [
-				{
-					key: 'standard',
-					name: t('interface_group_text_and_numbers'),
-					interfaces: filterInterfacesByGroup('standard'),
-				},
-				{
-					key: 'selection',
-					name: t('interface_group_selection'),
-					interfaces: filterInterfacesByGroup('selection'),
-				},
-				{
-					key: 'relational',
-					name: t('interface_group_relational'),
-					interfaces: filterInterfacesByGroup('relational'),
-				},
-				{
-					key: 'presentation',
-					name: t('interface_group_presentation'),
-					interfaces: filterInterfacesByGroup('presentation'),
-				},
-				{
-					key: 'group',
-					name: t('interface_group_groups'),
-					interfaces: filterInterfacesByGroup('group'),
-				},
-				{
-					key: 'other',
-					name: t('interface_group_other'),
-					interfaces: filterInterfacesByGroup('other'),
-				},
-			];
-
-			if (!search.value) return groupsWithInterfaces;
-
-			return groupsWithInterfaces.filter((group) => group.interfaces.length > 0);
-
-			function filterInterfacesByGroup(group: string) {
-				const filteredInterfaces = interfacesSorted.value.filter((inter) => inter.group === group);
-				if (!search.value) return filteredInterfaces;
-				const searchValue = search.value!.toLowerCase();
-				return filteredInterfaces.filter(
-					(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue)
-				);
-			}
-		});
-
-		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
-
-		const configRow = computed(() => {
-			if (!chosenInterface.value) return null;
-
-			let indexInGroup: number | null = null;
-
-			groups.value.forEach((group) => {
-				const index = group.interfaces.findIndex((inter) => inter.id === chosenInterface.value);
-				if (index !== -1) indexInGroup = index;
-			});
-
-			if (indexInGroup === null) return null;
-
-			const windowWidth = window.innerWidth;
-
-			let columns = 1;
-
-			if (windowWidth > 400) {
-				columns = 2;
-			}
-
-			if (windowWidth > 600) {
-				columns = 3;
-			}
-
-			if (windowWidth > 840) {
-				columns = 4;
-			}
-
-			return Math.ceil((indexInGroup + 1) / columns) + 1;
-		});
-
-		return { t, interfaces, groups, isSVG, syncRefProperty, chosenInterface, configRow, toggleInterface };
-
-		function isSVG(path: string) {
-			return path.startsWith('<svg');
-		}
-
-		function toggleInterface(id: string) {
-			if (chosenInterface.value === id) {
-				chosenInterface.value = null;
-			} else {
-				chosenInterface.value = id;
-			}
-		}
-	},
-});
-</script>
-
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
@@ -187,7 +183,7 @@ export default defineComponent({
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
@@ -221,7 +217,7 @@ export default defineComponent({
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -229,8 +225,8 @@ export default defineComponent({
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -251,39 +247,39 @@ export default defineComponent({
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
-	border: 2px solid var(--primary);
-	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--primary);
+	border-radius: var(--theme--border-radius);
+	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--theme--foreground-subdued);
+	--primary-50: var(--theme--foreground-subdued);
 
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 </style>

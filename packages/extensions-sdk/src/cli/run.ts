@@ -3,22 +3,26 @@ import add from './commands/add.js';
 import build from './commands/build.js';
 import create from './commands/create.js';
 import link from './commands/link.js';
-
-const pkg = require('../../../package.json');
+import getSdkVersion from './utils/get-sdk-version.js';
 
 const program = new Command();
 
 program.name('directus-extension').usage('[command] [options]');
-program.version(pkg.version, '-v, --version');
+program.version(getSdkVersion(), '-v, --version');
 
 program
 	.command('create')
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
+	.option('--no-install', 'skip dependency installation after creating extension')
 	.option('-l, --language <language>', 'specify the language to use')
 	.action(create);
 
-program.command('add').description('Add entries to an existing Directus extension').action(add);
+program
+	.command('add')
+	.description('Add entries to an existing Directus extension')
+	.option('--no-install', 'skip dependency (re)installation after adding extension')
+	.action(add);
 
 program
 	.command('build')

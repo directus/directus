@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import env from '../env.js';
-import { ForbiddenException, InvalidCredentialsException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -19,6 +19,10 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+import { useLogger } from '../logger.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -38,7 +42,12 @@ export class SharesService extends ItemsService {
 		return super.createOne(data, opts);
 	}
 
-	async login(payload: Record<string, any>): Promise<LoginResult> {
+	async login(
+		payload: Record<string, any>,
+		options?: Partial<{
+			session: boolean;
+		}>,
+	): Promise<Omit<LoginResult, 'id'>> {
 		const { nanoid } = await import('nanoid');
 
 		const record = await this.knex
@@ -67,11 +76,11 @@ export class SharesService extends ItemsService {
 			.first();
 
 		if (!record) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (record.share_password && !(await argon2.verify(record.share_password, payload['password']))) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		await this.knex('directus_shares')
@@ -89,13 +98,19 @@ export class SharesService extends ItemsService {
 			},
 		};
 
-		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
-			expiresIn: env['ACCESS_TOKEN_TTL'],
-			issuer: 'directus',
-		});
-
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
+		if (options?.session) {
+			tokenPayload.session = refreshToken;
+		}
+
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
+		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
+			expiresIn: TTL,
+			issuer: 'directus',
+		});
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -111,7 +126,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
+			expires: getMilliseconds(TTL),
 		};
 	}
 
@@ -120,7 +135,7 @@ export class SharesService extends ItemsService {
 	 * if you have read access to that particular share
 	 */
 	async invite(payload: { emails: string[]; share: PrimaryKey }) {
-		if (!this.accountability?.user) throw new ForbiddenException();
+		if (!this.accountability?.user) throw new ForbiddenError();
 
 		const share = await this.readOne(payload.share, { fields: ['collection'] });
 
@@ -140,20 +155,24 @@ Hello!
 
 ${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env['PUBLIC_URL']).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env['PUBLIC_URL'] as string).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {
-			await mailService.send({
-				template: {
-					name: 'base',
-					data: {
-						html: md(message),
+			mailService
+				.send({
+					template: {
+						name: 'base',
+						data: {
+							html: md(message),
+						},
 					},
-				},
-				to: email,
-				subject: `${userName(userInfo)} has shared an item with you`,
-			});
+					to: email,
+					subject: `${userName(userInfo)} has shared an item with you`,
+				})
+				.catch((error) => {
+					logger.error(error, `Could not send share notification mail`);
+				});
 		}
 	}
 }

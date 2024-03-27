@@ -18,6 +18,7 @@ export class TestLogger {
 		this.logs = '';
 		this.server = server;
 		this.stopCondition = stopCondition;
+
 		if (filterCondition) {
 			this.filterCondition = filterCondition === true ? stopCondition : filterCondition;
 		}

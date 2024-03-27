@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceInputHash from './input-hash.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -7,6 +7,7 @@ export default defineInterface({
 	name: '$t:interfaces.input-hash.hash',
 	description: '$t:interfaces.input-hash.description',
 	icon: 'fingerprint',
+	recommendedDisplays: ['hash'],
 	component: InterfaceInputHash,
 	types: ['hash'],
 	group: 'other',

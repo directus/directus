@@ -4,13 +4,30 @@ readTime: 10 min read
 pageClass: page-reference
 ---
 
+<script setup lang="ts">
+import { data as packages } from '@/data/packages.data.js';
+</script>
+
 # Accessing Files
 
 > Every file managed by the platform is uploaded to the configured storage adapter, and its associated metadata is
 > tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and
 > are only saved to storage.
 
----
+## File Security
+
+Data and permissions around files are associated to the `directus_files` collection.
+
+It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public'
+folder), rather than making the whole collection public. Read more on
+[custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
+
+::: warning Exporting Data Creates Files
+
+[Exporting data](/user-guide/content-module/import-export.html#export-items) creates new files and adds them to your
+file storage. If these files are accessible publicly, you may leak data held in the exported collections.
+
+:::
 
 ## Accessing a File
 
@@ -46,8 +63,6 @@ permissions and other built-in features.
 ![Original File](https://cdn.directus.io/docs/v9/reference/files/original-20220216A.jpg) _Original File Used — 602KB and
 1800x1200_
 
----
-
 ## Downloading a File
 
 To download an asset with the correct filename, you need to add the `?download` query parameter to the request and the
@@ -61,8 +76,6 @@ download will work on the _same_ domain, however it will have the file's "id" as
 <a href="https://your-directus.com/assets/<file-id>?download" target="_blank" download="Your File.pdf">Download</a>
 ```
 
----
-
 ## Requesting a Thumbnail
 
 Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Admin App, you can
@@ -71,8 +84,8 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/configuration/project-settings#files-thumbnails), a shortcut
-  for the below parameters
+- **`key`** — This **key** of the [Storage Asset Preset](/user-guide/settings/project-settings#files-storage), a
+  shortcut for the below parameters
 
 ### Custom Transformations
 
@@ -91,7 +104,8 @@ grained control:
 - **`height`** — The **height** of the thumbnail in pixels
 - **`quality`** — The optional **quality** of the thumbnail (`1` to `100`)
 - **`withoutEnlargement`** — Disable image up-scaling
-- **`format`** — What file format to return the thumbnail in. One of `jpg`, `png`, `webp`, `tiff`
+- **`format`** — What file format to return the thumbnail in. One of `auto`, `jpg`, `png`, `webp`, `tiff`
+  - `auto` — Will try to format it in `webp` or `avif` if the browser supports it, otherwise it will fallback to `jpg`.
 
 ### Advanced Transformations
 
@@ -127,28 +141,108 @@ Below are four possible qualities (200x200 cover) to visually compare the balanc
 
 ### Preset
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
 ```
-example.com/assets/<file-id>?key=<key>
+GET /assets/<file-id>?key=<key>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('<file-id>', { key: '<key>' }));
+```
+
+</template>
+</SnippetToggler>
 
 ### Custom
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
 ```
-example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
-example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&height=200&quality=80
+GET /assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	fit: '<fit>',
+	width: <width>,
+	height: <height>,
+	quality: <quality>,
+}));
+```
+
+</template>
+</SnippetToggler>
 
 ### Advanced
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
 ```
-?transforms=[
+GET /assets/<file-id>?transforms=[
 	["blur", 45],
 	["tint", "rgb(255, 0, 0)"],
 	["expand", { "right": 200, "bottom": 150 }]
 ]
 ```
 
----
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	transforms: [
+		["blur", 45],
+		["tint", "rgb(255, 0, 0)"],
+		["expand", { "right": 200, "bottom": 150 }]
+	]
+}));
+```
+
+</template>
+</SnippetToggler>
+
+### Focal Points
+
+Directus will crop assets when requested with a `width` or `height` query parameter. By default, images are cropped
+around the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping
+will center around these coordinates.
 
 ## The File Object
 
@@ -186,13 +280,22 @@ Who updated the file last. Many-to-one to [users](/reference/system/users).
 Size of the file in bytes.
 
 `width` **number**\
-If the file is a(n) image/video, it's the width in px.
+If the file is a(n) image/video, it's the width in px.\
+This property is only auto-extracted for images.
 
 `height` **number**\
-If the file is a(n) image/video, it's the height in px.
+If the file is a(n) image/video, it's the height in px.\
+This property is only auto-extracted for images.
+
+`focal_point_x` **number**\
+If the file is an image, cropping will center around this point.
+
+`focal_point_y` **number**\
+If the file is an image, cropping will center around this point.
 
 `duration` **number**\
-If the file contains audio/video, it's the duration in milliseconds.
+If the file contains audio/video, it's the duration in milliseconds.\
+This property is not auto-extracted.
 
 `description` **string**\
 Description of the file.
@@ -204,7 +307,7 @@ Location of the file.
 Tags for the file.
 
 `metadata` **object**\
-Any additional metadata Directus was able to scrape from the file. For images, this includes EXIF, IPTC, and ICC information.
+Any additional metadata Directus was able to scrape from the file. For images, this includes Exif, IPTC, and ICC information.
 
 ```json
 {
@@ -222,6 +325,8 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"filesize": 3442252,
 	"width": 3456,
 	"height": 5184,
+	"focal_point_x": null,
+	"focal_point_y": null,
 	"duration": null,
 	"description": null,
 	"location": null,
@@ -243,35 +348,27 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 }
 ```
 
----
-
 ## List Files
 
 List all files that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Returns
+`GET /files`
 
-An array of up to [limit](/reference/query#limit) [file objects](#the-file-object). If no items are available, data will
-be an empty array.
+`SEARCH /files`
 
-### REST API
-
-```
-GET /files
-SEARCH /files
-```
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -279,7 +376,40 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readFiles } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readFiles(query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [file objects](#the-file-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /files`
+
+`SEARCH /files`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -290,37 +420,45 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readFiles } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFiles({
+		query: {
+			filter: {
+				type: {
+					_eq: 'image',
+				},
+			},
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a File
 
 Retrieve a single file by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Returns
+`GET /files/:id`
 
-Returns a [file object](#the-file-object) if a valid primary key was provided.
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /files/:id
-```
-
-##### Example
-
-```
-GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -328,7 +466,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readFiles } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readFile(file_id, query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns a [file object](#the-file-object) if a valid primary key was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -339,100 +509,225 @@ query {
 }
 ```
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readFiles } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
 ## Upload a File
 
-Upload/create a new file.
+Upload a new file.
 
-To upload a file, use `multipart/form-data` as the encoding type. The file contents has to be provided in a part called
-`file`. All other properties of [the file object](#the-file-object) can be provided as parts as well, except
-`filename_disk` and `filename_download`.
+### Request
 
-Alternatively, you can use `application/json` with JSON request body to associate metadata to a file that already exists
-in the storage. The `type` property will be required to specify the mimetype of that file.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /files`
+
+Body must be formatted as a `multipart/form-data` with a final property called `file`.
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, uploadFiles } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const formData = new FormData();
+formData.append('file_1_property', 'Value');
+formData.append('file', raw_file);
+formData.append('file_2_property', 'Value');
+formData.append('file', raw_file_2);
+
+const result = await client.request(uploadFiles(formData));
+```
+
+</template>
+</SnippetToggler>
+
+The file contents has to be provided in a property called `file`. All other properties of
+[the file object](#the-file-object) can be provided as well, except `filename_disk` and `filename_download`.
 
 ::: tip Order Matters
 
-Make sure to define the non-file properties _first_. This ensures that the file metadata is associated with the correct
-file.
+Make sure to define the non-file properties for each file _first_. This ensures that the file metadata is associated
+with the correct file.
 
 :::
 
-You can upload multiple files at a time by repeating the payload with different contents, for example:
-
-```
---__X_BOUNDARY__
-Content-Disposition: form-data; name="title"
-
-Example
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="paulo-silva-vSRgXtQuns8-unsplash.jpg"
-Content-Type: image/jpeg
-
-// binary data
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="title"
-
-Another Title
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="mae-mu-GFhqNX1gE9E-unsplash.jpg"
-Content-Type: image/jpeg
-
-// binary data
-```
-
-In JavaScript, this can be achieved using the native `FormData` class:
-
-```js
-import axios from 'axios';
-
-const fileInput = document.querySelector('input[type="file"]');
-const formData = new FormData();
-
-formData.append('title', 'My First File');
-formData.append('file', fileInput.files[0]);
-
-await axios.post('/files', formData);
-```
-
-### Query Parameters
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Returns
+### Response
 
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
 
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /files`
+
+```http
+
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+example
+--boundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+
+< ./example.txt
+
+--boundary
 ```
-POST /files
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+#### Web
+
+::: code-group
+
+```js-vue [index.js]
+import { createDirectus, rest, uploadFiles } from 'https://unpkg.com/@directus/sdk@{{ packages['@directus/sdk'].version.major }}';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const form = document.getElementById('upload-file');
+
+if (form) {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const result = await client.request(uploadFiles(formData));
+
+    form.reset();
+  });
+}
 ```
 
+```html [index.html]
+<!doctype html>
+<html>
+  <head></head>
+  <body>
+    <form id="upload-file">
+      <input type="text" name="title" placeholder="Title..." />
+      <input type="file" name="file" />
+      <button type="submit">Upload</button>
+    </form>
+    <script src="/index.js" type="module"></script>
+  </body>
+</html>
 ```
-// Request
 
-Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
-Content-Length: 3442422
+:::
 
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="paulo-silva-vSRgXtQuns8-unsplash.jpg"
-Content-Type: image/jpeg
+#### Node.js
 
-ÿØÿàJFIFHHÿâICC_PROFILElcmsmntrRGB XYZ Ü)9acspAPPLöÖÓ-lcms
-descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
+```js
+import { createDirectus, rest, uploadFiles } from '@directus/sdk';
+import { readFileSync } from 'node:fs';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const title = 'Example';
+const file = new Blob([readFileSync('example.txt')], { type: 'text/plain' });
+const fileName = 'example.txt';
+
+const formData = new FormData();
+formData.append('title', title);
+formData.append('file', file, fileName);
+
+const result = await client.request(uploadFiles(formData));
 ```
 
----
+[Learn more about `FormData` ->](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+
+</template>
+</SnippetToggler>
 
 ## Import a File
 
 Import a file from the web
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /files/import`
+
+```json
+{
+	"url": file_url,
+	"data": file_object
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	import_file(url: String!, data: create_directus_files_input!): directus_files
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, importFile } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(importFile(file_url, file_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `url` **Required**\
 The URL to download the file from.
@@ -440,21 +735,18 @@ The URL to download the file from.
 `data`\
 Any of [the file object](#the-file-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [file object](#the-file-object) for the imported file.
 
-### REST API
+### Example
 
-```
-POST /files/import
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-##### Example
+`POST /files/import`
 
 ```json
-// POST /files/import
-
 {
 	"url": "https://source.unsplash.com/random",
 	"data": {
@@ -463,19 +755,10 @@ POST /files/import
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	import_file(url: String!, data: create_directus_files_input!): directus_files
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -485,47 +768,41 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, importFile } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	importFile('https://upload.wikimedia.org/wikipedia/commons/c/ca/Entlebucher.jpg', {
+		title: 'Dog',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a File
 
 Update an existing file, and/or replace it's file contents.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Request Body
+`PATCH /files/:id`
 
-You can either submit a JSON object consisting of a partial [file object](#the-file-object) to update the file meta, or
-send a multipart/form-data request to replace the file contents on disk. See [Upload a File](#upload-a-file) for more
-information on the structure of this `multipart/form-data` request.
+Provide a partial [file object](#the-file-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [file object](#the-file-object) for the updated file.
-
-### REST API
-
-```
-PATCH /files/:id
-```
-
-##### Example
-
-```json
-// PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-
-{
-	"title": "Example"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -533,7 +810,51 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateFile } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateFile(file_id, partial_file_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+You can either submit a JSON object consisting of a partial [file object](#the-file-object) to update the file meta, or
+send a multipart/form-data request to replace the file contents on disk. See [Upload a File](#upload-a-file) for more
+information on the structure of this `multipart/form-data` request.
+
+### Response
+
+Returns the [file object](#the-file-object) for the updated file.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
+```json
+{
+	"title": "Example"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -544,17 +865,72 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateFile } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFile('dc193671-13b9-4c37-a8af-42f17c036742', {
+		title: 'Entlebucher Mountain Dog',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Files
 
 Update multiple files at the same time.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`PATCH /files`
+
+```json
+{
+	"keys": file_id_array ,
+	"data": partial_file_object
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateFiles } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateFiles(file_id_array, partial_file_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the files you'd like to update.
@@ -562,21 +938,18 @@ Array of primary keys of the files you'd like to update.
 `data` **Required**\
 Any of [the file object](#the-file-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [file objects](#the-file-object) for the updated files.
 
-### REST API
+### Example
 
-```
-PATCH /files
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-##### Example
+`PATCH /files`
 
 ```json
-// PATCH /files
-
 {
 	"keys": ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"],
 	"data": {
@@ -585,19 +958,10 @@ PATCH /files
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -608,7 +972,23 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateFiles } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
+		tags: ['dogs'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a File
 
@@ -620,37 +1000,57 @@ This will also delete the file from disk.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Returns
+`DELETE /files/:id`
 
-Empty response.
+</template>
+<template #graphql>
 
-### REST API
-
-```
-DELETE /files/:id
-```
-
-##### Example
-
-```
-DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	delete_files_item(id: ID!): delete_one
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteFile } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteFile(file_id));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -660,7 +1060,19 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteFile } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Files
 
@@ -672,33 +1084,19 @@ This will also delete the files from disk.
 
 :::
 
-### Request Body
+### Request
 
-Array of file primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Returns
+`DELETE /files`
 
-Empty response.
+Provide an array of file IDs as the body of your request.
 
-### REST API
+</template>
+<template #graphql>
 
-```
-DELETE /files
-```
-
-##### Example
-
-```json
-// DELETE /files
-
-["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -706,7 +1104,51 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteFiles } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteFiles(file_id_array));
+
+//or
+
+const result = await client.request(deleteFiles(query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+Array of file primary keys
+
+### Returns
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`DELETE /files`
+
+```json
+["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -715,3 +1157,31 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteFiles } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteFiles(['90a416f0-28e0-4d51-84a2-387d1789add9', '840e2f08-d5cd-4caa-ac0a-31363626efb4'])
+);
+
+// or
+
+const result = await client.request(
+	deleteFiles({
+		filter: {
+			type: {
+				_eq: 'image/jpeg',
+			},
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>

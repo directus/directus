@@ -2,15 +2,15 @@ import { normalizePath } from '@directus/utils';
 import {
 	rand,
 	randAlphaNumeric,
+	randGitBranch as randCloudName,
 	randDirectoryPath,
 	randFilePath,
 	randFileType,
-	randGitBranch as randCloudName,
-	randGitCommitSha as randSha,
-	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
+	randGitCommitSha as randSha,
 	randText,
+	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
 import { Blob } from 'node:buffer';
@@ -21,7 +21,7 @@ import { extname, join, parse } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import type { Response } from 'undici';
-import { fetch, FormData } from 'undici';
+import { FormData, fetch } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
@@ -34,15 +34,20 @@ vi.mock('node:path');
 vi.mock('node:crypto');
 vi.mock('undici');
 
+const { join: joinActual } = await vi.importActual<typeof import('node:path')>('node:path');
+
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
 	path: {
 		input: string;
 		inputFull: string;
+		inputFolder: string;
 		src: string;
 		srcFull: string;
+		srcFolder: string;
 		dest: string;
 		destFull: string;
+		destFolder: string;
 	};
 	range: {
 		start: number;
@@ -82,10 +87,13 @@ beforeEach(() => {
 		path: {
 			input: randUnique() + randFilePath(),
 			inputFull: randUnique() + randFilePath(),
+			inputFolder: randUnique() + randFilePath(),
 			src: randUnique() + randFilePath(),
 			srcFull: randUnique() + randFilePath(),
+			srcFolder: randUnique() + randFilePath(),
 			dest: randUnique() + randFilePath(),
 			destFull: randUnique() + randFilePath(),
+			destFolder: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -122,6 +130,14 @@ beforeEach(() => {
 		if (input === sample.path.src) return sample.path.srcFull;
 		if (input === sample.path.dest) return sample.path.destFull;
 		if (input === sample.path.input) return sample.path.inputFull;
+
+		return '';
+	});
+
+	driver['getFolderPath'] = vi.fn().mockImplementation((input) => {
+		if (input === sample.path.src) return sample.path.srcFolder;
+		if (input === sample.path.dest) return sample.path.destFolder;
+		if (input === sample.path.input) return sample.path.inputFolder;
 
 		return '';
 	});
@@ -219,7 +235,7 @@ describe('#toFormUrlEncoded', () => {
 		mockProps = Array.from(Array(3), () => randAlphaNumeric({ length: randNumber({ min: 2, max: 15 }) }).join('')) as [
 			string,
 			string,
-			string
+			string,
 		];
 
 		mockValues = randWord({ length: 3 }) as [string, string, string];
@@ -251,14 +267,15 @@ describe('#toFormUrlEncoded', () => {
 					[mockProps[1]]: mockValues[1],
 					[mockProps[2]]: mockValues[2],
 				},
-				{ sort: true }
-			)
+				{ sort: true },
+			),
 		).toBe(`${mockProps[2]}=${mockValues[2]}&${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}`);
 	});
 });
 
 describe('#getFullSignature', () => {
 	let mockPayload: Record<string, string>;
+
 	let mockCreateHash: {
 		update: Mock;
 		digest: Mock;
@@ -337,6 +354,7 @@ describe('#getFullSignature', () => {
 describe('#getParameterSignature', () => {
 	let mockHash: string;
 	let result: string;
+
 	let mockCreateHash: {
 		update: Mock;
 		digest: Mock;
@@ -456,6 +474,7 @@ describe('#getPublicId', () => {
 	});
 
 	test('Returns original file path if type is raw', () => {
+		vi.mocked(parse).mockReturnValueOnce({ base: sample.path.input } as ParsedPath);
 		driver['getResourceType'] = vi.fn().mockReturnValue('raw');
 		const publicId = driver['getPublicId'](sample.path.input);
 		expect(publicId).toBe(sample.path.input);
@@ -534,25 +553,25 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET' }
+			{ method: 'GET' },
 		);
 	});
 
 	test('Adds optional Range header for start', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start, end: undefined });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-` } }
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-` } },
 		);
 	});
 
 	test('Adds optional Range header for end', async () => {
-		await driver.read(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { start: undefined, end: sample.range.end });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=-${sample.range.end}` } }
+			{ method: 'GET', headers: { Range: `bytes=-${sample.range.end}` } },
 		);
 	});
 
@@ -561,7 +580,7 @@ describe('#read', () => {
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
-			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-${sample.range.end}` } }
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-${sample.range.end}` } },
 		);
 	});
 
@@ -596,6 +615,7 @@ describe('#read', () => {
 
 describe('#stat', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		bytes: number;
 		created_at: string;
@@ -611,6 +631,8 @@ describe('#stat', () => {
 			json: vi.fn().mockResolvedValue(mockResponseBody),
 			status: 200,
 		};
+
+		vi.mocked(join).mockImplementation(joinActual);
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 	});
@@ -630,21 +652,47 @@ describe('#stat', () => {
 		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
-	test('Calls fetch with constructed URL and auth header', async () => {
+	test('Creates signature for body parameters', async () => {
 		await driver.stat(sample.path.input);
+
+		expect(driver['getFullSignature']).toHaveBeenCalledWith({
+			type: 'upload',
+			public_id: sample.publicId.input,
+			api_key: sample.config.apiKey,
+			timestamp: sample.timestamp,
+		});
+	});
+
+	test('Creates form url encoded body ', async () => {
+		await driver.stat(sample.path.input);
+
+		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+			type: 'upload',
+			public_id: sample.publicId.input,
+			api_key: sample.config.apiKey,
+			timestamp: sample.timestamp,
+			signature: sample.fullSignature,
+		});
+	});
+
+	test('Fetches URL with url encoded body', async () => {
+		await driver.stat(sample.path.input);
+
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/${sample.resourceType}/upload/${sample.publicId.input}`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/${sample.resourceType}/explicit`,
 			{
-				method: 'GET',
+				method: 'POST',
 				headers: {
-					Authorization: sample.basicAuth,
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
-			}
+				body: sample.formUrlEncoded,
+			},
 		);
 	});
 
 	test('Throws error when status is >400', async () => {
 		mockResponse.status = randNumber({ min: 400, max: 599 });
+
 		try {
 			await driver.stat(sample.path.input);
 		} catch (err: any) {
@@ -655,6 +703,7 @@ describe('#stat', () => {
 
 	test('Returns size/modified from bytes/created_at from Cloudinary', async () => {
 		const result = await driver.stat(sample.path.input);
+
 		expect(result).toStrictEqual({
 			size: sample.file.size,
 			modified: sample.file.modified,
@@ -686,6 +735,7 @@ describe('#exists', () => {
 
 describe('#move', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		error?: { message?: string };
 	};
@@ -750,7 +800,7 @@ describe('#move', () => {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
 				body: sample.formUrlEncoded,
-			}
+			},
 		);
 	});
 
@@ -853,6 +903,7 @@ describe('#write', () => {
 		await driver.write(sample.path.input, stream);
 
 		expect(driver['uploadChunk']).toHaveBeenCalledOnce();
+
 		expect(driver['uploadChunk']).toHaveBeenCalledWith({
 			resourceType: sample.resourceType,
 			blob: new Blob(chunks),
@@ -964,12 +1015,15 @@ describe('#write', () => {
 
 describe('#uploadChunk', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		error?: { message?: string };
 	};
+
 	let mockFormData: {
 		set: Mock;
 	};
+
 	let input: Parameters<(typeof driver)['uploadChunk']>[0];
 
 	beforeEach(() => {
@@ -1032,12 +1086,13 @@ describe('#uploadChunk', () => {
 					'X-Unique-Upload-Id': sample.timestamp,
 					'Content-Range': `bytes ${input.bytesOffset}-${input.bytesOffset + input.blob.size - 1}/${input.bytesTotal}`,
 				},
-			}
+			},
 		);
 	});
 
 	test('Throws an error when the response statusCode is >=400', async () => {
 		mockResponse.status = randNumber({ min: 400, max: 599 });
+
 		try {
 			await driver['uploadChunk'](input);
 		} catch (err: any) {
@@ -1073,6 +1128,8 @@ describe('#uploadChunk', () => {
 
 describe('#delete', () => {
 	beforeEach(async () => {
+		vi.mocked(join).mockImplementation(joinActual);
+
 		await driver.delete(sample.path.input);
 	});
 
@@ -1097,7 +1154,7 @@ describe('#delete', () => {
 		});
 	});
 
-	test('Calls fetch with correct parameters', () => {
+	test('Calls fetch with correct parameters', async () => {
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
@@ -1114,7 +1171,7 @@ describe('#delete', () => {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
-			}
+			},
 		);
 	});
 });
@@ -1157,21 +1214,17 @@ describe('#list', () => {
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 
-	test('Gets public id for prefix', async () => {
-		await driver.list(sample.path.input).next();
-		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
-	});
-
 	test('Fetches search api results', async () => {
 		await driver.list(sample.path.input).next();
+
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=`,
 			{
 				method: 'GET',
 				headers: {
 					Authorization: sample.basicAuth,
 				},
-			}
+			},
 		);
 	});
 
@@ -1201,14 +1254,15 @@ describe('#list', () => {
 		}
 
 		expect(fetch).toHaveBeenCalledTimes(2);
+
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=${mockNextCursor}`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=${mockNextCursor}`,
 			{
 				method: 'GET',
 				headers: {
 					Authorization: sample.basicAuth,
 				},
-			}
+			},
 		);
 	});
 

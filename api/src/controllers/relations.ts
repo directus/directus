@@ -1,6 +1,7 @@
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -23,7 +24,7 @@ router.get(
 		res.locals['payload'] = { data: relations || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -34,12 +35,13 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const relations = await service.readAll(req.params['collection']);
 
 		res.locals['payload'] = { data: relations || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -56,7 +58,7 @@ router.get(
 		res.locals['payload'] = { data: relation || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const newRelationSchema = Joi.object({
@@ -82,7 +84,7 @@ router.post(
 		const { error } = newRelationSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		await service.createOne(req.body);
@@ -91,7 +93,7 @@ router.post(
 			const createdRelation = await service.readOne(req.body.collection, req.body.field);
 			res.locals['payload'] = { data: createdRelation || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -100,7 +102,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const updateRelationSchema = Joi.object({
@@ -127,7 +129,7 @@ router.patch(
 		const { error } = updateRelationSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		await service.updateOne(req.params['collection']!, req.params['field']!, req.body);
@@ -136,7 +138,7 @@ router.patch(
 			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
 			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -145,7 +147,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -156,10 +158,11 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.deleteOne(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

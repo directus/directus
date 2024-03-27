@@ -1,0 +1,249 @@
+table: directus_collections
+
+fields:
+  - field: collection_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: box
+      title: $t:field_options.directus_collections.collection_setup
+    width: full
+
+  - field: collection
+    interface: input
+    options:
+      font: monospace
+    readonly: true
+    width: half
+
+  - field: note
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_collections.note_placeholder
+    width: half
+
+  - field: icon
+    interface: select-icon
+    options:
+    width: half
+
+  - field: color
+    interface: select-color
+    options:
+      placeholder: $t:interfaces.select-color.placeholder
+    width: half
+
+  - field: display_template
+    interface: system-display-template
+    options:
+      collectionField: collection
+    width: full
+
+  - field: hidden
+    special:
+      - cast-boolean
+    interface: boolean
+    options:
+      label: $t:field_options.directus_collections.hidden_label
+    width: half
+
+  - field: singleton
+    special:
+      - cast-boolean
+    interface: boolean
+    options:
+      label: $t:singleton_label
+    width: half
+
+  - field: translations
+    special:
+      - cast-json
+    interface: list
+    options:
+      template: '{{ translation }} ({{ language }})'
+      fields:
+        - field: language
+          name: $t:language
+          type: string
+          schema:
+            default_value: en-US
+          meta:
+            interface: system-language
+            width: half
+            required: true
+        - field: translation
+          name: $t:field_options.directus_collections.collection_name
+          type: string
+          meta:
+            interface: input
+            width: half
+            required: true
+            options:
+              placeholder: $t:field_options.directus_collections.translation_placeholder
+        - field: singular
+          name: $t:field_options.directus_collections.singular_unit
+          type: string
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:field_options.directus_collections.translation_placeholder
+        - field: plural
+          name: $t:field_options.directus_collections.plural_unit
+          type: string
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:field_options.directus_collections.translation_placeholder
+    width: full
+
+  - field: preview_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: preview
+      title: $t:field_options.directus_collections.preview_divider
+    width: full
+
+  - field: preview_url
+    interface: system-display-template
+    options:
+      collectionField: collection
+      injectVersionField: true
+    width: full
+
+  - field: content_versioning_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: published_with_changes
+      title: $t:field_options.directus_collections.content_versioning_divider
+    width: full
+
+  - field: versioning
+    interface: boolean
+    special:
+      - cast-boolean
+    options:
+      label: $t:field_options.directus_collections.enable_versioning
+    width: half
+
+  - field: archive_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: archive
+      title: $t:field_options.directus_collections.archive_divider
+    width: full
+
+  - field: archive_field
+    interface: system-field
+    options:
+      collectionField: collection
+      allowNone: true
+      placeholder: $t:field_options.directus_collections.archive_field_placeholder
+    width: half
+
+  - field: archive_app_filter
+    interface: boolean
+    special:
+      - cast-boolean
+    options:
+      label: $t:field_options.directus_collections.archive_app_filter
+    width: half
+
+  - field: archive_value
+    interface: input
+    options:
+      font: monospace
+      iconRight: archive
+      placeholder: $t:field_options.directus_collections.archive_value
+    width: half
+
+  - field: unarchive_value
+    interface: input
+    options:
+      font: monospace
+      iconRight: unarchive
+      placeholder: $t:field_options.directus_collections.unarchive_value
+    width: half
+
+  - field: sort_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: sort
+      title: $t:field_options.directus_collections.sort_divider
+    width: full
+
+  - field: sort_field
+    interface: system-field
+    options:
+      collectionField: collection
+      placeholder: $t:field_options.directus_collections.sort_field
+      typeAllowList:
+        - float
+        - decimal
+        - integer
+      allowNone: true
+      allowPrimaryKey: false
+      allowForeignKeys: false
+    width: half
+
+  - field: accountability_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: admin_panel_settings
+      title: $t:field_options.directus_collections.accountability_divider
+    width: full
+
+  - field: accountability
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:field_options.directus_collections.track_activity_revisions
+          value: all
+        - text: $t:field_options.directus_collections.only_track_activity
+          value: activity
+        - text: $t:field_options.directus_collections.do_not_track_anything
+          value: null
+    width: half
+
+  - field: duplication_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: content_copy
+      title: $t:field_options.directus_collections.duplication_divider
+
+  - field: item_duplication_fields
+    special:
+      - cast-json
+    interface: system-field-tree
+    options:
+      collectionField: collection
+
+  - field: sort
+    hidden: true
+
+  - field: group
+    hidden: true
+
+  - field: collapse
+    hidden: true

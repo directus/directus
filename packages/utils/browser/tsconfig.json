@@ -1,10 +1,7 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
-		"lib": ["es2022", "DOM"],
-		"types": [],
-		"outDir": "../dist/browser",
-		"composite": true
+		"lib": ["es2022", "dom"]
 	},
 	"include": ["."]
 }

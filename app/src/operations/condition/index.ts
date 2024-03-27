@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 
 export default defineOperationApp({
 	id: 'condition',
@@ -30,7 +30,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 					template: JSON.stringify(
 						{
@@ -41,7 +41,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 				},
 			},

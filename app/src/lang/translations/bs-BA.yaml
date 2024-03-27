@@ -26,6 +26,7 @@ method: Metoda
 published: Objavljeno
 draft: Skica
 archived: Arhivirano
+extensions: Ekstenzije
 modules: Moduli
 module_bar: Bočni meni
 logs: Logovi
@@ -50,6 +51,24 @@ and: I
 or: Ili
 dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno prikazuje prvih {n} stavki.
 modifier: Modifikator
+extension_interface: Interfejs
+extension_display: Prikaz
+extension_layout: Raspored
+extension_module: Modul
+extension_panel: Ploča
+extension_theme: Tema
+extension_hook: Kuka
+extension_endpoint: Krajnja tačka
+extension_operation: Operacija
+extension_interfaces: Interfejs
+extension_layouts: Raspored
+extension_modules: Moduli
+extension_panels: Ploča
+extension_themes: Teme
+extension_operations: Operacije
+extension_reload_required: Stranica se mora ponovo učitati
+enable: Omogući
+disable: Onemogući
 custom: Prilagođeno
 hook: Kuka
 fill_width: Širina ispune
@@ -78,14 +97,6 @@ create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni panel
 create_webhook: Kreiraj webhook
-create_translation_string: Dodaj prijevodni niz
-no_translation_string: Nema prijevodnih nizova
-no_translation_string_copy: Još nema prijevodnih nizova.
-translation_string_key_placeholder: Ključ niza prijevoda...
-translation_string_translations_placeholder: Dodaj novi prijevod
-edit_translation_string: Uredi prijevodni niz
-delete_translation_string_copy: >-
-  Jeste li sigurni da želite izbrisati prijevodni niz "{key}"? Ova se akcija ne može poništiti.
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -101,6 +112,7 @@ rename_folder: Preimenuj folder
 delete_folder: Izbriši folder
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Pretpregled
 reset_bookmark: Poništi bookmark
 update_bookmark: Ažuriraj bookmark
 delete_bookmark: Obriši bookmark
@@ -116,20 +128,12 @@ public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
 admin_description: Početna administrativna rola s neograničenim pristupom aplikaciji/API-ju.
 not_allowed: Nije dopušteno
-directus_version: Directus verzija
-node_version: Node verzija
-node_uptime: Node vrijeme rada
-os_type: Vrsta OS-a
-os_version: OS verzija
-os_uptime: OS vrijeme rada
-os_totalmem: OS memorija
 archive: Arhiva
 archive_confirm: Jeste li sigurni da želite arhivirati ovu stavku?
 archive_confirm_count: >-
   Nema odabranih stavki | Jeste li sigurni da želite arhivirati ovu stavku? | Jeste li sigurni da želite arhivirati ovih {count} stavki?
 reset_system_permissions_to: 'Resetujte dopuštenje sistema na:'
 reset_system_permissions_copy: Ova će akcija prebrisati sva prilagođene dozvole koja ste možda primijenili na kolekcije sistema. Jesi li sigurni?
-the_following_are_minimum_permissions: Sljedeće su minimalne dozvole potrebne kada je omogućen "Pristup aplikaciji". Dozvole možete proširiti izvan ovog, ali ne ispod.
 app_access_minimum: Minimum za pristup aplikaciji
 recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
@@ -240,13 +244,6 @@ string: Niz
 text: Tekst
 time: Vrijeme
 timestamp: Vremenska oznaka
-geometry: Geometrija (sve)
-geometry.Point: Tačka
-geometry.LineString: Linijski niz
-geometry.Polygon: Poligon
-geometry.MultiPoint: Više tačaka
-geometry.MultiLineString: Višelinijski niz
-geometry.MultiPolygon: Višestruki poligon
 not_available_for_type: Nije dostupno za ovu vrstu
 create_translations: Dodaj prijevod
 auto_refresh: Automatsko osvježavanje
@@ -336,7 +333,7 @@ revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
-presentation_text_values_cannot_be_reimported: "Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti."
+presentation_text_values_cannot_be_reimported: 'Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti.'
 download_page_as_csv: 'Preuzmite stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pretpregled izrade
@@ -373,6 +370,7 @@ move: Premjesti
 system: Sistem
 add_field_related: Dodaj polje povezanoj kolekciji
 interface_label: Interfejs
+display_label: Prikaz
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -413,7 +411,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreirano
 modified: Izmijenjeno
-checksum: Kontrolni broj
 owner: Vlasnik
 edited_by: Uredio/la
 zoom: Uvećaj
@@ -435,11 +432,6 @@ open_file_in_tab: Otvori fajl u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
-exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
-exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
-exporting_download_hint: Nakon završetka, {format} tip fajla automatski će se preuzeti na vaš uređaj.
-exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon završetka, {format} fajl biće sačuvan u biblioteku fajlova.
-exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon završetka, {format} fajl biće sačuvena u biblioteku fajlova.
 collection_key: Ključ kolekcije
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -464,7 +456,6 @@ enable_select_button: Omogući dugme za odabir
 allow_duplicates: Dopusti duplikate
 comments: Komentari
 no_comments: Još nema komentara
-click_to_expand: Klikni za proširenje
 select_item: Odaberi stavku
 no_items: Nema stavki
 search_items: Pretraži stavke...
@@ -571,7 +562,6 @@ errors:
   RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
   USER_SUSPENDED: Suspendovani korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNPROCESSABLE_ENTITY: Entitet koji se ne može obraditi
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
   ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
@@ -579,7 +569,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL izuzetak provjere valjanosti
   SERVICE_UNAVAILABLE: Usluga nije dostupna
   UNSUPPORTED_MEDIA_TYPE: Nepodržan tip fajla
   UNEXPECTED_RESPONSE: Neočekivani odgovor
@@ -700,7 +689,6 @@ layout_options: Mogućnosti izgleda
 rows: Redovi
 columns: Kolone
 collection_setup: Postavljanje kolekcije
-optional_system_fields: Opcionalna sistemska polja
 value_unique: Vrijednost mora biti jedinstvena
 all_activity: Sve aktivnosti
 create_item: Dodaj novu stavku
@@ -900,12 +888,10 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
-settings_permissions: Role i dozvole
-settings_project: Postavke projekta
+settings_project: Postavke
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
-settings_presets: Zadane postavke i oznake
-settings_translation_strings: Prijevodni nizovi
+settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
 scope: Opseg
 actions: Akcije
@@ -940,7 +926,6 @@ page_help_files_collection: >-
   **Biblioteka fajlova** — Navodi sve fajlove prenesene u ovaj projekat. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji fajla** — Obrazac za upravljanje metapodacima fajla, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
 page_help_settings_datamodel_collections: >-
   **Model podataka: kolekcije** — Navodi sve dostupne kolekcije. To uključuje vidljive, skrivene i sistemske kolekcije, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
@@ -955,7 +940,6 @@ page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazu
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za kreiranje i upravljanje web-dojavnicima.'
 page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
 page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_settings_translation_strings_collection: '**Pregledaj nizove prijevoda** — Navodi sve prijevodne nizove unutar projekta.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sistema unutar ovog projekta.'
 page_help_users_item: >-
   **Detalji o korisniku** — Upravljajte podacima o svom računu ili pregledajte detalje drugih korisnika.
@@ -1059,10 +1043,6 @@ fields:
     tags: Oznake
     user_preferences: Preferencije korisnika
     language: Jezik
-    theme: Tema
-    theme_auto: Automatski (na temelju sistema)
-    theme_light: Svijetli način
-    theme_dark: Tamni način
     tfa_secret: Dvofaktorska autentifikacija
     admin_options: Administratorske opcije
     status_draft: Skica
@@ -1090,7 +1070,6 @@ fields:
     project_color: Boja projekta
     project_logo: Logotip projekta
     default_language: Zadani jezik
-    branding: Brendiranje i stil
     public_foreground: Javni prvi plan
     public_background: Javna pozadina
     public_note: Javna napomena
@@ -1147,7 +1126,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Moj projekat...
     project_color_note: Pozadina i logotip za prijavu
-    project_logo_note: Bijela 40x40 SVG/PNG
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
     security_divider_title: Sigurnost
     auth_password_policy:
@@ -1197,6 +1175,7 @@ field_options:
     sort_field: Odaberite polje...
     accountability_divider: Odgovornost
     duplication_divider: Umnožavanje
+    preview_divider: Pretpregled
   directus_files:
     title: Jedinstven naslov...
     description: Neobavezan opis...
@@ -1207,7 +1186,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu rolu...
     description: Opis role...
-    ip_access: Dodajte dopuštene IP adrese, ostavite prazno da dopustite sve...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1252,6 +1230,8 @@ start_open: Počni otvoren
 start_collapsed: Počni skupljen
 block: Blok
 comment: Komentar
+live_preview:
+  new_window: Otvori u novom prozoru
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
@@ -1509,6 +1489,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije interfejsa
     description: Modal za odabir opcija interfejsa
+  system-display:
+    display: Prikaz
   list-m2m:
     description: Odaberite više povezanih spojnih stavki
     columns_configure_notice: Možete konfigurisati predložak prikaza nakon kreiranja ovog polja.
@@ -1565,6 +1547,7 @@ interfaces:
     sort_placeholder: Ručno
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutni podaci nisu kompatibilni sa interfejsom repetitora i biće nadjačani prilikom dodavanja stavki u repetitor
+    interface_group: Opcije interfejsa
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača
@@ -1603,7 +1586,6 @@ interfaces:
     input-translated-string: Prevedeni nizovi
     description: Odaberi ili dodaj prijevodni niz
     search_placeholder: Traži...
-    new_translation_string: Novi prijevodni niz
   boolean:
     toggle: Uključi/isključi
     description: Prebacivanje između uključivanja i isključivanja
@@ -1638,6 +1620,16 @@ interfaces:
     folder_note: Folder za učitane fajlove. Ne utječe na postojeće fajlove.
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
+  input-block-editor:
+    tools: Alatna traka
+    tools_options:
+      header: Zaglavlje
+      nestedlist: Lista
+      embed: Ugradi
+      code: Kôd
+      image: Slika
+      table: Tablica
+      underline: Podcrtano
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
@@ -1738,6 +1730,8 @@ displays:
     icon: Ikona
     border: Obrub
     border_label: Prikaži rubove
+    mask: Maskirano
+    mask_label: Sakrij prave vrijednosti
     text: Tekst
     text_placeholder: Opcionalno nadjačavanje vrijednosti...
   formatted-json-value:
@@ -1933,6 +1927,8 @@ operations:
     emit_events: Emituje događaje
     key: IDevi
     query: Upit
+  json-web-token:
+    options: Opcije
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu
@@ -1944,14 +1940,17 @@ operations:
     to: Za
     to_placeholder: Dodajte adrese e-pošte i pritisnite enter...
     body: Sadržaj
+    template: Predložak
+    data: Podaci
   notification:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
     message: Poruka
+    subject: Tema
   request:
     name: Web dojavnik / URL zahtjeva
-    description: "Pošaljite zahtjev na URL"
+    description: 'Pošaljite zahtjev na URL'
     method: Metoda
     data: Podaci
     headers: Zaglavlja
@@ -1970,3 +1969,12 @@ operations:
     flows: Tokovi
     flow: Tok
     data: Podaci
+standard: Standardno
+compact: Kompaktno
+style: Stil
+fonts:
+  normal: Normalno
+  bold: Podebljano
+  black: Crna
+  italic: Kurziv
+  auto: Automatski

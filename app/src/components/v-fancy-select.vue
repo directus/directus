@@ -1,3 +1,58 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+export type FancySelectItem = (
+	| {
+			icon: string;
+			value?: string | number;
+			text: string;
+			description?: string;
+			iconRight?: string;
+	  }
+	| { divider: true }
+) &
+	Record<string, any>;
+
+interface Props {
+	/** The list of possible items to display */
+	items: FancySelectItem[];
+	/** Used to model the current selected item */
+	modelValue?: string | number | null;
+	/** Disable selecting / deselecting a value */
+	disabled?: boolean;
+	/** What key in items to use to display text */
+	itemText?: string;
+	/** What key in items to use to model the selected item */
+	itemValue?: string;
+	/** What key in items to use to display a description */
+	itemDescription?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	disabled: false,
+	itemText: 'text',
+	itemValue: 'value',
+	itemDescription: 'description',
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const visibleItems = computed(() => {
+	if (props.modelValue === null) return props.items;
+
+	return props.items.filter((item) => {
+		return item[props.itemValue] === props.modelValue;
+	});
+});
+
+function toggle(item: Record<string, any>) {
+	if (props.disabled === true) return;
+	if (props.modelValue === item[props.itemValue]) emit('update:modelValue', null);
+	else emit('update:modelValue', item[props.itemValue]);
+}
+</script>
+
 <template>
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
@@ -33,58 +88,6 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { computed } from 'vue';
-
-export type FancySelectItem = {
-	icon: string;
-	value?: string | number;
-	text: string;
-	description?: string;
-	divider?: boolean;
-	iconRight?: string;
-} & Record<string, any>;
-
-interface Props {
-	/** The list of possible items to display */
-	items: FancySelectItem[];
-	/** Used to model the current selected item */
-	modelValue?: string | number | null;
-	/** Disable selecting / deselecting a value */
-	disabled?: boolean;
-	/** What key in items to use to display text */
-	itemText?: string;
-	/** What key in items to use to model the selected item */
-	itemValue?: string;
-	/** What key in items to use to display a description */
-	itemDescription?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: () => null,
-	disabled: false,
-	itemText: 'text',
-	itemValue: 'value',
-	itemDescription: 'description',
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const visibleItems = computed(() => {
-	if (props.modelValue === null) return props.items;
-
-	return props.items.filter((item) => {
-		return item[props.itemValue] === props.modelValue;
-	});
-});
-
-function toggle(item: Record<string, any>) {
-	if (props.disabled === true) return;
-	if (props.modelValue === item[props.itemValue]) emit('update:modelValue', null);
-	else emit('update:modelValue', item[props.itemValue]);
-}
-</script>
-
 <style lang="scss" scoped>
 .v-fancy-select {
 	position: relative;
@@ -98,8 +101,8 @@ function toggle(item: Record<string, any>) {
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--background-normal);
-	border: 2px solid var(--background-normal);
+	background-color: var(--theme--background-normal);
+	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -108,7 +111,7 @@ function toggle(item: Record<string, any>) {
 	transition-property: background-color, border-color;
 
 	&:not(.disabled):hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--border-color-accent);
 	}
 
 	&.disabled {
@@ -122,7 +125,7 @@ function toggle(item: Record<string, any>) {
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
 
@@ -136,16 +139,16 @@ function toggle(item: Record<string, any>) {
 
 	&.active {
 		z-index: 2;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
 		}
 	}
 }
@@ -169,7 +172,7 @@ function toggle(item: Record<string, any>) {
 }
 
 .icon-right {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-divider {

@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { useHead } from '@unhead/vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+useHead({
+	title: t('page_not_found'),
+});
+</script>
+
 <template>
 	<private-view :title="t('page_not_found')">
 		<div class="not-found">
@@ -7,18 +18,6 @@
 		</div>
 	</private-view>
 </template>
-
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .not-found {

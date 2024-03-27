@@ -1,0 +1,245 @@
+.paddingBox {
+	padding: 0 106px;
+}
+
+.sectionContainer {
+	max-width: calc(var(--vp-layout-max-width) - 64px);
+	margin-inline: auto;
+}
+
+.sectionContainerHero {
+	position: relative;
+}
+
+.sectionPaddingHero {
+	padding-block: 64px;
+}
+
+.sectionPaddingMd {
+	padding-block: 60px;
+}
+
+.sectionPaddingLg {
+	padding-block: 120px;
+}
+
+.sectionNoPaddingTop {
+	padding-block-start: 0;
+}
+
+.sectionNoPaddingBottom {
+	padding-block-end: 0;
+}
+
+.hero {
+	position: relative;
+	overflow: hidden;
+}
+
+.heroContent {
+	max-width: 580px;
+}
+
+.heroContent h1 {
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 1;
+	margin: 20px 0;
+}
+
+.heroContent p {
+	max-inline-size: 50ch;
+	margin: 20px 0;
+}
+
+.heroButtons {
+	margin: 24px 0;
+}
+
+.heroToggler {
+	border-radius: 12px;
+	width: 100%;
+	max-width: 590px;
+	backdrop-filter: blur(4px);
+	margin-left: 4em;
+}
+
+.heroToggler :global(.snippet-toggler .content-area .copy) {
+	display: none;
+}
+
+.flex {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.whiteBg {
+	background: var(--vp-c-bg);
+}
+
+.grayBg {
+	background: var(--vp-c-bg-soft);
+}
+
+.header {
+	text-align: center;
+	max-width: 680px;
+	margin: 0 auto;
+}
+
+.header h2 {
+	border-top: 0;
+	margin: 0;
+	line-height: 1.2;
+	font-size: 38px;
+}
+
+.header p {
+	font-size: 20px;
+	line-height: 1.5;
+	color: var(--vp-c-text-2);
+	margin: 20px 0;
+}
+
+.m60 {
+	margin: 60px 0;
+}
+.mb60 {
+	margin-bottom: 60px;
+}
+
+.grid2 {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 24px;
+}
+
+.grid3 {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+}
+
+.grid4 {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 24px;
+}
+
+.buttonGroup {
+	display: inline-flex;
+	gap: 32px;
+}
+
+.sectionContainerSelfHosted {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 48px;
+}
+
+.headerSelfHosted {
+	max-width: 420px;
+}
+
+.image {
+	width: 100%;
+	border-radius: 8px;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+}
+
+.frameworks img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center center;
+	transition: scale 150ms ease-out;
+	border-radius: 8px;
+}
+
+.frameworks .image:hover img {
+	scale: 1.05;
+}
+
+@media only screen and (min-width: 768px) {
+	.headerSelfHosted {
+		align-self: center;
+		text-align: unset;
+	}
+
+	.headingSelfHosted {
+		max-width: 10ch;
+	}
+}
+
+@media only screen and (max-width: 1400px) {
+	.heroToggler {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 1200px) {
+	.paddingBox {
+		padding-inline: 64px;
+	}
+	.sectionPaddingHero {
+		padding-block-end: 0;
+	}
+	.heroButtons {
+		margin-block-start: 0;
+	}
+	.grid4 {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.paddingBox {
+		padding: 0 32px;
+	}
+	.hero {
+		min-height: unset;
+	}
+	.flex {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.header h2 {
+		font-size: 28px;
+	}
+	.header p {
+		font-size: 18px;
+	}
+
+	.grid2,
+	.grid3,
+	.grid4 {
+		grid-template-columns: 1fr;
+	}
+
+	.sectionContainerSelfHosted {
+		display: block;
+	}
+
+	.headerSelfHosted {
+		text-align: center;
+		max-width: 680px;
+		margin: 0 auto;
+	}
+
+	.heroContent h1 {
+		font-size: 42px;
+	}
+
+	.sectionPaddingHero {
+		padding-block: 32px;
+	}
+}
+
+@media only screen and (max-width: 380px) {
+	.heroContent h1 {
+		font-size: 36px;
+	}
+}

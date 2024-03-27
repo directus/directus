@@ -1,21 +1,20 @@
 import { createTestingPinia } from '@pinia/testing';
-import { AxiosRequestConfig } from 'axios';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { RouteLocationNormalized } from 'vue-router';
+
+import { User } from '@directus/types';
+import { useLatencyStore } from './latency';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
-
-import { User } from '@directus/types';
-import { pick } from 'lodash';
-import { useLatencyStore } from './latency';
-import { useUserStore } from './user';
 
 const mockAdminUser = {
 	id: '00000000-0000-0000-0000-000000000000',
@@ -24,7 +23,6 @@ const mockAdminUser = {
 	last_name: 'User',
 	email: 'test@example.com',
 	last_page: null,
-	theme: 'light',
 	tfa_secret: null,
 	// this should be "null", but mocked as "{ id: null }" due to lodash pick usage
 	avatar: {
@@ -43,13 +41,11 @@ const mockAdminUser = {
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: (path: string, config?: AxiosRequestConfig<any>) => {
-				if (path === '/users/me' && config?.params?.fields) {
-					const returnedData = pick(mockAdminUser, config.params.fields);
-
+			get: (path: string) => {
+				if (path === '/users/me') {
 					return Promise.resolve({
 						data: {
-							data: returnedData,
+							data: mockAdminUser,
 						},
 					});
 				}
@@ -70,7 +66,7 @@ vi.mock('@/api', () => {
 });
 
 afterEach(() => {
-	vi.restoreAllMocks();
+	vi.clearAllMocks();
 });
 
 describe('getters', () => {
@@ -96,9 +92,26 @@ describe('getters', () => {
 			expect(userStore.isAdmin).toEqual(false);
 		});
 
-		test('should return true when is current user with role that has admin access', async () => {
+		test('should return false when current user has role with no admin access', async () => {
 			const userStore = useUserStore();
-			await userStore.hydrate();
+
+			userStore.currentUser = {
+				role: {
+					admin_access: false,
+				},
+			} as User;
+
+			expect(userStore.isAdmin).toEqual(false);
+		});
+
+		test('should return true when current user has role with admin access', async () => {
+			const userStore = useUserStore();
+
+			userStore.currentUser = {
+				role: {
+					admin_access: true,
+				},
+			} as User;
 
 			expect(userStore.isAdmin).toEqual(true);
 		});
@@ -107,35 +120,9 @@ describe('getters', () => {
 
 describe('actions', () => {
 	describe('hydrate', () => {
-		test('should fetch required fields and set current user as the returned value', async () => {
+		test('should fetch user fields and set current user as the returned value', async () => {
 			const userStore = useUserStore();
 			await userStore.hydrate();
-
-			const requiredFields = [
-				'id',
-				'language',
-				'first_name',
-				'last_name',
-				'email',
-				'last_page',
-				'theme',
-				'tfa_secret',
-				'avatar.id',
-				'role.admin_access',
-				'role.app_access',
-				'role.id',
-				'role.enforce_tfa',
-			];
-
-			expect(userStore.currentUser).toEqual(pick(mockAdminUser, requiredFields));
-		});
-	});
-
-	describe('hydrateAdditionalFields', () => {
-		test('should fetch additional fields and add them to the current user', async () => {
-			const userStore = useUserStore();
-			await userStore.hydrate();
-			await userStore.hydrateAdditionalFields(['custom_user_field', 'role.custom_role_field']);
 
 			expect(userStore.currentUser).toEqual(mockAdminUser);
 		});
@@ -149,7 +136,7 @@ describe('actions', () => {
 			vi.spyOn(latencyStore, 'save').mockReturnValue();
 
 			const userStore = useUserStore();
-			await userStore.trackPage(page);
+			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);
 
 			expect((userStore.currentUser as User)?.last_page).not.toBe(page);
 		});
@@ -160,7 +147,7 @@ describe('actions', () => {
 
 			const userStore = useUserStore();
 			await userStore.hydrate();
-			await userStore.trackPage(page);
+			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);
 
 			expect((userStore.currentUser as User).last_page).toBe(page);
 		});

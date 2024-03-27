@@ -18,7 +18,7 @@ export function mapValuesDeep(obj: Record<string, any>, fn: (key: string, value:
 					} else {
 						return [key, fn(prefix + (prefix ? '.' : '') + key, value)];
 					}
-				})
+				}),
 			);
 		}
 	}

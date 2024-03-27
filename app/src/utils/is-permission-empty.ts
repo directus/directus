@@ -1,4 +1,4 @@
-import { Permission } from '../../../packages/shared/types';
+import type { Permission } from '@directus/types';
 
 export function isPermissionEmpty(perm: Permission): boolean {
 	return (

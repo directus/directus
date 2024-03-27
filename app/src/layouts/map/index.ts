@@ -1,24 +1,27 @@
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { getItemRoute } from '@/utils/get-route';
+import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
-import { Field, Filter, GeometryOptions, Item } from '@directus/types';
-import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
+import { defineLayout } from '@directus/extensions';
+import { Field, Filter, GeometryOptions } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',
 	name: '$t:layouts.map.map',
 	icon: 'map',
 	smallHeader: true,
+	sidebarShadow: true,
 	component: MapLayout,
 	slots: {
 		options: MapOptions,
@@ -52,31 +55,35 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
-				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map'
+				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map',
 			);
 		});
 
 		watch(
 			geometryFields,
 			(fields) => {
-				if (!geometryField.value && fields.length > 0) {
+				if (!geometryField.value && fields[0]) {
 					geometryField.value = fields[0].field;
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = geometryFieldData.value;
+
 			if (!field) {
 				return;
 			}
+
 			const geometryField = field.field;
 			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
+
 			if (!geometryFormat) {
 				return;
 			}
+
 			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
@@ -130,9 +137,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
+
 			if (isGeometryFieldNative.value) {
 				return;
 			}
+
 			if (geojson.value?.features.length) {
 				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
@@ -175,6 +184,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojsonError.value = null;
 					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
+
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
@@ -204,24 +214,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		}
 
-		function setSelection(ids: Item[]) {
+		function setSelection(ids: (string | number)[]) {
 			selection.value = Array.from(new Set(ids));
 		}
 
-		function pushSelection(ids: Item[]) {
+		function pushSelection(ids: (string | number)[]) {
 			selection.value = Array.from(new Set(selection.value.concat(ids)));
 		}
 
-		function handleSelect({ ids, replace }: { ids: Item[]; replace: boolean }) {
+		function handleSelect({ ids, replace }: { ids: (string | number)[]; replace: boolean }) {
 			if (replace) setSelection(ids);
 			else pushSelection(ids);
 		}
 
-		function handleClick({ id, replace }: { id: Item; replace: boolean }) {
+		function handleClick({ id, replace }: { id: string | number; replace: boolean }) {
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
-				router.push(`/content/${collection.value}/${id}`);
+				router.push(getItemRoute(unref(collection), id));
 			}
 		}
 
@@ -236,11 +246,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
 		const itemPopup = ref<ItemPopup>({ item: null });
+
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
 				const field = primaryKeyField.value?.field;
 				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
 			}
+
 			itemPopup.value = merge({}, itemPopup.value, update);
 		}
 

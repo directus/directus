@@ -1,9 +1,49 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { LOCAL_TYPES } from '@directus/constants';
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty } from '../store';
+
+defineProps<{
+	localType: (typeof LOCAL_TYPES)[number];
+}>();
+
+const collectionsStore = useCollectionsStore();
+
+const { t } = useI18n();
+const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
+const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
+
+const availableCollections = computed(() => {
+	return [
+		...orderBy(
+			collectionsStore.databaseCollections.filter((collection) => collection.meta),
+			['meta.sort', 'collection'],
+		),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: collectionsStore.crudSafeSystemCollections,
+		},
+	];
+});
+</script>
+
 <template>
 	<div class="relationship">
 		<div v-if="localType === 'm2o'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -13,7 +53,7 @@
 			<div class="field half-left">
 				<div class="label type-label">
 					{{ t('related_collection') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
 				<related-collection-select v-model="o2mCollection" />
@@ -22,7 +62,7 @@
 			<div class="field half-right">
 				<div class="label type-label">
 					{{ t('foreign_key') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
 				<related-field-select v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
@@ -32,7 +72,7 @@
 		<div v-if="localType === 'm2m'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -41,7 +81,7 @@
 		<div v-if="localType === 'translations'" class="field full">
 			<div class="label type-label">
 				{{ t('languages_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -50,7 +90,7 @@
 		<div v-if="localType === 'm2a'" class="field full">
 			<div class="label type-label">
 				{{ t('related_collections') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<v-select
@@ -58,7 +98,8 @@
 				:placeholder="t('collection') + '...'"
 				:items="availableCollections"
 				item-value="collection"
-				item-text="name"
+				item-text="collection"
+				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				item-disabled="meta.singleton"
 				multiple
 				:multiple-preview-threshold="0"
@@ -67,71 +108,21 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
-import { LOCAL_TYPES } from '@directus/constants';
-import { syncFieldDetailStoreProperty } from '../store';
-import { useI18n } from 'vue-i18n';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { orderBy } from 'lodash';
-import { useCollectionsStore } from '@/stores/collections';
-
-export default defineComponent({
-	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	props: {
-		localType: {
-			type: String as PropType<(typeof LOCAL_TYPES)[number]>,
-			required: true,
-		},
-	},
-	setup() {
-		const collectionsStore = useCollectionsStore();
-
-		const { t } = useI18n();
-		const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-		const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-		const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
-		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
-
-		const availableCollections = computed(() => {
-			return orderBy(
-				[
-					...collectionsStore.databaseCollections,
-					{
-						divider: true,
-					},
-					{
-						name: t('system'),
-						selectable: false,
-						children: collectionsStore.crudSafeSystemCollections,
-					},
-				],
-				['collection'],
-				['asc']
-			);
-		});
-
-		return { availableCollections, oneAllowedCollections, relatedCollectionM2O, o2mCollection, o2mField, t };
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .relationship {
 	@include form-grid;
 
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	&:not(:empty) {
 		margin-bottom: 20px;
 	}
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 }
 </style>

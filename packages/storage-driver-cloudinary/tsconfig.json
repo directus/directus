@@ -1,7 +1,4 @@
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
-	"compilerOptions": {
-		"outDir": "dist"
-	},
+	"extends": "@directus/tsconfig/node18-esm",
 	"include": ["src"]
 }

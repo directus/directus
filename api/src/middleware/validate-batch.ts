@@ -1,8 +1,8 @@
-import { FailedValidationException } from '@directus/exceptions';
 import Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { validateQuery } from '../utils/validate-query.js';
 
 export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 	asyncHandler(async (req, _res, next) => {
@@ -15,7 +15,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 			return next();
 		}
 
-		if (!req.body) throw new InvalidPayloadException('Payload in body is required');
+		if (!req.body) throw new InvalidPayloadError({ reason: 'Payload in body is required' });
 
 		if (['update', 'delete'].includes(scope) && Array.isArray(req.body)) {
 			return next();
@@ -24,6 +24,8 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		// In reads, the query in the body should override the query params for searching
 		if (scope === 'read' && req.body.query) {
 			req.sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+
+			validateQuery(req.sanitizedQuery);
 		}
 
 		// Every cRUD action has either keys or query
@@ -46,7 +48,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		const { error } = batchSchema.validate(req.body);
 
 		if (error) {
-			throw new FailedValidationException(error.details[0]!);
+			throw new InvalidPayloadError({ reason: error.details[0]!.message });
 		}
 
 		return next();

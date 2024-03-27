@@ -1,12 +1,15 @@
+import { useEnv } from '@directus/env';
 import type { Notification } from '@directus/types';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -41,23 +44,26 @@ export class NotificationsService extends ItemsService {
 			const user = await this.usersService.readOne(data.recipient, {
 				fields: ['id', 'email', 'email_notifications', 'role.app_access'],
 			});
-			const manageUserAccountUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'users', user['id']).toString();
+
+			const manageUserAccountUrl = new Url(env['PUBLIC_URL'] as string)
+				.addPath('admin', 'users', user['id'])
+				.toString();
 
 			const html = data.message ? md(data.message) : '';
 
 			if (user['email'] && user['email_notifications'] === true) {
-				try {
-					await this.mailService.send({
+				this.mailService
+					.send({
 						template: {
 							name: 'base',
 							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
 						to: user['email'],
 						subject: data.subject,
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send notification via mail`);
 					});
-				} catch (error: any) {
-					logger.error(error.message);
-				}
 			}
 		}
 	}

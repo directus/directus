@@ -1,19 +1,3 @@
-<template>
-	<span
-		v-if="internalActive"
-		class="v-chip"
-		:class="[sizeClass, { outlined, label, disabled, close }]"
-		@click="onClick"
-	>
-		<span class="chip-content">
-			<slot />
-			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
-			</span>
-		</span>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -50,7 +34,11 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 
-const emit = defineEmits(['update:active', 'click', 'close']);
+const emit = defineEmits<{
+	'update:active': [active: boolean];
+	click: [event: MouseEvent];
+	close: [event: MouseEvent];
+}>();
 
 const internalLocalActive = ref(true);
 
@@ -79,35 +67,54 @@ function onCloseClick(event: MouseEvent) {
 }
 </script>
 
-<style>
-body {
-	--v-chip-color: var(--foreground-normal);
-	--v-chip-background-color: var(--background-normal-alt);
-	--v-chip-color-hover: var(--white);
-	--v-chip-background-color-hover: var(--primary-125);
-	--v-chip-close-color: var(--danger);
-	--v-chip-close-color-disabled: var(--primary);
-	--v-chip-close-color-hover: var(--primary-125);
-}
-</style>
+<template>
+	<span
+		v-if="internalActive"
+		class="v-chip"
+		:class="[sizeClass, { outlined, label, disabled, close }]"
+		@click="onClick"
+	>
+		<span class="chip-content">
+			<slot />
+			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
+				<v-icon class="close" :name="closeIcon" x-small />
+			</span>
+		</span>
+	</span>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-chip-color                   [var(--theme--foreground)]
+		--v-chip-background-color        [var(--theme--background-normal)]
+		--v-chip-color-hover             [var(--white)]
+		--v-chip-background-color-hover  [var(--theme--primary-accent)]
+		--v-chip-close-color             [var(--theme--danger)]
+		--v-chip-close-color-disabled    [var(--theme--primary)]
+		--v-chip-close-color-hover       [var(--theme--primary-accent)]
+		--v-chip-padding                 [0 8px]
+
+*/
+
 .v-chip {
 	display: inline-flex;
 	align-items: center;
 	height: 36px;
-	padding: 0 8px;
-	color: var(--v-chip-color);
+	padding: var(--v-chip-padding, 0 8px);
+	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
 	line-height: 22px;
-	background-color: var(--v-chip-background-color);
-	border: var(--border-width) solid var(--v-chip-background-color);
+	background-color: var(--v-chip-background-color, var(--theme--background-normal));
+	border: var(--theme--border-width) solid var(--v-chip-background-color, var(--theme--background-normal));
 	border-radius: 16px;
 
 	&.clickable:hover {
-		color: var(--v-chip-color-hover);
-		background-color: var(--v-chip-background-color-hover);
-		border-color: var(--v-chip-background-color-hover);
+		color: var(--v-chip-color-hover, var(--white));
+		background-color: var(--v-chip-background-color-hover, var(--theme--primary-accent));
+		border-color: var(--v-chip-background-color-hover, var(--theme--primary-accent));
 		cursor: pointer;
 	}
 
@@ -116,47 +123,47 @@ body {
 	}
 
 	&.disabled {
-		color: var(--v-chip-color);
-		background-color: var(--v-chip-background-color);
-		border-color: var(--v-chip-background-color);
+		color: var(--v-chip-color, var(--theme--foreground));
+		background-color: var(--v-chip-background-color, var(--theme--background-normal));
+		border-color: var(--v-chip-background-color, var(--theme--background-normal));
 
 		&.clickable:hover {
-			color: var(--v-chip-color);
-			background-color: var(--v-chip-background-color);
-			border-color: var(--v-chip-background-color);
+			color: var(--v-chip-color, var(--theme--foreground));
+			background-color: var(--v-chip-background-color, var(--theme--background-normal));
+			border-color: var(--v-chip-background-color, var(--theme--background-normal));
 		}
 	}
 
 	&.x-small {
 		height: 20px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 6px);
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
 		height: 24px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 8px);
 		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
 		height: 44px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
 		height: 48px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 18px;
 		border-radius: 24px;
 	}
 
 	&.label {
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.chip-content {
@@ -173,23 +180,23 @@ body {
 			width: 14px;
 			height: 14px;
 			margin-left: 4px;
-			background-color: var(--v-chip-close-color);
+			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
 
 			.close {
-				--v-icon-color: var(--v-chip-background-color);
+				--v-icon-color: var(--v-chip-background-color, var(--theme--background-normal));
 			}
 
 			&.disabled {
-				background-color: var(--v-chip-close-color-disabled);
+				background-color: var(--v-chip-close-color-disabled, var(--theme--primary));
 
 				&:hover {
-					background-color: var(--v-chip-close-color-disabled);
+					background-color: var(--v-chip-close-color-disabled, var(--theme--primary));
 				}
 			}
 
 			&:hover {
-				background-color: var(--v-chip-close-color-hover);
+				background-color: var(--v-chip-close-color-hover, var(--theme--primary-accent));
 			}
 		}
 	}

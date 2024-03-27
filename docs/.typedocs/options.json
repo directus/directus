@@ -1,0 +1,28 @@
+{
+	"entryPoints": [
+		"../../packages/composables",
+		"../../packages/constants",
+		"../../packages/errors",
+		"../../packages/extensions-sdk",
+		"../../packages/format-title",
+		"../../packages/memory",
+		"../../packages/pressure",
+		"../../packages/random",
+		"../../sdk",
+		"../../packages/stores",
+		"../../packages/system-data",
+		"../../packages/themes",
+		"../../packages/types",
+		"../../packages/update-check"
+	],
+	"name": "Directus",
+	"entryPointStrategy": "packages",
+	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-frontmatter", "typedoc-plugin-zod"],
+	"out": "../packages",
+	"docsRoot": "/",
+	"readme": "./home.md",
+	"hideGenerator": true,
+	"frontmatterGlobals": {
+		"editLink": false
+	}
+}

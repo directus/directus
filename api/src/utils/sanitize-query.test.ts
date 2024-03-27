@@ -1,6 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
-
+import { useEnv } from '@directus/env';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from './sanitize-query.js';
+
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('@directus/utils', async () => {
 	const actual = (await vi.importActual('@directus/utils')) as any;
@@ -9,6 +13,14 @@ vi.mock('@directus/utils', async () => {
 		...actual,
 		parseFilter: vi.fn().mockImplementation((value) => value),
 	};
+});
+
+beforeEach(() => {
+	vi.mocked(useEnv).mockReturnValue({});
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
 describe('limit', () => {
@@ -24,6 +36,54 @@ describe('limit', () => {
 		const sanitizedQuery = sanitizeQuery({ limit });
 
 		expect(sanitizedQuery.limit).toBe(1);
+	});
+});
+
+describe('max limit', () => {
+	test('should replace -1', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+
+		const sanitizedQuery = sanitizeQuery({ limit: -1 });
+
+		expect(sanitizedQuery.limit).toBe(100);
+	});
+
+	test.each([1, 25, 150])('should accept number %i', (limit) => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
+
+		const sanitizedQuery = sanitizeQuery({ limit });
+
+		expect(sanitizedQuery.limit).toBe(limit);
+	});
+
+	test('should apply max if no limit passed in request', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+
+		const sanitizedQuery = sanitizeQuery({});
+
+		expect(sanitizedQuery.limit).toBe(100);
+	});
+
+	test('should apply lower value if no limit passed in request', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 });
+
+		const sanitizedQuery = sanitizeQuery({});
+
+		expect(sanitizedQuery.limit).toBe(25);
+	});
+
+	test('should apply limit from request if no max defined', () => {
+		const sanitizedQuery = sanitizeQuery({ limit: 150 });
+
+		expect(sanitizedQuery.limit).toBe(150);
+	});
+
+	test('should apply limit from request if max is unlimited', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
+
+		const sanitizedQuery = sanitizeQuery({ limit: 150 });
+
+		expect(sanitizedQuery.limit).toBe(150);
 	});
 });
 
@@ -129,6 +189,14 @@ describe('sort', () => {
 
 		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
 	});
+
+	test('should trim csv array results', () => {
+		const sort = 'field_a, field_b';
+
+		const sanitizedQuery = sanitizeQuery({ sort });
+
+		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
+	});
 });
 
 describe('filter', () => {
@@ -166,12 +234,20 @@ describe('offset', () => {
 		expect(sanitizedQuery.offset).toBe(1);
 	});
 
-	test('should ignore zero', () => {
+	test('should accept zero #18370', () => {
 		const offset = 0;
 
 		const sanitizedQuery = sanitizeQuery({ offset });
 
-		expect(sanitizedQuery.offset).toBeUndefined();
+		expect(sanitizedQuery.offset).toBe(0);
+	});
+
+	test('should accept string zero #18370', () => {
+		const offset = '0';
+
+		const sanitizedQuery = sanitizeQuery({ offset });
+
+		expect(sanitizedQuery.offset).toBe(0);
 	});
 });
 
@@ -265,6 +341,16 @@ describe('deep', () => {
 		const sanitizedQuery = sanitizeQuery({ deep });
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _sort: ['name'] } } });
+	});
+
+	test('should work in combination with query limit', () => {
+		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
+
+		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
+
+		const sanitizedQuery = sanitizeQuery({ deep });
+
+		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _limit: 100, _sort: ['name'] } } });
 	});
 });
 

@@ -1,3 +1,59 @@
+<script setup lang="ts">
+import api from '@/api';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { appRecommendedPermissions } from './app-permissions';
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const isOpen = useDialogRoute();
+
+const roleName = ref<string | null>(null);
+const appAccess = ref(true);
+const adminAccess = ref(false);
+
+const { saving, save } = useSave();
+
+function useSave() {
+	const saving = ref(false);
+
+	return { saving, save };
+
+	async function save() {
+		saving.value = true;
+
+		try {
+			const roleResponse = await api.post('/roles', {
+				name: roleName.value,
+				admin_access: adminAccess.value,
+				app_access: appAccess.value,
+			});
+
+			if (appAccess.value === true && adminAccess.value === false) {
+				await api.post(
+					'/permissions',
+					appRecommendedPermissions.map((permission) => ({
+						...permission,
+						role: roleResponse.data.data.id,
+					})),
+				);
+			}
+
+			router.push(`/settings/roles/${roleResponse.data.data.id}`);
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			saving.value = false;
+		}
+	}
+}
+</script>
+
 <template>
 	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')">
 		<v-card>
@@ -29,72 +85,10 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
-import api from '@/api';
-import { useRouter } from 'vue-router';
-import { appRecommendedPermissions } from './app-permissions';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-
-		const router = useRouter();
-
-		const isOpen = useDialogRoute();
-
-		const roleName = ref<string | null>(null);
-		const appAccess = ref(true);
-		const adminAccess = ref(false);
-
-		const { saving, save } = useSave();
-
-		return { t, router, isOpen, roleName, saving, save, appAccess, adminAccess };
-
-		function useSave() {
-			const saving = ref(false);
-
-			return { saving, save };
-
-			async function save() {
-				saving.value = true;
-
-				try {
-					const roleResponse = await api.post('/roles', {
-						name: roleName.value,
-						admin_access: adminAccess.value,
-						app_access: appAccess.value,
-					});
-
-					if (appAccess.value === true && adminAccess.value === false) {
-						await api.post(
-							'/permissions',
-							appRecommendedPermissions.map((permission) => ({
-								...permission,
-								role: roleResponse.data.data.id,
-							}))
-						);
-					}
-
-					router.push(`/settings/roles/${roleResponse.data.data.id}`);
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					saving.value = false;
-				}
-			}
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .form-grid {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;

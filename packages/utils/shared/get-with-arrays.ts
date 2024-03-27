@@ -14,11 +14,17 @@ export function get(object: Record<string, any> | any[], path: string, defaultVa
 
 	if (key.includes(':')) key = key.split(':')[0]!;
 
-	const result = Array.isArray(object) ? object.map((entry) => entry?.[key]).filter((entry) => entry) : object?.[key];
+	const result = Array.isArray(object) ? getArrayResult(object, key) : object?.[key];
 
-	if (follow.length > 0) {
+	if (result !== undefined && follow.length > 0) {
 		return get(result, follow.join('.'), defaultValue);
 	}
 
 	return result ?? defaultValue;
+}
+
+function getArrayResult(object: unknown[], key: string): unknown[] | undefined {
+	const result = object.map((entry) => entry?.[key as keyof unknown]).filter((entry) => entry);
+
+	return result.length > 0 ? result.flat() : undefined;
 }

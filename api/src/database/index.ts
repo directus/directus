@@ -1,5 +1,6 @@
-import { createInspector } from '@directus/schema';
+import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -9,8 +10,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
-import env from '../env.js';
-import logger from '../logger.js';
+import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
+import { useLogger } from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -22,10 +23,15 @@ let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default function getDatabase(): Knex {
+export default getDatabase;
+
+export function getDatabase(): Knex {
 	if (database) {
 		return database;
 	}
+
+	const env = useEnv();
+	const logger = useLogger();
 
 	const {
 		client,
@@ -49,6 +55,7 @@ export default function getDatabase(): Knex {
 			} else {
 				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
 			}
+
 			break;
 
 		case 'cockroachdb':
@@ -58,11 +65,21 @@ export default function getDatabase(): Knex {
 			} else {
 				requiredEnvVars.push('DB_CONNECTION_STRING');
 			}
+
+			break;
+		case 'mysql':
+			if (!env['DB_SOCKET_PATH']) {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			} else {
+				requiredEnvVars.push('DB_DATABASE', 'DB_USER', 'DB_PASSWORD', 'DB_SOCKET_PATH');
+			}
+
 			break;
 		case 'mssql':
 			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			}
+
 			break;
 		default:
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
@@ -194,6 +211,7 @@ export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
 
 export async function validateDatabaseConnection(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
+	const logger = useLogger();
 
 	try {
 		if (getDatabaseClient(database) === 'oracle') {
@@ -243,17 +261,18 @@ export async function isInstalled(): Promise<boolean> {
 
 export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
 
-		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+		const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 		migrationFiles = migrationFiles.filter(
-			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
+			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false,
 		);
 
 		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
@@ -261,8 +280,9 @@ export async function validateMigrations(): Promise<boolean> {
 		migrationFiles.push(...customMigrationFiles);
 
 		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
+
 		const completedVersions = (await database.select('version').from('directus_migrations')).map(
-			({ version }) => version
+			({ version }) => version,
 		);
 
 		return requiredVersions.every((version) => completedVersions.includes(version));
@@ -281,6 +301,8 @@ export async function validateDatabaseExtensions(): Promise<void> {
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const geometrySupport = await helpers.st.supported();
+	const logger = useLogger();
+
 	if (!geometrySupport) {
 		switch (client) {
 			case 'postgres':
@@ -296,7 +318,9 @@ export async function validateDatabaseExtensions(): Promise<void> {
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {
+	const env = useEnv();
 	database = database ?? getDatabase();
+	const logger = useLogger();
 
 	if (getDatabaseClient(database) === 'mysql') {
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
@@ -311,9 +335,11 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.whereNot({ COLLATION_NAME: collation });
 
 		let inconsistencies = '';
+
 		for (const table of tables) {
 			const tableColumns = columns.filter((column) => column.table_name === table.name);
 			const tableHasInvalidCollation = table.collation !== collation;
+
 			if (tableHasInvalidCollation || tableColumns.length > 0) {
 				inconsistencies += `\t\t- Table "${table.name}": "${table.collation}"\n`;
 
@@ -325,7 +351,7 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		if (inconsistencies) {
 			logger.warn(
-				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
+				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`,
 			);
 		}
 	}

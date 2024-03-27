@@ -1,93 +1,66 @@
+import api from '@/api';
+import { Permission, PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, it, vi } from 'vitest';
+import { usePermissionsStore } from './permissions';
+import { useUserStore } from './user';
+import { randomIdentifier, randomUUID } from '@directus/random';
+import { mockedStore } from '@/__utils__/store';
+
+vi.mock('@/api');
+
+let sample: {
+	collection: string;
+	user: { id: string };
+	role: { id: string };
+};
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
-});
 
-import api from '@/api';
-import { usePermissionsStore } from './permissions';
-import { useUserStore } from './user';
-
-const mockUser = {
-	id: '00000000-0000-0000-0000-000000000000',
-	role: {
-		admin_access: false,
-		id: '00000000-0000-0000-0000-000000000000',
-	},
-};
-
-const mockAdminUser = {
-	id: '00000000-0000-0000-0000-000000000000',
-	role: {
-		admin_access: true,
-		id: '00000000-0000-0000-0000-000000000000',
-	},
-};
-
-const mockPermissions = [
-	{
-		role: '00000000-0000-0000-0000-000000000000',
-		permissions: {
-			_and: [
-				{
-					field_a: {
-						_null: true,
-					},
-				},
-				{
-					field_b: {
-						_null: true,
-					},
-				},
-			],
-		},
-		validation: null,
-		presets: null,
-		fields: ['*'],
-		collection: 'test',
-		action: 'read',
-	},
-];
-
-vi.mock('@/api', () => {
-	return {
-		default: {
-			get: (path: string) => {
-				if (path === '/permissions') {
-					return Promise.resolve({
-						data: {
-							data: mockPermissions,
-						},
-					});
-				}
-
-				return Promise.reject(new Error(`GET "${path}" is not mocked in this test`));
-			},
-		},
+	sample = {
+		collection: randomIdentifier(),
+		user: { id: randomUUID() },
+		role: { id: randomUUID() },
 	};
 });
 
 afterEach(() => {
-	vi.restoreAllMocks();
+	vi.clearAllMocks();
 });
+
+const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
 
 describe('actions', () => {
 	describe('hydrate', () => {
 		test('should fetch additional fields when there are dynamic variables in presets', async () => {
+			const mockUser = {
+				id: sample.user.id,
+				role: {
+					id: sample.role.id,
+				},
+			} as User;
+
 			const userStore = useUserStore();
-			userStore.currentUser = mockAdminUser as any;
+			userStore.currentUser = mockUser;
+
 			const hydrateAdditionalFieldsSpy = vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
 
 			const permissionWithDynamicVariablesInPresets = {
-				role: '00000000-0000-0000-0000-000000000000',
-				permissions: {},
+				role: sample.role.id,
+				permissions: {
+					collection_b: {
+						role: {
+							_eq: '$CURRENT_ROLE.name',
+						},
+					},
+				},
 				validation: {
 					user: {
 						_eq: '$CURRENT_USER',
@@ -102,84 +75,112 @@ describe('actions', () => {
 			};
 
 			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: { data: [...mockPermissions, permissionWithDynamicVariablesInPresets] },
+				data: { data: [permissionWithDynamicVariablesInPresets] },
 			});
 
 			const permissionsStore = usePermissionsStore();
 			await permissionsStore.hydrate();
 
 			expect(hydrateAdditionalFieldsSpy).toHaveBeenCalledOnce();
+			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
 		});
 
-		test('should not fetch additional fields when there are not dynamic variables in presets', async () => {
+		test('should not fetch additional fields when there are no dynamic variables in presets', async () => {
+			const mockUser = {
+				id: sample.user.id,
+				role: {
+					id: sample.role.id,
+				},
+			} as User;
+
 			const userStore = useUserStore();
-			userStore.currentUser = mockAdminUser as any;
+			userStore.currentUser = mockUser;
+
 			vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
 
 			expect(userStore.hydrateAdditionalFields).not.toHaveBeenCalled();
 		});
 	});
 
-	describe('getPermissionsForUser', () => {
-		const collection = 'test';
-
-		test('should return permission for current user when it exists', async () => {
-			const userStore = useUserStore();
-			userStore.currentUser = mockAdminUser as any;
+	describe('getPermission', () => {
+		it.each(actions)('should return matching permission if it exists', (action) => {
+			const mockPermissions: [Permission] = [
+				{
+					role: sample.role.id,
+					collection: sample.collection,
+					action,
+					permissions: null,
+					validation: null,
+					presets: null,
+					fields: ['*'],
+				},
+			];
 
 			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
+			permissionsStore.permissions = mockPermissions;
 
-			expect(permissionsStore.getPermissionsForUser(collection, 'read')).toMatchObject({
-				collection,
-				action: 'read',
+			expect(permissionsStore.getPermission(sample.collection, action)).toMatchObject({
+				collection: sample.collection,
+				action,
 			});
 		});
 
-		test('should return null for current user when it does not exists', async () => {
-			const userStore = useUserStore();
-			userStore.currentUser = mockAdminUser as any;
-
+		it.each(actions)('should return null when not matching permission exists', (action) => {
 			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
 
-			expect(permissionsStore.getPermissionsForUser(collection, 'create')).toBe(null);
+			expect(permissionsStore.getPermission(sample.collection, action)).toBe(null);
 		});
 	});
 
 	describe('hasPermission', () => {
-		const collection = 'test';
+		const actions: PermissionsAction[] = ['create', 'read', 'update', 'delete', 'share'];
 
-		test('should return true for admin user', async () => {
-			const userStore = useUserStore();
-			userStore.currentUser = mockAdminUser as any;
+		describe('admin users', () => {
+			it.each(actions)('should always return true for %s permission', (action) => {
+				const userStore = mockedStore(useUserStore());
+				userStore.isAdmin = true;
 
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
+				const { hasPermission } = usePermissionsStore();
+				const result = hasPermission(sample.collection, action);
 
-			expect(permissionsStore.hasPermission(collection, 'read')).toBe(true);
+				expect(result).toBe(true);
+			});
 		});
 
-		test('should return true for current user with necessary permissions', async () => {
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser as any;
+		describe('non-admin users', () => {
+			it.each(actions)('should return false if user has no %s permission', (action) => {
+				const userStore = mockedStore(useUserStore());
+				userStore.isAdmin = false;
 
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
+				const { hasPermission } = usePermissionsStore();
+				const result = hasPermission(sample.collection, action);
 
-			expect(permissionsStore.hasPermission(collection, 'read')).toBe(true);
-		});
+				expect(result).toBe(false);
+			});
 
-		test('should return false for current user without necessary permissions', async () => {
-			const userStore = useUserStore();
-			userStore.currentUser = mockUser as any;
+			it.each(actions)('should return true if user has %s permission', (action) => {
+				const userStore = mockedStore(useUserStore());
+				userStore.isAdmin = false;
 
-			const permissionsStore = usePermissionsStore();
-			await permissionsStore.hydrate();
+				const mockPermissions: [Permission] = [
+					{
+						role: sample.role.id,
+						collection: sample.collection,
+						action,
+						permissions: null,
+						validation: null,
+						presets: null,
+						fields: ['*'],
+					},
+				];
 
-			expect(permissionsStore.hasPermission(collection, 'create')).toBe(false);
-			expect(permissionsStore.hasPermission(collection, 'update')).toBe(false);
-			expect(permissionsStore.hasPermission(collection, 'delete')).toBe(false);
+				const permissionsStore = usePermissionsStore();
+				permissionsStore.permissions = mockPermissions;
+
+				const result = permissionsStore.hasPermission(sample.collection, action);
+
+				expect(result).toBe(true);
+			});
 		});
 	});
 });

@@ -1,25 +1,29 @@
-import { afterEach, beforeAll, expect, test, vi } from 'vitest';
-
+import { useEnv } from '@directus/env';
+import type { Logger } from 'pino';
+import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger.js';
 import { validateEnv } from './validate-env.js';
-import logger from '../logger.js';
 
-vi.mock('../env', () => ({
-	getEnv: vi.fn().mockReturnValue({
-		PRESENT_TEST_VARIABLE: true,
-	}),
-}));
-vi.mock('../logger', () => ({
-	default: {
-		error: vi.fn(),
-	},
-}));
+vi.mock('@directus/env');
 
-vi.mock('process', () => ({
-	exit: vi.fn(),
-}));
+vi.mock('../logger');
+
+let mockLogger: Logger<never>;
 
 beforeAll(() => {
 	vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+	vi.mocked(useEnv).mockReturnValue({
+		PRESENT_TEST_VARIABLE: 'true',
+	});
+});
+
+beforeEach(() => {
+	mockLogger = {
+		error: vi.fn(),
+	} as unknown as Logger<never>;
+
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
 });
 
 afterEach(() => {
@@ -29,13 +33,13 @@ afterEach(() => {
 test('should not have any error when key is present', () => {
 	validateEnv(['PRESENT_TEST_VARIABLE']);
 
-	expect(logger.error).not.toHaveBeenCalled();
+	expect(mockLogger.error).not.toHaveBeenCalled();
 	expect(process.exit).not.toHaveBeenCalled();
 });
 
 test('should have error when key is missing', () => {
 	validateEnv(['ABSENT_TEST_VARIABLE']);
 
-	expect(logger.error).toHaveBeenCalled();
+	expect(mockLogger.error).toHaveBeenCalled();
 	expect(process.exit).toHaveBeenCalled();
 });

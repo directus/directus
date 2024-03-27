@@ -1,38 +1,29 @@
 import api from '@/api';
-import { Settings } from '@directus/types';
-import { createTestingPinia } from '@pinia/testing';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
-import { AxiosRequestConfig } from 'axios';
+import { Settings } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
+import { useSettingsStore } from './settings';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
-
-import { useSettingsStore } from './settings';
-import { useUserStore } from './user';
-
-const mockTranslationStrings: Settings['translation_strings'] = [
-	{
-		key: 'test_translation',
-		translations: {
-			'en-US': 'My Translation EN',
-			'zh-CN': 'My Translation CN',
-		},
-	},
-];
 
 const mockSettings: Settings = {
 	id: 1,
 	project_name: 'Directus',
 	project_url: null,
+	report_error_url: null,
+	report_bug_url: null,
+	report_feature_url: null,
 	project_color: null,
 	project_logo: null,
 	public_foreground: null,
@@ -48,9 +39,14 @@ const mockSettings: Settings = {
 	mapbox_key: null,
 	module_bar: [],
 	project_descriptor: null,
-	translation_strings: [],
 	default_language: 'en-US',
 	custom_aspect_ratios: null,
+	public_favicon: null,
+	default_appearance: 'auto',
+	default_theme_light: null,
+	default_theme_dark: null,
+	theme_light_overrides: null,
+	theme_dark_overrides: null,
 };
 
 const mockUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', role: { admin_access: false } } as any;
@@ -60,23 +56,13 @@ const mockShareUser = { share: 'a6eff2c1-d26b-43b2-bafd-84bb58c3b8ce', role: { a
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: (path: string, config?: AxiosRequestConfig<any>) => {
+			get: (path: string) => {
 				if (path === '/settings') {
-					if (!config) {
-						return Promise.resolve({
-							data: {
-								data: mockSettings,
-							},
-						});
-					}
-
-					if (config.params?.fields && config.params.fields.includes('translation_strings')) {
-						return Promise.resolve({
-							data: {
-								data: Object.assign({}, mockSettings, { translation_strings: mockTranslationStrings }),
-							},
-						});
-					}
+					return Promise.resolve({
+						data: {
+							data: mockSettings,
+						},
+					});
 				}
 
 				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
@@ -96,9 +82,9 @@ vi.mock('@/api', () => {
 	};
 });
 
-let apiGetSpy: SpyInstance;
+let apiGetSpy: MockInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 });
 
@@ -152,9 +138,9 @@ describe('dehyrate action', () => {
 });
 
 describe('updateSettings action', async () => {
-	let ApiPatchSpy: SpyInstance;
-	let NotifySpy: SpyInstance;
-	let unexpectedErrorSpy: SpyInstance;
+	let ApiPatchSpy: MockInstance;
+	let NotifySpy: MockInstance;
+	let unexpectedErrorSpy: MockInstance;
 
 	beforeEach(() => {
 		ApiPatchSpy = vi.spyOn(api, 'patch');
@@ -188,33 +174,5 @@ describe('updateSettings action', async () => {
 		expect(ApiPatchSpy).toHaveBeenCalledOnce();
 		expect(NotifySpy).not.toHaveBeenCalled();
 		expect(unexpectedErrorSpy).toHaveBeenCalledOnce();
-	});
-});
-
-describe('fetchRawTranslationStrings action', async () => {
-	test('should not update translation_strings value when store is empty', async () => {
-		const settingsStore = useSettingsStore();
-		await settingsStore.fetchRawTranslationStrings();
-
-		expect(apiGetSpy).toHaveBeenCalledOnce();
-		expect(settingsStore.settings).toEqual(null);
-		expect(settingsStore.settings?.translation_strings).toEqual(undefined);
-	});
-
-	test('should update translation_strings value in existing store', async () => {
-		const userStore = useUserStore();
-		userStore.currentUser = mockUser;
-
-		const settingsStore = useSettingsStore();
-		await settingsStore.hydrate();
-
-		expect(apiGetSpy).toHaveBeenCalledTimes(1);
-		expect(settingsStore.settings?.translation_strings).toEqual([]);
-
-		const translationStrings = await settingsStore.fetchRawTranslationStrings();
-
-		expect(apiGetSpy).toHaveBeenCalledTimes(2);
-		expect(settingsStore.settings?.translation_strings).toEqual(mockTranslationStrings);
-		expect(translationStrings).toEqual(mockTranslationStrings);
 	});
 });

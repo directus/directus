@@ -1,19 +1,4 @@
-<template>
-	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" />
-		{{ value }}
-	</span>
-	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
-		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
-		</div>
-		<div class="inactive">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
-		</div>
-	</div>
-</template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 
 type InterfaceOptions = {
@@ -37,13 +22,28 @@ const props = withDefaults(defineProps<Props>(), {
 const starCount = computed(() => {
 	if (props.interfaceOptions === null) return 5;
 
-	return Math.ceil(props.interfaceOptions.maxValue ?? 5);
+	return Math.ceil(props.interfaceOptions?.maxValue ?? 5);
 });
 
 const ratingPercentage = computed(() => ({
 	width: (Number(props.value) / starCount.value) * 100 + '%',
 }));
 </script>
+
+<template>
+	<span v-if="simple" class="rating simple">
+		<v-icon small name="star" filled />
+		{{ value }}
+	</span>
+	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
+		<div class="active" :style="ratingPercentage">
+			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
+		</div>
+		<div class="inactive">
+			<v-icon v-for="index in starCount" :key="index" small name="star" />
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .rating {
@@ -54,7 +54,7 @@ const ratingPercentage = computed(() => ({
 		color: #ffc107;
 		font-weight: 600;
 		background-color: rgb(255 193 7 / 0.15);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 
 		.v-icon {
 			margin-right: 4px;
@@ -64,6 +64,8 @@ const ratingPercentage = computed(() => ({
 	&.detailed {
 		position: relative;
 		width: min-content;
+		display: inline-flex;
+		height: var(--v-icon-size, 24px);
 
 		.active {
 			position: relative;
@@ -80,7 +82,7 @@ const ratingPercentage = computed(() => ({
 			left: 0;
 			z-index: 1;
 			display: inline-flex;
-			color: var(--background-normal);
+			color: var(--theme--background-normal);
 		}
 	}
 }

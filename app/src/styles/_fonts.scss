@@ -4,7 +4,8 @@
 	font-weight: 400;
 	font-family: 'Inter';
 	font-style: normal;
-	src: url('../assets/fonts/Inter-Regular.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/Inter-Regular.woff2') format('woff2'),
 		url('../assets/fonts/Inter-Regular.woff') format('woff');
 	font-display: block;
 }
@@ -13,7 +14,8 @@
 	font-weight: 500;
 	font-family: 'Inter';
 	font-style: normal;
-	src: url('../assets/fonts/Inter-Medium.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/Inter-Medium.woff2') format('woff2'),
 		url('../assets/fonts/Inter-Medium.woff') format('woff');
 	font-display: block;
 }
@@ -22,7 +24,8 @@
 	font-weight: 500;
 	font-family: 'Inter';
 	font-style: italic;
-	src: url('../assets/fonts/Inter-MediumItalic.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/Inter-MediumItalic.woff2') format('woff2'),
 		url('../assets/fonts/Inter-MediumItalic.woff') format('woff');
 	font-display: block;
 }
@@ -31,7 +34,8 @@
 	font-weight: 600;
 	font-family: 'Inter';
 	font-style: normal;
-	src: url('../assets/fonts/Inter-SemiBold.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/Inter-SemiBold.woff2') format('woff2'),
 		url('../assets/fonts/Inter-SemiBold.woff') format('woff');
 	font-display: block;
 }
@@ -40,7 +44,9 @@
 	font-weight: 700;
 	font-family: 'Inter';
 	font-style: normal;
-	src: url('../assets/fonts/Inter-Bold.woff2') format('woff2'), url('../assets/fonts/Inter-Bold.woff') format('woff');
+	src:
+		url('../assets/fonts/Inter-Bold.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Bold.woff') format('woff');
 	font-display: block;
 }
 
@@ -48,7 +54,9 @@
 	font-weight: 800;
 	font-family: 'Inter';
 	font-style: normal;
-	src: url('../assets/fonts/Inter-Black.woff2') format('woff2'), url('../assets/fonts/Inter-Black.woff') format('woff');
+	src:
+		url('../assets/fonts/Inter-Black.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Black.woff') format('woff');
 	font-display: block;
 }
 
@@ -58,7 +66,8 @@
 	font-weight: 500;
 	font-family: 'Fira Mono';
 	font-style: normal;
-	src: url('../assets/fonts/FiraMono-Medium.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/FiraMono-Medium.woff2') format('woff2'),
 		url('../assets/fonts/FiraMono-Medium.woff') format('woff');
 }
 
@@ -68,7 +77,8 @@
 	font-weight: 400;
 	font-family: 'Merriweather';
 	font-style: normal;
-	src: url('../assets/fonts/merriweather-regular.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/merriweather-regular.woff2') format('woff2'),
 		url('../assets/fonts/merriweather-regular.woff') format('woff');
 	font-display: block;
 }
@@ -77,7 +87,8 @@
 	font-weight: 400;
 	font-family: 'Merriweather';
 	font-style: italic;
-	src: url('../assets/fonts/merriweather-italic.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/merriweather-italic.woff2') format('woff2'),
 		url('../assets/fonts/merriweather-italic.woff') format('woff');
 	font-display: block;
 }
@@ -86,7 +97,8 @@
 	font-weight: 600;
 	font-family: 'Merriweather';
 	font-style: normal;
-	src: url('../assets/fonts/merriweather-bold.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/merriweather-bold.woff2') format('woff2'),
 		url('../assets/fonts/merriweather-bold.woff') format('woff');
 	font-display: block;
 }
@@ -95,23 +107,16 @@
 	font-weight: 300;
 	font-family: 'Merriweather';
 	font-style: normal;
-	src: url('../assets/fonts/merriweather-light.woff2') format('woff2'),
+	src:
+		url('../assets/fonts/merriweather-light.woff2') format('woff2'),
 		url('../assets/fonts/merriweather-light.woff') format('woff');
 	font-display: block;
 }
 
 @font-face {
 	font-weight: 400;
-	font-family: 'Material Icons';
+	font-family: 'Material Symbols';
 	font-style: normal;
-	src: url('../assets/fonts/material-icons.woff2') format('woff2');
-	font-display: block;
-}
-
-@font-face {
-	font-weight: 400;
-	font-family: 'Material Icons Outline';
-	font-style: normal;
-	src: url('../assets/fonts/material-icons-outline.woff2') format('woff2');
+	src: url('../assets/fonts/material-symbols.woff2') format('woff2');
 	font-display: block;
 }

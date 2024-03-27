@@ -1,7 +1,9 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { getAutomaticJunctionCollectionName } from '../../../utils/get-junction-collection-name';
+import { collectionExists } from '../../../utils/collection-exists';
+import { fieldExists } from '../../../utils/field-exists';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -96,6 +98,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
+
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 
@@ -105,49 +108,28 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
 	set(updates, 'relations.m2o.field', 'item');
+
 	set(
 		updates,
 		'relations.m2o.meta.one_allowed_collections',
-		getCurrent('relations.m2o.meta.one_allowed_collections') ?? []
+		getCurrent('relations.m2o.meta.one_allowed_collections') ?? [],
 	);
+
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 }
 
 export function autoGenerateJunctionCollectionName(
 	updates: StateUpdates,
 	state: State,
-	{ getCurrent }: HelperFunctions
+	{ getCurrent }: HelperFunctions,
 ) {
 	if (getCurrent('autoGenerateJunctionRelation') === false) return;
 
 	set(
 		updates,
 		'relations.o2m.collection',
-		getAutomaticJunctionCollectionName(getCurrent('collection'), getCurrent('field.field'))
+		getAutomaticJunctionCollectionName(getCurrent('collection'), getCurrent('field.field')),
 	);
-}
-
-export function getAutomaticJunctionCollectionName(collectionA: string, field: string) {
-	let index = 0;
-	let name = getName(index);
-
-	while (collectionExists(name)) {
-		index++;
-		name = getName(index);
-	}
-
-	return name;
-
-	function getName(index: number) {
-		let name = `${collectionA}_${field}`;
-
-		if (name.startsWith('directus_')) {
-			name = 'junction_' + name;
-		}
-
-		if (index) return name + '_' + index;
-		return name;
-	}
 }
 
 export function updateRelationField(updates: StateUpdates) {
@@ -166,14 +148,6 @@ export function preventCircularConstraint(updates: StateUpdates, _state: State, 
 export function setJunctionFields(updates: StateUpdates, _state: State, { getCurrent }: HelperFunctions) {
 	set(updates, 'relations.o2m.meta.junction_field', getCurrent('relations.m2o.field'));
 	set(updates, 'relations.m2o.meta.junction_field', getCurrent('relations.o2m.field'));
-}
-
-function collectionExists(collection: string) {
-	return !!useCollectionsStore().getCollection(collection);
-}
-
-function fieldExists(collection: string, field: string) {
-	return !!useFieldsStore().getField(collection, field);
 }
 
 export function generateCollections(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {

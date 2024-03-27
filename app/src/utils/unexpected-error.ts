@@ -1,11 +1,11 @@
-import { RequestError } from '@/api';
+import type { RequestError } from '@/api';
 import { i18n } from '@/lang';
 import { useNotificationsStore } from '@/stores/notifications';
-import { APIError } from '@/types/error';
+import type { APIError } from '@/types/error';
 
 let store: any;
 
-export function unexpectedError(error: Error | RequestError | APIError): void {
+export function unexpectedError(error: unknown): void {
 	if (!store) store = useNotificationsStore();
 
 	const code =

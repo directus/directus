@@ -16,6 +16,7 @@ export class GeometryHelperMSSQL extends GeometryHelper {
 		if (field.type.split('.')[1]) {
 			field.meta!.special = [field.type];
 		}
+
 		return table.specificType(field.field, 'geometry');
 	}
 

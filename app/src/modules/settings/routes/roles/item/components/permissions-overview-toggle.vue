@@ -1,3 +1,88 @@
+<script setup lang="ts">
+import api from '@/api';
+import { Collection, Permission } from '@directus/types';
+import { computed, inject, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import useUpdatePermissions from '../composables/use-update-permissions';
+
+const props = defineProps<{
+	collection: Collection;
+	action: 'create' | 'read' | 'update' | 'delete' | 'share';
+	role: string | null;
+	permissions: Permission[];
+	loading?: boolean;
+	appMinimal?: Partial<Permission>;
+}>();
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const { collection, role, permissions } = toRefs(props);
+const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
+
+const permission = computed(() => getPermission(props.action));
+
+const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
+	if (permission.value === undefined) return 'none';
+
+	if (
+		permission.value.fields?.includes('*') &&
+		Object.keys(permission.value.permissions || {}).length === 0 &&
+		Object.keys(permission.value.validation || {}).length === 0
+	) {
+		return 'all';
+	}
+
+	return 'custom';
+});
+
+const saving = ref(false);
+
+const refresh = inject<() => Promise<void>>('refresh-permissions');
+
+const appMinimalLevel = computed(() => {
+	if (!props.appMinimal) return null;
+
+	if (
+		props.appMinimal.fields?.includes('*') &&
+		Object.keys(props.appMinimal.permissions || {}).length === 0 &&
+		Object.keys(props.appMinimal.validation || {}).length === 0
+	)
+		return 'full';
+
+	return 'partial';
+});
+
+async function openPermissions() {
+	// If this collection isn't "managed" yet, make sure to add it to directus_collections first
+	// before trying to associate any permissions with it
+	if (props.collection.meta === null) {
+		await api.patch(`/collections/${props.collection.collection}`, {
+			meta: {},
+		});
+	}
+
+	if (permission.value) {
+		router.push(`/settings/roles/${props.role || 'public'}/${permission.value.id}`);
+	} else {
+		saving.value = true;
+
+		const permResponse = await api.post('/permissions', {
+			role: props.role,
+			collection: props.collection.collection,
+			action: props.action,
+		});
+
+		await refresh?.();
+
+		saving.value = false;
+		router.push(`/settings/roles/${props.role || 'public'}/${permResponse.data.data.id}`);
+	}
+}
+</script>
+
 <template>
 	<div
 		v-tooltip="appMinimal && t('required_for_app_access')"
@@ -63,105 +148,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
-import { Permission, Collection } from '@directus/types';
-import api from '@/api';
-import { useRouter } from 'vue-router';
-import useUpdatePermissions from '../composables/use-update-permissions';
-
-export default defineComponent({
-	props: {
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
-		},
-		role: {
-			type: String,
-			default: null,
-		},
-		action: {
-			type: String,
-			required: true,
-		},
-		permissions: {
-			type: Array as PropType<Permission[]>,
-			default: null,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		appMinimal: {
-			type: [Boolean, Object] as PropType<false | Partial<Permission>>,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
-
-		const router = useRouter();
-
-		const { collection, role, permissions } = toRefs(props);
-		const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
-
-		const permission = computed(() => getPermission(props.action));
-
-		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
-			if (permission.value === undefined) return 'none';
-			if (
-				permission.value.fields?.includes('*') &&
-				Object.keys(permission.value.permissions || {}).length === 0 &&
-				Object.keys(permission.value.validation || {}).length === 0
-			)
-				return 'all';
-
-			return 'custom';
-		});
-
-		const saving = ref(false);
-
-		const refresh = inject<() => Promise<void>>('refresh-permissions');
-
-		const appMinimalLevel = computed(() => {
-			if (props.appMinimal === false) return null;
-			if (Object.keys(props.appMinimal).length === 2) return 'full';
-			return 'partial';
-		});
-
-		return { t, permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
-
-		async function openPermissions() {
-			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
-			// before trying to associate any permissions with it
-			if (props.collection.meta === null) {
-				await api.patch(`/collections/${props.collection.collection}`, {
-					meta: {},
-				});
-			}
-
-			if (permission.value) {
-				router.push(`/settings/roles/${props.role || 'public'}/${permission.value.id}`);
-			} else {
-				saving.value = true;
-
-				const permResponse = await api.post('/permissions', {
-					role: props.role,
-					collection: props.collection.collection,
-					action: props.action,
-				});
-
-				await refresh?.();
-
-				saving.value = false;
-				router.push(`/settings/roles/${props.role || 'public'}/${permResponse.data.data.id}`);
-			}
-		}
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .permissions-overview-toggle {
 	position: relative;
@@ -186,8 +172,8 @@ export default defineComponent({
 }
 
 .none {
-	--v-icon-color: var(--danger);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color: var(--theme--danger);
+	--v-icon-color-hover: var(--theme--danger);
 
 	&::before {
 		background-color: var(--danger-10);
@@ -196,8 +182,8 @@ export default defineComponent({
 
 .partial,
 .custom {
-	--v-icon-color: var(--warning);
-	--v-icon-color-hover: var(--warning);
+	--v-icon-color: var(--theme--warning);
+	--v-icon-color-hover: var(--theme--warning);
 
 	&::before {
 		background-color: var(--warning-10);
@@ -205,8 +191,8 @@ export default defineComponent({
 }
 
 .all {
-	--v-icon-color: var(--success);
-	--v-icon-color-hover: var(--success);
+	--v-icon-color: var(--theme--success);
+	--v-icon-color-hover: var(--theme--success);
 
 	&::before {
 		background-color: var(--success-10);

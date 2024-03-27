@@ -1,14 +1,64 @@
+<script setup lang="ts">
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import type { File } from '@directus/types';
+import { computed, toRef } from 'vue';
+
+export interface Props {
+	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;
+	preset?: string | null;
+	inModal?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), { preset: 'system-large-contain' });
+
+defineEmits<{
+	click: [];
+}>();
+
+const file = toRef(props, 'file');
+
+const src = computed(() =>
+	getAssetUrl(`${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`),
+);
+
+const type = computed<'image' | 'video' | 'audio' | string>(() => {
+	const mimeType = file.value.type;
+
+	if (mimeType === null) return 'unknown';
+
+	if (mimeType.startsWith('image')) {
+		return 'image';
+	}
+
+	if (mimeType.startsWith('video')) {
+		return 'video';
+	}
+
+	if (mimeType.startsWith('audio')) {
+		return 'audio';
+	}
+
+	return readableMimeType(mimeType, true) ?? 'unknown';
+});
+
+const isSVG = computed(() => file.value.type?.includes('svg'));
+
+const maxHeight = computed(() => (props.inModal ? '85vh' : Math.min(file.value.height ?? 528, 528) + 'px'));
+const isSmall = computed(() => file.value.height && file.value.height < 528);
+</script>
+
 <template>
-	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
-		<div v-if="type === 'image'" class="image" @click="$emit('click')">
-			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
+	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
+		<div v-if="type === 'image'" class="image">
+			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
-			<video controls :src="authenticatedSrc" />
+			<video controls :src="src" />
 		</div>
 
-		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
+		<audio v-else-if="type === 'audio'" controls :src="src" />
 
 		<div v-else class="fallback">
 			<v-icon-file :ext="type" />
@@ -16,57 +66,10 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { readableMimeType } from '@/utils/readable-mime-type';
-import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
-
-interface Props {
-	mime: string;
-	width?: number;
-	height?: number;
-	src: string;
-	title: string;
-	inModal?: boolean;
-}
-
-defineEmits(['click']);
-
-const props = withDefaults(defineProps<Props>(), { width: undefined, height: undefined, inModal: false });
-
-const imgError = ref(false);
-
-const type = computed<'image' | 'video' | 'audio' | string>(() => {
-	if (props.mime === null) return 'unknown';
-
-	if (props.mime.startsWith('image')) {
-		return 'image';
-	}
-
-	if (props.mime.startsWith('video')) {
-		return 'video';
-	}
-
-	if (props.mime.startsWith('audio')) {
-		return 'audio';
-	}
-
-	return readableMimeType(props.mime, true) ?? 'unknown';
-});
-
-const isSVG = computed(() => props.mime.includes('svg'));
-
-const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
-const isSmall = computed(() => props.height < 528);
-
-const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src));
-</script>
-
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {
@@ -84,13 +87,13 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src)
 		max-width: 100%;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.image,
 	.video {
-		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.image {
@@ -112,12 +115,12 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src)
 	}
 
 	.fallback {
-		background-color: var(--background-normal);
+		background-color: var(--theme--background-normal);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: var(--input-height-tall);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	&.svg,
@@ -128,7 +131,12 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src)
 	}
 
 	&.modal {
-		.image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		img,
+		video {
 			background-color: transparent;
 			border-radius: 0;
 		}

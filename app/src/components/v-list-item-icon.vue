@@ -1,9 +1,3 @@
-<template>
-	<div class="v-list-item-icon" :class="{ center }">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	center?: boolean;
@@ -14,13 +8,21 @@ withDefaults(defineProps<Props>(), {
 });
 </script>
 
-<style>
-body {
-	--v-list-item-icon-color: var(--foreground-subdued);
-}
-</style>
+<template>
+	<div class="v-list-item-icon" :class="{ center }">
+		<slot />
+	</div>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-list-item-icon-color  [var(--theme--foreground-subdued)]
+
+*/
+
 .v-list-item-icon {
 	$this: &;
 
@@ -42,7 +44,7 @@ body {
 		.v-list,
 		.v-list-item {
 			#{$this} {
-				--v-icon-color: var(--v-list-item-icon-color);
+				--v-icon-color: var(--v-list-item-icon-color, var(--theme--foreground-subdued));
 
 				margin-top: 4px;
 				margin-bottom: 4px;
@@ -65,7 +67,7 @@ body {
 			}
 
 			&.disabled #{$this} :slotted(.v-icon) {
-				--v-icon-color: var(--foreground-subdued) !important;
+				--v-icon-color: var(--theme--foreground-subdued) !important;
 			}
 		}
 	}

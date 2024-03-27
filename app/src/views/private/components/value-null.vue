@@ -4,6 +4,6 @@
 
 <style scoped>
 .null {
-	color: var(--border-normal); /* Don't confuse NULL with subdued value */
+	color: var(--theme--form--field--input--border-color); /* Don't confuse NULL with subdued value */
 }
 </style>

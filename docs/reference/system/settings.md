@@ -9,8 +9,6 @@ pageClass: page-reference
 > Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only
 > administrators have access to manage Settings.
 
----
-
 ## The Settings Object
 
 `id` **uuid**\
@@ -25,6 +23,48 @@ Descriptor of the project, shown in the Admin App.
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
+`report_feature_url` **string**\
+Link to the feature request page.
+
+`report_bug_url` **string**\
+Link to the bug report page.
+
+`report_error_url` **string**\
+Link to the error report page. This is a template URL that has access to the following object
+
+```ts
+{
+  error: {
+    name?: string;
+    message?: string;
+  };
+  route: {
+    fullPath: string;
+    hash: string;
+    name: string;
+    path: string;
+    query: string;
+  };
+  navigator: {
+    language: string;
+    userAgent: string;
+  };
+  user: {
+    id?: string | number;
+    first_name?: string;
+    last_name?: string;
+    title?: string;
+    description?: string;
+    location?: string;
+    status?: string;
+  };
+  role: {
+    id?: string;
+    name?: string;
+  };
+}
+```
+
 `project_color` **string**\
 Brand color for the current project.
 
@@ -37,8 +77,26 @@ Foreground image for the Admin App's public pages. Many-to-one to [files](/refer
 `public_background` **many-to-one**\
 Background image for the Admin App's public pages. Many-to-one to [files](/reference/files).
 
+`public_favicon` **many-to-one**\
+Favicon for the Data Studio. Many-to-one to [files](/reference/files).
+
 `public_note` **string**\
 Note shown on the Admin App's public pages. Supports Markdown.
+
+`default_appearance` **string**\
+One of `auto`, `light`, `dark`.
+
+`default_theme_light` **string**\
+Default theme to use in `light` mode.
+
+`default_theme_dark` **string**\
+Default theme to use in `dark` mode.
+
+`theme_light_overrides` **json**\
+Default customization for `light` theme in use.
+
+`theme_dark_overrides` **json**\
+Default customization for `dark` theme in use.
 
 `auth_login_attempts` **integer**\
 How often a user is allowed to try to login. After which times the user will be suspended.
@@ -68,11 +126,8 @@ Custom tiles to overriding the Mapbox defaults.
 `module_bar` **array**\
 What modules are enabled/added globally.
 
-`translation_strings` **array**\
-The key and translations for Translation Strings.
-
 `custom_aspect_ratios` **array**\
-Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
+Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-an-image).
 
 ```json
 {
@@ -81,6 +136,9 @@ Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
 		"project_name": "Directus",
 		"project_descriptor": "Application",
 		"project_url": null,
+		"report_error_url": null,
+		"report_bug_url": null,
+		"report_feature_url": null,
 		"project_color": null,
 		"project_logo": null,
 		"public_foreground": null,
@@ -104,15 +162,6 @@ Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
 		"basemaps": null,
 		"mapbox_key": null,
 		"module_bar": null,
-		"translation_strings": [
-			{
-				"key": "draft",
-				"translations": {
-					"de-DE": "Entwurf",
-					"en-US": "Draft"
-				}
-			}
-		],
 		"custom_aspect_ratios": [
 			{
 				"text": "16:10",
@@ -123,29 +172,19 @@ Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
 }
 ```
 
----
-
 ## Retrieve Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Returns
+`GET /settings`
 
-Returns the [settings object](#the-settings-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /settings
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -153,7 +192,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readSettings } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readSettings());
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the [settings object](#the-settings-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /settings`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -163,43 +234,35 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readSettings } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSettings());
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
 
-### Request Body
+`PATCH /settings`
 
-A partial [settings object](#the-settings-object).
+Provide a partial [settings object](#the-settings-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [settings object](#the-setting-object).
-
-### REST API
-
-```
-PATCH /settings
-```
-
-##### Example
-
-```json
-// PATCH /settings
-
-{
-	"project_url": "https://example.com/"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -207,7 +270,49 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateSettings(settings_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [settings object](#the-settings-object).
+
+### Response
+
+Returns the [settings object](#the-setting-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`PATCH /settings`
+
+```json
+{
+	"project_url": "https://example.com/"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -217,3 +322,21 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateSettings({
+		project_url: 'https://example.com/',
+	})
+);
+```
+
+</template>
+</SnippetToggler>

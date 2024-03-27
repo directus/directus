@@ -1,11 +1,10 @@
 import { useAliasFields } from '@/composables/use-alias-fields';
-import { useFieldsStore } from '@/stores/fields';
-import { get } from '@directus/utils';
-import { Field, Item } from '@directus/types';
-import { saveAs } from 'file-saver';
-import { parse } from 'json2csv';
-import { computed, ref } from 'vue';
 import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { Field, Item } from '@directus/types';
+import { Parser } from '@json2csv/plainjs';
+import { saveAs } from 'file-saver';
+import { computed } from 'vue';
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -19,7 +18,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		fieldsUsed[key] = fieldsStore.getField(collection, key);
 	}
 
-	const { aliasFields } = useAliasFields(ref(fields));
+	const { getFromAliasedItem } = useAliasFields(fields, collection);
 
 	const parsedItems = [];
 
@@ -43,14 +42,11 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 				name = fieldsUsed[key]?.name ?? key;
 			}
 
-			const value =
-				!aliasFields.value?.[key] || item[key] !== undefined
-					? get(item, key)
-					: get(item, aliasFields.value[key].fullAlias);
+			const value = getFromAliasedItem(item, key);
 
 			const display = useExtension(
 				'display',
-				computed(() => fieldsUsed[key]?.meta?.display ?? null)
+				computed(() => fieldsUsed[key]?.meta?.display ?? null),
 			);
 
 			if (value !== undefined && value !== null) {
@@ -69,7 +65,9 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		parsedItems.push(parsedItem);
 	}
 
-	const csvContent = parse(parsedItems);
+	const parser = new Parser();
+	const csvContent = parser.parse(parsedItems);
+
 	const now = new Date();
 
 	const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now

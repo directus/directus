@@ -1,7 +1,7 @@
 export type Revision = {
 	id: number;
-	data: Record<string, any>;
-	delta: Record<string, any>;
+	data: Record<string, any> | null;
+	delta: Record<string, any> | null;
 	collection: string;
 	item: string | number;
 	activity: {
@@ -19,11 +19,15 @@ export type Revision = {
 					last_name: string;
 			  };
 	};
+};
+
+export type RevisionWithTime = Revision & {
 	timestampFormatted: string;
+	timeRelative: string;
 };
 
 export type RevisionsByDate = {
 	date: Date;
 	dateFormatted: string;
-	revisions: Revision[];
+	revisions: RevisionWithTime[];
 };

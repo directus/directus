@@ -1,10 +1,10 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="60.34" y="36" width="40" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="104.34" y="36" width="20" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="104.34" y="18" width="10" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="60.34" y="72" width="60" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="50.34" y="54" width="20" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="74.34" y="54" width="40" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="50.59" y="18.25" width="50" height="6" rx="2" fill="var(--primary)"/>
-	<path d="m39 20.16-.82-.82-2.68 2.652-2.68-2.652-.82.82 3.5 3.5 3.5-3.5ZM44.16 36l-.82.82 2.652 2.68-2.652 2.68.82.82 3.5-3.5-3.5-3.5ZM39 56.16l-.82-.82-2.68 2.652-2.68-2.652-.82.82 3.5 3.5 3.5-3.5ZM44.16 72l-.82.82 2.652 2.68-2.652 2.68.82.82 3.5-3.5-3.5-3.5Z" fill="var(--primary)"/>
+	<rect x="60.34" y="36" width="40" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="104.34" y="36" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="104.34" y="18" width="10" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="60.34" y="72" width="60" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="50.34" y="54" width="20" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="74.34" y="54" width="40" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="50.59" y="18.25" width="50" height="6" rx="2" fill="var(--theme--primary)"/>
+	<path d="m39 20.16-.82-.82-2.68 2.652-2.68-2.652-.82.82 3.5 3.5 3.5-3.5ZM44.16 36l-.82.82 2.652 2.68-2.652 2.68.82.82 3.5-3.5-3.5-3.5ZM39 56.16l-.82-.82-2.68 2.652-2.68-2.652-.82.82 3.5 3.5 3.5-3.5ZM44.16 72l-.82.82 2.652 2.68-2.652 2.68.82.82 3.5-3.5-3.5-3.5Z" fill="var(--theme--primary)"/>
 </svg>

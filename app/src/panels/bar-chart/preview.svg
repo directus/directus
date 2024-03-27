@@ -1,0 +1,50 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_93)">
+        <g filter="url(#filter0_d_1280_93)">
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--theme--background)" class="glow" />
+            <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+        </g>
+        <rect x="27" y="46" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <line x1="38" y1="47.75" x2="128" y2="47.75" stroke="#E4EAF1" stroke-width="0.5" />
+        <rect x="27" y="56" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <line x1="38" y1="57.75" x2="128" y2="57.75" stroke="#E4EAF1" stroke-width="0.5" />
+        <rect x="27" y="66" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <line x1="38" y1="67.75" x2="128" y2="67.75" stroke="#E4EAF1" stroke-width="0.5" />
+        <rect x="27" y="36" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <line x1="38" y1="37.75" x2="128" y2="37.75" stroke="#E4EAF1" stroke-width="0.5" />
+        <rect x="27" y="26" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <line x1="38" y1="27.75" x2="128" y2="27.75" stroke="#E4EAF1" stroke-width="0.5" />
+        <path d="M42 32C42 30.8954 42.8954 30 44 30H46C47.1046 30 48 30.8954 48 32V68H42V32Z"
+            fill="var(--theme--primary)" />
+        <path d="M52 42C52 40.8954 52.8954 40 54 40H56C57.1046 40 58 40.8954 58 42V68H52V42Z"
+            fill="var(--theme--primary)" />
+        <path d="M62 54C62 52.8954 62.8954 52 64 52H66C67.1046 52 68 52.8954 68 54V68H62V54Z"
+            fill="var(--theme--primary)" />
+        <path d="M72 60C72 58.8954 72.8954 58 74 58H76C77.1046 58 78 58.8954 78 60V68H72V60Z"
+            fill="var(--theme--primary)" />
+        <path d="M82 58C82 56.8954 82.8954 56 84 56H86C87.1046 56 88 56.8954 88 58V68H82V58Z"
+            fill="var(--theme--primary)" />
+        <path d="M92 52C92 50.8954 92.8954 50 94 50H96C97.1046 50 98 50.8954 98 52V68H92V52Z"
+            fill="var(--theme--primary)" />
+        <path d="M102 44C102 42.8954 102.895 42 104 42H106C107.105 42 108 42.8954 108 44V68H102V44Z"
+            fill="var(--theme--primary)" />
+        <path d="M112 32C112 30.8954 112.895 30 114 30H116C117.105 30 118 30.8954 118 32V68H112V32Z"
+            fill="var(--theme--primary)" />
+        <path d="M122 41C122 39.8954 122.895 39 124 39H126C127.105 39 128 39.8954 128 41V68H122V41Z"
+            fill="var(--theme--primary)" />
+        <rect x="43" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="53" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="63" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="73" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="83" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="93" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="103" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="113" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="123" y="72" width="4" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+    </g>
+    <defs>
+        <clipPath id="clip0_1280_93">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

@@ -1,27 +1,30 @@
+import { useEnv } from '@directus/env';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+	isDirectusError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
 import ldap from 'ldapjs';
-import env from '../../env.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
-import {
-	InvalidConfigException,
-	InvalidCredentialsException,
-	InvalidPayloadException,
-	InvalidProviderException,
-	ServiceUnavailableException,
-	UnexpectedResponseException,
-} from '../../exceptions/index.js';
-import logger from '../../logger.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
-import type { AuthDriverOptions, User } from '../../types/index.js';
+import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { AuthDriver } from '../auth.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 interface UserInfo {
 	dn: string;
@@ -47,6 +50,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, userDn, provider, clientUrl } = config;
 
 		if (
@@ -56,20 +61,25 @@ export class LDAPAuthDriver extends AuthDriver {
 			!provider ||
 			(!clientUrl && !config['client']?.socketPath)
 		) {
-			throw new InvalidConfigException('Invalid provider config', { provider });
+			logger.error('Invalid provider config');
+			throw new InvalidProviderConfigError({ provider });
 		}
 
 		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
 
 		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
+
 		this.bindClient.on('error', (err: Error) => {
 			logger.warn(err);
 		});
+
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = config;
 	}
 
 	private async validateBindClient(): Promise<void> {
+		const logger = useLogger();
+
 		const { bindDn, bindPassword, provider } = this.config;
 
 		return new Promise((resolve, reject) => {
@@ -90,8 +100,9 @@ export class LDAPAuthDriver extends AuthDriver {
 						if (err) {
 							const error = handleError(err);
 
-							if (error instanceof InvalidCredentialsException) {
-								reject(new InvalidConfigException('Invalid bind user', { provider }));
+							if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
+								logger.warn('Invalid bind user');
+								reject(new InvalidProviderConfigError({ provider }));
 							} else {
 								reject(error);
 							}
@@ -103,8 +114,10 @@ export class LDAPAuthDriver extends AuthDriver {
 
 				res.on('end', (result: LDAPResult | null) => {
 					// Handle edge case where authenticated bind user cannot read their own DN
-					if (result?.status === 0) {
-						reject(new UnexpectedResponseException('Failed to find bind user record'));
+					// Status `0` is success
+					if (result?.status !== 0) {
+						logger.warn('[LDAP] Failed to find bind user record');
+						reject(new UnexpectedResponseError());
 					}
 				});
 			});
@@ -114,7 +127,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	private async fetchUserInfo(
 		baseDn: string,
 		filter?: ldap.EqualityFilter,
-		scope?: SearchScope
+		scope?: SearchScope,
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
 
@@ -165,7 +178,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(undefined);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -203,7 +216,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(userGroups);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -220,8 +233,10 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['identifier']) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
+
+		const logger = useLogger();
 
 		await this.validateBindClient();
 
@@ -233,11 +248,11 @@ export class LDAPAuthDriver extends AuthDriver {
 				attribute: userAttribute ?? 'cn',
 				value: payload['identifier'],
 			}),
-			userScope ?? 'one'
+			userScope ?? 'one',
 		);
 
 		if (!userInfo?.dn) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		let userRole;
@@ -249,7 +264,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
-				groupScope ?? 'one'
+				groupScope ?? 'one',
 			);
 
 			if (userGroups.length) {
@@ -267,31 +282,56 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userId = await this.fetchUserId(userInfo.dn);
 
 		if (userId) {
+			// Run hook so the end user has the chance to augment the
+			// user that is about to be updated
+			let updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				{},
+				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
+				{ database: getDatabase(), schema: this.schema, accountability: null },
+			);
+
 			// Only sync roles if the AD groups are configured
 			if (groupDn) {
-				await this.usersService.updateOne(userId, { role: userRole?.id ?? defaultRoleId ?? null });
+				updatedUserPayload = { role: userRole?.id ?? defaultRoleId ?? null, ...updatedUserPayload };
 			}
+
+			// Update user to update properties that might have changed
+			await this.usersService.updateOne(userId, updatedUserPayload);
+
 			return userId;
 		}
 
 		if (!userInfo) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
+		const userPayload = {
+			provider: this.config['provider'],
+			first_name: userInfo.firstName,
+			last_name: userInfo.lastName,
+			email: userInfo.email,
+			external_identifier: userInfo.dn,
+			role: userRole?.id ?? defaultRoleId,
+		};
+
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.create`,
+			userPayload,
+			{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
+			{ database: getDatabase(), schema: this.schema, accountability: null },
+		);
+
 		try {
-			await this.usersService.createOne({
-				provider: this.config['provider'],
-				first_name: userInfo.firstName,
-				last_name: userInfo.lastName,
-				email: userInfo.email,
-				external_identifier: userInfo.dn,
-				role: userRole?.id ?? defaultRoleId,
-			});
+			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
+
 			throw e;
 		}
 
@@ -300,11 +340,12 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async verify(user: User, password?: string): Promise<void> {
 		if (!user.external_identifier || !password) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		return new Promise((resolve, reject) => {
 			const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
+
 			const client = ldap.createClient({
 				url: this.config['clientUrl'],
 				...clientConfig,
@@ -321,6 +362,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				} else {
 					resolve();
 				}
+
 				client.destroy();
 			});
 		});
@@ -336,7 +378,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
 
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 	}
 }
@@ -347,11 +389,12 @@ const handleError = (e: Error) => {
 		e instanceof ldap.InvalidCredentialsError ||
 		e instanceof ldap.InsufficientAccessRightsError
 	) {
-		return new InvalidCredentialsException();
+		return new InvalidCredentialsError();
 	}
-	return new ServiceUnavailableException('Service returned unexpected error', {
+
+	return new ServiceUnavailableError({
 		service: 'ldap',
-		message: e.message,
+		reason: `Service returned unexpected error: ${e.message}`,
 	});
 };
 
@@ -365,19 +408,21 @@ export function createLDAPAuthRouter(provider: string): Router {
 	const loginSchema = Joi.object({
 		identifier: Joi.string().required(),
 		password: Joi.string().required(),
-		mode: Joi.string().valid('cookie', 'json'),
+		mode: Joi.string().valid('cookie', 'json', 'session'),
 		otp: Joi.string(),
 	}).unknown();
 
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
+			const env = useEnv();
+
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,
 			};
 
-			const userAgent = req.get('user-agent');
+			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;
 
 			const origin = req.get('origin');
@@ -391,40 +436,39 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { error } = loginSchema.validate(req.body);
 
 			if (error) {
-				throw new InvalidPayloadException(error.message);
+				throw new InvalidPayloadError({ reason: error.message });
 			}
 
-			const mode = req.body.mode || 'json';
+			const mode: AuthenticationMode = req.body.mode ?? 'json';
 
-			const { accessToken, refreshToken, expires } = await authenticationService.login(
-				provider,
-				req.body,
-				req.body?.otp
-			);
+			const { accessToken, refreshToken, expires } = await authenticationService.login(provider, req.body, {
+				session: mode === 'session',
+				otp: req.body?.otp,
+			});
 
-			const payload = {
-				data: { access_token: accessToken, expires },
-			} as Record<string, Record<string, any>>;
+			const payload = { access_token: accessToken, expires } as {
+				access_token: string;
+				expires: number;
+				refresh_token?: string;
+			};
 
 			if (mode === 'json') {
-				payload['data']!['refresh_token'] = refreshToken;
+				payload.refresh_token = refreshToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
-					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
-					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
-					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
 			}
 
-			res.locals['payload'] = payload;
+			if (mode === 'session') {
+				res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+			}
+
+			res.locals['payload'] = { data: payload };
 
 			return next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

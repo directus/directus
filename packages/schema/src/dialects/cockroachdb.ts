@@ -60,6 +60,7 @@ export default class CockroachDB implements SchemaInspector {
 	constructor(knex: Knex) {
 		this.knex = knex;
 		const config = knex.client.config;
+
 		if (!config.searchPath) {
 			this.schema = 'public';
 			this.explodedSchema = [this.schema];
@@ -126,7 +127,7 @@ export default class CockroachDB implements SchemaInspector {
           t.table_type = 'BASE TABLE'
           AND c.table_schema IN (?);
       `,
-				[this.explodedSchema.join(',')]
+				[this.explodedSchema.join(',')],
 			),
 
 			this.knex.raw(
@@ -147,7 +148,7 @@ export default class CockroachDB implements SchemaInspector {
           AND indnatts = 1
 			 AND relkind != 'S'
       `,
-				[this.explodedSchema.join(',')]
+				[this.explodedSchema.join(',')],
 			),
 		]);
 
@@ -177,7 +178,7 @@ export default class CockroachDB implements SchemaInspector {
 					AND t.table_type = 'BASE TABLE'
 				WHERE f_table_schema in (?)
 				`,
-				[this.explodedSchema.join(',')]
+				[this.explodedSchema.join(',')],
 			);
 
 			geometryColumns = result.rows;
@@ -195,15 +196,18 @@ export default class CockroachDB implements SchemaInspector {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
 			}
+
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
+
 			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
 			overview[table_name]!.primary = column_name;
 		}
+
 		for (const { table_name, column_name, data_type } of geometryColumns) {
 			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}
@@ -222,6 +226,7 @@ export default class CockroachDB implements SchemaInspector {
 			.select<{ tablename: string }[]>('tablename')
 			.from('pg_catalog.pg_tables')
 			.whereIn('schemaname', this.explodedSchema);
+
 		return records.map(({ tablename }) => tablename);
 	}
 
@@ -241,7 +246,7 @@ export default class CockroachDB implements SchemaInspector {
 					.from('pg_class')
 					.where({ relkind: 'r' })
 					.andWhere({ relname: 'table_name' })
-					.as('table_comment')
+					.as('table_comment'),
 			)
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
@@ -279,6 +284,7 @@ export default class CockroachDB implements SchemaInspector {
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
 			.andWhere({ table_name: table });
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
@@ -385,7 +391,7 @@ export default class CockroachDB implements SchemaInspector {
            AND NOT att.attisdropped
          ORDER BY rel.relname, att.attnum) res;
        `,
-				bindings
+				bindings,
 			),
 			knex.raw<{ rows: Constraint[] }>(
 				`
@@ -408,13 +414,13 @@ export default class CockroachDB implements SchemaInspector {
            ${table ? 'AND rel.relname = ?' : ''}
            ${column ? 'AND att.attname = ?' : ''}
          `,
-				bindings
+				bindings,
 			),
 		]);
 
 		const parsedColumns: Column[] = columns.rows.map((col): Column => {
 			const constraintsForColumn = constraints.rows.filter(
-				(constraint) => constraint.table === col.table && constraint.column === col.name
+				(constraint) => constraint.table === col.table && constraint.column === col.name,
 			);
 
 			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
@@ -453,7 +459,7 @@ export default class CockroachDB implements SchemaInspector {
 				select * from geometry_columns
 				union
 				select * from geography_columns
-		`)
+		`),
 			)
 			.select<Column[]>({
 				table: 'f_table_name',
@@ -505,6 +511,7 @@ export default class CockroachDB implements SchemaInspector {
 				table_name: table,
 				column_name: column,
 			});
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
@@ -519,7 +526,7 @@ export default class CockroachDB implements SchemaInspector {
 			.leftJoin(
 				'information_schema.table_constraints',
 				'information_schema.table_constraints.constraint_name',
-				'information_schema.key_column_usage.constraint_name'
+				'information_schema.key_column_usage.constraint_name',
 			)
 			.whereIn('information_schema.table_constraints.table_schema', this.explodedSchema)
 			.andWhere({
@@ -630,7 +637,7 @@ export default class CockroachDB implements SchemaInspector {
 			return Object.fromEntries(
 				Object.entries(row).map(([key, value]) => {
 					return [key, stripQuotes(value)];
-				})
+				}),
 			) as ForeignKey;
 		}
 	}

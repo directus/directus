@@ -1,6 +1,6 @@
 .hljs,
 .hljs-subst {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .hljs-keyword,
@@ -8,7 +8,7 @@
 .hljs-selector-tag,
 .hljs-doctag,
 .hljs-name {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .hljs-built_in,
@@ -16,7 +16,7 @@
 .hljs-bullet,
 .hljs-code,
 .hljs-addition {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .hljs-regexp,
@@ -36,7 +36,7 @@
 .hljs-quote,
 .hljs-template-tag,
 .hljs-deletion {
-	color: var(--success);
+	color: var(--theme--success);
 }
 
 .hljs-title,
@@ -45,15 +45,15 @@
 }
 
 .hljs-params {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .hljs-comment {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .hljs-meta-keyword {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .hljs-meta {
@@ -73,5 +73,5 @@
 }
 
 .hljs-number {
-	color: var(--success);
+	color: var(--theme--success);
 }

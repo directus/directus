@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_files
 properties:
   id:
     description: Unique identifier for the file.
@@ -79,16 +78,16 @@ properties:
     type: string
     nullable: true
   location:
-    description: Where the file was created. Is automatically populated based on EXIF data for images.
+    description: Where the file was created. Is automatically populated based on Exif data for images.
     type: string
     nullable: true
   tags:
-    description: Tags for the file. Is automatically populated based on EXIF data for images.
+    description: Tags for the file. Is automatically populated based on Exif data for images.
     type: array
     nullable: true
     items:
       type: string
   metadata:
-    description: IPTC, EXIF, and ICC metadata extracted from file
+    description: IPTC, Exif, and ICC metadata extracted from file
     type: object
     nullable: true

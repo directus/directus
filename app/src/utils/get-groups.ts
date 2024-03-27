@@ -12,7 +12,7 @@
  */
 export function getGroups(
 	precision: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | undefined,
-	dateField: string
+	dateField: string,
 ) {
 	let groups: string[] = [];
 

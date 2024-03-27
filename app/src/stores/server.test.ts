@@ -1,20 +1,20 @@
 import api, * as apiFunctions from '@/api';
 import * as setLanguageDefault from '@/lang/set-language';
+import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
+import { Auth, Info, useServerStore } from './server';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
-
-import { Auth, Info, useServerStore } from './server';
-import { useUserStore } from './user';
 
 const mockServerInfo: Info = {
 	project: {
@@ -23,42 +23,39 @@ const mockServerInfo: Info = {
 		project_logo: null,
 		project_color: null,
 		default_language: 'de-DE',
+		default_appearance: 'auto',
+		default_theme_light: null,
+		default_theme_dark: null,
+		theme_light_overrides: null,
+		theme_dark_overrides: null,
 		public_foreground: null,
 		public_background: null,
+		public_favicon: null,
 		public_note: null,
 		custom_css: null,
-	},
-	directus: {
-		version: '10.10.10',
-	},
-	node: {
-		version: '20.0.0',
-		uptime: 123,
-	},
-	os: {
-		type: 'Test OS',
-		version: '10.10.10',
-		uptime: 10000,
-		totalmem: 12345678,
 	},
 };
 
 const mockAuthProviders: Auth['providers'] = [
 	{
-		name: 'directus',
 		driver: 'oauth2',
+		name: 'directus',
+		label: 'Directus',
 	},
 ];
 
-const mockAdminUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec' } as any;
+const mockAdminUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec' } as User;
 
-const mockAdminUserWithLanguage = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', language: 'zh-CN' } as any;
+const mockAdminUserWithLanguage = {
+	id: 'e7f7a94d-5b38-4978-8450-de0e38859fec',
+	language: 'zh-CN',
+} as User;
 
-let apiGetSpy: SpyInstance;
-let replaceQueueSpy: SpyInstance;
-let setLanguageSpy: SpyInstance;
+let apiGetSpy: MockInstance;
+let replaceQueueSpy: MockInstance;
+let setLanguageSpy: MockInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 	replaceQueueSpy = vi.spyOn(apiFunctions, 'replaceQueue').mockResolvedValue();
 	setLanguageSpy = vi.spyOn(setLanguageDefault, 'setLanguage').mockResolvedValue(true);
@@ -79,10 +76,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -98,7 +97,7 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,
@@ -106,6 +105,8 @@ describe('hydrate action', async () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -127,10 +128,12 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -149,10 +152,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -171,10 +176,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -196,10 +203,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -221,10 +230,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -246,10 +257,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -268,10 +281,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -297,10 +312,12 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -314,7 +331,7 @@ describe('hydrate action', async () => {
 	});
 });
 
-describe('dehyrate action', () => {
+describe('dehydrate action', () => {
 	test('should reset store', async () => {
 		apiGetSpy.mockImplementation((path: string) => {
 			if (path === '/server/info') {
@@ -325,7 +342,7 @@ describe('dehyrate action', () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,
@@ -333,6 +350,8 @@ describe('dehyrate action', () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -340,9 +359,6 @@ describe('dehyrate action', () => {
 		serverStore.dehydrate();
 
 		expect(serverStore.info.project).toEqual(null);
-		expect(serverStore.info.directus).toEqual(undefined);
-		expect(serverStore.info.node).toEqual(undefined);
-		expect(serverStore.info.os).toEqual(undefined);
 		expect(serverStore.auth.providers).toEqual([]);
 		expect(serverStore.auth.disableDefault).toEqual(false);
 	});

@@ -48,6 +48,7 @@ export default class SQLite implements SchemaInspector {
 
 			if (table in overview === false) {
 				const primaryKeys = columns.filter((column) => column.pk !== 0);
+
 				overview[table] = {
 					primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
 					columns: {},
@@ -71,6 +72,7 @@ export default class SQLite implements SchemaInspector {
 				};
 			}
 		}
+
 		return overview;
 	}
 
@@ -85,6 +87,7 @@ export default class SQLite implements SchemaInspector {
 			.select('name')
 			.from('sqlite_master')
 			.whereRaw(`type = 'table' AND name NOT LIKE 'sqlite_%'`);
+
 		return records.map(({ name }) => name) as string[];
 	}
 
@@ -163,15 +166,15 @@ export default class SQLite implements SchemaInspector {
 
 			const foreignKeys = await this.knex.raw<{ table: string; from: string; to: string }[]>(
 				`PRAGMA foreign_key_list(??)`,
-				table
+				table,
 			);
 
 			const indexList = await this.knex.raw<{ name: string; unique: boolean }[]>(`PRAGMA index_list(??)`, table);
 
 			const indexInfoList = await Promise.all(
 				indexList.map((index) =>
-					this.knex.raw<{ seqno: number; cid: number; name: string }[]>(`PRAGMA index_info(??)`, index.name)
-				)
+					this.knex.raw<{ seqno: number; cid: number; name: string }[]>(`PRAGMA index_info(??)`, index.name),
+				),
 			);
 
 			return columns.map((raw): Column => {
@@ -221,13 +224,17 @@ export default class SQLite implements SchemaInspector {
 	 */
 	async hasColumn(table: string, column: string): Promise<boolean> {
 		let isColumn = false;
+
 		const results = await this.knex.raw(
-			`SELECT COUNT(*) AS ct FROM pragma_table_xinfo('${table}') WHERE name='${column}'`
+			`SELECT COUNT(*) AS ct FROM pragma_table_xinfo('${table}') WHERE name='${column}'`,
 		);
+
 		const resultsVal = results[0]['ct'];
+
 		if (resultsVal !== 0) {
 			isColumn = true;
 		}
+
 		return isColumn;
 	}
 
@@ -256,7 +263,7 @@ export default class SQLite implements SchemaInspector {
 					on_update: key.on_update,
 					on_delete: key.on_delete,
 					constraint_name: null,
-				})
+				}),
 			);
 		}
 

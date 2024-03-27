@@ -1,2 +1,9 @@
 #!/usr/bin/env node
-import '@directus/api/cli/run.js';
+import { updateCheck } from '@directus/update-check';
+import { version } from './version.js';
+
+if (version) {
+	await updateCheck(version);
+}
+
+import('@directus/api/cli/run.js');

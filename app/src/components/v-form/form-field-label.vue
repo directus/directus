@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import type { FormField } from './types';
+
+withDefaults(
+	defineProps<{
+		field: FormField;
+		toggle: (event: Event) => any;
+		batchMode?: boolean;
+		batchActive?: boolean;
+		disabled?: boolean;
+		active?: boolean;
+		edited?: boolean;
+		hasError?: boolean;
+		badge?: string | null;
+		loading?: boolean;
+		rawEditorEnabled?: boolean;
+		rawEditorActive?: boolean;
+	}>(),
+	{
+		batchMode: false,
+		batchActive: false,
+		disabled: false,
+		active: false,
+		edited: false,
+		hasError: false,
+		badge: null,
+		loading: false,
+		rawEditorEnabled: false,
+		rawEditorActive: false,
+	},
+);
+
+defineEmits(['toggle-batch', 'toggle-raw']);
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<span class="field-name" @click="toggle">
@@ -9,7 +47,14 @@
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
-			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
+			<v-icon
+				v-if="field.meta?.required === true"
+				class="required"
+				:class="{ 'has-badge': badge }"
+				sup
+				name="star"
+				filled
+			/>
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
 				v-if="!disabled && rawEditorEnabled"
@@ -26,49 +71,13 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
-
-interface Props {
-	field: Field;
-	toggle: (event: Event) => any;
-	batchMode?: boolean;
-	batchActive?: boolean;
-	disabled?: boolean;
-	active?: boolean;
-	edited?: boolean;
-	hasError?: boolean;
-	badge?: string | null;
-	loading?: boolean;
-	rawEditorEnabled?: boolean;
-	rawEditorActive?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	batchMode: false,
-	batchActive: false,
-	disabled: false,
-	active: false,
-	edited: false,
-	hasError: false,
-	badge: null,
-	loading: false,
-	rawEditorEnabled: false,
-	rawEditorActive: false,
-});
-
-defineEmits(['toggle-batch', 'toggle-raw']);
-
-const { t } = useI18n();
-</script>
-
 <style lang="scss" scoped>
 .field-label {
 	position: relative;
 	display: flex;
 	margin-bottom: 8px;
 	cursor: pointer;
+	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
 		display: inline;
@@ -91,7 +100,7 @@ const { t } = useI18n();
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-left: 3px;
 
@@ -102,7 +111,7 @@ const { t } = useI18n();
 
 	.ctx-arrow {
 		margin-top: -3px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 
@@ -125,16 +134,16 @@ const { t } = useI18n();
 		width: 24px;
 		margin-top: -2px;
 		margin-left: 5px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {
-			color: var(--primary);
-			background-color: var(--primary-alt);
+			color: var(--theme--primary);
+			background-color: var(--theme--primary-background);
 			border-radius: 50%;
 		}
 	}
@@ -147,7 +156,7 @@ const { t } = useI18n();
 			display: block;
 			width: 4px;
 			height: 4px;
-			background-color: var(--foreground-subdued);
+			background-color: var(--theme--foreground-subdued);
 			border-radius: 4px;
 			content: '';
 		}
@@ -170,5 +179,9 @@ const { t } = useI18n();
 			display: flex;
 		}
 	}
+}
+
+.type-label {
+	font-family: var(--theme--form--field--label--font-family);
 }
 </style>

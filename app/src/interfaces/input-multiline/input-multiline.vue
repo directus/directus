@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		clear?: boolean;
+		disabled?: boolean;
+		placeholder?: string;
+		trim?: boolean;
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		softLength?: number;
+		direction?: string;
+	}>(),
+	{
+		font: 'sans-serif',
+	},
+);
+
+defineEmits(['input']);
+
+const charsRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
+
+	if (!props.softLength) return null;
+	if (!props.value && props.softLength) return props.softLength;
+	const realValue = props.value!.replaceAll('\n', ' ').length;
+
+	if (props.softLength) return +props.softLength - realValue;
+	return null;
+});
+
+const percentageRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
+
+	if (!props.softLength) return null;
+	if (!props.value) return 100;
+
+	if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
+	return 100;
+});
+</script>
+
 <template>
 	<v-textarea
 		v-bind="{ placeholder, trim }"
@@ -13,8 +56,8 @@
 				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
 				}"
 			>
 				{{ charsRemaining }}
@@ -23,86 +66,18 @@
 	</v-textarea>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		clear: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		trim: {
-			type: Boolean,
-			default: false,
-		},
-		font: {
-			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'sans-serif',
-		},
-		softLength: {
-			type: Number,
-			default: undefined,
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const charsRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
-
-			if (!props.softLength) return null;
-			if (!props.value && props.softLength) return props.softLength;
-			const realValue = props.value.replaceAll('\n', ' ').length;
-
-			if (props.softLength) return +props.softLength - realValue;
-			return null;
-		});
-
-		const percentageRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
-
-			if (!props.softLength) return null;
-			if (!props.value) return 100;
-
-			if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
-			return 100;
-		});
-		return {
-			charsRemaining,
-			percentageRemaining,
-		};
-	},
-});
-</script>
-
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-textarea-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	&.serif {
-		--v-textarea-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.sans-serif {
-		--v-textarea-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--theme--fonts--sans--font-family);
 	}
 }
 
@@ -110,7 +85,7 @@ export default defineComponent({
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -126,6 +101,6 @@ export default defineComponent({
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 </style>

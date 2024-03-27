@@ -19,7 +19,7 @@ type AlterationFunctions = Record<
 	(
 		selections: string,
 		cursors: { cursorHead: Position; cursorFrom: Position; cursorTo: Position },
-		options?: Record<string, any>
+		options?: Record<string, any>,
 	) => { newSelection: string; newCursor: Position; highlight?: { from: Position; to: Position } }
 >;
 
@@ -279,7 +279,7 @@ export function applyEdit(codemirror: CodeMirror.Editor | null, type: Alteration
 				cursorTo: cloneDeep(selection ? cursorTo : wordRange.head),
 				cursorHead: cursor,
 			},
-			options
+			options,
 		);
 
 		if (word && !selection) {

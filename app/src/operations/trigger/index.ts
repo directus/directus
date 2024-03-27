@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 import { useFlowsStore } from '@/stores/flows';
 
 export default defineOperationApp({
@@ -14,11 +14,13 @@ export default defineOperationApp({
 	],
 	options: (panel) => {
 		const flowStore = useFlowsStore();
+
 		const flowChoices = flowStore.flows
 			.filter((flow) => flow.trigger === 'operation')
 			.map((flow) => {
 				return { text: flow.name, value: flow.id };
 			});
+
 		return [
 			{
 				field: 'flow',
@@ -94,7 +96,7 @@ export default defineOperationApp({
 								data: '{{ $last }}',
 							},
 							null,
-							2
+							2,
 						),
 						template: JSON.stringify(
 							{
@@ -102,7 +104,7 @@ export default defineOperationApp({
 								data: '{{ $last }}',
 							},
 							null,
-							2
+							2,
 						),
 					},
 				},

@@ -10,6 +10,7 @@ const query = `
 		}
 	}
 `;
+
 const variables = JSON.stringify({ id: 1 });
 const additionalProperty = 'test';
 

@@ -1,5 +1,3 @@
-/* eslint-disable vue/one-component-per-file */
-
 import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { defineComponent, h, nextTick } from 'vue';
@@ -44,6 +42,7 @@ test('Should show fallback component when there is an error', async () => {
 		},
 		render: () => h('div', 'test'),
 	});
+
 	const fallbackComponent = defineComponent({ render: () => h('div', 'fallback') });
 
 	const wrapper = mount(VErrorBoundary, {

@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
+
+withDefaults(
+	defineProps<{
+		field: Field;
+		fields: Field[];
+		values: Record<string, unknown>;
+		initialValues: Record<string, unknown>;
+		primaryKey: number | string;
+		disabled?: boolean;
+		batchMode?: boolean;
+		batchActiveFields?: string[];
+		loading?: boolean;
+		validationErrors?: ValidationError[];
+		badge?: string;
+		rawEditorEnabled?: boolean;
+		direction?: string;
+	}>(),
+	{
+		batchActiveFields: () => [],
+		validationErrors: () => [],
+	},
+);
+
+defineEmits(['apply']);
+</script>
+
 <template>
 	<div class="group-raw">
 		<v-form
@@ -5,7 +33,7 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.field"
+			:group="field.meta?.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:disabled="disabled"
@@ -18,66 +46,3 @@
 		/>
 	</div>
 </template>
-
-<script lang="ts">
-import { Field, ValidationError } from '@directus/types';
-import { defineComponent, PropType } from 'vue';
-export default defineComponent({
-	name: 'InterfaceGroupRaw',
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		fields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		values: {
-			type: Object as PropType<Record<string, unknown>>,
-			required: true,
-		},
-		initialValues: {
-			type: Object as PropType<Record<string, unknown>>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActiveFields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-		badge: {
-			type: String,
-			default: null,
-		},
-		rawEditorEnabled: {
-			type: Boolean,
-			default: false,
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['apply'],
-});
-</script>

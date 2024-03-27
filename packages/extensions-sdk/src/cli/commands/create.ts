@@ -1,11 +1,3 @@
-import {
-	BUNDLE_EXTENSION_TYPES,
-	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
 import type {
 	ApiExtensionType,
 	AppExtensionType,
@@ -13,33 +5,45 @@ import type {
 	ExtensionOptions,
 	ExtensionType,
 	HybridExtensionType,
-} from '@directus/types';
+} from '@directus/extensions';
+import {
+	BUNDLE_EXTENSION_TYPES,
+	EXTENSION_LANGUAGES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
+import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
 import getPackageManager from '../utils/get-package-manager.js';
-import getSdkVersion from '../utils/get-sdk-version.js';
 import { isLanguage, languageToShort } from '../utils/languages.js';
 import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-type CreateOptions = { language?: string };
+type CreateOptions = {
+	language?: string;
+	install?: boolean;
+};
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
+	const install = options.install ?? true;
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
+
 		process.exit(1);
 	}
 
@@ -65,31 +69,33 @@ export default async function create(type: string, name: string, options: Create
 	}
 
 	if (isIn(type, BUNDLE_EXTENSION_TYPES)) {
-		await createPackageExtension({ type, name, targetDir, targetPath });
+		await createBundleExtension({ type, name, targetDir, targetPath, install });
 	} else {
 		const language = options.language ?? 'javascript';
 
-		await createLocalExtension({ type, name, targetDir, targetPath, language });
+		await createExtension({ type, name, targetDir, targetPath, language, install });
 	}
 }
 
-async function createPackageExtension({
+async function createBundleExtension({
 	type,
 	name,
 	targetDir,
 	targetPath,
+	install,
 }: {
 	type: BundleExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
+	install: boolean;
 }) {
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath);
 
-	const host = `^${getSdkVersion()}`;
+	const host = `^${LAST_BREAKING_RELEASE}`;
 	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
@@ -97,33 +103,38 @@ async function createPackageExtension({
 
 	const packageManager = getPackageManager();
 
-	await execa(packageManager, ['install'], { cwd: targetPath });
+	if (install) {
+		await execa(packageManager, ['install'], { cwd: targetPath });
+	}
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath, packageManager));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager, install));
 }
 
-async function createLocalExtension({
+async function createExtension({
 	type,
 	name,
 	targetDir,
 	targetPath,
 	language,
+	install,
 }: {
 	type: AppExtensionType | ApiExtensionType | HybridExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
 	language: string;
+	install: boolean;
 }) {
 	if (!isLanguage(language)) {
 		log(
 			`Language ${chalk.bold(language)} is not supported. Available languages: ${EXTENSION_LANGUAGES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
+
 		process.exit(1);
 	}
 
@@ -132,7 +143,8 @@ async function createLocalExtension({
 	await fse.ensureDir(targetPath);
 	await copyTemplate(type, targetPath, 'src', language);
 
-	const host = `^${getSdkVersion()}`;
+	const host = `^${LAST_BREAKING_RELEASE}`;
+
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
 				type,
@@ -146,26 +158,31 @@ async function createLocalExtension({
 				source: `src/index.${languageToShort(language)}`,
 				host,
 		  };
+
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
 	const packageManager = getPackageManager();
 
-	await execa(packageManager, ['install'], { cwd: targetPath });
+	if (install) {
+		await execa(packageManager, ['install'], { cwd: targetPath });
+	}
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath, packageManager));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager, install));
 }
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
 	const packageManifest: Record<string, any> = {
-		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
+		name: name,
 		description: 'Please enter a description for your extension',
 		icon: 'extension',
 		version: '1.0.0',
-		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
+		keywords: ['directus', 'directus-extension', `directus-extension-${options.type}`],
+		type: 'module',
+		files: ['dist'],
 		[EXTENSION_PKG_KEY]: options,
 		scripts: {
 			build: 'directus-extension build',
@@ -182,15 +199,30 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 	return packageManifest;
 }
 
-function getDoneMessage(type: ExtensionType, targetDir: string, targetPath: string, packageManager: string) {
-	return `
+function getDoneMessage(
+	type: ExtensionType,
+	targetDir: string,
+	targetPath: string,
+	packageManager: string,
+	install: boolean,
+) {
+	let message = `
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
-	${chalk.blue('cd')} ${targetDir}
+	${chalk.blue('cd')} ${targetDir}`;
+
+	if (!install) {
+		message += `
+	${chalk.blue(`${packageManager}`)} install`;
+	}
+
+	message += `
 	${chalk.blue(`${packageManager} run`)} dev
 
-and then to build for production, run:
+To build for production, run:
 	${chalk.blue(`${packageManager} run`)} build
 `;
+
+	return message;
 }

@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { DisplayConfig } from '@directus/types';
+import type { DisplayConfig } from '@directus/extensions';
 import { sortBy } from 'lodash';
+import { App } from 'vue';
 
 export function getInternalDisplays(): DisplayConfig[] {
 	const displays = import.meta.glob<DisplayConfig>('./*/index.ts', { import: 'default', eager: true });

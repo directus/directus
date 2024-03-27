@@ -1,51 +1,3 @@
-<template>
-	<v-list-group v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
-		<template #activator>
-			<v-checkbox
-				v-model="treeValue"
-				:indeterminate="groupIndeterminateState"
-				:checked="groupCheckedStateOverride"
-				:label="text"
-				:value="value"
-				:disabled="disabled"
-			>
-				<v-highlight :text="text" :query="search" />
-			</v-checkbox>
-		</template>
-
-		<v-checkbox-tree-checkbox
-			v-for="choice in children"
-			:key="choice[itemValue]"
-			v-model="treeValue"
-			:value-combining="valueCombining"
-			:checked="childrenCheckedStateOverride"
-			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
-			:search="search"
-			:item-text="itemText"
-			:item-value="itemValue"
-			:item-children="itemChildren"
-			:text="choice[itemText]"
-			:value="choice[itemValue]"
-			:children="choice[itemChildren]"
-			:disabled="disabled"
-			:show-selection-only="showSelectionOnly"
-			:parent-value="value"
-		/>
-	</v-list-group>
-
-	<v-list-item v-else-if="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
-			<v-highlight :text="text" :query="search" />
-		</v-checkbox>
-	</v-list-item>
-</template>
-
-<script lang="ts">
-export default {
-	name: 'VCheckboxTreeCheckbox',
-};
-</script>
-
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';
@@ -56,36 +8,37 @@ type Delta = {
 	removed?: (number | string)[];
 };
 
-interface Props {
-	text: string;
-	value: string | number;
-	valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-	children?: Record<string, any>[];
-	modelValue?: (string | number)[];
-	checked?: boolean | null;
-	search?: string | null;
-	hidden?: boolean;
-	itemText?: string;
-	itemValue?: string;
-	itemChildren?: string;
-	disabled?: boolean;
-	showSelectionOnly?: boolean;
-	parentValue?: string | number | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	children: () => [],
-	modelValue: () => [],
-	checked: null,
-	search: null,
-	hidden: false,
-	itemText: 'text',
-	itemValue: 'value',
-	itemChildren: 'children',
-	disabled: false,
-	showSelectionOnly: false,
-	parentValue: null,
-});
+const props = withDefaults(
+	defineProps<{
+		text: string;
+		value: string | number;
+		valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+		children?: Record<string, any>[];
+		modelValue?: (string | number)[];
+		checked?: boolean | null;
+		search?: string | null;
+		hidden?: boolean;
+		itemText?: string;
+		itemValue?: string;
+		itemChildren?: string;
+		disabled?: boolean;
+		showSelectionOnly?: boolean;
+		parentValue?: string | number | null;
+	}>(),
+	{
+		children: () => [],
+		modelValue: () => [],
+		checked: null,
+		search: null,
+		hidden: false,
+		itemText: 'text',
+		itemValue: 'value',
+		itemChildren: 'children',
+		disabled: false,
+		showSelectionOnly: false,
+		parentValue: null,
+	},
+);
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -101,7 +54,7 @@ const { visibleChildrenValues } = useVisibleChildren(
 	itemValue,
 	itemChildren,
 	parentValue,
-	value
+	value,
 );
 
 const groupShown = computed(() => {
@@ -423,6 +376,48 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 	}
 }
 </script>
+
+<template>
+	<v-list-group v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
+		<template #activator>
+			<v-checkbox
+				v-model="treeValue"
+				:indeterminate="groupIndeterminateState"
+				:checked="groupCheckedStateOverride"
+				:label="text"
+				:value="value"
+				:disabled="disabled"
+			>
+				<v-highlight :text="text" :query="search" />
+			</v-checkbox>
+		</template>
+
+		<v-checkbox-tree-checkbox
+			v-for="choice in children"
+			:key="choice[itemValue]"
+			v-model="treeValue"
+			:value-combining="valueCombining"
+			:checked="childrenCheckedStateOverride"
+			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
+			:search="search"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:item-children="itemChildren"
+			:text="choice[itemText]"
+			:value="choice[itemValue]"
+			:children="choice[itemChildren]"
+			:disabled="disabled"
+			:show-selection-only="showSelectionOnly"
+			:parent-value="value"
+		/>
+	</v-list-group>
+
+	<v-list-item v-else-if="!hidden" class="item">
+		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
+			<v-highlight :text="text" :query="search" />
+		</v-checkbox>
+	</v-list-item>
+</template>
 
 <style scoped>
 .item {

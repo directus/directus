@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { toRefs } from 'vue';
+
+const props = defineProps<{
+	display: string | null;
+	options?: Record<string, unknown>;
+	interface?: string;
+	interfaceOptions?: Record<string, unknown>;
+	value?: string | number | boolean | Record<string, unknown> | unknown[];
+	type: string;
+	collection: string;
+	field: string;
+}>();
+
+const { display } = toRefs(props);
+
+const displayInfo = useExtension('display', display);
+</script>
+
 <template>
 	<value-null v-if="value === null || value === undefined" />
 	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
@@ -18,53 +38,6 @@
 		</template>
 	</v-error-boundary>
 </template>
-
-<script lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {
-		display: {
-			type: String,
-			default: null,
-		},
-		options: {
-			type: Object,
-			default: () => ({}),
-		},
-		interface: {
-			type: String,
-			default: null,
-		},
-		interfaceOptions: {
-			type: Object,
-			default: null,
-		},
-		value: {
-			type: [String, Number, Object, Array, Boolean],
-			default: null,
-		},
-		type: {
-			type: String,
-			required: true,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		field: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const displayInfo = useExtension('display', props.display);
-
-		return { displayInfo };
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .display {

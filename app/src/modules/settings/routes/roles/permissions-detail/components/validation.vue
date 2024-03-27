@@ -1,6 +1,57 @@
+<script setup lang="ts">
+import { DeepPartial, Field, Permission, Role } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import AppMinimal from './app-minimal.vue';
+
+const props = defineProps<{
+	permission: Permission;
+	role?: Role;
+	appMinimal?: Permission['validation'];
+}>();
+
+const emit = defineEmits(['update:permission']);
+
+const { t } = useI18n();
+
+const permissionLocal = ref({ validation: props.permission.validation });
+const permissionInitial = permissionLocal.value;
+
+const permissionSync = computed({
+	get() {
+		return permissionLocal.value;
+	},
+	set(value) {
+		permissionLocal.value = value;
+
+		emit('update:permission', {
+			...props.permission,
+			validation: value.validation !== undefined ? value.validation : permissionInitial.validation,
+		});
+	},
+});
+
+const fields = computed<DeepPartial<Field>[]>(() => [
+	{
+		field: 'validation',
+		name: t('rule'),
+		type: 'json',
+		meta: {
+			interface: 'system-filter',
+			options: {
+				collectionName: props.permission.collection,
+				includeValidation: true,
+				includeRelations: false,
+				rawFieldNames: true,
+			},
+		},
+	},
+]);
+</script>
+
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('validation_for_role', {
 					action: t(permission.action).toLowerCase(),
@@ -9,55 +60,13 @@
 			}}
 		</v-notice>
 
-		<v-form v-model="permissionSync" :fields="fields" />
+		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
+
+		<app-minimal :value="appMinimal" />
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@directus/types';
-import { useSync } from '@directus/composables';
-
-export default defineComponent({
-	props: {
-		permission: {
-			type: Object as PropType<Permission>,
-			required: true,
-		},
-		role: {
-			type: Object as PropType<Role>,
-			default: null,
-		},
-	},
-	emits: ['update:permission'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const permissionSync = useSync(props, 'permission', emit);
-
-		const fields = computed(() => [
-			{
-				field: 'validation',
-				name: t('rule'),
-				type: 'json',
-				meta: {
-					interface: 'system-filter',
-					options: {
-						collectionName: permissionSync.value.collection,
-						includeValidation: true,
-						includeRelations: false,
-					},
-				},
-			},
-		]);
-
-		return { t, permissionSync, fields };
-	},
-});
-</script>
-
-<style lang="scss" scoped>
+<style scoped>
 .v-notice {
 	margin-bottom: 36px;
 }

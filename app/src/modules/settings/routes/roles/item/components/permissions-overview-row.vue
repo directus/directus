@@ -1,104 +1,60 @@
+<script setup lang="ts">
+import { Collection } from '@/types/collections';
+import ValueNull from '@/views/private/components/value-null.vue';
+import { Permission } from '@directus/types';
+import { toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { editablePermissionActions, EditablePermissionsAction } from '../../app-permissions';
+import useUpdatePermissions from '../composables/use-update-permissions';
+import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
+
+const props = defineProps<{
+	collection: Collection;
+	disabledActions?: EditablePermissionsAction[];
+	permissions: Permission[];
+	refreshing: number[];
+	role: string | null;
+	appMinimal?: Partial<Permission>[];
+}>();
+
+const { t } = useI18n();
+
+const { collection, role, permissions } = toRefs(props);
+const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
+
+function isLoading(action: string) {
+	const permission = getPermission(action);
+	if (!permission?.id) return false;
+	return props.refreshing.includes(permission.id);
+}
+</script>
+
 <template>
 	<div class="permissions-overview-row">
-		<span class="name">
-			<span v-tooltip.left="collection.collection">{{ collection.name }}</span>
-			<span class="actions">
-				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
-				<span class="divider">/</span>
-				<span class="none" @click="setNoAccessAll">{{ t('none') }}</span>
-			</span>
+		<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
+
+		<span class="actions">
+			<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
+			<span class="divider">/</span>
+			<span class="none" @click="setNoAccessAll">{{ t('none') }}</span>
 		</span>
 
-		<permissions-overview-toggle
-			action="create"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('create')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'create')"
-		/>
-		<permissions-overview-toggle
-			action="read"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('read')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'read')"
-		/>
-		<permissions-overview-toggle
-			action="update"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('update')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'update')"
-		/>
-		<permissions-overview-toggle
-			action="delete"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('delete')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
-		/>
-		<permissions-overview-toggle
-			action="share"
-			:collection="collection"
-			:role="role"
-			:permissions="permissions"
-			:loading="isLoading('share')"
-			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
-		/>
+		<span class="spacer" />
+
+		<template v-for="action in editablePermissionActions" :key="action">
+			<permissions-overview-toggle
+				v-if="!disabledActions?.includes(action)"
+				:action="action"
+				:collection="collection"
+				:role="role"
+				:permissions="permissions"
+				:loading="isLoading(action)"
+				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
+			/>
+			<value-null v-else />
+		</template>
 	</div>
 </template>
-
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, toRefs } from 'vue';
-import { Permission, Collection } from '@directus/types';
-import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
-import useUpdatePermissions from '../composables/use-update-permissions';
-
-export default defineComponent({
-	components: { PermissionsOverviewToggle },
-	props: {
-		role: {
-			type: String,
-			default: null,
-		},
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
-		},
-		permissions: {
-			type: Array as PropType<Permission[]>,
-			required: true,
-		},
-		refreshing: {
-			type: Array as PropType<number[]>,
-			required: true,
-		},
-		appMinimal: {
-			type: [Boolean, Array] as PropType<false | Partial<Permission>[]>,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
-
-		const { collection, role, permissions } = toRefs(props);
-		const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
-
-		return { t, getPermission, isLoading, setFullAccessAll, setNoAccessAll };
-
-		function isLoading(action: string) {
-			const permission = getPermission(action);
-			if (!permission) return false;
-			return props.refreshing.includes(permission.id);
-		}
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .permissions-overview-row {
@@ -106,49 +62,64 @@ export default defineComponent({
 	align-items: center;
 	height: 48px;
 	padding: 0 12px;
-	background-color: var(--background-input);
 
 	.name {
-		flex-grow: 1;
+		font-family: var(--theme--fonts--monospace--font-family);
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-		.actions {
-			margin-left: 8px;
-			color: var(--foreground-subdued);
-			font-size: 12px;
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
+	.actions {
+		font-family: var(--theme--fonts--monospace--font-family);
+		margin-left: 8px;
+		color: var(--theme--foreground-subdued);
+		font-size: 12px;
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
 
-			span {
-				cursor: pointer;
+		span {
+			cursor: pointer;
 
-				&:hover {
-					&.all {
-						color: var(--success);
-					}
+			&:hover {
+				&.all {
+					color: var(--theme--success);
+				}
 
-					&.none {
-						color: var(--danger);
-					}
+				&.none {
+					color: var(--theme--danger);
 				}
 			}
+		}
 
-			.divider {
-				margin: 0 6px;
-				cursor: default;
-			}
+		.divider {
+			margin: 0 6px;
+			cursor: default;
 		}
 	}
 
-	&:hover .name .actions {
+	&:hover .actions {
 		opacity: 1;
 	}
 
-	.permissions-overview-toggle + .permissions-overview-toggle {
+	.spacer {
+		flex-grow: 1;
+		width: 20px;
+	}
+
+	.null {
+		display: flex;
+		justify-content: center;
+		width: 24px;
+		color: var(--theme--foreground);
+		cursor: not-allowed;
+	}
+
+	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
 		margin-left: 20px;
 	}
 
 	& + .permissions-overview-row {
-		border-top: var(--border-width) solid var(--border-subdued);
+		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

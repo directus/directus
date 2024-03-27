@@ -1,3 +1,39 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = withDefaults(
+	defineProps<{
+		value: boolean;
+		labelOn: string | null;
+		labelOff: string | null;
+		iconOn: string | null;
+		iconOff: string | null;
+		colorOn: string;
+		colorOff: string;
+	}>(),
+	{
+		value: false,
+		labelOn: null,
+		labelOff: null,
+		iconOn: 'check',
+		iconOff: 'close',
+		colorOn: 'var(--theme--primary)',
+		colorOff: 'var(--theme--foreground-subdued)',
+	},
+);
+
+const styles = computed(() => {
+	const style: Record<string, any> = {};
+
+	if (props.colorOn !== null && props.colorOff !== null) {
+		style['color'] = props.value ? props.colorOn : props.colorOff;
+		style['--v-icon-color'] = props.value ? props.colorOn : props.colorOff;
+	}
+
+	return style;
+});
+</script>
+
 <template>
 	<div class="boolean" :style="styles">
 		<value-null v-if="value === null" />
@@ -7,56 +43,6 @@
 		</template>
 	</div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-
-export default defineComponent({
-	props: {
-		value: {
-			type: Boolean,
-			default: false,
-		},
-		labelOn: {
-			type: String,
-			default: null,
-		},
-		labelOff: {
-			type: String,
-			default: null,
-		},
-		iconOn: {
-			type: String,
-			default: 'check',
-		},
-		iconOff: {
-			type: String,
-			default: 'close',
-		},
-		colorOn: {
-			type: String,
-			default: 'var(--primary)',
-		},
-		colorOff: {
-			type: String,
-			default: 'var(--foreground-subdued)',
-		},
-	},
-	setup(props) {
-		const styles = computed(() => {
-			const style: Record<string, any> = {};
-
-			if (props.colorOn !== null && props.colorOff !== null) {
-				style['color'] = props.value ? props.colorOn : props.colorOff;
-				style['--v-icon-color'] = props.value ? props.colorOn : props.colorOff;
-			}
-			return style;
-		});
-
-		return { styles };
-	},
-});
-</script>
 
 <style lang="scss" scoped>
 .boolean {

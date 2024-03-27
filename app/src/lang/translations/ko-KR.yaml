@@ -52,6 +52,13 @@ or: 또는
 init: 초기화
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
 modifier: 추가 항목
+extension_interface: 인터페이스
+extension_display: 표시하다
+extension_layout: 표시 방법
+extension_panel: 패널
+extension_hook: 후크
+extension_modules: 모듈
+enable: 활성화
 custom: 사용자 정의
 hook: 후크
 fill_width: 전체 폭
@@ -80,14 +87,6 @@ create_user: 사용자 생성
 message: 메시지
 delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
-create_translation_string: 번역 문구 추가
-no_translation_string: 번역 문구 없음.
-no_translation_string_copy: 아직 등록된 번역 문구가 없습니다.
-translation_string_key_placeholder: 번역 문구 키(key)...
-translation_string_translations_placeholder: 새로운 번역 문구를 추가하세요.
-edit_translation_string: 번역 문구 수정
-delete_translation_string_copy: >-
-  번역 문구 "{key}"를 삭제하시겠습니까? 한번 삭제하면 복구되지 않습니다.
 invite_users: 사용자 초대
 invite: 초대
 email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
@@ -103,6 +102,7 @@ rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
 suffix: 접미사
+promote_version_preview: 미리보기
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -118,20 +118,13 @@ public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 not_allowed: 허용되지 않음
-directus_version: Directus 버전
-node_version: 노드 버전
-node_uptime: 노드 가동 시간
-os_type: OS 유형
-os_version: OS 버전
-os_uptime: OS 가동 시간
-os_totalmem: OS 메모리
 archive: 보관
 archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
 archive_confirm_count: >-
   선택한 항목 없음 | 이 항목을 보관하시겠습니까? | 이 {Count}개의 항목을 보관하시겠습니까?
 reset_system_permissions_to: '시스템 권한 초기화 :'
 reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
-the_following_are_minimum_permissions: 다음은 '앱 액세스'가 활성화된 경우 필요한 최소 권한입니다. 이 이상으로 권한을 확장할 수 있지만 그 이하로는 확장할 수 없습니다.
+the_following_are_minimum_permissions: 다음 최소 권한은 "App Access"를 사용할 때 자동으로 적용됩니다. 필요한 경우 추가 권한을 부여할 수 있지만 이 수준 이하로 권한을 줄일 수는 없습니다.
 app_access_minimum: 최소 앱 액세스
 recommended_defaults: 권장 기본값
 unarchive: 보관 해제(사용)
@@ -252,13 +245,6 @@ time: 시간
 timestamp: 타임스탬프
 uuid: UUID
 hash: 해시
-geometry: 기하학 (전체)
-geometry.Point: 포인트
-geometry.LineString: 줄 문자열
-geometry.Polygon: 다각형
-geometry.MultiPoint: 멀티포인트
-geometry.MultiLineString: 여러 줄 문자열
-geometry.MultiPolygon: 다중 다각형
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
@@ -296,7 +282,12 @@ o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
 m2a_relationship: 다대다 관계
 invalid_item: 비정상적인 아이템
+require_confirmation: 확인 요청
+dialog: 대화상자
 modal: 모달
+confirmation_dialog: 확인 대화 상자
+confirmation_description: 확인 설명
+confirmation_input_fields: 확인 입력 필드
 next: 다음
 field_name: 필드 이름
 translations: 번역
@@ -315,6 +306,7 @@ updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
 foreign_key: 외래키
+field_key: 필드 키
 finish_setup: 셋업 종료
 dismiss: 무효
 toggle_raw_editor: RAW 편집기 토글
@@ -351,7 +343,7 @@ revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
 revision_delta_by: '{user}의 {date}'
-presentation_text_values_cannot_be_reimported: "프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다."
+presentation_text_values_cannot_be_reimported: '프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다.'
 download_page_as_csv: '페이지를 CSV로 다운로드'
 private_user: 비공개 사용자
 creation_preview: 생성 미리보기
@@ -389,6 +381,7 @@ move: 이동
 system: 시스템
 add_field_related: 관계형 컬렉션에 필드 추가
 interface_label: 인터페이스
+display_label: 표시하다
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -438,8 +431,7 @@ file_details: 파일 세부 정보
 dimensions: 규격
 size: 용량
 created: 작성됨
-modified: 수정됨 
-checksum: 체크섬
+modified: 수정됨
 owner: 소유자
 edited_by: 편집자
 folder: 폴더
@@ -462,11 +454,6 @@ open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
-exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
-exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
-exporting_download_hint: 완료되면 이 {format} 파일이 기기에 자동으로 다운로드됩니다.
-exporting_batch_hint: 이 내보내기는 일괄 처리되며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
-exporting_batch_hint_forced: 항목 수가 많기 때문에 이 내보내기는 일괄 처리해야 하며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
 collection_key: 컬렉션 키
 name: 이름
 primary_key_field: 기본키 필드
@@ -491,10 +478,8 @@ enable_select_button: 선택 버튼 활성화
 allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
-click_to_expand: 확장하려면 클릭
 select_item: 항목 선택
 no_items: 항목 없음
-search_items: 검색
 disabled: 비활성화 됨
 information: 정보
 report_bug: 버그 제보
@@ -515,7 +500,7 @@ no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
 no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
-no_notifications_copy: 당신은 모두 잡혔습니다!
+no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
 any: 모두
@@ -525,6 +510,7 @@ create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
 relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
+no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
 select_a_collection: 컬렉션 선택
@@ -602,7 +588,6 @@ errors:
   RECORD_NOT_UNIQUE: 중복 값 감지됨
   USER_SUSPENDED: 사용자 일시중지됨
   CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
-  UNPROCESSABLE_ENTITY: 처리할 수 없는 엔터티
   INTERNAL_SERVER_ERROR: 예기치 않은 오류
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
   ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
@@ -610,7 +595,6 @@ errors:
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
   INVALID_FOREIGN_KEY: 잘못된 외래 키
   UNKNOWN: 예기치 않은 오류
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 유효성 검사 예외
   SERVICE_UNAVAILABLE: 서비스 불가
   UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
   UNEXPECTED_RESPONSE: 예상치 못한 응답
@@ -663,6 +647,7 @@ one_filtered_item: '1개 항목'
 delete_collection_are_you_sure: >-
   정말 "{collection}" 컬렉션을 삭제하시겠습니까? 이렇게 하면 컬렉션과 그 안에 있는 모든 항목이 삭제됩니다. 이 작업은 영구적입니다.
 delete_folder_are_you_sure: 정말로 "{folder}" 폴더를 삭제하시겠습니까? 중첩된 폴더 및 컬렉션은 최상위 레벨로 이동됩니다.
+delete_collection_peer_dependencies: 다음 필드도 현재 컬렉션과 관련이 있으므로 삭제됩니다.
 collections_shown: 표시된 컬렉션
 visible_collections: 보이는 컬렉션
 hidden_collections: 숨겨진 컬렉션
@@ -691,34 +676,34 @@ delete_advanced_filter: 필터 삭제
 change_advanced_filter_operator: 연산자 변경
 advanced: 고급의
 operators:
-  eq: 같음
-  neq: 같지 않음
-  lt: 미만
-  gt: 보다 큰
-  lte: 보다 작거나 같음
-  gte: 보다 크거나 같음
-  in: 중 하나이다
-  nin: 다음 중 하나가 아님
+  eq: '이(가) 같음 : '
+  neq: '이(가) 같지 않음 :'
+  lt: '이(가) 작음 :'
+  gt: '이(가) 더 큼 :'
+  lte: '이(가) 작거나 같음 :'
+  gte: '이(가) 크거나 같음:'
+  in: '이(가) 중 하나 :'
+  nin: '이(가) 다음 중 하나가 아님 :'
   null: "null"
   nnull: null이 아님
-  contains: 포함
-  ncontains: 포함하지 않음
-  icontains: 포함(무감각)
-  starts_with: 시작
-  nstarts_with: 로 시작하지 않음
-  ends_with: 로 끝나다
-  nends_with: 로 끝나지 않는다
-  between: 사이에
-  nbetween: 사이가 아님
+  contains: '이(가) 포함 :'
+  ncontains: '이(가) 포함하지 않음 :'
+  icontains: '이(가) 포함(구분) :'
+  starts_with: '이(가) 시작 :'
+  nstarts_with: '이(가) 다음으로 시작하지 않음 :'
+  ends_with: '이(가) 다음으로 끝남 :'
+  nends_with: '이(가) 다음으로 끝나지 않음 :'
+  between: '이(가) 사이임 :'
+  nbetween: '이(가) 사이가 아님 :'
   empty: 비었다
-  nempty: 비어 있지 않음
-  all: 다음 키를 포함합니다.
-  has: 다음 키 중 일부를 포함합니다.
-  intersects: 교차
-  nintersects: 교차하지 않음
-  intersects_bbox: 교차 경계 상자
-  nintersects_bbox: 경계 상자와 교차하지 않음
-  regex: RegExp와 일치
+  nempty: 이(가) 비어 있지 않음
+  all: '이(가) 이 키를 포함 : '
+  has: '이(가) 이 키중 일부를 포함 : '
+  intersects: '이(가) 교차함 :'
+  nintersects: '이(가) 교차하지 않음 :'
+  intersects_bbox: 이(가) 경계 상자와 교차함
+  nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
 drop_to_upload: 드롭하여 업로드
@@ -737,7 +722,6 @@ layout_options: 표시방법 선택
 rows: 행
 columns: 열
 collection_setup: 컬렉션 설정
-optional_system_fields: 선택적 시스템 필드
 value_unique: 생산Key는 유일해야만 합니다.
 all_activity: 전체 활동
 create_item: 추가
@@ -781,15 +765,22 @@ format_value: 형식 값
 abbreviate_value: 약어 값
 operator: 운영자
 bold: 굵게
-toggle: 비녀장
+toggle: 토글
 icon_on: 아이콘 켜기
 icon_off: 아이콘 끄기
 label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
+run_flow_confirm: 이 규칙을 실행하시겠습니까?
+run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
+run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
+run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
+run_flow: 플로우 실행
 run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
+field_name_placeholder: 필드 이름 입력...
+field_key_placeholder: 필드 키 입력...
 trigger: 방아쇠
 trigger_options: 트리거 옵션
 view_trigger: 트리거 보기
@@ -801,9 +792,9 @@ set_flow_active: 플로우을 활성으로 설정
 set_flow_inactive: 플로우을 비활성으로 설정
 edit_flow: 플로우 편집
 delete_flow: 플로우 삭제
-no_other_flows_copy: 아직 다른 플로우이 없습니다.
+no_other_flows_copy: 아직 다른 플로우가 없습니다.
 no_flows: 플로우 없음
-no_flows_copy: 아직 플로우이 없습니다.
+no_flows_copy: 아직 플로우가 없습니다.
 create_flow: 플로우 작성
 creating_new_flow: 새 플로우 만들기
 updating_flow: 플로우 업데이트 중...
@@ -933,7 +924,7 @@ choices: 선택
 choices_option_configured_incorrectly: 잘못 구성된 선택 사항
 deselect: 선택 취소
 deselect_all: 모두 선택 취소
-other: 다른...
+other: 기타
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
 creating_in: '{collection} 데이터 추가'
@@ -944,12 +935,11 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
-settings_permissions: 역할 및 권한
-settings_project: 프로젝트 설정
+settings_project: 설정
 settings_webhooks: 웹후크
 settings_flows: 플로우
-settings_presets: 사전설정 및 북마크
-settings_translation_strings: 번역 문자열
+settings_presets: 북마크
+settings_translations: 번역
 one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
 scope: 범위
 actions: 액션
@@ -984,7 +974,6 @@ page_help_files_collection: >-
   **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
 page_help_files_item: >-
   **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
-page_help_settings_project: "**프로젝트 설정** — 프로젝트의 전역 구성 옵션입니다."
 page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
@@ -999,7 +988,6 @@ page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝�
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
-page_help_settings_translation_strings_collection: '**번역 문자열 찾아보기** — 프로젝트 내의 모든 번역 문자열을 나열합니다.'
 page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
 page_help_users_item: >-
   **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
@@ -1065,7 +1053,7 @@ fields:
     singleton: 싱글턴 패턴
     translations: 컬렉션 명명 번역
     archive_app_filter: 아카이브 앱 필터
-    archive_value: 아카이브 가치
+    archive_value: 아카이브 값
     unarchive_value: 아카이브 취소 값
     sort_field: 정렬 기준
     accountability: 활동 및 개정 추적
@@ -1107,10 +1095,6 @@ fields:
     tags: 태그(Tags)
     user_preferences: 개인 설정
     language: 언어
-    theme: 화면테마
-    theme_auto: 자동(시스템 설정)
-    theme_light: 밝은 배경 테마
-    theme_dark: 어두운 배경 테마
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
@@ -1131,6 +1115,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: 매핑
     basemaps: 베이스맵
     basemaps_raster: 래스터
@@ -1148,7 +1133,6 @@ fields:
     project_color: 테마컬러
     project_logo: 로고
     default_language: 기본 언어 설정
-    branding: 브랜딩 및 스타일
     public_foreground: 공개화면 전경(foreground)
     public_background: 공개화면 배경(background)
     public_note: 공개화면 표시글
@@ -1208,7 +1192,6 @@ field_options:
   directus_settings:
     project_name_placeholder: 내 프로젝트...
     project_color_note: 로그인/로고 화면 배경
-    project_logo_note: 흰색 40x40 SVG/PNG
     public_note_placeholder: 마크다운 서식을 지원하는 짧은 공개 메시지...
     security_divider_title: 보안
     auth_password_policy:
@@ -1262,6 +1245,7 @@ field_options:
     sort_field: 필드 선택...
     accountability_divider: 책임
     duplication_divider: 복사
+    preview_divider: 미리보기
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
@@ -1272,7 +1256,6 @@ field_options:
   directus_roles:
     name: 이 역할의 고유한 이름...
     description: 이 역할에 대한 설명...
-    ip_access: 허용된 IP 주소를 추가하고 모두 허용하려면 비워 두세요...
     fields:
       icon_name: 아이콘
       name_name: 이름
@@ -1307,7 +1290,7 @@ field_options:
       value: 값
       add: 헤더 추가
 no_fields_in_collection: '아직 "{collection}"에 필드가 없습니다.'
-no_value: 가치 없음
+no_value: 값 없음
 do_nothing: 아무것도하지 마세요
 generate_and_save_uuid: UUID 생성 및 저장
 save_current_user_id: 현재 사용자 ID 저장
@@ -1319,7 +1302,9 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
-shares: 주식
+live_preview:
+  new_window: 새 창에서 열기
+shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
@@ -1352,8 +1337,7 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  현재 {name}으로 인증되었습니다.
-  이 계정으로 계속하려면 계속을 누르세요.
+  현재 {name}으로 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
@@ -1425,6 +1409,7 @@ export_started: 내보내기를 시작했습니다.
 export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
 sort_asc: 오름차순 정렬
 sort_desc: 내림차순 정렬
+disable_sort: 정렬 비활성화
 template: 템플릿
 require_value_to_be_set: 생성 시 값을 설정해야 함
 translation: 번역
@@ -1489,7 +1474,7 @@ interfaces:
   select-multiple-checkbox-tree:
     name: 확인란(트리)
     description: 중첩된 확인란을 통해 여러 옵션 중에서 선택
-    value_combining: 가치 결합
+    value_combining: 값 합치기
     value_combining_note: 중첩된 선택이 수행될 때 저장되는 값을 제어합니다.
     show_all: 모두 보이기
     show_selected: 선택한 항목 표시
@@ -1562,7 +1547,7 @@ interfaces:
     hash: 해시
     description: 해싱할 값을 입력하세요.
     masked: 마스크
-    masked_label: 진정한 가치를 숨기세요
+    masked_label: 참 값 숨기기
   select-icon:
     icon: 아이콘
     description: 드롭다운에서 아이콘 선택
@@ -1579,6 +1564,8 @@ interfaces:
   system-interface-options:
     interface-options: 인터페이스 옵션
     description: 인터페이스 옵션을 선택하기 위한 모달
+  system-display:
+    display: 표시하다
   list-m2m:
     many-to-many: 다대다
     description: 여러 개의 관련 접합 항목 선택
@@ -1588,11 +1575,14 @@ interfaces:
     many-to-one: 다대일
     description: 단일 관련 항목 선택
     display_template: 표시 형식
+  collection-item-dropdown:
+    collection-item-dropdown: 컬렉션 항목 드롭다운
+    description: JSON 형식의 컬렉션에서 항목 선택
   input-rich-text-md:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
     edit: 수정
-    preview: 미리보기 
+    preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
     customSyntax: 맞춤형 블록
@@ -1627,7 +1617,6 @@ interfaces:
     description: 여러 관련 항목 선택
     no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
-    folder: 폴더
     description: 폴더 선택
     field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     root_name: 파일 라이브러리 루트
@@ -1644,6 +1633,7 @@ interfaces:
     sort_placeholder: 수동
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
+    interface_group: 인터페이스 옵션
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
@@ -1668,8 +1658,8 @@ interfaces:
     trim: 손질
     trim_label: 시작과 끝 다듬기
     mask: 마스크
-    mask_label: 진짜 가치를 숨기다
-    clear: 청산된 가치
+    mask_label: 진짜 값 숨기기
+    clear: 정리된 값
     clear_label: 빈 문자열로 저장
     minimum_value: 최소값
     maximum_value: 최대값
@@ -1683,9 +1673,8 @@ interfaces:
     input-translated-string: 번역된 문자열
     description: 번역 문자열 선택 또는 추가
     search_placeholder: 검색...
-    new_translation_string: 새 번역 문자열
   boolean:
-    toggle: 비녀장
+    toggle: 토글
     description: 켜기와 끄기 간 전환
     color_on: 컬러 온
     color_off: 색상 끄기
@@ -1720,11 +1709,21 @@ interfaces:
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+  input-block-editor:
+    tools: 툴바
+    tools_options:
+      header: 머리글
+      nestedlist: 목록
+      embed: 포함시키다
+      code: 코드
+      image: 이미지
+      table: 테이블
+      underline: 밑줄
   input-autocomplete-api:
     input-autocomplete-api: 자동 완성 입력(API)
     description: 외부 API 값에 대한 미리 검색.
     results_path: 결과 경로
-    value_path: 가치 경로
+    value_path: 값 경로
     text_path: 텍스트 경로
     trigger: 방아쇠
     rate: 비율
@@ -1743,7 +1742,7 @@ interfaces:
     system-token: 접속 인증 토큰
     description: 정적 액세스 토큰 관리
     placeholder: 새 정적 액세스 토큰을 생성하려면 "토큰 생성"을 클릭하십시오.
-    value_securely_saved: 가치를 안전하게 저장
+    value_securely_saved: 값이 안전하기 저장 됨
     generate: 토큰 생성
     regenerate: 토큰 재생성
     generate_success_copy: 위의 토큰을 백업하고 복사하십시오. 보안상의 이유로 이 페이지를 저장하고 탐색한 후에는 토큰을 다시 볼 수 없습니다.
@@ -1827,11 +1826,15 @@ displays:
     icon: 아이콘
     border: 테두리
     border_label: 테두리 표시
+    mask: 마스크
+    mask_label: 진짜 값 숨기기
     text: 텍스트
     text_placeholder: 선택적 값 재정의...
   formatted-json-value:
     formatted-json-value: 형식화된 JSON 값
     description: 객체의 형식화된 버전 표시
+  hash:
+    hash: 해시
   icon:
     icon: 아이콘
     description: 아이콘 표시
@@ -1994,6 +1997,7 @@ panels:
     smooth: 매끄러운
     straight: 똑바로
     step_line: 스텝 라인
+    show_legend: 범례 표시
   meter:
     name: 미터
     description: 값 추적을 위한 미터
@@ -2077,6 +2081,10 @@ operations:
     key: ID
     payload: 유효 탑재량
     query: 질문
+  json-web-token:
+    payload: 유효 탑재량
+    token: 접속 인증 토큰
+    options: 옵션
   log:
     name: 콘솔에 로그인
     description: 콘솔에 출력
@@ -2088,14 +2096,19 @@ operations:
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
     body: 몸
+    template: 템플릿
+    data: 데이터
   notification:
     name: 알림 보내기
     description: 한 명 이상의 사용자에게 인앱 알림 보내기
     recipient: 사용자
+    recipient_placeholder: UUID를 입력하세요...
+    recipient_note: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
+    subject: 제목
   request:
     name: 웹훅 / 요청 URL
-    description: "URL에 요청하기"
+    description: 'URL에 요청하기'
     url: URL
     url_placeholder: https://example.com/example
     method: 방법
@@ -2123,3 +2136,15 @@ operations:
     parallel: 평행한
     batch: 일괄
     batch_size: 배치 크기
+    cache: 캐시
+standard: 표준
+compact: 좁게
+style: 스타일
+fonts:
+  thin: 얇은
+  normal: 정상
+  medium: 중간
+  bold: 굵게
+  black: 검은색
+  italic: 이탤릭체
+  auto: 자동

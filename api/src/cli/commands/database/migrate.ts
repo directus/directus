@@ -1,9 +1,10 @@
 import run from '../../../database/migrations/run.js';
 import getDatabase from '../../../database/index.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger.js';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
 	const database = getDatabase();
+	const logger = useLogger();
 
 	try {
 		logger.info('Running migrations...');
@@ -15,6 +16,7 @@ export default async function migrate(direction: 'latest' | 'up' | 'down'): Prom
 		} else {
 			logger.info('Database up to date');
 		}
+
 		database.destroy();
 		process.exit();
 	} catch (err: any) {

@@ -1,3 +1,131 @@
+<script setup lang="ts">
+import { getCurrentLanguage } from '@/lang/get-current-language';
+import type { Translation } from '@/stores/translations';
+import { useTranslationsStore } from '@/stores/translations';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { computed, ref, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
+
+const translationPrefix = '$t:';
+
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		autofocus?: boolean;
+		disabled?: boolean;
+		placeholder?: string | null;
+	}>(),
+	{
+		value: null,
+		placeholder: null,
+	},
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const menuEl = ref();
+const hasValidKey = ref<boolean>(false);
+const isFocused = ref<boolean>(false);
+const searchValue = ref<string | null>(null);
+
+const loading = ref(false);
+const translationsKeys = ref<string[]>([]);
+const translationsStore = useTranslationsStore();
+
+const isCustomTranslationDrawerOpen = ref<boolean>(false);
+
+const fetchTranslationsKeys = async () => {
+	loading.value = true;
+
+	try {
+		const response: { key: string }[] = await fetchAll(`/translations`, {
+			params: {
+				fields: ['key'],
+				groupBy: ['key'],
+			},
+		});
+
+		translationsKeys.value = response.map((t) => t.key);
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		loading.value = false;
+	}
+};
+
+fetchTranslationsKeys();
+
+const filteredTranslationKeys = computed(() => {
+	const keys = unref(translationsKeys);
+	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
+
+	if (filteredKeys.length > 100) {
+		return filteredKeys.slice(0, 100);
+	}
+
+	return filteredKeys;
+});
+
+const localValue = computed<string | null>({
+	get() {
+		return props.value;
+	},
+	set(val) {
+		if (props.value === val) return;
+		emit('input', val);
+	},
+});
+
+const create = async (item: Translation) => {
+	await translationsStore.create(item);
+	await fetchTranslationsKeys();
+	setValue(`${translationPrefix}${item.key}`);
+};
+
+watch(
+	() => props.value,
+	(newVal) => setValue(newVal),
+	{ immediate: true },
+);
+
+const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
+
+function getKeyWithoutPrefix(val: string) {
+	return val.substring(translationPrefix.length);
+}
+
+function selectKey(key: string) {
+	setValue(`${translationPrefix}${key}`);
+	menuEl.value.deactivate();
+	searchValue.value = null;
+}
+
+function setValue(newValue: string | null) {
+	if (newValue?.startsWith(translationPrefix)) newValue = newValue.replace(/\s/g, '_');
+	localValue.value = newValue;
+	if (!isFocused.value) checkKeyValidity();
+}
+
+function blur() {
+	isFocused.value = false;
+	checkKeyValidity();
+}
+
+function checkKeyValidity() {
+	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
+}
+
+function openNewCustomTranslationDrawer() {
+	menuEl.value.deactivate();
+	isCustomTranslationDrawerOpen.value = true;
+}
+</script>
+
 <template>
 	<div class="input-translated-string">
 		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
@@ -31,7 +159,7 @@
 				</v-input>
 			</template>
 
-			<div v-if="searchValue !== null || translations.length >= 25" class="search">
+			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
 				<v-input
 					class="search-input"
 					type="text"
@@ -46,167 +174,68 @@
 				</v-input>
 			</div>
 
-			<v-list>
+			<v-list :loading="loading">
 				<v-list-item
-					v-for="translation in translations"
-					:key="translation.key"
+					v-for="translationKey in filteredTranslationKeys"
+					:key="translationKey"
 					class="translation-key"
-					:class="{ selected: localValue && translation.key === localValueWithoutPrefix }"
+					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
 					clickable
-					@click="selectKey(translation.key!)"
+					@click="selectKey(translationKey)"
 				>
 					<v-list-item-icon>
 						<v-icon name="translate" />
 					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="translation.key" :query="searchValue" /></v-list-item-content>
+					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
 					<v-list-item-icon class="info">
-						<TranslationStringsTooltip :translations="translation.translations" hide-display-text />
+						<custom-translations-tooltip :translation-key="translationKey" />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
+				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('interfaces.input-translated-string.new_translation_string') }}
+						{{ t('interfaces.input-translated-string.new_custom_translation') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
 
-		<TranslationStringsDrawer
-			:model-value="isTranslationStringDialogOpen"
-			:translation-string="editingTranslationString"
-			@update:model-value="updateTranslationStringsDialog"
-			@saved-key="setValue(`${translationPrefix}${$event}`)"
+		<DrawerItem
+			v-model:active="isCustomTranslationDrawerOpen"
+			collection="directus_translations"
+			primary-key="+"
+			:edits="{ language: getCurrentLanguage() }"
+			@input="create"
 		/>
 	</div>
 </template>
-
-<script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
-import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
-import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
-
-const translationPrefix = '$t:';
-
-interface Props {
-	value?: string | null;
-	autofocus?: boolean;
-	disabled?: boolean;
-	placeholder?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	value: () => null,
-	autofocus: false,
-	disabled: false,
-	placeholder: () => null,
-});
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const menuEl = ref();
-const hasValidKey = ref<boolean>(false);
-const isFocused = ref<boolean>(false);
-const searchValue = ref<string | null>(null);
-
-const { translationStrings } = useTranslationStrings();
-
-const isTranslationStringDialogOpen = ref<boolean>(false);
-
-const editingTranslationString = ref<TranslationString | null>(null);
-
-const translations = computed(() => {
-	const keys = translationStrings.value ?? [];
-
-	return !searchValue.value ? keys : keys.filter((key) => key.key?.includes(searchValue.value!));
-});
-
-const localValue = computed<string | null>({
-	get() {
-		return props.value;
-	},
-	set(val) {
-		if (props.value === val) return;
-		emit('input', val);
-	},
-});
-
-watch(
-	() => props.value,
-	(newVal) => setValue(newVal),
-	{ immediate: true }
-);
-
-const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
-
-function getKeyWithoutPrefix(val: string) {
-	return val.substring(translationPrefix.length);
-}
-
-function selectKey(key: string) {
-	setValue(`${translationPrefix}${key}`);
-	menuEl.value.deactivate();
-	searchValue.value = null;
-}
-
-function setValue(newValue: string | null) {
-	if (newValue?.startsWith(translationPrefix)) newValue = newValue.replace(/\s/g, '_');
-	localValue.value = newValue;
-	if (!isFocused.value) checkKeyValidity();
-}
-
-function blur() {
-	isFocused.value = false;
-	checkKeyValidity();
-}
-
-function checkKeyValidity() {
-	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
-}
-
-function openNewTranslationStringDialog() {
-	menuEl.value.deactivate();
-	isTranslationStringDialogOpen.value = true;
-}
-
-function updateTranslationStringsDialog(val: boolean) {
-	if (val) return;
-
-	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = val;
-}
-</script>
 
 <style lang="scss" scoped>
 .translation-input {
 	:deep(button) {
 		margin-right: auto;
 		padding: 2px 8px 0;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-radius: var(--border-radius);
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	:deep(button:not(:disabled):hover) {
 		color: var(--white);
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 	}
 
 	.translate-icon {
 		&:hover,
 		&.active {
-			--v-icon-color-hover: var(--primary);
-			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--theme--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 }
@@ -215,7 +244,7 @@ function updateTranslationStringsDialog(val: boolean) {
 	padding: 12px 8px 6px 8px;
 
 	.search-input {
-		--input-height: 48px;
+		--input-height: 40px;
 	}
 
 	.search-icon {
@@ -239,16 +268,16 @@ function updateTranslationStringsDialog(val: boolean) {
 		flex-basis: auto;
 		flex-grow: 0;
 		flex-shrink: 1;
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	&.selected {
 		--v-list-item-color-active: var(--foreground-inverted);
-		--v-list-item-background-color-active: var(--primary);
+		--v-list-item-background-color-active: var(--theme--primary);
 		--v-list-item-color-hover: var(--foreground-inverted);
-		--v-list-item-background-color-hover: var(--primary);
+		--v-list-item-background-color-hover: var(--theme--primary);
 
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		color: var(--foreground-inverted);
 
 		.v-list-item-icon {
@@ -262,13 +291,13 @@ function updateTranslationStringsDialog(val: boolean) {
 	}
 }
 
-.new-translation-string {
-	--v-list-item-color-hover: var(--primary-125);
+.new-custom-translation {
+	--v-list-item-color-hover: var(--theme--primary-accent);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 
 	.v-list-item-icon {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 </style>

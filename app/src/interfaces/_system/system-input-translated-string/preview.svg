@@ -1,11 +1,11 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="17.037" width="120" height="62" rx="6" fill="var(--background-page)" />
-	<rect x="19" y="18.037" width="118" height="60" rx="5" stroke="var(--primary)" stroke-opacity=".25"
+	<rect x="18" y="17.037" width="120" height="62" rx="6" fill="var(--theme--background)" />
+	<rect x="19" y="18.037" width="118" height="60" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25"
 		stroke-width="2" />
-	<rect x="28" y="51" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="28" y="63" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="18" y="17" width="120" height="26" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="19" y="18" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
-	<rect x="28" y="27" width="70" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<path d="m124.52 31.78-1.5-1.45.02-.03a10 10 0 0 0 2.16-3.8h1.73v-1.18h-4.1v-1.14h-1.15v1.14h-4.1v1.18h6.53a9.34 9.34 0 0 1-1.86 3.12 9.14 9.14 0 0 1-1.34-1.94h-1.18a10.89 10.89 0 0 0 1.75 2.65l-2.98 2.92.82.82 2.93-2.9 1.8 1.81.47-1.2zm3.28-2.96h-1.17l-2.63 7h1.18l.65-1.75h2.76l.66 1.75h1.18l-2.63-7zm-1.53 4.1.93-2.54.96 2.55h-1.89z" fill="var(--primary)"/>
+	<rect x="28" y="51" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="28" y="63" width="60" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="18" y="17" width="120" height="26" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="19" y="18" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+	<rect x="28" y="27" width="70" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<path d="m124.52 31.78-1.5-1.45.02-.03a10 10 0 0 0 2.16-3.8h1.73v-1.18h-4.1v-1.14h-1.15v1.14h-4.1v1.18h6.53a9.34 9.34 0 0 1-1.86 3.12 9.14 9.14 0 0 1-1.34-1.94h-1.18a10.89 10.89 0 0 0 1.75 2.65l-2.98 2.92.82.82 2.93-2.9 1.8 1.81.47-1.2zm3.28-2.96h-1.17l-2.63 7h1.18l.65-1.75h2.76l.66 1.75h1.18l-2.63-7zm-1.53 4.1.93-2.54.96 2.55h-1.89z" fill="var(--theme--primary)"/>
 </svg>
