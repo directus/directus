@@ -8,6 +8,7 @@ import { RouteLocationRaw } from 'vue-router';
 import { useServerStore } from './stores/server';
 import emitter, { Events } from './events';
 import { type LoginOptions } from '@directus/sdk';
+import { unexpectedError } from './utils/unexpected-error';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -29,7 +30,10 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 
 	const password = credentials.password;
 	const email = share ? credentials.share : credentials.email;
-	if (!password || !email) throw new Error('test');
+
+	if (!password || !email) {
+		return unexpectedError('Missing email or password.');
+	}
 
 	const options: LoginOptions = {};
 	if (share) options.share = share;
