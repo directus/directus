@@ -17,7 +17,8 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Removed `authenticateShare` from the SDK
 
-The functionality covered by the `authenticateShare()` command in the app has now been merged into the `login()` command.
+The functionality covered by the `authenticateShare()` command in the app has now been merged into the `login()`
+command.
 
 ::: details Migration/Mitigation
 
