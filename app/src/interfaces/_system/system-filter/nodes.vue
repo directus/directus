@@ -13,12 +13,11 @@ import {
 	Type,
 } from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
-import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
-import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import { fieldToFilter, getComparator, getField, getNodeName, getValue, isSome } from './utils';
 
 type FilterInfo = {
 	id: number;
@@ -30,10 +29,12 @@ type FilterInfo = {
 type FilterInfoField = {
 	id: number;
 	isField: true;
+	isO2M: boolean;
 	name: string;
 	node: Filter;
 	field: string;
 	comparator: string;
+	some: boolean;
 };
 
 interface Props {
@@ -69,19 +70,28 @@ const { t } = useI18n();
 const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	get() {
 		return props.filter.map((node, id) => {
-			const name = getNodeName(node);
+			const name = getNodeName(node)!;
+
 			const isField = name.startsWith('_') === false;
 
-			return isField
-				? ({
-						id,
-						isField,
-						name,
-						field: getField(node),
-						comparator: getComparator(node),
-						node,
-				  } as FilterInfoField)
-				: ({ id, name, isField, node } as FilterInfo);
+			if (isField) {
+				const field = getField(node);
+				const relations = relationsStore.getRelationTypes(props.collection, field);
+				const isO2M = relations.includes('o2m') || relations.includes('m2a');
+
+				return {
+					id,
+					isField,
+					isO2M,
+					name,
+					field,
+					comparator: getComparator(node),
+					node,
+					some: isSome(node),
+				} as FilterInfoField;
+			} else {
+				return { id, name, isField, node } as FilterInfo;
+			}
 		});
 	},
 	set(newVal) {
@@ -131,7 +141,7 @@ function getIndex(item: Filter) {
 function toggleLogic(index: number) {
 	const nodeInfo = filterInfo.value[index];
 
-	if (filterInfo.value[index].isField) return;
+	if (!nodeInfo || nodeInfo.isField) return;
 
 	if ('_and' in nodeInfo.node) {
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
@@ -154,10 +164,8 @@ function toggleLogic(index: number) {
 
 function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const nodeInfo = filterInfo.value[index];
-	if (nodeInfo.isField === false) return;
-
-	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	const value = get(nodeInfo.node, valuePath);
+	if (!nodeInfo || nodeInfo.isField === false) return;
+	const value = getValue(nodeInfo.node);
 
 	switch (operator) {
 		case '_in':
@@ -197,13 +205,26 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	}
 
 	function update(value: any) {
-		if (nodeInfo.isField === false) return;
+		if (!nodeInfo || nodeInfo.isField === false) return;
 
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
-			if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
+			if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value, nodeInfo.some);
 			return filter;
 		});
 	}
+}
+
+function toggleQuantityType(index: number) {
+	const nodeInfo = filterInfo.value[index];
+	if (!nodeInfo || nodeInfo.isField === false) return;
+
+	filterSync.value = filterSync.value.map((filter, filterIndex) => {
+		if (filterIndex === index) {
+			return fieldToFilter(nodeInfo.field, nodeInfo.comparator, getValue(nodeInfo.node), !nodeInfo.some);
+		}
+
+		return filter;
+	});
 }
 
 function updateField(index: number, newField: string) {
@@ -211,10 +232,9 @@ function updateField(index: number, newField: string) {
 	const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
 	const newFieldInfo = fieldsStore.getField(props.collection, newField);
 
-	if (nodeInfo.isField === false) return;
+	if (!nodeInfo || nodeInfo.isField === false) return;
 
-	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	let value = get(nodeInfo.node, valuePath);
+	let value = getValue(nodeInfo.node);
 	let comparator = nodeInfo.comparator;
 
 	if (oldFieldInfo?.type !== newFieldInfo?.type) {
@@ -223,7 +243,7 @@ function updateField(index: number, newField: string) {
 	}
 
 	filterSync.value = filterSync.value.map((filter, filterIndex) => {
-		if (filterIndex === index) return fieldToFilter(newField, comparator, value);
+		if (filterIndex === index) return fieldToFilter(newField, comparator, value, true);
 		return filter;
 	});
 }
@@ -308,6 +328,20 @@ function isExistingField(node: Record<string, any>): boolean {
 								@add="updateField(index, $event[0])"
 							/>
 						</v-menu>
+						<div
+							v-if="(filterInfo[index] as FilterInfoField).isO2M"
+							class="quantity-type"
+							:class="{'none': !(filterInfo[index] as FilterInfoField).some}"
+							@click="toggleQuantityType(index)"
+						>
+							<span class="key">
+								{{
+									(filterInfo[index] as FilterInfoField).some
+										? t('interfaces.filter.quantity_type_some')
+										: t('interfaces.filter.quantity_type_none')
+								}}
+							</span>
+						</div>
 						<v-select
 							inline
 							class="comparator"
@@ -389,7 +423,12 @@ function isExistingField(node: Record<string, any>): boolean {
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
-	.logic-type {
+	.quantity-type {
+		margin-right: 4px;
+	}
+
+	.logic-type,
+	.quantity-type {
 		color: var(--theme--form--field--input--foreground-subdued);
 
 		.key {
@@ -407,7 +446,8 @@ function isExistingField(node: Record<string, any>): boolean {
 			}
 		}
 
-		&.or .key {
+		&.or .key,
+		&.none .key {
 			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
 
