@@ -10,6 +10,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -167,6 +168,8 @@ const {
 	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
+
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -348,6 +351,47 @@ function deleteItem(item: DisplayItem) {
 	remove(item);
 }
 
+const batchEditActive = ref(false);
+const selection = ref<DisplayItem[]>([]);
+
+const relatedPrimaryKeys = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+
+	return selection.value.map((item) => get(item, [junctionField, relatedPkField], null)).filter(Boolean);
+});
+
+function stageBatchEdits(edits: Record<string, any>) {
+	if (!relationInfo.value) return;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+
+	selection.value.forEach((item) => {
+		const junctionId = get(item, [junctionPkField], null);
+		const relatedId = get(item, [junctionField, relatedPkField], null);
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[junctionPkField]: junctionId,
+			[junctionField]: {
+				[relatedPkField]: relatedId,
+				...edits,
+			},
+		};
+
+		update(changes);
+	});
+
+	selection.value = [];
+}
+
 const values = inject('values', ref<Record<string, any>>({}));
 
 const customFilter = computed(() => {
@@ -406,8 +450,6 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
-
-const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 </script>
 
 <template>
@@ -435,6 +477,17 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				</div>
 
 				<v-button
+					v-if="updateAllowed && relatedPrimaryKeys.length > 0"
+					v-tooltip.bottom="t('edit')"
+					rounded
+					icon
+					secondary
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
 					v-if="!disabled && enableSelect && selectAllowed"
 					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
 					rounded
@@ -460,6 +513,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				v-if="layout === LAYOUTS.TABLE"
 				v-model:sort="sort"
 				v-model:headers="headers"
+				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
 				:items="displayItems"
@@ -467,6 +521,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				:disabled="!updateAllowed"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
+				:show-select="updateAllowed ? 'multiple' : 'none'"
 				show-resize
 				@click:row="editRow"
 				@update:items="sortItems"
@@ -608,6 +663,14 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			:filter="customFilter"
 			multiple
 			@input="select"
+		/>
+
+		<drawer-batch
+			v-model:active="batchEditActive"
+			:primary-keys="relatedPrimaryKeys"
+			:collection="relationInfo.relatedCollection.collection"
+			stage-on-save
+			@input="stageBatchEdits"
 		/>
 	</div>
 </template>
