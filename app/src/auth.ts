@@ -110,7 +110,7 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 	if (options.reason === LogoutReason.SIGN_OUT) {
 		try {
 			await sdk.logout();
-		} catch (err) {
+		} catch {
 			// User already signed out
 		}
 	}
