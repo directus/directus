@@ -871,11 +871,11 @@ with the credentials set returned by this endpoint.
 <template #sdk>
 
 ```js
-import { createDirectus, rest, authenticateShare } from '@directus/sdk';
+import { createDirectus, rest, login } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(authenticateShare('share_key', 'password'));
+const result = await client.request(login('share_key', 'password', { share: true }));
 ```
 
 </template>
@@ -929,11 +929,11 @@ or `session` as the mode in the request, the refresh token won't be returned in 
 <template #sdk>
 
 ```js
-import { createDirectus, rest, authenticateShare } from '@directus/sdk';
+import { createDirectus, rest, login } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
+const result = await client.request(login('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us', { share: true }));
 ```
 
 </template>
