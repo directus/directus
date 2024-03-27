@@ -7,5 +7,3 @@ export enum Events {
 	tabIdle = 'tab-idle',
 	tabActive = 'tab-active',
 }
-
-export default emitter;

@@ -6,7 +6,7 @@ import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { useServerStore } from './stores/server';
-import emitter, { Events } from './events';
+import { emitter, Events } from './events';
 import { type LoginOptions } from '@directus/sdk';
 import { unexpectedError } from './utils/unexpected-error';
 
