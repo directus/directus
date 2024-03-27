@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, watch } from 'vue';
+import { emitter, Events } from '@/events';
 
 const props = defineProps<{
 	modelValue: number | null;
@@ -24,6 +25,20 @@ const interval = computed<number | null>({
 
 const activeInterval = ref<NodeJS.Timeout | null>(null);
 
+const setRefreshInterval = (interval: number) => {
+	activeInterval.value = setInterval(() => {
+		emit('refresh');
+	}, interval * 1000);
+};
+
+emitter.on(Events.tabIdle, () => {
+	if (activeInterval.value) clearInterval(activeInterval.value);
+});
+
+emitter.on(Events.tabActive, () => {
+	if (interval.value) setRefreshInterval(interval.value);
+});
+
 watch(
 	interval,
 	(newInterval) => {
@@ -32,9 +47,7 @@ watch(
 		}
 
 		if (newInterval !== null && newInterval > 0) {
-			activeInterval.value = setInterval(() => {
-				emit('refresh');
-			}, newInterval * 1000);
+			setRefreshInterval(newInterval * 1000);
 		}
 	},
 	{ immediate: true },
