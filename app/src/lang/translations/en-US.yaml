@@ -1204,6 +1204,7 @@ singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
 directus_collection:
+  directus_access: Policy attachments
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
   directus_dashboards: Dashboards within the Insights module
@@ -1215,7 +1216,8 @@ directus_collection:
   directus_notifications: Notifications sent to users
   directus_operations: Operations that run in Flows
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
+  directus_permissions: Access permissions for each policy
+  directus_policies: Access control policies
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -1382,12 +1384,14 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
+    users: Users in Role
+  directus_policies:
+    name: Policy Name
+    description: Description
     app_access: App Access
     admin_access: Admin Access
     ip_access: IP Access
     enforce_tfa: Require 2FA
-    users: Users in Role
-    module_list: Module Navigation
   directus_webhooks:
     name: Name
     method: Method
