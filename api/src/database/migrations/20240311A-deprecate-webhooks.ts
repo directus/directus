@@ -99,7 +99,7 @@ export async function up(knex: Knex): Promise<void> {
 			await trx(TABLE_FLOWS).insert(newFlow);
 
 			// Only need to transform the payload if the webhook enabled transmitting it
-			if (webhook.data) {
+			if (webhook.data && webhook.method !== 'GET') {
 				// Order is important due to IDs
 				await trx(TABLE_OPERATIONS).insert(operationWebhook);
 				await trx(TABLE_OPERATIONS).insert(operationRunScript);
