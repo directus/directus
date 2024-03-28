@@ -24,32 +24,6 @@ fields:
       placeholder: $t:field_options.directus_roles.description
     width: full
 
-  - field: app_access
-    interface: boolean
-    special:
-      - cast-boolean
-    width: half
-
-  - field: admin_access
-    interface: boolean
-    special:
-      - cast-boolean
-    width: half
-
-  - field: ip_access
-    interface: tags
-    options:
-      placeholder: $t:field_options.directus_roles.ip_access
-    special:
-      - cast-csv
-    width: full
-
-  - field: enforce_tfa
-    interface: boolean
-    special:
-      - cast-boolean
-    width: half
-
   - field: users
     interface: list-o2m
     special:

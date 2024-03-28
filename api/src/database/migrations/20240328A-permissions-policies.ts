@@ -107,12 +107,14 @@ export async function down(knex: Knex) {
 		.from('directus_policies');
 
 	for (const policy of policies) {
-		await knex('directus_roles').update({
-			ip_access: policy.ip_access,
-			enforce_tfa: policy.enforce_tfa,
-			admin_access: policy.admin_access,
-			app_access: policy.app_access,
-		}).where({ id: policy.id });
+		await knex('directus_roles')
+			.update({
+				ip_access: policy.ip_access,
+				enforce_tfa: policy.enforce_tfa,
+				admin_access: policy.admin_access,
+				app_access: policy.app_access,
+			})
+			.where({ id: policy.id });
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,4 +137,9 @@ export async function down(knex: Knex) {
 		table.uuid('role').notNullable().alter();
 		table.dropColumn('policy');
 	});
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Drop policies table
+
+	await knex.schema.dropTable('directus_policies');
 }

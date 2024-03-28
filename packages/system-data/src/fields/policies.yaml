@@ -1,0 +1,36 @@
+table: directus_policies
+
+fields:
+  - field: id
+    special:
+      - uuid
+
+  - field: name
+
+  - field: description
+
+  - field: app_access
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: admin_access
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: ip_access
+    interface: tags
+    options:
+      placeholder: $t:field_options.directus_policies.ip_access
+    special:
+      - cast-csv
+    width: full
+
+  - field: enforce_tfa
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half

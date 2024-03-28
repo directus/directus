@@ -1,0 +1,17 @@
+table: directus_access
+
+fields:
+  - field: id
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: item
+    width: half
+
+  - field: policy
+    width: half
+
+  - field: sort
+    width: half

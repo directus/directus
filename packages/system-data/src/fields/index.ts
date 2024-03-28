@@ -1,5 +1,6 @@
 import defaults from './_defaults.yaml';
 
+import accessFields from './activity.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
 import fieldFields from './fields.yaml';
@@ -29,6 +30,7 @@ import { FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 
+processFields(accessFields);
 processFields(activityFields);
 processFields(collectionFields);
 processFields(fieldFields);

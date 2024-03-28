@@ -2,20 +2,36 @@
 table: directus_permissions
 
 fields:
+  - field: permissions
+    hidden: true
+    special:
+      - cast-json
+    width: half
+
+  - field: presets
+    hidden: true
+    special:
+      - cast-json
+    width: half
+
+  - field: policy
+    width: half
+
+  - field: collection
+    width: half
+
   - field: id
     width: half
 
-  - field: collections
+  - field: fields
+    width: half
     special:
-      - cast-json
+      - cast-csv
 
-  - field: actions
-    special:
-      - cast-json
+  - field: action
+    width: half
 
-  - field: type
-  - field: policy
-
-  - field: rule
+  - field: validation
+    width: half
     special:
       - cast-json
