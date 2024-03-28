@@ -27,7 +27,7 @@ export class WebhooksService extends ItemsService<Webhook> {
 		throw new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))();
 	}
 
-	override updateOne(): Promise<PrimaryKey> {
+	override async updateOne(): Promise<PrimaryKey> {
 		throw new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))();
 	}
 
