@@ -85,7 +85,7 @@ export async function up(knex: Knex): Promise<void> {
 				position_y: 1,
 				options: {
 					url: webhook.url,
-					body: webhook.data && webhook.method === 'POST' ? '{{$last}}' : undefined,
+					body: webhook.data ? '{{$last}}' : undefined,
 					method: webhook.method,
 					headers: typeof webhook.headers === 'string' ? parseJSON(webhook.headers) : webhook.headers,
 				},
@@ -99,7 +99,7 @@ export async function up(knex: Knex): Promise<void> {
 			await trx(TABLE_FLOWS).insert(newFlow);
 
 			// Only need to transform the payload if the webhook enabled transmitting it
-			if (webhook.data && webhook.method === 'POST') {
+			if (webhook.data) {
 				// Order is important due to IDs
 				await trx(TABLE_OPERATIONS).insert(operationWebhook);
 				await trx(TABLE_OPERATIONS).insert(operationRunScript);
