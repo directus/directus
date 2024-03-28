@@ -56,10 +56,13 @@ export async function getSchema(options?: {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
 		return new Promise((resolve) => {
-			bus.subscribe(messageKey, async () => {
+			const callback = async () => {
 				const schema = await getSchema(options);
 				resolve(schema);
-			});
+				bus.unsubscribe(messageKey, callback);
+			};
+
+			bus.subscribe(messageKey, callback);
 		});
 	}
 
