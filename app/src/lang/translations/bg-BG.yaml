@@ -69,8 +69,39 @@ extension_hook: Кука
 extension_endpoint: Крайна точка
 extension_operation: Оператор
 extension_bundle: Пакет
+extension_interfaces: Интерфейси
+extension_displays: Дисплей
+extension_layouts: Оформления
 extension_modules: Модули
+extension_panels: Панели
+extension_themes: Теми
+extension_hooks: Кукички
+extension_endpoints: Крайни точки
+extension_operations: Операции
+extension_bundles: Вързопи
+extension_missing: Липсва
+extension_reload_required: Необходимо презареждане на страницата
+extension_reload_required_copy: Необходимо е презареждане на страницата, за да видите промените след активиране или деактивиране на разширенията на приложението.
+extension_reload_now: Презареди сега
+published_relative: Публикувано {relativeTime}
+compatible_with_your_project: Съвместим с вашия проект
+compatible_with_your_project_copy: Авторът е посочил, че съвместимостта на това разширение е {hostVersion}, което съответства на версията на вашия проект ({currentVersion})
+last_updated_relative: Последна актуализация {relativeTime}
+n_files: '{n} файлове'
+verified: Проверен
+homepage: Начална страница
+repository: Хранилище
+reload_required: Изисква се презареждане
+report_an_issue: Докладвай за проблем
+website: Уебсайт
+github: GitHub
+beta: Beta
+n_downloads: '{n} Изтегляния'
+downloads: Изтегляния
+compatibility_not_guaranteed: Съвместимостта не е гарантирана
+compatibility_not_guaranteed_copy: Авторът е посочил, че съвместимостта на това разширение е {hostVersion}, което не съответства на версията на вашия проект ({currentVersion})
 enable: Включване
+disable: Деактивиране
 custom: Персонализиран
 hook: Кука
 fill_width: Изпълване по ширина
@@ -99,6 +130,10 @@ create_user: Създаване на потребител
 message: Съобщение
 delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
+create_custom_translation: Създайте персонализиран превод
+edit_custom_translation: Редактиране на персонализиран превод
+no_custom_translations: Без персонализирани преводи
+no_custom_translations_copy: Все още няма персонализирани преводи.
 invite_users: Покана до потребители
 invite: Поканване
 email_already_invited: Вече е изпратена покана в пощата на „{email}“
@@ -114,6 +149,21 @@ rename_folder: Преименуване на папката
 delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
+keep: Запази
+version: Версия
+version_key: Ключ на версията
+version_name: Име на версията
+main_version: Основен
+switch_version: Превключване на версията
+switch_version_copy: Сигурни ли сте, че искате да преминете към версията "{version}"? Незапазените промени ще бъдат загубени.
+create_version: Създаване на версия
+rename_version: Преименуване на версията
+compare_version: Сравнете версията
+save_version: Запазване на версията
+promote_version: Популяризирайте версията
+promote_version_disabled: Без промени
+promote_version_drawer_title: Повишете {version} до основната
+promote_version_changes: Промени
 promote_version_preview: Преглед
 reset_bookmark: Нулиране на отметки
 update_bookmark: Обновяване на отметка
@@ -458,6 +508,9 @@ open_file_in_tab: Отваряне в нов таб
 start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
+exporting_download_hint: След като файлът {format} бъде създаден, той ще бъде изтеглен на вашето устройство.
+exporting_library_hint: След като файлът {format} бъде създаден, той ще бъде записан във файловата библиотека.
+exporting_library_hint_forced: Този експорт трябва да се обработва на партиди. След като бъде завършен, файлът {format} ще бъде записан във файловата библиотека.
 collection_key: Ключ на колекция
 name: Име
 primary_key_field: Поле за първичния ключ
@@ -473,6 +526,7 @@ generated_uuid: Генериран UUID
 manual_string: Ръчно въвеждане на стойност
 save_and_create_new: Запазване на текущия и дублиране в нов
 save_and_stay: Запазване и оставане
+save_and_quit: Запиши и излез
 save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
 creating_items: Създаване на записи
@@ -482,8 +536,12 @@ enable_select_button: Показване на бутон за избор
 allow_duplicates: Позволяване на дублирането
 comments: Коментари
 no_comments: Все още няма коментари
+expand: Разширяване
+collapse: Свиване
 select_item: Избор на запис
 no_items: Няма записи
+search_items: Търсене на елементи...
+search_extensions: Търсене на разширения...
 disabled: Изключване
 information: Информация
 report_bug: Докладване за проблем
@@ -502,6 +560,10 @@ no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители към ролята.
 webhooks_count: 'Няма уеб-куки | 1 уеб-кука | {count} уеб-куки'
+webhooks_deprecation_notice: |
+  Webhooks са отхвърлени и по-нататъшното им използване не се препоръчва.
+
+  Моля, използвайте **Flows** с [Webhook/Request URL операция](https://docs.directus.io/app/flows/operations.html#webhook-request-url) вместо това.
 no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
 no_notifications: Няма известия
 no_notifications_copy: Всичко е прегледано!
@@ -514,6 +576,7 @@ create_collection: Създаване на колекция
 no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
 relationship_not_setup: Релацията не е конфигурирана правилно
+no_singleton_relations: Връзките към Singletons не се поддържат
 display_template_not_setup: Настройките за показване не са конфигурирани правилно
 collection_field_not_setup: Настройките на полето от колекцията, не са конфигурирани правилно
 select_a_collection: Избор на колекция
@@ -562,7 +625,12 @@ bookmark_doesnt_exist_copy: Отметката която се опитвате 
 bookmark_doesnt_exist_cta: Връщане в колекция
 select_an_item: Избиране...
 edit: Редактиране
+edit_item: Редактиране на елемент
 enabled: Включване
+partially_enabled: Partially Enabled
+enable_all: Активиране на всички
+disable_all: Деактивирайте всички
+enabled_dev_tooltip: Разширенията за приложения винаги са активирани в режим за разработка
 disable_tfa: Изключване на 2FA
 admin_disable_tfa_text: Сигурни ли сте, че искате да деактивирате 2FA за потребителя?
 tfa_setup: Настройка на 2FA
@@ -575,8 +643,10 @@ corresponding_field: Кореспондиращо поле
 errors:
   COLLECTION_NOT_FOUND: "Колекцията не съществува"
   CONTAINS_NULL_VALUES: Полето съдържа null стойност
+  CONTENT_TOO_LARGE: Изпратеният елемент/файл е твърде голям
   FIELD_NOT_FOUND: Полето не е намерено
   FORBIDDEN: Забранен
+  GRAPHQL_VALIDATION: Валидиране на GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   INVALID_CONFIG: Невалидна конфигурация
@@ -591,6 +661,7 @@ errors:
   INVALID_USER: Неуспешно удостоверение на потребителя
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
+  LIMIT_EXCEEDED: 'Лимитът е надвишен'
   METHOD_NOT_ALLOWED: Методът не е разрешен
   NOT_NULL_VIOLATION: Стойността не трябва да е null
   RANGE_NOT_SATISFIABLE: Невалиден диапазон
@@ -601,6 +672,7 @@ errors:
   TOKEN_EXPIRED: Изтекъл токен
   UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
   UNKNOWN: Неочаквана грешка
+  UNPROCESSABLE_CONTENT: Съдържание, което не може да се обработва
   UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
   USER_SUSPENDED: Потребителя е деактивиран
   VALUE_OUT_OF_RANGE: Стойността е извън границите
