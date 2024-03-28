@@ -49,7 +49,9 @@ export async function up(knex: Knex): Promise<void> {
 				// accountability: "all",
 				options: {
 					type: 'action',
-					scope: toArray(webhook.actions).map((scope) => `items.${scope}`),
+					scope: toArray(webhook.actions)
+						.filter((action) => action.trim() !== '')
+						.map((scope) => `items.${scope}`),
 					collections: toArray(webhook.collections),
 				},
 				operation: null, // Fill this in later --> `operationIdRunScript`
