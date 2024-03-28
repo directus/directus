@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Относно
 identifier: Идентификатор
 avatar: Аватар
 application: Приложение
@@ -7,14 +28,18 @@ method: Метод
 published: Публикуван
 draft: Чернова
 archived: Архивиран
+marketplace: Пазар
+extensions: Разширения
 modules: Модули
 module_bar: Модулна лента
 logs: Дневник
+unknown: Неизвестен
 reset_width: Нулиране на ширината
 tile_size: Големина на сегментите
 edit_field: Редактиране на полето
 conditions: Условия
 location: Местоположение
+collection_names_are_case_sensitive: Имената на колекциите са чувствителни
 condition_rules: Условни правила
 input: Текстово поле
 maps: Географски карти
@@ -26,6 +51,8 @@ duplicate_field: Дублиране на полето
 half_width: Половин ширина
 full_width: Пълна ширина
 group: Групиране
+popular: Популярен
+recent: Скорошни
 export_items: Експортиране на записите
 and: И
 or: Или
@@ -35,8 +62,13 @@ modifier: Модификатор
 extension_interface: Интерфейс
 extension_display: Изглед
 extension_layout: Оформление
+extension_module: Модул
 extension_panel: Панел
+extension_theme: Тема
 extension_hook: Кука
+extension_endpoint: Крайна точка
+extension_operation: Оператор
+extension_bundle: Пакет
 extension_modules: Модули
 enable: Включване
 custom: Персонализиран
@@ -966,6 +998,7 @@ batch_delete_confirm: >-
   Няма избрани записи | Сигурни ли сте, че искате да изтриете записа? Действието не може да бъде отменено. | Сигурни ли сте, че искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
 cancel: Отмяна
 no_upscale: Да не се уголемяват
+source_registry: Пазар
 collection: Колекция
 collections: Колекции
 content: Съдържание
