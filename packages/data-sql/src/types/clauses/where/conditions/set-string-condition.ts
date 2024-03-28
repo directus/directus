@@ -2,7 +2,7 @@ import type { ValuesNode } from '../../../parameterized-statement.js';
 import type { AbstractSqlQueryTargetNode } from '../../common/target.js';
 
 /*
- * Condition to filter rows where a column value is in a list of values.
+ * Condition to filter rows where a column value is in a list of strings.
  * The value can basically be of any time, although the type should be obviously the same as the column type.
  */
 export interface SqlConditionSetStringNode {

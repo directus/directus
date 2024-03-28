@@ -1,6 +1,5 @@
 import type { AbstractQueryFieldNodeNestedSingleMany, AtLeastOneElement } from '@directus/data';
 import type {
-	AbstractSqlClauses,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryWhereNode,
@@ -31,7 +30,6 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tab
 	if (field.nesting.type !== 'relational-single') throw new Error('Nested o2a not yet implemented!');
 
 	const indexGen = createIndexGenerators();
-
 	const tableIndexRelational = indexGen.table.next().value;
 
 	const from = { tableName: field.nesting.foreign.collection, tableIndex: tableIndexRelational };
@@ -42,23 +40,7 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tab
 	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
 	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
 
-	const clauses: AbstractSqlClauses = {
-		select: nestedFieldNodes.clauses.select,
-		from,
-		...nestedModifiers.clauses,
-		joins: joins,
-		where: nestedModifiers.clauses.where
-			? {
-					type: 'logical',
-					operator: 'and',
-					negate: false,
-					childNodes: [
-						nestedModifiers.clauses.where,
-						getRelationConditions(tableIndexRelational, field.nesting.foreign.fields, indexGen),
-					],
-			  }
-			: getRelationConditions(tableIndexRelational, field.nesting.foreign.fields, indexGen),
-	};
+	const where = getFilter(nestedModifiers.clauses.where, tableIndexRelational, indexGen, field.nesting.foreign.fields);
 
 	const generatedAliases = field.nesting.local.fields.map((field) => [field, indexGen.column.next().value] as const);
 	const generatedAliasMap = Object.fromEntries(generatedAliases);
@@ -68,7 +50,13 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tab
 	return {
 		subQuery: (rootRow, columnIndexToIdentifier) => ({
 			rootQuery: {
-				clauses,
+				clauses: {
+					select: nestedFieldNodes.clauses.select,
+					from,
+					...nestedModifiers.clauses,
+					joins,
+					where,
+				},
 				parameters: [
 					...parameters,
 					...field.nesting.local.fields.map(
@@ -76,13 +64,38 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany, tab
 					),
 				],
 			},
-
 			subQueries: nestedFieldNodes.subQueries,
-
 			aliasMapping: nestedFieldNodes.aliasMapping,
 		}),
 		select,
 	};
+}
+
+/**
+ * Creates the where node to filter out the related items.
+ *
+ * @param nestedWhere
+ * @param tableIndex
+ * @param indexGen
+ * @param nestedForeignFields
+ * @returns The where condition which filters out the related items
+ */
+function getFilter(
+	nestedWhere: AbstractSqlQueryWhereNode | undefined,
+	tableIndex: number,
+	indexGen: IndexGenerators,
+	nestedForeignFields: AtLeastOneElement<string>,
+): AbstractSqlQueryWhereNode {
+	if (nestedWhere) {
+		return {
+			type: 'logical',
+			operator: 'and',
+			negate: false,
+			childNodes: [nestedWhere, getRelationConditions(tableIndex, nestedForeignFields, indexGen)],
+		};
+	}
+
+	return getRelationConditions(tableIndex, nestedForeignFields, indexGen);
 }
 
 function getRelationConditions(
@@ -112,7 +125,7 @@ function getRelationConditions(
  * @param indexGen
  * @returns
  */
-function getRelationCondition(
+export function getRelationCondition(
 	tableIndex: number,
 	columnName: string,
 	indexGen: IndexGenerators,

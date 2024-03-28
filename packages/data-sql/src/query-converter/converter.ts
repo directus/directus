@@ -6,7 +6,7 @@
  */
 import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlClauses, AliasMapping, ConverterResult, ParameterTypes, SubQuery } from '../types/index.js';
-import { convertFieldNodes } from './fields/index.js';
+import { convertFieldNodes } from './fields/fields.js';
 import { convertModifiers } from './modifiers/modifiers.js';
 import { createIndexGenerators } from './utils/create-index-generators.js';
 
@@ -21,9 +21,7 @@ import { createIndexGenerators } from './utils/create-index-generators.js';
 export const convertQuery = (abstractQuery: AbstractQuery): ConverterResult => {
 	const parameters: ParameterTypes[] = [];
 	const subQueries: SubQuery[] = [];
-
 	const indexGen = createIndexGenerators();
-
 	const tableIndex = indexGen.table.next().value;
 
 	let clauses: AbstractSqlClauses;

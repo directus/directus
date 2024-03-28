@@ -63,10 +63,14 @@ export interface AbstractQueryFieldNodeNestedUnionRelational {
 	/** The field name which holds the relational information */
 	field: string;
 
-	collections: RelationalUnionCollection[];
+	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
 }
 
-interface RelationalUnionCollection {
+/**
+ * Used to specify the fields which should be returned for a specific collection.
+ * It also contains information about how the two collections are related.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
@@ -80,7 +84,7 @@ interface RelationalUnionCollection {
 		/** The UUID of the foreign collection */
 		collectionIdentifier: string;
 
-		/** The column(s) of the foreign collection which store the primary key(s) */
-		fields: AtLeastOneElement<string>;
+		/** The column name(s) of the foreign collection which store the primary key(s) */
+		fields: AtLeastOneElement<{ name: string; type: 'string' | 'number' }>;
 	};
 }

@@ -47,6 +47,6 @@ test('set with json integer target', () => {
 	};
 
 	const res = setNumberCondition(sampleCondition, false);
-	const expected = `CAST("t${tableIndex}"."${columnName}" -> $6 -> $7 AS numeric) IN ($3, $4, $5)`;
+	const expected = `CAST("t${tableIndex}"."${columnName}" -> $6 ->> $7 AS numeric) IN ($3, $4, $5)`;
 	expect(res).toStrictEqual(expected);
 });
