@@ -35,6 +35,12 @@ describe('Integration Tests', () => {
 		let service: WebhooksService;
 		let messengerPublishSpy: MockInstance;
 
+		const errorDeprecation = new (createError(
+			ErrorCode.MethodNotAllowed,
+			'Webhooks are deprecated, use Flows instead',
+			405,
+		))();
+
 		beforeEach(() => {
 			service = new WebhooksService({
 				knex: db,
@@ -78,33 +84,25 @@ describe('Integration Tests', () => {
 
 		describe('createOne', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.createOne({})).rejects.toEqual(
-					new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))(),
-				);
+				return expect(service.createOne({})).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('createMany', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.createMany([{}])).rejects.toEqual(
-					new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))(),
-				);
+				return expect(service.createMany([{}])).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('updateOne', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.updateOne(1, {})).rejects.toEqual(
-					new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))(),
-				);
+				return expect(service.updateOne(1, {})).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('updateMany', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.updateMany([1], {})).rejects.toEqual(
-					new (createError(ErrorCode.MethodNotAllowed, 'Webhooks are deprecated, use Flows instead', 405))(),
-				);
+				return expect(service.updateMany([1], {})).rejects.toEqual(errorDeprecation);
 			});
 		});
 
