@@ -108,7 +108,7 @@ async function deleteAndQuit() {
 
 <style lang="scss" scoped>
 .deprecation-notice-wrapper {
-	padding: 0 var(--content-padding) var(--content-padding) var(--content-padding);
+	padding: 0 var(--content-padding);
 	width: fit-content;
 	:deep(a) {
 		text-decoration: underline;
