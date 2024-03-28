@@ -782,6 +782,13 @@ export class FieldsService {
 			}
 		}
 
+		if (field.schema?.simple_index?.is_indexed === false && alter?.simple_index?.index_name?.length) {
+			//dropIndex must be done before column.unique(),
+			//because column.unique() creates a unique index with same name
+			//so droping index after index would either result in error(in oracle) or cause inconsistencies
+			table.dropIndex(field.field, alter.simple_index.index_name);
+		}
+
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (field.schema?.is_unique === true) {
@@ -791,6 +798,19 @@ export class FieldsService {
 		} else if (field.schema?.is_unique === false) {
 			if (alter && alter.is_unique === true) {
 				table.dropUnique([field.field]);
+			}
+		}
+
+		if (field.schema?.simple_index?.is_indexed === true) {
+			const is_not_unique = !(field.schema?.is_unique || alter?.is_unique) || field.schema?.is_unique === false; //either not already unique or already unique but is being dropped
+
+			if (
+				is_not_unique &&
+				!(field.schema?.is_primary_key || alter?.is_primary_key) &&
+				!alter?.simple_index?.is_indexed
+			) {
+				//index only if there is no pk or unique index or its redundant
+				column.index(field.schema.simple_index.index_name || undefined);
 			}
 		}
 
