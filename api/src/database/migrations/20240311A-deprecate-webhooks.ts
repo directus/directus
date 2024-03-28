@@ -52,7 +52,7 @@ export async function up(knex: Knex): Promise<void> {
 					scope: toArray(webhook.actions)
 						.filter((action) => action.trim() !== '')
 						.map((scope) => `items.${scope}`),
-					collections: toArray(webhook.collections),
+					collections: toArray(webhook.collections).filter((collection) => collection.trim() !== ''),
 				},
 				operation: null, // Fill this in later --> `operationIdRunScript`
 				// date_created: Default Date,
