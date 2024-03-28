@@ -106,6 +106,12 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('updateBatch', () => {
+			it('should error because of deprecation', async () => {
+				return expect(service.updateBatch()).rejects.toEqual(errorDeprecation);
+			});
+		});
+
 		describe('deleteOne', () => {
 			it('should publish webhooks reload message once', async () => {
 				await service.deleteOne(1);

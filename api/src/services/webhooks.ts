@@ -34,7 +34,7 @@ export class WebhooksService extends ItemsService<Webhook> {
 		throw this.errorDeprecation;
 	}
 
-	override async updateOne(): Promise<PrimaryKey> {
+	override async updateBatch(): Promise<PrimaryKey[]> {
 		throw this.errorDeprecation;
 	}
 
