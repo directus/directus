@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Informacje
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
@@ -27,10 +28,12 @@ method: Metoda
 published: Opublikowany
 draft: Szkic
 archived: Zarchiwizowany
+marketplace: Marketplace
 extensions: Rozszerzenia
 modules: Moduły
 module_bar: Pasek modułu
 logs: Logi
+unknown: Nieznane
 reset_width: Zresetuj szerokość
 tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
@@ -48,6 +51,8 @@ duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 group: Grupa
+popular: Popularne
+recent: Najnowsze
 export_items: Eksportuj elementy
 and: I
 or: Lub
@@ -69,9 +74,32 @@ extension_displays: Wyświetlanie
 extension_layouts: Szablony
 extension_modules: Moduły
 extension_panels: Panele
+extension_themes: Motywy
+extension_hooks: Hooki
 extension_endpoints: Punkty końcowe
 extension_operations: Operacje
 extension_bundles: Pakiety
+extension_missing: Brakujące
+extension_reload_required: Wymagane przeładowanie strony
+extension_reload_required_copy: Aby zobaczyć zmiany po włączeniu lub wyłączeniu rozszerzeń aplikacji, wymagane jest przeładowanie strony.
+extension_reload_now: Załaduj ponownie teraz
+published_relative: Opublikowano {relativeTime}
+compatible_with_your_project: Kompatybilne z Twoim projektem
+compatible_with_your_project_copy: Autor wskazał kompatybilność tego rozszerzenia dla wersji {hostVersion}, która jest zgodna z wersją Twojego projektu ({currentVersion})
+last_updated_relative: Ostatnia aktualizacja {relativeTime}
+n_files: '{n} plików'
+verified: Zweryfikowano
+homepage: Strona główna
+repository: Repozytorium
+reload_required: Wymagane ponowne załadowanie
+report_an_issue: Zgłoś problem
+website: Strona internetowa
+github: GitHub
+beta: Beta
+n_downloads: '{n} pobrań'
+downloads: Pobrania
+compatibility_not_guaranteed: Kompatybilność nie jest gwarantowana
+compatibility_not_guaranteed_copy: Autor wskazał kompatybilność tego rozszerzenia dla wersji {hostVersion}, która nie jest zgodna z wersją Twojego projektu ({currentVersion})
 enable: Włącz
 disable: Wyłącz
 custom: Własny
@@ -160,6 +188,8 @@ logoutReason:
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
+no_description: Brak opisu...
+reached_maximum_number_of_extensions: Osiągnięto maksymalną liczbę rozszerzeń dla tego projektu ({n}). Skontaktuj się z administratorem systemu, aby uzyskać więcej informacji.
 not_allowed: Niedozwolone
 archive: Archiwum
 archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
@@ -299,9 +329,20 @@ time: Czas
 timestamp: Sygnatura czasowa
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (wszystkie)
+  Point: Point (punkt)
+  LineString: LineString (krzywa)
+  Polygon: Polygon (wielokąt)
+  MultiPoint: MultiPoint (wiele punktów)
+  MultiLineString: MultiLineString (wiele krzywych)
+  MultiPolygon: MultiPolygon (wielokąt złożony)
 theme_auto: Automatyczne (Oparte na systemie)
 theme_light: Tryb jasny
 theme_dark: Tryb ciemny
+theme_directus_default: Domyślny Directus
+theme_directus_minimal: Minimalny Directus
+theme_directus_colormatch: Dopasowanie kolorów Directus
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -313,6 +354,7 @@ auto_generate: Automatycznie generuj
 this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszystkich wymaganych pól i relacji.
 click_here: Kliknij tutaj
 to_manually_setup_translations: aby ręcznie ustawić tłumaczenia.
+manage: Zarządzaj
 click_to_manage_translated_fields: >-
   Nie ma jeszcze przetłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno przetłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Ilość przetłumaczonych pół: {count}. Kliknij tutaj, aby nimi zarządzać.
 fields_group: Grupa pól
@@ -482,7 +524,11 @@ months:
   november: Listopad
   december: Grudzień
 drag_mode: Tryb przeciągania
+move_tool: Narzędzie przesuwania
+crop_tool: Narzędzie przycinania
+focal_point_tool: Narzędzie punktu skupienia
 cancel_crop: Anuluj przycinanie
+cancel_selection: Anuluj wybór
 original: Oryginalny
 url: Adres URL
 import_label: Importuj
@@ -550,6 +596,7 @@ collapse: Zwiń
 select_item: Wybierz element
 no_items: Brak elementów
 search_items: Szukaj elementów...
+search_extensions: Szukaj rozszerzeń...
 disabled: Wyłączony
 information: Informacja
 report_bug: Zgłoś błąd
@@ -631,6 +678,10 @@ select_an_item: Wybierz element...
 edit: Edytuj
 edit_item: Edytuj element
 enabled: Włączone
+partially_enabled: Częściowo włączone
+enable_all: Włącz wszystko
+disable_all: Wyłącz wszystko
+enabled_dev_tooltip: Rozszerzenia aplikacji są zawsze włączone w trybie deweloperskim
 disable_tfa: Wyłącz weryfikację dwuetapową
 admin_disable_tfa_text: Czy na pewno chcesz wyłączyć 2FA dla tego użytkownika?
 tfa_setup: Konfiguracja 2FA
@@ -642,39 +693,41 @@ auto_fill: Automatyczne wypełnianie
 corresponding_field: Odpowiednie pole
 errors:
   COLLECTION_NOT_FOUND: "Kolekcja nie istnieje"
+  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
+  CONTENT_TOO_LARGE: Przedłożony element/plik jest zbyt duży
   FIELD_NOT_FOUND: Nie znaleziono pola
   FORBIDDEN: Zabronione
+  GRAPHQL_VALIDATION: Walidacja GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
+  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
+  INVALID_CONFIG: Nieprawidłowa konfiguracja
   INVALID_CREDENTIALS: Nieprawidłowa nazwa użytkownika lub hasło
+  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
+  INVALID_IP: Adres IP niedozwolony
   INVALID_OTP: Złe hasło jednorazowe
   INVALID_PAYLOAD: Błędny payload
   INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
-  INVALID_CONFIG: Nieprawidłowa konfiguracja
   INVALID_TOKEN: Nieprawidłowy token
-  INVALID_IP: Adres IP niedozwolony
   INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
-  ROUTE_NOT_FOUND: Nie znaleziono
-  RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
-  USER_SUSPENDED: Użytkownik zawieszony
-  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNPROCESSABLE_CONTENT: Zawartość niemożliwa do przetworzenia
-  INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
-  NOT_NULL_VIOLATION: Wartość nie może być pusta
-  ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
-  VALUE_TOO_LONG: Wartość jest zbyt długa
-  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
-  INVALID_FOREIGN_KEY: Nieprawidłowy klucz
-  UNKNOWN: Nieoczekiwany błąd
-  SERVICE_UNAVAILABLE: Serwis niedostępny
-  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
-  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
-  TOKEN_EXPIRED: Token wygasł
-  RANGE_NOT_SATISFIABLE: Błędny zakres
+  LIMIT_EXCEEDED: 'Przekroczony limit'
   METHOD_NOT_ALLOWED: Metoda niedozwolona
+  NOT_NULL_VIOLATION: Wartość nie może być pusta
+  RANGE_NOT_SATISFIABLE: Błędny zakres
+  RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   REQUESTS_EXCEEDED: Osiągnięto limit żądań
-  CONTENT_TOO_LARGE: Przedłożony element/plik jest zbyt duży
+  ROUTE_NOT_FOUND: Nie znaleziono
+  SERVICE_UNAVAILABLE: Serwis niedostępny
+  TOKEN_EXPIRED: Token wygasł
+  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
+  UNKNOWN: Nieoczekiwany błąd
+  UNPROCESSABLE_CONTENT: Zawartość niemożliwa do przetworzenia
+  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
+  USER_SUSPENDED: Użytkownik zawieszony
+  VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
+  VALUE_TOO_LONG: Wartość jest zbyt długa
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
@@ -783,6 +836,7 @@ operators:
   regex: Wyrażenie dopasowania
 custom_validation_message: Niestandardowy komunikat walidacyjny
 loading: Wczytywanie...
+extension_readme_missing: To rozszerzenie nie posiada pliku README.
 drop_to_upload: Upuść, aby przesłać
 item: Element
 items: Elementy
@@ -800,6 +854,7 @@ layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
 collection_setup: Ustawienia kolekcji
+optional_system_fields: Pola opcjonalne
 value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
 create_item: Utwórz element
@@ -1006,7 +1061,10 @@ deselect: Odznacz
 deselect_all: Odznacz Wszystko
 theme: Motyw
 select_a_theme: Wybierz motyw
+default_sync_with_project: Domyślny (synchronizacja z projektem)
+appearance_auto: Automatyczny (synchronizacja z systemem)
 appearance_light: Jasny
+appearance_dark: Ciemny
 other: Inne...
 adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
@@ -1020,6 +1078,7 @@ no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
 settings_permissions: Kontrola dostępu
 settings_project: Ustawienia
+settings_appearance: Wygląd
 settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_presets: Zakładki
@@ -1061,6 +1120,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Szczegóły pliku** — Formularz do zarządzania metadanymi plików, edycji oryginalnego zasobu i aktualizacji ustawień dostępu.
 page_help_settings_project: "**Ustawienia** — Ogólne opcje konfiguracji Twojego projektu."
+page_help_settings_appearance: "**Wygląd** — wygląd Twojego projektu i opcje motywów."
 page_help_settings_extensions: '**Rozszerzenia** — Rozszerzenia zainstalowane w Twoim projekcie.'
 page_help_settings_datamodel_collections: >-
   **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
@@ -1083,6 +1143,9 @@ page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
 page_help_insights_overview: '**Insights** - Lista pulpitów, do których masz dostęp.'
 page_help_insights_dashboard: '**Pulpit** - Obszar roboczy do zarządzania jednym lub kilkoma panelami'
+page_help_marketplace_account: '**Konto** — Wydawca lub zarządzający opublikowanym rozszerzeniem.'
+page_help_marketplace_registry: '**Rejestr** — Rozszerzenia dostępne w Directus Marketplace.'
+page_help_marketplace_extension: '**Rozszerzenie** — Rozszerzenie w Directus Marketplace.'
 activity_feed: Kanał aktywności
 add_new: Dodaj nowy
 create_new: Utwórz nowy
@@ -1095,6 +1158,14 @@ cancel: Anuluj
 no_upscale: Nie skaluj obrazów
 no_extensions: Brak rozszerzeń
 no_extensions_copy: Nie zainstalowano jeszcze żadnych rozszerzeń.
+install_extension: Zainstaluj rozszerzenie
+uninstall_locked: Nie można odinstalować rozszerzeń, które nie zostały zainstalowane za pośrednictwem Marketplace
+uninstall: Odinstaluj
+installed: Zainstalowany
+open_in_marketplace: Otwórz w Marketplace
+source_registry: Marketplace
+source_local: Lokalny
+source_module: Moduł Node
 collection: Kolekcja
 collections: Kolekcje
 content: Zawartość
@@ -1206,6 +1277,9 @@ fields:
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
     email_notifications: Powiadomienia e-mail
+    appearance: Wygląd
+    theme_light: Motyw jasny
+    theme_dark: Motyw ciemny
     theme_light_overrides: Dostosowanie jasnego motywu
     theme_dark_overrides: Dostosowanie ciemnego motywu
   directus_settings:
@@ -1214,6 +1288,7 @@ fields:
     webP: WebP
     tiff: Wskazówka
     avif: AVIF
+    reporting: Zgłaszanie
     mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
@@ -1236,6 +1311,9 @@ fields:
     public_background: Tło publiczne
     public_note: Notatka publiczna
     theming: Ustawienia domyślne motywu
+    default_appearance: Domyślny wygląd
+    default_theme_light: Domyślny jasny motyw
+    default_theme_dark: Domyślny ciemny motyw
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
     files_and_thumbnails: Pliki i pamięć
@@ -1357,11 +1435,13 @@ field_options:
     description: Opcjonalny opis...
     location: Opcjonalna lokalizacja...
     storage_divider: Nazwy plików
+    focal_point_divider: Punkt ogniskowy
     filename_disk: Nazwa na dysku...
     filename_download: Nazwa podczas pobierania...
   directus_roles:
     name: Unikalna nazwa dla tej roli...
     description: Opis tej roli...
+    ip_access: Dodaj dozwolone adresy IP, zakresy IP i bloki CIDR. Pozostaw puste, aby zezwolić na wszystkie...
     fields:
       icon_name: Ikona
       name_name: Nazwa
@@ -1810,6 +1890,7 @@ interfaces:
     no_collection: Brak kolekcji
     toggle_split_view: Przełącz widok dzielony
     enable: Włącz
+    default_split_view_state: Domyślny stan widoku podzielonego
     user_language: Użyj bieżącego języka użytkownika
     default_language: Domyślny język
     language_field: Pole identyfikacji języka
@@ -1830,7 +1911,9 @@ interfaces:
     description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
+    custom_formats_note: Lista formatów zawartości TinyMCE. Więcej informacji można znaleźć w dokumentacji TinyMCE na temat [Formatowania Treści](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Zastąp opcje
+    options_override_note: Klucze formatowania użytkownika TinyMCE i ich wartości. Więcej informacji można znaleźć w dokumentacji TinyMCE na temat opcji [Formatowania Użytkownika](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     imageToken: Statyczny token dostępu
     imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
@@ -1971,6 +2054,7 @@ displays:
     description: Wyświetl sformatowaną wersję obiektu
   hash:
     hash: Hash
+    description: Wyświetlanie zredagowanej wersji wartości
   icon:
     icon: Ikona
     description: Wyświetl ikonę
@@ -2325,5 +2409,6 @@ series_grouping: Grupowanie serii
 date_precision: Precyzja daty
 export_dashboard: Eksportuj pulpit
 duplicate_dashboard: Duplikuj pulpit
+search_dashboard: Szukaj na pulpicie...
 search_flow: Szukaj przepływu...
 percent: Procent

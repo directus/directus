@@ -375,15 +375,15 @@ errors:
   COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
   FIELD_NOT_FOUND: Laukas nerastas
   FORBIDDEN: Draudžiama
+  INTERNAL_SERVER_ERROR: Nenumatyta klaida
   INVALID_CREDENTIALS: Klaidingas prisijungimo vardas ir slaptažodis
   INVALID_OTP: Klaidingas vienkartinis slaptažodis
   INVALID_PAYLOAD: Neteisingi duomenys
   INVALID_QUERY: Neteisinga užklausa
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
-  ROUTE_NOT_FOUND: Nerasta
-  INTERNAL_SERVER_ERROR: Nenumatyta klaida
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...

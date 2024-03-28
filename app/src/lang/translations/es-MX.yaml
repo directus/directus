@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -639,38 +619,38 @@ auto_fill: Auto Rellenar
 corresponding_field: Campo Correspondiente
 errors:
   COLLECTION_NOT_FOUND: "La Colección no existe"
+  CONTAINS_NULL_VALUES: El campo contiene valores nulos
+  CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
+  ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
+  INTERNAL_SERVER_ERROR: Error Inesperado
+  INVALID_CONFIG: Configuración invalida
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
+  INVALID_FOREIGN_KEY: Clave externa no válida
+  INVALID_IP: Dirección IP no permitida
   INVALID_OTP: Contraseña Temporal Incorrecta
   INVALID_PAYLOAD: Payload Inválido
   INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta Inválida
-  INVALID_CONFIG: Configuración invalida
   INVALID_TOKEN: Token invalido
-  INVALID_IP: Dirección IP no permitida
   INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
-  ROUTE_NOT_FOUND: No encontrado
-  RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
-  USER_SUSPENDED: Usuario suspendido
-  CONTAINS_NULL_VALUES: El campo contiene valores nulos
-  INTERNAL_SERVER_ERROR: Error Inesperado
-  NOT_NULL_VIOLATION: El valor no puede ser nulo
-  ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
-  VALUE_TOO_LONG: El valor es demasiado largo
-  VALUE_OUT_OF_RANGE: Valor fuera de rango
-  INVALID_FOREIGN_KEY: Clave externa no válida
-  UNKNOWN: Error Inesperado
-  SERVICE_UNAVAILABLE: Servicio no disponible
-  UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
-  UNEXPECTED_RESPONSE: Respuesta inesperada
-  TOKEN_EXPIRED: Token caducado
-  RANGE_NOT_SATISFIABLE: Rango invalido
   METHOD_NOT_ALLOWED: Método no permitido
+  NOT_NULL_VIOLATION: El valor no puede ser nulo
+  RANGE_NOT_SATISFIABLE: Rango invalido
+  RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   REQUESTS_EXCEEDED: Límite de sugerencias alcanzado
-  CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
+  ROUTE_NOT_FOUND: No encontrado
+  SERVICE_UNAVAILABLE: Servicio no disponible
+  TOKEN_EXPIRED: Token caducado
+  UNEXPECTED_RESPONSE: Respuesta inesperada
+  UNKNOWN: Error Inesperado
+  UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
+  USER_SUSPENDED: Usuario suspendido
+  VALUE_OUT_OF_RANGE: Valor fuera de rango
+  VALUE_TOO_LONG: El valor es demasiado largo
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...

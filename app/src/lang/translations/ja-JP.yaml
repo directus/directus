@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -601,34 +581,34 @@ auto_fill: 自動入力
 corresponding_field: 対応するフィールド
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
+  CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
   FIELD_NOT_FOUND: フィールドが見つかりません
   FORBIDDEN: アクセス禁止
+  ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
+  INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  INVALID_CONFIG: 無効な設定
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
+  INVALID_FOREIGN_KEY: 無効な外部キー
+  INVALID_IP: IPアドレスが許可されていません
   INVALID_OTP: ワンタイムパスワードが間違っています
   INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
-  INVALID_CONFIG: 無効な設定
   INVALID_TOKEN: 無効なトークン
-  INVALID_IP: IPアドレスが許可されていません
   INVALID_USER: ユーザー認証に失敗しました
   ITEM_LIMIT_REACHED: アイテムの上限に達しました
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
-  ROUTE_NOT_FOUND: 見つかりません
-  RECORD_NOT_UNIQUE: 重複値が検出されました
-  CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
-  INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
-  NOT_NULL_VIOLATION: 値は Null 値にできません
-  ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
-  VALUE_TOO_LONG: 値が長すぎます
-  VALUE_OUT_OF_RANGE: 値が範囲外です
-  INVALID_FOREIGN_KEY: 無効な外部キー
-  UNKNOWN: 予期しないエラーが発生しました
-  SERVICE_UNAVAILABLE: サービスは利用できません
-  UNSUPPORTED_MEDIA_TYPE: サポート外のメディア種別
-  TOKEN_EXPIRED: トークンが期限切れです
-  RANGE_NOT_SATISFIABLE: 無効な範囲
   METHOD_NOT_ALLOWED: 許可されていないメソッド
+  NOT_NULL_VIOLATION: 値は Null 値にできません
+  RANGE_NOT_SATISFIABLE: 無効な範囲
+  RECORD_NOT_UNIQUE: 重複値が検出されました
   REQUESTS_EXCEEDED: リクエストの上限に達しました
+  ROUTE_NOT_FOUND: 見つかりません
+  SERVICE_UNAVAILABLE: サービスは利用できません
+  TOKEN_EXPIRED: トークンが期限切れです
+  UNKNOWN: 予期しないエラーが発生しました
+  UNSUPPORTED_MEDIA_TYPE: サポート外のメディア種別
+  VALUE_OUT_OF_RANGE: 値が範囲外です
+  VALUE_TOO_LONG: 値が長すぎます
 security: セキュリティ
 value_hashed: 値が安全にハッシュされました
 bookmark_name: ブックマーク名

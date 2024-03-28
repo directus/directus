@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
@@ -563,37 +543,37 @@ auto_fill: Automatikus kitöltés
 corresponding_field: Megfelelő mező
 errors:
   COLLECTION_NOT_FOUND: "Gyűjtemény nem létezik"
+  CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
+  ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
+  INTERNAL_SERVER_ERROR: Váratlan hiba történt
+  INVALID_CONFIG: Érvénytelen konfiguráció
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  INVALID_FOREIGN_KEY: Érvénytelen idegen kulcs
+  INVALID_IP: Nem engedélyezett IP-cím
   INVALID_OTP: Helytelen az egyszer használatos jelszó
   INVALID_PAYLOAD: Érvénytelen payload
   INVALID_PROVIDER: A felhasználó egy másik hitelesítési szolgáltatóhoz tartozik
   INVALID_QUERY: Érvénytelen lekérdezés
-  INVALID_CONFIG: Érvénytelen konfiguráció
   INVALID_TOKEN: Érvénytelen token
-  INVALID_IP: Nem engedélyezett IP-cím
   INVALID_USER: Érvénytelen felhasználó
   ITEM_LIMIT_REACHED: Elérte az elemek maximális számát
   ITEM_NOT_FOUND: Elem nem található
-  ROUTE_NOT_FOUND: Nem található
-  RECORD_NOT_UNIQUE: Ismétlődő értéket észleltem
-  USER_SUSPENDED: Felhasználó felfüggesztve
-  CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
-  INTERNAL_SERVER_ERROR: Váratlan hiba történt
-  NOT_NULL_VIOLATION: Az érték nem lehet null
-  ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
-  VALUE_TOO_LONG: Az érték túl hosszú
-  VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
-  INVALID_FOREIGN_KEY: Érvénytelen idegen kulcs
-  UNKNOWN: Váratlan hiba történt
-  SERVICE_UNAVAILABLE: Szolgáltatás nem elérhető
-  UNSUPPORTED_MEDIA_TYPE: Nem támogatott fájltípus
-  UNEXPECTED_RESPONSE: Nem várt kiszolgálóhiba
-  TOKEN_EXPIRED: A token lejárt
-  RANGE_NOT_SATISFIABLE: Érvénytelen tartomány
   METHOD_NOT_ALLOWED: A módszer nem támogatott
+  NOT_NULL_VIOLATION: Az érték nem lehet null
+  RANGE_NOT_SATISFIABLE: Érvénytelen tartomány
+  RECORD_NOT_UNIQUE: Ismétlődő értéket észleltem
   REQUESTS_EXCEEDED: Elérte a kérelmek számának maximumát
+  ROUTE_NOT_FOUND: Nem található
+  SERVICE_UNAVAILABLE: Szolgáltatás nem elérhető
+  TOKEN_EXPIRED: A token lejárt
+  UNEXPECTED_RESPONSE: Nem várt kiszolgálóhiba
+  UNKNOWN: Váratlan hiba történt
+  UNSUPPORTED_MEDIA_TYPE: Nem támogatott fájltípus
+  USER_SUSPENDED: Felhasználó felfüggesztve
+  VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
+  VALUE_TOO_LONG: Az érték túl hosszú
 security: Biztonság
 value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...

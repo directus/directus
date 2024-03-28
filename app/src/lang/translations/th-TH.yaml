@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
 application: แอพลิเคชัน
@@ -501,22 +481,22 @@ auto_fill: กรอกอัตโนมัติ
 corresponding_field: ฟิลด์ที่สอดคล้องกัน
 errors:
   COLLECTION_NOT_FOUND: "ไม่พบคอลเลกชัน"
+  CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
   FIELD_NOT_FOUND: ไม่พบฟิลด์
   FORBIDDEN: ไม่ได้รับอนุญาต
+  ILLEGAL_ASSET_TRANSFORMATION: ขนาดของภาพเกินกำหนด
+  INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   INVALID_CREDENTIALS: ชื่อผู้ใช้หรือรหัสผ่านผิด
   INVALID_OTP: OTP ไม่ถูกต้อง
   INVALID_PAYLOAD: payload ไม่ถูกต้อง
   INVALID_QUERY: query ไม่ถูกต้อง
   ITEM_LIMIT_REACHED: ไอเท็มถึงขีดจำกัด
   ITEM_NOT_FOUND: ไม่พบไอเท็ม
-  ROUTE_NOT_FOUND: ไม่พบข้อมูลที่ต้องการ
-  RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
-  USER_SUSPENDED: ผู้ใช้ถูกระงับ
-  CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
-  INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   NOT_NULL_VIOLATION: ต้องไม่เป็นค่า null
-  ILLEGAL_ASSET_TRANSFORMATION: ขนาดของภาพเกินกำหนด
+  RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
+  ROUTE_NOT_FOUND: ไม่พบข้อมูลที่ต้องการ
   UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+  USER_SUSPENDED: ผู้ใช้ถูกระงับ
 security: ความปลอดภัย
 value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
 bookmark_name: ชื่อบุ๊กมาร์ก...

@@ -380,21 +380,21 @@ auto_fill: Leuniañ emgefreek
 corresponding_field: Maezienn liammet
 errors:
   COLLECTION_NOT_FOUND: "N'eus ket eus an dastumad"
+  CONTAINS_NULL_VALUES: E-barzh ar vaezienn ez eus talvoudoù null
   FIELD_NOT_FOUND: N'haller ket kavout ar vaezienn-se
   FORBIDDEN: Difennet
+  INTERNAL_SERVER_ERROR: Fazi dianav
   INVALID_CREDENTIALS: N'eo ket mat an anv implijer pe ar ger-tremen
   INVALID_OTP: Direizh eo ar ger-tremen nemetañ
   INVALID_PAYLOAD: Payload direizh
   INVALID_QUERY: N'eus ket eus an dibab-se
   ITEM_LIMIT_REACHED: Ne c'heller kaout muioc'h a elfennoù
   ITEM_NOT_FOUND: N'haller ket kavout an elfenn-se
-  ROUTE_NOT_FOUND: Dibosupl da gavout
-  RECORD_NOT_UNIQUE: Talvoud eilet kavet
-  USER_SUSPENDED: Implijer lakaet a gostez
-  CONTAINS_NULL_VALUES: E-barzh ar vaezienn ez eus talvoudoù null
-  INTERNAL_SERVER_ERROR: Fazi dianav
   NOT_NULL_VIOLATION: Arabat e vije null an talvoud
+  RECORD_NOT_UNIQUE: Talvoud eilet kavet
+  ROUTE_NOT_FOUND: Dibosupl da gavout
   UNKNOWN: Fazi dianav
+  USER_SUSPENDED: Implijer lakaet a gostez
 value_hashed: Talvoud hashet en un doare sur
 bookmark_name: Anv ar pennroll
 create_bookmark: Ouzhpenn e-giz pennroll

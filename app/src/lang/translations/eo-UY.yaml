@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identigilo
 avatar: Profilbildo
 application: Aplikaĵo
@@ -404,27 +384,27 @@ create_account: Krei konton
 account_created_successfully: Konto sukcese kreita
 errors:
   COLLECTION_NOT_FOUND: "Kolekto ne ekzistas"
+  CONTAINS_NULL_VALUES: La kampo enhavas NULL-valorojn
   FIELD_NOT_FOUND: Kampo ne trovita
   FORBIDDEN: Malpermesita
+  INTERNAL_SERVER_ERROR: Neatendita eraro
   INVALID_CREDENTIALS: Malĝusta uzantnomo aŭ pasvorto
+  INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
+  INVALID_IP: IP-adreso ne permesita
   INVALID_OTP: Malĝusta unufoja pasvorto
   INVALID_PAYLOAD: Nevalidaj enhavaj datumoj
   INVALID_TOKEN: Nevalida ĵetono
-  INVALID_IP: IP-adreso ne permesita
   ITEM_NOT_FOUND: Ero ne trovita
-  ROUTE_NOT_FOUND: Ne trovita
-  CONTAINS_NULL_VALUES: La kampo enhavas NULL-valorojn
-  INTERNAL_SERVER_ERROR: Neatendita eraro
-  NOT_NULL_VIOLATION: Valoro ne povas esti NULL
-  VALUE_TOO_LONG: Valoro estas tro longa
-  VALUE_OUT_OF_RANGE: Valoro estas ekster la intervalo
-  INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
-  UNKNOWN: Neatendita eraro
-  SERVICE_UNAVAILABLE: Servo ne disponebla
-  UNEXPECTED_RESPONSE: Neatendita respondo
-  TOKEN_EXPIRED: Ĵetono eksvalidiĝinta
-  RANGE_NOT_SATISFIABLE: Nevalida intervalo
   METHOD_NOT_ALLOWED: Metodo ne permesita
+  NOT_NULL_VIOLATION: Valoro ne povas esti NULL
+  RANGE_NOT_SATISFIABLE: Nevalida intervalo
+  ROUTE_NOT_FOUND: Ne trovita
+  SERVICE_UNAVAILABLE: Servo ne disponebla
+  TOKEN_EXPIRED: Ĵetono eksvalidiĝinta
+  UNEXPECTED_RESPONSE: Neatendita respondo
+  UNKNOWN: Neatendita eraro
+  VALUE_OUT_OF_RANGE: Valoro estas ekster la intervalo
+  VALUE_TOO_LONG: Valoro estas tro longa
 security: Sekureco
 create_bookmark: Krei legosignon
 edit_bookmark: Redakti la legosignon

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -69,10 +49,15 @@ extension_displays: Darstellungen
 extension_layouts: Layouts
 extension_modules: Module
 extension_panels: Panels
+extension_themes: Erscheinungsbilder
 extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
 extension_bundles: Pakete
+extension_reload_required: Neuladen der Seite erforderlich
+extension_reload_required_copy: Um die Änderungen nach Aktivierung oder Deaktivierung von App-Erweiterungen sehen zu können, ist ein Neuladen der Seite erforderlich.
+extension_reload_now: Jetzt neu laden
+homepage: Hello world
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -300,9 +285,20 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometrie (alle)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatisch (Systemeinstellung folgen)
 theme_light: Heller Modus
 theme_dark: Dunkler Modus
+theme_directus_default: Directus Standard
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus-Farbwiedergabe
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -632,6 +628,10 @@ select_an_item: Element auswählen...
 edit: Bearbeiten
 edit_item: Element bearbeiten
 enabled: Aktiviert
+partially_enabled: Teilweise aktiviert
+enable_all: Alle aktivieren
+disable_all: Alle deaktivieren
+enabled_dev_tooltip: App-Erweiterungen sind im Dev-Modus immer aktiviert
 disable_tfa: 2FA deaktivieren
 admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
 tfa_setup: 2FA einrichten
@@ -643,39 +643,40 @@ auto_fill: Autom. ausfüllen
 corresponding_field: Korrespondierendes Feld
 errors:
   COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
+  CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
+  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
+  GRAPHQL_VALIDATION: GraphQL Validierung
+  ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
+  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
+  INVALID_CONFIG: Ungültige Konfiguration
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
+  INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
+  INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
-  INVALID_CONFIG: Ungültige Konfiguration
   INVALID_TOKEN: Token ungültig
-  INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
-  ROUTE_NOT_FOUND: Nicht gefunden
-  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
-  USER_SUSPENDED: Benutzer gesperrt
-  CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_CONTENT: Nicht verarbeitbarer Inhalt
-  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
-  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
-  ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
-  VALUE_TOO_LONG: Wert ist zu lang
-  VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
-  INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
-  UNKNOWN: Unerwarteter Fehler
-  SERVICE_UNAVAILABLE: Dienst nicht verfügbar
-  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
-  UNEXPECTED_RESPONSE: Unerwartete Antwort
-  TOKEN_EXPIRED: Token abgelaufen
-  RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
+  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
+  RANGE_NOT_SATISFIABLE: Ungültiger Bereich
+  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
-  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
+  ROUTE_NOT_FOUND: Nicht gefunden
+  SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  TOKEN_EXPIRED: Token abgelaufen
+  UNEXPECTED_RESPONSE: Unerwartete Antwort
+  UNKNOWN: Unerwarteter Fehler
+  UNPROCESSABLE_CONTENT: Nicht verarbeitbarer Inhalt
+  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
+  USER_SUSPENDED: Benutzer gesperrt
+  VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
+  VALUE_TOO_LONG: Wert ist zu lang
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -933,6 +934,7 @@ media: Medien
 quality: Qualität
 width: Breite
 height: Höhe
+transformation_preset_key: Vorgabe-Schlüssel Transformation
 source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
@@ -1213,6 +1215,8 @@ fields:
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
     appearance: Erscheinung
+    theme_light: Helles Erscheinungsbild
+    theme_dark: Dunkles Erscheinungsbild
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
@@ -1243,6 +1247,9 @@ fields:
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     theming: Design-Standardwerte
+    default_appearance: Standard-Erscheinung
+    default_theme_light: 'Standard Erscheinungsbild: Hell'
+    default_theme_dark: 'Standard Erscheinungsbild: Dunkel'
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
@@ -1369,6 +1376,7 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
+    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1837,7 +1845,9 @@ interfaces:
     description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
+    custom_formats_note: Liste der TinyMCE Inhaltsformate. Siehe TinyMCE Dokumentation über [Inhaltsformatierung](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) für weitere Informationen.
     options_override: Optionen überschreiben
+    options_override_note: Die TinyMCE Schlüssel und Werte für Benutzer-Formatierung. Siehe TinyMCE Dokumentation über [Benutzer-Formatierung](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) für weitere Informationen.
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
@@ -1978,6 +1988,7 @@ displays:
     description: Eine formatierte Version des Objekts anzeigen
   hash:
     hash: Hash
+    description: Eine zensierte Version des Wertes anzeigen
   icon:
     icon: Symbol
     description: Icon anzeigen

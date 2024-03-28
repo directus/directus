@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Quant a
 identifier: Indentificador
 avatar: Foto
 application: Aplicació
@@ -27,9 +28,11 @@ method: Mètode
 published: Publicat
 draft: Esborrany
 archived: Arxivat
+extensions: Extensions
 modules: Mòduls
 module_bar: Barra de mòduls
 logs: Registres
+unknown: Desconegut
 reset_width: Restableix l'amplada
 tile_size: Mida del mosaic
 edit_field: Edita el camp
@@ -46,6 +49,8 @@ duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
 group: Grup
+popular: Popular
+recent: Recent
 export_items: Exporta els elements
 and: I
 or: O
@@ -55,8 +60,21 @@ modifier: Modificador
 extension_interface: Interfície
 extension_display: Mostra
 extension_layout: Disposició
+extension_module: Mòdul
+extension_panel: Panell
+extension_theme: Tema
 extension_hook: Ganxo
+extension_endpoint: Endpoint
+extension_operation: Operació
 extension_modules: Mòduls
+n_files: '{n} fitxers'
+github: GitHub
+beta: Beta
+n_downloads: '{n} baixades'
+downloads: Baixades
+compatibility_not_guaranteed: Compatiblitiat no garantida
+enable: Habilita
+disable: Deshabilita
 custom: Personalitzat
 hook: Ganxo
 fill_width: Amplada de l'emplenat
@@ -100,6 +118,7 @@ rename_folder: Renombra carpeta
 delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
+keep: Manté
 promote_version_preview: Vista prèvia
 reset_bookmark: Reinicia marcador
 update_bookmark: Actualitza marcador
@@ -235,12 +254,15 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Text
 time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+theme_light: Mode clar
+theme_dark: Mode fosc
 not_available_for_type: No disponible per aquest Tipus
 create_translations: Crea traduccions
 auto_refresh: Refrescament automàtic
@@ -316,6 +338,7 @@ clear_items: Netejar elements
 reset_to_default: Restaura als valors per defecte
 undo_changes: Desfes els canvis
 notifications: Notificacions
+archive_all: Arxiva tots
 show_all_activity: Mostra tota l'activitat
 page_not_found: Pàgina no trobada
 page_not_found_body: No hem trobat la pàgina que cerques.
@@ -413,6 +436,7 @@ months:
   december: Desembre
 drag_mode: Mode d'arrossegament
 cancel_crop: Cancel·la el retall
+cancel_selection: Cancel·la la selecció
 original: Original
 url: URL
 import_label: Importa
@@ -437,6 +461,7 @@ import_from_url: Importa el fitxer des de la URL
 replace_from_device: Reemplaça el fitxer des del dispositiu
 replace_from_library: Reemplaça el fitxer des de la biblioteca
 replace_from_url: Reemplaça el fitxer des d'una URL
+no_image_selected: Cap imatge seleccionada
 no_file_selected: Cap fitxer seleccionat
 download_file: Descarrega el fitxer
 open_file_in_tab: Obre el fitxer en una nova pestanya
@@ -557,37 +582,37 @@ auto_fill: Omple automàticament
 corresponding_field: Camp corresponent
 errors:
   COLLECTION_NOT_FOUND: "La col·lecció no existeix"
+  CONTAINS_NULL_VALUES: El camp conté valors nuls
   FIELD_NOT_FOUND: Camp no trobat
   FORBIDDEN: Prohibit
+  ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
+  INTERNAL_SERVER_ERROR: Error inesperat
+  INVALID_CONFIG: Configuració invàlida
   INVALID_CREDENTIALS: Identificador o contrasenya incorrectes
+  INVALID_FOREIGN_KEY: Clau forana invàlida
+  INVALID_IP: Adreça IP no permesa
   INVALID_OTP: Contrasenya d'un sol ús errònia
   INVALID_PAYLOAD: Payload invàlid
   INVALID_PROVIDER: Aquest usuari pertany a un proveïdor d'autenticació diferent
   INVALID_QUERY: Consulta invàlida
-  INVALID_CONFIG: Configuració invàlida
   INVALID_TOKEN: Token invàlid
-  INVALID_IP: Adreça IP no permesa
   INVALID_USER: No s’ha pogut autenticar l’usuari
   ITEM_LIMIT_REACHED: Límit d'elements assolit
   ITEM_NOT_FOUND: Element no trobat
-  ROUTE_NOT_FOUND: No trobat
-  RECORD_NOT_UNIQUE: Valor duplicat detectat
-  USER_SUSPENDED: Usuari suspès
-  CONTAINS_NULL_VALUES: El camp conté valors nuls
-  INTERNAL_SERVER_ERROR: Error inesperat
-  NOT_NULL_VIOLATION: El valor no pot ser null
-  ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
-  VALUE_TOO_LONG: El valor és massa gran
-  VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
-  INVALID_FOREIGN_KEY: Clau forana invàlida
-  UNKNOWN: Error inesperat
-  SERVICE_UNAVAILABLE: Servei no disponible
-  UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
-  UNEXPECTED_RESPONSE: Resposta inesperada
-  TOKEN_EXPIRED: Token expirat
-  RANGE_NOT_SATISFIABLE: Interval no vàlid
   METHOD_NOT_ALLOWED: Mètode no permès
+  NOT_NULL_VIOLATION: El valor no pot ser null
+  RANGE_NOT_SATISFIABLE: Interval no vàlid
+  RECORD_NOT_UNIQUE: Valor duplicat detectat
   REQUESTS_EXCEEDED: Límit de peticions assolit
+  ROUTE_NOT_FOUND: No trobat
+  SERVICE_UNAVAILABLE: Servei no disponible
+  TOKEN_EXPIRED: Token expirat
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  UNKNOWN: Error inesperat
+  UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
+  USER_SUSPENDED: Usuari suspès
+  VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
+  VALUE_TOO_LONG: El valor és massa gran
 security: Seguretat
 value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...

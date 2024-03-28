@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikaator
 avatar: Avatar
 application: Rakendus
@@ -531,26 +511,26 @@ auto_fill: Täida automaatselt
 corresponding_field: Seotud väli
 errors:
   COLLECTION_NOT_FOUND: "Andmekogu ei leitud"
+  CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   FIELD_NOT_FOUND: "Välja ei leitud\n"
   FORBIDDEN: Keelatud
+  INTERNAL_SERVER_ERROR: Ootamatu viga
   INVALID_CREDENTIALS: Vale kasutajanimi või parool
+  INVALID_IP: Host või IP aadress pole lubatud
   INVALID_OTP: Vale ühekordne parool
   INVALID_PAYLOAD: Vigane päring
   INVALID_QUERY: Vigane päring
   INVALID_TOKEN: Vigane luba
-  INVALID_IP: Host või IP aadress pole lubatud
   ITEM_LIMIT_REACHED: Kirjete limiit sai täis
   ITEM_NOT_FOUND: Kirjet ei leitud
-  ROUTE_NOT_FOUND: Ei leitud
-  RECORD_NOT_UNIQUE: Kirje pole unikaalne
-  USER_SUSPENDED: Kasutajakonto on suletud
-  CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
-  INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
-  VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
-  UNKNOWN: Ootamatu viga
+  RECORD_NOT_UNIQUE: Kirje pole unikaalne
+  ROUTE_NOT_FOUND: Ei leitud
   SERVICE_UNAVAILABLE: Teenus pole saadaval
+  UNKNOWN: Ootamatu viga
   UNSUPPORTED_MEDIA_TYPE: Failitüüp pole toetatud
+  USER_SUSPENDED: Kasutajakonto on suletud
+  VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
 security: Turvalisus
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...

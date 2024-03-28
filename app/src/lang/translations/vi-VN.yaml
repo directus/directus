@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
@@ -51,10 +31,13 @@ and: Và
 or: Hoặc
 init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
+modifier: Đã sửa đổi
 extension_interface: Giao diện
 extension_display: Hiển thị
 extension_layout: Bố cục
+extension_module: Các Mô-Đun
 extension_panel: Bảng
+extension_theme: Theme
 extension_hook: Móc
 extension_modules: Mô đun
 extension_hooks: Móc
@@ -527,34 +510,34 @@ auto_fill: Tự động Điền
 corresponding_field: Trường tương ứng
 errors:
   COLLECTION_NOT_FOUND: "Danh mục không tồn tại"
+  CONTAINS_NULL_VALUES: Trường chứa giá trị rỗng
+  CONTENT_TOO_LARGE: Dữ liệu quá lớn
   FIELD_NOT_FOUND: Trường không tồn tại
   FORBIDDEN: Cấm
+  ILLEGAL_ASSET_TRANSFORMATION: Nguồn ảnh quá lớn để xem trước
+  INTERNAL_SERVER_ERROR: Lỗi Bất Thường
+  INVALID_CONFIG: Cấu hình không hợp lệ
   INVALID_CREDENTIALS: Sai tên người dùng hoặc mật khẩu
+  INVALID_IP: Địa chỉ IP không được phép
   INVALID_OTP: Sai mật khẩu dùng một lần
   INVALID_PAYLOAD: Dữ liệu không hợp lệ
   INVALID_QUERY: Truy vấn không hợp lệ
-  INVALID_CONFIG: Cấu hình không hợp lệ
   INVALID_TOKEN: Token không hợp lệ
-  INVALID_IP: Địa chỉ IP không được phép
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
-  ROUTE_NOT_FOUND: Không tìm thấy
-  RECORD_NOT_UNIQUE: Phát hiện giá trị trùng lặp
-  USER_SUSPENDED: Tài khoản bị vô hiệu
-  CONTAINS_NULL_VALUES: Trường chứa giá trị rỗng
-  INTERNAL_SERVER_ERROR: Lỗi Bất Thường
-  NOT_NULL_VIOLATION: Dữ liệu không thể để rỗng
-  ILLEGAL_ASSET_TRANSFORMATION: Nguồn ảnh quá lớn để xem trước
-  VALUE_TOO_LONG: Dữ liệu quá dài
-  VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
-  UNKNOWN: Lỗi Bất Thường
-  SERVICE_UNAVAILABLE: Dịch vụ không khả dụng
-  UNSUPPORTED_MEDIA_TYPE: Loại tập tin không được hỗ trợ
-  UNEXPECTED_RESPONSE: Lỗi không xác định
-  TOKEN_EXPIRED: Token đã hết hạn
   METHOD_NOT_ALLOWED: Phương thức này bị cấm
+  NOT_NULL_VIOLATION: Dữ liệu không thể để rỗng
+  RECORD_NOT_UNIQUE: Phát hiện giá trị trùng lặp
   REQUESTS_EXCEEDED: Bạn đã đạt giới hạn về số lần gọi API
-  CONTENT_TOO_LARGE: Dữ liệu quá lớn
+  ROUTE_NOT_FOUND: Không tìm thấy
+  SERVICE_UNAVAILABLE: Dịch vụ không khả dụng
+  TOKEN_EXPIRED: Token đã hết hạn
+  UNEXPECTED_RESPONSE: Lỗi không xác định
+  UNKNOWN: Lỗi Bất Thường
+  UNSUPPORTED_MEDIA_TYPE: Loại tập tin không được hỗ trợ
+  USER_SUSPENDED: Tài khoản bị vô hiệu
+  VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
+  VALUE_TOO_LONG: Dữ liệu quá dài
 security: Bảo mật
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
