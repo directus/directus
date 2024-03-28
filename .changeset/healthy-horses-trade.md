@@ -1,5 +1,6 @@
 ---
 '@directus/app': patch
+'@directus/api': major
 ---
 
-Softly deprecated the use of webhooks - Please switch to Flows
+Deprecated Webhooks and auto-migrated existing ones to Flows
