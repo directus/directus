@@ -17,9 +17,9 @@ export async function up(knex: Knex) {
 		table.string('name', 100).notNullable();
 		table.text('description');
 		table.text('ip_access');
-		table.boolean('enforce_tfa');
-		table.boolean('admin_access');
-		table.boolean('app_access');
+		table.boolean('enforce_tfa').defaultTo(false).notNullable();
+		table.boolean('admin_access').defaultTo(false).notNullable();
+		table.boolean('app_access').defaultTo(true).notNullable();
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,4 +88,51 @@ export async function up(knex: Knex) {
 	});
 }
 
-export async function down() {}
+export async function down(knex: Knex) {
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Reinstate access control fields on directus roles
+
+	await knex.schema.alterTable('directus_roles', (table) => {
+		table.text('ip_access');
+		table.boolean('enforce_tfa').defaultTo(false).notNullable();
+		table.boolean('admin_access').defaultTo(false).notNullable();
+		table.boolean('app_access').defaultTo(true).notNullable();
+	});
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Copy policy access control rules back to roles
+
+	const policies = await knex
+		.select('id', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
+		.from('directus_policies');
+
+	for (const policy of policies) {
+		await knex('directus_roles').update({
+			ip_access: policy.ip_access,
+			enforce_tfa: policy.enforce_tfa,
+			admin_access: policy.admin_access,
+			app_access: policy.app_access,
+		}).where({ id: policy.id });
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Drop policy attachments
+
+	await knex.schema.dropTable('directus_access');
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Reattach permissions to roles instead of permissions
+
+	await knex.schema.alterTable('directus_permissions', (table) => {
+		table.uuid('role').references('directus_roles.id');
+	});
+
+	await knex('directus_permissions').update({
+		role: knex.ref('policy'),
+	});
+
+	await knex.schema.alterTable('directus_permissions', (table) => {
+		table.uuid('role').notNullable().alter();
+		table.dropColumn('policy');
+	});
+}
