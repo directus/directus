@@ -76,14 +76,14 @@ export const getExtensionsSettings = async ({
 		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === bundleId);
 
 		for (const entry of bundleEntriesSettings) {
-			const entryExists = bundleExtension.entries.find(({ name }) => name === entry.folder);
+			const entryExists = bundleExtension.entries.some(({ name }) => name === entry.folder);
 			if (entryExists) continue;
 
 			removedSettingIds.push(entry.id);
 		}
 
 		for (const entry of bundleExtension.entries) {
-			const settingsExist = bundleEntriesSettings.find(({ folder }) => folder === entry.name);
+			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
 			if (settingsExist) continue;
 
 			newSettings.push({
