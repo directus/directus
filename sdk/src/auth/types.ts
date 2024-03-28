@@ -26,6 +26,8 @@ export interface AuthenticationClient<_Schema extends object> {
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
 
+	stopRefreshing(): void;
+
 	getToken(): Promise<string | null>;
 	setToken(access_token: string | null): void;
 }

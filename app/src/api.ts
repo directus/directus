@@ -1,7 +1,8 @@
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { type Options } from 'p-queue';
+import PQueue, { type QueueAddOptions, type Options } from 'p-queue';
+import sdk from './sdk';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -29,12 +30,12 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 	};
 
 	return new Promise((resolve) => {
-		if (config.url && config.url === '/auth/refresh') {
-			requestQueue.pause();
-			return resolve(requestConfig);
-		}
+		requestQueue.add(async () => {
+			// use getToken to await currently active refreshes
+			await sdk.getToken().catch(() => {
+				/* fail gracefully */
+			});
 
-		requestQueue.add(() => {
 			return resolve(requestConfig);
 		});
 	});
