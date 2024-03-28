@@ -83,7 +83,7 @@ export async function up(knex: Knex): Promise<void> {
 				position_y: 1,
 				options: {
 					url: webhook.url,
-					body: webhook.data ? '{{$last}}' : undefined,
+					body: webhook.data && webhook.method === 'POST' ? '{{$last}}' : undefined,
 					method: webhook.method,
 					headers: typeof webhook.headers === 'string' ? parseJSON(webhook.headers) : webhook.headers,
 				},
@@ -96,13 +96,19 @@ export async function up(knex: Knex): Promise<void> {
 
 			await trx(TABLE_FLOWS).insert(newFlow);
 
-			// Order is important due to IDs
-			await trx(TABLE_OPERATIONS).insert(operationWebhook);
-			await trx(TABLE_OPERATIONS).insert(operationRunScript);
+			// Only need to transform the payload if the webhook enabled transmitting it
+			if (webhook.data && webhook.method === 'POST') {
+				// Order is important due to IDs
+				await trx(TABLE_OPERATIONS).insert(operationWebhook);
+				await trx(TABLE_OPERATIONS).insert(operationRunScript);
+				await trx(TABLE_FLOWS).update({ operation: operationIdRunScript }).where({ id: flowId });
+			} else {
+				operationWebhook.position_x = 19; // Reset it because the Run-Script will be missing
+				await trx(TABLE_OPERATIONS).insert(operationWebhook);
+				await trx(TABLE_FLOWS).update({ operation: operationIdWebhook }).where({ id: flowId });
+			}
 
-			await trx(TABLE_FLOWS).update({ operation: operationIdRunScript }).where({ id: flowId });
-
-			// Persist new Flow/s so that we can retroactively disable them on potential down-migrations
+			// Persist new Flow/s so that we can retroactively remove them on potential down-migrations
 			await trx(TABLE_WEBHOOKS)
 				.update({ [NEW_COLUMN_FLOW]: flowId })
 				.where({ id: webhook.id });
