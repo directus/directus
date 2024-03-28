@@ -118,13 +118,12 @@ export async function up(knex: Knex): Promise<void> {
  * Lets preserve the data and drop them in the next release to be extra safe with users data.
  */
 export async function down(knex: Knex): Promise<void> {
-	// Set existing migrated flows to inactive
-	// Note: Here we assume that they have not been expanded upon i.e. only disable not delete just in case
+	// Remove Flows created by the up-migration
 	const migratedFlowIds = (await knex(TABLE_WEBHOOKS).select(NEW_COLUMN_FLOW).whereNotNull(NEW_COLUMN_FLOW)).map(
 		(col) => col[NEW_COLUMN_FLOW],
 	);
 
-	await knex(TABLE_FLOWS).update({ status: 'inactive' }).whereIn('id', migratedFlowIds);
+	await knex(TABLE_FLOWS).delete().whereIn('id', migratedFlowIds);
 
 	// Restore previously activated webhooks
 	await knex(TABLE_WEBHOOKS)
