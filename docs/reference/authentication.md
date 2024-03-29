@@ -681,6 +681,26 @@ Will redirect to the configured SSO provider for the user to login.
 
 ### Request
 
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
+<template #rest>
+
 ```
 GET /auth/login/:provider
 ```
+
+</template>
+<template #sdk>
+
+```ts
+import { createDirectus, rest, login } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(login('email', 'password', { provider: 'provider' }));
+
+```
+
+Note: The SDK cannot do browser redirects which some SSO providers require.
+
+</template>
+</SnippetToggler>
