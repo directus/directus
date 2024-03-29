@@ -8,15 +8,16 @@ import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
+import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
+import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
-import { useLogger } from '../logger.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -239,7 +240,7 @@ export class UsersService extends ItemsService {
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const service = new UsersService({
 				accountability: this.accountability,
 				knex: trx,
