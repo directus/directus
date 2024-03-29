@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensionsStore } from '@/stores/extensions';
-import { ExtensionType } from '@directus/extensions';
+import { ApiOutput } from '@directus/extensions';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -9,6 +9,9 @@ import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
+import { ExtensionType } from './types';
+
+type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 
 const { t } = useI18n();
 
@@ -18,8 +21,6 @@ const { extensions, loading } = storeToRefs(extensionsStore);
 const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
 
 const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
-
-type ExtensionsMap = Record<ExtensionType | 'missing', typeof extensionsStore.extensions>;
 
 const extensionsByType = computed(() => {
 	const groups = groupBy(regular.value, 'schema.type');

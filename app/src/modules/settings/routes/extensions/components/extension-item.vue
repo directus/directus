@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { extensionTypeIconMap } from '../constants';
 import { ExtensionStatus } from '../types';
 import ExtensionItemOptions from './extension-item-options.vue';
 
