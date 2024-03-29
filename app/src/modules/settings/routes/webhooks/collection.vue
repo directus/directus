@@ -5,7 +5,7 @@ import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 
@@ -19,7 +19,6 @@ const layoutRef = ref();
 const selection = ref<Item[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_webhooks'));
-const { addNewLink, batchLink } = useLinks();
 const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 const { layoutWrapper } = useLayout(layout);
@@ -43,7 +42,9 @@ function useBatchDelete() {
 
 		const batchPrimaryKeys = selection.value;
 
-		await api.delete(`/webhooks/${batchPrimaryKeys}`);
+		await api.delete(`/webhooks`, {
+			data: batchPrimaryKeys,
+		});
 
 		await refresh();
 
@@ -51,19 +52,6 @@ function useBatchDelete() {
 		deleting.value = false;
 		confirmDelete.value = false;
 	}
-}
-
-function useLinks() {
-	const addNewLink = computed<string>(() => {
-		return `/settings/webhooks/+`;
-	});
-
-	const batchLink = computed<string>(() => {
-		const batchPrimaryKeys = selection.value;
-		return `/settings/webhooks/${batchPrimaryKeys}`;
-	});
-
-	return { addNewLink, batchLink };
 }
 
 function clearFilters() {
@@ -124,15 +112,13 @@ function clearFilters() {
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
-
-				<v-button v-if="selection.length > 0" v-tooltip.bottom="t('edit')" rounded icon secondary :to="batchLink">
-					<v-icon name="edit" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('create_webhook')" rounded icon :to="addNewLink">
-					<v-icon name="add" />
-				</v-button>
 			</template>
+
+			<div class="deprecation-notice-wrapper">
+				<v-notice type="danger">
+					<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
+				</v-notice>
+			</div>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
@@ -148,10 +134,6 @@ function clearFilters() {
 				<template #no-items>
 					<v-info :title="t('webhooks_count', 0)" icon="anchor" center>
 						{{ t('no_webhooks_copy') }}
-
-						<template #append>
-							<v-button :to="{ path: '/settings/webhooks/+' }">{{ t('create_webhook') }}</v-button>
-						</template>
 					</v-info>
 				</template>
 			</component>
@@ -170,6 +152,14 @@ function clearFilters() {
 </template>
 
 <style lang="scss" scoped>
+.deprecation-notice-wrapper {
+	padding: 0 var(--content-padding) var(--content-padding) var(--content-padding);
+	width: fit-content;
+	:deep(a) {
+		text-decoration: underline;
+	}
+}
+
 .header-icon {
 	--v-button-background-color-disabled: var(--theme--primary-background);
 	--v-button-color-disabled: var(--theme--primary);
