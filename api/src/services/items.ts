@@ -344,11 +344,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
+		const createFields = async (knex: Knex) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
-				knex: trx,
+				knex: knex,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -377,7 +377,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			return { primaryKeys, nestedActionEvents };
-		});
+		};
+
+		let primaryKeys: PrimaryKey[];
+		let nestedActionEvents: ActionEventParams[];
+
+		if (this.knex.isTransaction) {
+			const res = await createFields(this.knex);
+			primaryKeys = res.primaryKeys;
+			nestedActionEvents = res.nestedActionEvents;
+		} else {
+			const res = await this.knex.transaction(async (trx) => await createFields(trx));
+			primaryKeys = res.primaryKeys;
+			nestedActionEvents = res.nestedActionEvents;
+		}
 
 		if (opts.emitEvents !== false) {
 			for (const nestedActionEvent of nestedActionEvents) {
