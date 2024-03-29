@@ -34,7 +34,6 @@ const icon = computed(() => extensionTypeIconMap[type.value]);
 
 const disabled = computed(() => {
 	if (type.value === 'missing') return true;
-	if (devMode) return false;
 
 	return !props.extension.meta.enabled;
 });
@@ -108,10 +107,10 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled }">
+	<v-list-item block>
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
-			<span class="monospace">
+			<span class="name" :class="{ disabled }">
 				<router-link
 					v-if="extension.schema?.name && extension.meta.source === 'registry'"
 					v-tooltip="t('open_in_marketplace')"
@@ -190,33 +189,25 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 </template>
 
 <style lang="scss" scoped>
-.monospace {
+.name {
 	font-family: var(--theme--fonts--monospace--font-family);
-}
 
-.nested {
-	margin-left: 20px;
-
-	&:not(.partial) .options {
-		display: none;
+	&.disabled {
+		color: var(--theme--foreground-subdued);
 	}
-}
 
-.disabled {
-	--v-list-item-color: var(--theme--foreground-subdued);
-}
-
-.options {
-	margin-left: 12px;
-}
-
-.marketplace-link {
-	&:hover {
-		text-decoration: underline;
+	.marketplace-link {
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 }
 
 .version {
+	margin-right: 8px;
+}
+
+.spinner {
 	margin-right: 8px;
 }
 
@@ -235,7 +226,15 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 	}
 }
 
-.spinner {
-	margin-right: 8px;
+.options {
+	margin-left: 12px;
+}
+
+.nested {
+	margin-left: 20px;
+
+	&:not(.partial) .options {
+		display: none;
+	}
 }
 </style>
