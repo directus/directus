@@ -115,7 +115,7 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 				<router-link
 					v-if="extension.schema?.name && extension.meta.source === 'registry'"
 					v-tooltip="t('open_in_marketplace')"
-					class="market-link"
+					class="marketplace-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>
 					{{ extension.schema?.name }}
@@ -210,7 +210,7 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 	margin-left: 12px;
 }
 
-.market-link {
+.marketplace-link {
 	&:hover {
 		text-decoration: underline;
 	}
