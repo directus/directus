@@ -25,7 +25,7 @@ extensions folder prefixed with `directus-extension-`) no action is required at 
 on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
 `hooks`, etc, you will have to update your extensions before upgrading to this version.
 
-Directus will ignore extensions altogether if the extensions folder contains the legacy typed folders starting in 10.10.
+Directus will ignore extensions that use the legacy format starting in this version.
 
 ::: details Migration/Mitigation
 
@@ -61,6 +61,21 @@ Notes:
   `^10.0.0`)
 
 :::
+
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+migrated.
+
+Place migrations in the `./migrations` directory, or set the new location in the `MIGRATIONS_PATH` environment variable.
+
+### Moved Email Templates Out of Extensions
+
+Email Templates are no longer considered an extension type as of this release. The `templates` extensions directory must
+be migrated.
+
+Place email templates in the `./templates` directory, or set the new location in the `EMAIL_TEMPLATES_PATH` environment
+variable.
 
 ### Content Versioning Output
 
@@ -158,6 +173,16 @@ If your current workflow depends on redirecting to an external domain after succ
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` config option.
 
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
+
+### Email Flow Operation No Longer Waits for Emails to Be Sent
+
+Previously, the [Send Email](https://docs.directus.io/app/flows/operations.html#send-email) Flow Operation has waited
+until emails have been sent out before proceeding to the next step.
+
+This is no longer the case, which also means that the operation can no longer be used to receive information about
+dispatched emails.
+
+If this is a requirement, it can still be achieved by building a custom operation which directly uses the `MailService`.
 
 ## Version 10.9.0
 

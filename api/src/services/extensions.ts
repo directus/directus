@@ -208,7 +208,9 @@ export class ExtensionsService {
 			return extension;
 		});
 
-		this.extensionsManager.reload();
+		this.extensionsManager.reload().then(() => {
+			this.extensionsManager.broadcastReloadNotification();
+		});
 
 		return result;
 	}

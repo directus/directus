@@ -16,6 +16,8 @@ export interface Props {
 	suffix?: boolean;
 }
 
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(defineProps<Props>(), {
 	format: 'long',
 	relative: false,

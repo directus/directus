@@ -30,4 +30,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
 
 	LOG_HTTP_IGNORE_PATHS: 'array',
+
+	REDIS_ENABLED: 'boolean',
 } as const;

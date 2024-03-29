@@ -8,6 +8,9 @@ export type DirectusSettings<Schema extends object> = MergeCoreCollection<
 		id: 1;
 		project_name: string;
 		project_url: string;
+		report_error_url: string | null;
+		report_bug_url: string | null;
+		report_feature_url: string | null;
 		project_color: string | null;
 		project_logo: string | null;
 		public_foreground: string | null;

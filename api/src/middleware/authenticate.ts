@@ -19,7 +19,7 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 		ip: getIPFromReq(req),
 	};
 
-	const userAgent = req.get('user-agent');
+	const userAgent = req.get('user-agent')?.substring(0, 1024);
 	if (userAgent) defaultAccountability.userAgent = userAgent;
 
 	const origin = req.get('origin');

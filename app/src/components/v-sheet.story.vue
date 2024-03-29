@@ -4,8 +4,6 @@ import VSheet from './v-sheet.vue';
 
 <template>
 	<Story title="VSheet">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-sheet v-bind="state">This is some wanky sheet that is not even used inside Directus.</v-sheet>
-		</template>
+		<v-sheet>This is some wanky sheet that is not even used inside Directus.</v-sheet>
 	</Story>
 </template>
