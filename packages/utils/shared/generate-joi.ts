@@ -179,8 +179,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
 				schema[key] = Joi.any().equal(true);
 			} else {
-				// TODO: Make this case work
-				schema[key] = Joi.alternatives().try(getStringSchema().ncontains(compareValue), Joi.array().items(Joi.any()));
+				schema[key] = Joi.alternatives().try(
+					getStringSchema().ncontains(compareValue),
+					Joi.array().items(Joi.string().pattern(new RegExp(escapeRegExp(compareValue)), { invert: true })),
+				);
 			}
 		}
 

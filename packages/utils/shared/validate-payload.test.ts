@@ -165,11 +165,11 @@ describe('validatePayload', () => {
 		expect(validatePayload(mockFilter, { value: undefined }, options)).toHaveLength(1);
 		expect(validatePayload(mockFilter, { value: 123 }, options)).toHaveLength(1);
 
+		expect(validatePayload(mockFilter, { value: ['foo'] }, options)).toHaveLength(0);
 		expect(validatePayload(mockFilter, { value: ['foo', 'match'] }, options)).toHaveLength(1);
-		expect(validatePayload(mockFilter, { value: [123, 'match'] }, options)).toHaveLength(1);
-		expect(validatePayload(mockFilter, { value: [123, 'MATCH'] }, options)).toHaveLength(0);
-		expect(validatePayload(mockFilter, { value: [123, 'substring-match'] }, options)).toHaveLength(1);
-		expect(validatePayload(mockFilter, { value: [] }, options)).toHaveLength(1);
+		expect(validatePayload(mockFilter, { value: ['MATCH'] }, options)).toHaveLength(0);
+		expect(validatePayload(mockFilter, { value: ['substring-match'] }, options)).toHaveLength(1);
+		expect(validatePayload(mockFilter, { value: [] }, options)).toHaveLength(0);
 
 		expect(validatePayload(mockFilter, { value: {} }, options)).toHaveLength(1);
 	});
