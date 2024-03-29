@@ -76,7 +76,7 @@ type LoginOptions = {
 ```
 
 - **`otp`** — The user's one-time-password (if MFA is enabled).
-- **`mode`** — Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`,
+- **`mode`** — Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` cookie. One of `json`,
   `cookie` or `session`. Defaults to `cookie`.
 - **`share`** — Whether to authenticate as a share
 - **`provider`** — Use a specific authentication provider (does not work for SSO that relies on browser redirects).
