@@ -1,53 +1,62 @@
 <script setup lang="ts">
-import { ExtensionType } from '@directus/extensions';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ExtensionStatus } from '../types';
+import { ExtensionState, ExtensionType } from '../types';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput } from '@directus/extensions';
 
 const props = defineProps<{
-	status: ExtensionStatus;
-	type?: ExtensionType;
-	disableLocked?: boolean;
-	uninstallLocked?: boolean;
-	bundleEntry?: boolean;
+	extension: ApiOutput;
+	type: ExtensionType;
+	state: ExtensionState;
+	children: ApiOutput[];
 }>();
 
-defineEmits<{ toggleStatus: [enabled: boolean]; uninstall: [] }>();
+defineEmits<{ toggleState: [enabled: boolean]; uninstall: []; reinstall: []; remove: [] }>();
 
 const { t } = useI18n();
 
-const actions = computed(() => {
-	const enabled = props.status === 'enabled';
+const isOrHasAppExtension = computed(() => {
+	if (props.type === 'bundle') return props.children.some((extension) => isAppExtension(extension.schema?.type));
 
-	if (props.type !== 'bundle') {
-		return [{ text: enabled ? t('disable') : t('enable'), enabled }];
-	}
+	return isAppExtension(props.type);
+});
 
-	if (props.status !== 'partial') {
-		return [{ text: enabled ? t('disable_all') : t('enable_all'), enabled }];
-	}
+const disableLocked = computed(() => import.meta.env.DEV && isOrHasAppExtension.value);
+const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
+
+const stateActions = computed(() => {
+	const enabled = props.state === 'enabled';
+
+	if (props.type !== 'bundle') return [{ text: enabled ? t('disable') : t('enable'), enabled }];
+
+	if (props.state !== 'partial') return [{ text: enabled ? t('disable_all') : t('enable_all'), enabled }];
 
 	return [
 		{ text: t('enable_all'), enabled: false },
 		{ text: t('disable_all'), enabled: true },
 	];
 });
+
+function isAppExtension(type?: ExtensionType) {
+	if (!type) return false;
+	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
+}
 </script>
 
 <template>
-	<div class="options">
-		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
-			</template>
-			<v-list>
+	<v-menu placement="bottom-start" show-arrow>
+		<template #activator="{ toggle }">
+			<v-icon name="more_vert" clickable class="menu-toggle" @click.prevent="toggle" />
+		</template>
+		<v-list>
+			<template v-if="type !== 'missing'">
 				<v-list-item
-					v-for="(action, index) in actions"
+					v-for="(action, index) in stateActions"
 					:key="index"
 					v-tooltip.left="disableLocked ? t('enabled_dev_tooltip') : null"
 					:disabled="disableLocked"
 					clickable
-					@click="$emit('toggleStatus', action.enabled)"
+					@click="$emit('toggleState', action.enabled)"
 				>
 					<v-list-item-icon>
 						<v-icon name="mode_off_on" />
@@ -56,7 +65,7 @@ const actions = computed(() => {
 						{{ action.text }}
 					</v-list-item-content>
 				</v-list-item>
-				<template v-if="bundleEntry === false">
+				<template v-if="!extension.bundle">
 					<v-divider />
 					<v-list-item
 						v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null"
@@ -73,13 +82,33 @@ const actions = computed(() => {
 						</v-list-item-content>
 					</v-list-item>
 				</template>
-			</v-list>
-		</v-menu>
-	</div>
+			</template>
+
+			<template v-else>
+				<v-list-item v-if="props.extension.meta.source === 'registry'" clickable @click="$emit('reinstall')">
+					<v-list-item-icon>
+						<v-icon name="download" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('reinstall') }}
+					</v-list-item-content>
+				</v-list-item>
+				<v-divider v-if="props.extension.meta.source === 'registry'" />
+				<v-list-item clickable @click="$emit('remove')">
+					<v-list-item-icon>
+						<v-icon name="delete" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('remove') }}
+					</v-list-item-content>
+				</v-list-item>
+			</template>
+		</v-list>
+	</v-menu>
 </template>
 
 <style lang="scss" scoped>
-.ctx-toggle {
+.menu-toggle {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	&:hover {

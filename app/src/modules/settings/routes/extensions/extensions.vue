@@ -58,10 +58,12 @@ const extensionsByType = computed(() => {
 					<extension-group-divider class="group-divider" :type="type" />
 
 					<v-list>
-						<template v-for="ext in list" :key="ext.name">
+						<template v-for="extension in list" :key="extension.name">
 							<extension-item
-								:extension="ext"
-								:children="ext.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === ext.id) : []"
+								:extension
+								:children="
+									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.id) : []
+								"
 							/>
 						</template>
 					</v-list>
