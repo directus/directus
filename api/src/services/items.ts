@@ -837,11 +837,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async upsertMany(payloads: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const primaryKeys = await transaction(this.knex, async (knex) => {
+		const primaryKeys = await transaction(this.knex, async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
-				knex: knex,
+				knex: trx,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
