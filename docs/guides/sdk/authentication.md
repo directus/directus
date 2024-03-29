@@ -63,7 +63,8 @@ tokens can be used as well (see
 
 ### Login options
 
-Both the `authentication` and `rest` composable `login` functions accept an options object, this object accepts the following properties:
+Both the `authentication` and `rest` composable `login` functions accept an options object, this object accepts the
+following properties:
 
 ```ts
 type LoginOptions = {
@@ -75,7 +76,8 @@ type LoginOptions = {
 ```
 
 - **`otp`** — The user's one-time-password (if MFA is enabled).
-- **`mode`** — Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`.
+- **`mode`** — Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`,
+  `cookie` or `session`. Defaults to `cookie`.
 - **`share`** — Whether to authenticate as a share
 - **`provider`** — Use a specific authentication provider (does not work for SSO that relies on browser redirects).
 
