@@ -4,8 +4,6 @@ import VChip from './v-chip.vue';
 
 <template>
 	<Story title="VChip">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-chip v-bind="state">Cake</v-chip>
-		</template>
+		<v-chip>Cake</v-chip>
 	</Story>
 </template>

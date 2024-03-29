@@ -8,7 +8,12 @@ const api = axios.create({
 	withCredentials: true,
 });
 
-let queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
+export let requestQueue: PQueue = new PQueue({
+	concurrency: 5,
+	intervalCap: 5,
+	interval: 500,
+	carryoverConcurrencyCount: true,
+});
 
 type RequestConfig = InternalAxiosRequestConfig & { id: string };
 type Response = AxiosResponse & { config: RequestConfig };
@@ -25,11 +30,11 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 
 	return new Promise((resolve) => {
 		if (config.url && config.url === '/auth/refresh') {
-			queue.pause();
+			requestQueue.pause();
 			return resolve(requestConfig);
 		}
 
-		queue.add(() => {
+		requestQueue.add(() => {
 			return resolve(requestConfig);
 		});
 	});
@@ -59,11 +64,11 @@ api.interceptors.response.use(onResponse, onError);
 export default api;
 
 export function resumeQueue() {
-	if (!queue.isPaused) return;
-	queue.start();
+	if (!requestQueue.isPaused) return;
+	requestQueue.start();
 }
 
 export async function replaceQueue(options?: Options<any, QueueAddOptions>) {
-	await queue.onIdle();
-	queue = new PQueue(options);
+	await requestQueue.onIdle();
+	requestQueue = new PQueue(options);
 }
