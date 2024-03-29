@@ -163,7 +163,7 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 							@click="reinstall"
 						>
 							<v-list-item-icon>
-								<v-icon name="install_desktop" />
+								<v-icon name="download" />
 							</v-list-item-icon>
 							<v-list-item-content>
 								{{ t('re-install') }}
