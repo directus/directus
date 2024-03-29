@@ -17,7 +17,9 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Uninstalling registry extenstions via the API
 
-The logic to uninstall registry extensions has been moved from `/extensions/:uuid` to `/extensions/registry/uninstall/:uuid` and the old endpoint re-used to delete extensions from the database when the extension has gone missing from the filesystem.
+The logic to uninstall registry extensions has been moved from `/extensions/:uuid` to
+`/extensions/registry/uninstall/:uuid` and the old endpoint re-used to delete extensions from the database when the
+extension has gone missing from the filesystem.
 
 ::: code-group
 
