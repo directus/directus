@@ -13,9 +13,9 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Vesion [NEXT]
+## Version [NEXT]
 
-### Uninstalling registry extenstions via the API
+### Uninstalling registry extensions via the API
 
 The logic to uninstall registry extensions has been moved from `/extensions/:uuid` to
 `/extensions/registry/uninstall/:uuid` and the old endpoint re-used to delete extensions from the database when the
