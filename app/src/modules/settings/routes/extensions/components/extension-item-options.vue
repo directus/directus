@@ -1,27 +1,20 @@
 <script setup lang="ts">
+import { ApiOutput } from '@directus/extensions';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ExtensionState, ExtensionType } from '../types';
-import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput } from '@directus/extensions';
 
 const props = defineProps<{
 	extension: ApiOutput;
 	type: ExtensionType;
 	state: ExtensionState;
-	children: ApiOutput[];
+	stateLocked: boolean;
 }>();
 
 defineEmits<{ toggleState: [enabled: boolean]; uninstall: []; reinstall: []; remove: [] }>();
 
 const { t } = useI18n();
 
-const isOrHasAppExtension = computed(() => {
-	if (props.type === 'bundle') return props.children.some((extension) => isAppExtension(extension.schema?.type));
-
-	return isAppExtension(props.type);
-});
-
-const disableLocked = computed(() => import.meta.env.DEV && isOrHasAppExtension.value);
 const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
 
 const stateActions = computed(() => {
@@ -36,11 +29,6 @@ const stateActions = computed(() => {
 		{ text: t('disable_all'), enabled: true },
 	];
 });
-
-function isAppExtension(type?: ExtensionType) {
-	if (!type) return false;
-	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
-}
 </script>
 
 <template>
@@ -53,8 +41,8 @@ function isAppExtension(type?: ExtensionType) {
 				<v-list-item
 					v-for="(action, index) in stateActions"
 					:key="index"
-					v-tooltip.left="disableLocked ? t('enabled_dev_tooltip') : null"
-					:disabled="disableLocked"
+					v-tooltip.left="stateLocked ? t('enabled_dev_tooltip') : null"
+					:disabled="stateLocked"
 					clickable
 					@click="$emit('toggleState', action.enabled)"
 				>
@@ -85,15 +73,17 @@ function isAppExtension(type?: ExtensionType) {
 			</template>
 
 			<template v-else>
-				<v-list-item v-if="props.extension.meta.source === 'registry'" clickable @click="$emit('reinstall')">
-					<v-list-item-icon>
-						<v-icon name="download" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('reinstall') }}
-					</v-list-item-content>
-				</v-list-item>
-				<v-divider v-if="props.extension.meta.source === 'registry'" />
+				<template v-if="props.extension.meta.source === 'registry'">
+					<v-list-item clickable @click="$emit('reinstall')">
+						<v-list-item-icon>
+							<v-icon name="download" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('reinstall') }}
+						</v-list-item-content>
+					</v-list-item>
+					<v-divider />
+				</template>
 				<v-list-item clickable @click="$emit('remove')">
 					<v-list-item-icon>
 						<v-icon name="delete" />

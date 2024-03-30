@@ -3,7 +3,7 @@ import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ApiOutput } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { extensionTypeIconMap } from '../constants';
@@ -25,6 +25,7 @@ const extensionsStore = useExtensionsStore();
 
 const loading = ref(false);
 
+const name = computed(() => props.extension.schema?.name ?? props.extension.meta.folder);
 const type = computed(() => props.extension.schema?.type ?? 'missing');
 const icon = computed(() => extensionTypeIconMap[type.value]);
 
@@ -34,8 +35,18 @@ const version = computed(() => {
 	return props.extension.schema.version;
 });
 
+const stateLocked = computed(() => {
+	if (!import.meta.env.DEV) return false;
+
+	if (props.extension.schema?.type === 'bundle')
+		return props.children.some((extension) => isAppExtension(extension.schema?.type));
+
+	return isAppExtension(props.extension.schema?.type);
+});
+
 const disabled = computed(() => {
 	if (type.value === 'missing') return true;
+	if (stateLocked.value) return false;
 
 	return !props.extension.meta.enabled;
 });
@@ -77,22 +88,27 @@ const toggleState = requestHandler(() => extensionsStore.toggleState(props.exten
 const uninstall = requestHandler(() => extensionsStore.uninstall(props.extension.id));
 const reinstall = requestHandler(() => extensionsStore.reinstall(props.extension.id));
 const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
+
+function isAppExtension(type?: ExtensionType) {
+	if (!type) return false;
+	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
+}
 </script>
 
 <template>
 	<v-list-item block>
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
-			<span class="name" :class="{ disabled }">
+			<span class="meta" :class="{ disabled }">
 				<router-link
 					v-if="extension.meta.source === 'registry' && !extension.bundle"
 					v-tooltip="t('open_in_marketplace')"
 					class="marketplace-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>
-					{{ extension.schema?.name ?? extension.meta.folder }}
+					{{ name }}
 				</router-link>
-				<span v-else>{{ extension.schema?.name ?? extension.meta.folder }}</span>
+				<span v-else>{{ name }}</span>
 				{{ ' ' }}
 				<v-chip v-if="version" class="version" small>
 					{{ version }}
@@ -113,7 +129,7 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 			:extension
 			:type
 			:state="state.value"
-			:children
+			:state-locked
 			@toggle-state="toggleState"
 			@uninstall="uninstall"
 			@reinstall="reinstall"
@@ -127,22 +143,23 @@ const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 </template>
 
 <style lang="scss" scoped>
-.name {
+.meta {
 	font-family: var(--theme--fonts--monospace--font-family);
-
-	&.disabled {
-		color: var(--theme--foreground-subdued);
-	}
 
 	.marketplace-link {
 		&:hover {
 			text-decoration: underline;
 		}
 	}
-}
 
-.version {
-	margin-right: 8px;
+	.version {
+		margin-right: 8px;
+	}
+
+	&.disabled {
+		color: var(--theme--foreground-subdued);
+		--v-chip-color: var(--theme--foreground-subdued);
+	}
 }
 
 .spinner {
