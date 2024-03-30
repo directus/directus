@@ -195,19 +195,18 @@ router.delete(
 			throw new ForbiddenError();
 		}
 
-		const service = new ExtensionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		const pk = req.params['pk'];
 
 		if (typeof pk !== 'string') {
 			throw new ForbiddenError();
 		}
 
-		await service.uninstall(pk);
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
+		await service.uninstall(pk);
 		return next();
 	}),
 	respond,

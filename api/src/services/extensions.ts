@@ -39,7 +39,7 @@ export class ExtensionsService {
 		});
 	}
 
-	async install(extensionId: string, versionId: string) {
+	private async preInstall(extensionId: string, versionId: string) {
 		const env = useEnv();
 
 		const describeOptions: DescribeOptions = {};
@@ -74,6 +74,12 @@ export class ExtensionsService {
 			}
 		}
 
+		return { extension, version };
+	}
+
+	async install(extensionId: string, versionId: string) {
+		const { extension, version } = await this.preInstall(extensionId, versionId);
+
 		await this.extensionsItemService.createOne({
 			id: extensionId,
 			enabled: true,
@@ -101,7 +107,7 @@ export class ExtensionsService {
 
 		if (settings.source !== 'registry') {
 			throw new InvalidPayloadError({
-				reason: 'Cannot uninstall extensions that were not installed from the marketplace registry',
+				reason: 'Cannot uninstall extensions that were not installed via marketplace',
 			});
 		}
 
@@ -114,18 +120,21 @@ export class ExtensionsService {
 
 		if (settings.source !== 'registry') {
 			throw new InvalidPayloadError({
-				reason: 'Cannot re-install extensions that were not installed from the marketplace registry',
+				reason: 'Cannot reinstall extensions that were not installed via marketplace',
 			});
 		}
 
 		if (settings.bundle !== null) {
 			throw new InvalidPayloadError({
-				reason: 'Cannot re-install sub extensions that are in bundles separately',
+				reason: 'Cannot reinstall sub extensions of bundles separately',
 			});
 		}
 
-		await this.uninstall(id);
-		await this.install(id, settings.folder);
+		const extensionId = settings.id;
+		const versionId = settings.folder;
+
+		await this.preInstall(extensionId, versionId);
+		await this.extensionsManager.install(versionId);
 	}
 
 	async readAll() {
