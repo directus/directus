@@ -13,31 +13,6 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version [NEXT]
-
-### Uninstalling registry extensions via the API
-
-The logic to uninstall registry extensions has been moved from `/extensions/:uuid` to
-`/extensions/registry/uninstall/:uuid` and the old endpoint re-used to delete extensions from the database when the
-extension has gone missing from the filesystem.
-
-::: code-group
-
-```http [Before]
-// to uninstall a registry extension
-DELETE /extensions/:uuid
-```
-
-```http [After]
-// to uninstall a registry extension
-DELETE /extensions/registry/uninstall/:uuid
-
-// to remove a missing extension
-DELETE /extensions/:uuid
-```
-
-:::
-
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders
