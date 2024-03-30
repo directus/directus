@@ -59,7 +59,7 @@ function getUrlPath(request: FetchContext['request']): string | null {
 
 	try {
 		return new URL(uri).pathname;
-	} catch (e) {
+	} catch {
 		return null;
 	}
 }
