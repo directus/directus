@@ -111,6 +111,12 @@ export class ExtensionsService {
 			});
 		}
 
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall sub extensions of bundles separately',
+			});
+		}
+
 		await this.deleteOne(id);
 		await this.extensionsManager.uninstall(settings.folder);
 	}
