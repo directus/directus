@@ -61,25 +61,23 @@ first message sent must include authentication details. This example uses the `e
 tokens can be used as well (see
 [Authenticate Realtime Connection with a Token](#authenticate-realtime-connection-with-a-token)).
 
-### Login options
+### Login Options
 
-Both the `authentication` and `rest` composable `login` functions accept an options object, this object accepts the
-following properties:
+Both the `authentication` and `rest` composable `login` functions accept a login options object, which has the following
+signature:
 
 ```ts
 type LoginOptions = {
+	/** The user's one-time-password (if MFA is enabled). */
 	otp?: string;
+	/** Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`. */
 	mode?: AuthenticationMode;
+	/** Whether to authenticate as a share. */
 	share?: boolean;
+	/** Use a specific authentication provider (does not work for SSO that relies on browser redirects). */
 	provider?: string;
-}
+};
 ```
-
-- **`otp`** — The user's one-time-password (if MFA is enabled).
-- **`mode`** — Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` cookie. One of `json`,
-  `cookie` or `session`. Defaults to `cookie`.
-- **`share`** — Whether to authenticate as a share
-- **`provider`** — Use a specific authentication provider (does not work for SSO that relies on browser redirects).
 
 ## Set a Token
 
