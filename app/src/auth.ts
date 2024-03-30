@@ -1,14 +1,13 @@
 import { resumeQueue } from '@/api';
-import { sdk } from '@/sdk';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
+import { sdk } from '@/sdk';
+import { type LoginOptions } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
+import { Events, emitter } from './events';
 import { useServerStore } from './stores/server';
-import { emitter, Events } from './events';
-import { type LoginOptions } from '@directus/sdk';
-import { unexpectedError } from './utils/unexpected-error';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -31,9 +30,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	const password = credentials.password;
 	const email = share ? credentials.share : credentials.email;
 
-	if (!password || !email) {
-		return unexpectedError('Missing email or password.');
-	}
+	if (!password || !email) throw new Error('Missing credentials.');
 
 	const options: LoginOptions = {};
 	if (share) options.share = share;
