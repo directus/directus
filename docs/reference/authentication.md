@@ -700,7 +700,7 @@ const result = await client.request(login('email', 'password', { provider: 'prov
 
 ```
 
-Note: The SDK cannot do browser redirects which some SSO providers require.
+Note: The SDK doesn't support browser redirects, which is required by some SSO providers.
 
 </template>
 </SnippetToggler>

@@ -13,12 +13,11 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version [NEXT]
+## Version 10.10.5
 
-### Removed `authenticateShare` from the SDK
+### Removed `authenticateShare` in SDK
 
-The functionality covered by the `authenticateShare()` command in the app has now been merged into the `login()`
-command.
+The functionality covered by the `authenticateShare()` command in the SDK has been merged into the `login()` command.
 
 ::: details Migration/Mitigation
 
