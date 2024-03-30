@@ -55,7 +55,7 @@ The query parameter option is not recommended in production setups as the parame
 
 ## Login
 
-Retrieve a temporary access token and refresh token.
+Authenticate as a user.
 
 ### Request
 
@@ -108,7 +108,7 @@ const result = await client.request(login(email, password));
 #### Request Body
 
 `email` **Required**\
-Email address of the user you're retrieving the access token for.
+Email address of the user.
 
 `password` **Required**\
 Password of the user.

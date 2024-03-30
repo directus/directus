@@ -1,6 +1,6 @@
 ---
 "@directus/app": minor
-"@directus/sdk": major
+"@directus/sdk": minor
 ---
 
 Migrated the App authentication handling to use the SDK

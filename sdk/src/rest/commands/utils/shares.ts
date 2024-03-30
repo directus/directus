@@ -1,4 +1,25 @@
+import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
+
+/**
+ * Authenticate as a share user.
+ *
+ * @param share The ID of the share.
+ * @param password Password for the share, if one is configured.
+ * @param mode Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`.
+ *
+ * @returns Authentication data.
+ */
+export const authenticateShare =
+	<Schema extends object>(
+		share: string,
+		password?: string,
+		mode: AuthenticationMode = 'cookie',
+	): RestCommand<AuthenticationData, Schema> =>
+	() => {
+		const data = { share, password, mode };
+		return { path: '/shares/auth', method: 'POST', body: JSON.stringify(data) };
+	};
 
 /**
  * Sends an email to the provided email addresses with a link to the share.

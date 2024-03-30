@@ -1,9 +1,14 @@
-import type { LoginOptions } from '../index.js';
 import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
-import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
+import type {
+	AuthenticationClient,
+	AuthenticationConfig,
+	AuthenticationData,
+	AuthenticationMode,
+	LoginOptions,
+} from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
 const defaultConfigValues: AuthenticationConfig = {
@@ -11,8 +16,11 @@ const defaultConfigValues: AuthenticationConfig = {
 	autoRefresh: true,
 };
 
-// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
-// for tokens that last > 24 days. Ref #4054
+/**
+ * setTimeout breaks with numbers bigger than 32bits.
+ * This ensures that we don't try refreshing for tokens that last > 24 days.
+ * Ref #4054
+ */
 const MAX_INT32 = 2 ** 31 - 1;
 
 /**
@@ -122,7 +130,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
 
-				const path = getAuthEndpoint(options.provider, options.share);
+				const path = getAuthEndpoint(options.provider);
 				const requestUrl = getRequestUrl(client.url, path);
 
 				const fetchOptions: RequestInit = {

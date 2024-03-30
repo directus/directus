@@ -3,7 +3,7 @@ import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
-import { type LoginOptions } from '@directus/sdk';
+import { AuthenticationData, LoginOptions, authenticateShare } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { Events, emitter } from './events';
@@ -27,17 +27,25 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 
-	const password = credentials.password;
-	const email = share ? credentials.share : credentials.email;
+	let response: AuthenticationData;
 
-	if (!password || !email) throw new Error('Missing credentials.');
+	if (share) {
+		const { share, password } = credentials;
+		if (!share) throw new Error('Missing share ID');
 
-	const options: LoginOptions = {};
-	if (share) options.share = share;
-	if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
-	if (credentials.otp) options.otp = credentials.otp;
+		await sdk.request(authenticateShare(share, password, 'session'));
+		// To initialize auto-refresh
+		response = await sdk.refresh();
+	} else {
+		const { email, password, otp } = credentials;
+		if (!email || !password) throw new Error('Missing email or password');
 
-	const response = await sdk.login(email, password, options);
+		const options: LoginOptions = {};
+		if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
+		if (otp) options.otp = otp;
+
+		response = await sdk.login(email, password, options);
+	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	appStore.authenticated = true;
@@ -57,7 +65,7 @@ emitter.on(Events.tabIdle, () => {
 	idle = true;
 });
 
-// Restart the autorefresh process when the app is used (again)
+// Restart the auto-refresh process when the app is used again
 emitter.on(Events.tabActive, () => {
 	if (idle === true) {
 		refresh();
@@ -77,7 +85,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 		appStore.authenticated = true;
 		firstRefresh = false;
-	} catch (error: any) {
+	} catch {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
 		resumeQueue();
@@ -97,7 +105,7 @@ export type LogoutOptions = {
 /**
  * Everything that should happen when someone logs out, or is logged out through an external factor
  */
-export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
+export async function logout(options: LogoutOptions = {}): Promise<void> {
 	const appStore = useAppStore();
 
 	const defaultOptions: Required<LogoutOptions> = {
@@ -105,12 +113,12 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 		reason: LogoutReason.SIGN_OUT,
 	};
 
+	const logoutOptions = { ...defaultOptions, ...options };
+
 	sdk.stopRefreshing();
 
-	const options = { ...defaultOptions, ...optionsRaw };
-
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
-	if (options.reason === LogoutReason.SIGN_OUT) {
+	if (logoutOptions.reason === LogoutReason.SIGN_OUT) {
 		try {
 			await sdk.logout();
 		} catch {
@@ -122,10 +130,10 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 
 	await dehydrate();
 
-	if (options.navigate === true) {
+	if (logoutOptions.navigate === true) {
 		const location: RouteLocationRaw = {
 			path: `/login`,
-			query: { reason: options.reason },
+			query: { reason: logoutOptions.reason },
 		};
 
 		router.push(location);

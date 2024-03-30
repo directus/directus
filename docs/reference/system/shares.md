@@ -843,10 +843,12 @@ const result = await client.request(
 
 ## Authenticate a Share
 
-Shares work by publicly giving you an access/refresh token combination (as you would get with the regular /auth/login
-endpoints). These tokens are limited to a permissions set that only allows access to the item that was shared, and any
-relationally linked items that that associated role has access to. This means that all regular endpoints can be used
-with the credentials set returned by this endpoint.
+Authenticate as a share user.
+
+> Shares work by returning a token, as it is the case with the regular login endpoint. These tokens are limited to a
+> permissions set that only allows access to the item that was shared, and any relationally linked items that that
+> associated role has access to. This means that all regular endpoints can be used with the token returned by this
+> endpoint.
 
 ### Request
 
@@ -871,11 +873,11 @@ with the credentials set returned by this endpoint.
 <template #sdk>
 
 ```js
-import { createDirectus, rest, login } from '@directus/sdk';
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(login('share_key', 'password', { share: true }));
+const result = await client.request(authenticateShare('share_key', 'password'));
 ```
 
 </template>
@@ -929,11 +931,11 @@ or `session` as the mode in the request, the refresh token won't be returned in 
 <template #sdk>
 
 ```js
-import { createDirectus, rest, login } from '@directus/sdk';
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(login('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us', { share: true }));
+const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
 ```
 
 </template>

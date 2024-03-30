@@ -13,30 +13,6 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version 10.10.5
-
-### Removed `authenticateShare` in SDK
-
-The functionality covered by the `authenticateShare()` command in the SDK has been merged into the `login()` command.
-
-::: details Migration/Mitigation
-
-::: code-group
-
-```js [Before]
-import { createDirectus, rest, authenticateShare } from '@directus/sdk';
-
-const result = await client.request(authenticateShare('share_key', 'password'));
-```
-
-```js [After]
-import { createDirectus, rest, login } from '@directus/sdk';
-
-const result = await client.request(login('share_key', 'password', { share: true }));
-```
-
-:::
-
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders
