@@ -3,7 +3,7 @@ import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
-import { AuthenticationData, LoginOptions, authenticateShare } from '@directus/sdk';
+import { AuthenticationData, LoginOptions, RestCommand, authenticateShare, getAuthEndpoint } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { Events, emitter } from './events';
@@ -37,14 +37,29 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 		// To initialize auto-refresh
 		response = await sdk.refresh();
 	} else {
-		const { email, password, otp } = credentials;
-		if (!email || !password) throw new Error('Missing email or password');
+		const { email, identifier, password, otp } = credentials;
 
-		const options: LoginOptions = {};
-		if (provider !== DEFAULT_AUTH_PROVIDER) options.provider = provider;
-		if (otp) options.otp = otp;
+		if (!password) throw new Error('Missing password');
 
-		response = await sdk.login(email, password, options);
+		const loginOptions: LoginOptions = { otp, ...(provider !== DEFAULT_AUTH_PROVIDER && { provider }) };
+
+		if (email) {
+			response = await sdk.login(email, password, loginOptions);
+		} else if (identifier) {
+			const login =
+				<Schema extends object>(): RestCommand<AuthenticationData, Schema> =>
+				() => {
+					const path = getAuthEndpoint(loginOptions.provider);
+					const data = { identifier, password, otp, mode: 'session' };
+					return { path, method: 'POST', body: JSON.stringify(data) };
+				};
+
+			await sdk.request(login());
+			// To initialize auto-refresh
+			response = await sdk.refresh();
+		} else {
+			throw new Error('Missing email or identifier');
+		}
 	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
