@@ -55,7 +55,7 @@ The query parameter option is not recommended in production setups as the parame
 
 ## Login
 
-Retrieve a temporary access token and refresh token.
+Authenticate as a user.
 
 ### Request
 
@@ -108,7 +108,7 @@ const result = await client.request(login(email, password));
 #### Request Body
 
 `email` **Required**\
-Email address of the user you're retrieving the access token for.
+Email address of the user.
 
 `password` **Required**\
 Password of the user.
@@ -681,6 +681,26 @@ Will redirect to the configured SSO provider for the user to login.
 
 ### Request
 
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
+<template #rest>
+
 ```
 GET /auth/login/:provider
 ```
+
+</template>
+<template #sdk>
+
+```ts
+import { createDirectus, rest, login } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(login('email', 'password', { provider: 'provider' }));
+
+```
+
+Note: The SDK doesn't support browser redirects, which is required by some SSO providers.
+
+</template>
+</SnippetToggler>
