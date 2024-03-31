@@ -3,42 +3,32 @@ import { Events, emitter } from '@/events';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-	modelValue: number | null;
-}>();
+const model = defineModel<number | null>({ required: true });
 
 const emit = defineEmits<{
-	'update:modelValue': [value: number | null];
 	refresh: [];
 }>();
 
 const { t } = useI18n();
 
-const interval = computed<number | null>({
-	get() {
-		return props.modelValue;
-	},
-	set(newVal) {
-		emit('update:modelValue', newVal);
-	},
-});
+const active = computed(() => model.value && model.value > 0);
+const interval = ref<NodeJS.Timeout>();
 
-const active = computed(() => interval.value !== null);
+const setRefreshInterval = (value: number | null) => {
+	clearInterval(interval.value);
 
-const activeInterval = ref<NodeJS.Timeout>();
+	if (!value || value <= 0) return;
 
-const setRefreshInterval = (interval: number) => {
-	activeInterval.value = setInterval(() => {
+	interval.value = setInterval(() => {
 		emit('refresh');
-	}, interval * 1000);
+	}, value * 1000);
 };
 
-const onIdle = () => {
-	if (activeInterval.value) clearInterval(activeInterval.value);
-};
+const onIdle = () => clearInterval(interval.value);
 
 const onActive = () => {
-	if (interval.value) setRefreshInterval(interval.value);
+	if (active.value) emit('refresh');
+	setRefreshInterval(model.value);
 };
 
 emitter.on(Events.tabIdle, onIdle);
@@ -49,19 +39,7 @@ onUnmounted(() => {
 	emitter.off(Events.tabActive, onActive);
 });
 
-watch(
-	interval,
-	(newInterval) => {
-		if (activeInterval.value !== null) {
-			clearInterval(activeInterval.value);
-		}
-
-		if (newInterval !== null && newInterval > 0) {
-			setRefreshInterval(newInterval);
-		}
-	},
-	{ immediate: true },
-);
+watch(model, (value) => setRefreshInterval(value), { immediate: true });
 
 const items = computed(() => {
 	const intervals = [null, 10, 30, 60, 300];
@@ -92,7 +70,7 @@ const items = computed(() => {
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ t('refresh_interval') }}</p>
-				<v-select v-model="interval" :items="items" />
+				<v-select v-model="model" :items="items" />
 			</div>
 		</div>
 	</sidebar-detail>
