@@ -34,8 +34,12 @@ export function generateExtensionsEntrypoint(
 						if (isApp === false) return false;
 
 						const enabled =
-							settings.find((setting) => setting.folder === entry.name && setting.bundle === settingsForExtension.id)
-								?.enabled ?? false;
+							settings.find(
+								(setting) =>
+									setting.source === source &&
+									setting.folder === entry.name &&
+									setting.bundle === settingsForExtension.id,
+							)?.enabled ?? false;
 
 						return enabled;
 					}),
