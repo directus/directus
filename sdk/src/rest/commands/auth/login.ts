@@ -1,22 +1,15 @@
-import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
+import type { AuthenticationData, LoginOptions } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
 
-export type LoginOptions = {
-	otp?: string;
-	mode?: AuthenticationMode;
-	share?: boolean;
-	provider?: string;
-};
-
 /**
- * Retrieve a temporary access token and refresh token.
+ * Authenticate as a user.
  *
- * @param email Email address of the user you're retrieving the access token for.
+ * @param email Email address of the user.
  * @param password Password of the user.
- * @param options Optional login settings
+ * @param options Optional login settings.
  *
- * @returns The access and refresh tokens for the session
+ * @returns Authentication data.
  */
 export const login =
 	<Schema extends object>(
@@ -25,7 +18,7 @@ export const login =
 		options: LoginOptions = {},
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
-		const path = getAuthEndpoint(options.provider, options.share);
+		const path = getAuthEndpoint(options.provider);
 		const data: Record<string, string> = { email, password };
 		if ('otp' in options) data['otp'] = options.otp;
 		data['mode'] = options.mode ?? 'cookie';

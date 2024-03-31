@@ -34,7 +34,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/system-data": "workspace:*",
-		"date-fns": "3.4.0",
+		"date-fns": "3.6.0",
 		"fs-extra": "11.2.0",
 		"joi": "17.12.2",
 		"js-yaml": "4.1.0",

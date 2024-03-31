@@ -1,10 +1,8 @@
 /**
- * @param provider
- * @param share
- * @returns
+ * @param provider Use a specific authentication provider
+ * @returns The endpoint to be used for authentication
  */
-export function getAuthEndpoint(provider?: string, share?: boolean) {
-	if (share) return '/shares/auth';
+export function getAuthEndpoint(provider?: string) {
 	if (provider) return `/auth/login/${provider}`;
 	return '/auth/login';
 }
