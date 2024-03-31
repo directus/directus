@@ -1,14 +1,27 @@
-import type { LoginOptions } from '../index.js';
+import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
-import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
+import type {
+	AuthenticationClient,
+	AuthenticationConfig,
+	AuthenticationData,
+	AuthenticationMode,
+	LoginOptions,
+} from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
 const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
 };
+
+/**
+ * setTimeout breaks with numbers bigger than 32bits.
+ * This ensures that we don't try refreshing for tokens that last > 24 days.
+ * Ref #4054
+ */
+const MAX_INT32 = 2 ** 31 - 1;
 
 /**
  * Creates a client to authenticate with Directus.
@@ -41,8 +54,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			const authData = await storage.get();
 
 			if (refreshPromise || !authData?.expires_at) {
-				await activeRefresh();
-				return;
+				return activeRefresh();
 			}
 
 			if (authData.expires_at < new Date().getTime() + authConfig.msRefreshBeforeExpires) {
@@ -51,7 +63,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				});
 			}
 
-			await activeRefresh();
+			return activeRefresh();
 		};
 
 		const setCredentials = (data: AuthenticationData) => {
@@ -59,7 +71,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			data.expires_at = new Date().getTime() + expires;
 			storage.set(data);
 
-			if (authConfig.autoRefresh && expires > authConfig.msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
+			if (authConfig.autoRefresh && expires > authConfig.msRefreshBeforeExpires && expires < MAX_INT32) {
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 
 				refreshTimeout = setTimeout(() => {
@@ -98,15 +110,13 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
-
-				setCredentials(data);
-				return data;
+				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) => {
+					setCredentials(data);
+					return data;
+				});
 			};
 
-			refreshPromise = awaitRefresh().catch((err) => {
-				throw err;
-			});
+			refreshPromise = awaitRefresh();
 
 			return refreshPromise;
 		};
@@ -114,14 +124,14 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		return {
 			refresh,
 			async login(email: string, password: string, options: LoginOptions = {}) {
-				// TODO: allow for websocket only authentication
 				resetStorage();
-
-				const requestUrl = getRequestUrl(client.url, '/auth/login');
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
+
+				const path = getAuthEndpoint(options.provider);
+				const requestUrl = getRequestUrl(client.url, path);
 
 				const fetchOptions: RequestInit = {
 					method: 'POST',
@@ -165,11 +175,18 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
 				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
-				if (refreshTimeout) clearTimeout(refreshTimeout);
+				this.stopRefreshing();
 				resetStorage();
 			},
+			stopRefreshing() {
+				if (refreshTimeout) {
+					clearTimeout(refreshTimeout);
+				}
+			},
 			async getToken() {
-				await refreshIfExpired();
+				await refreshIfExpired().catch(() => {
+					/* fail gracefully */
+				});
 
 				const data = await storage.get();
 				return data?.access_token ?? null;

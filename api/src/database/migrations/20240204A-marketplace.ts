@@ -71,8 +71,18 @@ export async function up(knex: Knex): Promise<void> {
 	}
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.uuid('id').alter().notNullable();
+	});
+
+	await knex.transaction(async (trx) => {
+		await trx.schema.alterTable('directus_extensions', (table) => {
+			table.dropPrimary();
+			table.primary(['id']);
+		});
+	});
+
+	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
-		table.uuid('id').alter().primary().notNullable();
 		table.string('source').alter().notNullable();
 		table.string('folder').alter().notNullable();
 	});

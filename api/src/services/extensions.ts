@@ -39,7 +39,7 @@ export class ExtensionsService {
 		});
 	}
 
-	async install(extensionId: string, versionId: string) {
+	private async preInstall(extensionId: string, versionId: string) {
 		const env = useEnv();
 
 		const describeOptions: DescribeOptions = {};
@@ -74,6 +74,12 @@ export class ExtensionsService {
 			}
 		}
 
+		return { extension, version };
+	}
+
+	async install(extensionId: string, versionId: string) {
+		const { extension, version } = await this.preInstall(extensionId, versionId);
+
 		await this.extensionsItemService.createOne({
 			id: extensionId,
 			enabled: true,
@@ -93,6 +99,47 @@ export class ExtensionsService {
 			);
 		}
 
+		await this.extensionsManager.install(versionId);
+	}
+
+	async uninstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall sub extensions of bundles separately',
+			});
+		}
+
+		await this.deleteOne(id);
+		await this.extensionsManager.uninstall(settings.folder);
+	}
+
+	async reinstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall sub extensions of bundles separately',
+			});
+		}
+
+		const extensionId = settings.id;
+		const versionId = settings.folder;
+
+		await this.preInstall(extensionId, versionId);
 		await this.extensionsManager.install(versionId);
 	}
 
@@ -176,23 +223,16 @@ export class ExtensionsService {
 			return extension;
 		});
 
-		this.extensionsManager.reload();
+		this.extensionsManager.reload().then(() => {
+			this.extensionsManager.broadcastReloadNotification();
+		});
 
 		return result;
 	}
 
 	async deleteOne(id: string) {
-		const settings = await this.extensionsItemService.readOne(id);
-
-		if (settings.source !== 'registry') {
-			throw new InvalidPayloadError({
-				reason: 'Cannot uninstall extensions that were not installed from the marketplace registry',
-			});
-		}
-
 		await this.extensionsItemService.deleteOne(id);
 		await this.extensionsItemService.deleteByQuery({ filter: { bundle: { _eq: id } } });
-		await this.extensionsManager.uninstall(settings.folder);
 	}
 
 	/**

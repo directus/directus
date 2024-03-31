@@ -1,29 +1,21 @@
 <script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
-import type { Field, Relation } from '@directus/types';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+const value = defineModel<string>();
+
 const props = defineProps<{
-	value: string | null;
 	placeholder?: string | null;
 	disabled?: boolean;
 	collection: string | null;
-	inject: {
-		fields: Field[];
-		relations?: Relation[];
-	} | null;
-}>();
-
-defineEmits<{
-	(e: 'input', value: string | null): void;
 }>();
 
 const { t } = useI18n();
 
-const { collection, inject } = toRefs(props);
+const { collection } = toRefs(props);
 
-const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
+const { treeList, loadFieldRelations } = useFieldTree(collection);
 </script>
 
 <template>
@@ -33,12 +25,11 @@ const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
 		</v-notice>
 		<v-field-template
 			v-else
+			v-model="value"
 			:tree="treeList"
-			:model-value="value"
 			:disabled="disabled"
 			:placeholder="placeholder"
 			:load-path-level="loadFieldRelations"
-			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
 </template>

@@ -1,7 +1,7 @@
 import type { FunctionFields } from './functions.js';
 import type { ExtractItem } from './query.js';
 import type { ItemType, RelationalFields, RemoveRelationships } from './schema.js';
-import type { UnpackList } from './utils.js';
+import type { IfNever, UnpackList } from './utils.js';
 
 /**
  * Fields querying, including nested relational fields
@@ -25,15 +25,21 @@ export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonl
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-export type QueryFieldsRelational<Schema extends object, Item> = {
-	[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
-		? RelatedCollection extends any[]
-			? HasManyToAnyRelation<RelatedCollection> extends never
-				? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
-				: ManyToAnyFields<Schema, RelatedCollection> // many to any
-			: QueryFields<Schema, RelatedCollection> // many-to-one
-		: never;
-};
+export type QueryFieldsRelational<Schema extends object, Item> = RelationalFields<Schema, Item> extends infer Relations
+	? IfNever<
+			Relations,
+			never,
+			{
+				[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
+					? RelatedCollection extends any[]
+						? HasManyToAnyRelation<RelatedCollection> extends never
+							? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
+							: ManyToAnyFields<Schema, RelatedCollection> // many to any
+						: QueryFields<Schema, RelatedCollection> // many-to-one
+					: never;
+			}
+	  >
+	: never;
 
 /**
  * Deal with many-to-any relational fields
