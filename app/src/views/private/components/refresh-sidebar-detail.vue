@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { Events, emitter } from '@/events';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { computed, ref, watch } from 'vue';
-import { emitter, Events } from '@/events';
 
 const props = defineProps<{
 	modelValue: number | null;
 }>();
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', value: number | null): void;
-	(e: 'refresh'): void;
+	'update:modelValue': [value: number | null];
+	refresh: [];
 }>();
 
 const { t } = useI18n();
@@ -23,7 +23,9 @@ const interval = computed<number | null>({
 	},
 });
 
-const activeInterval = ref<NodeJS.Timeout | null>(null);
+const active = computed(() => interval.value !== null);
+
+const activeInterval = ref<NodeJS.Timeout>();
 
 const setRefreshInterval = (interval: number) => {
 	activeInterval.value = setInterval(() => {
@@ -31,12 +33,20 @@ const setRefreshInterval = (interval: number) => {
 	}, interval * 1000);
 };
 
-emitter.on(Events.tabIdle, () => {
+const onIdle = () => {
 	if (activeInterval.value) clearInterval(activeInterval.value);
-});
+};
 
-emitter.on(Events.tabActive, () => {
+const onActive = () => {
 	if (interval.value) setRefreshInterval(interval.value);
+};
+
+emitter.on(Events.tabIdle, onIdle);
+emitter.on(Events.tabActive, onActive);
+
+onUnmounted(() => {
+	emitter.off(Events.tabIdle, onIdle);
+	emitter.off(Events.tabActive, onActive);
 });
 
 watch(
@@ -75,8 +85,6 @@ const items = computed(() => {
 			  };
 	});
 });
-
-const active = computed(() => interval.value !== null);
 </script>
 
 <template>
