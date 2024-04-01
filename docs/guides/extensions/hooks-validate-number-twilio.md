@@ -24,7 +24,7 @@ Now the boilerplate has been created, install the twilio package, and then open 
 
 ```
 cd directus-hook-phone-validation
-npm install twilio
+npm install twilio @directus/errors
 ```
 
 ## Build the Hook
@@ -39,19 +39,23 @@ library:
 import twilio from 'twilio';
 ```
 
-Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
-environment variables and `exceptions` to throw an error when validation fails:
+Define the invalid payload function using the `@directus/errors` package:
 
 ```js
-export default ({ filter }, { env, exceptions }) => {};
+import { createError } from "@directus/errors";
+
+const InvalidPayloadException = createError(
+  "INVALID_PAYLOAD_ERROR",
+  (message) => message,
+  500
+);
 ```
 
-Inside the function, define the invalid payload function from the exceptions scope:
+Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
+environment variables:
 
 ```js
-export default ({ filter }, { env, exceptions }) => {
-	const { InvalidPayloadException } = exceptions; // [!code ++]
-};
+export default ({ filter }, { env }) => {};
 ```
 
 Next, capture the `items.create` stream using `filter` and include the `input` and `collection` associated with the
@@ -154,15 +158,14 @@ that Twilio has to offer.
 
 ```js
 import { createError } from "@directus/errors";
+
 const InvalidPayloadException = createError(
   "INVALID_PAYLOAD_ERROR",
   (message) => message,
   500
 );
 
-export default ({ filter }, { env, exceptions }) => {
-	const { InvalidPayloadException } = exceptions;
-
+export default ({ filter }, { env }) => {
 	filter('items.create', async (input, { collection }) => {
 		if (collection !== 'customers') return input;
 
