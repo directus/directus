@@ -39,7 +39,7 @@ library:
 import twilio from 'twilio';
 ```
 
-Define the invalid payload function using the `@directus/errors` package:
+Define the invalid payload error using the `@directus/errors` package:
 
 ```js
 import { createError } from "@directus/errors";
