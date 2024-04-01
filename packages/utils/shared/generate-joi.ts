@@ -51,7 +51,7 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 				return this.$_addRule({ name: 'icontains', args: { substring } });
 			},
 			validate(value: string, helpers, { substring }) {
-				if (value.toLocaleUpperCase().includes(substring.toLocaleUpperCase()) === false) {
+				if (value.toLowerCase().includes(substring.toLowerCase()) === false) {
 					return helpers.error('string.icontains', { substring });
 				}
 
