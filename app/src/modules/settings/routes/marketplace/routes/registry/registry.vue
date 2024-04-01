@@ -22,9 +22,11 @@ const page = useRouteQuery('page', 1, {
 const search = useRouteQuery<string | null>('search', null, {
 	transform: (value) => (Array.isArray(value) ? value[0] : value),
 });
+
 const type = useRouteQuery<string | null>('type', null, {
 	transform: (value) => (Array.isArray(value) ? value[0] : value),
 });
+
 const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
 
 watch([search, sort, type], (newVal, oldVal) => {
