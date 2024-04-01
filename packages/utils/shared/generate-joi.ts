@@ -181,7 +181,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			} else {
 				schema[key] = Joi.alternatives().try(
 					getStringSchema().ncontains(compareValue),
-					Joi.array().items(Joi.string().pattern(new RegExp(escapeRegExp(compareValue)), { invert: true })),
+					Joi.array().items(getStringSchema().contains(compareValue).forbidden()),
 				);
 			}
 		}
