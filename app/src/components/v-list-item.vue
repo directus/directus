@@ -320,10 +320,7 @@ function onClick(event: PointerEvent) {
 
 		&.dense {
 			--theme--form--field--input--height: 44px;
-			padding: var(
-				--v-list-item-padding,
-				calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2)
-			);
+			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {
 				margin-top: var(--v-list-item-margin, 4px);
