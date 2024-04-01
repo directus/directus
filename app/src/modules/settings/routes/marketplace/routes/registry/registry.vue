@@ -19,8 +19,12 @@ const page = useRouteQuery('page', 1, {
 	transform: (value) => Number(Array.isArray(value) ? value[0] : value) || 1,
 });
 
-const search = useRouteQuery('search');
-const type = useRouteQuery('type');
+const search = useRouteQuery<string | null>('search', null, {
+	transform: (value) => (Array.isArray(value) ? value[0] : value),
+});
+const type = useRouteQuery<string | null>('type', null, {
+	transform: (value) => (Array.isArray(value) ? value[0] : value),
+});
 const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
 
 watch([search, sort, type], (newVal, oldVal) => {
