@@ -108,19 +108,18 @@ function getLinkForItem(item: any) {
 </template>
 
 <style lang="scss" scoped>
-$toggle-px: 6px;
-$toggle-py: 4px;
-
 .toggle {
 	position: relative;
+	--toggle-px: 6px;
+	--toggle-py: 4px;
 
 	&::before {
 		position: absolute;
-		top: #{$toggle-py * -1};
-		left: #{$toggle-px * -1};
+		top: calc(-1 * var(--toggle-py));
+		left: calc(-1 * var(--toggle-px));
 		z-index: 1;
-		width: calc(100% + #{$toggle-px * 2});
-		height: calc(100% + #{$toggle-py * 2});
+		width: calc(100% + var(--toggle-px) * 2);
+		height: calc(100% + var(--toggle-py) * 2);
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -140,16 +139,14 @@ $toggle-py: 4px;
 	&:not(.disabled):active::before {
 		background-color: var(--theme--background-accent);
 	}
+
+	.render-template > .v-menu & {
+		margin: var(--toggle-py) var(--toggle-px);
+	}
 }
 
-.render-template {
-	> .v-menu {
-		display: inline;
-
-		.toggle {
-			margin: $toggle-py $toggle-px;
-		}
-	}
+.render-template > .v-menu {
+	display: inline;
 }
 
 .disabled {
