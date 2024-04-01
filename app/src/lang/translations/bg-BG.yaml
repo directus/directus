@@ -165,6 +165,15 @@ promote_version_disabled: Без промени
 promote_version_drawer_title: Повишете {version} до основната
 promote_version_changes: Промени
 promote_version_preview: Преглед
+outdated_notice: >-
+  Основният елемент е актуализиран след създаването на тази версия. Проверете всички стойности в следните полета и потвърдете коя версия трябва да се използва при популяризиране на тази версия в основния елемент.
+promote_notice: >-
+  Моля, прегледайте всички стойности на полетата по-долу и потвърдете коя версия трябва да се използва при повишаване на тази версия в основния елемент.
+delete_version: Изтриване на версията
+delete_version_copy: >-
+  Сигурни ли сте, че искате да изтриете версията „{version}“? Това действие не може да бъде отменено.
+delete_on_promote_copy: >-
+  Искате ли да изтриете или запазите версията „{version}“ след повишението?
 reset_bookmark: Нулиране на отметки
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
@@ -179,6 +188,8 @@ logoutReason:
 public_label: Публичен
 public_description: Контрол на позволенията към API-то, без нужда от оторизиране.
 admin_description: Първоначална администраторска роля с неограничен достъп до API и приложението.
+no_description: Няма описание...
+reached_maximum_number_of_extensions: Достигнахте максималния брой разширения за този проект ({n}). Свържете се с вашия системен администратор за повече информация.
 not_allowed: Не е позволено
 archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да архивирате записа?
@@ -186,6 +197,7 @@ archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате записа? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions_to: 'Нулиране на системните позволения към:'
 reset_system_permissions_copy: Действието може да презапише обособените позволения, които са приложени към системните колекции. Сигурни ли сте?
+the_following_are_minimum_permissions: Следните минимални разрешения се прилагат автоматично, когато е активиран „Достъп до приложението“. Можете да предоставите допълнителни разрешения, ако е необходимо, но не можете да намалите разрешенията под това ниво.
 app_access_minimum: Минимум за достъп до приложението
 recommended_defaults: Препоръчителни
 unarchive: Разархивиране
@@ -209,7 +221,16 @@ validationError:
   nnull: Стойността не трябва да е null
   required: Изисква се стойност
   unique: Само уникални стойности
+  email: Стойността трябва да е валиден имейл адрес
   regex: Стойността е неправилно форматирана
+  starts_with: Стойността трябва да започва с {substring}
+  istarts_with: Стойността трябва да започва с {substring}
+  nstarts_with: Стойността не може да започва с {substring}
+  nistarts_with: Стойността не може да започва с {substring}
+  ends_with: Стойността трябва да завършва с {substring}
+  iends_with: Стойността трябва да завършва с {substring}
+  nends_with: Стойността не може да завършва с {substring}
+  niends_with: Стойността не може да завършва с {substring}
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
@@ -236,6 +257,7 @@ permissions_for_role: 'Записи, които ролята „{role}“ има
 fields_for_role: 'Полета, които ролята „{role}“ има позволение за {action}.'
 validation_for_role: 'Правила, които ролята „{role}“ трябва да спазва, при {action} на полета.'
 presets_for_role: 'Стойности по подразбиране на полетата, за ролята „{role}“.'
+presets_field_warning: 'Релационните настройки за полето „{field}“ трябва да бъдат конфигурирани с „подробен“ синтаксис.'
 presentation_and_aliases: Визуализиране и псевдоними
 revision_post_create: Ето как е изглеждал записът при създаването си.
 revision_post_update: Така ще изглежда записът, след възстановяване.
@@ -291,6 +313,7 @@ bigInteger: Голям целочислен
 boolean: Булев
 date: Дата
 date_range: Времеви период
+translation_key_placeholder: Въведете ключ...
 datetime: Дата и час
 dateTime: Дата и час
 precision: Точност
@@ -299,12 +322,27 @@ float: Плаващ
 integer: Целочислен
 json: JSON
 xml: XML
+yaml: YAML
 string: Низ
 text: Текст
 time: Час
 timestamp: Времеви печат
 uuid: UUID
 hash: Хеш
+geometry:
+  All: Геометрия (всички)
+  Point: Точка
+  LineString: LineString
+  Polygon: Полигон
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
+theme_auto: Автоматично (въз основа на системата)
+theme_light: Светъл режим
+theme_dark: Тъмен режим
+theme_directus_default: Directus по подразбиране
+theme_directus_minimal: Directus минимално
+theme_directus_colormatch: Directus Съвпадение на цветовете
 not_available_for_type: Не е налично за типът
 create_translations: Създаване на преводи
 auto_refresh: Автоматично опресняване
@@ -316,6 +354,7 @@ auto_generate: Автоматично генериране
 this_will_auto_setup_fields_relations: Автоматично настройване и генериране на задължителните полета и релации.
 click_here: Натиснете тук
 to_manually_setup_translations: за ръчна настройка на преводи.
+manage: Управление
 click_to_manage_translated_fields: >-
   Все още няма преведени полета. Натиснете тук за създаване. | Има едно преведено поле. Натиснете тук за управление. | Има {count} преведени полета. Натиснете тук за управление.
 fields_group: Групи от полета
@@ -342,7 +381,12 @@ o2m_relationship: Един към много
 m2m_relationship: Много към много
 m2a_relationship: Много към нещо
 invalid_item: Невалиден запис
+require_confirmation: Изискване на потвърждение
+dialog: Диалог
 modal: Диалог
+confirmation_dialog: Диалогов прозорец за потвърждение
+confirmation_description: Описание на потвърждението
+confirmation_input_fields: Полета за въвеждане на потвърждение
 next: Напред
 field_name: Име на поле
 translations: Преводи
@@ -361,6 +405,7 @@ updated_on: Обновен на
 updated_by: Обновен от
 primary_key: Първичен ключ
 foreign_key: Външен ключ
+field_key: Ключ на полето
 finish_setup: Завършване на настройката
 dismiss: Отхвърляне
 toggle_raw_editor: Превключване към редактора в суров вид
@@ -381,6 +426,7 @@ clear_items: Изчистване на всички
 reset_to_default: Връщане към стойността по подразбиране
 undo_changes: Отмяна на текущите промени
 notifications: Известия
+archive_all: Архивирай всичко
 show_all_activity: Преглед на цялата активност
 page_not_found: Страницата не е намерена
 page_not_found_body: Страницата, която търсите, не съществува.
@@ -393,6 +439,7 @@ revision_delta_created: Създаден
 revision_delta_created_externally: Външно-създаден запис
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
+revision_delta_version_saved: 'Версия Запазване (Актуализирано 1 поле) | Запазване на версията (Актуализирани {count} полета)'
 revision_delta_reverted: Възстановен
 revision_delta_update_message: Това поле бе обновено, но поради мерки за сигурност стойността му е прикрита.
 revision_delta_other: Ревизия
@@ -477,7 +524,11 @@ months:
   november: Ноември
   december: Декември
 drag_mode: Режим при дърпане
+move_tool: Инструмент за преместване
+crop_tool: Инструмент за изрязване
+focal_point_tool: Инструмент за фокусна точка
 cancel_crop: Отказване на изрязването
+cancel_selection: Отказ от избора
 original: Оригинал
 url: URL
 import_label: Импортиране
@@ -489,6 +540,7 @@ modified: Променен
 owner: Собственик
 edited_by: Променен от
 folder: Папка
+folders: Папки
 zoom: Мащабиране
 download: Изтегляне
 open: Отваряне
@@ -502,12 +554,15 @@ import_from_url: Импортиране на файл от URL
 replace_from_device: Замяна на файла от устройство
 replace_from_library: Замяна на файла от библиотеката
 replace_from_url: Замяна на файла от URL
+no_image_selected: Няма избрано изображение
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файла
 open_file_in_tab: Отваряне в нов таб
 start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
+exporting_limited_items_in_collection: '{count} от {total} елемента в рамките на {collection} ще бъдат експортирани.'
+exporting_no_items_to_export: Няма елементи за експортиране. Коригирайте конфигурацията за експортиране и/или добавете елементи към колекцията.
 exporting_download_hint: След като файлът {format} бъде създаден, той ще бъде изтеглен на вашето устройство.
 exporting_library_hint: След като файлът {format} бъде създаден, той ще бъде записан във файловата библиотека.
 exporting_library_hint_forced: Този експорт трябва да се обработва на партиди. След като бъде завършен, файлът {format} ще бъде записан във файловата библиотека.
@@ -722,6 +777,7 @@ one_filtered_item: '1 филтриран запис'
 delete_collection_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете колекцията - „{collection}“? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
 delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката „{folder}“? Подпапките и колекциите ще бъдат преместени към главната папка.
+delete_collection_peer_dependencies: Следните полета също ще бъдат изтрити, тъй като са свързани с текущата колекция.
 collections_shown: Показани колекции
 visible_collections: Видими колекции
 hidden_collections: Скрити колекции
@@ -765,8 +821,12 @@ operators:
   icontains: Съдържа (нечувствителен регистър)
   starts_with: Започва с
   nstarts_with: Не започва с
+  istarts_with: Започва с (безчувствен)
+  nistarts_with: Не започва с (безчувствен)
   ends_with: Завършва с
   nends_with: Не завършва с
+  iends_with: Завършва с (безчувствен)
+  niends_with: Не завършва с (безчувствен)
   between: Е между
   nbetween: Не е между
   empty: Е празно
@@ -780,6 +840,7 @@ operators:
   regex: Отговаря на RegExp
 custom_validation_message: Собствено съобщение при валидация
 loading: Зареждане...
+extension_readme_missing: Това разширение няма файл README.
 drop_to_upload: Пускане за качване
 item: Запис
 items: Записи
@@ -792,10 +853,12 @@ upload_pending: Качване в изчакване
 drag_file_here: За да качите файлове, пуснете ги тук
 click_to_browse: Натиснете за избор
 interface_options: Настройки на интерфейса
+display_options: Опции на дисплея
 layout_options: Оформление и настройки
 rows: Редове
 columns: Колони
 collection_setup: Настройване
+optional_system_fields: Незадължителни полета
 value_unique: Само уникални стойности
 all_activity: Цялата активност
 create_item: Създаване на запис
@@ -846,8 +909,15 @@ label: Надпис
 flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
+run_flow_confirm: Сигурни ли сте, че искате да изпълните този процес?
+run_flow_on_current_collection: Стартиране на процеса за текущата колекция
+run_flow_on_current: Изпълнение на процеса на текущия елемент
 run_flow_on_current_edited_confirm: Записът може да бъде редактиран от процеса, сигурни ли сте, че искате да го изпълните?
+run_flow_on_selected: Първо изберете един или повече елементи | Изпълнение на процеса на 1 избран елемент | Стартирайте Flow върху {n} избрани елементи
+run_flow: Стартирайте процеса
 run_flow_success: Изпълнението на процеса „{flow}“ е успешно
+field_name_placeholder: Въведете име на поле...
+field_key_placeholder: Въведете ключ на полето...
 trigger: Задействане
 trigger_options: Настройка на задействането
 view_trigger: Преглед на задействането
@@ -986,6 +1056,8 @@ wysiwyg_options:
   source_code: Редактиране на изходния код
   fullscreen: Пълен екран
   directionality: Подравняване
+  lazy_loading: Бавно зареждане на изображение
+  lazy_loading_label: Разрешете бавно зареждане
 dropdown: Падащо меню
 choices: Възможности
 choices_option_configured_incorrectly: Възможностите са настроени неправилно
@@ -1632,6 +1704,8 @@ interfaces:
     description: Диалог за избор на настройки за интерфейс
   system-display:
     display: Изглед
+  system-display-options:
+    display-options: Опции на дисплея
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
@@ -1696,6 +1770,7 @@ interfaces:
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
     interface_group: Настройки на интерфейса
+    display_group: Опции на дисплея
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
