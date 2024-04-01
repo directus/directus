@@ -64,7 +64,7 @@ filter('items.create', async (input, { collection }) => {
 ```
 
 Prevent saving an event if the `phone_number` is `undefined`, by reporting this back to the user. Add this line
-underneath the collections exception.
+underneath the collection restriction.
 
 ```js
 if (input.phone_number === undefined) {
@@ -93,7 +93,7 @@ The lookup is performed with the `phone_number` from the input object.
 Inside the callback, provide a response for when the phone number is invalid, otherwise continue as normal. Twilio
 provides a very helpful boolean response called `valid`.
 
-Use this to throw an exception if `false`, or return the input to the stream and end the hook if `true`:
+Use this to throw an error if `false`, or return the input to the stream and end the hook if `true`:
 
 ```js
 client.lookups.v2
