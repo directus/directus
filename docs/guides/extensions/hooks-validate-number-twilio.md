@@ -33,22 +33,11 @@ Create a collection called Customers with a text field called `phone_number`. Th
 item when a record is saved.
 
 Open the `index.js` file inside the src directory. Delete all the existing code and start with the import of the Twilio
-library:
+library and the invalid payload error:
 
 ```js
 import twilio from 'twilio';
-```
-
-Define the invalid payload error using the `@directus/errors` package:
-
-```js
-import { createError } from "@directus/errors";
-
-const InvalidPayloadException = createError(
-  "INVALID_PAYLOAD_ERROR",
-  (message) => message,
-  500
-);
+import { InvalidPayloadError } from "@directus/errors";
 ```
 
 Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
@@ -79,7 +68,7 @@ underneath the collections exception.
 
 ```js
 if (input.phone_number === undefined) {
-	throw new InvalidPayloadException('No Phone Number has been provided');
+	throw new InvalidPayloadError('No Phone Number has been provided');
 }
 ```
 
@@ -112,7 +101,7 @@ client.lookups.v2
 	.fetch()
 	.then((phoneNumber) => {
 		if (!phoneNumber.valid) { // [!code ++]
-			throw new InvalidPayloadException('Phone Number is not valid'); // [!code ++]
+			throw new InvalidPayloadError('Phone Number is not valid'); // [!code ++]
 		} // [!code ++]
 // [!code ++]
 		return input; // [!code ++]
@@ -157,20 +146,14 @@ that Twilio has to offer.
 `index.js`
 
 ```js
-import { createError } from "@directus/errors";
-
-const InvalidPayloadException = createError(
-  "INVALID_PAYLOAD_ERROR",
-  (message) => message,
-  500
-);
+import { InvalidPayloadError } from "@directus/errors";
 
 export default ({ filter }, { env }) => {
 	filter('items.create', async (input, { collection }) => {
 		if (collection !== 'customers') return input;
 
 		if (input.phone_number === undefined) {
-			throw new InvalidPayloadException('No Phone Number has been provided');
+			throw new InvalidPayloadError('No Phone Number has been provided');
 		}
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
@@ -182,7 +165,7 @@ export default ({ filter }, { env }) => {
 			.fetch()
 			.then((phoneNumber) => {
 				if (!phoneNumber.valid) {
-					throw new InvalidPayloadException('Phone Number is not valid');
+					throw new InvalidPayloadError('Phone Number is not valid');
 				}
 
 				return input;
