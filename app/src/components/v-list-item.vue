@@ -260,7 +260,7 @@ function onClick(event: PointerEvent) {
 
 		padding: var(
 			--v-list-item-padding,
-			calc(var(--theme--form--field--input--height) * 0.13333) var(--theme--form--field--input--padding)
+			calc(var(--theme--form--field--input--padding) / 2) var(--theme--form--field--input--padding)
 		);
 		position: relative;
 		display: flex;
@@ -320,7 +320,10 @@ function onClick(event: PointerEvent) {
 
 		&.dense {
 			--theme--form--field--input--height: 44px;
-			padding-inline: calc(var(--theme--form--field--input--padding) / 2);
+			padding: var(
+				--v-list-item-padding,
+				calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2)
+			);
 
 			& + & {
 				margin-top: var(--v-list-item-margin, 4px);
