@@ -1,6 +1,6 @@
-import { randomUUID } from '@directus/random';
 import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
 import type { Webhook } from '../../types/webhooks.js';
 
 // To avoid typos
