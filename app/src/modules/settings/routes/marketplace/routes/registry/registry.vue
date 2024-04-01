@@ -32,7 +32,7 @@ watch([search, sort, type], (newVal, oldVal) => {
 const filterCount = ref(0);
 
 const extensions = ref<RegistryListResponse['data'] | null>(null);
-const pageCount = computed(() => Math.round(filterCount.value / perPage));
+const pageCount = computed(() => Math.ceil(filterCount.value / perPage));
 const loading = ref(false);
 const error = ref<unknown>(null);
 
