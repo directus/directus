@@ -28,7 +28,7 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
-marketplace: Boutique
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Barre de modules
@@ -51,7 +51,7 @@ duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Toute la largeur
 group: Groupe
-popular: Populaire
+popular: Popularité
 recent: Récent
 export_items: Exporter
 and: Et
@@ -82,10 +82,23 @@ extension_bundles: Lots
 extension_reload_required: Rechargement de la page requis
 extension_reload_required_copy: Un rechargement de la page est nécessaire pour voir les changements après l'activation ou la désactivation des extensions d'application.
 extension_reload_now: Recharger maintenant
+published_relative: Publié {relativeTime}
+compatible_with_your_project: Compatible avec votre projet
+compatible_with_your_project_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui correspond à la version de votre projet ({currentVersion})
+last_updated_relative: Dernière mise à jour {relativeTime}
+n_files: '{n} Fichiers'
 verified: Vérifié
+homepage: Page d'accueil
+repository: Dépôt
+reload_required: Rechargement requis
+report_an_issue: Signaler un problème
+website: Site internet
 github: GitHub
 beta: Bêta
+n_downloads: '{n} Téléchargements'
 downloads: Téléchargements
+compatibility_not_guaranteed: Compatibilité non garantie
+compatibility_not_guaranteed_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui ne correspond pas à la version de votre projet ({currentVersion})
 enable: Activer
 disable: Désactiver
 custom: Personnalisé
@@ -175,6 +188,7 @@ public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 no_description: Aucune description...
+reached_maximum_number_of_extensions: Vous avez atteint le nombre maximum d'extensions pour ce projet ({n}). Contactez votre administrateur système pour plus d'informations.
 not_allowed: Non autorisé
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
@@ -509,7 +523,11 @@ months:
   november: Novembre
   december: Décembre
 drag_mode: Mode Glisser/Déposer
+move_tool: Déplacer
+crop_tool: Recadrer
+focal_point_tool: Point focal
 cancel_crop: Annuler le recadrage
+cancel_selection: Annuler la sélection
 original: Initial
 url: URL
 import_label: Importer
@@ -577,6 +595,7 @@ collapse: Replier
 select_item: Sélectionner un élément
 no_items: Aucun élément
 search_items: Rechercher des éléments...
+search_extensions: Rechercher des extensions...
 disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
@@ -692,6 +711,7 @@ errors:
   INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
+  LIMIT_EXCEEDED: 'Limite dépassée'
   METHOD_NOT_ALLOWED: Méthode non autorisée
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
   RANGE_NOT_SATISFIABLE: Plage non valide
@@ -815,6 +835,7 @@ operators:
   regex: Correspondances RegExp
 custom_validation_message: Message de validation personnalisé
 loading: Chargement…
+extension_readme_missing: Cette extension n'a pas de fichier README.
 drop_to_upload: Déposer pour téléverser
 item: Élément
 items: Éléments
@@ -1121,6 +1142,9 @@ page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
 page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
 page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
+page_help_marketplace_account: '**Compte** — Éditeur ou mainteneur d''une extension publiée.'
+page_help_marketplace_registry: '**Enregistrement** — Extensions disponibles sur le Marketplace Directus.'
+page_help_marketplace_extension: '**Extension** — Extension sur le Marketplace Directus.'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -1133,8 +1157,13 @@ cancel: Annuler
 no_upscale: Ne pas agrandir les images
 no_extensions: Aucune extension
 no_extensions_copy: Aucune extension n'a encore été installée.
+install_extension: Installer l'extension
+uninstall_locked: Impossible de désinstaller les extensions qui n'ont pas été installées via le Marketplace
+uninstall: Désinstaller
 installed: Installé
-source_registry: Boutique
+reinstall: Réinstaller
+open_in_marketplace: Ouvrir dans la Marketplace
+source_registry: Marketplace
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1403,6 +1432,7 @@ field_options:
     description: Une description optionnelle...
     location: Un emplacement optionnel...
     storage_divider: Nommage des fichiers
+    focal_point_divider: Point focal
     filename_disk: Nom du fichier sur le disque...
     filename_download: Nom du fichier téléchargé...
   directus_roles:
