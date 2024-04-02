@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
+import { InvalidQueryError } from '@directus/errors';
+import type { Accountability, Aggregate, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
 import { useLogger } from '../logger.js';
@@ -137,19 +138,21 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
-	const logger = useLogger();
-
-	let filters: Filter | null = rawFilter;
+	let filters = rawFilter;
 
 	if (typeof rawFilter === 'string') {
 		try {
 			filters = parseJSON(rawFilter);
 		} catch {
-			logger.warn('Invalid value passed for filter query parameter.');
+			throw new InvalidQueryError({ reason: 'Invalid filter object' });
 		}
 	}
 
-	return parseFilter(filters, accountability);
+	try {
+		return parseFilter(filters, accountability);
+	} catch {
+		throw new InvalidQueryError({ reason: 'Invalid filter object' });
+	}
 }
 
 function sanitizeLimit(rawLimit: any) {
