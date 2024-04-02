@@ -120,7 +120,11 @@ function addNode(key: string) {
 
 		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
-		const node = set({}, key, { ['_' + operator]: null });
+
+		const booleanOptionTypes: Type[] = ['json', 'hash'];
+		const initialValue = booleanOptionTypes.includes(type) ? true : null;
+
+		const node = set({}, key, { ['_' + operator]: initialValue });
 		innerValue.value = innerValue.value.concat(node);
 	}
 }
