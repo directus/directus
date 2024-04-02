@@ -140,9 +140,9 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 	let filters = rawFilter;
 
-	if (typeof rawFilter === 'string') {
+	if (typeof filters === 'string') {
 		try {
-			filters = parseJSON(rawFilter);
+			filters = parseJSON(filters);
 		} catch {
 			throw new InvalidQueryError({ reason: 'Invalid filter object' });
 		}
