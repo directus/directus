@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
-import { ExtensionType } from '@directus/extensions';
 import { pluralize } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionType } from '../types';
 
 const props = defineProps<{
-	type: ExtensionType | 'missing';
+	type: ExtensionType;
 }>();
 
 const { t } = useI18n();

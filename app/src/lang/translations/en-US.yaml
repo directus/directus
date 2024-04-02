@@ -630,6 +630,10 @@ no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks are deprecated and further use is discouraged.
+
+  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
@@ -1188,6 +1192,7 @@ install_extension: Install Extension
 uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
 uninstall: Uninstall
 installed: Installed
+reinstall: Reinstall
 open_in_marketplace: Open in Marketplace
 source_registry: Marketplace
 source_local: Local
@@ -1314,6 +1319,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Reporting
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster

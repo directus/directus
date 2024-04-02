@@ -164,6 +164,54 @@ router.post(
 	respond,
 );
 
+router.post(
+	'/registry/reinstall',
+	asyncHandler(async (req, _res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const { extension } = req.body;
+
+		if (!extension) {
+			throw new ForbiddenError();
+		}
+
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.reinstall(extension);
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	`/registry/uninstall/:pk(${UUID_REGEX})`,
+	asyncHandler(async (req, _res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const pk = req.params['pk'];
+
+		if (typeof pk !== 'string') {
+			throw new ForbiddenError();
+		}
+
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.uninstall(pk);
+		return next();
+	}),
+	respond,
+);
+
 router.patch(
 	`/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {

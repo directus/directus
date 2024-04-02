@@ -6,6 +6,7 @@ import { getItemRoute } from '@/utils/get-route';
 import { useCollection } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Share } from '@directus/types';
+import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -132,6 +133,8 @@ async function authenticate() {
 		authenticating.value = false;
 	}
 }
+
+useHead({ title });
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -57,7 +58,7 @@ const imageInfo = computed(() => {
 		key = 'system-medium-contain';
 	}
 
-	const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+	const source = getAssetUrl(`${props.file.id}?key=${key}&modified=${props.file.modified_on}`);
 
 	return { source, fileType };
 });

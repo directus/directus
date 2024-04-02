@@ -235,6 +235,11 @@ export function realtime(config: WebSocketConfig = {}) {
 					ws.addEventListener('open', async (evt: Event) => {
 						debug('info', `Connection open.`);
 
+						state = { code: 'open', connection: ws, firstMessage: true };
+						reconnectState.attempts = 0;
+						reconnectState.active = false;
+						handleMessages(self);
+
 						if (config.authMode === 'handshake' && hasAuth(self)) {
 							const access_token = await self.getToken();
 
@@ -262,12 +267,7 @@ export function realtime(config: WebSocketConfig = {}) {
 							}
 						}
 
-						state = { code: 'open', connection: ws, firstMessage: true };
-						reconnectState.attempts = 0;
-						reconnectState.active = false;
-
 						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-						handleMessages(self);
 
 						resolved = true;
 						resolve(ws);

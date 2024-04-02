@@ -110,4 +110,9 @@ p {
 	font-size: 0.75rem;
 	margin-top: 0.5rem;
 }
+
+/* Hide main error message if mail field already has one */
+:deep(form:has(.hs-form-field .hs-error-msgs) .hs_error_rollup) {
+	display: none;
+}
 </style>
