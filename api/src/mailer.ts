@@ -76,6 +76,14 @@ export default function getMailer(): Transporter {
 				apiKey: env['EMAIL_SENDGRID_API_KEY'],
 			}) as any,
 		);
+	} else if (transportName === 'resend') {
+		const rs = require('@documenso/nodemailer-resend');
+
+		transporter = nodemailer.createTransport(
+			rs({
+				apiKey: env['EMAIL_RESEND_API_KEY'],
+			}) as any,
+		);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}

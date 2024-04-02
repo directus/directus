@@ -1005,6 +1005,12 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | ------------------------ | ---------------------- | ------------- |
 | `EMAIL_SENDGRID_API_KEY` | Your SendGrid API key. | --            |
 
+### Resend (`resend`)
+
+| Variable               | Description          | Default Value |
+| ---------------------- | -------------------- | ------------- |
+| `EMAIL_RESEND_API_KEY` | Your Resend API key. | --            |
+
 ### AWS SES (`ses`)
 
 | Variable                                   | Description                 | Default Value |

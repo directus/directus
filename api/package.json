@@ -225,6 +225,7 @@
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
+		"@documenso/nodemailer-resend": "3.0.0",
 		"oracledb": "6.4.0",
 		"pg": "8.11.4",
 		"sqlite3": "5.1.7",
