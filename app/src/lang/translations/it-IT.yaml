@@ -615,6 +615,10 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
+webhooks_deprecation_notice: |
+  I webhook sono deprecati e un ulteriore utilizzo è scoraggiato.
+
+  Utilizza invece **Flows** con l'[operazione Webhook/Richiedi URL](https://docs.directus.io/app/flows/operazioni.html#webhook-request-url).
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 no_notifications: Nessuna notifica
 no_notifications_copy: È tutto!
@@ -1162,6 +1166,7 @@ install_extension: Installa estensione
 uninstall_locked: Impossibile disinstallare le estensioni che non sono state installate attraverso il Marketplace
 uninstall: Disinstalla
 installed: Installata
+reinstall: Reinstalla
 open_in_marketplace: Apri nel Marketplace
 source_registry: Marketplace
 source_local: Locali
@@ -1288,6 +1293,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Segnalare
     mapping: Mappe
     basemaps: Mappe base
     basemaps_raster: Raster
