@@ -80,7 +80,7 @@ export default function getMailer(): Transporter {
 		const rs = require('@documenso/nodemailer-resend');
 
 		transporter = nodemailer.createTransport(
-			rs({
+			rs.ResendTransport.makeTransport({
 				apiKey: env['EMAIL_RESEND_API_KEY'],
 			}) as any,
 		);
