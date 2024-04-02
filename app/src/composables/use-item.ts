@@ -304,7 +304,7 @@ export function useItem<T extends Record<string, any>>(
 				const response = await api.get(getEndpoint(relation.collection), {
 					params: {
 						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
-						[`filter[${relation.meta?.many_field}][_eq]`]: itemData.data.data[primaryKeyField.value!.field],
+						[`filter[${relation.field}][_eq]`]: itemData.data.data[primaryKeyField.value!.field],
 					},
 				});
 
