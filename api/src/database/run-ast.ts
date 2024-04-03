@@ -11,7 +11,7 @@ import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
-import { stripFunction } from '../utils/strip-function.js';
+import { parseFilterKey } from '../utils/parse-filter-key.js';
 import { getHelpers } from './helpers/index.js';
 import getDatabase from './index.js';
 
@@ -161,7 +161,7 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
-			const fieldName = stripFunction(child.name);
+			const { fieldName } = parseFilterKey(child.name);
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
@@ -224,7 +224,8 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
+			const { fieldName } = parseFilterKey(fieldNode.name);
+			field = schema.collections[table]!.fields[fieldName];
 		} else {
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
