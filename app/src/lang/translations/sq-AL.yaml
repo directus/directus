@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Rreth
 identifier: Identifikues
 avatar: Avatar
 application: Aplikacion
@@ -7,10 +28,12 @@ method: Metodë
 published: Publikuar
 draft: Draft
 archived: Arkivuar
+marketplace: Pazari
 extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
+unknown: I panjohur
 reset_width: Rikthe Gjerësinë
 tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
@@ -28,6 +51,8 @@ duplicate_field: Dupliko Fushën
 half_width: Gjerësi e Gjysmës
 full_width: Gjerësi e Plotë
 group: Grup
+popular: Popullor
+recent: I fundit
 export_items: Eksporto Artikujt
 and: Dhe
 or: Ose
@@ -54,9 +79,27 @@ extension_hooks: Kroçe
 extension_endpoints: Pikat fundore
 extension_operations: Operacione
 extension_bundles: Paketa
+extension_missing: Mungon
 extension_reload_required: Kërkohet ringarkimi i faqes
 extension_reload_required_copy: Është e nevojshme të ringarkohet faqja për të parë ndryshimet pas aktivizimit ose çaktivizimit të zgjerimeve të aplikacionit.
 extension_reload_now: Ringarko tani
+published_relative: Publikuar {relativeTime}
+compatible_with_your_project: Përputhshëm me projektin tuaj
+compatible_with_your_project_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila përputhet me versionin e projektit tuaj ({currentVersion})
+last_updated_relative: Përditësuar së fundmi {relativeTime}
+n_files: '{n} Skedarë'
+verified: Verifikuar
+homepage: Faqja kryesore
+repository: Depo
+reload_required: Kërkohet ringarkim
+report_an_issue: Raporto një Problem
+website: Faqe interneti
+github: GitHub
+beta: Beta
+n_downloads: '{n} Shkarkime'
+downloads: Shkarkime
+compatibility_not_guaranteed: Përputhshmëria nuk është e garantuar
+compatibility_not_guaranteed_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila nuk përputhet me versionin e projektit tuaj ({currentVersion})
 enable: Parashikoni përkthimet
 disable: Çaktivizo
 custom: Personalizuar
@@ -145,6 +188,8 @@ logoutReason:
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+no_description: Pa përshkrim...
+reached_maximum_number_of_extensions: Keni arritur numrin maksimal të zgjerimeve për këtë projekt ({n}). Kontaktoni administratorin e sistemit tuaj për më shumë informacion.
 not_allowed: Nuk lejohet
 archive: Arkivo
 archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
@@ -309,6 +354,7 @@ auto_generate: Gjenero Automatikisht
 this_will_auto_setup_fields_relations: Kjo do të konfigurojë automatikisht të gjitha fushat dhe marrëdhëniet e nevojshme.
 click_here: Kliko këtu
 to_manually_setup_translations: për të konfiguruar manualisht përkthimet.
+manage: Menaxho
 click_to_manage_translated_fields: >-
   Nuk ka fusha të përkthyera akoma. Kliko këtu për t'i krijuar ato. | Ka një fushë të përkthyer. Kliko këtu për ta menaxhuar atë. | Ka {count} fusha të përkthyera. Kliko këtu për t'i menaxhuar ato.
 fields_group: Grup Fushash
@@ -478,7 +524,11 @@ months:
   november: Nëntor
   december: Dhjetor
 drag_mode: Mënyra e Tërheqjes
+move_tool: Mjeti i Lëvizjes
+crop_tool: Mjeti i Prerjes
+focal_point_tool: Mjeti i Pikës Fokale
 cancel_crop: Anulo Kopshtin
+cancel_selection: Anulo Zgjedhjen
 original: Origjinal
 url: URL
 import_label: Importo
@@ -546,6 +596,7 @@ collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
 search_items: Kërko artikuj...
+search_extensions: Kërko Zgjerime...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -564,6 +615,8 @@ no_files_copy: Këtu nuk ka skedarë.
 user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
 no_users_copy: Ende nuk ka përdorues në këtë rol.
 webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks janë të vjetruara dhe përdorimi i mëtejmë nuk rekomandohet. Ju lutemi përdorni **Flows** me [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) në vend të kësaj.
 no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
 no_notifications: Asnjë Njoftim
 no_notifications_copy: Ju jeni përditësuar plotësisht!
@@ -661,6 +714,7 @@ errors:
   INVALID_USER: Autentifikimi i përdoruesit dështoi
   ITEM_LIMIT_REACHED: Limiti i artikujve arriti
   ITEM_NOT_FOUND: Artikulli nuk u gjet
+  LIMIT_EXCEEDED: 'Limiti i tejkaluar'
   METHOD_NOT_ALLOWED: Metodë e palëjuar
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
   RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
@@ -784,6 +838,7 @@ operators:
   regex: Përputhet me RegExp
 custom_validation_message: Mesazh i Personalizuar i Validimit
 loading: Po Ngarkohet...
+extension_readme_missing: Kjo zgjerim nuk ka një skedar README.
 drop_to_upload: Lësho për të Ngarkuar
 item: Artikull
 items: Artikuj
@@ -1090,6 +1145,9 @@ page_help_users_item: >-
   **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
 page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
 page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
+page_help_marketplace_account: '**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar.'
+page_help_marketplace_registry: '**Regjistri** — Zgjerime të disponueshme në Tregun e Directus.'
+page_help_marketplace_extension: '**Zgjerim** — Zgjerim në Tregun e Directus.'
 activity_feed: Feed Aktiviteti
 add_new: Shto të Ri
 create_new: Krijo të Ri
@@ -1102,6 +1160,15 @@ cancel: Anulo
 no_upscale: Mos zgjero imazhet
 no_extensions: Pa Zgjerime
 no_extensions_copy: Asnjë zgjerim nuk është instaluar ende.
+install_extension: Instalo Zgjerimin
+uninstall_locked: Nuk mund të çinstalohen zgjerimet që nuk janë instaluar përmes Pazarit
+uninstall: Çinstalo
+installed: I Instaluar
+reinstall: Ri-instalo
+open_in_marketplace: Hap në Pazar
+source_registry: Pazari
+source_local: Lokal
+source_module: Node Module
 collection: Koleksion
 collections: Koleksione
 content: Përmbajtje
@@ -1224,6 +1291,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Raportimi
     mapping: Hartëzim
     basemaps: Harta Bazë
     basemaps_raster: Raster
@@ -1370,6 +1438,7 @@ field_options:
     description: Një përshkrim opsional...
     location: Një vendndodhje opsionale...
     storage_divider: Emërtimi i Skedarit
+    focal_point_divider: Pika Fokale
     filename_disk: Emri në ruajtjen disk...
     filename_download: Emri gjatë shkarkimit...
   directus_roles:
@@ -1824,6 +1893,7 @@ interfaces:
     no_collection: Asnjë Koleksion
     toggle_split_view: Ndërro Pamjen e Ndara
     enable: Aktivizo
+    default_split_view_state: Gjendja e Parazgjedhur e Pamjes së Ndara
     user_language: Përdor Gjuhën Aktuale të Përdoruesit
     default_language: Gjuha e Parazgjedhur
     language_field: Fushe Indikatore e Gjuhës
