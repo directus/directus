@@ -19,16 +19,25 @@ import getLocalType from './get-local-type.js';
 
 const logger = useLogger();
 
-export async function getSchema(options?: {
-	database?: Knex;
+export async function getSchema(
+	options?: {
+		database?: Knex;
 
-	/**
-	 * To bypass any cached schema if bypassCache is enabled.
-	 * Used to ensure schema snapshot/apply is not using outdated schema
-	 */
-	bypassCache?: boolean;
-}): Promise<SchemaOverview> {
+		/**
+		 * To bypass any cached schema if bypassCache is enabled.
+		 * Used to ensure schema snapshot/apply is not using outdated schema
+		 */
+		bypassCache?: boolean;
+	},
+	attempt = 0,
+): Promise<SchemaOverview> {
+	const MAX_ATTEMPTS = 5;
+
 	const env = useEnv();
+
+	if (attempt >= MAX_ATTEMPTS) {
+		throw new Error(`Failed to get Schema information: hit infinite loop`);
+	}
 
 	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
 		const database = options?.database || getDatabase();
@@ -56,13 +65,23 @@ export async function getSchema(options?: {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
 		return new Promise((resolve) => {
+			const TIMEOUT = 10000;
+
 			const callback = async () => {
-				const schema = await getSchema(options);
+				const schema = await getSchema(options, attempt + 1);
 				resolve(schema);
 				bus.unsubscribe(messageKey, callback);
 			};
 
 			bus.subscribe(messageKey, callback);
+
+			setTimeout(async () => {
+				logger.trace('Did not receive schema callback message in time. Pulling schema...');
+				bus.unsubscribe(messageKey, callback);
+
+				const schema = await getSchema(options, attempt + 1);
+				resolve(schema);
+			}, TIMEOUT);
 		});
 	}
 
