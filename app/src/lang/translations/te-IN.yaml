@@ -1,7 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: గురించి
+identifier: ఐడెంటిఫైయర్
+avatar: అవతార్
+application: అప్లికేషన్
+default_provider: డిఫాల్ట్
 draft: డ్రాఫ్ట్
 conditions: షరతులు
+dataset_too_large_currently_showing_n_items: డేటాసెట్ చాలా పెద్దది. ప్రస్తుతం మొదటి {n} అంశాలను చూపుతోంది.
 extension_interfaces: ఇంటర్ఫేస్
+extension_reload_required_copy: యాప్ ఎక్స్‌టెన్షన్‌లను ఎనేబుల్ లేదా డిసేబుల్ చేసిన తర్వాత మార్పులను చూడటానికి పేజీ రీలోడ్ అవసరం.
+extension_reload_now: ఇప్పుడే రీలోడ్ చేయండి
+compatible_with_your_project: మీ ప్రాజెక్ట్‌తో అనుకూలమైనది
+compatible_with_your_project_copy: రచయిత ఈ పొడిగింపు యొక్క అనుకూలతను {hostVersion}, గా సూచించారు, ఇది మీ ప్రాజెక్ట్ సంస్కరణ ({currentVersion}) కి సరిపోతుంది
+last_updated_relative: చివరిగా అప్‌డేట్ చేయబడింది {relativeTime}
+n_files: '{n} ఫైల్‌లు'
+compatibility_not_guaranteed: అనుకూలత హామీ లేదు
+compatibility_not_guaranteed_copy: రచయిత ఈ పొడిగింపు యొక్క అనుకూలతను {hostVersion} గా సూచించారు, ఇది మీ ప్రాజెక్ట్ సంస్కరణ ({currentVersion}) తో సరిపోలలేదు
+db_only_click_to_configure: 'డేటాబేస్ మాత్రమే: కాన్ఫిగర్ చేయడానికి క్లిక్ చేయండి'
+required_for_app_access: యాప్ యాక్సెస్ కోసం అవసరం
 invite: ఆహ్వానించండి
 inbox: ఇన్‌బాక్స్
 emails: ఇమెయిల్
@@ -41,9 +77,15 @@ interfaces:
     image: చిత్రం
   translations:
     default_language: డిఫాల్ట్ భాష
+  input-rich-text-html:
+    description: HTML కంటెంట్‌ని వ్రాసే రిచ్-టెక్స్ట్ ఎడిటర్
+    custom_formats_note: TinyMCE కంటెంట్ ఫార్మాట్‌ల జాబితా. మరింత సమాచారం కోసం [కంటెంట్ ఫార్మాటింగ్](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) గురించి TinyMCE డాక్యుమెంటేషన్ చూడండి.
   input-block-editor:
     tools_options:
       image: చిత్రం
+  group-detail:
+    description: ఫీల్డ్‌లను ధ్వంసమయ్యే విభాగంగా రెండర్ చేయండి
+    show_header: గ్రూప్ హెడర్‌ని చూపించు
   system-token:
     description: స్టాటిక్ యాక్సెస్ టోకెన్‌ని నిర్వహించండి
     placeholder: కొత్త స్టాటిక్ యాక్సెస్ టోకెన్‌ని సృష్టించడానికి "జనరేట్ టోకెన్" క్లిక్ చేయండి
@@ -62,7 +104,17 @@ displays:
     label_on_placeholder: లేబుల్‌ని నమోదు చేయండి...
     label_off: లేబుల్ ఆఫ్
     label_off_placeholder: ఆఫ్ లేబుల్‌ని నమోదు చేయండి...
+  color:
+    color: రంగు
   datetime:
+    format_note: >-
+      అనుకూల ఆకృతి __[తేదీ ఫీల్డ్ సింబల్ టేబుల్](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ని అంగీకరిస్తుంది
+    relative_label: 'సంబంధిత సమయాన్ని చూపు, ఉదా: 5 నిమిషాల క్రితం'
+    suffix_label: సంబంధిత సూచికను చూపు
+    suffix_note: '''in'' మరియు ''ago'' వంటి పదాలను ఉపయోగిస్తుంది'
+    strict_note: '''దాదాపు'', ''పైగా'', ''తక్కువ'' వంటి పదాలను తొలగిస్తుంది'
+    round: గుండ్రంగా
+    round_note: ఉపయోగించడానికి రౌండింగ్ ఫంక్షన్‌ను ఎంచుకోండి
     nearest: దగ్గరిది
     up: పైకి
   file:
