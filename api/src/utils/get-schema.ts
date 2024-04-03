@@ -30,10 +30,10 @@ export async function getSchema(options?: {
 }): Promise<SchemaOverview> {
 	const env = useEnv();
 
-	const database = options?.database || getDatabase();
-	const schemaInspector = createInspector(database);
-
 	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
+		const database = options?.database || getDatabase();
+		const schemaInspector = createInspector(database);
+
 		return await getDatabaseSchema(database, schemaInspector);
 	}
 
@@ -67,6 +67,9 @@ export async function getSchema(options?: {
 	}
 
 	try {
+		const database = options?.database || getDatabase();
+		const schemaInspector = createInspector(database);
+
 		const schema = await getDatabaseSchema(database, schemaInspector);
 		await setSchemaCache(schema);
 		return schema;
