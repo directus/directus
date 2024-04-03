@@ -32,19 +32,19 @@
 		"@directus/data": "workspace:*",
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.26",
+		"@types/node": "18.19.29",
 		"@types/pg": "8.11.4",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.4.0",
-		"dependency-cruiser": "16.2.3",
+		"dependency-cruiser": "16.2.4",
 		"tsup": "8.0.2",
-		"typescript": "5.3.3",
-		"vitest": "1.3.1"
+		"typescript": "5.4.3",
+		"vitest": "1.4.0"
 	},
 	"dependencies": {
 		"@directus/data-sql": "workspace:*",
-		"pg": "8.11.4",
-		"pg-query-stream": "4.5.3",
+		"pg": "8.11.5",
+		"pg-query-stream": "4.5.5",
 		"wellknown": "0.5.0"
 	}
 }
