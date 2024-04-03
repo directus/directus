@@ -112,6 +112,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
+		console.log('b', aliases)
+
 		const payload: AnyItem = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -427,6 +429,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			knex: this.knex,
 		});
 
+		console.log('1', ast);
+
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
@@ -435,13 +439,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
+			console.log('2', ast);
 		}
+
 
 		const records = await runAST(ast, this.schema, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
+
+		console.log('3', records);
 
 		if (records === null) {
 			throw new ForbiddenError();
