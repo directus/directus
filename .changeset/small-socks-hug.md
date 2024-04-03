@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed an issue where duplicating an item with many relational items could fail
+Fixed an issue where duplicating an item (Save as Copy) with many relational items could fail
