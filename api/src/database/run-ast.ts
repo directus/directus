@@ -85,8 +85,7 @@ export default async function runAST(
 
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
-		const aliasMap = query.alias ?? {};
-		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, aliasMap);
+		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, query.alias ?? {});
 
 		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 

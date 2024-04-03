@@ -160,17 +160,19 @@ export class PayloadService {
 		if (processedPayload.length === 0) return [];
 
 		const fieldsInPayload = Object.keys(processedPayload[0]!);
+		const fieldEntries = Object.entries(this.schema.collections[this.collection]!.fields);
+		const aliasEntries = Object.entries(aliasMap);
 
 		let specialFieldsInCollection: [string, FieldOverview][] = [];
 
-		for (const [name, field] of Object.entries(this.schema.collections[this.collection]!.fields)) {
+		for (const [name, field] of fieldEntries) {
 			if (field.special && field.special.length > 0) {
 				specialFieldsInCollection.push([name, field]);
 
-				for (const [aliasName, fieldName] of Object.entries(aliasMap)) {
-					if (fieldName !== name) continue;
-
-					specialFieldsInCollection.push([aliasName, field]);
+				for (const [aliasName, fieldName] of aliasEntries) {
+					if (fieldName === name) {
+						specialFieldsInCollection.push([aliasName, field]);
+					}
 				}
 			}
 		}
