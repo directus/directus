@@ -146,6 +146,8 @@ export class PayloadService {
 		},
 	};
 
+	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>
 	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>): Promise<Partial<Item>>;
 	async processValues(
@@ -177,15 +179,12 @@ export class PayloadService {
 			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {
 				return fieldsInPayload.includes(name);
 			});
-
-			console.log(specialFieldsInCollection);
 		}
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
 					specialFieldsInCollection.map(async ([name, field]) => {
-						// console.log('x', name, field, record, action);
 						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[name] = newValue;
 					}),
@@ -236,8 +235,6 @@ export class PayloadService {
 		action: Action,
 		accountability: Accountability | null,
 	): Promise<any> {
-		//console.log(field)
-
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
 

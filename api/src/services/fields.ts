@@ -117,8 +117,6 @@ export class FieldsService {
 
 		let aliasFields = [...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[])];
 
-		// console.log('a', aliasFields)
-
 		if (collection) {
 			aliasFields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
