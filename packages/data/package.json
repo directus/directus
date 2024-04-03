@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.26",
+		"@types/node": "18.19.29",
 		"@types/wellknown": "0.5.8",
 		"@vitest/coverage-v8": "1.4.0",
 		"dependency-cruiser": "16.2.3",
