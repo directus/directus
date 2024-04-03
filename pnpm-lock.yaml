@@ -939,8 +939,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2(typedoc@0.25.12)
       typedoc-vitepress-theme:
-        specifier: 1.0.0-next.9
-        version: 1.0.0-next.9(typedoc-plugin-markdown@4.0.0-next.53)
+        specifier: 1.0.0-next.10
+        version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -19699,8 +19699,8 @@ packages:
       typedoc: 0.25.12(typescript@5.3.3)
     dev: true
 
-  /typedoc-vitepress-theme@1.0.0-next.9(typedoc-plugin-markdown@4.0.0-next.53):
-    resolution: {integrity: sha512-NDkV3i1kZno3TUnmKyAFlcx4UeYR4yWPqgtBB4hPRrMe7AunUFn46XOlTaOhtaZDhk/+LPJD5aWVmpVKNIjo/Q==}
+  /typedoc-vitepress-theme@1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53):
+    resolution: {integrity: sha512-VtEoqO4VLG3NsyzsqAFLFeg4L18UotZughdJbW5pRhLaKKfpflr9zbJAnLcA6t1Z1JvkJZa8c26iCM3akOURdQ==}
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0-next.51'
     dependencies:
@@ -20788,7 +20788,7 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      vue: 3.4.21(typescript@5.4.3)
+      vue: 3.4.21(typescript@5.3.3)
 
   /vue-eslint-parser@9.4.2(eslint@8.57.0):
     resolution: {integrity: sha512-Ry9oiGmCAK91HrKMtCrKFWmSFWvYkpGglCeFAIqDdr9zdXmMMpJOmUJS7WWsW7fX81h6mwHmUZCQQ1E0PkSwYQ==}
