@@ -1666,8 +1666,8 @@ importers:
         specifier: 4.0.4
         version: 4.0.4(openapi-types@12.1.3)
       swagger-ui-watcher:
-        specifier: 2.1.13
-        version: 2.1.13
+        specifier: 2.1.14
+        version: 2.1.14
 
   packages/storage:
     devDependencies:
@@ -19128,8 +19128,8 @@ packages:
     resolution: {integrity: sha512-POcchbUGn34LJJOHvaf16lI5YPF2wn3vDmMelE4UCZv84WHvBmli9AHuBz+a5HTm7/+zsnqYwLVk0iwPiB+CzA==}
     dev: true
 
-  /swagger-ui-watcher@2.1.13:
-    resolution: {integrity: sha512-xj/orx1DnuoVn6kJ9Rq+My10YIYEiSEKNV7+kQyO3gd7SI69r14tv8y+sCp7zTK2XYEmkT68V+hVhtv7UA5/Nw==}
+  /swagger-ui-watcher@2.1.14:
+    resolution: {integrity: sha512-cYNkb28pxg6S3KVlBfVveqvtr5W9zrueESQpPYjFJArhCU6EJZGw6hRgeBAcEB6BVz7Nh5MPfikno+cuuCPiSQ==}
     hasBin: true
     dependencies:
       chokidar: 3.6.0

@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"npm-watch": "0.11.0",
 		"swagger-cli": "4.0.4",
-		"swagger-ui-watcher": "2.1.13"
+		"swagger-ui-watcher": "2.1.14"
 	},
 	"watch": {
 		"build": {
