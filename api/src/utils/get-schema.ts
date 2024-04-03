@@ -67,7 +67,11 @@ export async function getSchema(
 		return new Promise((resolve) => {
 			const TIMEOUT = 10000;
 
+			let timeout: NodeJS.Timeout;
+
 			const callback = async () => {
+				if (timeout) clearTimeout(timeout);
+
 				const schema = await getSchema(options, attempt + 1);
 				resolve(schema);
 				bus.unsubscribe(messageKey, callback);
@@ -75,12 +79,9 @@ export async function getSchema(
 
 			bus.subscribe(messageKey, callback);
 
-			setTimeout(async () => {
+			timeout = setTimeout(async () => {
 				logger.trace('Did not receive schema callback message in time. Pulling schema...');
-				bus.unsubscribe(messageKey, callback);
-
-				const schema = await getSchema(options, attempt + 1);
-				resolve(schema);
+				callback();
 			}, TIMEOUT);
 		});
 	}
