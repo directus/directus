@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: 식별자
 avatar: 아바타
 application: 애플리케이션
@@ -571,37 +551,37 @@ auto_fill: 자동 채우기
 corresponding_field: 해당하는 필드
 errors:
   COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
+  CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
   FIELD_NOT_FOUND: 필드가 존재하지 않습니다.
   FORBIDDEN: 접근이 허용되지 않음.
+  ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
+  INTERNAL_SERVER_ERROR: 예기치 않은 오류
+  INVALID_CONFIG: 잘못된 구성
   INVALID_CREDENTIALS: 이메일이나 비밀번호가 올바르지 않습니다.
+  INVALID_FOREIGN_KEY: 잘못된 외래 키
+  INVALID_IP: 허용되지 않는 IP 주소
   INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
   INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
   INVALID_PROVIDER: 사용자가 다른 인증 공급자에 속해 있습니다.
   INVALID_QUERY: 잘못된 쿼리
-  INVALID_CONFIG: 잘못된 구성
   INVALID_TOKEN: 잘못된 토큰
-  INVALID_IP: 허용되지 않는 IP 주소
   INVALID_USER: 사용자 인증에 실패하였습니다.
   ITEM_LIMIT_REACHED: 항목 한도 도달
   ITEM_NOT_FOUND: 항목을 찾을 수 없음
-  ROUTE_NOT_FOUND: 찾을 수 없음
-  RECORD_NOT_UNIQUE: 중복 값 감지됨
-  USER_SUSPENDED: 사용자 일시중지됨
-  CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
-  INTERNAL_SERVER_ERROR: 예기치 않은 오류
-  NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
-  ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
-  VALUE_TOO_LONG: 값이 너무 깁니다.
-  VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
-  INVALID_FOREIGN_KEY: 잘못된 외래 키
-  UNKNOWN: 예기치 않은 오류
-  SERVICE_UNAVAILABLE: 서비스 불가
-  UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
-  UNEXPECTED_RESPONSE: 예상치 못한 응답
-  TOKEN_EXPIRED: 토큰 만료
-  RANGE_NOT_SATISFIABLE: 잘못된 범위
   METHOD_NOT_ALLOWED: 허가되지 않은 메소드
+  NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
+  RANGE_NOT_SATISFIABLE: 잘못된 범위
+  RECORD_NOT_UNIQUE: 중복 값 감지됨
   REQUESTS_EXCEEDED: 요청 한도 도달
+  ROUTE_NOT_FOUND: 찾을 수 없음
+  SERVICE_UNAVAILABLE: 서비스 불가
+  TOKEN_EXPIRED: 토큰 만료
+  UNEXPECTED_RESPONSE: 예상치 못한 응답
+  UNKNOWN: 예기치 않은 오류
+  UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
+  USER_SUSPENDED: 사용자 일시중지됨
+  VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
+  VALUE_TOO_LONG: 값이 너무 깁니다.
 security: 보안
 value_hashed: 안전하게 해시된 값
 bookmark_name: 북마크 이름...

@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: O programe
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikácia
@@ -27,10 +28,12 @@ method: Metóda
 published: Zverejnené
 draft: Koncept
 archived: Archivované
+marketplace: Trhovisko
 extensions: Rozšírenia
 modules: Moduly
 module_bar: Panel modulov
 logs: Logy
+unknown: Neznáme
 reset_width: Obnoviť šírku
 tile_size: Veľkosť dlaždice
 edit_field: Upraviť pole
@@ -48,6 +51,8 @@ duplicate_field: Duplicitné pole
 half_width: Polovičná šírka
 full_width: Plná šírka
 group: Skupina
+popular: Populárne
+recent: Posledné
 export_items: Exportovať položky
 and: A
 or: Alebo
@@ -74,9 +79,27 @@ extension_hooks: Háky
 extension_endpoints: Koncové body
 extension_operations: Operácie
 extension_bundles: Balíky
+extension_missing: Chýbajúce
 extension_reload_required: Treba obnoviť stránku
 extension_reload_required_copy: Aby sa prejavili zmeny alebo vyplo rozšírenie, treba obnoviť stránku.
 extension_reload_now: Obnoviť teraz
+published_relative: Zverejnené {relativeTime}
+compatible_with_your_project: Kompatibilné s vaším Projektov
+compatible_with_your_project_copy: Autor uviedol kompatibilitu tohoto rozšírenia ako {hostVersion}, čo sedí s verziou vášho projektu ({currentVersion})
+last_updated_relative: Naposledy aktualizované {relativeTime}
+n_files: '{n} súborov'
+verified: Overené
+homepage: Domovská stránka
+repository: Repozitár
+reload_required: Treba obnoviť stránku
+report_an_issue: Nahlásiť problém
+website: Webstránka
+github: GitHub
+beta: Beta
+n_downloads: '{n} stiahnutí'
+downloads: Stiahnutia
+compatibility_not_guaranteed: Kompatibilita nezaručená
+compatibility_not_guaranteed_copy: Autor uviedol kompatibilitu tohoto rozšírenia ako {hostVersion}, čo nesedí s verziou vášho projektu ({currentVersion})
 enable: Zapnúť
 disable: Vypnúť
 custom: Vlastné
@@ -165,6 +188,8 @@ logoutReason:
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
+no_description: Žiadny popis...
+reached_maximum_number_of_extensions: Dosiahli ste maximálny počet rozšírení pre váš projekt ({n}). Kontaktujte správcu tohoto systému pre viac informácií.
 not_allowed: Nepovolené
 archive: Archív
 archive_confirm: Naozaj chcete archivovať túto položku?
@@ -304,11 +329,18 @@ time: Čas
 timestamp: Časová pečiatka
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (Všetko)
+  Point: Bod
+  Polygon: Polygón
+  MultiPoint: MultiPoint
+  MultiPolygon: MultiPolygón
 theme_auto: Automaticky (podľa systému)
 theme_light: Svetlý režim
 theme_dark: Tmavý režim
 theme_directus_default: Directus predvolené
 theme_directus_minimal: Directus minimum
+theme_directus_colormatch: Zosúladenie farieb Directus
 not_available_for_type: Nedostupné pre tento typ
 create_translations: Vytvoriť preklady
 auto_refresh: Auto obnovenie
@@ -320,6 +352,7 @@ auto_generate: Automaticky generovať
 this_will_auto_setup_fields_relations: Toto automaticky nastaví všetky povinné polia a vzťahy.
 click_here: Kliknite sem
 to_manually_setup_translations: pre ručné nastavenia prekladov.
+manage: Spravovať
 click_to_manage_translated_fields: >-
   Zatiaľ nie sú žiadne preložené polia. Kliknite sem na ich vytvorenie. | Je tu jedno preložené pole. Kliknutím ho nastavíte. | Je tu {count} preložených polí. Kliknutím ich nastavíte.
 fields_group: Skupina polí
@@ -489,7 +522,11 @@ months:
   november: November
   december: December
 drag_mode: Spôsob pretiahnutia
+move_tool: Nájstroj presunu
+crop_tool: Nástroj orezania
+focal_point_tool: Nástroj ústredného bodu
 cancel_crop: Zrušiť orezanie
+cancel_selection: Zrušiť výber
 original: Pôvodné
 url: URL
 import_label: Importovať
@@ -557,6 +594,7 @@ collapse: Zbaliť
 select_item: Vybrať položku
 no_items: Žiadne položky
 search_items: Hľadať položky...
+search_extensions: Hľadať rozšírenia...
 disabled: Vypnuté
 information: Informácia
 report_bug: Nahlásiť chybu
@@ -638,6 +676,10 @@ select_an_item: Vyberte položku...
 edit: Upraviť
 edit_item: Upraviť položku
 enabled: Zapnuté
+partially_enabled: Čiastočne zapnuté
+enable_all: Zapnúť všetko
+disable_all: Vypnúť všetko
+enabled_dev_tooltip: V dev režime sú rozšírenia vždy zapnuté
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
@@ -649,39 +691,41 @@ auto_fill: Automatické vypĺňanie
 corresponding_field: Zodpovedajúce pole
 errors:
   COLLECTION_NOT_FOUND: "Zbierka neexistuje"
+  CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
+  CONTENT_TOO_LARGE: Odoslaná položka/súbor je príliš veľký
   FIELD_NOT_FOUND: Pole sa nenašlo
   FORBIDDEN: Zakázané
+  GRAPHQL_VALIDATION: Validácia GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
+  INTERNAL_SERVER_ERROR: Neočakávaná chyba
+  INVALID_CONFIG: Neplatná konfigurácia
   INVALID_CREDENTIALS: Nesprávne používateľské meno alebo heslo
+  INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
+  INVALID_IP: IP Adresa nie je povolená
   INVALID_OTP: Nesprávne jednorazové heslo
   INVALID_PAYLOAD: Neplatný payload
   INVALID_PROVIDER: Používateľ patrí k inému auth poskytovateľovi
   INVALID_QUERY: Neplatný dotaz
-  INVALID_CONFIG: Neplatná konfigurácia
   INVALID_TOKEN: Neplatný token
-  INVALID_IP: IP Adresa nie je povolená
   INVALID_USER: Nepodarilo sa overiť používateľa
   ITEM_LIMIT_REACHED: Dosiahnutý limit položiek
   ITEM_NOT_FOUND: Položka nenájdená
-  ROUTE_NOT_FOUND: Nenájdené
-  RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
-  USER_SUSPENDED: Používateľ pozastavený
-  CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_CONTENT: Nespracovateľný obsah
-  INTERNAL_SERVER_ERROR: Neočakávaná chyba
-  NOT_NULL_VIOLATION: Hodnota nemôže byť null
-  ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
-  VALUE_TOO_LONG: Hodnota je príliš dlhá
-  VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
-  INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
-  UNKNOWN: Neočakávaná chyba
-  SERVICE_UNAVAILABLE: Služba je nedostupná
-  UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
-  UNEXPECTED_RESPONSE: Neočakávaná odpoveď
-  TOKEN_EXPIRED: Platnosť tokenu vypršala
-  RANGE_NOT_SATISFIABLE: Neplatný rozsah
+  LIMIT_EXCEEDED: 'Prekročený limit'
   METHOD_NOT_ALLOWED: Metóda nie je povolená
+  NOT_NULL_VIOLATION: Hodnota nemôže byť null
+  RANGE_NOT_SATISFIABLE: Neplatný rozsah
+  RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
   REQUESTS_EXCEEDED: Dosiahnutý limit požiadaviek
-  CONTENT_TOO_LARGE: Odoslaná položka/súbor je príliš veľký
+  ROUTE_NOT_FOUND: Nenájdené
+  SERVICE_UNAVAILABLE: Služba je nedostupná
+  TOKEN_EXPIRED: Platnosť tokenu vypršala
+  UNEXPECTED_RESPONSE: Neočakávaná odpoveď
+  UNKNOWN: Neočakávaná chyba
+  UNPROCESSABLE_CONTENT: Nespracovateľný obsah
+  UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
+  USER_SUSPENDED: Používateľ pozastavený
+  VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
+  VALUE_TOO_LONG: Hodnota je príliš dlhá
 security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
@@ -790,6 +834,7 @@ operators:
   regex: Vyhovuje RegExp
 custom_validation_message: Vlastná validačná správa
 loading: Načítavanie...
+extension_readme_missing: Toto rozšírenie nemá README súbor.
 drop_to_upload: Pustením sem nahráte
 item: Položka
 items: Položky
@@ -1096,6 +1141,9 @@ page_help_users_item: >-
   **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
 page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte prístup.'
 page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
+page_help_marketplace_account: '**Účet** — Vydavateľ alebo správca zverejneného rozšírenia.'
+page_help_marketplace_registry: '**Register** — Rozšírenie dostupné v Directus trhovisku.'
+page_help_marketplace_extension: '**Rozšírenie** — Rozšírenie v Directus trhovisku.'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nové
@@ -1108,6 +1156,14 @@ cancel: Zrušiť
 no_upscale: Nezväčšovať obrázky
 no_extensions: Žiadne rozšírenia
 no_extensions_copy: Zatiaľ nie je nainštalované žiadne rozšírenie.
+install_extension: Inštalovať rozšírenie
+uninstall_locked: Nedá sa odinštalovať rozšírenie, ktoré nebolo nainštalované cez Trhovisko
+uninstall: Odinštalovať
+installed: Nainštalované
+open_in_marketplace: Otvoriť na Trhovisku
+source_registry: Trhovisko
+source_local: Lokálny
+source_module: Node modul
 collection: Zbierka
 collections: Zbierky
 content: Obsah
@@ -1374,11 +1430,13 @@ field_options:
     description: Voliteľný popis...
     location: Voliteľné miesto...
     storage_divider: Pomenovanie súboru
+    focal_point_divider: Ústredný bod
     filename_disk: Názov na diskovom úložisku...
     filename_download: Názov pri sťahovaní...
   directus_roles:
     name: Unikátny názov tejto role...
     description: Popis tejto role...
+    ip_access: Pridajte IP adresy, IP rozsahy a CIDR bloky. Nechajte prázdne pre povolenie všetkých...
     fields:
       icon_name: Ikona
       name_name: Názov
@@ -1847,7 +1905,9 @@ interfaces:
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
     custom_formats: Vlastné formáty
+    custom_formats_note: Zoznam TinyMCE formátov obsahu. Pre viac info pozrite TinyMCE dokumentáciu [Formátovanie obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Prepísanie nastavení
+    options_override_note: Klávesy na používateľské formátovanie TinyMCE. Pre viac info pozrite TinyMCE dokumentáciu [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
@@ -1988,6 +2048,7 @@ displays:
     description: Zobrazí formátovanú hodnotu objektu
   hash:
     hash: Hash
+    description: Zobrazí redigovanú verziu hodnoty
   icon:
     icon: Ikona
     description: Zobraziť ikonu

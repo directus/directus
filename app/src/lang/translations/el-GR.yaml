@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Ταυτοποιητής
 avatar: Άβαταρ
 application: Εφαρμογή
@@ -59,16 +39,24 @@ extension_display: Προβολή
 extension_layout: Διάταξη
 extension_module: Ενότητα
 extension_panel: Πίνακας Διαχείρισης
+extension_theme: Θέμα
 extension_hook: Άγκιστρο
 extension_endpoint: Endpoint
 extension_operation: Λειτουργία
 extension_bundle: Δέσμη
 extension_interfaces: Διεπαφές
+extension_displays: Προβολές
 extension_layouts: Διατάξεις
 extension_modules: Ενότητες
 extension_panels: Πίνακες Διαχείρισης
+extension_themes: Θέματα
 extension_hooks: Hooks
 extension_endpoints: Endpoints
+extension_operations: Λειτουργίες
+extension_bundles: Πακέτα
+extension_reload_required: Απαιτείται Επαναφόρτωση Σελίδας
+extension_reload_required_copy: Απαιτείται επαναφόρτωση σελίδας για να δείτε τις αλλαγές μετά την ενεργοποίηση ή απενεργοποίηση των επεκτάσεων εφαρμογών.
+extension_reload_now: Επαναφόρτωση τώρα
 enable: Ενεργοποίηση
 disable: Απενεργοποίηση
 custom: Προσαρμοσμένο
@@ -99,6 +87,10 @@ create_user: Δημιουργία Χρήστη
 message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
+create_custom_translation: Δημιουργία Προσαρμοσμένης Μετάφρασης
+edit_custom_translation: Επεξεργασία Προσαρμοσμένης Μετάφρασης
+no_custom_translations: Καμία Προσαρμοσμένη Μετάφραση
+no_custom_translations_copy: Δεν υπάρχουν ακόμα προσαρμοσμένες μεταφράσεις.
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
@@ -114,12 +106,19 @@ rename_folder: Μετονομασία Φακέλου
 delete_folder: Διαγραφή Φακέλου
 prefix: Πρόθεμα
 suffix: Επίθεμα
+keep: Διατήρηση
 version: Έκδοση
+version_key: Κλειδί Έκδοσης
+version_name: Όνομα έκδοσης
+main_version: Αρχή
+switch_version: Εναλλαγή Έκδοσης
+create_version: Δημιουργία Έκδοσης
 rename_version: Μετονομασία Έκδοσης
 compare_version: Σύγκριση Έκδοσης
 save_version: Αποθήκευση Έκδοσης
 promote_version: Προώθηση Έκδοσης
 promote_version_disabled: Καμία Αλλαγή
+promote_version_drawer_title: Προώθηση του {version} στον Κύριο
 promote_version_changes: Αλλαγές
 promote_version_preview: Προεπισκόπηση
 reset_bookmark: Επαναφορά Σελιδοδείκτη
@@ -156,11 +155,15 @@ validationError:
   regex: Η τιμή δεν έχει τη σωστή μορφή
 all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
+use_custom: Χρήση προσαρμοσμένου
 nullable: Κενό
 allow_null_value: Επέτρεψε κενές τιμές
+allow_multiple: Επιτρέπονται πολλαπλές
+allow_multiple_to_be_open: Επιτρέπονται πολλαπλά για άνοιγμα
 field_standard: Τυπικό
 field_presentation: Παρουσίαση & Συνώνυμα
 field_file: Μονό Αρχείο
+field_m2a: Σχέση M2A
 field_translations: Μεταφράσεις
 field_group: Ομάδα πεδίων
 item_permissions: Δικαιώματα Στοιχείου

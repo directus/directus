@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificator
 avatar: Avatar
 application: Aplicație
@@ -599,25 +579,25 @@ auto_fill: Completare automată
 corresponding_field: Câmp corespondent
 errors:
   COLLECTION_NOT_FOUND: "Colecția nu există"
+  CONTAINS_NULL_VALUES: Câmpul conține valori null
   FIELD_NOT_FOUND: Câmpul nu a fost găsit
   FORBIDDEN: Interzis
+  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
+  INTERNAL_SERVER_ERROR: Eroare neașteptată
   INVALID_CREDENTIALS: Nume utilizator sau parolă greșite
+  INVALID_FOREIGN_KEY: Cheie străină nevalidă
   INVALID_OTP: Parolă de unică folosință greșită
   INVALID_PAYLOAD: Conținut invalid
   INVALID_QUERY: Interogare invalidă
   ITEM_LIMIT_REACHED: S-a atins limita de elemente
   ITEM_NOT_FOUND: Elementul nu a fost găsit
-  ROUTE_NOT_FOUND: Nu a fost găsit
-  RECORD_NOT_UNIQUE: Valoare duplicat detectată
-  USER_SUSPENDED: Utilizator suspendat
-  CONTAINS_NULL_VALUES: Câmpul conține valori null
-  INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
-  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
-  VALUE_TOO_LONG: Valoarea este prea lungă
-  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
-  INVALID_FOREIGN_KEY: Cheie străină nevalidă
+  RECORD_NOT_UNIQUE: Valoare duplicat detectată
+  ROUTE_NOT_FOUND: Nu a fost găsit
   UNKNOWN: Eroare neașteptată
+  USER_SUSPENDED: Utilizator suspendat
+  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
+  VALUE_TOO_LONG: Valoarea este prea lungă
 security: Securitate
 value_hashed: Valoare criptată în mod securizat
 bookmark_name: Denumirea semnului de carte...
