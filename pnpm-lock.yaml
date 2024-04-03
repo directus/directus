@@ -255,8 +255,8 @@ importers:
         specifier: 2.3.3
         version: 2.3.3
       liquidjs:
-        specifier: 10.10.1
-        version: 10.10.1
+        specifier: 10.10.2
+        version: 10.10.2
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -14255,8 +14255,8 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /liquidjs@10.10.1:
-    resolution: {integrity: sha512-h699VW79OLoshCTjFF02tmRCrd8t/E49LSIsjLwlg4k0TbMVjxsCRXVUEsURXbfKl3HUln2cShlDQCrSNm2YaA==}
+  /liquidjs@10.10.2:
+    resolution: {integrity: sha512-UcuTUexKg/8CmX6I5KNghk13pl3c8Rqhm+WSWqrc17pQP9LjpYPpOLDKG9OMBeHDBQ70yyn/GOqyZ/EKJ4z5yg==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
