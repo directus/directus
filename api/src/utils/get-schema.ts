@@ -31,7 +31,7 @@ export async function getSchema(
 	},
 	attempt = 0,
 ): Promise<SchemaOverview> {
-	const MAX_ATTEMPTS = 5;
+	const MAX_ATTEMPTS = 3;
 
 	const env = useEnv();
 
