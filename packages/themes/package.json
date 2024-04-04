@@ -36,7 +36,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@unhead/vue": "1.8.10",
+		"@unhead/vue": "1.9.4",
 		"@vitejs/plugin-vue": "5.0.4",
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.1",
