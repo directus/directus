@@ -1,4 +1,3 @@
-import api from '@/api';
 import type { ApiOutput } from '@directus/extensions';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/extensions';
 import { isIn } from '@directus/utils';
@@ -7,6 +6,8 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from './notifications';
+import { useSdk } from '@directus/composables';
+import { readExtensions, updateExtension } from '@directus/sdk';
 
 const getEnabledBrowserExtensions = (extensions: ApiOutput[]) => {
 	const enabledIds: string[] = [];
@@ -33,9 +34,12 @@ const getEnabledBrowserExtensions = (extensions: ApiOutput[]) => {
 	return enabledIds;
 };
 
+// TODO create actual SDK commands for these
+
 export const useExtensionsStore = defineStore('extensions', () => {
 	const notificationsStore = useNotificationsStore();
 	const { t } = useI18n();
+	const sdk = useSdk();
 
 	const loading = ref(false);
 	const error = ref<unknown>(null);
@@ -48,8 +52,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		const currentlyEnabledBrowserExtensions = getEnabledBrowserExtensions(extensions.value);
 
 		try {
-			const response = await api.get('/extensions');
-			extensions.value = response.data.data;
+			extensions.value = await sdk.request<ApiOutput[]>(readExtensions());
 
 			const newEnabledBrowserExtensions = getEnabledBrowserExtensions(extensions.value);
 
@@ -87,31 +90,46 @@ export const useExtensionsStore = defineStore('extensions', () => {
 
 		if (!extension) throw new Error(`Extension with ID ${id} does not exist`);
 
-		const current = extension.meta.enabled;
-		const endpoint = `/extensions/${id}`;
-
-		await api.patch(endpoint, { meta: { enabled: !current } });
+		await sdk.request(updateExtension(extension.bundle, extension.id, { meta: { enabled: !extension.meta.enabled } }));
 
 		await refresh();
 	};
 
 	const install = async (extensionId: string, versionId: string) => {
-		await api.post('/extensions/registry/install', { extension: extensionId, version: versionId });
+		await sdk.request(() => ({
+			path: '/extensions/registry/install',
+			method: 'POST',
+			body: JSON.stringify({ extension: extensionId, version: versionId }),
+		}));
+
 		await refresh();
 	};
 
 	const uninstall = async (extensionId: string) => {
-		await api.delete(`/extensions/registry/uninstall/${extensionId}`);
+		await sdk.request(() => ({
+			path: `/extensions/registry/uninstall/${extensionId}`,
+			method: 'DELETE',
+		}));
+
 		await refresh();
 	};
 
 	const reinstall = async (extensionId: string) => {
-		await api.post(`/extensions/registry/reinstall`, { extension: extensionId });
+		await sdk.request(() => ({
+			path: `/extensions/registry/reinstall`,
+			method: 'POST',
+			body: JSON.stringify({ extension: extensionId })
+		}));
+
 		await refresh();
 	};
 
 	const remove = async (extensionId: string) => {
-		await api.delete(`/extensions/${extensionId}`);
+		await sdk.request(() => ({
+			path: `/extensions/${extensionId}`,
+			method: 'DELETE',
+		}));
+
 		await refresh();
 	};
 
