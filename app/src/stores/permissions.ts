@@ -1,10 +1,11 @@
-import api from '@/api';
 import { parseFilter } from '@/utils/parse-filter';
 import { parsePreset } from '@/utils/parse-preset';
 import { Permission, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
+import { useSdk } from '@directus/composables';
+import { readPermissions } from '@directus/sdk';
 
 export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
@@ -14,18 +15,19 @@ export const usePermissionsStore = defineStore({
 	actions: {
 		async hydrate() {
 			const userStore = useUserStore();
+			const sdk = useSdk();
 
-			const response = await api.get('/permissions', {
-				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
-			});
+			const response = await sdk.request<Permission[]>(readPermissions({
+				filter: { role: { _eq: userStore.currentUser!.role!.id } }
+			}));
 
-			const fields = getNestedDynamicVariableFields(response.data.data);
+			const fields = getNestedDynamicVariableFields(response);
 
 			if (fields.length > 0) {
 				await userStore.hydrateAdditionalFields(fields);
 			}
 
-			this.permissions = response.data.data.map((rawPermission: Permission) => {
+			this.permissions = response.map((rawPermission: Permission) => {
 				if (rawPermission.permissions) {
 					rawPermission.permissions = parseFilter(rawPermission.permissions);
 				}
