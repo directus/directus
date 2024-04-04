@@ -11,19 +11,21 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
 import { Field, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { usePermissions } from './use-permissions';
+import { UsablePermissions, usePermissions } from './use-permissions';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
-	hasEdits: Ref<boolean>;
+	hasEdits: ComputedRef<boolean>;
 	item: Ref<T | null>;
+	permissions: UsablePermissions;
 	error: Ref<any>;
-	loading: Ref<boolean>;
+	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
 	save: () => Promise<any>;
@@ -47,7 +49,7 @@ export function useItem<T extends Record<string, any>>(
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
-	const loading = ref(false);
+	const loadingItem = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
@@ -66,7 +68,10 @@ export function useItem<T extends Record<string, any>>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
+	const permissions = usePermissions(collection, primaryKey, isNew);
+	const fieldsWithPermissions = permissions.itemPermissions.fields;
+
+	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
@@ -86,6 +91,7 @@ export function useItem<T extends Record<string, any>>(
 		edits,
 		hasEdits,
 		item,
+		permissions,
 		error,
 		loading,
 		saving,
@@ -103,7 +109,7 @@ export function useItem<T extends Record<string, any>>(
 	};
 
 	async function getItem() {
-		loading.value = true;
+		loadingItem.value = true;
 		error.value = null;
 
 		try {
@@ -112,7 +118,7 @@ export function useItem<T extends Record<string, any>>(
 		} catch (err: any) {
 			error.value = err;
 		} finally {
-			loading.value = false;
+			loadingItem.value = false;
 		}
 	}
 
@@ -201,12 +207,14 @@ export function useItem<T extends Record<string, any>>(
 				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
 			});
 
-			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
-				const fieldsToFetch = fields
-					.filter((field) => field.startsWith(relation.meta!.one_field!))
-					.map((field) => field.split('.').slice(1).join('.'));
+			const oneField = relation.meta?.one_field;
 
-				if (Array.isArray(newItem[relation.meta.one_field])) {
+			if (oneField && oneField in newItem) {
+				const fieldsToFetch = fields
+					.filter((field) => field.split('.')[0] === oneField || field === '*')
+					.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
+
+				if (Array.isArray(newItem[oneField])) {
 					const existingItems = await findExistingRelatedItems(
 						newItem,
 						relation,
@@ -214,7 +222,7 @@ export function useItem<T extends Record<string, any>>(
 						fieldsToFetch,
 					);
 
-					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
+					newItem[oneField] = newItem[oneField].map((relatedItem: any) => {
 						if (typeof relatedItem !== 'object' && existingItems.length > 0) {
 							relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
 						}
@@ -225,9 +233,9 @@ export function useItem<T extends Record<string, any>>(
 						return relatedItem;
 					});
 				} else {
-					const createdRelatedItems = newItem[relation.meta.one_field]?.create;
-					const updatedRelatedItems = newItem[relation.meta.one_field]?.update;
-					const deletedRelatedItems = newItem[relation.meta.one_field]?.delete;
+					const createdRelatedItems = newItem[oneField]?.create;
+					const updatedRelatedItems = newItem[oneField]?.update;
+					const deletedRelatedItems = newItem[oneField]?.delete;
 
 					let existingItems: any[] = await findExistingRelatedItems(
 						item.value,
@@ -296,7 +304,7 @@ export function useItem<T extends Record<string, any>>(
 				const response = await api.get(getEndpoint(relation.collection), {
 					params: {
 						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
-						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
 					},
 				});
 
@@ -440,7 +448,7 @@ export function useItem<T extends Record<string, any>>(
 	function refresh() {
 		error.value = null;
 		validationErrors.value = [];
-		loading.value = false;
+		loadingItem.value = false;
 		saving.value = false;
 		deleting.value = false;
 		archiving.value = false;
@@ -448,6 +456,7 @@ export function useItem<T extends Record<string, any>>(
 		item.value = null;
 
 		refreshItem();
+		permissions.itemPermissions.refresh();
 	}
 
 	function refreshItem() {
@@ -460,8 +469,8 @@ export function useItem<T extends Record<string, any>>(
 
 	function setItemValueToResponse(response: AxiosResponse) {
 		if (
-			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
 		) {
 			response.data.data = translate(response.data.data);
 		}

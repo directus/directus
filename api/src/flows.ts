@@ -21,8 +21,8 @@ import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
-import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
+import { isSystemCollection } from '@directus/system-data';
 
 let flowManager: FlowManager | undefined;
 
@@ -159,7 +159,7 @@ class FlowManager {
 								if (!flow.options?.['collections']) return [];
 
 								return toArray(flow.options['collections']).map((collection: string) => {
-									if (collection.startsWith('directus_')) {
+									if (isSystemCollection(collection)) {
 										const action = scope.split('.')[1];
 										return collection.substring(9) + '.' + action;
 									}
@@ -449,8 +449,9 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// make sure we don't expose the stack trace
-				data = sanitizeError(error);
+				// Don't expose the stack trace to the next operation
+				delete error.stack;
+				data = error;
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
 				data = isValidJSON(error) ? parseJSON(error) : error;

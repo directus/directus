@@ -14,6 +14,7 @@ vi.mock('@directus/env', () => ({
 		WEBSOCKETS_ENABLED: true,
 		WEBSOCKETS_REST_ENABLED: true,
 		EXTENSIONS_PATH: './extensions',
+		EMAIL_TEMPLATES_PATH: './templates',
 	}),
 }));
 

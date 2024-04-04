@@ -47,12 +47,12 @@ export default defineComponent({
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.title') }}</div>
-		<v-field-template v-model="titleWritable" :collection="collection" />
+		<v-collection-field-template v-model="titleWritable" :collection="collection" />
 	</div>
 
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.subtitle') }}</div>
-		<v-field-template v-model="subtitleWritable" :collection="collection" />
+		<v-collection-field-template v-model="subtitleWritable" :collection="collection" />
 	</div>
 
 	<v-detail class="field">

@@ -67,7 +67,6 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
-import { init as initWebhooks } from './webhooks.js';
 
 const require = createRequire(import.meta.url);
 
@@ -136,7 +135,7 @@ export default async function createApp(): Promise<express.Application> {
 				{
 					useDefaults: true,
 					directives: {
-						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						// Unsafe-eval is required for app extensions
 						scriptSrc: ["'self'", "'unsafe-eval'"],
 
 						// Even though this is recommended to have enabled, it breaks most local
@@ -147,7 +146,13 @@ export default async function createApp(): Promise<express.Application> {
 						// These are required for MapLibre
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:'],
+						imgSrc: [
+							"'self'",
+							'data:',
+							'blob:',
+							'https://raw.githubusercontent.com',
+							'https://avatars.githubusercontent.com',
+						],
 						mediaSrc: ["'self'"],
 						connectSrc: ["'self'", 'https://*'],
 					},
@@ -306,9 +311,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(errorHandler);
 
 	await emitter.emitInit('routes.after', { app });
-
-	// Register all webhooks
-	await initWebhooks();
 
 	initTelemetry();
 

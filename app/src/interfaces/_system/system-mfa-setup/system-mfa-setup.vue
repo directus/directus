@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	value: string | null;
 	primaryKey?: string;
+	disabled?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -88,7 +89,7 @@ function cancelAndClose() {
 
 <template>
 	<div>
-		<v-checkbox block :model-value="tfaEnabled" :disabled="!isCurrentUser && !tfaEnabled" @click="toggle">
+		<v-checkbox block :model-value="tfaEnabled" :disabled="disabled || (!isCurrentUser && !tfaEnabled)" @click="toggle">
 			{{ tfaEnabled ? t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>

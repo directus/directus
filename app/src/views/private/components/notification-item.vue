@@ -13,6 +13,10 @@ const props = withDefaults(
 		showClose?: boolean;
 		loading?: boolean;
 		progress?: number;
+		alwaysShowText?: boolean;
+		dismissText?: string;
+		dismissIcon?: string;
+		dismissAction?: () => void | Promise<void>;
 	}>(),
 	{
 		type: 'info',
@@ -21,15 +25,19 @@ const props = withDefaults(
 
 const notificationsStore = useNotificationsStore();
 
-function close() {
+const done = async () => {
 	if (props.showClose === true) {
+		if (props.dismissAction) {
+			await props.dismissAction();
+		}
+
 		notificationsStore.remove(props.id);
 	}
-}
+};
 </script>
 
 <template>
-	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
+	<div class="notification-item" :class="[type, { tail, dense, 'show-text': alwaysShowText }]" @click="done">
 		<div v-if="loading || progress || icon" class="icon">
 			<v-progress-circular v-if="loading" indeterminate small />
 			<v-progress-circular v-else-if="progress" small :value="progress" />
@@ -41,7 +49,14 @@ function close() {
 			<p v-if="text" class="text selectable">{{ text }}</p>
 		</div>
 
-		<v-icon v-if="showClose" name="close" clickable class="close" @click="close" />
+		<v-icon
+			v-if="showClose"
+			v-tooltip="dismissText"
+			:name="dismissIcon ?? 'close'"
+			clickable
+			class="close"
+			@click="done"
+		/>
 	</div>
 </template>
 
@@ -69,6 +84,10 @@ function close() {
 		margin-right: 12px;
 		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
+	}
+
+	.text {
+		hyphens: auto;
 	}
 
 	.content {
@@ -110,7 +129,7 @@ function close() {
 			background-color: transparent;
 		}
 
-		.text {
+		&:not(.show-text) .text {
 			display: none;
 		}
 	}
@@ -162,6 +181,10 @@ function close() {
 			color: var(--danger-alt);
 		}
 	}
+}
+
+.close {
+	margin-left: 12px;
 }
 
 .v-progress-circular {

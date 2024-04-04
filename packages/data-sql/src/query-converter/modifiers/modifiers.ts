@@ -51,6 +51,8 @@ export const convertModifiers = (
 				result.clauses.joins = sortConversionResult.clauses.joins;
 			}
 		}
+
+		result.parameters.push(...sortConversionResult.parameters);
 	}
 
 	return result;

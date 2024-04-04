@@ -3,8 +3,8 @@
  */
 
 import type { RequestHandler } from 'express';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { ForbiddenError } from '@directus/errors';
+import { systemCollectionRows } from '@directus/system-data';
 import asyncHandler from '../utils/async-handler.js';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
@@ -16,12 +16,12 @@ const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) =>
 
 	req.collection = req.params['collection'];
 
-	if (req.collection.startsWith('directus_')) {
-		const systemRow = systemCollectionRows.find((collection) => {
-			return collection?.collection === req.collection;
-		});
+	const systemCollectionRow = systemCollectionRows.find((collection) => {
+		return collection?.collection === req.collection;
+	});
 
-		req.singleton = !!systemRow?.singleton;
+	if (systemCollectionRow !== undefined) {
+		req.singleton = !!systemCollectionRow?.singleton;
 	} else {
 		req.singleton = req.schema.collections[req.collection]?.singleton ?? false;
 	}

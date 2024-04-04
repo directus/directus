@@ -24,7 +24,7 @@ Now the boilerplate has been created, install the twilio package, and then open 
 
 ```
 cd directus-hook-phone-validation
-npm install twilio
+npm install twilio @directus/errors
 ```
 
 ## Build the Hook
@@ -33,25 +33,18 @@ Create a collection called Customers with a text field called `phone_number`. Th
 item when a record is saved.
 
 Open the `index.js` file inside the src directory. Delete all the existing code and start with the import of the Twilio
-library:
+library and the invalid payload error:
 
 ```js
 import twilio from 'twilio';
+import { InvalidPayloadError } from "@directus/errors";
 ```
 
 Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
-environment variables and `exceptions` to throw an error when validation fails:
+environment variables:
 
 ```js
-export default ({ filter }, { env, exceptions }) => {};
-```
-
-Inside the function, define the invalid payload function from the exceptions scope:
-
-```js
-export default ({ filter }, { env, exceptions }) => {
-	const { InvalidPayloadException } = exceptions; // [!code ++]
-};
+export default ({ filter }, { env }) => {};
 ```
 
 Next, capture the `items.create` stream using `filter` and include the `input` and `collection` associated with the
@@ -71,11 +64,11 @@ filter('items.create', async (input, { collection }) => {
 ```
 
 Prevent saving an event if the `phone_number` is `undefined`, by reporting this back to the user. Add this line
-underneath the collections exception.
+underneath the collection restriction.
 
 ```js
 if (input.phone_number === undefined) {
-	throw new InvalidPayloadException('No Phone Number has been provided');
+	throw new InvalidPayloadError('No Phone Number has been provided');
 }
 ```
 
@@ -100,7 +93,7 @@ The lookup is performed with the `phone_number` from the input object.
 Inside the callback, provide a response for when the phone number is invalid, otherwise continue as normal. Twilio
 provides a very helpful boolean response called `valid`.
 
-Use this to throw an exception if `false`, or return the input to the stream and end the hook if `true`:
+Use this to throw an error if `false`, or return the input to the stream and end the hook if `true`:
 
 ```js
 client.lookups.v2
@@ -108,7 +101,7 @@ client.lookups.v2
 	.fetch()
 	.then((phoneNumber) => {
 		if (!phoneNumber.valid) { // [!code ++]
-			throw new InvalidPayloadException('Phone Number is not valid'); // [!code ++]
+			throw new InvalidPayloadError('Phone Number is not valid'); // [!code ++]
 		} // [!code ++]
 // [!code ++]
 		return input; // [!code ++]
@@ -153,21 +146,14 @@ that Twilio has to offer.
 `index.js`
 
 ```js
-import { createError } from "@directus/errors";
-const InvalidPayloadException = createError(
-  "INVALID_PAYLOAD_ERROR",
-  (message) => message,
-  500
-);
+import { InvalidPayloadError } from "@directus/errors";
 
-export default ({ filter }, { env, exceptions }) => {
-	const { InvalidPayloadException } = exceptions;
-
+export default ({ filter }, { env }) => {
 	filter('items.create', async (input, { collection }) => {
 		if (collection !== 'customers') return input;
 
 		if (input.phone_number === undefined) {
-			throw new InvalidPayloadException('No Phone Number has been provided');
+			throw new InvalidPayloadError('No Phone Number has been provided');
 		}
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
@@ -179,7 +165,7 @@ export default ({ filter }, { env, exceptions }) => {
 			.fetch()
 			.then((phoneNumber) => {
 				if (!phoneNumber.valid) {
-					throw new InvalidPayloadException('Phone Number is not valid');
+					throw new InvalidPayloadError('Phone Number is not valid');
 				}
 
 				return input;

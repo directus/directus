@@ -1,11 +1,14 @@
 import { formatTitle } from '@directus/format-title';
+import { readItems } from '@directus/sdk';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
+import { client } from '../lib/directus.js';
 import { sections as guideSections } from './guides.js';
 
 export default {
 	'/': sidebarDeveloperReference(),
 	'/user-guide/': sidebarUserGuide(),
+	'/plus/': await sidebarDirectusPlus(),
 	'/packages/': sidebarTypedocs(),
 } as DefaultTheme.Sidebar;
 
@@ -290,10 +293,6 @@ function sidebarDeveloperReference() {
 							link: '/extensions/installing-extensions',
 							text: 'Installing Extensions',
 						},
-						{
-							link: '/extensions/creating-extensions',
-							text: 'Creating Extensions',
-						},
 					],
 				},
 				{
@@ -301,16 +300,16 @@ function sidebarDeveloperReference() {
 					collapsed: true,
 					items: [
 						{
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
+						},
+						{
 							text: 'Extension Types',
 							collapsed: true,
 							items: [
 								{
 									link: '/extensions/displays',
 									text: 'Displays',
-								},
-								{
-									link: '/extensions/email-templates',
-									text: 'Email Templates',
 								},
 								{
 									link: '/extensions/endpoints',
@@ -327,10 +326,6 @@ function sidebarDeveloperReference() {
 								{
 									link: '/extensions/layouts',
 									text: 'Layouts',
-								},
-								{
-									link: '/extensions/migrations',
-									text: 'Migrations',
 								},
 								{
 									link: '/extensions/modules',
@@ -418,6 +413,10 @@ function sidebarDeveloperReference() {
 						},
 					],
 				},
+				{
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing',
+				},
 			],
 		},
 		{
@@ -458,6 +457,14 @@ function sidebarDeveloperReference() {
 				{
 					link: '/self-hosted/cli',
 					text: 'CLI',
+				},
+				{
+					link: '/self-hosted/migrations',
+					text: 'Migrations',
+				},
+				{
+					link: '/self-hosted/email-templates',
+					text: 'Email Templates',
 				},
 				{
 					text: 'Single Sign-On (SSO)',
@@ -617,6 +624,16 @@ function sidebarUserGuide() {
 			],
 		},
 		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview',
+				},
+			],
+		},
+		{
 			text: 'Directus Cloud',
 			collapsed: true,
 			items: [
@@ -708,4 +725,30 @@ function typeDocSidebarFormat(item: DefaultTheme.SidebarItem) {
 	}
 
 	return item;
+}
+
+async function sidebarDirectusPlus() {
+	const sections = await client.request(
+		readItems('dplus_docs_sections', {
+			fields: ['*', { articles: ['title', 'slug'] }],
+			filter: {
+				articles: {
+					status: { _eq: 'published' },
+				},
+			},
+		}),
+	);
+
+	const sidebar = sections.map((section) => {
+		return {
+			text: section.title,
+			collapsed: section.slug === 'overview' ? false : true,
+			items: section.articles.map((article) => ({
+				text: article.title,
+				link: `/plus/${article.slug}`,
+			})),
+		};
+	});
+
+	return sidebar;
 }

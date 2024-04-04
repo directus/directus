@@ -118,7 +118,8 @@ const isStepDownAllowed = computed(() => {
 });
 
 function processValue(event: KeyboardEvent) {
-	const key = keyMap[event.key] ?? event.key.toLowerCase();
+	// `event.key` can be `undefined` with Chrome's autofill feature
+	const key = keyMap[event.key] ?? event.key?.toLowerCase();
 
 	if (!key) return;
 

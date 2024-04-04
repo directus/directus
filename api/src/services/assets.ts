@@ -15,13 +15,13 @@ import hash from 'object-hash';
 import path from 'path';
 import type { FailOnOptions } from 'sharp';
 import sharp from 'sharp';
-import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
 import { FilesService } from './files.js';
@@ -38,7 +38,7 @@ export class AssetsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.filesService = new FilesService(options);
+		this.filesService = new FilesService({ ...options, accountability: null });
 		this.authorizationService = new AuthorizationService(options);
 	}
 
@@ -61,17 +61,13 @@ export class AssetsService {
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
 		 */
-		const isValidUUID = validateUUID(id, 4);
-
-		if (isValidUUID === false) throw new ForbiddenError();
+		if (!isValidUuid(id)) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File | undefined;
-
-		if (!file) throw new ForbiddenError();
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 

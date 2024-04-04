@@ -28,7 +28,7 @@ export type Info = {
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
-		public_background: string | null;
+		public_background: { id: string; type: string } | null;
 		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
@@ -44,6 +44,9 @@ export type Info = {
 		max: number;
 	};
 	version?: string;
+	extensions?: {
+		limit: number | null;
+	};
 };
 
 export type Auth = {
@@ -54,6 +57,7 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
+		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
 	});
@@ -80,10 +84,14 @@ export const useServerStore = defineStore('serverStore', () => {
 	});
 
 	const hydrate = async (options?: HydrateOptions) => {
-		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
+		const [serverInfoResponse, authResponse] = await Promise.all([
+			api.get(`/server/info`),
+			api.get('/auth?sessionOnly'),
+		]);
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
+		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.version = serverInfoResponse.data.data?.version;
 
 		auth.providers = authResponse.data.data;

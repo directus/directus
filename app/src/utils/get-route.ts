@@ -1,3 +1,5 @@
+import { isSystemCollection } from '@directus/system-data';
+
 const accessibleSystemCollections = {
 	directus_users: { route: '/users' },
 	directus_files: { route: '/files' },
@@ -11,10 +13,6 @@ const accessibleSystemCollections = {
 	directus_webhooks: { route: '/settings/webhooks' },
 	directus_flows: { route: '/settings/flows' },
 } as const;
-
-function isSystemCollection(collection: string) {
-	return collection.startsWith('directus_');
-}
 
 function isAccessibleSystemCollection(collection: string): collection is keyof typeof accessibleSystemCollections {
 	return collection in accessibleSystemCollections;

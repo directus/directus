@@ -3,15 +3,16 @@ import api from '@/api';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useExtension } from '@/composables/use-extension';
 import { Folder, useFolders } from '@/composables/use-folders';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import emitter, { Events } from '@/events';
+import { emitter, Events } from '@/events';
 import { useNotificationsStore } from '@/stores/notifications';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
-import { getFolderFilter } from '@/utils/get-folder-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -21,7 +22,6 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
 type Item = {
 	[field: string]: any;
@@ -37,7 +37,6 @@ const { t } = useI18n();
 const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
-const permissionsStore = usePermissionsStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
@@ -79,7 +78,13 @@ useEventListener(window, 'dragover', onDragOver);
 useEventListener(window, 'dragleave', onDragLeave);
 useEventListener(window, 'drop', onDrop);
 
-const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+const {
+	updateAllowed: batchEditAllowed,
+	deleteAllowed: batchDeleteAllowed,
+	createAllowed,
+} = useCollectionPermissions('directus_files');
+
+const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
 
 function useBatch() {
 	const confirmDelete = ref(false);
@@ -197,54 +202,6 @@ async function refresh() {
 function clearFilters() {
 	filter.value = null;
 	search.value = null;
-}
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === 'directus_files',
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === 'directus_files',
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_files',
-		);
-
-		return !!createPermissions;
-	});
-
-	const createFolderAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === 'directus_folders',
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
 }
 
 function useFileUpload() {

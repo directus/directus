@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -27,6 +7,7 @@ method: Метод
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
+extensions: Розширення
 modules: Модулі
 module_bar: Панель модулів
 logs: Логи
@@ -56,10 +37,26 @@ modifier: Модифікатор
 extension_interface: Інтерфейс
 extension_display: Відображати
 extension_layout: Макет
+extension_module: Модуль
 extension_panel: Панель
+extension_theme: Тема
 extension_hook: Хук
+extension_endpoint: Кінцева точка
+extension_operation: Операція
+extension_interfaces: Інтерфейси
+extension_displays: Дисплеї
+extension_layouts: Макети
 extension_modules: Модулі
+extension_panels: Панелі
+extension_themes: Теми
+extension_hooks: Гачки
+extension_endpoints: Кінцеві точки
+extension_operations: Операції
+extension_reload_required: Потрібне перезавантаження сторінки
+extension_reload_required_copy: Щоб побачити зміни після ввімкнення чи вимкнення розширень додатків, потрібно оновити сторінку.
+extension_reload_now: Перезавантажте зараз
 enable: Увімкнути
+disable: Вимкнути
 custom: Власний
 hook: Хук
 fill_width: Ширина заповнення
@@ -88,6 +85,10 @@ create_user: Новий користувач
 message: Повідомлення
 delete_panel: Видалити панель
 create_webhook: Створити вебхук
+create_custom_translation: Створити спеціальний переклад
+edit_custom_translation: Редагувати спеціальний переклад
+no_custom_translations: Немає спеціальних перекладів
+no_custom_translations_copy: Ще немає спеціальних перекладів.
 invite_users: Запросити друзів
 invite: Запросити
 email_already_invited: Користувача "{email}" вже запрошено
@@ -103,7 +104,29 @@ rename_folder: Перейменувати папку
 delete_folder: Видалити папку
 prefix: Префікс
 suffix: Суфікс
+keep: Тримати
+version: Версія
+version_key: Ключ версії
+version_name: Назва версії
+main_version: Головна
+switch_version: Змінити версію
+switch_version_copy: Ви впевнені, що бажаєте перейти на версію "{version}"? Незбережені зміни буде втрачено.
+create_version: Створити версію
+rename_version: Перейменувати версію
+compare_version: Порівняти версію
+save_version: Зберегти версію
+promote_version_disabled: Жодних змін
+promote_version_changes: Зміни
 promote_version_preview: Перегляд
+outdated_notice: >-
+  Основний елемент було оновлено після створення цієї версії. Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
+promote_notice: >-
+  Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
+delete_version: Видалити версію
+delete_version_copy: >-
+  Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
+delete_on_promote_copy: >-
+  Ви бажаєте видалити або зберегти версію "{version}" після підвищення?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -125,6 +148,7 @@ archive_confirm_count: >-
   Жодного елементу не обрано | Ви впевнені, що хочете додати цей файл до архіву? | Ви впевнені, що хочете додати ці {count} файлів до архіву?
 reset_system_permissions_to: 'Скинути налаштування до:'
 reset_system_permissions_copy: Ця дія перезапише будь-які користувацькі дозволи, які ви могли задати до системних колекцій. Ви впевнені?
+the_following_are_minimum_permissions: Наступні мінімальні дозволи застосовуються автоматично, коли ввімкнено «Доступ до програми». За потреби можна надати додаткові дозволи, але не можна зменшити дозволи нижче цього рівня.
 app_access_minimum: Мінімальний доступ до додатку
 recommended_defaults: Рекомендовані значення за замовчуванням
 unarchive: Розархівувати
@@ -148,7 +172,14 @@ validationError:
   nnull: Значення не може бути null
   required: Значення є обов'язковим
   unique: Значення повинно бути унікальним
+  email: Значення має бути дійсною адресою електронної пошти
   regex: Значення має некоректний формат
+  starts_with: Значення має починатися з {substring}
+  istarts_with: Значення має починатися з {substring}
+  nstarts_with: Значення не може починатися з {substring}
+  nistarts_with: Значення не може починатися з {substring}
+  ends_with: Значення має закінчуватися на {substring}
+  iends_with: Значення має закінчуватися на {substring}
 all_access: Повний доступ
 no_access: Немає доступу
 use_custom: Використайте Користувацькі налаштування
@@ -245,13 +276,6 @@ time: Час
 timestamp: Часова відмітка
 uuid: UUID
 hash: Хеш
-geometry: Геометрія (Все)
-geometry.Point: Аспект
-geometry.LineString: Лінія
-geometry.Polygon: Полігон
-geometry.MultiPoint: Багатоточковий
-geometry.MultiLineString: Багаторядковий рядок
-geometry.MultiPolygon: Мультимногокутник
 not_available_for_type: Не доступно для цього типу
 create_translations: Створити переклади
 auto_refresh: Автооновлення
@@ -571,37 +595,37 @@ auto_fill: Автозаповнення
 corresponding_field: Відповідне поле
 errors:
   COLLECTION_NOT_FOUND: "Колекція не існує"
+  CONTAINS_NULL_VALUES: Поле містить нульові значення
   FIELD_NOT_FOUND: Поле не знайдено
   FORBIDDEN: Заборонено
+  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
+  INTERNAL_SERVER_ERROR: Неочікувана помилка
+  INVALID_CONFIG: Недійсна конфігурація
   INVALID_CREDENTIALS: Хибне ім'я або пароль
+  INVALID_FOREIGN_KEY: Невірний зовнішній ключ
+  INVALID_IP: IP-адреса не допускається
   INVALID_OTP: Неправильний одноразовий пароль
   INVALID_PAYLOAD: Невірне навантаження
   INVALID_PROVIDER: Користувач належить іншому провайдеру автентифікації
   INVALID_QUERY: Невірний запит
-  INVALID_CONFIG: Недійсна конфігурація
   INVALID_TOKEN: Невірний токен
-  INVALID_IP: IP-адреса не допускається
   INVALID_USER: Помилка автентифікації користувача
   ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
   ITEM_NOT_FOUND: Об'єкт не знайдений
-  ROUTE_NOT_FOUND: Не знайдено
-  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
-  USER_SUSPENDED: Користувача призупинено
-  CONTAINS_NULL_VALUES: Поле містить нульові значення
-  INTERNAL_SERVER_ERROR: Неочікувана помилка
-  NOT_NULL_VIOLATION: Значення не може бути null
-  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
-  VALUE_TOO_LONG: Значення занадто довге
-  VALUE_OUT_OF_RANGE: Значення є поза діапазоном
-  INVALID_FOREIGN_KEY: Невірний зовнішній ключ
-  UNKNOWN: Неочікувана помилка
-  SERVICE_UNAVAILABLE: Сервіс недоступний
-  UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
-  UNEXPECTED_RESPONSE: Неочікувана відповідь
-  TOKEN_EXPIRED: Токен вже не чинний
-  RANGE_NOT_SATISFIABLE: Невірний діапазон
   METHOD_NOT_ALLOWED: Метод не допустимий
+  NOT_NULL_VIOLATION: Значення не може бути null
+  RANGE_NOT_SATISFIABLE: Невірний діапазон
+  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
   REQUESTS_EXCEEDED: Досягнуто ліміт запитів
+  ROUTE_NOT_FOUND: Не знайдено
+  SERVICE_UNAVAILABLE: Сервіс недоступний
+  TOKEN_EXPIRED: Токен вже не чинний
+  UNEXPECTED_RESPONSE: Неочікувана відповідь
+  UNKNOWN: Неочікувана помилка
+  UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
+  USER_SUSPENDED: Користувача призупинено
+  VALUE_OUT_OF_RANGE: Значення є поза діапазоном
+  VALUE_TOO_LONG: Значення занадто довге
 security: Захист
 value_hashed: Значення надійно видалені
 bookmark_name: Назва закладки...
@@ -1247,7 +1271,6 @@ field_options:
   directus_roles:
     name: Унікальна назва для цієї ролі...
     description: Опис цієї ролі...
-    ip_access: Додайте дозволені IP-адреси, залиште порожнім, щоб дозволити...
     fields:
       icon_name: Іконка
       name_name: Назва
@@ -1820,6 +1843,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Форматоване значення JSON
     description: Відобразити форматовану версію об'єкту
+  hash:
+    hash: Хеш
   icon:
     icon: Іконка
     description: Відображати як значок
