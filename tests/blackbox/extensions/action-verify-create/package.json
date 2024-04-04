@@ -2,26 +2,10 @@
 	"name": "action-verify-create",
 	"version": "0.0.0",
 	"private": true,
-	"keywords": [
-		"directus",
-		"directus-extension",
-		"directus-custom-hook"
-	],
 	"directus:extension": {
 		"type": "hook",
 		"path": "index.mjs",
 		"source": "index.mjs",
 		"host": "^10.10.0"
-	},
-	"scripts": {
-		"build": "directus-extension build",
-		"dev": "directus-extension build -w --no-minify",
-		"link": "directus-extension link"
-	},
-	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.2"
-	},
-	"files": [
-		"*"
-	]
+	}
 }
