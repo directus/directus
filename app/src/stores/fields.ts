@@ -1,4 +1,3 @@
-import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
@@ -6,12 +5,19 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSdk } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
 import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import {
+	readFields as readFieldsCmd,
+	createField as createFieldCmd,
+	updateField as updateFieldCmd,
+	deleteField as deleteFieldCmd,
+} from '@directus/sdk';
 
 type HydrateOptions = {
 	/**
@@ -67,6 +73,7 @@ const fakeFilesField: Field = {
 let currentUpdate: string;
 
 export const useFieldsStore = defineStore('fieldsStore', () => {
+	const sdk = useSdk();
 	const fields = ref<Field[]>([]);
 
 	return {
@@ -89,9 +96,8 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	};
 
 	async function hydrate(options?: HydrateOptions) {
-		const fieldsResponse = await api.get<any>(`/fields`);
+		const fieldsRaw = await sdk.request<FieldRaw[]>(readFieldsCmd());
 
-		const fieldsRaw: FieldRaw[] = fieldsResponse.data.data;
 		fields.value = [...fieldsRaw.map(parseField), fakeFilesField];
 		if (options?.skipTranslation !== true) translateFields();
 	}
@@ -183,9 +189,11 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		// Save to API, and update local state again to make sure everything is in sync with the
 		// API
 		try {
-			const response = await api.post<{ data: Field }>(`/fields/${collectionKey}`, newField);
+			// TODO fix type here (any was actually needed here weird!)
+			const fixedType = newField as any;
+			const result = await sdk.request<FieldRaw>(createFieldCmd(collectionKey, fixedType));
 
-			const createdField = parseField(response.data.data);
+			const createdField = parseField(result);
 
 			fields.value = [...fields.value, createdField];
 
@@ -212,11 +220,13 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		// Save to API, and update local state again to make sure everything is in sync with the
 		// API
 		try {
-			const response = await api.patch<any>(`/fields/${collectionKey}/${fieldKey}`, updates);
+			// TODO fix the type
+			const fixedType = updates as Parameters<typeof updateFieldCmd>[2];
+			const response = await sdk.request<FieldRaw>(updateFieldCmd(collectionKey, fieldKey, fixedType));
 
 			fields.value = fields.value.map((field) => {
 				if (field.collection === collectionKey && field.field === fieldKey) {
-					return parseField(response.data.data);
+					return parseField(response);
 				}
 
 				return field;
@@ -250,12 +260,18 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		try {
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
-			const response = await api.patch(`/fields/${collectionKey}`, updates);
+
+			// TODO make actual command for this
+			const response = await sdk.request<FieldRaw[]>(() => ({
+				path: `/fields/${collectionKey}`,
+				method: 'PATCH',
+				body: JSON.stringify(updates),
+			}));
 
 			if (currentUpdate === updateID) {
 				fields.value = fields.value.map((field) => {
 					if (field.collection === collectionKey) {
-						const newDataForField = response.data.data.find((update: Field) => update.field === field.field);
+						const newDataForField = response.find((update: FieldRaw) => update.field === field.field);
 						if (newDataForField) return parseField(newDataForField);
 					}
 
@@ -295,7 +311,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		});
 
 		try {
-			await api.delete(`/fields/${collectionKey}/${fieldKey}`);
+			await sdk.request(deleteFieldCmd(collectionKey, fieldKey));
 			await collectionsStore.hydrate();
 		} catch (error) {
 			fields.value = stateClone;
