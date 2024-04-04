@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"@directus/data-sql": "workspace:*",
-		"pg": "8.11.4",
+		"pg": "8.11.5",
 		"pg-query-stream": "4.5.3",
 		"wellknown": "0.5.0"
 	}
