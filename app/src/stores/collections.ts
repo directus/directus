@@ -13,7 +13,12 @@ import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 import { isSystemCollection } from '@directus/system-data';
 import { useSdk } from '@directus/composables';
-import { createCollection, deleteCollection, readCollections, updateCollection } from '@directus/sdk';
+import {
+	createCollection as createCollectionCmd,
+	deleteCollection as deleteCollectionCmd,
+	readCollections as readCollectionsCmd,
+	updateCollection as updateCollectionCmd
+} from '@directus/sdk';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const sdk = useSdk();
@@ -49,13 +54,13 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		prepareCollectionForApp,
 		translateCollections,
 		upsertCollection,
-		updateCollection2,
-		deleteCollection2,
+		updateCollection,
+		deleteCollection,
 		getCollection,
 	};
 
 	async function hydrate() {
-		const rawCollections = await sdk.request<CollectionRaw[]>(readCollections());
+		const rawCollections = await sdk.request<CollectionRaw[]>(readCollectionsCmd());
 
 		collections.value = rawCollections.map(prepareCollectionForApp);
 	}
@@ -143,9 +148,9 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 				if (isEqual(existing, values)) return;
 
 				// TODO fix this type error
-				const typeFixed = rawValues as Parameters<typeof updateCollection>[1];
+				const typeFixed = rawValues as Parameters<typeof updateCollectionCmd>[1];
 
-				const updatedCollectionResponse = await sdk.request<CollectionRaw>(updateCollection(collection, typeFixed));
+				const updatedCollectionResponse = await sdk.request<CollectionRaw>(updateCollectionCmd(collection, typeFixed));
 
 				collections.value = collections.value.map((existingCollection: Collection) => {
 					if (existingCollection.collection === collection) {
@@ -156,9 +161,9 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 				});
 			} else {
 				// TODO fix this type error
-				const typeFixed = rawValues as Parameters<typeof createCollection>[0];
+				const typeFixed = rawValues as Parameters<typeof createCollectionCmd>[0];
 
-				const createdCollectionResponse = await sdk.request<CollectionRaw>(createCollection(typeFixed));
+				const createdCollectionResponse = await sdk.request<CollectionRaw>(createCollectionCmd(typeFixed));
 
 				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse)];
 			}
@@ -167,12 +172,12 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		}
 	}
 
-	async function updateCollection2(collection: string, updates: DeepPartial<Collection>) {
+	async function updateCollection(collection: string, updates: DeepPartial<Collection>) {
 		try {
 			// TODO fix this type error
-			const typeFixed = updates as Parameters<typeof updateCollection>[1];
+			const typeFixed = updates as Parameters<typeof updateCollectionCmd>[1];
 
-			await sdk.request(updateCollection(collection, typeFixed));
+			await sdk.request(updateCollectionCmd(collection, typeFixed));
 			await hydrate();
 
 			notify({
@@ -183,11 +188,11 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		}
 	}
 
-	async function deleteCollection2(collection: string) {
+	async function deleteCollection(collection: string) {
 		const relationsStore = useRelationsStore();
 
 		try {
-			await sdk.request(deleteCollection(collection));
+			await sdk.request(deleteCollectionCmd(collection));
 			await Promise.all([hydrate(), relationsStore.hydrate()]);
 
 			notify({
