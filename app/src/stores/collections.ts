@@ -1,4 +1,3 @@
-import api from '@/api';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
@@ -13,8 +12,11 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 import { isSystemCollection } from '@directus/system-data';
+import { useSdk } from '@directus/composables';
+import { createCollection, deleteCollection, readCollections, updateCollection } from '@directus/sdk';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
+	const sdk = useSdk();
 	const collections = ref<Collection[]>([]);
 
 	const visibleCollections = computed(() =>
@@ -47,15 +49,13 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		prepareCollectionForApp,
 		translateCollections,
 		upsertCollection,
-		updateCollection,
-		deleteCollection,
+		updateCollection2,
+		deleteCollection2,
 		getCollection,
 	};
 
 	async function hydrate() {
-		const response = await api.get<any>(`/collections`);
-
-		const rawCollections: CollectionRaw[] = response.data.data;
+		const rawCollections = await sdk.request<CollectionRaw[]>(readCollections());
 
 		collections.value = rawCollections.map(prepareCollectionForApp);
 	}
@@ -142,31 +142,37 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			if (existing) {
 				if (isEqual(existing, values)) return;
 
-				const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
-					`/collections/${collection}`,
-					rawValues,
-				);
+				// TODO fix this type error
+				const typeFixed = rawValues as Parameters<typeof updateCollection>[1];
+
+				const updatedCollectionResponse = await sdk.request<CollectionRaw>(updateCollection(collection, typeFixed));
 
 				collections.value = collections.value.map((existingCollection: Collection) => {
 					if (existingCollection.collection === collection) {
-						return prepareCollectionForApp(updatedCollectionResponse.data.data);
+						return prepareCollectionForApp(updatedCollectionResponse);
 					}
 
 					return existingCollection;
 				});
 			} else {
-				const createdCollectionResponse = await api.post<{ data: CollectionRaw }>('/collections', rawValues);
+				// TODO fix this type error
+				const typeFixed = rawValues as Parameters<typeof createCollection>[0];
 
-				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse.data.data)];
+				const createdCollectionResponse = await sdk.request<CollectionRaw>(createCollection(typeFixed));
+
+				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse)];
 			}
 		} catch (error) {
 			unexpectedError(error);
 		}
 	}
 
-	async function updateCollection(collection: string, updates: DeepPartial<Collection>) {
+	async function updateCollection2(collection: string, updates: DeepPartial<Collection>) {
 		try {
-			await api.patch(`/collections/${collection}`, updates);
+			// TODO fix this type error
+			const typeFixed = updates as Parameters<typeof updateCollection>[1];
+
+			await sdk.request(updateCollection(collection, typeFixed));
 			await hydrate();
 
 			notify({
@@ -177,11 +183,11 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		}
 	}
 
-	async function deleteCollection(collection: string) {
+	async function deleteCollection2(collection: string) {
 		const relationsStore = useRelationsStore();
 
 		try {
-			await api.delete(`/collections/${collection}`);
+			await sdk.request(deleteCollection(collection));
 			await Promise.all([hydrate(), relationsStore.hydrate()]);
 
 			notify({

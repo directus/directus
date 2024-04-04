@@ -37,7 +37,7 @@ test('parseField action should translate field name when translations are added 
 	});
 
 	collectionsStore.collections = [mockCollectionWithTranslations].map(collectionsStore.prepareCollectionForApp);
-	expect(collectionsStore.collections[0].name).toEqual('Collection A en-US');
+	expect(collectionsStore.collections[0]!.name).toEqual('Collection A en-US');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(true);
 
 	const mockCollectionWithMissingTranslations = merge({}, mockCollection, {
@@ -52,7 +52,7 @@ test('parseField action should translate field name when translations are added 
 	});
 
 	collectionsStore.collections = [mockCollectionWithMissingTranslations].map(collectionsStore.prepareCollectionForApp);
-	expect(collectionsStore.collections[0].name).toEqual('A');
+	expect(collectionsStore.collections[0]!.name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);
 });
 
@@ -71,7 +71,7 @@ test('parseField action should translate field name when all translations are re
 	});
 
 	collectionsStore.collections = [mockCollectionWithTranslations].map(collectionsStore.prepareCollectionForApp);
-	expect(collectionsStore.collections[0].name).toEqual('Collection A en-US');
+	expect(collectionsStore.collections[0]!.name).toEqual('Collection A en-US');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(true);
 
 	const mockCollectionWithoutTranslations = merge({}, mockCollection, {
@@ -81,6 +81,6 @@ test('parseField action should translate field name when all translations are re
 	});
 
 	collectionsStore.collections = [mockCollectionWithoutTranslations].map(collectionsStore.prepareCollectionForApp);
-	expect(collectionsStore.collections[0].name).toEqual('A');
+	expect(collectionsStore.collections[0]!.name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);
 });
