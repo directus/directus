@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Інформація про
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -7,10 +28,12 @@ method: Метод
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
+marketplace: Маркетплейс
 extensions: Розширення
 modules: Модулі
 module_bar: Панель модулів
 logs: Логи
+unknown: Невідомо
 reset_width: Скинути ширину
 tile_size: Розмір плитки
 edit_field: Редагувати поле
@@ -28,6 +51,8 @@ duplicate_field: Дублювати поле
 half_width: Ширина ряду на половину
 full_width: Повна ширина
 group: Група
+popular: Популярне
+recent: Останнє
 export_items: Експорт товарів
 and: Й
 or: Або
@@ -43,6 +68,7 @@ extension_theme: Тема
 extension_hook: Хук
 extension_endpoint: Кінцева точка
 extension_operation: Операція
+extension_bundle: Комплект
 extension_interfaces: Інтерфейси
 extension_displays: Дисплеї
 extension_layouts: Макети
@@ -52,9 +78,18 @@ extension_themes: Теми
 extension_hooks: Гачки
 extension_endpoints: Кінцеві точки
 extension_operations: Операції
+extension_bundles: Комплекти
+extension_missing: Відсутні
 extension_reload_required: Потрібне перезавантаження сторінки
 extension_reload_required_copy: Щоб побачити зміни після ввімкнення чи вимкнення розширень додатків, потрібно оновити сторінку.
 extension_reload_now: Перезавантажте зараз
+published_relative: Опубліковано {relativeTime}
+compatible_with_your_project: Сумісно з вашим проєктом
+compatible_with_your_project_copy: Автор вказав сумісність цього розширення як {hostVersion}, що відповідає версії вашого проєкту ({currentVersion})
+last_updated_relative: Останнє оновлення {relativeTime}
+n_files: '{n} Файли'
+verified: Підтверджено
+homepage: Головна сторінка
 enable: Увімкнути
 disable: Вимкнути
 custom: Власний
@@ -1019,6 +1054,7 @@ batch_delete_confirm: >-
   Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
 cancel: Скасувати
 no_upscale: Не показувати зображення
+source_registry: Маркетплейс
 collection: Колекція
 collections: Колекції
 content: Вміст
