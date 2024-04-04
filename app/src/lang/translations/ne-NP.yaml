@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: पहिचान
 avatar: अवतार
 application: अनुप्रयोग
@@ -548,37 +528,37 @@ auto_fill: स्वतः भर्नुहोस्
 corresponding_field: सम्बन्धित फिल्ड
 errors:
   COLLECTION_NOT_FOUND: "संग्रह अवस्थित छैन"
+  CONTAINS_NULL_VALUES: फिल्डमा शून्य मानहरू छन्
   FIELD_NOT_FOUND: फिल्ड भेटिएन
   FORBIDDEN: प्रतिबन्धि‍त
+  ILLEGAL_ASSET_TRANSFORMATION: पूर्वावलोकनको लागि तस्वीरको स्रोत धेरै ठूलो छ
+  INTERNAL_SERVER_ERROR: नसाेचेकाे समस्या
+  INVALID_CONFIG: अमान्य कन्फिगरेसन
   INVALID_CREDENTIALS: गलत प्रयोगकर्ता नाम वा पासवर्ड
+  INVALID_FOREIGN_KEY: अवैध विदेशी कुञ्जी
+  INVALID_IP: आईपी ठेगानालाई अनुमति छैन
   INVALID_OTP: गलत वन-टाइम पासवर्ड
   INVALID_PAYLOAD: अमान्य पेलोड
   INVALID_PROVIDER: प्रयोगकर्ता फरक प्रमाणीकरण प्रदायकसँग सम्बन्धित छ
   INVALID_QUERY: अमान्य क्वेरी
-  INVALID_CONFIG: अमान्य कन्फिगरेसन
   INVALID_TOKEN: अमान्य टोकन
-  INVALID_IP: आईपी ठेगानालाई अनुमति छैन
   INVALID_USER: प्रयोगकर्ता प्रमाणीकरण गर्न असफल
   ITEM_LIMIT_REACHED: वस्तुको सीमा पुगेको छ
   ITEM_NOT_FOUND: वस्तु फेला परेन
-  ROUTE_NOT_FOUND: फेला परेन
-  RECORD_NOT_UNIQUE: डुप्लिकेट मान पत्ता लाग्यो
-  USER_SUSPENDED: प्रयोगकर्ता निलम्बित
-  CONTAINS_NULL_VALUES: फिल्डमा शून्य मानहरू छन्
-  INTERNAL_SERVER_ERROR: नसाेचेकाे समस्या
-  NOT_NULL_VIOLATION: मूल्य शून्य हुन सक्दैन
-  ILLEGAL_ASSET_TRANSFORMATION: पूर्वावलोकनको लागि तस्वीरको स्रोत धेरै ठूलो छ
-  VALUE_TOO_LONG: मान धेरै लामो छ
-  VALUE_OUT_OF_RANGE: मान दायरा भन्दा बाहिर छ
-  INVALID_FOREIGN_KEY: अवैध विदेशी कुञ्जी
-  UNKNOWN: नसाेचेकाे समस्या
-  SERVICE_UNAVAILABLE: सेवा उपलब्ध छैन
-  UNSUPPORTED_MEDIA_TYPE: असमर्थित मिडिया प्रकार
-  UNEXPECTED_RESPONSE: अप्रत्याशित प्रतिक्रिया
-  TOKEN_EXPIRED: टोकनको म्याद सकियो
-  RANGE_NOT_SATISFIABLE: अमान्य दायरा
   METHOD_NOT_ALLOWED: विधिलाई अनुमति छैन
+  NOT_NULL_VIOLATION: मूल्य शून्य हुन सक्दैन
+  RANGE_NOT_SATISFIABLE: अमान्य दायरा
+  RECORD_NOT_UNIQUE: डुप्लिकेट मान पत्ता लाग्यो
   REQUESTS_EXCEEDED: अनुरोध सीमा पुग्यो
+  ROUTE_NOT_FOUND: फेला परेन
+  SERVICE_UNAVAILABLE: सेवा उपलब्ध छैन
+  TOKEN_EXPIRED: टोकनको म्याद सकियो
+  UNEXPECTED_RESPONSE: अप्रत्याशित प्रतिक्रिया
+  UNKNOWN: नसाेचेकाे समस्या
+  UNSUPPORTED_MEDIA_TYPE: असमर्थित मिडिया प्रकार
+  USER_SUSPENDED: प्रयोगकर्ता निलम्बित
+  VALUE_OUT_OF_RANGE: मान दायरा भन्दा बाहिर छ
+  VALUE_TOO_LONG: मान धेरै लामो छ
 security: सुरक्षा
 value_hashed: मान सुरक्षित रूपमा ह्यास गरिएको
 bookmark_name: बुकमार्कको नाम...

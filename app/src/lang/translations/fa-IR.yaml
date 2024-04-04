@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -579,38 +559,38 @@ auto_fill: پر کردن خودکار
 corresponding_field: فیلد متناظر
 errors:
   COLLECTION_NOT_FOUND: "مجموعه مد نظر، وجود ندارد"
+  CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
+  CONTENT_TOO_LARGE: آیتم/فایل بیشتر از حد مجاز است
   FIELD_NOT_FOUND: فیلد یافت نشد
   FORBIDDEN: عدم اجازه دسترسی
+  ILLEGAL_ASSET_TRANSFORMATION: منبع تصویر برای پیش نمایش بیش از حد بزرگ است
+  INTERNAL_SERVER_ERROR: خطای غیر منتظره
+  INVALID_CONFIG: پیکربندی نامعتبر است
   INVALID_CREDENTIALS: نام کاربری یا کلمه عبور اشتباه است
+  INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
+  INVALID_IP: آدرس IP مجاز نیست
   INVALID_OTP: رمزعبور یکبار مصرف اشتباه است
   INVALID_PAYLOAD: مجموعه داده نامعتبر
   INVALID_PROVIDER: کاربر متعلق به ارائه دهنده دیگری است
   INVALID_QUERY: کوئریِ نامعتبر
-  INVALID_CONFIG: پیکربندی نامعتبر است
   INVALID_TOKEN: توکن نامعتبر است
-  INVALID_IP: آدرس IP مجاز نیست
   INVALID_USER: احراز هویت کاربر ناموفق بود
   ITEM_LIMIT_REACHED: رسیدن به حد مجاز
   ITEM_NOT_FOUND: آیتم پیدا نشد
-  ROUTE_NOT_FOUND: یافت نشد
-  RECORD_NOT_UNIQUE: موارد تکراری یافت شد
-  USER_SUSPENDED: کاربر معلق شد
-  CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
-  INTERNAL_SERVER_ERROR: خطای غیر منتظره
-  NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
-  ILLEGAL_ASSET_TRANSFORMATION: منبع تصویر برای پیش نمایش بیش از حد بزرگ است
-  VALUE_TOO_LONG: مقدار، بسیار طولانی است
-  VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
-  INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
-  UNKNOWN: خطای غیر منتظره
-  SERVICE_UNAVAILABLE: سرویس در دسترس نیست
-  UNSUPPORTED_MEDIA_TYPE: رسانه پشتیبانی نشده
-  UNEXPECTED_RESPONSE: پاسخ غیر منتظره
-  TOKEN_EXPIRED: توکن منقضی شده است
-  RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
   METHOD_NOT_ALLOWED: روش مجاز نمی باشد
+  NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
+  RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
+  RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   REQUESTS_EXCEEDED: به محدودیت درخواست رسیده است
-  CONTENT_TOO_LARGE: آیتم/فایل بیشتر از حد مجاز است
+  ROUTE_NOT_FOUND: یافت نشد
+  SERVICE_UNAVAILABLE: سرویس در دسترس نیست
+  TOKEN_EXPIRED: توکن منقضی شده است
+  UNEXPECTED_RESPONSE: پاسخ غیر منتظره
+  UNKNOWN: خطای غیر منتظره
+  UNSUPPORTED_MEDIA_TYPE: رسانه پشتیبانی نشده
+  USER_SUSPENDED: کاربر معلق شد
+  VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
+  VALUE_TOO_LONG: مقدار، بسیار طولانی است
 security: امنیت
 value_hashed: این مقدار به طور امن، هش شده است
 bookmark_name: نام نشانک...

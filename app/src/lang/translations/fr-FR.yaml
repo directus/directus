@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: À propos
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -27,10 +28,12 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
+unknown: Inconnu
 reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
@@ -48,6 +51,8 @@ duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Toute la largeur
 group: Groupe
+popular: Popularité
+recent: Récent
 export_items: Exporter
 and: Et
 or: Ou
@@ -70,9 +75,30 @@ extension_layouts: Mises en page
 extension_modules: Modules
 extension_panels: Panneaux
 extension_themes: Thèmes
+extension_hooks: Hooks
 extension_endpoints: Points d'accès
 extension_operations: Opérations
 extension_bundles: Lots
+extension_reload_required: Rechargement de la page requis
+extension_reload_required_copy: Un rechargement de la page est nécessaire pour voir les changements après l'activation ou la désactivation des extensions d'application.
+extension_reload_now: Recharger maintenant
+published_relative: Publié {relativeTime}
+compatible_with_your_project: Compatible avec votre projet
+compatible_with_your_project_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui correspond à la version de votre projet ({currentVersion})
+last_updated_relative: Dernière mise à jour {relativeTime}
+n_files: '{n} Fichiers'
+verified: Vérifié
+homepage: Page d’accueil
+repository: Dépôt
+reload_required: Rechargement requis
+report_an_issue: Signaler un problème
+website: Site internet
+github: GitHub
+beta: Bêta
+n_downloads: '{n} Téléchargements'
+downloads: Téléchargements
+compatibility_not_guaranteed: Compatibilité non garantie
+compatibility_not_guaranteed_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui ne correspond pas à la version de votre projet ({currentVersion})
 enable: Activer
 disable: Désactiver
 custom: Personnalisé
@@ -135,6 +161,7 @@ compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
 promote_version_disabled: Aucun changement
+promote_version_drawer_title: Mettre {version} en Main
 promote_version_changes: Changements
 promote_version_preview: Prévisualiser
 outdated_notice: >-
@@ -142,6 +169,10 @@ outdated_notice: >-
 promote_notice: >-
   Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
 delete_version: Supprimer la version
+delete_version_copy: >-
+  Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
+delete_on_promote_copy: >-
+  Voulez-vous supprimer ou conserver la version "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -156,6 +187,8 @@ logoutReason:
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
+no_description: Aucune description...
+reached_maximum_number_of_extensions: Vous avez atteint le nombre maximum d'extensions pour ce projet ({n}). Contactez votre administrateur système pour plus d'informations.
 not_allowed: Non autorisé
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
@@ -295,9 +328,20 @@ time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
+geometry:
+  All: Géométrie (Tous)
+  Point: Point
+  LineString: Chaîne ligne simple
+  Polygon: Polygone
+  MultiPoint: Multi points
+  MultiLineString: Chaîne multi-lignes
+  MultiPolygon: Multiples Polygones
 theme_auto: Automatique (basé sur le système)
 theme_light: Mode Clair
 theme_dark: Mode Sombre
+theme_directus_default: Directus par défaut
+theme_directus_minimal: Directus Minimale
+theme_directus_colormatch: Correspondance de couleur de Directus
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -309,6 +353,7 @@ auto_generate: Générer automatiquement
 this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires seront configurés automatiquement.
 click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
+manage: Gérer
 click_to_manage_translated_fields: >-
   Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
@@ -393,6 +438,7 @@ revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
+revision_delta_version_saved: 'Sauvegarde de la version (1 champ mis à jour) | Sauvegarde de la version ({count} champs mis à jour)'
 revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
@@ -477,7 +523,11 @@ months:
   november: Novembre
   december: Décembre
 drag_mode: Mode Glisser/Déposer
+move_tool: Déplacer
+crop_tool: Recadrer
+focal_point_tool: Point focal
 cancel_crop: Annuler le recadrage
+cancel_selection: Annuler la sélection
 original: Initial
 url: URL
 import_label: Importer
@@ -510,6 +560,11 @@ open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
 start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
+exporting_limited_items_in_collection: '{count} sur {total} éléments dans {collection} seront exportés.'
+exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export et/ou ajoutez des éléments à la collection.
+exporting_download_hint: Une fois le fichier {format} créé, il sera sauvegardé dans la bibliothèque de fichiers.
+exporting_library_hint: Une fois le fichier {format} créé, il sera sauvegardé dans la bibliothèque de fichiers.
+exporting_library_hint_forced: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -540,6 +595,7 @@ collapse: Replier
 select_item: Sélectionner un élément
 no_items: Aucun élément
 search_items: Rechercher des éléments...
+search_extensions: Rechercher des extensions...
 disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
@@ -621,6 +677,10 @@ select_an_item: Sélectionnez un élément...
 edit: Modifier
 edit_item: Modifier l'élément
 enabled: Activé
+partially_enabled: Partiellement activé
+enable_all: Tout activer
+disable_all: Tout désactiver
+enabled_dev_tooltip: Les extensions d'applications sont toujours activées en mode développeur
 disable_tfa: Désactiver l'A2F
 admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
 tfa_setup: Configurer 2FA
@@ -632,37 +692,41 @@ auto_fill: Remplissage automatique
 corresponding_field: Champ correspondant
 errors:
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
+  CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
+  CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
   FIELD_NOT_FOUND: Champ introuvable
   FORBIDDEN: Non autorisé
+  GRAPHQL_VALIDATION: Validation GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
+  INTERNAL_SERVER_ERROR: Erreur inconnue
+  INVALID_CONFIG: Configuration non valide
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
+  INVALID_FOREIGN_KEY: Clé étrangère invalide
+  INVALID_IP: Adresse IP non autorisée
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Données invalides
   INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
-  INVALID_CONFIG: Configuration non valide
   INVALID_TOKEN: Jeton non valide
-  INVALID_IP: Adresse IP non autorisée
   INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
-  ROUTE_NOT_FOUND: Introuvable
-  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
-  USER_SUSPENDED: Utilisateur suspendu
-  CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
-  INTERNAL_SERVER_ERROR: Erreur inconnue
-  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
-  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
-  VALUE_TOO_LONG: La valeur est trop longue
-  VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
-  INVALID_FOREIGN_KEY: Clé étrangère invalide
-  UNKNOWN: Erreur inconnue
-  SERVICE_UNAVAILABLE: Service indisponible
-  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
-  UNEXPECTED_RESPONSE: Réponse inattendue
-  TOKEN_EXPIRED: Jeton expiré
-  RANGE_NOT_SATISFIABLE: Plage non valide
+  LIMIT_EXCEEDED: 'Limite dépassée'
   METHOD_NOT_ALLOWED: Méthode non autorisée
+  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+  RANGE_NOT_SATISFIABLE: Plage non valide
+  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   REQUESTS_EXCEEDED: Limite de requêtes atteinte
+  ROUTE_NOT_FOUND: Introuvable
+  SERVICE_UNAVAILABLE: Service indisponible
+  TOKEN_EXPIRED: Jeton expiré
+  UNEXPECTED_RESPONSE: Réponse inattendue
+  UNKNOWN: Erreur inconnue
+  UNPROCESSABLE_CONTENT: Contenu non traitable
+  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
+  USER_SUSPENDED: Utilisateur suspendu
+  VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
+  VALUE_TOO_LONG: La valeur est trop longue
 security: Sécurité
 value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
@@ -771,6 +835,7 @@ operators:
   regex: Correspondances RegExp
 custom_validation_message: Message de validation personnalisé
 loading: Chargement…
+extension_readme_missing: Cette extension n'a pas de fichier README.
 drop_to_upload: Déposer pour téléverser
 item: Élément
 items: Éléments
@@ -1031,6 +1096,7 @@ editing_preset: Modifier le préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
 data: Données
+theme-overrides: Éditeur de thème
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
@@ -1076,6 +1142,9 @@ page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
 page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
 page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
+page_help_marketplace_account: '**Compte** — Éditeur ou mainteneur d''une extension publiée.'
+page_help_marketplace_registry: '**Enregistrement** — Extensions disponibles sur le Marketplace Directus.'
+page_help_marketplace_extension: '**Extension** — Extension sur le Marketplace Directus.'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -1088,6 +1157,13 @@ cancel: Annuler
 no_upscale: Ne pas agrandir les images
 no_extensions: Aucune extension
 no_extensions_copy: Aucune extension n'a encore été installée.
+install_extension: Installer l'extension
+uninstall_locked: Impossible de désinstaller les extensions qui n'ont pas été installées via le Marketplace
+uninstall: Désinstaller
+installed: Installé
+reinstall: Réinstaller
+open_in_marketplace: Ouvrir dans la Marketplace
+source_registry: Marketplace
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1145,6 +1221,7 @@ fields:
     unarchive_value: Valeur lors du désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
+    versioning: Versionnement
     archive_field: Champ d'archivage
     item_duplication_fields: Champs de duplication d'éléments
   directus_files:
@@ -1199,6 +1276,8 @@ fields:
     last_access: Dernier accès
     email_notifications: Notifications par e-mail
     appearance: Personnalisation du Thème
+    theme_light: Thème jour
+    theme_dark: Thème Sombre
     theme_light_overrides: Personnalisation du thème clair
     theme_dark_overrides: Personnalisation du thème sombre
   directus_settings:
@@ -1229,6 +1308,9 @@ fields:
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
     theming: Valeurs par défaut du Thème
+    default_appearance: Apparence par défaut
+    default_theme_light: Thème jour par défaut
+    default_theme_dark: Thème sombre par défaut
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
     files_and_thumbnails: Fichiers et stockage
@@ -1288,6 +1370,7 @@ field_options:
     project_name_placeholder: Mon projet...
     project_color_note: Fond de connexion et de logo
     project_logo_note: SVG/PNG de 40×40 Blanc
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1349,11 +1432,13 @@ field_options:
     description: Une description optionnelle...
     location: Un emplacement optionnel...
     storage_divider: Nommage des fichiers
+    focal_point_divider: Point focal
     filename_disk: Nom du fichier sur le disque...
     filename_download: Nom du fichier téléchargé...
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
+    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -1407,6 +1492,7 @@ live_preview:
   refresh: Actualiser l'aperçu
   new_window: Ouvrir dans une nouvelle fenêtre
   close_window: Ouvrir en mode écran partagé
+  toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
 uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
@@ -1730,6 +1816,7 @@ interfaces:
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
+    folder: Répertoire racine
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
@@ -1820,12 +1907,15 @@ interfaces:
     description: Un éditeur de texte avancé pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
+    custom_formats_note: Liste des formats de contenu TinyMCE. Voir la documentation TinyMCE à propos du [Formatage de contenu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) pour plus d'informations.
     options_override: Remplacement des options
+    options_override_note: Les clés de mise en forme TinyMCE et leurs valeurs. Voir la documentation de TinyMCE sur le [Formatage des utilisateurs](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) pour plus d'informations.
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
     imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
   input-block-editor:
     input-block-editor: Éditeur de blocs
+    description: Éditeur de style avancé, produit des données propres en JSON à l'aide de Editor.js
     tools: Barre d’outils
     tools_options:
       header: En-tête
@@ -1960,6 +2050,7 @@ displays:
     description: Afficher une version formatée de l'objet
   hash:
     hash: Hash
+    description: Afficher une version formatée de la valeur
   icon:
     icon: Icône
     description: Afficher une icône
@@ -2096,6 +2187,7 @@ panels:
     field: Champ
   metric_list:
     name: Liste métrique
+    description: Lister et visualiser les métriques d'agrégats à partir d'une collection
   time_series:
     name: Échelle de temps
     description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
