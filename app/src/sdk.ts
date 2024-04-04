@@ -1,11 +1,11 @@
-import type { AuthenticationClient, DirectusClient, RestClient } from '@directus/sdk';
-import { createDirectus, rest, authentication } from '@directus/sdk';
+import type { AuthenticationClient, DirectusClient, GraphqlClient, RestClient } from '@directus/sdk';
+import { createDirectus, rest, authentication, graphql } from '@directus/sdk';
 import { getPublicURL } from '@/utils/get-root-path';
 import { ofetch, type FetchContext } from 'ofetch';
 import { useRequestsStore } from './stores/requests';
 import { requestQueue } from './api';
 
-export type SdkClient = DirectusClient<any> & AuthenticationClient<any> & RestClient<any>;
+export type SdkClient = DirectusClient<any> & AuthenticationClient<any> & RestClient<any> & GraphqlClient<any>;
 
 type OptionsWithId = FetchContext['options'] & { id: string };
 
@@ -50,7 +50,8 @@ const baseClient = ofetch.create({
 
 export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient.native } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: 10_000 }))
-	.with(rest({ credentials: 'include' }));
+	.with(rest({ credentials: 'include' }))
+	.with(graphql({ credentials: 'include' }));
 
 export default sdk;
 
