@@ -9,10 +9,16 @@ import { LOCAL_TYPES } from '@directus/constants';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, merge, omit, orderBy, set } from 'lodash';
+import { cloneDeep, get, has, isEmpty, mergeWith, omit, orderBy, set } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
+
+async function merge(a: any, b: any) {
+	return mergeWith(a, b, (_, src, key, obj) => {
+		if (src === undefined) obj[key] = src;
+	});
+}
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
