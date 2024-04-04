@@ -9,16 +9,10 @@ import { LOCAL_TYPES } from '@directus/constants';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, mergeWith, omit, orderBy, set } from 'lodash';
+import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
-
-async function merge(a: any, b: any) {
-	return mergeWith(a, b, (_, src, key, obj) => {
-		if (src === undefined) obj[key] = src;
-	});
-}
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -150,46 +144,47 @@ export const useFieldDetailStore = defineStore({
 			const hasChanged = (path: string) => has(updates, path) && get(updates, path) !== get(this, path);
 			const getCurrent = (path: string) => (has(updates, path) ? get(updates, path) : get(this, path));
 
-			const helperFn = { hasChanged, getCurrent };
-
-			if (hasChanged('field.meta.interface')) {
-				alterations.global.setLocalTypeForInterface(updates);
-				alterations.global.setTypeForInterface(updates, this);
-			}
-
-			if (hasChanged('localType')) {
-				alterations.global.resetSchema(updates, this);
-				alterations.global.resetRelations(updates);
-				alterations.global.setSpecialForLocalType(updates);
-			}
-
-			const localType = getCurrent('localType') as (typeof LOCAL_TYPES)[number] | undefined;
-
-			if (localType) {
-				alterations[localType].applyChanges(updates, this, helperFn);
-			}
-
-			if (hasChanged('field')) {
-				merge(this.fieldUpdates, omit(updates.field, 'schema', 'meta'));
-
-				if (updates.field?.schema) {
-					Object.assign((this.fieldUpdates.schema ??= {}), updates.field.schema);
-				}
-
-				if (updates.field?.meta) {
-					Object.assign((this.fieldUpdates.meta ??= {}), updates.field.meta);
-				}
-			}
-
 			this.$patch((state) => {
-				merge(state, omit(updates, 'field.schema', 'field.meta'));
-
-				if (updates.field?.schema) {
-					Object.assign((state.field.schema ??= {}), updates.field.schema);
+				if (hasChanged('field.meta.interface')) {
+					alterations.global.setLocalTypeForInterface(updates);
+					alterations.global.setTypeForInterface(updates, state);
 				}
 
-				if (updates.field?.meta) {
-					Object.assign((state.field.meta ??= {}), updates.field.meta);
+				if (hasChanged('localType')) {
+					alterations.global.resetSchema(updates, state);
+					alterations.global.resetRelations(updates);
+					alterations.global.setSpecialForLocalType(updates);
+				}
+
+				const localType = getCurrent('localType') as LocalType | undefined;
+
+				if (localType) {
+					alterations[localType].applyChanges(updates, state, { hasChanged, getCurrent });
+				}
+
+				const { field: fieldUpdates, ...restUpdates } = updates;
+
+				mergeWith(state, restUpdates, (_, srcValue, key, object) => {
+					if (Array.isArray(srcValue)) return srcValue;
+					if (srcValue === undefined) object[key] = undefined;
+					return;
+				});
+
+				if (fieldUpdates) {
+					const { schema: schemaUpdates, meta: metaUpdates, ...restFieldUpdates } = fieldUpdates;
+
+					Object.assign(state.field, restFieldUpdates);
+					Object.assign(state.fieldUpdates, restFieldUpdates);
+
+					if (schemaUpdates) {
+						Object.assign((state.field.schema ??= {}), schemaUpdates);
+						Object.assign((state.fieldUpdates.schema ??= {}), schemaUpdates);
+					}
+
+					if (metaUpdates) {
+						Object.assign((state.field.meta ??= {}), metaUpdates);
+						Object.assign((state.fieldUpdates.meta ??= {}), metaUpdates);
+					}
 				}
 			});
 		},
