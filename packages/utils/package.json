@@ -52,7 +52,7 @@
 		"@vitest/coverage-v8": "1.4.0",
 		"tmp": "0.2.3",
 		"tsup": "8.0.2",
-		"typescript": "5.4.3",
+		"typescript": "5.4.4",
 		"vitest": "1.4.0",
 		"vue": "3.4.21"
 	},

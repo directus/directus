@@ -36,7 +36,7 @@
 		"@vitest/coverage-v8": "1.4.0",
 		"dependency-cruiser": "16.2.4",
 		"tsup": "8.0.2",
-		"typescript": "5.4.3",
+		"typescript": "5.4.4",
 		"vitest": "1.4.0"
 	}
 }
