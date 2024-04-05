@@ -64,7 +64,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				if (token) url.searchParams.set('access_token', token);
 			}
 
-			return url;
+			return url.toString();
 		};
 
 		const getSocketUrl = async (currentClient: AuthWSClient<Schema>) => {
@@ -76,7 +76,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 
 			// try filling in the defaults based on the main URL
-			const newUrl = new client.globals.URL(client.url.toString());
+			const newUrl = new client.globals.URL(client.url);
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
 			newUrl.pathname = '/websocket';
 
