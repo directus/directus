@@ -1,8 +1,9 @@
-import api from '@/api';
 import { i18n } from '@/lang';
 import { fetchAll } from '@/utils/fetch-all';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSdk } from '@directus/composables';
+import { createTranslation } from '@directus/sdk';
 import { defineStore } from 'pinia';
 import { ref, unref, watch } from 'vue';
 
@@ -16,6 +17,7 @@ export const useTranslationsStore = defineStore('translations', () => {
 	const loading = ref(false);
 	const translations = ref<Translation[]>([]);
 	const lang = ref<string>('en-US');
+	const sdk = useSdk();
 
 	const loadTranslations = async (newLang = unref(lang)) => {
 		loading.value = true;
@@ -40,7 +42,7 @@ export const useTranslationsStore = defineStore('translations', () => {
 
 	const create = async (translation: Translation) => {
 		try {
-			await api.post('/translations', translation);
+			await sdk.request(createTranslation(translation));
 			await loadTranslations();
 		} catch (error) {
 			unexpectedError(error);
