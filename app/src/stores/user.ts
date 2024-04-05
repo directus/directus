@@ -1,6 +1,6 @@
+import sdk from '@/sdk';
 import { useLatencyStore } from '@/stores/latency';
 import { userName } from '@/utils/user-name';
-import { useSdk } from '@directus/composables';
 import { readMe } from '@directus/sdk';
 import { User } from '@directus/types';
 import { merge } from 'lodash';
@@ -35,7 +35,6 @@ export const useUserStore = defineStore({
 	actions: {
 		async hydrate() {
 			this.loading = true;
-			const sdk = useSdk();
 
 			try {
 				const fields = ['*', 'avatar.id', 'role.admin_access', 'role.app_access', 'role.id', 'role.enforce_tfa'];
@@ -50,8 +49,6 @@ export const useUserStore = defineStore({
 			this.$reset();
 		},
 		async hydrateAdditionalFields(fields: string[]) {
-			const sdk = useSdk();
-
 			try {
 				const data = await sdk.request<User | ShareUser>(readMe({ fields }));
 				this.currentUser = merge({}, this.currentUser, data);
@@ -68,8 +65,6 @@ export const useUserStore = defineStore({
 			if (to.path.endsWith('/preview')) {
 				return;
 			}
-
-			const sdk = useSdk();
 
 			const latencyStore = useLatencyStore();
 

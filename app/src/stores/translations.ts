@@ -1,8 +1,8 @@
 import { i18n } from '@/lang';
+import sdk from '@/sdk';
 import { fetchAll } from '@/utils/fetch-all';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useSdk } from '@directus/composables';
 import { createTranslation } from '@directus/sdk';
 import { defineStore } from 'pinia';
 import { ref, unref, watch } from 'vue';
@@ -17,7 +17,6 @@ export const useTranslationsStore = defineStore('translations', () => {
 	const loading = ref(false);
 	const translations = ref<Translation[]>([]);
 	const lang = ref<string>('en-US');
-	const sdk = useSdk();
 
 	const loadTranslations = async (newLang = unref(lang)) => {
 		loading.value = true;

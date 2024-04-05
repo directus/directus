@@ -6,8 +6,8 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from './notifications';
-import { useSdk } from '@directus/composables';
 import { readExtensions, updateExtension } from '@directus/sdk';
+import sdk from '@/sdk';
 
 const getEnabledBrowserExtensions = (extensions: ApiOutput[]) => {
 	const enabledIds: string[] = [];
@@ -39,7 +39,6 @@ const getEnabledBrowserExtensions = (extensions: ApiOutput[]) => {
 export const useExtensionsStore = defineStore('extensions', () => {
 	const notificationsStore = useNotificationsStore();
 	const { t } = useI18n();
-	const sdk = useSdk();
 
 	const loading = ref(false);
 	const error = ref<unknown>(null);

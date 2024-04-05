@@ -4,8 +4,8 @@ import { Permission, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
-import { useSdk } from '@directus/composables';
 import { readPermissions } from '@directus/sdk';
+import sdk from '@/sdk';
 
 export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
@@ -15,7 +15,6 @@ export const usePermissionsStore = defineStore({
 	actions: {
 		async hydrate() {
 			const userStore = useUserStore();
-			const sdk = useSdk();
 
 			const response = await sdk.request<Permission[]>(readPermissions({
 				filter: { role: { _eq: userStore.currentUser!.role!.id } }

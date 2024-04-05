@@ -4,8 +4,8 @@ import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
-import { useSdk } from '@directus/composables';
 import { readNotifications } from '@directus/sdk';
+import sdk from '@/sdk';
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
@@ -26,7 +26,6 @@ export const useNotificationsStore = defineStore({
 		},
 		async getUnreadCount() {
 			const userStore = useUserStore();
-			const sdk = useSdk();
 
 			if (!userStore.currentUser || !('id' in userStore.currentUser)) return;
 

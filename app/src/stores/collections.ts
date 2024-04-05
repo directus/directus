@@ -12,16 +12,15 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 import { isSystemCollection } from '@directus/system-data';
-import { useSdk } from '@directus/composables';
 import {
 	createCollection as createCollectionCmd,
 	deleteCollection as deleteCollectionCmd,
 	readCollections as readCollectionsCmd,
 	updateCollection as updateCollectionCmd
 } from '@directus/sdk';
+import sdk from '@/sdk';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
-	const sdk = useSdk();
 	const collections = ref<Collection[]>([]);
 
 	const visibleCollections = computed(() =>

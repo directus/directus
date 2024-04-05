@@ -1,6 +1,6 @@
+import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
-import { useSdk } from '@directus/composables';
 import { createPreset, deletePresets, readPreset, updatePreset } from '@directus/sdk';
 import { Preset, User } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
@@ -186,7 +186,6 @@ export const usePresetsStore = defineStore({
 			this.$reset();
 		},
 		async create(newPreset: Partial<Preset>) {
-			const sdk = useSdk();
 			const response = await sdk.request<Preset>(createPreset(newPreset));
 
 			this.collectionPresets.push(response);
@@ -194,7 +193,6 @@ export const usePresetsStore = defineStore({
 			return response;
 		},
 		async update(id: number, updates: Partial<Preset>) {
-			const sdk = useSdk();
 			const updateID = nanoid();
 			currentUpdate[id] = updateID;
 
@@ -213,7 +211,6 @@ export const usePresetsStore = defineStore({
 			return updatedPreset;
 		},
 		async delete(ids: number[]) {
-			const sdk = useSdk();
 			await sdk.request(deletePresets(ids));
 
 			this.collectionPresets = this.collectionPresets.filter((preset) => {
@@ -322,7 +319,6 @@ export const usePresetsStore = defineStore({
 		},
 
 		async clearLocalSave(preset: Preset) {
-			const sdk = useSdk();
 			const response = await sdk.request<Preset>(readPreset(preset.id!));
 
 			this.collectionPresets = this.collectionPresets.map((preset) => {

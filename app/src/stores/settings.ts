@@ -5,8 +5,8 @@ import { Settings } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
-import { useSdk } from '@directus/composables';
 import { readSettings, updateSettings } from '@directus/sdk';
+import sdk from '@/sdk';
 
 export const useSettingsStore = defineStore({
 	id: 'settingsStore',
@@ -15,7 +15,6 @@ export const useSettingsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const sdk = useSdk();
 			const userStore = useUserStore();
 			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
 
@@ -29,7 +28,6 @@ export const useSettingsStore = defineStore({
 		async updateSettings(updates: { [key: string]: any }, notifyOnSuccess = true) {
 			const settingsCopy = { ...(this.settings as Settings) };
 			const newSettings = merge({}, this.settings, updates);
-			const sdk = useSdk();
 
 			this.settings = newSettings;
 

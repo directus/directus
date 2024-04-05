@@ -5,7 +5,6 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useSdk } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
 import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
@@ -18,6 +17,7 @@ import {
 	updateField as updateFieldCmd,
 	deleteField as deleteFieldCmd,
 } from '@directus/sdk';
+import sdk from '@/sdk';
 
 type HydrateOptions = {
 	/**
@@ -73,7 +73,6 @@ const fakeFilesField: Field = {
 let currentUpdate: string;
 
 export const useFieldsStore = defineStore('fieldsStore', () => {
-	const sdk = useSdk();
 	const fields = ref<Field[]>([]);
 
 	return {
