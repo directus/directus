@@ -1,6 +1,7 @@
-import api from '@/api';
+import sdk from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { createRelation, readRelations, updateRelation } from '@directus/sdk';
 import { Relation, DeepPartial } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -13,8 +14,7 @@ export const useRelationsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/relations`);
-			this.relations = response.data.data;
+			this.relations = await sdk.request<Relation[]>(readRelations());
 		},
 		async dehydrate() {
 			this.$reset();
@@ -31,22 +31,23 @@ export const useRelationsStore = defineStore({
 				if (existing) {
 					if (isEqual(existing, values)) return;
 
-					const updatedRelationResponse = await api.patch<{ data: Relation }>(
-						`/relations/${collection}/${field}`,
-						values,
-					);
+					// TODO fix the type
+					const fixedType = values as Parameters<typeof updateRelation>[2];
+					const updatedRelationResponse = await sdk.request<Relation>(updateRelation(collection, field, fixedType));
 
 					this.relations = this.relations.map((relation) => {
 						if (relation.collection === collection && relation.field === field) {
-							return updatedRelationResponse.data.data;
+							return updatedRelationResponse;
 						}
 
 						return relation;
 					});
 				} else {
-					const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
+					// TODO fix the type
+					const fixedType = values as Parameters<typeof createRelation>[0];
+					const createdRelationResponse = await sdk.request<Relation>(createRelation(fixedType));
 
-					this.relations = [...this.relations, createdRelationResponse.data.data];
+					this.relations = [...this.relations, createdRelationResponse];
 				}
 			} catch (error) {
 				unexpectedError(error);
