@@ -36,16 +36,14 @@ const mockField = {
 	},
 } as Field;
 
-vi.mock('@/api', () => {
+vi.mock('@/sdk', () => {
 	return {
 		default: {
-			get: (path: string) => {
+			request: (cfg: () => Record<string, any>) => {
+				const { path } = cfg();
+
 				if (path === '/fields') {
-					return Promise.resolve({
-						data: {
-							data: [mockField],
-						},
-					});
+					return Promise.resolve([mockField]);
 				}
 
 				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
@@ -92,7 +90,7 @@ describe('parseField action', () => {
 		});
 
 		fieldsStore.fields = [mockFieldWithTranslations].map(fieldsStore.parseField);
-		expect(fieldsStore.fields[0].name).toEqual('Name en-US');
+		expect(fieldsStore.fields[0]!.name).toEqual('Name en-US');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(true);
 
 		const mockFieldWithoutTranslations = merge({}, mockField, {
@@ -107,7 +105,7 @@ describe('parseField action', () => {
 		});
 
 		fieldsStore.fields = [mockFieldWithoutTranslations].map(fieldsStore.parseField);
-		expect(fieldsStore.fields[0].name).toEqual('Name');
+		expect(fieldsStore.fields[0]!.name).toEqual('Name');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(false);
 	});
 
@@ -126,7 +124,7 @@ describe('parseField action', () => {
 		});
 
 		fieldsStore.fields = [mockFieldWithTranslations].map(fieldsStore.parseField);
-		expect(fieldsStore.fields[0].name).toEqual('name en-US');
+		expect(fieldsStore.fields[0]!.name).toEqual('name en-US');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(true);
 
 		const mockFieldWithoutTranslations = merge({}, mockField, {
@@ -136,7 +134,7 @@ describe('parseField action', () => {
 		});
 
 		fieldsStore.fields = [mockFieldWithoutTranslations].map(fieldsStore.parseField);
-		expect(fieldsStore.fields[0].name).toEqual('Name');
+		expect(fieldsStore.fields[0]!.name).toEqual('Name');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(false);
 	});
 });
