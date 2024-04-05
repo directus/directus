@@ -1940,6 +1940,9 @@ interfaces:
       inlinecode: Вбудований код
       delimiter: Розділювальний символ
       checklist: Список
+      toggle: Перемикач
+      alignment: Вирівнювання
+      raw: Незавершений HTML
   input-autocomplete-api:
     input-autocomplete-api: Автоматичне доповнення вводу (API)
     description: Автодоповнення значень пошуку через зовнішній API.
@@ -2056,6 +2059,7 @@ displays:
     description: Відобразити форматовану версію об'єкту
   hash:
     hash: Хеш
+    description: Показати відредаговану версію показника
   icon:
     icon: Іконка
     description: Відображати як значок
@@ -2163,16 +2167,36 @@ layouts:
     no_group: Без Групи
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
+vertical: Вертикальний
 x_axis: Вісь X
 y_axis: Вісь Y
+y_axis_function: Функція осі Y
 show_x_only: Показувати лише вісь X
 show_y_only: Показувати лише вісь Y
+show_data_label: Показати мітку з даними
 both: Обидва
+show_axis_labels: Показати мітки осей
+function: Функція
+half_circle: Півколо
+full_circle: Повне коло
+stroke_width: Ширина обведення
+rounded_stroke: Заокруглене обведення
+thin: Тонкий
+medium: Середній
+broad: Широкий
+show_labels: Показати мітки
+show_legend: Показати історію
+right: Справа
+left: Зліва
+donut: Кільце
 panels:
   metric:
     name: Метрична
     description: Показати одне значення на основі запиту
     field: Поле
+  metric_list:
+    name: Список метрик
+    description: Перерахувати та візуалізувати загальні метрики з колекції
   time_series:
     name: Серії часу
     description: Відображення лінійного графіку на основі значень з часом
@@ -2193,27 +2217,66 @@ panels:
     select_collection: Виберіть колекцію.
   linechart:
     name: Лінійна діаграма
+    description: Лінійна діаграма для порівняння змін параметрів поля
+    disabled_grouping: Недоступно, коли вибрано режим групування.
     disabled_no_grouping: Вимкнено, якщо групування не вибрано.
     show_marker: Показати маркер підказки
     curve_type: Тип кривої
+    smooth: Згладити
     straight: Прямо
     step_line: Поетапно
     show_legend: Показати історію
   meter:
     name: Вимірювач
     description: Вимірювач для визначення значень
+  piechart:
+    name: Кругова або Кільцева діаграма
+    description: Кругова діаграма, що показує співвідношення між групами у колонках
+  variable:
+    name: Загальна змінна
+    description: Встановіть загальне значення для використання в наступних фільтрах панелей
+    variable_key: Ключ змінної
   relational-variable:
     name: Глобальна реляційна змінна
     description: Встановити глобальне реляційне значення для використання у фільтрі інших панелей
+    variable_key: Ключ змінної
+    multiple: Множина
     multiple-label: Вибрати кілька елементів
 triggers:
   common:
+    response_body: Служба реагування
     response_body_all: Всі дані
     response_body_last: Дані Останньої Дії
+  event:
+    name: Обробка подій
+    description: Запуск внаслідок подій на платформі або в даних
+    action: 'Дія (без блокування)'
+    filter: 'Фільтр (блокування)'
   webhook:
+    name: Вебхук
+    description: Запуск за вхідним HTTP-запитом
     method: Метод
+    async: Асинхронний
   operation:
     name: Інша Автоматизація
+    description: Запуск іншим потоком, для ланцюжкового зв'язку
+    preview: Запуск внаслідок дій в іншому потоці
+  schedule:
+    name: Графік (CRON)
+    description: Запуск у визначені моменти часу
+    cron: Проміжок
+  manual:
+    name: Ручний режим
+    description: Запуск у ручному режимі в межах вибраної колекції (колекцій)
+    collection_and_item: Сторінки колекцій та елементів
+    collection_only: Сторінка колекції
+    item_only: Сторінка лише елемента
+    collection_page: Сторінка колекції
+    require_selection: Потребує вибору
+a_flow_uuid: Виберіть потік для запуску...
+any_string_or_json: Будь-який рядок або JSON...
+item_payload_placeholder: Це JSON, який використовується для оновлення значень полів елемента...
+operation_variables_note: Ви можете отримати доступ до даних потоку за допомогою таких змінних, як **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** та **{'{'}{'{'}$accountability{'}'}{'}'}** або зверніться до попередніх операцій за допомогою **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Умова
@@ -2221,6 +2284,7 @@ operations:
   exec:
     name: Виконати Скрипт
     description: Виконати довільний код щоб змінити дані
+    modules: 'Можна використовувати наступні **Node modules**:'
   item-create:
     name: Створити дані
     description: Створити елементи в базі даних
@@ -2246,9 +2310,18 @@ operations:
     payload: Вміст
     query: Запит
   json-web-token:
+    name: Веб-токен JSON (JWT)
+    description: Підписання та перевірка веб-токенів JSON
+    operation: Операція
+    secret: Приватно
+    secret_placeholder: Введіть ключ...
     payload: Вміст
     token: Ключ
+    token_placeholder: eyJhbGciOi......
     options: Параметри
+    sign: Маркер підпису
+    verify: Перевірка токену
+    decode: Розшифровування токену
   log:
     name: Увійти в консоль
     description: Вивести щось в консоль
@@ -2266,6 +2339,8 @@ operations:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
+    recipient_placeholder: Введіть UUID...
+    recipient_note: Додайте UUID користувача і натисніть Enter...
     message: Повідомлення
     subject: Тема
   request:
@@ -2302,8 +2377,12 @@ standard: Стандартний
 compact: Компактна
 style: Стиль
 fonts:
+  thin: Тонкий
   normal: Нормальний
+  medium: Середній
   bold: Напівжирний
   black: Чорний
   italic: Курсив
   auto: Автоматично
+search_flow: Пошуковий потік...
+percent: Відсоток
