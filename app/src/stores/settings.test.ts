@@ -1,4 +1,4 @@
-import api from '@/api';
+import sdk from '@/sdk';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
 import { Settings } from '@directus/types';
@@ -53,39 +53,30 @@ const mockUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', role: { admin_acc
 
 const mockShareUser = { share: 'a6eff2c1-d26b-43b2-bafd-84bb58c3b8ce', role: { admin_access: false } } as any;
 
-vi.mock('@/api', () => {
+vi.mock('@/sdk', () => {
 	return {
 		default: {
-			get: (path: string) => {
-				if (path === '/settings') {
-					return Promise.resolve({
-						data: {
-							data: mockSettings,
-						},
-					});
+			request: (cfg: () => Record<string, any>) => {
+				const { path, method } = cfg();
+
+				if (method === 'GET' && path === '/settings') {
+					return Promise.resolve(mockSettings);
 				}
 
-				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
-			},
-			patch: (path: string) => {
-				if (path === '/settings') {
-					return Promise.resolve({
-						data: {
-							data: mockSettings,
-						},
-					});
+				if (method === 'PATCH' && path === '/settings') {
+					return Promise.resolve(mockSettings);
 				}
 
-				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
+				return Promise.reject(new Error(`Path "${method} ${path}" is not mocked in this test`));
 			},
 		},
 	};
 });
 
-let apiGetSpy: MockInstance;
+let sdkRequestSpy: MockInstance;
 
 beforeEach(() => {
-	apiGetSpy = vi.spyOn(api, 'get');
+	sdkRequestSpy = vi.spyOn(sdk, 'request');
 });
 
 afterEach(() => {
@@ -97,7 +88,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(apiGetSpy).not.toHaveBeenCalled();
+		expect(sdkRequestSpy).not.toHaveBeenCalled();
 		expect(settingsStore.settings).toEqual(null);
 	});
 
@@ -108,7 +99,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(apiGetSpy).not.toHaveBeenCalled();
+		expect(sdkRequestSpy).not.toHaveBeenCalled();
 		expect(settingsStore.settings).toEqual(null);
 	});
 
@@ -119,7 +110,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(apiGetSpy).toHaveBeenCalledOnce();
+		expect(sdkRequestSpy).toHaveBeenCalledOnce();
 		expect(settingsStore.settings).toEqual(mockSettings);
 	});
 });
@@ -138,12 +129,10 @@ describe('dehyrate action', () => {
 });
 
 describe('updateSettings action', async () => {
-	let ApiPatchSpy: MockInstance;
 	let NotifySpy: MockInstance;
 	let unexpectedErrorSpy: MockInstance;
 
 	beforeEach(() => {
-		ApiPatchSpy = vi.spyOn(api, 'patch');
 		NotifySpy = vi.spyOn(notifyUtil, 'notify');
 		unexpectedErrorSpy = vi.spyOn(unexpectedErrorUtil, 'unexpectedError').mockReturnValue();
 	});
@@ -152,7 +141,7 @@ describe('updateSettings action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.updateSettings({});
 
-		expect(ApiPatchSpy).toHaveBeenCalledOnce();
+		expect(sdkRequestSpy).toHaveBeenCalledOnce();
 		expect(NotifySpy).toHaveBeenCalledOnce();
 	});
 
@@ -160,18 +149,18 @@ describe('updateSettings action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.updateSettings({}, false);
 
-		expect(ApiPatchSpy).toHaveBeenCalledOnce();
+		expect(sdkRequestSpy).toHaveBeenCalledOnce();
 		expect(NotifySpy).not.toHaveBeenCalled();
 	});
 
 	test('should call unexpectedError on catch', async () => {
 		// intentional reject to induce error
-		ApiPatchSpy.mockImplementation(() => Promise.reject());
+		sdkRequestSpy.mockImplementation(() => Promise.reject());
 
 		const settingsStore = useSettingsStore();
 		await settingsStore.updateSettings({}, false);
 
-		expect(ApiPatchSpy).toHaveBeenCalledOnce();
+		expect(sdkRequestSpy).toHaveBeenCalledOnce();
 		expect(NotifySpy).not.toHaveBeenCalled();
 		expect(unexpectedErrorSpy).toHaveBeenCalledOnce();
 	});
