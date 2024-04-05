@@ -1,0 +1,59 @@
+<script setup>
+const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+</script>
+
+<template>
+	<div class="page">
+		<aside>
+			<NuxtLink to="/">Home</NuxtLink>
+			<nav>
+				<section v-for="section of navigation" :key="section._path">
+					<span>{{ section.title }}</span>
+					<nav>
+						<NuxtLink v-for="link of section.children" :key="link._path" :to="link._path">
+							{{ link.title }}
+						</NuxtLink>
+					</nav>
+				</section>
+			</nav>
+		</aside>
+		<main>
+			<slot />
+		</main>
+	</div>
+</template>
+
+<style lang="scss">
+body, h1, h2, h3 {
+	margin: 0;
+}
+h2, h3, h4 {
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+}
+</style>
+
+<style lang="scss" scoped>
+.page {
+	display: grid;
+	grid-template-columns: 175px auto;
+	gap: 2em;
+}
+aside {
+	background: lightgrey;
+	height: 100vh;
+	overflow-y: scroll;
+	position: sticky;
+}
+main {
+	max-width: 80ch;
+	padding-top: 2rem;
+	max-height: 100vh;
+	overflow-y: scroll;
+}
+a {
+	display: block;
+}
+</style>
