@@ -234,7 +234,9 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				await fieldsStore.upsertField(this.collection, this.editing, this.fieldUpdates);
+				if (Object.keys(this.fieldUpdates).length > 0) {
+					await fieldsStore.upsertField(this.collection, this.editing, this.fieldUpdates);
+				}
 
 				for (const collection of Object.values(this.collections)) {
 					if (!collection || !collection.collection) continue;
