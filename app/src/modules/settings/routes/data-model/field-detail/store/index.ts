@@ -8,7 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set } from 'lodash';
+import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
@@ -359,7 +359,7 @@ export const useFieldDetailStore = defineStore({
 				});
 			}
 
-			return items;
+			return sortBy(items, 'name');
 		},
 	},
 });
