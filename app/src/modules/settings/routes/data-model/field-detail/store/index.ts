@@ -5,7 +5,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { LOCAL_TYPES } from '@directus/constants';
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -30,16 +29,16 @@ export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 export const useFieldDetailStore = defineStore({
 	id: 'fieldDetailStore',
 	state: () => ({
-		// whether there are additional field metadata being fetched (used in startEditing)
+		/** Whether there are additional field metadata being fetched (used in startEditing) */
 		loading: false,
 
-		// The current collection we're operating in
+		/** The current collection we're operating in */
 		collection: undefined as string | undefined,
 
-		// What field we're currently editing ("+"" for new)
+		/** What field we're currently editing ("+"" for new)  */
 		editing: '+' as string,
 
-		// Full field data with edits
+		/** Full field data with edits  */
 		field: {
 			field: undefined,
 			type: undefined,
@@ -47,22 +46,22 @@ export const useFieldDetailStore = defineStore({
 			meta: {},
 		} as DeepPartial<Field>,
 
-		// Contains only edited properties of the field
+		/** Contains only edited properties of the field */
 		fieldUpdates: {} as DeepPartial<Field>,
 
-		// Relations that will be upserted as part of this change
+		/** Relations that will be upserted as part of this change */
 		relations: {
 			m2o: undefined as DeepPartial<Relation> | undefined,
 			o2m: undefined as DeepPartial<Relation> | undefined,
 		},
 
-		// Collections that will be upserted as part of this change
+		/** Collections that will be upserted as part of this change */
 		collections: {
 			junction: undefined as DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined,
 			related: undefined as DeepPartial<Collection & { fields: DeepPartial<Field>[] }> | undefined,
 		},
 
-		// Fields that will be upserted as part of this change
+		/** Fields that will be upserted as part of this change */
 		fields: {
 			corresponding: undefined as DeepPartial<Field> | undefined,
 			junctionCurrent: undefined as DeepPartial<Field> | undefined,
@@ -71,12 +70,16 @@ export const useFieldDetailStore = defineStore({
 			oneCollectionField: undefined as DeepPartial<Field> | undefined,
 		},
 
-		// Any items that need to be injected into any collection
+		/** Any items that need to be injected into any collection */
 		items: {} as Record<string, Record<string, any>[]>,
 
-		// Various flags that alter the operations of watchers and getters
-		localType: 'standard' as (typeof LOCAL_TYPES)[number],
+		/** The local type used for the current field */
+		localType: 'standard' as LocalType,
+
+		/** Whether to auto-fill the field names of the junction relation */
 		autoGenerateJunctionRelation: true,
+
+		/** Whether the field settings are currently being saved */
 		saving: false,
 	}),
 	actions: {
@@ -97,7 +100,7 @@ export const useFieldDetailStore = defineStore({
 
 				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
 
-				// o2m relation is the same regardless of type
+				// O2M relation is the same regardless of type
 				this.relations.o2m = relations.find(
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field,
 				) as DeepPartial<Relation> | undefined;
@@ -113,7 +116,7 @@ export const useFieldDetailStore = defineStore({
 					) as DeepPartial<Relation> | undefined;
 				}
 
-				// re-fetch field meta to get the raw untranslated values
+				// Re-fetch field meta to get the raw untranslated values
 				try {
 					this.loading = true;
 					const response = await api.get(`/fields/${collection}/${field}`);
