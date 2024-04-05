@@ -1,4 +1,4 @@
-import api from '@/api';
+import sdk from '@/sdk';
 import { Permission, PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -8,7 +8,7 @@ import { useUserStore } from './user';
 import { randomIdentifier, randomUUID } from '@directus/random';
 import { mockedStore } from '@/__utils__/store';
 
-vi.mock('@/api');
+vi.mock('@/sdk');
 
 let sample: {
 	collection: string;
@@ -74,9 +74,9 @@ describe('actions', () => {
 				action: 'create',
 			};
 
-			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: { data: [permissionWithDynamicVariablesInPresets] },
-			});
+			vi.spyOn(vi.mocked(sdk), 'request').mockResolvedValueOnce(
+				[permissionWithDynamicVariablesInPresets]
+			);
 
 			const permissionsStore = usePermissionsStore();
 			await permissionsStore.hydrate();
