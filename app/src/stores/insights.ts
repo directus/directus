@@ -1,11 +1,12 @@
-import api from '@/api';
 import { useExtensions } from '@/extensions';
+import sdk from '@/sdk';
 import { usePermissionsStore } from '@/stores/permissions';
 import { Dashboard } from '@/types/insights';
 import { fetchAll } from '@/utils/fetch-all';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { Panel } from '@directus/extensions';
+import { createPanels, deletePanels } from '@directus/sdk';
 import { isSystemCollection } from '@directus/system-data';
 import type { Item } from '@directus/types';
 import { applyOptionsData, getSimpleHash, toArray } from '@directus/utils';
@@ -243,10 +244,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		);
 
 		try {
-			const requests: Promise<AxiosResponse<any, any>>[] = [];
+			const requests: Promise<any>[] = [];
 
-			if (gqlString) requests.push(api.post(`/graphql`, { query: gqlString }));
-			if (systemGqlString) requests.push(api.post(`/graphql/system`, { query: systemGqlString }));
+			if (gqlString) requests.push(sdk.query(gqlString, {}, 'items'));
+			if (systemGqlString) requests.push(sdk.query(systemGqlString, {}, 'system'));
 
 			const responses = await Promise.all(requests);
 
@@ -422,24 +423,26 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		saving.value = true;
 
 		try {
-			const requests: Promise<AxiosResponse<any, any>>[] = [];
+			const requests: Promise<any>[] = [];
 
 			if (edits.create) {
 				// Created edits might come with a temporary ID for editing. Make sure to submit to API without temp ID
-				requests.push(
-					api.post(
-						`/panels`,
-						edits.create.map((create) => omit(create, 'id')),
-					),
-				);
+				//TODO fix type
+				const panels = edits.create.map((create) => omit(create, 'id')) as Parameters<typeof createPanels>[0]
+				requests.push(sdk.request(createPanels(panels)));
 			}
 
 			if (edits.update) {
-				requests.push(api.patch(`/panels`, edits.update));
+				// TODO update updatePanels signature
+				requests.push(sdk.request(() => ({
+					path: '/panels',
+					method: 'PATCH',
+					body: JSON.stringify(edits.update),
+				})));
 			}
 
 			if (edits.delete) {
-				requests.push(api.delete(`/panels`, { data: edits.delete }));
+				requests.push(sdk.request(deletePanels(edits.delete)));
 			}
 
 			await Promise.all(requests);
