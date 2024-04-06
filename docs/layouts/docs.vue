@@ -13,9 +13,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 				<section v-for="section of navigation" :key="section._path">
 					<span>{{ section.title }}</span>
 					<nav>
-						<NuxtLink v-for="link of section.children" :key="link._path" :to="link._path">
-							{{ link.title }}
-						</NuxtLink>
+						<NavSectionList :list="section.children" />
 					</nav>
 				</section>
 			</nav>
@@ -56,7 +54,7 @@ main {
 	max-height: 100vh;
 	overflow-y: scroll;
 }
-a {
-	display: block;
+section {
+	margin: 1rem 0;
 }
 </style>
