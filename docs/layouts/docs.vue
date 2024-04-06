@@ -6,7 +6,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 </script>
 
 <template>
-	<div class="page">
+	<div class="page docs">
 		<aside>
 			<NuxtLink to="/">Home</NuxtLink>
 			<nav>
@@ -51,7 +51,7 @@ aside {
 	position: sticky;
 }
 main {
-	max-width: 80ch;
+	width: 80ch;
 	padding-top: 2rem;
 	max-height: 100vh;
 	overflow-y: scroll;

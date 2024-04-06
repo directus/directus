@@ -4,8 +4,6 @@ description: Learn about the Directus Data Engine and Studio, when to use it, an
 
 # Introduction
 
-<!-- TODO: HIDE THIS PAGE IN SIDEBAR -->
-
 Directus is a Composable Data Platform built to democratize data. Connect it to your database, asset storage, and external services, and immediately receive rich developer tooling (the Engine) and an intuitive and approachable web application (the Studio) to work with your data. Granular and powerful access control means users can only see, interact, and create data allowed by their role used by both the Engine and Studio.
 
 
@@ -57,6 +55,8 @@ Establish a single source of truth for all data. Build no-code analytics dashb
 ## How It Works
 
 Directus sits alongside your new or existing SQL database and S3-compatible asset storage.
+
+:directus-image{uuid="da56b1ed-e53d-4e60-9156-787e8e2e6402" alt="Testo"}
 
 <!-- TODO: ARCHITECTURE DIAGRAM -->
 

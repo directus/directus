@@ -6,11 +6,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter -f ./content -q -d ./dictionary.txt"
+    "spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter -f ./content -q -d ./dictionary.txt"
   },
   "dependencies": {
     "@directus/format-title": "^10.1.1",
     "@nuxt/content": "^2.12.1",
+    "@nuxt/image": "^1.5.0",
     "nuxt": "^3.11.2",
     "sass": "^1.74.1"
   },
