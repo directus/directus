@@ -1,5 +1,8 @@
 <script setup>
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+import sidebarExclude from '@/utils/sidebarExclude'
+
+const queryBuilder = queryContent().where({ _path: { $not: { $containsAny: sidebarExclude } }})
+const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(queryBuilder))
 </script>
 
 <template>
