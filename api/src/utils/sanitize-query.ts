@@ -144,7 +144,7 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 		try {
 			filters = parseJSON(filters);
 		} catch {
-			throw new InvalidQueryError({ reason: 'Invalid filter object' });
+			throw new InvalidQueryError({ reason: 'Invalid JSON for filter object' });
 		}
 	}
 

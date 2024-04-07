@@ -235,7 +235,7 @@ describe('filter', () => {
 			throw new Error();
 		});
 
-		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid filter object.');
+		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid JSON for filter object.');
 	});
 });
 
