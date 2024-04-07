@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: المعرِّف
 avatar: الصورة الرمزية
 application: التطبيق
@@ -27,6 +7,7 @@ method: طريقة
 published: تم نشره
 draft: مسوّدة
 archived: مؤرشف
+extensions: الإضافات
 modules: الوحدات
 module_bar: شريط الوحدة
 logs: السجلات
@@ -35,6 +16,7 @@ tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 location: الموقع
+collection_names_are_case_sensitive: أسماء المجموعات حساسة الحالة
 condition_rules: قوانين الشرط
 input: إدخال
 maps: الخرائط
@@ -55,9 +37,28 @@ modifier: معدِل
 extension_interface: الواجهة
 extension_display: عرض
 extension_layout: نموذج العرض
+extension_module: وحدة نمطية
 extension_panel: لوحة
+extension_theme: السمة
 extension_hook: ربط
+extension_endpoint: نقطة الوصول
+extension_operation: عمليّة
+extension_bundle: حُزْمَة
+extension_interfaces: واجهات
+extension_displays: عُروض
+extension_layouts: نماذج العرض
 extension_modules: الوحدات
+extension_panels: لوحات
+extension_themes: السمات
+extension_hooks: روابط
+extension_endpoints: نقطة الوصول
+extension_operations: عمليات
+extension_bundles: حُزَم
+extension_reload_required: مطلوب إعادة تحميل الصفحة
+extension_reload_required_copy: مطلوب إعادة تحميل الصفحة لرؤية التغييرات بعد تفعيل أو تعطيل إضافات التطبيق.
+extension_reload_now: إعادة التحميل الآن
+enable: تفعيل
+disable: تعطيل
 custom: تخصيص
 hook: ربط
 fill_width: العرض الكامل
@@ -89,6 +90,7 @@ create_webhook: إنشاء Webhook
 create_custom_translation: إنشاء ترجمة مخصصة
 edit_custom_translation: إنشاء ترجمة مخصصة
 no_custom_translations: ترجمات مخصصة
+no_custom_translations_copy: لا توجد ترجمات مخصصة حتى الآن.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
@@ -104,6 +106,31 @@ rename_folder: إعادة تسمية المجلد
 delete_folder: حذف المجلد
 prefix: بادئة
 suffix: لاحقة
+keep: احتفظ
+version: إصدار
+version_key: مفتاح الإصدار
+version_name: اسم الإصدار
+main_version: رئيسي
+switch_version: تبديل الإصدار
+switch_version_copy: هل أنت متيقِّن من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
+create_version: إنشاء الإصدار
+rename_version: إعادة تسمية الإصدار
+compare_version: مقارنة الإصدار
+save_version: حفظ الإصدار
+promote_version: ترقية الإصدار
+promote_version_disabled: لا يوجد تغييرات
+promote_version_drawer_title: ترقية {version} إلى الإصدار الرئيس
+promote_version_changes: التغييرات
+promote_version_preview: معاينة
+outdated_notice: >-
+  تم تحديث العنصر الرئيس منذ إنشاء هذا الإصدار. يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند ترقية هذا الإصدار إلى العنصر الرئيس.
+promote_notice: >-
+  يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند ترقية هذا الإصدار إلى العنصر الرئيس.
+delete_version: حذف الإصدار
+delete_version_copy: >-
+  هل أنت متيقِّن من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
+delete_on_promote_copy: >-
+  هل تريد حذف أو إبقاء الإصدار "{version}" بعد الترقية؟
 reset_bookmark: إعادة تعيين المفضلة
 update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
@@ -149,11 +176,16 @@ validationError:
   nnull: لا يمكن أن تكون القيمة فارغة
   required: هذه القيمة مطلوبة
   unique: القيمة يجب أن تكون
+  email: القيمة يجب أن تكون عنوان بريد إلكتروني صحيح
   regex: القيمة لا تحتوي على التنسيق الصحيح
-  nstarts_with: يجب أن لا تحتوي القيمة على {substring}
-  nistarts_with: يجب أن لا تحتوي القيمة على {substring}
-  ends_with: يجب أن لا تحتوي القيمة على {substring}
-  iends_with: Value has to end with {substring}
+  starts_with: القيمة يجب أن تبدأ ب {substring}
+  istarts_with: القيمة يجب أن تبدأ ب {substring}
+  nstarts_with: القيمة لا يمكن أن تبدأ ب {substring}
+  nistarts_with: القيمة لا يمكن أن تبدأ ب {substring}
+  ends_with: القيمة يجب أن تنتهي ب {substring}
+  iends_with: القيمة يجب أن تنتهي ب {substring}
+  nends_with: القيمة لا يمكن أن تنتهي ب {substring}
+  niends_with: القيمة لا يمكن أن تنتهي ب {substring}
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص
@@ -163,6 +195,7 @@ allow_multiple: السماح بالاختيار المتعدد
 allow_multiple_to_be_open: السماح بالفتح المتعدد
 enter_value_to_replace_nulls: الرجاء إدخال قيمة جديدة لاستبدال أي ULLL حاليا داخل هذا الحقل.
 field_standard: قياسي
+field_presentation: العرض و الأسماء المستعارة
 field_file: ملف واحد
 field_files: عدة ملفات
 field_m2o: العلاقة
@@ -179,6 +212,8 @@ permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
+presets_field_warning: 'يجب تكوين قوالب الإعدادات للعلاقات للحقل "{field}" بالشكل "التفصيلي".'
+presentation_and_aliases: العرض و الأسماء المستعارة
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
@@ -233,6 +268,7 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 date_range: فترة التاريخ
+translation_key_placeholder: أدخل مفتاح...
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
@@ -248,6 +284,14 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
+geometry:
+  All: الهندسة (الكل)
+  Point: نقطة
+  Polygon: مضلّع
+  MultiPoint: نقاط متعددة
+theme_auto: تلقائي (مبني على النظام)
+theme_light: الوضع الفاتح
+theme_dark: الوضع المُعتِم
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -285,6 +329,11 @@ o2m_relationship: علاقة واحد لكثير
 m2m_relationship: علاقة كثير لكثير
 m2a_relationship: علاقة كثيرون لأية علاقة
 invalid_item: عنصر غير صالح
+require_confirmation: يتطلب تأكيدا
+dialog: مربع حوار
+confirmation_dialog: نوافذ التأكيد
+confirmation_description: وصف التأكيد
+confirmation_input_fields: تأكيد حقول الإدخال
 next: التالي
 field_name: إسم الحقل
 translations: الترجمة
@@ -303,6 +352,7 @@ updated_on: تم التحديث في
 updated_by: تم التحديث بواسطة
 primary_key: المفتاح الرئيسي
 foreign_key: مفتاح خارجي
+field_key: مفتاح الحقل
 finish_setup: إنهاء التثبيت
 dismiss: تجاهل
 toggle_raw_editor: فتح \ إغلاق محرر الخريطة
@@ -323,6 +373,7 @@ clear_items: مسح كل العناصر
 reset_to_default: إعادة التعيين إلى الوضع الإفتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
+archive_all: أرشفة الكل
 show_all_activity: أظهر كل النشاط
 page_not_found: الصفحة غير موجودة
 page_not_found_body: الصفحة التي تبحث عنها غير موجودة.
@@ -431,6 +482,7 @@ modified: معدّل
 owner: المالك
 edited_by: تم التحرير بواسطة
 folder: مجلد
+folders: المجلدات
 zoom: تكبير/تصغير
 download: تنزيل
 open: فتح
@@ -444,12 +496,14 @@ import_from_url: استيراد ملف من رابط
 replace_from_device: استبدال الملف من الجهاز
 replace_from_library: استبدال الملف من المكتبة
 replace_from_url: استبدال الملف من رابط
+no_image_selected: لم يتم اختيار أي صورة
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
 open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
+exporting_no_items_to_export: لا توجد عناصر للتصدير. تعديل تكوين التصدير و/أو إضافة عناصر إلى المجموعة.
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -465,6 +519,7 @@ generated_uuid: مولد UUID
 manual_string: نص مدخل يدوياً
 save_and_create_new: حفظ وإنشاء جديد
 save_and_stay: حفظ و إستمرار
+save_and_quit: الحفظ والخروج
 save_as_copy: حفظ كنسخة إضافية
 add_existing: إضافة من القائمة
 creating_items: إنشاء عنصر
@@ -474,8 +529,11 @@ enable_select_button: تفعيل زر التحديد
 allow_duplicates: السماح بالتكرارات
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
+expand: عرض الكل
+collapse: طي
 select_item: تحديد عنصر
 no_items: لا يوجد عناصر
+search_items: البحث عن عناصر...
 disabled: مُعطل
 information: معلومات
 report_bug: تبليغ عن خطأ
@@ -554,7 +612,12 @@ bookmark_doesnt_exist_copy: لم يتم العثور على العلامة ال�
 bookmark_doesnt_exist_cta: إضافة إلى مجموعة
 select_an_item: تحديد عنصر...
 edit: تعديل
+edit_item: تحرير بند
 enabled: تمكين
+partially_enabled: مفعل جزئياً
+enable_all: تفعيل الكل
+disable_all: تعطيل الكل
+enabled_dev_tooltip: إضافات التطبيق دائمًا مفعلة في وضع التطوير
 disable_tfa: تعطيل المصادقة الثنائية 2FA
 admin_disable_tfa_text: هل أنت متيقِّن من انك تريد تعطيل المصادقة الثنائية لهذا المستخدم؟
 tfa_setup: إعداد خاصية التوثيق الثنائي
@@ -566,37 +629,39 @@ auto_fill: تجديد الخدمة الذاتية
 corresponding_field: الوحدة البرمجية المقابلة
 errors:
   COLLECTION_NOT_FOUND: "المجموعة غير موجودة"
+  CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
+  CONTENT_TOO_LARGE: العنصر/الملف المقدم كبير جداً
   FIELD_NOT_FOUND: الحقل غير موجود
   FORBIDDEN: محظور
+  ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
+  INTERNAL_SERVER_ERROR: خطأ غير متوقع
+  INVALID_CONFIG: تكوين غير صالح
   INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
+  INVALID_FOREIGN_KEY: مفتاح مرشح غير صحيح
+  INVALID_IP: عنوان IP غير مسموح به
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: المستخدم ينتمي إلى موفر مصادقة مختلف
   INVALID_QUERY: طلب غير صحيح
-  INVALID_CONFIG: تكوين غير صالح
   INVALID_TOKEN: رمز دخول غير صحيح
-  INVALID_IP: عنوان IP غير مسموح به
   INVALID_USER: أخفقت مصادقة المستخدم
   ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
-  ROUTE_NOT_FOUND: غير موجود
-  RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
-  USER_SUSPENDED: المستخدم موقوف
-  CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
-  INTERNAL_SERVER_ERROR: خطأ غير متوقع
-  NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
-  ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
-  VALUE_TOO_LONG: الاسم طويل جدا
-  VALUE_OUT_OF_RANGE: القيمة خارج النطاق
-  INVALID_FOREIGN_KEY: مفتاح مرشح غير صحيح
-  UNKNOWN: خطأ غير متوقع
-  SERVICE_UNAVAILABLE: الخدمة غير متاحة
-  UNSUPPORTED_MEDIA_TYPE: نوع الوسائط غير مدعوم
-  UNEXPECTED_RESPONSE: استجابة غير متوقعة
-  TOKEN_EXPIRED: انتهت صلاحية الرمز
-  RANGE_NOT_SATISFIABLE: النطاق غير صالح
   METHOD_NOT_ALLOWED: الطريقة غير مسموح بها
+  NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  RANGE_NOT_SATISFIABLE: النطاق غير صالح
+  RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   REQUESTS_EXCEEDED: تم بلوغ حد الطلبات
+  ROUTE_NOT_FOUND: غير موجود
+  SERVICE_UNAVAILABLE: الخدمة غير متاحة
+  TOKEN_EXPIRED: انتهت صلاحية الرمز
+  UNEXPECTED_RESPONSE: استجابة غير متوقعة
+  UNKNOWN: خطأ غير متوقع
+  UNPROCESSABLE_CONTENT: محتوى غير قابل للمعالجة
+  UNSUPPORTED_MEDIA_TYPE: نوع الوسائط غير مدعوم
+  USER_SUSPENDED: المستخدم موقوف
+  VALUE_OUT_OF_RANGE: القيمة خارج النطاق
+  VALUE_TOO_LONG: الاسم طويل جدا
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...
@@ -642,6 +707,7 @@ one_filtered_item: '1 عنصر مصفى'
 delete_collection_are_you_sure: >-
   هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
 delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
+delete_collection_peer_dependencies: سيتم حذف الحقول التالية أيضا، لأنها مرتبطة بالمجموعة الحالية.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
@@ -712,10 +778,12 @@ upload_pending: التحميل معلق
 drag_file_here: السحب والإفلات الملف هنا
 click_to_browse: انقر للتصفح
 interface_options: خيارات الواجهة
+display_options: خيارات العرض
 layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
 collection_setup: لا توجد مجموعات الإعداد
+optional_system_fields: حقول اختيارية
 value_unique: القيمة يجب أن تكون
 all_activity: كل النشاط
 create_item: أنشئ عنصر
@@ -766,8 +834,14 @@ label: تسمية
 flows: التدفقات
 flow: التدفق
 select_a_flow: حدد تدفق
+run_flow_confirm: هل أنت متأكد من أنك تريد تنفيذ هذا التدفق؟
+run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
+run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
+run_flow: تشغيل التدفق
 run_flow_success: تدفق "{flow}" تم بنجاح
+field_name_placeholder: أدخل اسم الحقل...
+field_key_placeholder: أدخل مفتاح الحقل...
 trigger: المحفز
 trigger_options: خيارات المحفز
 view_trigger: عرض المحفز
@@ -823,22 +897,41 @@ no_dashboards_copy: ليس لديك أي لوحة تحكم حتى الآن.
 create_dashboard: إنشاء لوحة تحكم
 dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
+no_data_in_flow: لم يتم إنتاج أو الوصول إلى أي بيانات ضمن هذا التدفق
 accountability: المساءلة
+payload: الحمولة
 details: التفاصيل
 full_screen: ملء الشاشة
+full_text_search: البحث عن النص الكامل
 edit_panels: تحرير لوحة
+center_align: توسيط العناصر
+left_align: محاذاة لليسار
+right_align: محاذاة لليمين
+fit_to_screen: ملائمة للشاشة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
+quality: الجودة
 width: العرض
 height: الارتفاع
 source: مصدر
 url_placeholder: أدخل عنوان الرابط
 display_text: عرض النص
+interface_group_selection: الاختيار
+interface_group_relational: مرتبطة
+interface_group_presentation: عرض
+interface_group_groups: المجموعات
+interface_group_other: غير ذلك
 tooltip: تلميح
 unlimited: غير محدود
 open_link_in: افتح الرابط في
+new_tab: تبويب جديد
+current_tab: التبويب الحالي
+save_image: حفظ الصورة
+save_media: حفظ الوسائط
 wysiwyg_options:
+  aligncenter: محاذاة للمركز
+  alignjustify: ضبط المحاذاة
   alignleft: محاذاة إلى اليسار
   alignright: محاذاة إلى اليمين
   forecolor: لون الواجهة
@@ -846,13 +939,22 @@ wysiwyg_options:
   bold: عريض
   italic: خط مائل
   underline: مسطر
+  strikethrough: يتوسطه خط
+  subscript: منخفض
+  superscript: مرتفع
   codeblock: نص برمجي
+  blockquote: اقتباس
+  bullist: قائمة نُقطيّة
+  numlist: قائمة مرقّمة
+  hr: مسطرة أفقية
   link: إضافة/تحرير الرابط
   unlink: إزالة الرابط
+  media: إضافة/تعديل الوسائط
   image: إضافة/تحرير الصورة
   copy: نسخ
   cut: قص
   paste: لصق
+  heading: العنوان
   h1: العنوان 1
   h2: العنوان 2
   h3: العنوان 3
@@ -861,11 +963,15 @@ wysiwyg_options:
   h6: العنوان 6
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
+  indent: إزاحة
+  undo: التراجع
+  redo: اعادة
   remove: احذف
   removeformat: إزالة التنسيق
   selectall: تحديد الكل
   table: الجدول
   visualaid: عرض العناصر غير المرئية
+  source_code: تعديل رمز المصدر
   fullscreen: ملء الشاشة
   directionality: الاتجاهية
 dropdown: قائمة منسدلة
@@ -873,6 +979,10 @@ choices: الخيارات
 choices_option_configured_incorrectly: تم تكوين الخيارات بشكل غير صحيح
 deselect: إلغاء تحديد
 deselect_all: إلغاء تحديد الكل
+theme: السمة
+select_a_theme: أختر سمة
+appearance_light: فاتح
+appearance_dark: داكن
 other: أخرى...
 adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
@@ -884,7 +994,9 @@ editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
+settings_permissions: صلاحيات الوصول
 settings_project: إعدادات
+settings_appearance: المظهر
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
 settings_presets: محفوظات
@@ -894,6 +1006,7 @@ scope: مجال
 actions: الإجراءات
 select: حدد...
 layout: نموذج العرض
+tree_view: عرض على شكل شجرة
 changes_are_permanent: التغييرات دائمة
 preset_name_placeholder: يعمل كإعداد افتراضي عندما يكون فارغًا...
 preset_search_placeholder: استعلام البحث...
@@ -901,6 +1014,7 @@ editing_preset: تحرير الإعداد المسبق
 layout_preview: معاينة نموذج العرض
 layout_setup: إعداد نموذج العرض
 data: البيانات
+theme-overrides: تجاوز السمة
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
@@ -922,6 +1036,8 @@ page_help_files_collection: >-
   **مكتبة الملفات** - قائمة جميع أصول الملفات التي تم تحميلها إلى هذا المشروع. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_files_item: >-
   **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
+page_help_settings_appearance: "**المظهر** — مظهر مشروعك وخيارات السمات."
+page_help_settings_extensions: '**الإضافات** - الإضافات المثبتة في مشروعك.'
 page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
@@ -951,6 +1067,8 @@ batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
 cancel: إلغاء
 no_upscale: عدم تكبير أبعاد الصور
+no_extensions: لا توجد إضافات
+no_extensions_copy: لم يتم تثبيت أي إضافات حتى الآن.
 collection: المجموعة
 collections: مجموعات
 content: المحتوى
@@ -979,6 +1097,8 @@ directus_collection:
   directus_shares: تتبع العناصر المشتركة خارجيًا
   directus_users: مستخدمي النظام للمنصة
   directus_webhooks: إعدادات لطلبات HTTP المستندة إلى الأحداث
+  directus_translations: ترجمات مخصصة
+  directus_extensions: إعدادات الإضافات
 fields:
   directus_activity:
     item: المفتاح الأساسي للعنصر
@@ -1058,6 +1178,7 @@ fields:
     last_page: آخر صفحة
     last_access: آخر وصول
     email_notifications: إشعارات البريد الإلكتروني
+    appearance: المظهر
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1074,9 +1195,12 @@ fields:
     project_color: لون المشروع
     project_logo: شعار المشروع
     default_language: اللغة الافتراضية
+    branding: الهويّة البصريّة
     public_foreground: الصورة الأمامية العامة
     public_background: الخلفية العامة
     public_note: ملاحظة عامة
+    theming: القالب الافتراضي
+    default_appearance: المظهر الافتراضي
     auth_password_policy: سياسات كلمة المرور
     auth_login_attempts: محاولات تسجيل الدخول
     files_and_thumbnails: الملفات والتخزين
@@ -1095,6 +1219,7 @@ fields:
     password: كلمة المرور
     date_start: تاريخ البدء
     date_end: تاريخ الانتهاء
+    max_uses: الحد الأقصى للاستخدامات
     times_used: الوقت المستغرق
   directus_fields:
     collection: اسم المجموعة
@@ -1114,6 +1239,7 @@ fields:
     users: المستخدمون في الدور
   directus_webhooks:
     name: الاسم
+    method: الطريقة
     status: حالة
     data: البيانات
     header: الترويسة
@@ -1174,6 +1300,9 @@ field_options:
     sort_field: إختر حقل...
     accountability_divider: المساءلة
     duplication_divider: تكرار
+    preview_divider: معاينة
+    content_versioning_divider: تعيين إصدار للمحتوى
+    enable_versioning: تفعيل عمليّة الإصدار
   directus_files:
     title: عنوان فريد...
     description: وصف اختياري...
@@ -1184,10 +1313,13 @@ field_options:
   directus_roles:
     name: الاسم الفريد لهذا الدور...
     description: وصف لهذا الدور...
+    ip_access: إضافة عناوين IP المسموح بها، نطاقات IP وكتل CIDR. اتركها فارغة للسماح للجميع...
     fields:
       icon_name: أيقونة
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
+      link_name: الرابط
+      link_placeholder: رابط نسبي أو مطلق...
     collections_name: مجموعات
     collections_addLabel: مجموعة جديدة...
   directus_users:
@@ -1217,6 +1349,8 @@ field_options:
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 no_value: لا توجد قيمة
 do_nothing: لا تفعل شيئا
+generate_and_save_uuid: إنشاء وحفظ UUID
+save_current_user_id: حفظ معرف المستخدم الحالي
 save_current_user_role: احفظ دور المستخدم الحالي
 save_current_datetime: أحفظ التاريخ/الوقت الحالي
 always_open: يعمل دائماً
@@ -1224,7 +1358,13 @@ block: حَظْر
 inline: ضمن السياق
 comment: تعليق
 live_preview:
+  enable: تمكين المعاينة
+  disable: تعطيل المعاينة
+  change_size: تغيير أبعاد العرض
+  refresh: تحديث المعاينة
   new_window: فتح في نافذة جديدة
+  close_window: فتح في وضع العرض المقسم
+  toggle_3d: تفعيل وضع ثلاثي الأبعاد
 shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
@@ -1232,8 +1372,18 @@ new_share: مشاركة جديدة
 expired: منتهية الصلاحية
 upcoming: القادم
 share: مشاركة
+share_item: مشاركة العنصر
 shared_with_you: تم مشاركة عنصر معك
 shared_enter_passcode: أدخل رمز المرور الخاص بك للمتابعة...
+shared_leave_blank_for_passwordless_access: اتركه فارغاً للوصول دون كلمة مرور
+shared_leave_blank_for_unlimited: اتركه فارغاً لغير محدود
+shared_times_remaining: يمكن استخدام هذا الرابط فقط {n} مرات
+shared_last_remaining: يُمكن استخدام هذا الرابط لمرة واحدة فقط
+shared_uses_left: لمزيد من الأمان، تم تكوين هذه الصفحة المشتركة مع عدد محدود من المشاهدات. لا يزال هناك حاليا مشاهدات {n} المتبقية، وبعد ذلك لن يكون الوصول إلى الصفحة.
+share_access_page: الوصول إلى الصفحة المشتركة
+share_access_not_found: هذه الصفحة المشتركة إما غير موجودة أو أنها تجاوزت الحد الأقصى لعدد الاستخدامات المسموح بها.
+share_access_not_found_desc: يرجى الاتصال بمستخدم مصرح له لهذا المشروع لطلب الوصول.
+share_access_not_found_title: صفحة مشاركة غير معروفة
 share_copy_link: نسخ الرابط
 share_copy_link_success: تم نسخ الرابط
 share_copy_link_error: تعذر نسخ الرابط
@@ -1242,6 +1392,7 @@ referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
+referential_action_set_null: إلغاء حقل {field}
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
 continue_label: متابعة
@@ -1415,6 +1566,7 @@ interfaces:
     allow_none_label: لا يسمح بتحديد
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...
+    preview_threshold: حدود المعاينة
   select-multiple-dropdown:
     select-multiple-dropdown: منسدلة (متعدد)
     description: حدد قيم متعددة من القائمة المنسدلة
@@ -1426,6 +1578,7 @@ interfaces:
     description: حدد أو ارفع ملفات متعددة
   input-hash:
     hash: الهاش
+    description: أدخل قيمة لتشفيرها
     masked: مقنع
     masked_label: إخفاء القيم الحقيقية
   select-icon:
@@ -1435,28 +1588,76 @@ interfaces:
   file-image:
     image: صورة
     description: حدد أو ارفع صورة
+    crop_label: قص حسب الحاجة
   system-interface:
     interface: الواجهة
+    description: حدد واجهة موجودة
+    placeholder: اختر واجهة...
+  system-interface-options:
+    interface-options: خيارات الواجهة
+    description: طريقة لتحديد خيارات واجهة
   system-display:
     display: عرض
+    description: حدد واجهة موجودة
+    placeholder: تحديد طريقة عرض...
+  system-display-options:
+    display-options: خيارات العرض
+    description: طريقة تحديد خيارات العرض
   list-m2m:
     many-to-many: كثير لكثير
+    description: حدد عدة عناصر ذات صلة
+    columns_configure_notice: يمكنك تعديل الأعمدة بعد إنشاء هذا الحقل.
+    display_template_configure_notice: يمكنك تعديل قالب العرض بعد إنشاء هذا الحقل.
   select-dropdown-m2o:
     many-to-one: كثير إلى واحد
     description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب
+  collection-item-dropdown:
+    collection-item-dropdown: قائمة عناصر المجموعة
+    description: اختيار عنصر من مجموعة بتنسيق JSON
   input-rich-text-md:
     description: أدخل و معاينة markdown
     edit: تعديل
+    preview: معاينة
+    editorFont: خط المحرر
+    previewFont: معاينة الخط
+    customSyntax: كتل مخصصة
+    box: كتلة / مضمن
+    imageToken: رمز الوصول الثابت
+    imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول
   map:
+    map: الخريطة
+    description: تحديد موقع على الخريطة
     zoom: تكبير/تصغير
+    geometry_type: نوع الشكل الهندسي
+    geometry_format: تنسيق الشكل الهندسي
+    default_view: طريقة العرض الافتراضية
+    invalid_options: خيارات غير صالحة
+    invalid_format: تنسيق غير صالح ({format})
+    unexpected_geometry: توقّعت {expected}، حصلت على {got}.
+    fit_bounds: تناسب العرض مع البيانات
+    native: الأصل
+    click_to_select: انقر لاختيار {geometry}
+  presentation-notice:
+    notice: إشعار
+    description: عرض إشعار قصير
+    text: أدخل محتوى الإشعار هنا...
+    no_text: لم يتم تعديل نص...
   list-o2m:
+    one-to-many: واحد للكثيرين
     description: حدد عدة عناصر ذات صلة
+    no_collection: تعذر العثور على المجموعة
+  system-folder:
+    folder: المجلد الرئيس
+    description: اختر مجلدًا
+    field_hint: المجلد الافتراضي للملفات التي تم تحميلها دون تحديد مجلد. لا يؤثر على الملفات الموجودة.
   select-radio:
     description: حدد اختيار واحد من خيارات متعددة
   list:
     edit_fields: تعديل الحقول
     sort: رتب
+    interface_group: خيارات الواجهة
+    display_group: خيارات العرض
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
@@ -1500,18 +1701,35 @@ interfaces:
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
     options_override: تجاوز الخيارات
+    imageToken: رمز الوصول الثابت
+    imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول
   input-block-editor:
+    description: محرر على غرار الكتلة لقصص الوسائط الغنية، المخرجات نظيفة في JSON باستخدام Editor.js
     tools: شريط الأدوات
     tools_options:
       header: الترويسة
+      nestedlist: قائمة
       embed: تضمين
+      paragraph: فقرة
       code: نص برمجي
       image: صورة
+      attaches: إرفاق
       table: الجدول
+      quote: اقتباس
       underline: مسطر
+      inlinecode: الرمز المُتّضَمَّن
+      delimiter: مُحَدَّد
+      alignment: المحاذاة
   input-autocomplete-api:
+    results_path: مسار النتائج
+    value_path: مسار القيمة
+    text_path: مسار النص
     trigger: المشغّل
     rate: معدل
+  group-raw:
+    description: عرض الحقول كـما هي
+  group-detail:
+    name: تفاصيل المجموعة
   system-token:
     system-token: الرمز المميز
 displays:
@@ -1580,6 +1798,7 @@ displays:
     choices_text_placeholder: أدخل نص...
   mime-type:
     description: أظهر MIME-Type الملف
+    extension_only: الإضافة فقط
     extension_only_label: أظهر ملحق الملف فقط
   rating:
     rating: التقييم
@@ -1588,6 +1807,7 @@ displays:
   related-values:
     related-values: القيم ذات الصلة
     description: اعرض القيم ذات الصلة
+    display_template_configure_notice: يمكنك تعديل قالب العرض بعد إنشاء هذا الحقل.
   user:
     user: مستخدم
     description: عرض مستخدم directus
@@ -1611,14 +1831,28 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
+  map:
+    map: الخريطة
   kanban:
     advanced: متقدم
 both: كل منهما
 panels:
   label:
     name: تسمية
+  list:
+    name: قائمة
+triggers:
+  webhook:
+    method: الطريقة
 operations:
+  item-create:
+    name: إنشاء بيانات
+    description: إنشاء عناصر في قاعدة البيانات
+    payload: الحمولة
   item-delete:
+    name: حذف البيانات
+    description: حذف العناصر في قاعدة البيانات
+    key: المعرفات
     query: الاستعلام
   item-read:
     name: قراءة البيانات
@@ -1634,9 +1868,20 @@ operations:
     payload: حمولة
     query: الاستعلام
   json-web-token:
+    name: رمز JSON ويب (JWT)
+    description: توقيع و التحقق من رموز JSON
+    operation: عمليّة
+    secret: السر
+    secret_placeholder: أدخل السر...
+    payload: الحمولة
     token: الرمز المميز
     options: خيارات
+    options_placeholder: 'الرجوع إلى https://www.npmjs.com/package/jsonwebtoken#usage للخيارات المتاحة'
+    sign: رمز تسجيل الدخول
+    verify: التحقق من الرمز المميز
+    decode: فك الرمز المميز
   log:
+    name: تسجيل الدخول إلى وحدة التحكم
     message: الرسالة
   mail:
     name: إرسال بريد إلكتروني
@@ -1664,6 +1909,10 @@ operations:
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: النوم
+    milliseconds: ملي ثانية
+  transform:
+    name: تحويل الحمولة
+    description: تغيير حمولة JSON للتدفق
   trigger:
     flows: التدفقات
     flow: التدفق
@@ -1675,4 +1924,24 @@ fonts:
   bold: عريض
   black: أسود
   italic: خط مائل
+  oblique: مائل، منحرف
+  small: صغير
+  large: كبير
   auto: تلقائي
+text_wrap: تغليف النص
+center: الوسط
+justify: تنسيق
+text_align: محاذاة النص
+font_weight: وزن الخط
+font_style: نمط الخط
+font_size: حجم الخط
+minimum_fraction_digits: الحد الأدنى للعشرية
+maximum_fraction_digits: الحد الأقصى للعشرية
+show_percentage: إظهار النسب المئوية
+aggregation: تجميع
+series_grouping: تجميع السلسلة
+date_precision: دقة التاريخ
+export_dashboard: تصدير لوحة التحكم
+duplicate_dashboard: تكرار لوحة التحكم
+search_flow: ابحث في التدفق...
+percent: النسبة المئوية

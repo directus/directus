@@ -295,7 +295,7 @@ export function useItem<T extends Item>(
 				const response = await api.get(getEndpoint(relation.collection), {
 					params: {
 						fields: [relatedPrimaryKeyField.field, ...fieldsToFetch],
-						[`filter[${relatedPrimaryKeyField.field}][_in]`]: existingIds.join(','),
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
 					},
 				});
 
