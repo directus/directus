@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { FieldFunction, Filter, Type } from '@directus/types';
+import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,
@@ -120,7 +120,11 @@ function addNode(key: string) {
 
 		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
-		const node = set({}, key, { ['_' + operator]: null });
+
+		const booleanOperators: ClientFilterOperator[] = ['empty', 'nempty', 'null', 'nnull'];
+		const initialValue = operator && booleanOperators.includes(operator) ? true : null;
+
+		const node = set({}, key, { ['_' + operator]: initialValue });
 		innerValue.value = innerValue.value.concat(node);
 	}
 }

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -615,37 +595,37 @@ auto_fill: Автозаповнення
 corresponding_field: Відповідне поле
 errors:
   COLLECTION_NOT_FOUND: "Колекція не існує"
+  CONTAINS_NULL_VALUES: Поле містить нульові значення
   FIELD_NOT_FOUND: Поле не знайдено
   FORBIDDEN: Заборонено
+  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
+  INTERNAL_SERVER_ERROR: Неочікувана помилка
+  INVALID_CONFIG: Недійсна конфігурація
   INVALID_CREDENTIALS: Хибне ім'я або пароль
+  INVALID_FOREIGN_KEY: Невірний зовнішній ключ
+  INVALID_IP: IP-адреса не допускається
   INVALID_OTP: Неправильний одноразовий пароль
   INVALID_PAYLOAD: Невірне навантаження
   INVALID_PROVIDER: Користувач належить іншому провайдеру автентифікації
   INVALID_QUERY: Невірний запит
-  INVALID_CONFIG: Недійсна конфігурація
   INVALID_TOKEN: Невірний токен
-  INVALID_IP: IP-адреса не допускається
   INVALID_USER: Помилка автентифікації користувача
   ITEM_LIMIT_REACHED: Досягнуто ліміту об'єктів
   ITEM_NOT_FOUND: Об'єкт не знайдений
-  ROUTE_NOT_FOUND: Не знайдено
-  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
-  USER_SUSPENDED: Користувача призупинено
-  CONTAINS_NULL_VALUES: Поле містить нульові значення
-  INTERNAL_SERVER_ERROR: Неочікувана помилка
-  NOT_NULL_VIOLATION: Значення не може бути null
-  ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
-  VALUE_TOO_LONG: Значення занадто довге
-  VALUE_OUT_OF_RANGE: Значення є поза діапазоном
-  INVALID_FOREIGN_KEY: Невірний зовнішній ключ
-  UNKNOWN: Неочікувана помилка
-  SERVICE_UNAVAILABLE: Сервіс недоступний
-  UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
-  UNEXPECTED_RESPONSE: Неочікувана відповідь
-  TOKEN_EXPIRED: Токен вже не чинний
-  RANGE_NOT_SATISFIABLE: Невірний діапазон
   METHOD_NOT_ALLOWED: Метод не допустимий
+  NOT_NULL_VIOLATION: Значення не може бути null
+  RANGE_NOT_SATISFIABLE: Невірний діапазон
+  RECORD_NOT_UNIQUE: Виявлено ідентичне значення
   REQUESTS_EXCEEDED: Досягнуто ліміт запитів
+  ROUTE_NOT_FOUND: Не знайдено
+  SERVICE_UNAVAILABLE: Сервіс недоступний
+  TOKEN_EXPIRED: Токен вже не чинний
+  UNEXPECTED_RESPONSE: Неочікувана відповідь
+  UNKNOWN: Неочікувана помилка
+  UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
+  USER_SUSPENDED: Користувача призупинено
+  VALUE_OUT_OF_RANGE: Значення є поза діапазоном
+  VALUE_TOO_LONG: Значення занадто довге
 security: Захист
 value_hashed: Значення надійно видалені
 bookmark_name: Назва закладки...
