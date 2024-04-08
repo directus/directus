@@ -117,7 +117,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
 		await sdk.request(() => ({
 			path: `/extensions/registry/reinstall`,
 			method: 'POST',
-			body: JSON.stringify({ extension: extensionId })
+			body: JSON.stringify({ extension: extensionId }),
 		}));
 
 		await refresh();

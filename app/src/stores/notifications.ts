@@ -29,7 +29,8 @@ export const useNotificationsStore = defineStore({
 
 			if (!userStore.currentUser || !('id' in userStore.currentUser)) return;
 
-			const countResponse = await sdk.request(readNotifications({
+			const countResponse = await sdk.request(
+				readNotifications({
 					filter: {
 						_and: [
 							{
@@ -47,7 +48,8 @@ export const useNotificationsStore = defineStore({
 					aggregate: {
 						count: 'id',
 					},
-				}));
+				}),
+			);
 
 			this.unread = countResponse[0]!.count.id;
 		},

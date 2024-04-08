@@ -16,9 +16,11 @@ export const usePermissionsStore = defineStore({
 		async hydrate() {
 			const userStore = useUserStore();
 
-			const response = await sdk.request<Permission[]>(readPermissions({
-				filter: { role: { _eq: userStore.currentUser!.role!.id } }
-			}));
+			const response = await sdk.request<Permission[]>(
+				readPermissions({
+					filter: { role: { _eq: userStore.currentUser!.role!.id } },
+				}),
+			);
 
 			const fields = getNestedDynamicVariableFields(response);
 

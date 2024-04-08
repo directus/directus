@@ -428,17 +428,19 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			if (edits.create) {
 				// Created edits might come with a temporary ID for editing. Make sure to submit to API without temp ID
 				//TODO fix type
-				const panels = edits.create.map((create) => omit(create, 'id')) as Parameters<typeof createPanels>[0]
+				const panels = edits.create.map((create) => omit(create, 'id')) as Parameters<typeof createPanels>[0];
 				requests.push(sdk.request(createPanels(panels)));
 			}
 
 			if (edits.update) {
 				// TODO update updatePanels signature
-				requests.push(sdk.request(() => ({
-					path: '/panels',
-					method: 'PATCH',
-					body: JSON.stringify(edits.update),
-				})));
+				requests.push(
+					sdk.request(() => ({
+						path: '/panels',
+						method: 'PATCH',
+						body: JSON.stringify(edits.update),
+					})),
+				);
 			}
 
 			if (edits.delete) {

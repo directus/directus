@@ -74,9 +74,7 @@ describe('actions', () => {
 				action: 'create',
 			};
 
-			vi.spyOn(vi.mocked(sdk), 'request').mockResolvedValueOnce(
-				[permissionWithDynamicVariablesInPresets]
-			);
+			vi.spyOn(vi.mocked(sdk), 'request').mockResolvedValueOnce([permissionWithDynamicVariablesInPresets]);
 
 			const permissionsStore = usePermissionsStore();
 			await permissionsStore.hydrate();

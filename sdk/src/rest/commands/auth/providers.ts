@@ -7,7 +7,7 @@ export type ReadProviderOutput = {
 		icon?: string | null;
 	}[];
 	disableDefault: boolean;
-}
+};
 
 /**
  * List all the configured auth providers.

@@ -75,7 +75,7 @@ export const useUserStore = defineStore({
 				method: 'PATCH',
 				body: JSON.stringify({
 					last_page: to.fullPath,
-				})
+				}),
 			}));
 
 			const end = performance.now();

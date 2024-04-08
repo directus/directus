@@ -16,7 +16,7 @@ import {
 	createCollection as createCollectionCmd,
 	deleteCollection as deleteCollectionCmd,
 	readCollections as readCollectionsCmd,
-	updateCollection as updateCollectionCmd
+	updateCollection as updateCollectionCmd,
 } from '@directus/sdk';
 import sdk from '@/sdk';
 

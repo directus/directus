@@ -21,7 +21,10 @@ export function useApi(): AxiosInstance {
 	return api;
 }
 
-export type SdkClient<Schema extends object = any> = DirectusClient<Schema> & AuthenticationClient<Schema> & RestClient<Schema> & GraphqlClient<Schema>;
+export type SdkClient<Schema extends object = any> = DirectusClient<Schema> &
+	AuthenticationClient<Schema> &
+	RestClient<Schema> &
+	GraphqlClient<Schema>;
 
 export function useSdk<Schema extends object = any>(): SdkClient<Schema> {
 	const sdk = inject<SdkClient<Schema>>(SDK_INJECT);
