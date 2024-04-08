@@ -9,6 +9,6 @@ definePageMeta({
 		EXPANDED HEADER HOMEPAGE ONLY
 	</section>
 	<article>
-		<ContentDoc class="content" path="/" />
+		<ContentDoc class="content" path="/getting-started/homepage" />
 	</article>
 </template>

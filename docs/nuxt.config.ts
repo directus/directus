@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
-	modules: ['@nuxt/content', "@nuxt/image"],
+	modules: ['@nuxt/content', '@nuxt/image'],
 	image: {
 		provider: 'directus',
 		directus: {

@@ -16,6 +16,7 @@
     "sass": "^1.74.1"
   },
   "devDependencies": {
+    "shiki": "1.2.4",
     "spellchecker-cli": "6.2.0"
   }
 }

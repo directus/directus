@@ -1,7 +1,8 @@
 <script setup>
 import formatTitle from '@directus/format-title'
 
-const route = useRoute()
+const route = useRoute
+const section = route.params ? formatTitle(route.params.slug[0]) : false
 
 definePageMeta({
 	layout: 'docs'
@@ -10,7 +11,7 @@ definePageMeta({
 
 <template>
 	<main>
-		<span>{{ formatTitle(route.params.slug[0]) }}</span>
+		<span v-if="section">{{ section }}</span>
 		<article>
 			<ContentDoc class="content">
 				<template #not-found>

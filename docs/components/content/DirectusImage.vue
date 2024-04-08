@@ -2,11 +2,11 @@
 defineProps({
 	uuid: {
 		type: String,
-		// required: true
+		required: true
 	},
 	alt: {
 		type: String,
-		// required: true
+		required: true
 	},
 	width: {
 		type: [String, Number],

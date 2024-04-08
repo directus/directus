@@ -1,3 +1,3 @@
 export default [
-	'/getting-started/introduction'
+	'/getting-started/homepage',
 ]
