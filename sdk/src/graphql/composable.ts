@@ -3,6 +3,7 @@ import type { GraphqlClient, GraphqlConfig } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import type { AuthenticationClient } from '../auth/types.js';
+import { extractData } from '../utils/extract-data.js';
 
 const defaultConfigValues: GraphqlConfig = {};
 
@@ -47,7 +48,8 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
 				const requestUrl = getRequestUrl(client.url, requestPath);
 
-				return await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				return request<{ data: Output }>(requestUrl.toString(), fetchOptions, client.globals.fetch)
+					.then(data => extractData(data));
 			},
 		};
 	};

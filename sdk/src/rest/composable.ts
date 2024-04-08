@@ -1,5 +1,6 @@
 import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../types/client.js';
+import { extractData } from '../utils/extract-data.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
@@ -65,7 +66,8 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 					fetchOptions = await restConfig.onRequest(fetchOptions);
 				}
 
-				let result = await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				let result = await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch)
+					.then((data) => options.extractData !== false ? extractData(data) : data);
 
 				// apply onResponse hook from command
 				if ('onResponse' in options) {

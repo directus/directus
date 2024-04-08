@@ -1,5 +1,6 @@
 import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
 import type { DirectusClient } from '../types/client.js';
+import { extractData } from '../utils/extract-data.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type {
@@ -110,10 +111,12 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) => {
-					setCredentials(data);
-					return data;
-				});
+				return request<{ data: AuthenticationData }>(requestUrl.toString(), fetchOptions, client.globals.fetch)
+					.then((data) => extractData(data))
+					.then((data) => {
+						setCredentials(data);
+						return data;
+					});
 			};
 
 			refreshPromise = awaitRefresh();
