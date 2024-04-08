@@ -298,6 +298,7 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
+Node.js
 NoSQL
 npm
 NPM
@@ -462,3 +463,11 @@ XSS
 yaml
 YAML
 Zeet
+
+# components
+callout
+directus-image
+api-reference
+dev-docs
+toggleable
+sso

@@ -28,7 +28,7 @@ const componentType = props.url ? 'a' : 'div'
 	display: block;
 	background: #f8fafc;
 	border: 1px solid #e2e8f0;
-	padding: 1px 1rem;
+	padding: 1rem;
 	border-radius: 8px;
 	text-decoration: none;
 	color: inherit;
