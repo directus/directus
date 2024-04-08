@@ -1,14 +1,14 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
+import type { Item, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import { useLogger } from '../logger.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
-	Item,
 	LoginResult,
 	MutationOptions,
-	PrimaryKey,
 	ShareData,
 } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -19,7 +19,6 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
-import { useLogger } from '../logger.js';
 
 const env = useEnv();
 const logger = useLogger();
