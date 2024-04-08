@@ -1,5 +1,5 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Alterations, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
@@ -11,14 +11,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type {
-	AbstractServiceOptions,
-	ActionEventParams,
-	Alterations,
-	Item,
-	MutationOptions,
-	PrimaryKey,
-} from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { ItemsService } from './items.js';
 

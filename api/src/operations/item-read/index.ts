@@ -1,8 +1,7 @@
 import { defineOperationApi } from '@directus/extensions';
-import type { Accountability, PrimaryKey } from '@directus/types';
+import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { optionToObject, toArray } from '@directus/utils';
 import { ItemsService } from '../../services/items.js';
-import type { Item } from '../../types/index.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 

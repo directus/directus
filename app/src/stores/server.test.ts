@@ -76,7 +76,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -97,7 +97,7 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,
@@ -128,7 +128,7 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -152,7 +152,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -176,7 +176,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -203,7 +203,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -230,7 +230,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -257,7 +257,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -281,7 +281,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -312,7 +312,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -342,7 +342,7 @@ describe('dehydrate action', () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,

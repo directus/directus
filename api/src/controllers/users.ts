@@ -1,8 +1,13 @@
-import { isDirectusError } from '@directus/errors';
-import type { Role } from '@directus/types';
+import {
+	ErrorCode,
+	ForbiddenError,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	isDirectusError,
+} from '@directus/errors';
+import type { PrimaryKey, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -11,7 +16,6 @@ import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
-import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 

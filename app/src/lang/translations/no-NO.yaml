@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
@@ -523,34 +503,34 @@ auto_fill: Autofyll
 corresponding_field: Tilsvarende felt
 errors:
   COLLECTION_NOT_FOUND: "Kolleksjonen eksisterer ikke"
+  CONTAINS_NULL_VALUES: Feltet inneholder nullverdier
   FIELD_NOT_FOUND: Feltet ble ikke funnet
   FORBIDDEN: Forbudt
+  ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
+  INTERNAL_SERVER_ERROR: Uventet feil
+  INVALID_CONFIG: Ugyldig konfigurasjon
   INVALID_CREDENTIALS: Feil brukernavn eller passord
+  INVALID_FOREIGN_KEY: Ugyldig fremmednøkkel
+  INVALID_IP: IP-addressen er ikke tillatt
   INVALID_OTP: Feil engangspassord
   INVALID_PAYLOAD: Invalid payload
   INVALID_QUERY: Ugyldig spørring
-  INVALID_CONFIG: Ugyldig konfigurasjon
   INVALID_TOKEN: Ugyldig nøkkel
-  INVALID_IP: IP-addressen er ikke tillatt
   INVALID_USER: Brukerautentisering mislyktes
   ITEM_LIMIT_REACHED: Elementgrense er nådd
   ITEM_NOT_FOUND: Element ikke funnet
-  ROUTE_NOT_FOUND: Ikke funnet
-  RECORD_NOT_UNIQUE: Duplikat verdi oppdaget
-  USER_SUSPENDED: Bruker Suspendert
-  CONTAINS_NULL_VALUES: Feltet inneholder nullverdier
-  INTERNAL_SERVER_ERROR: Uventet feil
-  NOT_NULL_VIOLATION: Verdien kan ikke være null
-  ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
-  VALUE_TOO_LONG: Verdien er for lang
-  VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
-  INVALID_FOREIGN_KEY: Ugyldig fremmednøkkel
-  UNKNOWN: Uventet feil
-  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgjengelig
-  UNSUPPORTED_MEDIA_TYPE: Filtypen støttes ikke
-  TOKEN_EXPIRED: Nøkkelen har utgått
   METHOD_NOT_ALLOWED: Metode ikke tillatt
+  NOT_NULL_VIOLATION: Verdien kan ikke være null
+  RECORD_NOT_UNIQUE: Duplikat verdi oppdaget
   REQUESTS_EXCEEDED: Maks antall forespørsler nådd
+  ROUTE_NOT_FOUND: Ikke funnet
+  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgjengelig
+  TOKEN_EXPIRED: Nøkkelen har utgått
+  UNKNOWN: Uventet feil
+  UNSUPPORTED_MEDIA_TYPE: Filtypen støttes ikke
+  USER_SUSPENDED: Bruker Suspendert
+  VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
+  VALUE_TOO_LONG: Verdien er for lang
 security: Sikkerhet
 value_hashed: Sikker verdi Hastet
 bookmark_name: Bokmerkenavn...

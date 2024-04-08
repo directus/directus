@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
-import type { Notification } from '@directus/types';
+import type { Notification, PrimaryKey } from '@directus/types';
 import { useLogger } from '../logger.js';
-import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';

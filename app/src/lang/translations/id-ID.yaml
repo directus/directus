@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Pengenal
 avatar: Avatar
 application: Aplikasi
@@ -577,37 +557,37 @@ auto_fill: Isi Otomatis
 corresponding_field: Bidang yang sesuai
 errors:
   COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
+  CONTAINS_NULL_VALUES: Bidang berisi nilai nol
   FIELD_NOT_FOUND: Baris tidak ditemukan
   FORBIDDEN: Dilarang
+  ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
+  INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
+  INVALID_CONFIG: Konfigurasi yang tidak valid
   INVALID_CREDENTIALS: Nama pengguna atau kata sandi salah
+  INVALID_FOREIGN_KEY: Foreign key tidak valid
+  INVALID_IP: Alamat IP tidak diperbolehkan
   INVALID_OTP: Kata sandi satu-kali salah
   INVALID_PAYLOAD: Payload tidak valid
   INVALID_PROVIDER: Pengguna termasuk kedalam penyedia autentikasi yang berbeda
   INVALID_QUERY: Kueri tidak valid
-  INVALID_CONFIG: Konfigurasi yang tidak valid
   INVALID_TOKEN: Token tidak valid
-  INVALID_IP: Alamat IP tidak diperbolehkan
   INVALID_USER: Gagal untuk mengautentikasi pengguna
   ITEM_LIMIT_REACHED: Batas item tercapai
   ITEM_NOT_FOUND: Item tidak ditemukan
-  ROUTE_NOT_FOUND: Tidak ditemukan
-  RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
-  USER_SUSPENDED: Pengguna Ditangguhkan
-  CONTAINS_NULL_VALUES: Bidang berisi nilai nol
-  INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
-  NOT_NULL_VIOLATION: Nilai tidak boleh kosong
-  ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
-  VALUE_TOO_LONG: Nilai terlalu panjang
-  VALUE_OUT_OF_RANGE: Nilai di luar rentang
-  INVALID_FOREIGN_KEY: Foreign key tidak valid
-  UNKNOWN: Kesalahan Tidak Terduga
-  SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
-  UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
-  UNEXPECTED_RESPONSE: Respon tidak terduga
-  TOKEN_EXPIRED: Token kedaluwarsa
-  RANGE_NOT_SATISFIABLE: Rentang tidak valid
   METHOD_NOT_ALLOWED: Metode Tidak Diizinkan
+  NOT_NULL_VIOLATION: Nilai tidak boleh kosong
+  RANGE_NOT_SATISFIABLE: Rentang tidak valid
+  RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
   REQUESTS_EXCEEDED: Batas permintaan telah tercapai
+  ROUTE_NOT_FOUND: Tidak ditemukan
+  SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
+  TOKEN_EXPIRED: Token kedaluwarsa
+  UNEXPECTED_RESPONSE: Respon tidak terduga
+  UNKNOWN: Kesalahan Tidak Terduga
+  UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
+  USER_SUSPENDED: Pengguna Ditangguhkan
+  VALUE_OUT_OF_RANGE: Nilai di luar rentang
+  VALUE_TOO_LONG: Nilai terlalu panjang
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...

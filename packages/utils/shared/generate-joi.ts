@@ -5,6 +5,7 @@ import { escapeRegExp, merge } from 'lodash-es';
 
 export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
+	icontains(substring: string): this;
 	ncontains(substring: string): this;
 }
 
@@ -13,6 +14,7 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 	base: BaseJoi.string(),
 	messages: {
 		'string.contains': '{{#label}} must contain [{{#substring}}]',
+		'string.icontains': '{{#label}} must contain case insensitive [{{#substring}}]',
 		'string.ncontains': "{{#label}} can't contain [{{#substring}}]",
 	},
 	rules: {
@@ -31,6 +33,26 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
+				}
+
+				return value;
+			},
+		},
+		icontains: {
+			args: [
+				{
+					name: 'substring',
+					ref: true,
+					assert: (val) => typeof val === 'string',
+					message: 'must be a string',
+				},
+			],
+			method(substring) {
+				return this.$_addRule({ name: 'icontains', args: { substring } });
+			},
+			validate(value: string, helpers, { substring }) {
+				if (value.toLowerCase().includes(substring.toLowerCase()) === false) {
+					return helpers.error('string.icontains', { substring });
 				}
 
 				return value;
@@ -135,7 +157,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
 				schema[key] = Joi.any().equal(true);
 			} else {
-				schema[key] = getStringSchema().contains(compareValue);
+				schema[key] = Joi.alternatives().try(
+					getStringSchema().contains(compareValue),
+					Joi.array().items(getStringSchema().contains(compareValue).required(), Joi.any()),
+				);
 			}
 		}
 
@@ -143,7 +168,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
 				schema[key] = Joi.any().equal(true);
 			} else {
-				schema[key] = getStringSchema().contains(compareValue);
+				schema[key] = Joi.alternatives().try(
+					getStringSchema().icontains(compareValue),
+					Joi.array().items(getStringSchema().icontains(compareValue).required(), Joi.any()),
+				);
 			}
 		}
 
@@ -151,7 +179,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
 				schema[key] = Joi.any().equal(true);
 			} else {
-				schema[key] = getStringSchema().ncontains(compareValue);
+				schema[key] = Joi.alternatives().try(
+					getStringSchema().ncontains(compareValue),
+					Joi.array().items(getStringSchema().contains(compareValue).forbidden()),
+				);
 			}
 		}
 
