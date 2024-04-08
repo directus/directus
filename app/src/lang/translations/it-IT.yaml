@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Informazioni
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -27,10 +28,12 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+marketplace: Marketplace
 extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
+unknown: Sconosciuto
 reset_width: Reimposta larghezza
 tile_size: Dimensione della casella
 edit_field: Modifica campo
@@ -48,6 +51,8 @@ duplicate_field: Duplica campo
 half_width: Metà larghezza
 full_width: Larghezza Massima
 group: Gruppo
+popular: Popolari
+recent: Recenti
 export_items: Esporta elementi
 and: E
 or: O
@@ -74,9 +79,27 @@ extension_hooks: Hook
 extension_endpoints: Endpoint
 extension_operations: Operazioni
 extension_bundles: Pacchetti
+extension_missing: Mancanti
 extension_reload_required: È necessario ricaricare la pagina
 extension_reload_required_copy: È necessario ricaricare la pagina per vedere le modifiche dopo aver abilitato o disabilitato le estensioni.
 extension_reload_now: Ricarica ora
+published_relative: Pubblicate {relativeTime}
+compatible_with_your_project: Compatibili con il tuo progetto
+compatible_with_your_project_copy: L'autore ha indicato che la compatibilità di questa estensione è {hostVersion}, che è compatibile con la versione del tuo progetto ({currentVersion})
+last_updated_relative: Ultimo aggiornamento {relativeTime}
+n_files: '{n} File'
+verified: Verificata
+homepage: Pagina iniziale
+repository: Repository
+reload_required: Ricaricamento necessario
+report_an_issue: Segnala un problema
+website: Sito web
+github: GitHub
+beta: Beta
+n_downloads: '{n} Download'
+downloads: Download
+compatibility_not_guaranteed: Compatibilità non garantita
+compatibility_not_guaranteed_copy: L'autore ha indicato che la compatibilità di questa estensione è {hostVersion}, che non è compatibile con la versione del tuo progetto ({currentVersion})
 enable: Attivato
 disable: Disattiva
 custom: Personalizzato
@@ -165,6 +188,8 @@ logoutReason:
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
+no_description: Nessuna descrizione...
+reached_maximum_number_of_extensions: Hai raggiunto il numero massimo di estensioni per questo progetto ({n}). Contatta l'amministratore di sistema per maggiori informazioni.
 not_allowed: Non consentito
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
@@ -304,6 +329,14 @@ time: Ora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (tutte)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatico (in base al sistema)
 theme_light: Tema chiaro
 theme_dark: Tema scuro
@@ -321,6 +354,7 @@ auto_generate: Generare automaticamente
 this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
 click_here: Clicca qui
 to_manually_setup_translations: per configurare manualmente le traduzioni.
+manage: Gestisci
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
@@ -490,7 +524,11 @@ months:
   november: Novembre
   december: Dicembre
 drag_mode: Modalità Di Trascinamento
+move_tool: Sposta
+crop_tool: Ritaglia
+focal_point_tool: Punto Focale
 cancel_crop: Annulla Ritaglio
+cancel_selection: Deseleziona tutto
 original: Originale
 url: URL
 import_label: Importa
@@ -558,6 +596,7 @@ collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
 search_items: Cerca Elementi...
+search_extensions: Cerca Estensioni...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
@@ -576,6 +615,10 @@ no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
+webhooks_deprecation_notice: |
+  I webhook sono deprecati e un ulteriore utilizzo è scoraggiato.
+
+  Utilizza invece **Flows** con l'[operazione Webhook/Richiedi URL](https://docs.directus.io/app/flows/operazioni.html#webhook-request-url).
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 no_notifications: Nessuna notifica
 no_notifications_copy: È tutto!
@@ -639,6 +682,10 @@ select_an_item: Seleziona un elemento...
 edit: Modifica
 edit_item: Modifica elemento
 enabled: Abilitato
+partially_enabled: Parzialmente Abilitato
+enable_all: Attiva tutto
+disable_all: Disabilita tutto
+enabled_dev_tooltip: Le estensioni sono sempre abilitate in modalità sviluppatore
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
 tfa_setup: Configura l'autenticazione a due fattori
@@ -650,40 +697,41 @@ auto_fill: Auto-completamento
 corresponding_field: Campo Corrispondente
 errors:
   COLLECTION_NOT_FOUND: "La Raccolta non esiste"
+  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
+  CONTENT_TOO_LARGE: L'oggetto/file inviato è troppo grande
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
+  GRAPHQL_VALIDATION: Validazione GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
+  INTERNAL_SERVER_ERROR: Errore Imprevisto
+  INVALID_CONFIG: Configurazione non valida
   INVALID_CREDENTIALS: Nome utente o password sbagliati
+  INVALID_FOREIGN_KEY: Chiave esterna non valida
+  INVALID_IP: Indirizzo IP non consentito
   INVALID_OTP: Password monouso errata
   INVALID_PAYLOAD: Payload non valido
   INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
-  INVALID_CONFIG: Configurazione non valida
   INVALID_TOKEN: Token non valido
-  INVALID_IP: Indirizzo IP non consentito
   INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
-  ROUTE_NOT_FOUND: Non trovato
-  RECORD_NOT_UNIQUE: Rilevato valore duplicato
-  USER_SUSPENDED: Utente sospeso
-  CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNPROCESSABLE_CONTENT: Contenuto non elaborabile
-  INTERNAL_SERVER_ERROR: Errore Imprevisto
-  NOT_NULL_VIOLATION: Il valore non può essere nullo
-  ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
-  VALUE_TOO_LONG: Il valore è troppo lungo
-  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
-  INVALID_FOREIGN_KEY: Chiave esterna non valida
-  UNKNOWN: Errore Imprevisto
-  GRAPHQL_VALIDATION: Validazione GraphQL
-  SERVICE_UNAVAILABLE: Servizio non disponibile
-  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
-  UNEXPECTED_RESPONSE: Risposta inattesa
-  TOKEN_EXPIRED: Token scaduto
-  RANGE_NOT_SATISFIABLE: Intervallo non valido
+  LIMIT_EXCEEDED: 'Limite superato'
   METHOD_NOT_ALLOWED: Metodo non consentito
+  NOT_NULL_VIOLATION: Il valore non può essere nullo
+  RANGE_NOT_SATISFIABLE: Intervallo non valido
+  RECORD_NOT_UNIQUE: Rilevato valore duplicato
   REQUESTS_EXCEEDED: Limite di richieste raggiunto
-  CONTENT_TOO_LARGE: L'oggetto/file inviato è troppo grande
+  ROUTE_NOT_FOUND: Non trovato
+  SERVICE_UNAVAILABLE: Servizio non disponibile
+  TOKEN_EXPIRED: Token scaduto
+  UNEXPECTED_RESPONSE: Risposta inattesa
+  UNKNOWN: Errore Imprevisto
+  UNPROCESSABLE_CONTENT: Contenuto non elaborabile
+  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
+  USER_SUSPENDED: Utente sospeso
+  VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
+  VALUE_TOO_LONG: Il valore è troppo lungo
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -792,6 +840,7 @@ operators:
   regex: Corrisponde all'espressione regolare
 custom_validation_message: Messaggio di validazione personalizzato
 loading: Caricamento in corso...
+extension_readme_missing: Questa estensione non ha un file README.
 drop_to_upload: Rilascia per caricare
 item: Elemento
 items: Elementi
@@ -1098,6 +1147,9 @@ page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
 page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
 page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
+page_help_marketplace_account: '**Account** — Editore o responsabile di un''estensione pubblicata.'
+page_help_marketplace_registry: '**Registry** — Estensioni disponibili nel Marketplace di Directus.'
+page_help_marketplace_extension: '**Estensione** — Estensione nel Marketplace di Directus.'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -1110,6 +1162,15 @@ cancel: Annulla
 no_upscale: Non ingrandire le immagini
 no_extensions: Nessuna estensione
 no_extensions_copy: Non sono ancora state installate estensioni.
+install_extension: Installa estensione
+uninstall_locked: Impossibile disinstallare le estensioni che non sono state installate attraverso il Marketplace
+uninstall: Disinstalla
+installed: Installata
+reinstall: Reinstalla
+open_in_marketplace: Apri nel Marketplace
+source_registry: Marketplace
+source_local: Locali
+source_module: Node module
 collection: Raccolta
 collections: Raccolte
 content: Contenuti
@@ -1232,6 +1293,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Segnalare
     mapping: Mappe
     basemaps: Mappe base
     basemaps_raster: Raster
@@ -1378,11 +1440,13 @@ field_options:
     description: Una descrizione opzionale...
     location: Una posizione opzionale...
     storage_divider: Denominazione File
+    focal_point_divider: Punto Focale
     filename_disk: Nome sul disco...
     filename_download: Nome al download...
   directus_roles:
     name: Nome unico per questo ruolo...
     description: Una descrizione per questo ruolo...
+    ip_access: Aggiungi indirizzi IP consentiti, intervalli di IP e blocchi CIDR. Lascia vuoto per consentire tutti...
     fields:
       icon_name: Icona
       name_name: Nome
@@ -1831,6 +1895,7 @@ interfaces:
     no_collection: Nessuna Raccolta
     toggle_split_view: Attiva/disattiva la Split View
     enable: Attivato
+    default_split_view_state: Stato predefinito della vista divisa
     user_language: Usa la lingua dell'utente corrente
     default_language: Lingua predefinita
     language_field: Campo indicatore della lingua

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -27,6 +7,7 @@ method: Metoda
 published: Objavljeno
 draft: Osnutek
 archived: Arhivirano
+extensions: Razširitve
 modules: Moduli
 module_bar: Stranski Meni
 logs: Dnevniki
@@ -55,8 +36,23 @@ modifier: Modifikator
 extension_interface: Vmesnik
 extension_display: Prikaz
 extension_layout: Postavitev
+extension_module: Modul
+extension_panel: Plošča
+extension_theme: Tema
 extension_hook: Hook
+extension_endpoint: Končna točka
+extension_operation: Operacija
+extension_bundle: Paket
+extension_interfaces: Vmesniki
 extension_modules: Moduli
+extension_panels: Plošče
+extension_themes: Teme
+extension_endpoints: Končne točke
+extension_operations: Postopki
+extension_bundles: Paketi
+extension_reload_now: Ponovno zaženi
+enable: Omogoči
+disable: Onemogoči
 custom: Po meri
 hook: Hook
 fill_width: Zapolni širino
@@ -100,6 +96,15 @@ rename_folder: Preimenuj mapo
 delete_folder: Izbriši mapo
 prefix: Predpona
 suffix: Pripona
+switch_version: Spremeni različico
+create_version: Ustvari različico
+rename_version: Preimenuj različico
+compare_version: Primerjaj različico
+save_version: Shrani različico
+promote_version_disabled: Ni sprememb
+promote_version_changes: Spremembe
+promote_version_preview: Predogled
+delete_version: Izbriši različico
 reset_bookmark: Ponastavi zaznamek
 update_bookmark: Posodobi zaznamek
 delete_bookmark: Izbriši zaznamek
@@ -172,6 +177,8 @@ fields_for_role: 'Polja, nad katerimi lahko vloga {role} opravlja akcijo {action
 validation_for_role: 'Pravila, ki jih mora upoštevati vloga {role} za polje {action}.'
 presets_for_role: 'Privzete vrednosti vloge {role} za polje.'
 presentation_and_aliases: Predstavitev in aliasi
+top: Vrh
+bottom: Spodaj
 hide_field_on_detail: Skrij polje v podrobnem pogledu
 show_field_on_detail: Prikaži polje v podrobnem pogledu
 delete_field: Izbriši polje
@@ -183,6 +190,10 @@ language: Jezik
 global: Globalno
 admins_have_all_permissions: Administratorji imajo vsa dovoljenja
 camera: Kamera
+sum: Vsota
+avg: Povprečje
+min: Min
+max: Max
 exposure: Osvetlitev
 shutter: Zaklop
 iso: ISO
@@ -202,17 +213,22 @@ boolean: Boolean
 date: Datum
 datetime: Datum in ura
 dateTime: Datum in ura
+precision: Natančnost
 decimal: Decimalno število
 float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: Besedilo
 text: Tekst
 time: Ura
 timestamp: Časovni žig
 uuid: UUID
 hash: Hash
+theme_auto: Avtomatsko (sistemsko)
+theme_light: Svetli način
+theme_dark: Temni način
 not_available_for_type: Ni na razpolago za ta tip
 create_translations: Ustvari nove prevode
 auto_refresh: Samodejno osveži
@@ -458,21 +474,21 @@ auto_fill: Samodejno zapolni
 corresponding_field: Ustrezno polje
 errors:
   COLLECTION_NOT_FOUND: "Zbirka ne obstaja"
+  CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
   FIELD_NOT_FOUND: Polje ne obstaja
   FORBIDDEN: Prepovedano
+  INTERNAL_SERVER_ERROR: Nepričakovana napaka
   INVALID_CREDENTIALS: Napačno uporabniško ime ali geslo
   INVALID_OTP: Napačno geslo za enkratno uporabo
   INVALID_PAYLOAD: Napačen tovor
   INVALID_QUERY: Neveljavna poizvedba
   ITEM_LIMIT_REACHED: Meja zapisa dosežena
   ITEM_NOT_FOUND: Zapis ne obstaja
-  ROUTE_NOT_FOUND: Ne obstaja
-  RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
-  USER_SUSPENDED: Uporabnik suspendiran
-  CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
-  INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
+  RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
+  ROUTE_NOT_FOUND: Ne obstaja
   UNKNOWN: Nepričakovana napaka
+  USER_SUSPENDED: Uporabnik suspendiran
 security: Varnost
 value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
