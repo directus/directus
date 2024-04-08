@@ -1,4 +1,5 @@
-import api, * as apiFunctions from '@/api';
+import * as apiFunctions from '@/api';
+import sdk from '@/sdk';
 import * as setLanguageDefault from '@/lang/set-language';
 import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
@@ -51,12 +52,12 @@ const mockAdminUserWithLanguage = {
 	language: 'zh-CN',
 } as User;
 
-let apiGetSpy: MockInstance;
+let sdkRequestSpy: MockInstance;
 let replaceQueueSpy: MockInstance;
 let setLanguageSpy: MockInstance;
 
 beforeEach(() => {
-	apiGetSpy = vi.spyOn(api, 'get');
+	sdkRequestSpy = vi.spyOn(sdk, 'request');
 	replaceQueueSpy = vi.spyOn(apiFunctions, 'replaceQueue').mockResolvedValue();
 	setLanguageSpy = vi.spyOn(setLanguageDefault, 'setLanguage').mockResolvedValue(true);
 });
@@ -67,18 +68,16 @@ afterEach(() => {
 
 describe('hydrate action', async () => {
 	test('should hydrate info', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -91,18 +90,18 @@ describe('hydrate action', async () => {
 	});
 
 	test('should hydrate auth', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
 				// stub as server info is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			if (path.startsWith('/auth')) {
 				return Promise.resolve({
-					data: {
-						data: mockAuthProviders,
-						disableDefault: true,
-					},
+					data: mockAuthProviders,
+					disableDefault: true,
 				});
 			}
 
@@ -122,15 +121,17 @@ describe('hydrate action', async () => {
 	});
 
 	test('should set default language en-US when there is no logged in user', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
 				// stub as server info is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -143,18 +144,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should set configured default language when there is no logged in user', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -167,18 +166,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should set updated default language for admin user', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -194,18 +191,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should not set updated default language for admin user', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -221,18 +216,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should not set updated default language for admin user with configured language', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -248,18 +241,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should not call replaceQueue when there is no rateLimit', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: {},
-					},
-				});
+				return Promise.resolve({});
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -272,18 +263,16 @@ describe('hydrate action', async () => {
 	});
 
 	test('should call replaceQueue without arguments when rateLimit is false', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: { rateLimit: false },
-					},
-				});
+				return Promise.resolve({ rateLimit: false });
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -301,20 +290,16 @@ describe('hydrate action', async () => {
 			points: 20,
 		};
 
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: {
-							rateLimit: mockRateLimit,
-						},
-					},
-				});
+				return Promise.resolve({ rateLimit: mockRateLimit });
 			}
 
 			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
-				return Promise.resolve({ data: {} });
+				return Promise.resolve({});
 			}
 
 			return;
@@ -333,21 +318,17 @@ describe('hydrate action', async () => {
 
 describe('dehydrate action', () => {
 	test('should reset store', async () => {
-		apiGetSpy.mockImplementation((path: string) => {
+		sdkRequestSpy.mockImplementation((cfg: () => Record<string, any>) => {
+			const { path } = cfg();
+
 			if (path === '/server/info') {
-				return Promise.resolve({
-					data: {
-						data: mockServerInfo,
-					},
-				});
+				return Promise.resolve(mockServerInfo);
 			}
 
 			if (path.startsWith('/auth')) {
 				return Promise.resolve({
-					data: {
-						data: mockAuthProviders,
-						disableDefault: true,
-					},
+					data: mockAuthProviders,
+					disableDefault: true,
 				});
 			}
 

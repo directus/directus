@@ -1,10 +1,12 @@
-import api, { replaceQueue } from '@/api';
+import { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
+import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
+import { readProviders, serverInfo } from '@directus/sdk';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
 
@@ -85,17 +87,17 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const hydrate = async (options?: HydrateOptions) => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
-			api.get(`/server/info`),
-			api.get('/auth?sessionOnly'),
+			sdk.request(serverInfo()),
+			sdk.request(readProviders(true)),
 		]);
 
-		info.project = serverInfoResponse.data.data?.project;
-		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
-		info.extensions = serverInfoResponse.data.data?.extensions;
-		info.version = serverInfoResponse.data.data?.version;
+		info.project = serverInfoResponse.project;
+		info.queryLimit = serverInfoResponse.queryLimit;
+		info.extensions = serverInfoResponse.extensions;
+		info.version = serverInfoResponse.version;
 
-		auth.providers = authResponse.data.data;
-		auth.disableDefault = authResponse.data.disableDefault;
+		auth.providers = authResponse.data;
+		auth.disableDefault = authResponse.disableDefault;
 
 		const { currentUser } = useUserStore();
 
@@ -109,11 +111,11 @@ export const useServerStore = defineStore('serverStore', () => {
 			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 		}
 
-		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
-			if (serverInfoResponse.data.data?.rateLimit === false) {
+		if (serverInfoResponse.rateLimit !== undefined) {
+			if (serverInfoResponse.rateLimit === false) {
 				await replaceQueue();
 			} else {
-				const { duration, points } = serverInfoResponse.data.data.rateLimit;
+				const { duration, points } = serverInfoResponse.rateLimit;
 				await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });
 			}
 		}
