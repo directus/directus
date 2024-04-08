@@ -16,10 +16,10 @@ importers:
         version: link:packages/release-notes-generator
       '@typescript-eslint/eslint-plugin':
         specifier: 7.1.1
-        version: 7.1.1(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.3.3)
+        version: 7.1.1(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.4.4)
       '@typescript-eslint/parser':
         specifier: 7.1.1
-        version: 7.1.1(eslint@8.57.0)(typescript@5.3.3)
+        version: 7.1.1(eslint@8.57.0)(typescript@5.4.4)
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -848,8 +848,8 @@ importers:
         specifier: 7.6.0
         version: 7.6.0
       tinymce:
-        specifier: 6.8.3
-        version: 6.8.3
+        specifier: 7.0.0
+        version: 7.0.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -916,7 +916,7 @@ importers:
         version: 3.0.1(eslint@8.57.0)
       eslint-plugin-prettier:
         specifier: npm:@paescuj/eslint-plugin-prettier@5.0.1-1
-        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.1.0)
+        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.2.5)
       eslint-plugin-react:
         specifier: 7.34.1
         version: 7.34.1(eslint@8.57.0)
@@ -946,7 +946,7 @@ importers:
         version: 5.3.3
       vitepress:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@algolia/client-search@4.22.1)(search-insights@2.13.0)(typescript@5.3.3)
+        version: 1.0.0-rc.4(@algolia/client-search@4.23.2)(search-insights@2.13.0)(typescript@5.3.3)
       vitepress-plugin-tabs:
         specifier: 0.3.0
         version: 0.3.0(vitepress@1.0.0-rc.4)(vue@3.3.8)
@@ -970,25 +970,25 @@ importers:
         version: 1.4.0(vitest@1.3.1)
       histoire:
         specifier: 0.17.14
-        version: 0.17.14(sass@1.72.0)(vite@5.1.4)
+        version: 0.17.14(vite@5.1.4)
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.3.3)(vue@3.4.21)
       rollup-plugin-node-externals:
         specifier: 7.1.1
-        version: 7.1.1(rollup@4.12.0)
+        version: 7.1.1(rollup@4.14.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
       vite:
         specifier: 5.1.4
-        version: 5.1.4(sass@1.72.0)
+        version: 5.1.4(@types/node@18.19.26)
       vite-plugin-dts:
         specifier: 3.8.1
-        version: 3.8.1(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4)
+        version: 3.8.1(rollup@4.14.1)(typescript@5.3.3)(vite@5.1.4)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -1046,7 +1046,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -1284,7 +1284,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/extensions:
     dependencies:
@@ -1400,7 +1400,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/extensions-sdk:
     dependencies:
@@ -1497,7 +1497,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/format-title:
     devDependencies:
@@ -1512,7 +1512,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/memory:
     dependencies:
@@ -1577,7 +1577,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/random:
     devDependencies:
@@ -1719,7 +1719,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1753,7 +1753,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1784,7 +1784,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/storage-driver-local:
     dependencies:
@@ -1849,7 +1849,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1883,7 +1883,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   packages/stores:
     dependencies:
@@ -1966,16 +1966,16 @@ importers:
         version: 2.1.7(typescript@5.3.3)(vue@3.4.21)
       rollup-plugin-node-externals:
         specifier: 7.1.1
-        version: 7.1.1(rollup@4.12.0)
+        version: 7.1.1(rollup@4.14.1)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
       vite:
         specifier: 5.1.4
-        version: 5.1.4(sass@1.72.0)
+        version: 5.1.4(@types/node@18.19.26)
       vite-plugin-dts:
         specifier: 3.8.1
-        version: 3.8.1(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4)
+        version: 3.8.1(rollup@4.14.1)(typescript@5.3.3)(vite@5.1.4)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.3)
@@ -2152,7 +2152,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   sdk:
     dependencies:
@@ -2174,7 +2174,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
 
   tests/blackbox:
     devDependencies:
@@ -2255,7 +2255,7 @@ importers:
         version: 4.3.2(typescript@5.3.3)
       vitest:
         specifier: 1.3.1
-        version: 1.3.1(happy-dom@13.10.1)(sass@1.72.0)
+        version: 1.3.1
       ws:
         specifier: 8.16.0
         version: 8.16.0
@@ -2272,47 +2272,47 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: true
 
-  /@algolia/autocomplete-core@1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)(search-insights@2.13.0):
+  /@algolia/autocomplete-core@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)(search-insights@2.13.0):
     resolution: {integrity: sha512-009HdfugtGCdC4JdXUbVJClA0q0zh24yyePn+KUGk3rP7j8FEe/m5Yo/z65gn6nP/cM39PxpzqKrL7A6fP6PPw==}
     dependencies:
-      '@algolia/autocomplete-plugin-algolia-insights': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)(search-insights@2.13.0)
-      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)
+      '@algolia/autocomplete-plugin-algolia-insights': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)(search-insights@2.13.0)
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)
     transitivePeerDependencies:
       - '@algolia/client-search'
       - algoliasearch
       - search-insights
     dev: true
 
-  /@algolia/autocomplete-plugin-algolia-insights@1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)(search-insights@2.13.0):
+  /@algolia/autocomplete-plugin-algolia-insights@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)(search-insights@2.13.0):
     resolution: {integrity: sha512-a/yTUkcO/Vyy+JffmAnTWbr4/90cLzw+CC3bRbhnULr/EM0fGNvM13oQQ14f2moLMcVDyAx/leczLlAOovhSZg==}
     peerDependencies:
       search-insights: '>= 1 < 3'
     dependencies:
-      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)
       search-insights: 2.13.0
     transitivePeerDependencies:
       - '@algolia/client-search'
       - algoliasearch
     dev: true
 
-  /@algolia/autocomplete-preset-algolia@1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0):
+  /@algolia/autocomplete-preset-algolia@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0):
     resolution: {integrity: sha512-d4qlt6YmrLMYy95n5TB52wtNDr6EgAIPH81dvvvW8UmuWRgxEtY0NJiPwl/h95JtG2vmRM804M0DSwMCNZlzRA==}
     peerDependencies:
       '@algolia/client-search': '>= 4.9.1 < 6'
       algoliasearch: '>= 4.9.1 < 6'
     dependencies:
-      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)
-      '@algolia/client-search': 4.22.1
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)
+      '@algolia/client-search': 4.23.2
       algoliasearch: 4.22.0
     dev: true
 
-  /@algolia/autocomplete-shared@1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0):
+  /@algolia/autocomplete-shared@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0):
     resolution: {integrity: sha512-Wnm9E4Ye6Rl6sTTqjoymD+l8DjSTHsHboVRYrKgEt8Q7UHm9nYbqhN/i0fhUYA3OAEH7WA8x3jfpnmJm3rKvaQ==}
     peerDependencies:
       '@algolia/client-search': '>= 4.9.1 < 6'
       algoliasearch: '>= 4.9.1 < 6'
     dependencies:
-      '@algolia/client-search': 4.22.1
+      '@algolia/client-search': 4.23.2
       algoliasearch: 4.22.0
     dev: true
 
@@ -2326,8 +2326,8 @@ packages:
     resolution: {integrity: sha512-TPwUMlIGPN16eW67qamNQUmxNiGHg/WBqWcrOoCddhqNTqGDPVqmgfaM85LPbt24t3r1z0zEz/tdsmuq3Q6oaA==}
     dev: true
 
-  /@algolia/cache-common@4.22.1:
-    resolution: {integrity: sha512-TJMBKqZNKYB9TptRRjSUtevJeQVXRmg6rk9qgFKWvOy8jhCPdyNZV1nB3SKGufzvTVbomAukFR8guu/8NRKBTA==}
+  /@algolia/cache-common@4.23.2:
+    resolution: {integrity: sha512-OUK/6mqr6CQWxzl/QY0/mwhlGvS6fMtvEPyn/7AHUx96NjqDA4X4+Ju7aXFQKh+m3jW9VPB0B9xvEQgyAnRPNw==}
     dev: true
 
   /@algolia/cache-in-memory@4.22.0:
@@ -2360,11 +2360,11 @@ packages:
       '@algolia/transporter': 4.22.0
     dev: true
 
-  /@algolia/client-common@4.22.1:
-    resolution: {integrity: sha512-IvaL5v9mZtm4k4QHbBGDmU3wa/mKokmqNBqPj0K7lcR8ZDKzUorhcGp/u8PkPC/e0zoHSTvRh7TRkGX3Lm7iOQ==}
+  /@algolia/client-common@4.23.2:
+    resolution: {integrity: sha512-Q2K1FRJBern8kIfZ0EqPvUr3V29ICxCm/q42zInV+VJRjldAD9oTsMGwqUQ26GFMdFYmqkEfCbY4VGAiQhh22g==}
     dependencies:
-      '@algolia/requester-common': 4.22.1
-      '@algolia/transporter': 4.22.1
+      '@algolia/requester-common': 4.23.2
+      '@algolia/transporter': 4.23.2
     dev: true
 
   /@algolia/client-personalization@4.22.0:
@@ -2383,20 +2383,20 @@ packages:
       '@algolia/transporter': 4.22.0
     dev: true
 
-  /@algolia/client-search@4.22.1:
-    resolution: {integrity: sha512-yb05NA4tNaOgx3+rOxAmFztgMTtGBi97X7PC3jyNeGiwkAjOZc2QrdZBYyIdcDLoI09N0gjtpClcackoTN0gPA==}
+  /@algolia/client-search@4.23.2:
+    resolution: {integrity: sha512-CxSB29OVGSE7l/iyoHvamMonzq7Ev8lnk/OkzleODZ1iBcCs3JC/XgTIKzN/4RSTrJ9QybsnlrN/bYCGufo7qw==}
     dependencies:
-      '@algolia/client-common': 4.22.1
-      '@algolia/requester-common': 4.22.1
-      '@algolia/transporter': 4.22.1
+      '@algolia/client-common': 4.23.2
+      '@algolia/requester-common': 4.23.2
+      '@algolia/transporter': 4.23.2
     dev: true
 
   /@algolia/logger-common@4.22.0:
     resolution: {integrity: sha512-HMUQTID0ucxNCXs5d1eBJ5q/HuKg8rFVE/vOiLaM4Abfeq1YnTtGV3+rFEhOPWhRQxNDd+YHa4q864IMc0zHpQ==}
     dev: true
 
-  /@algolia/logger-common@4.22.1:
-    resolution: {integrity: sha512-OnTFymd2odHSO39r4DSWRFETkBufnY2iGUZNrMXpIhF5cmFE8pGoINNPzwg02QLBlGSaLqdKy0bM8S0GyqPLBg==}
+  /@algolia/logger-common@4.23.2:
+    resolution: {integrity: sha512-jGM49Q7626cXZ7qRAWXn0jDlzvoA1FvN4rKTi1g0hxKsTTSReyYk0i1ADWjChDPl3Q+nSDhJuosM2bBUAay7xw==}
     dev: true
 
   /@algolia/logger-console@4.22.0:
@@ -2415,8 +2415,8 @@ packages:
     resolution: {integrity: sha512-Y9cEH/cKjIIZgzvI1aI0ARdtR/xRrOR13g5psCxkdhpgRN0Vcorx+zePhmAa4jdQNqexpxtkUdcKYugBzMZJgQ==}
     dev: true
 
-  /@algolia/requester-common@4.22.1:
-    resolution: {integrity: sha512-dgvhSAtg2MJnR+BxrIFqlLtkLlVVhas9HgYKMk2Uxiy5m6/8HZBL40JVAMb2LovoPFs9I/EWIoFVjOrFwzn5Qg==}
+  /@algolia/requester-common@4.23.2:
+    resolution: {integrity: sha512-3EfpBS0Hri0lGDB5H/BocLt7Vkop0bTTLVUBB844HH6tVycwShmsV6bDR7yXbQvFP1uNpgePRD3cdBCjeHmk6Q==}
     dev: true
 
   /@algolia/requester-node-http@4.22.0:
@@ -2433,12 +2433,12 @@ packages:
       '@algolia/requester-common': 4.22.0
     dev: true
 
-  /@algolia/transporter@4.22.1:
-    resolution: {integrity: sha512-kzWgc2c9IdxMa3YqA6TN0NW5VrKYYW/BELIn7vnLyn+U/RFdZ4lxxt9/8yq3DKV5snvoDzzO4ClyejZRdV3lMQ==}
+  /@algolia/transporter@4.23.2:
+    resolution: {integrity: sha512-GY3aGKBy+8AK4vZh8sfkatDciDVKad5rTY2S10Aefyjh7e7UGBP4zigf42qVXwU8VOPwi7l/L7OACGMOFcjB0Q==}
     dependencies:
-      '@algolia/cache-common': 4.22.1
-      '@algolia/logger-common': 4.22.1
-      '@algolia/requester-common': 4.22.1
+      '@algolia/cache-common': 4.23.2
+      '@algolia/logger-common': 4.23.2
+      '@algolia/requester-common': 4.23.2
     dev: true
 
   /@ampproject/remapping@2.2.1:
@@ -4131,10 +4131,10 @@ packages:
     resolution: {integrity: sha512-SPiDHaWKQZpwR2siD0KQUwlStvIAnEyK6tAE2h2Wuoq8ue9skzhlyVQ1ddzOxX6khULnAALDiR/isSF3bnuciA==}
     dev: true
 
-  /@docsearch/js@3.5.2(@algolia/client-search@4.22.1)(search-insights@2.13.0):
+  /@docsearch/js@3.5.2(@algolia/client-search@4.23.2)(search-insights@2.13.0):
     resolution: {integrity: sha512-p1YFTCDflk8ieHgFJYfmyHBki1D61+U9idwrLh+GQQMrBSP3DLGKpy0XUJtPjAOPltcVbqsTjiPFfH7JImjUNg==}
     dependencies:
-      '@docsearch/react': 3.5.2(@algolia/client-search@4.22.1)(search-insights@2.13.0)
+      '@docsearch/react': 3.5.2(@algolia/client-search@4.23.2)(search-insights@2.13.0)
       preact: 10.19.3
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -4144,7 +4144,7 @@ packages:
       - search-insights
     dev: true
 
-  /@docsearch/react@3.5.2(@algolia/client-search@4.22.1)(search-insights@2.13.0):
+  /@docsearch/react@3.5.2(@algolia/client-search@4.23.2)(search-insights@2.13.0):
     resolution: {integrity: sha512-9Ahcrs5z2jq/DcAvYtvlqEBHImbm4YJI8M9y0x6Tqg598P40HTEkX7hsMcIuThI+hTFxRGZ9hll0Wygm2yEjng==}
     peerDependencies:
       '@types/react': '>= 16.8.0 < 19.0.0'
@@ -4161,8 +4161,8 @@ packages:
       search-insights:
         optional: true
     dependencies:
-      '@algolia/autocomplete-core': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)(search-insights@2.13.0)
-      '@algolia/autocomplete-preset-algolia': 1.9.3(@algolia/client-search@4.22.1)(algoliasearch@4.22.0)
+      '@algolia/autocomplete-core': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)(search-insights@2.13.0)
+      '@algolia/autocomplete-preset-algolia': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.22.0)
       '@docsearch/css': 3.5.2
       algoliasearch: 4.22.0
       search-insights: 2.13.0
@@ -6070,7 +6070,7 @@ packages:
       '@otplib/plugin-thirty-two': 12.0.1
     dev: false
 
-  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.1.0):
+  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.2.5):
     resolution: {integrity: sha512-gc+FaHyaGEnlcjN9n/bjXxa8CRxmkZRZTHkclaePXNgHSMIqgucFukE+4N1PYnSza2CnRijLjpRo8Z6UiGmNUA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -6086,7 +6086,7 @@ packages:
     dependencies:
       eslint: 8.57.0
       eslint-config-prettier: 9.1.0(eslint@8.57.0)
-      prettier: 3.1.0
+      prettier: 3.2.5
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.6
     dev: true
@@ -6743,12 +6743,36 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 4.12.0
+    dev: false
+
+  /@rollup/pluginutils@5.1.0(rollup@4.14.1):
+    resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.5
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+      rollup: 4.14.1
+    dev: true
 
   /@rollup/rollup-android-arm-eabi@4.12.0:
     resolution: {integrity: sha512-+ac02NL/2TCKRrJu2wffk1kZ+RyqxVUlbjSagNgPm94frxtr+XDL12E5Ll1enWskLrtrZ2r8L3wED1orIibV/w==}
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-android-arm-eabi@4.14.1:
+    resolution: {integrity: sha512-fH8/o8nSUek8ceQnT7K4EQbSiV7jgkHq81m9lWZFIXjJ7lJzpWXbQFpT/Zh6OZYnpFykvzC3fbEvEAFZu03dPA==}
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-android-arm64@4.12.0:
@@ -6758,11 +6782,27 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-android-arm64@4.14.1:
+    resolution: {integrity: sha512-Y/9OHLjzkunF+KGEoJr3heiD5X9OLa8sbT1lm0NYeKyaM3oMhhQFvPB0bNZYJwlq93j8Z6wSxh9+cyKQaxS7PQ==}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-darwin-arm64@4.12.0:
     resolution: {integrity: sha512-X64tZd8dRE/QTrBIEs63kaOBG0b5GVEd3ccoLtyf6IdXtHdh8h+I56C2yC3PtC9Ucnv0CpNFJLqKFVgCYe0lOQ==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-darwin-arm64@4.14.1:
+    resolution: {integrity: sha512-+kecg3FY84WadgcuSVm6llrABOdQAEbNdnpi5X3UwWiFVhZIZvKgGrF7kmLguvxHNQy+UuRV66cLVl3S+Rkt+Q==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-darwin-x64@4.12.0:
@@ -6772,11 +6812,27 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-darwin-x64@4.14.1:
+    resolution: {integrity: sha512-2pYRzEjVqq2TB/UNv47BV/8vQiXkFGVmPFwJb+1E0IFFZbIX8/jo1olxqqMbo6xCXf8kabANhp5bzCij2tFLUA==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-linux-arm-gnueabihf@4.12.0:
     resolution: {integrity: sha512-a6w/Y3hyyO6GlpKL2xJ4IOh/7d+APaqLYdMf86xnczU3nurFTaVN9s9jOXQg97BE4nYm/7Ga51rjec5nfRdrvA==}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-linux-arm-gnueabihf@4.14.1:
+    resolution: {integrity: sha512-mS6wQ6Do6/wmrF9aTFVpIJ3/IDXhg1EZcQFYHZLHqw6AzMBjTHWnCG35HxSqUNphh0EHqSM6wRTT8HsL1C0x5g==}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-linux-arm64-gnu@4.12.0:
@@ -6786,11 +6842,35 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-linux-arm64-gnu@4.14.1:
+    resolution: {integrity: sha512-p9rGKYkHdFMzhckOTFubfxgyIO1vw//7IIjBBRVzyZebWlzRLeNhqxuSaZ7kCEKVkm/kuC9fVRW9HkC/zNRG2w==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-linux-arm64-musl@4.12.0:
     resolution: {integrity: sha512-eTvzUS3hhhlgeAv6bfigekzWZjaEX9xP9HhxB0Dvrdbkk5w/b+1Sxct2ZuDxNJKzsRStSq1EaEkVSEe7A7ipgQ==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-linux-arm64-musl@4.14.1:
+    resolution: {integrity: sha512-nDY6Yz5xS/Y4M2i9JLQd3Rofh5OR8Bn8qe3Mv/qCVpHFlwtZSBYSPaU4mrGazWkXrdQ98GB//H0BirGR/SKFSw==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@rollup/rollup-linux-powerpc64le-gnu@4.14.1:
+    resolution: {integrity: sha512-im7HE4VBL+aDswvcmfx88Mp1soqL9OBsdDBU8NqDEYtkri0qV0THhQsvZtZeNNlLeCUQ16PZyv7cqutjDF35qw==}
+    cpu: [ppc64le]
+    os: [linux]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-linux-riscv64-gnu@4.12.0:
@@ -6800,11 +6880,35 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-linux-riscv64-gnu@4.14.1:
+    resolution: {integrity: sha512-RWdiHuAxWmzPJgaHJdpvUUlDz8sdQz4P2uv367T2JocdDa98iRw2UjIJ4QxSyt077mXZT2X6pKfT2iYtVEvOFw==}
+    cpu: [riscv64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@rollup/rollup-linux-s390x-gnu@4.14.1:
+    resolution: {integrity: sha512-VMgaGQ5zRX6ZqV/fas65/sUGc9cPmsntq2FiGmayW9KMNfWVG/j0BAqImvU4KTeOOgYSf1F+k6at1UfNONuNjA==}
+    cpu: [s390x]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-linux-x64-gnu@4.12.0:
     resolution: {integrity: sha512-TenQhZVOtw/3qKOPa7d+QgkeM6xY0LtwzR8OplmyL5LrgTWIXpTQg2Q2ycBf8jm+SFW2Wt/DTn1gf7nFp3ssVA==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-linux-x64-gnu@4.14.1:
+    resolution: {integrity: sha512-9Q7DGjZN+hTdJomaQ3Iub4m6VPu1r94bmK2z3UeWP3dGUecRC54tmVu9vKHTm1bOt3ASoYtEz6JSRLFzrysKlA==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.12.0:
@@ -6814,11 +6918,27 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-linux-x64-musl@4.14.1:
+    resolution: {integrity: sha512-JNEG/Ti55413SsreTguSx0LOVKX902OfXIKVg+TCXO6Gjans/k9O6ww9q3oLGjNDaTLxM+IHFMeXy/0RXL5R/g==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-win32-arm64-msvc@4.12.0:
     resolution: {integrity: sha512-JPDxovheWNp6d7AHCgsUlkuCKvtu3RB55iNEkaQcf0ttsDU/JZF+iQnYcQJSk/7PtT4mjjVG8N1kpwnI9SLYaw==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-win32-arm64-msvc@4.14.1:
+    resolution: {integrity: sha512-ryS22I9y0mumlLNwDFYZRDFLwWh3aKaC72CWjFcFvxK0U6v/mOkM5Up1bTbCRAhv3kEIwW2ajROegCIQViUCeA==}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rollup/rollup-win32-ia32-msvc@4.12.0:
@@ -6828,11 +6948,27 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@rollup/rollup-win32-ia32-msvc@4.14.1:
+    resolution: {integrity: sha512-TdloItiGk+T0mTxKx7Hp279xy30LspMso+GzQvV2maYePMAWdmrzqSNZhUpPj3CGw12aGj57I026PgLCTu8CGg==}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@rollup/rollup-win32-x64-msvc@4.12.0:
     resolution: {integrity: sha512-ZYmr5mS2wd4Dew/JjT0Fqi2NPB/ZhZ2VvPp7SmvPZb4Y1CG/LRcS6tcRo2cYU7zLK5A7cdbhWnnWmUjoI4qapg==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    optional: true
+
+  /@rollup/rollup-win32-x64-msvc@4.14.1:
+    resolution: {integrity: sha512-wQGI+LY/Py20zdUPq+XCem7JcPOyzIJBm3dli+56DJsQOHbnXZFEwgmnC6el1TPAfC8lBT3m+z69RmLykNUbew==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
     optional: true
 
   /@rushstack/node-core-library@4.0.2:
@@ -8432,7 +8568,7 @@ packages:
       '@types/node': 18.19.26
     dev: true
 
-  /@typescript-eslint/eslint-plugin@7.1.1(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.3.3):
+  /@typescript-eslint/eslint-plugin@7.1.1(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.4.4):
     resolution: {integrity: sha512-zioDz623d0RHNhvx0eesUmGfIjzrk18nSBC8xewepKXbBvN/7c1qImV7Hg8TI1URTxKax7/zxfxj3Uph8Chcuw==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -8444,10 +8580,10 @@ packages:
         optional: true
     dependencies:
       '@eslint-community/regexpp': 4.10.0
-      '@typescript-eslint/parser': 7.1.1(eslint@8.57.0)(typescript@5.3.3)
+      '@typescript-eslint/parser': 7.1.1(eslint@8.57.0)(typescript@5.4.4)
       '@typescript-eslint/scope-manager': 7.1.1
-      '@typescript-eslint/type-utils': 7.1.1(eslint@8.57.0)(typescript@5.3.3)
-      '@typescript-eslint/utils': 7.1.1(eslint@8.57.0)(typescript@5.3.3)
+      '@typescript-eslint/type-utils': 7.1.1(eslint@8.57.0)(typescript@5.4.4)
+      '@typescript-eslint/utils': 7.1.1(eslint@8.57.0)(typescript@5.4.4)
       '@typescript-eslint/visitor-keys': 7.1.1
       debug: 4.3.4
       eslint: 8.57.0
@@ -8455,13 +8591,13 @@ packages:
       ignore: 5.3.1
       natural-compare: 1.4.0
       semver: 7.6.0
-      ts-api-utils: 1.0.3(typescript@5.3.3)
-      typescript: 5.3.3
+      ts-api-utils: 1.0.3(typescript@5.4.4)
+      typescript: 5.4.4
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser@7.1.1(eslint@8.57.0)(typescript@5.3.3):
+  /@typescript-eslint/parser@7.1.1(eslint@8.57.0)(typescript@5.4.4):
     resolution: {integrity: sha512-ZWUFyL0z04R1nAEgr9e79YtV5LbafdOtN7yapNbn1ansMyaegl2D4bL7vHoJ4HPSc4CaLwuCVas8CVuneKzplQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -8473,11 +8609,11 @@ packages:
     dependencies:
       '@typescript-eslint/scope-manager': 7.1.1
       '@typescript-eslint/types': 7.1.1
-      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.4.4)
       '@typescript-eslint/visitor-keys': 7.1.1
       debug: 4.3.4
       eslint: 8.57.0
-      typescript: 5.3.3
+      typescript: 5.4.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8490,7 +8626,7 @@ packages:
       '@typescript-eslint/visitor-keys': 7.1.1
     dev: true
 
-  /@typescript-eslint/type-utils@7.1.1(eslint@8.57.0)(typescript@5.3.3):
+  /@typescript-eslint/type-utils@7.1.1(eslint@8.57.0)(typescript@5.4.4):
     resolution: {integrity: sha512-5r4RKze6XHEEhlZnJtR3GYeCh1IueUHdbrukV2KSlLXaTjuSfeVF8mZUVPLovidCuZfbVjfhi4c0DNSa/Rdg5g==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -8500,12 +8636,12 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.3.3)
-      '@typescript-eslint/utils': 7.1.1(eslint@8.57.0)(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.4.4)
+      '@typescript-eslint/utils': 7.1.1(eslint@8.57.0)(typescript@5.4.4)
       debug: 4.3.4
       eslint: 8.57.0
-      ts-api-utils: 1.0.3(typescript@5.3.3)
-      typescript: 5.3.3
+      ts-api-utils: 1.0.3(typescript@5.4.4)
+      typescript: 5.4.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8515,7 +8651,7 @@ packages:
     engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
 
-  /@typescript-eslint/typescript-estree@7.1.1(typescript@5.3.3):
+  /@typescript-eslint/typescript-estree@7.1.1(typescript@5.4.4):
     resolution: {integrity: sha512-9ZOncVSfr+sMXVxxca2OJOPagRwT0u/UHikM2Rd6L/aB+kL/QAuTnsv6MeXtjzCJYb8PzrXarypSGIPx3Jemxw==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -8531,13 +8667,13 @@ packages:
       is-glob: 4.0.3
       minimatch: 9.0.3
       semver: 7.6.0
-      ts-api-utils: 1.0.3(typescript@5.3.3)
-      typescript: 5.3.3
+      ts-api-utils: 1.0.3(typescript@5.4.4)
+      typescript: 5.4.4
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/utils@7.1.1(eslint@8.57.0)(typescript@5.3.3):
+  /@typescript-eslint/utils@7.1.1(eslint@8.57.0)(typescript@5.4.4):
     resolution: {integrity: sha512-thOXM89xA03xAE0lW7alstvnyoBUbBX38YtY+zAUcpRPcq9EIhXPuJ0YTv948MbzmKh6e1AUszn5cBFK49Umqg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -8548,7 +8684,7 @@ packages:
       '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 7.1.1
       '@typescript-eslint/types': 7.1.1
-      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.3.3)
+      '@typescript-eslint/typescript-estree': 7.1.1(typescript@5.4.4)
       eslint: 8.57.0
       semver: 7.6.0
     transitivePeerDependencies:
@@ -13040,6 +13176,58 @@ packages:
       - utf-8-validate
     dev: true
 
+  /histoire@0.17.14(vite@5.1.4):
+    resolution: {integrity: sha512-w3RXzkwbcBpiDLlfdsUHUx9ABclbC3+ub1TsM7Pi5xfkbAy5xCkRS9FpFBo7JSbHZ91cjVRXj8CosQ7HlDDDzw==}
+    hasBin: true
+    peerDependencies:
+      vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      '@akryum/tinypool': 0.3.1
+      '@histoire/app': 0.17.14(vite@5.1.4)
+      '@histoire/controls': 0.17.14(vite@5.1.4)
+      '@histoire/shared': 0.17.14(vite@5.1.4)
+      '@histoire/vendors': 0.17.14
+      '@types/flexsearch': 0.7.6
+      '@types/markdown-it': 12.2.3
+      birpc: 0.1.1
+      change-case: 4.1.2
+      chokidar: 3.6.0
+      connect: 3.7.0
+      defu: 6.1.3
+      diacritics: 1.3.0
+      flexsearch: 0.7.21
+      fs-extra: 10.1.0
+      globby: 13.2.2
+      gray-matter: 4.0.3
+      jiti: 1.21.0
+      jsdom: 20.0.3
+      markdown-it: 12.3.2
+      markdown-it-anchor: 8.6.7(@types/markdown-it@12.2.3)(markdown-it@12.3.2)
+      markdown-it-attrs: 4.1.6(markdown-it@12.3.2)
+      markdown-it-emoji: 2.0.2
+      micromatch: 4.0.5
+      mrmime: 1.0.1
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      sade: 1.8.1
+      shiki-es: 0.2.0
+      sirv: 2.0.4
+      vite: 5.1.4(@types/node@18.19.26)
+      vite-node: 0.34.7
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - canvas
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - utf-8-validate
+    dev: true
+
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
     dev: true
@@ -17128,6 +17316,12 @@ packages:
     hasBin: true
     dev: true
 
+  /prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -17897,13 +18091,13 @@ packages:
       - supports-color
     dev: false
 
-  /rollup-plugin-node-externals@7.1.1(rollup@4.12.0):
+  /rollup-plugin-node-externals@7.1.1(rollup@4.14.1):
     resolution: {integrity: sha512-rnIUt0zYdV05muRetoxOiFiKxrrfiyXuM/CgI+akv6NExBTaIiPkH2rCSE9JUCsjta1MXzQVAldpe5tJEszlwQ==}
     engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
     peerDependencies:
       rollup: ^3.0.0 || ^4.0.0
     dependencies:
-      rollup: 4.12.0
+      rollup: 4.14.1
     dev: true
 
   /rollup-plugin-styles@4.0.0(rollup@3.29.4):
@@ -17961,6 +18155,31 @@ packages:
       '@rollup/rollup-win32-ia32-msvc': 4.12.0
       '@rollup/rollup-win32-x64-msvc': 4.12.0
       fsevents: 2.3.3
+
+  /rollup@4.14.1:
+    resolution: {integrity: sha512-4LnHSdd3QK2pa1J6dFbfm1HN0D7vSK/ZuZTsdyUAlA6Rr1yTouUTL13HaDOGJVgby461AhrNGBS7sCGXXtT+SA==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
+    dependencies:
+      '@types/estree': 1.0.5
+    optionalDependencies:
+      '@rollup/rollup-android-arm-eabi': 4.14.1
+      '@rollup/rollup-android-arm64': 4.14.1
+      '@rollup/rollup-darwin-arm64': 4.14.1
+      '@rollup/rollup-darwin-x64': 4.14.1
+      '@rollup/rollup-linux-arm-gnueabihf': 4.14.1
+      '@rollup/rollup-linux-arm64-gnu': 4.14.1
+      '@rollup/rollup-linux-arm64-musl': 4.14.1
+      '@rollup/rollup-linux-powerpc64le-gnu': 4.14.1
+      '@rollup/rollup-linux-riscv64-gnu': 4.14.1
+      '@rollup/rollup-linux-s390x-gnu': 4.14.1
+      '@rollup/rollup-linux-x64-gnu': 4.14.1
+      '@rollup/rollup-linux-x64-musl': 4.14.1
+      '@rollup/rollup-win32-arm64-msvc': 4.14.1
+      '@rollup/rollup-win32-ia32-msvc': 4.14.1
+      '@rollup/rollup-win32-x64-msvc': 4.14.1
+      fsevents: 2.3.3
+    dev: true
 
   /run-applescript@5.0.0:
     resolution: {integrity: sha512-XcT5rBksx1QdIhlFOCtgZkB99ZEouFZ1E2Kc2LHqNW13U3/74YGdkQRmThTwxy4QIyookibDKYZOPqX//6BlAg==}
@@ -19341,6 +19560,10 @@ packages:
     resolution: {integrity: sha512-3fCHKAeqT+xNwBVESf6iDbDV0VNwZNmfrkx9c/6Gz5iB8piMfaO6s7FvoiTrj1hf1gVbfyLTnz1DooI6DhgINQ==}
     dev: true
 
+  /tinymce@7.0.0:
+    resolution: {integrity: sha512-ggXLfTRrUALAcjeJSRrZcJDOl6MgC2tPXe/zNOEkQXvTDgcKqFypPRoPpfpK5wejexjyaI/7dwETOntJ5MPBFg==}
+    dev: true
+
   /tinypool@0.8.2:
     resolution: {integrity: sha512-SUszKYe5wgsxnNOVlBYO6IC+8VGWdVGZWAqUxp3UErNBtptZvWbwyUOyzNL59zigz2rCA92QiL3wvG+JDSdJdQ==}
     engines: {node: '>=14.0.0'}
@@ -19461,13 +19684,13 @@ packages:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
     dev: true
 
-  /ts-api-utils@1.0.3(typescript@5.3.3):
+  /ts-api-utils@1.0.3(typescript@5.4.4):
     resolution: {integrity: sha512-wNMeqtMz5NtwpT/UZGY5alT+VoKdSsOOP/kqHFcUW1P/VRhH2wJ48+DN2WwUliNbQ976ETwDL0Ifd2VVvgonvg==}
     engines: {node: '>=16.13.0'}
     peerDependencies:
       typescript: '>=4.2.0'
     dependencies:
-      typescript: 5.3.3
+      typescript: 5.4.4
     dev: true
 
   /ts-interface-checker@0.1.13:
@@ -19757,6 +19980,12 @@ packages:
 
   /typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.4.4:
+    resolution: {integrity: sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -20197,6 +20426,28 @@ packages:
       vfile-message: 3.1.4
     dev: true
 
+  /vite-node@0.34.7:
+    resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
+    engines: {node: '>=v14.18.0'}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      mlly: 1.5.0
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      vite: 5.1.4(@types/node@18.19.26)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vite-node@0.34.7(sass@1.72.0):
     resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
     engines: {node: '>=v14.18.0'}
@@ -20208,6 +20459,27 @@ packages:
       pathe: 1.1.2
       picocolors: 1.0.0
       vite: 5.1.4(sass@1.72.0)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /vite-node@1.3.1:
+    resolution: {integrity: sha512-azbRrqRxlWTJEVbzInZCTchx0X69M/XPTCz4H+TLvlTcR/xH/3hkRqhOakT41fMJCMzXTu4UvegkZiEoJAWvng==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      vite: 5.1.4(@types/node@18.19.26)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -20261,7 +20533,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.8.1(rollup@4.12.0)(typescript@5.3.3)(vite@5.1.4):
+  /vite-plugin-dts@3.8.1(rollup@4.14.1)(typescript@5.3.3)(vite@5.1.4):
     resolution: {integrity: sha512-zEYyQxH7lKto1VTKZHF3ZZeOPkkJgnMrePY4VxDHfDSvDjmYMMfWjZxYmNwW8QxbaItWJQhhXY+geAbyNphI7g==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -20272,13 +20544,13 @@ packages:
         optional: true
     dependencies:
       '@microsoft/api-extractor': 7.43.0
-      '@rollup/pluginutils': 5.1.0(rollup@4.12.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.14.1)
       '@vue/language-core': 1.8.27(typescript@5.3.3)
       debug: 4.3.4
       kolorist: 1.8.0
       magic-string: 0.30.8
       typescript: 5.3.3
-      vite: 5.1.4(sass@1.72.0)
+      vite: 5.1.4(@types/node@18.19.26)
       vue-tsc: 1.8.27(typescript@5.3.3)
     transitivePeerDependencies:
       - '@types/node'
@@ -20414,16 +20686,16 @@ packages:
       vitepress: ^1.0.0-beta.2
       vue: ^3.3.4
     dependencies:
-      vitepress: 1.0.0-rc.4(@algolia/client-search@4.22.1)(search-insights@2.13.0)(typescript@5.3.3)
+      vitepress: 1.0.0-rc.4(@algolia/client-search@4.23.2)(search-insights@2.13.0)(typescript@5.3.3)
       vue: 3.3.8(typescript@5.3.3)
     dev: true
 
-  /vitepress@1.0.0-rc.4(@algolia/client-search@4.22.1)(search-insights@2.13.0)(typescript@5.3.3):
+  /vitepress@1.0.0-rc.4(@algolia/client-search@4.23.2)(search-insights@2.13.0)(typescript@5.3.3):
     resolution: {integrity: sha512-JCQ89Bm6ECUTnyzyas3JENo00UDJeK8q1SUQyJYou+4Yz5BKEc/F3O21cu++DnUT2zXc0kvQ2Aj4BZCc/nioXQ==}
     hasBin: true
     dependencies:
       '@docsearch/css': 3.5.2
-      '@docsearch/js': 3.5.2(@algolia/client-search@4.22.1)(search-insights@2.13.0)
+      '@docsearch/js': 3.5.2(@algolia/client-search@4.23.2)(search-insights@2.13.0)
       '@vitejs/plugin-vue': 4.6.2(vite@4.5.2)(vue@3.4.21)
       '@vue/devtools-api': 6.5.1
       '@vueuse/core': 10.9.0(vue@3.4.21)
@@ -20461,6 +20733,61 @@ packages:
       - terser
       - typescript
       - universal-cookie
+    dev: true
+
+  /vitest@1.3.1:
+    resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@types/node': ^18.0.0 || >=20.0.0
+      '@vitest/browser': 1.3.1
+      '@vitest/ui': 1.3.1
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@types/node':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@vitest/expect': 1.3.1
+      '@vitest/runner': 1.3.1
+      '@vitest/snapshot': 1.3.1
+      '@vitest/spy': 1.3.1
+      '@vitest/utils': 1.3.1
+      acorn-walk: 8.3.2
+      chai: 4.4.1
+      debug: 4.3.4
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.7
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      std-env: 3.7.0
+      strip-literal: 2.0.0
+      tinybench: 2.6.0
+      tinypool: 0.8.2
+      vite: 5.1.4(@types/node@18.19.26)
+      vite-node: 1.3.1
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
     dev: true
 
   /vitest@1.3.1(@types/node@18.19.26):
