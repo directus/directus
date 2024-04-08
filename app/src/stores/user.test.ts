@@ -38,28 +38,21 @@ const mockAdminUser = {
 	},
 };
 
-vi.mock('@/api', () => {
+vi.mock('@/sdk', () => {
 	return {
 		default: {
-			get: (path: string) => {
+			request: (cfg: () => Record<string, any>) => {
+				const { path, method } = cfg();
+
 				if (path === '/users/me') {
-					return Promise.resolve({
-						data: {
-							data: mockAdminUser,
-						},
-					});
+					return Promise.resolve(mockAdminUser);
 				}
 
-				return Promise.reject(new Error(`GET "${path}" is not mocked in this test`));
-			},
-			patch: (path: string) => {
 				if (path === '/users/me/track/page') {
-					return Promise.resolve({
-						data: {},
-					});
+					return Promise.resolve({});
 				}
 
-				return Promise.reject(new Error(`PATCH "${path}" is not mocked in this test`));
+				return Promise.reject(new Error(`${method} "${path}" is not mocked in this test`));
 			},
 		},
 	};
