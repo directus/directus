@@ -8,6 +8,7 @@
     "preview": "nuxt preview",
     "spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter -f ./content -q -d ./dictionary.txt"
   },
+	"pre-commit": ["spellcheck"],
   "dependencies": {
     "@directus/format-title": "^10.1.1",
     "@nuxt/content": "^2.12.1",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "nuxt-headlessui": "1.2.0",
+    "pre-commit": "1.2.2",
     "shiki": "1.2.4",
     "spellchecker-cli": "6.2.0"
   }
