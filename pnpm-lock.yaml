@@ -770,8 +770,8 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       dompurify:
-        specifier: 3.0.11
-        version: 3.0.11
+        specifier: 3.1.0
+        version: 3.1.0
       editorjs-toggle-block:
         specifier: 0.3.14
         version: 0.3.14
@@ -11261,8 +11261,8 @@ packages:
     dependencies:
       domelementtype: 2.3.0
 
-  /dompurify@3.0.11:
-    resolution: {integrity: sha512-Fan4uMuyB26gFV3ovPoEoQbxRRPfTu3CvImyZnhGq5fsIEO+gEFLp45ISFt+kQBWsK5ulDdT0oV28jS1UrwQLg==}
+  /dompurify@3.1.0:
+    resolution: {integrity: sha512-yoU4rhgPKCo+p5UrWWWNKiIq+ToGqmVVhk0PmMYBK4kRsR3/qhemNFL8f6CFmBd4gMwm3F4T7HBoydP5uY07fA==}
     dev: true
 
   /domutils@2.8.0:
