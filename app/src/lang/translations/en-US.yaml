@@ -1629,6 +1629,7 @@ select_field_type: Select a field type
 select_interface: Select an interface
 select_display: Select a display
 settings: Settings
+register: Register
 sign_in: Sign In
 sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?

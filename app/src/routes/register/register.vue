@@ -6,9 +6,8 @@ import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ContinueAs from './components/continue-as.vue';
-import { LdapForm, LoginForm } from './components/login-form/';
-import SsoLinks from './components/sso-links.vue';
+import SsoLinks from '../login/components/sso-links.vue';
+import RegisterForm from './register-form.vue';
 
 withDefaults(
 	defineProps<{
@@ -41,42 +40,38 @@ const providerSelect = computed({
 const authenticated = computed(() => appStore.authenticated);
 
 useHead({
-	title: t('sign_in'),
+	title: t('register'),
 });
 </script>
 
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title">{{ t('sign_in') }}</h1>
-			<router-link to="/register" class="register">
-				{{ t('register') }}
+			<h1 class="type-title">{{ t('register') }}</h1>
+			<router-link to="/login" class="login">
+				{{ t('sign_in') }}
 			</router-link>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
 		</div>
 
-		<continue-as v-if="authenticated" />
-
-		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
-
-		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
+		<register-form :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
 		<template #notice>
-			<template v-if="authenticated">
+			<div v-if="authenticated">
 				<v-icon name="lock_open" left />
 				{{ t('authenticated') }}
-			</template>
-			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
-				{{ t(`logoutReason.${logoutReason}`) }}
-			</template>
-			<template v-else>
-				<v-icon name="lock" left />
-				{{ t('not_authenticated') }}
-			</template>
+			</div>
+			<div v-else>
+				{{
+					logoutReason && te(`logoutReason.${logoutReason}`)
+						? t(`logoutReason.${logoutReason}`)
+						: t('not_authenticated')
+				}}
+			</div>
 		</template>
 	</public-view>
 </template>
@@ -86,7 +81,7 @@ h1 {
 	margin-bottom: 20px;
 }
 
-.register {
+.login {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
