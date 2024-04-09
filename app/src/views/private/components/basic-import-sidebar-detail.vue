@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { AxiosProgressEvent } from 'axios';
+import { useSdk } from '@directus/composables';
+import { utilsImport } from '@directus/sdk';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -48,6 +48,7 @@ function importData() {
 }
 
 function useUpload() {
+	const sdk = useSdk();
 	const uploading = ref(false);
 	const importing = ref(false);
 	const progress = ref(0);
@@ -63,13 +64,10 @@ function useUpload() {
 		formData.append('file', file);
 
 		try {
-			await api.post(`/utils/import/${collection.value}`, formData, {
-				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
-					progress.value = percentCompleted;
-					importing.value = percentCompleted === 100 ? true : false;
-				},
-			});
+			await sdk.request(utilsImport(collection.value, formData));
+
+			progress.value = 100;
+			importing.value = false;
 
 			clearFileInput();
 
@@ -79,6 +77,7 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
+			//TODO check error
 			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
 
 			notify({
