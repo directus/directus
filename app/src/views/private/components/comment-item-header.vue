@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import api from '@/api';
 import { Activity } from '@/types/activity';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
+import { useSdk } from '@directus/composables';
+import { deleteComment } from '@directus/sdk';
 import type { User } from '@directus/types';
 import { format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+const sdk = useSdk();
 
 const props = defineProps<{
 	activity: Activity & {
@@ -48,7 +51,7 @@ function useDelete() {
 		deleting.value = true;
 
 		try {
-			await api.delete(`/activity/comment/${props.activity.id}`);
+			await sdk.request(deleteComment(props.activity.id));
 			await props.refresh();
 			confirmDelete.value = false;
 		} catch (error) {
