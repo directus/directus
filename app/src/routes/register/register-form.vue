@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { RequestError } from '@/api';
-import { login } from '@/auth';
+import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -10,7 +8,6 @@ import { useRouter } from 'vue-router';
 type Credentials = {
 	email: string;
 	password: string;
-	otp?: string;
 };
 
 const props = defineProps<{
@@ -20,25 +17,18 @@ const props = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 const { provider } = toRefs(props);
-const loggingIn = ref(false);
+const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
 const passwordVerification = ref<string | null>(null);
 const error = ref<RequestError | string | null>(null);
-const otp = ref<string | null>(null);
-const requiresTFA = ref(false);
-const userStore = useUserStore();
 
-watch(email, () => {
-	if (requiresTFA.value === true) requiresTFA.value = false;
-});
+const passwordsMatch = computed(() => password.value === passwordVerification.value);
 
 watch(provider, () => {
 	email.value = null;
 	password.value = null;
 	error.value = null;
-	otp.value = null;
-	requiresTFA.value = false;
 });
 
 const errorFormatted = computed(() => {
@@ -58,42 +48,32 @@ async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
 	const emailRegex = /^\S+@\S+$/;
 
-	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
+	if (
+		email.value === null ||
+		!emailRegex.test(email.value) ||
+		password.value === null ||
+		passwordsMatch.value === false
+	) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
 
 	try {
-		loggingIn.value = true;
+		isLoading.value = true;
 
 		const credentials: Credentials = {
 			email: email.value,
 			password: password.value,
 		};
 
-		if (otp.value) {
-			credentials.otp = otp.value;
-		}
+		await api.post('/user/register', credentials);
 
-		await login({ provider: provider.value, credentials });
-
-		const redirectQuery = router.currentRoute.value.query.redirect as string;
-
-		let lastPage: string | null = null;
-
-		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
-			lastPage = userStore.currentUser.last_page;
-		}
-
-		router.push(redirectQuery || lastPage || '/content');
+		// Redirect to login because this role might require 2FA
+		router.push('/login');
 	} catch (err: any) {
-		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
-			requiresTFA.value = true;
-		} else {
-			error.value = err.errors?.[0]?.extensions?.code || err;
-		}
+		error.value = err.errors?.[0]?.extensions?.code || err;
 	} finally {
-		loggingIn.value = false;
+		isLoading.value = false;
 	}
 }
 </script>
@@ -104,22 +84,11 @@ async function onSubmit() {
 		<v-input v-model="password" type="password" :placeholder="t('password')" />
 		<v-input v-model="passwordVerification" type="password" :placeholder="t('password')" />
 
-		<transition-expand>
-			<v-input
-				v-if="requiresTFA"
-				v-model="otp"
-				type="text"
-				autocomplete="one-time-code"
-				:placeholder="t('otp')"
-				autofocus
-			/>
-		</transition-expand>
-
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ t('register') }}</v-button>
+			<v-button type="submit" :loading="isLoading" large>{{ t('register') }}</v-button>
 		</div>
 	</form>
 </template>
