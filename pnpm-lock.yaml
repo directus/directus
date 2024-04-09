@@ -581,8 +581,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@editorjs/editorjs':
-        specifier: 2.28.2
-        version: 2.28.2
+        specifier: 2.29.1
+        version: 2.29.1
       '@editorjs/embed':
         specifier: 2.7.0
         version: 2.7.0
@@ -4194,8 +4194,8 @@ packages:
       '@codexteam/icons': 0.0.5
     dev: true
 
-  /@editorjs/editorjs@2.28.2:
-    resolution: {integrity: sha512-g6V0Nd3W9IIWMpvxDNTssQ6e4kxBp1Y0W4GIf8cXRlmcBp3TUjrgCYJQmNy3l2a6ZzhyBAoVSe8krJEq4g7PQw==}
+  /@editorjs/editorjs@2.29.1:
+    resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==}
     dev: true
 
   /@editorjs/embed@2.7.0:
