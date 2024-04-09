@@ -1,8 +1,8 @@
 import { ForbiddenError } from '@directus/errors';
-import type { ItemPermissions, Permission, PermissionsAction, Query } from '@directus/types';
+import type { Item, ItemPermissions, Permission, PermissionsAction, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../../cache.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../../types/index.js';
 import { AuthorizationService } from '../authorization.js';
 import type { QueryOptions } from '../items.js';
 import { ItemsService } from '../items.js';

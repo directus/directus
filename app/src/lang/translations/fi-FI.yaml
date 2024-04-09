@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Tunniste
 avatar: Avatari
 application: Sovellus
@@ -561,36 +541,36 @@ auto_fill: Automaattinen täyttö
 corresponding_field: Vastaava kenttä
 errors:
   COLLECTION_NOT_FOUND: "Kokoelmaa ei ole olemassa"
+  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   FIELD_NOT_FOUND: Kenttää ei löydy
   FORBIDDEN: Kielletty
+  ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
+  INTERNAL_SERVER_ERROR: Odottamaton virhe
+  INVALID_CONFIG: Virheelliset asetukset
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
+  INVALID_FOREIGN_KEY: Virheellinen vierasavain
+  INVALID_IP: IP-osoite ei ole sallittu
   INVALID_OTP: Väärä kertakäyttösalasana
   INVALID_PAYLOAD: Virheellinen kuorma
   INVALID_PROVIDER: Käyttäjä kuuluu eri tunnistautumis-tarjoajalle
   INVALID_QUERY: Virheellinen kysely
-  INVALID_CONFIG: Virheelliset asetukset
   INVALID_TOKEN: Tunnus ei kelpaa
-  INVALID_IP: IP-osoite ei ole sallittu
   INVALID_USER: Todennus epäonnistui
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
-  ROUTE_NOT_FOUND: Ei löytynyt
-  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
-  USER_SUSPENDED: Käyttäjä jäädytetty
-  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
-  ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
-  VALUE_TOO_LONG: Arvo on liian pitkä
-  VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
-  INVALID_FOREIGN_KEY: Virheellinen vierasavain
-  UNKNOWN: Odottamaton virhe
-  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
-  UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
-  UNEXPECTED_RESPONSE: Odottamaton vastaus
-  TOKEN_EXPIRED: Token vanhentunut
   RANGE_NOT_SATISFIABLE: Virheellinen väli
+  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   REQUESTS_EXCEEDED: Pyyntöjen raja saavutettu
+  ROUTE_NOT_FOUND: Ei löytynyt
+  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
+  TOKEN_EXPIRED: Token vanhentunut
+  UNEXPECTED_RESPONSE: Odottamaton vastaus
+  UNKNOWN: Odottamaton virhe
+  UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
+  USER_SUSPENDED: Käyttäjä jäädytetty
+  VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
+  VALUE_TOO_LONG: Arvo on liian pitkä
 security: Turvallisuus
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
