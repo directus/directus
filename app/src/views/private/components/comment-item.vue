@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import api from '@/api';
 import { Activity } from '@/types/activity';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { User } from '@directus/types';
 import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
+import { useSdk } from '@directus/composables';
+import { updateComment } from '@directus/sdk';
+
+const sdk = useSdk();
 
 const props = withDefaults(
 	defineProps<{
@@ -41,9 +44,7 @@ function useEdits() {
 		savingEdits.value = true;
 
 		try {
-			await api.patch(`/activity/comment/${props.activity.id}`, {
-				comment: edits.value,
-			});
+			await sdk.request(updateComment(props.activity.id, { comment: edits.value }));
 
 			props.refresh();
 		} catch (error) {
