@@ -1,14 +1,17 @@
 <script setup>
 import sidebarExclude from '@/utils/sidebarExclude'
 
+const route = useRoute()
+
 const queryBuilder = queryContent().where({ _path: { $not: { $containsAny: sidebarExclude } }})
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(queryBuilder))
 </script>
 
 <template>
-	<div class="page docs">
+	<HeaderHero v-if="route.path == '/'" />
+	<HeaderNav />
+	<div class="page container">
 		<aside>
-			<NuxtLink to="/">Home</NuxtLink>
 			<nav>
 				<section v-for="section of navigation" :key="section._path">
 					<span>{{ section.title }}</span>
@@ -18,43 +21,37 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 				</section>
 			</nav>
 		</aside>
-		<main>
+		<main class="prose">
 			<slot />
 		</main>
 	</div>
 </template>
 
-<style lang="scss">
-body, h1, h2, h3 {
-	margin: 0;
-}
-h2, h3, h4 {
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
-}
-</style>
-
 <style lang="scss" scoped>
 .page {
 	display: grid;
-	grid-template-columns: 175px auto;
+	grid-template-columns: 200px auto;
 	gap: 2em;
 }
 aside {
-	background: lightgrey;
-	height: 100vh;
-	overflow-y: scroll;
-	position: sticky;
+	margin-top: 2rem;
+	border-right: 2px solid var(--border);
 }
 main {
 	width: 80ch;
 	padding-top: 2rem;
-	max-height: 100vh;
-	overflow-y: scroll;
+	padding-bottom: 2rem;
 }
 section {
-	margin: 1rem 0;
+	margin: 2rem 0;
+	&:first-child {
+		margin-top: 0;
+	}
+	& span {
+		color: var(--typography--subdued);
+		text-transform: uppercase;
+		font-size: var(--nav-font);
+		font-weight: 500;
+	}
 }
 </style>

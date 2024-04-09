@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Poppins:wght@700&display=swap');
+
+:root {
+	--purple--light-3: #E0DAFF;
+	--purple--light-2: #C2B4FF;
+	--purple--light-1: #947CFF;
+	--purple: #6644ff;
+	--purple--dark-1: #4C2DDB;
+	--purple--dark-2: #201262;
+
+	--pink--light-3: #FFEBF8;
+	--pink--light-2: #FFD6F1;
+	--pink--light-1: #FFB8E7;
+	--pink: #ff99dd;
+	--pink--dark-1: #D064AC;
+	--pink--dark-2: #4F133B;
+
+	--blue--light-3: #DAEBFC;
+	--blue--light-2: #B3D7F9;
+	--blue--light-1: #8FC4F7;
+	--blue: #68B0F4;
+	--blue--dark-1: #5A93C8;
+	--blue--dark-2: #4B769B;
+
+	--green--light-3: #E6FAF5;
+	--green--light-2: #7FE3CA;
+	--green--light-1: #40D6B1;
+	--green: #01C897;
+	--green--dark-1: #08A582;
+	--green--dark-2: #17826D;
+
+	--yellow--light-3: #FEF0D3;
+	--yellow--light-2: #FDE2A7;
+	--yellow--light-1: #FCD37B;
+	--yellow: #FBC54E;
+	--yellow--dark-1: #C8A34B;
+	--yellow--dark-2: #948049;
+
+	--red--light-3: #F8D3D9;
+	--red--light-2: #F0A7B3;
+	--red--light-1: #EA7D8F;
+	--red: #E35169;
+	--red--dark-1: #B64C5F;
+	--red--dark-2: #884756;
+
+	--typography-1: #19212C;
+	--typography-2: #8196B0;
+	--typography-3: #BECBDC;
+	--typography--dark-1: #FAFBFC;
+	--typography--dark--2: #F6F8FA;
+	--typography--dark--3: #ECF0F5;
+
+	--bg: white;
+	--bg-2: #F7FAFC;
+	--bg-3: #F0F4F9;
+	--bg--dark: #18222F;
+	--bg--dark-2: #172940;
+	--bg--dark-3: #263B56;
+
+	--border: #F0F4F9;
+	--border-2: #D3DAE4;
+	--border-3: #A2B5CD;
+
+	--font--body: 'IBM Plex Sans', sans-serif;
+	--font--header: 'Poppins', sans-serif;
+	--font--code: 'IBM Plex Mono', monospace;
+
+	--primary: var(--purple);
+	--primary--light: var(--purple-light-1);
+	--primary--dark: var(--purple-dark-1);
+	--secondary: var(--pink);
+	--secondary--light: var(--pink-light-1);
+	--secondary--dark: var(--pink-dark-1);
+	--typography: var(--typography-1);
+	--typography--subdued: var(--typography-2);
+	--typography--subtle: var(--typography-3);
+	--background: var(--bg);
+	--background--subdued: var(--bg-2);
+	--background--subtle: var(--bg-3);
+
+	--max-width: 1440px;
+	--sidebar-width: 280px;
+	--page-padding: 24px;
+
+	--nav-font: 14px;
+	--nav-padding: 8px;
+}

@@ -24,5 +24,13 @@ ol ol {
 }
 a {
 	display: block;
+	text-decoration: none;
+	margin-top: 0.5rem;
+}
+a.router-link-active {
+	color: var(--primary);
+	font-weight: 500;
+	border-right: 2px solid var(--primary);
+	margin-right: -2px;
 }
 </style>

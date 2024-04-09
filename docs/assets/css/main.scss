@@ -1,0 +1,41 @@
+@use 'reset';
+@use 'vars';
+
+body {
+	font-family: var(--font--body);
+	color: var(--typography-1);
+}
+
+a {
+	text-decoration: underline;
+	color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--font--header);
+	font-weight: 600;
+	& a {
+		text-decoration: none;
+	}
+}
+
+code,
+pre {
+	font-family: var(--font--code);
+}
+
+.container {
+	max-width: var(--max-width);
+	padding: 0 var(--page-padding);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.prose {
+	p, h1, h2, h3 {
+		margin-bottom: 1rem;
+	}
+}
