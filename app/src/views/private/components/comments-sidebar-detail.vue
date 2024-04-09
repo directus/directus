@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
@@ -12,7 +11,9 @@ import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
 import { useSdk } from '@directus/composables';
-import { readActivities } from '@directus/sdk';
+import { readActivities, readUsers } from '@directus/sdk';
+
+const sdk = useSdk();
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
@@ -50,8 +51,6 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	const loadingCount = ref(false);
 	const userPreviews = ref<Record<string, any>>({});
 
-	const sdk = useSdk();
-
 	watch([collection, primaryKey], () => refresh());
 
 	return {
@@ -71,26 +70,32 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loading.value = true;
 
 		try {
-			const response = await sdk.request<Activity[]>(readActivities({
-				filter: {
-					collection: { _eq: collection.value },
-					item: { _eq: primaryKey.value },
-					action: { _eq: 'comment' },
-				},
-				sort: '-id', // directus_activity has auto increment and is therefore in chronological order
-				fields: [
-					'id',
-					'action',
-					'timestamp',
-					'user.id',
-					'user.email',
-					'user.first_name',
-					'user.last_name',
-					'user.avatar.id',
-					'revisions.id',
-					'comment',
-				],
-			}));
+			// TODO fix #20633
+			const response = await sdk.request<Activity[]>(
+				readActivities({
+					filter: {
+						// @ts-ignore
+						_and: [
+							{ collection: { _eq: collection.value } },
+							{ item: { _eq: primaryKey.value } },
+							{ action: { _eq: 'comment' } },
+						],
+					},
+					sort: '-id', // directus_activity has auto increment and is therefore in chronological order
+					fields: [
+						'id',
+						'action',
+						'timestamp',
+						'user.id',
+						'user.email',
+						'user.first_name',
+						'user.last_name',
+						'user.avatar.id',
+						'revisions.id',
+						'comment',
+					],
+				}),
+			);
 
 			userPreviews.value = await loadUserPreviews(response, regex);
 
@@ -150,9 +155,10 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loadingCount.value = true;
 
 		try {
-			const response = await api.get(`/activity`, {
-				params: {
+			// TODO fix #20633
+			const response = await sdk.request(readActivities({
 					filter: {
+						// @ts-ignore
 						_and: [
 							{
 								collection: {
@@ -174,10 +180,12 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 					aggregate: {
 						count: 'id',
 					},
-				},
-			});
+				}));
 
-			activityCount.value = Number(response.data.data[0].count.id);
+
+			if (response[0]) {
+				activityCount.value = Number(response[0].count.id);
+			}
 		} catch (error: any) {
 			error.value = error;
 		} finally {
@@ -203,16 +211,14 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	});
 
 	if (uniqIds.length > 0) {
-		const response = await api.get('/users', {
-			params: {
-				filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
-				fields: ['first_name', 'last_name', 'email', 'id'],
-			},
-		});
+		const response = await sdk.request(readUsers({
+			filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
+			fields: ['first_name', 'last_name', 'email', 'id'],
+		}));
 
 		const userPreviews: Record<string, string> = {};
 
-		response.data.data.map((user: Record<string, any>) => {
+		response.map((user: Record<string, any>) => {
 			userPreviews[user.id] = userName(user);
 		});
 
