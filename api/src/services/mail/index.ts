@@ -25,7 +25,8 @@ const liquidEngine = new Liquid({
 
 export type EmailOptions = SendMailOptions & {
 	template?: {
-		name: string;
+		name?: string;
+		content?: string;
 		data: Record<string, any>;
 	};
 };
@@ -68,7 +69,11 @@ export class MailService {
 				...templateData,
 			};
 
-			html = await this.renderTemplate(template.name, templateData);
+			if ( template.content ) {
+				html = await this.renderTemplateString(template.content, templateData);
+			} else if ( template.name ) {
+				html = await this.renderTemplate(template.name, templateData);
+			}
 		}
 
 		if (typeof html === 'string') {
@@ -94,6 +99,12 @@ export class MailService {
 		}
 
 		const templateString = await fse.readFile(templatePath, 'utf8');
+		const html = await this.renderTemplateString(templateString, variables);
+
+		return html;
+	}
+
+	private async renderTemplateString(templateString: string, variables: Record<string, any>) {
 		const html = await liquidEngine.parseAndRender(templateString, variables);
 
 		return html;
