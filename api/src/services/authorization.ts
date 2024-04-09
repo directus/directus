@@ -3,8 +3,10 @@ import type {
 	Accountability,
 	Aggregate,
 	Filter,
+	Item,
 	Permission,
 	PermissionsAction,
+	PrimaryKey,
 	Query,
 	SchemaOverview,
 } from '@directus/types';
@@ -19,9 +21,7 @@ import type {
 	AbstractServiceOptions,
 	FieldNode,
 	FunctionFieldNode,
-	Item,
 	NestedCollectionNode,
-	PrimaryKey,
 } from '../types/index.js';
 import { getRelationInfo } from '../utils/get-relation-info.js';
 import { stripFunction } from '../utils/strip-function.js';

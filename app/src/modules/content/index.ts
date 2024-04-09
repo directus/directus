@@ -33,7 +33,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		'bookmark' in from.query &&
 		typeof from.query.bookmark === 'string' &&
 		'bookmark' in to.query === false &&
-		to.params.collection === from.params.collection
+		to.params.collection === from.params.collection &&
+		'primaryKey' in to.params
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}

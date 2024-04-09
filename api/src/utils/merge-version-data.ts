@@ -1,7 +1,6 @@
-import type { Item, SchemaOverview } from '@directus/types';
-import Joi from 'joi';
-import type { Alterations } from '../types/index.js';
+import type { Alterations, Item, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
+import Joi from 'joi';
 import { cloneDeep } from 'lodash-es';
 
 const alterationSchema = Joi.object({
