@@ -1,5 +1,5 @@
 <script setup>
-import sectionDefinitions from '@/utils/sectionDefinitions'
+import calloutDefinitions from '@/utils/calloutDefinitions'
 
 const props = defineProps({
 	title: String,
@@ -9,12 +9,12 @@ const props = defineProps({
 		type: String,
 		default: 'info',
 		validator(value) {
-			return sectionDefinitions.map(icon => icon.type).includes(value)
+			return calloutDefinitions.map(icon => icon.type).includes(value)
 		}
 	},
 })
 
-const section = sectionDefinitions.find(section => section.type == props.type)
+const section = calloutDefinitions.find(section => section.type == props.type)
 
 const componentType = props.url ? 'a' : 'div'
 </script>
@@ -87,3 +87,4 @@ details.callout {
 	margin-bottom: 0;
 }
 </style>
+~/utils/calloutDefinitions

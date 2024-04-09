@@ -3,19 +3,23 @@ const nav = ref([
 	{
 		label: 'Developer Docs',
 		href: '/',
+		color: 'var(--section--dev-docs)',
 		active: true
 	},
 	{
 		label: 'API Reference',
-		href: '/api-reference'
+		href: '/api-reference',
+		color: 'var(--section--api-reference)',
 	},
 	{
 		label: 'Tutorials',
-		href: '/tutorials'
+		href: '/tutorials',
+		color: 'var(--section--tutorials)',
 	},
 	{
 		label: 'User Guide',
-		href: '/user-guide'
+		href: '/user-guide',
+		color: 'var(--section--user-guide)',
 	},
 	{
 		label: 'Community',
@@ -38,7 +42,9 @@ const nav = ref([
 	<nav>
 		<ul class="container">
 			<li v-for="item in nav" :key="item.label">
-				<a :href="item.href" :class="{ active: item.active }">{{ item.label }}</a>
+				<a :href="item.href" :class="{ active: item.active }" :style="`--active-color: ${item.color}`">
+					{{ item.label }}
+				</a>
 			</li>
 		</ul>
 	</nav>
@@ -63,8 +69,8 @@ a {
 	font-weight: 500;
 	margin-bottom: -2px;
 	&:hover, &.active {
-		color: var(--primary);
-		border-color: var(--primary);
+		color: var(--active-color);
+		border-color: var(--active-color);
 	}
 }
 </style>

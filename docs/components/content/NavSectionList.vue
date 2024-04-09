@@ -28,6 +28,7 @@ a {
 	margin-top: 0.5rem;
 }
 a.router-link-active {
+	/* TODO: USE SECTION COLORS */
 	color: var(--primary);
 	font-weight: 500;
 	border-right: 2px solid var(--primary);

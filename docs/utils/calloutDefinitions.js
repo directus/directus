@@ -21,7 +21,7 @@ export default [
 	{
 		type: 'api-ref',
 		icon: 'material-symbols:code-blocks-rounded',
-		color: 'var(--section--api-ref)'
+		color: 'var(--section--api-reference)'
 	},
 	{
 		type: 'tutorials',
