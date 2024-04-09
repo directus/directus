@@ -61,17 +61,17 @@ useHead({
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
 		<template #notice>
-			<div v-if="authenticated">
+			<template v-if="authenticated">
 				<v-icon name="lock_open" left />
 				{{ t('authenticated') }}
-			</div>
-			<div v-else>
-				{{
-					logoutReason && te(`logoutReason.${logoutReason}`)
-						? t(`logoutReason.${logoutReason}`)
-						: t('not_authenticated')
-				}}
-			</div>
+			</template>
+			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
+				{{ t(`logoutReason.${logoutReason}`) }}
+			</template>
+			<template v-else>
+				<v-icon name="lock" left />
+				{{ t('not_authenticated') }}
+			</template>
 		</template>
 	</public-view>
 </template>
