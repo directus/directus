@@ -4,6 +4,7 @@ export default defineNuxtConfig({
 	modules: [
 		'@nuxt/content',
 		'@nuxt/image',
+		'nuxt-icon',
 		'nuxt-headlessui'
 	],
 	image: {

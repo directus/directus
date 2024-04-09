@@ -1,4 +1,5 @@
 <script setup>
+useAppConfig()
 provideHeadlessUseId(() => useId())
 </script>
 

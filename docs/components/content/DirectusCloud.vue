@@ -1,5 +1,5 @@
 <template>
-	<a href="https://directus.cloud/register" target="_blank">
+	<a class="directus-cloud" href="https://directus.cloud/register" target="_blank">
 		DirectusCloud Component: Sign up for Directus Cloud
 	</a>
 </template>
@@ -8,9 +8,9 @@
 a {
 	display: block;
 	text-decoration: none;
-	background: #6644ff;
+	background: var(--purple);
 	color: white;
 	padding: 1rem;
-	border-radius: 8px;
+	border-radius: var(--border-radius);
 }
 </style>

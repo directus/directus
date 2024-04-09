@@ -36,7 +36,7 @@
 	--yellow--dark-1: #C8A34B;
 	--yellow--dark-2: #948049;
 
-	--red--light-3: #F8D3D9;
+	--red--light-3: #FDEEF0;
 	--red--light-2: #F0A7B3;
 	--red--light-1: #EA7D8F;
 	--red: #E35169;
@@ -81,7 +81,13 @@
 	--max-width: 1440px;
 	--sidebar-width: 280px;
 	--page-padding: 24px;
+	--border-radius: 6px;
 
 	--nav-font: 14px;
 	--nav-padding: 8px;
+
+	--section--dev-docs: var(--purple);
+	--section--api-reference: var(--green);
+	--section--tutorials: var(--pink);
+	--section--user-guide: var(--blue);
 }

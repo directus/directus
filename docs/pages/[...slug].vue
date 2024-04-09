@@ -24,12 +24,3 @@ definePageMeta({
 		</article>
 	</main>
 </template>
-
-<style>
-article .content > img {
-	display: block;
-	margin: 1rem 0;
-	width: 100%;
-	border-radius: 8px;
-}
-</style>

@@ -34,8 +34,29 @@ pre {
 	margin-right: auto;
 }
 
-.prose {
-	p, h1, h2, h3 {
+.prose .content {
+	h1 {
+		font-size: 2rem;
+	}
+	> h2 {
+		margin-top: 3rem;
+	}
+	p, h1, h2, h3, img, .callout, pre, .directus-cloud {
 		margin-bottom: 1rem;
+	}
+	ul, ol {
+		li {
+			margin-bottom: 0.5rem;
+		}
+	}
+	pre {
+		border: 1px solid black;
+		padding: 1rem;
+		border-radius: var(--border-radius);
+	}
+	img {
+		border-radius: var(--border-radius);
+		display: block;
+		width: 100%;
 	}
 }

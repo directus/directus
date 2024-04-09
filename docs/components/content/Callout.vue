@@ -1,46 +1,89 @@
 <script setup>
+import sectionDefinitions from '@/utils/sectionDefinitions'
+
 const props = defineProps({
 	title: String,
 	url: String,
 	toggleable: Boolean,
 	type: {
 		type: String,
-		default: 'info'	// warning | link | user-guide | dev-docs | api-ref | tutorials
+		default: 'info',
+		validator(value) {
+			return sectionDefinitions.map(icon => icon.type).includes(value)
+		}
 	},
 })
+
+const section = sectionDefinitions.find(section => section.type == props.type)
 
 const componentType = props.url ? 'a' : 'div'
 </script>
 
 <template>
-	<details v-if="toggleable">
+	<!-- TOGGLE -->
+	<details v-if="toggleable" class="callout info">
 		<summary>{{ title }}</summary>
 		<ContentSlot :use="$slots.default" />
 	</details>
-	<component :is="componentType" v-else :href="url" class="callout">
-		<p>{{ type }} <b>{{ title }}</b></p>
-		<ContentSlot :use="$slots.default" />
+
+	<!-- STATIC -->
+	<component :is="componentType" v-else :href="url" class="callout" :class="type" :style="`border-color: ${section.color};`">
+		<Icon :name="section.icon" :color="section.color" />
+		<div class="content">
+			<p v-if="title"><b>{{ title }}</b></p>
+			<ContentSlot :use="$slots.default" />
+		</div>
+		<Icon v-if="componentType == 'a'" class="arrow" name="material-symbols:arrow-forward-ios-rounded" :color="section.color"  />
 	</component>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .callout {
 	display: block;
-	background: #f8fafc;
-	border: 1px solid #e2e8f0;
+	background: var(--background--subdued);
+	border: 1px solid var(--border-2);
 	padding: 1rem;
-	border-radius: 8px;
+	border-radius: var(--border-radius);
 	text-decoration: none;
 	color: inherit;
+	display: grid;
+	grid-template-columns: 2em auto;
+	&.warning {
+		background: var(--red--light-3)
+	}
 }
 
 a.callout {
+	background: transparent;
+	grid-template-columns: 2em auto 2em;
 	border-style: dashed;
+	&:hover {
+		border-style: solid;
+		cursor: pointer;
+	}
+	.arrow {
+		margin-left: auto;
+	}
 }
 
-a.callout:hover {
-	border-style: solid;
-	border-color: #6644ff;
-	cursor: pointer;
+svg {
+	margin-top: 2px;
+}
+
+details.callout {
+	summary {
+		cursor: pointer;
+		font-weight: bold;
+		&::marker {
+			content: '';
+		}
+		&:deep(+ *) {
+			margin-top: 1rem;
+		}
+	}
+}
+
+.content :deep(> *:last-child) {
+	margin-bottom: 0;
 }
 </style>

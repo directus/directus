@@ -7,7 +7,7 @@
 <style scoped>
 div {
 	border: 1px solid lightgrey;
-	border-radius: 8px;
+	border-radius: var(--border-radius);
 	padding: 1rem;
 }
 </style>
