@@ -27,7 +27,7 @@ const render = () => {
 		h(TabsHeader, {
 			activeTabIndex: activeTabIndex.value,
 			tabs: slots.default().map((slot, index) => ({
-				label: slot?.props?.filename || slot?.props?.label || `${index}`,
+				label: slot?.props?.filename || slot?.props?.label || slot?.props?.title || `${index}`,
 				active: slot?.props?.active || false,
 				component: slot,
 			})),
