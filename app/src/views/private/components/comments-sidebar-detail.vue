@@ -11,6 +11,8 @@ import { Ref, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
+import { useSdk } from '@directus/composables';
+import { readActivities } from '@directus/sdk';
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
@@ -48,6 +50,8 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	const loadingCount = ref(false);
 	const userPreviews = ref<Record<string, any>>({});
 
+	const sdk = useSdk();
+
 	watch([collection, primaryKey], () => refresh());
 
 	return {
@@ -67,30 +71,30 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/activity`, {
-				params: {
-					'filter[collection][_eq]': collection.value,
-					'filter[item][_eq]': primaryKey.value,
-					'filter[action][_eq]': 'comment',
-					sort: '-id', // directus_activity has auto increment and is therefore in chronological order
-					fields: [
-						'id',
-						'action',
-						'timestamp',
-						'user.id',
-						'user.email',
-						'user.first_name',
-						'user.last_name',
-						'user.avatar.id',
-						'revisions.id',
-						'comment',
-					],
+			const response = await sdk.request<Activity[]>(readActivities({
+				filter: {
+					collection: { _eq: collection.value },
+					item: { _eq: primaryKey.value },
+					action: { _eq: 'comment' },
 				},
-			});
+				sort: '-id', // directus_activity has auto increment and is therefore in chronological order
+				fields: [
+					'id',
+					'action',
+					'timestamp',
+					'user.id',
+					'user.email',
+					'user.first_name',
+					'user.last_name',
+					'user.avatar.id',
+					'revisions.id',
+					'comment',
+				],
+			}));
 
-			userPreviews.value = await loadUserPreviews(response.data.data, regex);
+			userPreviews.value = await loadUserPreviews(response, regex);
 
-			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
+			const activityWithUsersInComments = response.map((comment) => {
 				const display = (comment.comment as string).replace(
 					regex,
 					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`,
