@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Activity } from '@/types/activity';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -7,11 +6,15 @@ import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
+import { useSdk } from '@directus/composables';
+import { createComment, readUsers, updateComment } from '@directus/sdk';
 import { User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+const sdk = useSdk();
 
 const props = withDefaults(
 	defineProps<{
@@ -53,7 +56,10 @@ watch(
 const saving = ref(false);
 const showMentionDropDown = ref(false);
 
-const searchResult = ref<Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>[]>([]);
+// TODO better name and better place
+type SearchUser = Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
+
+const searchResult = ref<SearchUser[]>([]);
 const userPreviews = ref<Record<string, string>>({});
 
 watch(
@@ -112,23 +118,21 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 	}
 
 	try {
-		const result = await api.get('/users', {
-			params: {
-				filter: name === '' || !name ? undefined : filter,
-				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
-			},
-			cancelToken: cancelToken.token,
-		});
+		// TODO implement cancelToken?
+		const result = await sdk.request<SearchUser[]>(readUsers({
+			filter: name === '' || !name ? undefined : filter,
+			fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
+		}));
 
 		const newUsers = cloneDeep(userPreviews.value);
 
-		result.data.data.forEach((user: any) => {
+		result.forEach((user: any) => {
 			newUsers[user.id] = userName(user);
 		});
 
 		userPreviews.value = newUsers;
 
-		searchResult.value = result.data.data;
+		searchResult.value = result;
 	} catch (error) {
 		return error;
 	}
@@ -228,15 +232,15 @@ async function postComment() {
 
 	try {
 		if (props.existingComment) {
-			await api.patch(`/activity/comment/${props.existingComment.id}`, {
+			await sdk.request(updateComment(props.existingComment.id, {
 				comment: newCommentContent.value,
-			});
+			}));
 		} else {
-			await api.post(`/activity/comment`, {
+			await sdk.request(createComment({
 				collection: props.collection,
-				item: props.primaryKey,
+				item: String(props.primaryKey),
 				comment: newCommentContent.value,
-			});
+			}));
 		}
 
 		props.refresh();
