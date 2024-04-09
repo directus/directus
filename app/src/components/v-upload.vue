@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import api from '@/api';
 import { emitter, Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import { useSdk } from '@directus/composables';
+import { importFile, readFile, readFiles } from '@directus/sdk';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -146,28 +147,27 @@ function useDragging() {
 }
 
 function useSelection() {
+	const sdk = useSdk();
+
 	return { setSelection };
 
 	async function setSelection(selection: (string | number)[] | null) {
 		if (!selection) return;
 
 		if (props.multiple) {
-			const filesResponse = await api.get(`/files`, {
-				params: {
+			const filesResponse = await sdk.request(readFiles({
 					filter: {
 						id: {
 							_in: selection,
 						},
-					},
-				},
-			});
+					}
+				}));
 
-			emit('input', filesResponse.data.data);
+			emit('input', filesResponse);
 		} else {
 			if (selection[0]) {
-				const id = selection[0];
-				const fileResponse = await api.get(`/files/${id}`);
-				emit('input', fileResponse.data.data);
+				const fileResponse = await sdk.request(readFile(String(selection[0])));
+				emit('input', fileResponse);
 			} else {
 				emit('input', null);
 			}
@@ -176,6 +176,7 @@ function useSelection() {
 }
 
 function useURLImport() {
+	const sdk = useSdk();
 	const url = ref('');
 	const loading = ref(false);
 
@@ -200,17 +201,14 @@ function useURLImport() {
 		};
 
 		try {
-			const response = await api.post(`/files/import`, {
-				url: url.value,
-				data,
-			});
+			const response = await sdk.request(importFile(url.value, data));
 
 			emitter.emit(Events.upload);
 
 			if (props.multiple) {
-				emit('input', [response.data.data]);
+				emit('input', [response]);
 			} else {
-				emit('input', response.data.data);
+				emit('input', response);
 			}
 
 			activeDialog.value = null;
