@@ -34,3 +34,8 @@ fields:
     special:
       - cast-boolean
     width: half
+
+  - field: permissions
+    special:
+      - o2m
+    # TODO this will have a new system-interface for managing the permissions in a coming PR

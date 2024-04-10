@@ -24,6 +24,26 @@ fields:
       placeholder: $t:field_options.directus_roles.description
     width: full
 
+  - field: parent
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: children
+    interface: list-o2m
+    special:
+      - o2m
+    options:
+      fields:
+        - name
+    width: full
+
   - field: users
     interface: list-o2m
     special:

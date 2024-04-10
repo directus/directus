@@ -4,10 +4,10 @@ fields:
   - field: id
     width: half
 
-  - field: collection
+  - field: role
     width: half
 
-  - field: item
+  - field: user
     width: half
 
   - field: policy
