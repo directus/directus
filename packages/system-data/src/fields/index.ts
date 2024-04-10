@@ -1,6 +1,6 @@
 import defaults from './_defaults.yaml';
 
-import accessFields from './activity.yaml';
+import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
 import dashboardFields from './dashboards.yaml';
