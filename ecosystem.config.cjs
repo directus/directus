@@ -27,6 +27,6 @@ module.exports = [
 
 		// Logs
 		error_file: process.env.PM2_LOG_ERROR_FILE,
-		out_file: process.env.PM2_LOG_OUT_FILE
+		out_file: process.env.PM2_LOG_OUT_FILE,
 	},
 ];
