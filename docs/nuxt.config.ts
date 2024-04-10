@@ -7,6 +7,13 @@ export default defineNuxtConfig({
 		'nuxt-icon',
 		'nuxt-headlessui'
 	],
+	content: {
+		markdown: {
+			toc: {
+				depth: 1
+			}
+		}
+	},
 	image: {
 		provider: 'directus',
 		directus: {

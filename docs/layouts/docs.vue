@@ -10,48 +10,33 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 <template>
 	<HeaderHero v-if="route.path == '/'" />
 	<HeaderNav />
-	<div class="page container">
-		<aside>
-			<nav>
-				<section v-for="section of navigation" :key="section._path">
-					<span>{{ section.title }}</span>
-					<nav>
-						<NavSectionList :list="section.children" />
-					</nav>
-				</section>
-			</nav>
-		</aside>
-		<main class="prose">
-			<slot />
-		</main>
+	<div class="docs container">
+		<nav>
+			<section v-for="section of navigation" :key="section._path">
+				<span class="section-title">{{ section.title }}</span>
+				<nav>
+					<NavSectionList :list="section.children" />
+				</nav>
+			</section>
+		</nav>
+		<slot />
 	</div>
 </template>
 
 <style lang="scss" scoped>
-.page {
+.docs {
 	display: grid;
 	grid-template-columns: 200px auto;
-	gap: 2em;
-}
-aside {
-	margin-top: 2rem;
-	border-right: 2px solid var(--border);
-}
-main {
-	width: 80ch;
-	padding-top: 2rem;
-	padding-bottom: 2rem;
-}
-section {
-	margin: 2rem 0;
-	&:first-child {
-		margin-top: 0;
-	}
-	& span {
-		color: var(--typography--subdued);
-		text-transform: uppercase;
-		font-size: var(--nav-font);
-		font-weight: 500;
+	gap: 3rem;
+	> nav {
+		margin-top: var(--nav-spacing-under);
+		border-right: 2px solid var(--border);
+		section {
+			margin: 2rem 0;
+			&:first-child {
+				margin-top: 0;
+			}
+		}
 	}
 }
 </style>

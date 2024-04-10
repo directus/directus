@@ -15,14 +15,18 @@ const props = defineProps({
 })
 
 const section = calloutDefinitions.find(section => section.type == props.type)
-
 const componentType = props.url ? 'a' : 'div'
+
+const detailsOpen = ref(false)
 </script>
 
 <template>
 	<!-- TOGGLE -->
-	<details v-if="toggleable" class="callout info">
-		<summary>{{ title }}</summary>
+	<details v-if="toggleable" class="callout info" @toggle="detailsOpen = !detailsOpen">
+		<summary>
+			<span> {{ title }} </span>
+			<Badge :text="`Click to ${detailsOpen ? 'close' : 'open'}`" />
+		</summary>
 		<ContentSlot :use="$slots.default" />
 	</details>
 
@@ -74,6 +78,9 @@ details.callout {
 	summary {
 		cursor: pointer;
 		font-weight: bold;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		&::marker {
 			content: '';
 		}

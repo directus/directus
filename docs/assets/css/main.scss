@@ -34,7 +34,7 @@ pre {
 	margin-right: auto;
 }
 
-.prose .content {
+.prose {
 	h1 {
 		font-size: 2rem;
 	}
@@ -59,4 +59,11 @@ pre {
 		display: block;
 		width: 100%;
 	}
+}
+
+.section-title {
+	color: var(--typography--subdued);
+	text-transform: uppercase;
+	font-size: var(--nav-font);
+	font-weight: 500;
 }

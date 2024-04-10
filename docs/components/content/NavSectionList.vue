@@ -1,11 +1,18 @@
 <script setup>
 defineProps({
-	list: Object
+	list: {
+		type: Object,
+		required: true
+	},
+	highlightActive: {
+		type: Boolean,
+		default: true
+	}
 })
 </script>
 
 <template>
-	<ol>
+	<ol :class="{ highlight: highlightActive }">
 		<li v-for="link of list" :key="link._path">
 			<NuxtLink :to="link._path">{{ link.title }}</NuxtLink>
 			<NavSectionList v-if="link.children" :list="link.children.slice(1)" />
@@ -27,7 +34,7 @@ a {
 	text-decoration: none;
 	margin-top: 0.5rem;
 }
-a.router-link-active {
+ol.highlight a.router-link-active {
 	/* TODO: USE SECTION COLORS */
 	color: var(--primary);
 	font-weight: 500;
