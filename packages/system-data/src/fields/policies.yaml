@@ -24,7 +24,7 @@ fields:
   - field: ip_access
     interface: tags
     options:
-      placeholder: $t:field_options.directus_policies.ip_access
+      placeholder: $t:fields.directus_policies.ip_access
     special:
       - cast-csv
     width: full
