@@ -61,7 +61,7 @@ useHead({
 			<v-button large to="/login">{{ t('sign_in') }}</v-button>
 		</div>
 
-		<register-form v-else @was-successful="wasSuccessful = $event" :provider="provider" />
+		<register-form v-else :provider="provider" @was-successful="wasSuccessful = $event" />
 
 		<!-- TODO: SSO links should be dependent on the setting for generating users on login -->
 
