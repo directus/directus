@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSdk } from '@directus/composables';
+import { RestCommand } from '@directus/sdk';
 import { getEndpoint } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -66,6 +67,7 @@ function useActiveState() {
 }
 
 function useActions() {
+	const sdk = useSdk();
 	const saving = ref(false);
 	const validationErrors = ref([]);
 
@@ -75,10 +77,10 @@ function useActions() {
 		saving.value = true;
 
 		try {
-			await api.patch(getEndpoint(collection.value), {
+			await sdk.request(dynamicUpdate(collection.value, {
 				keys: props.primaryKeys,
 				data: internalEdits.value,
-			});
+			}))
 
 			emit('refresh');
 
@@ -107,6 +109,15 @@ function useActions() {
 		internalActive.value = false;
 		internalEdits.value = {};
 	}
+}
+
+// TODO should perhaps be part of the SDK?
+function dynamicUpdate(collection: string, payload: Record<string, any>): RestCommand<unknown, any> {
+	return () => ({
+		path: getEndpoint(collection),
+		method: 'PATCH',
+		body: JSON.stringify(payload),
+	});
 }
 </script>
 
