@@ -1,6 +1,6 @@
 <template>
 	<div class="newsletter">
-		TODO: Newsletter Component
+		Newsletter Component
 	</div>
 </template>
 

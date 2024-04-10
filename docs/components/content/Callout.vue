@@ -15,7 +15,12 @@ const props = defineProps({
 })
 
 const section = calloutDefinitions.find(section => section.type == props.type)
-const componentType = props.url ? 'a' : 'div'
+
+function componentType() {
+	if(props.url && props.url.charAt(0) == '/') return resolveComponent('NuxtLink')
+	if(props.url) return 'a'
+	else return 'div'
+}
 
 const detailsOpen = ref(false)
 </script>
@@ -31,7 +36,7 @@ const detailsOpen = ref(false)
 	</details>
 
 	<!-- STATIC -->
-	<component :is="componentType" v-else :href="url" class="callout" :class="type" :style="`border-color: ${section.color};`">
+	<component :is="componentType()" v-else :href="url" class="callout" :class="type" :style="`border-color: ${section.color};`">
 		<Icon :name="section.icon" :color="section.color" />
 		<div class="content">
 			<p v-if="title"><b>{{ title }}</b></p>

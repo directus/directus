@@ -1,10 +1,10 @@
 <template>
 	<a class="directus-cloud" href="https://directus.cloud/register" target="_blank">
-		<img src="~/assets/img/cloud-logo.svg" alt="directus Cloud">
 		<div>
-			<p>Everything you need to start building. Provisioned in 90 seconds.</p>
-			<Button label="Get Started" type="span" color="white" size="small" />
+			<img src="~/assets/img/cloud-logo.svg" alt="directus Cloud">
+			<Button label="Get Started" type="span" color="white" />
 		</div>
+			<p>Everything you need to start building. Provisioned in 90 seconds.</p>
 	</a>
 </template>
 
@@ -18,16 +18,19 @@
 	border-radius: var(--border-radius);
 	text-decoration: none;
 	color: white;
-	padding: 1.25rem 1rem 1rem;
+	padding: 1rem;
 }
 img {
-	width: 200px;
+	width: 225px;
 }
 div {
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
 	gap: 1rem;
+	.button {
+		margin-bottom: 1rem;
+	}
 }
 p {
 	font-size: 1rem;

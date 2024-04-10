@@ -3,14 +3,13 @@ import sidebarExclude from '@/utils/sidebarExclude'
 
 const route = useRoute()
 
-const queryBuilder = queryContent().where({ _path: { $not: { $containsAny: sidebarExclude } }})
+const queryBuilder = queryContent().where({ _path: { $not: { $containsAny: sidebarExclude.map(s => s.path) } }})
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(queryBuilder))
 </script>
 
 <template>
 	<HeaderHero v-if="route.path == '/'" />
 	<HeaderHat v-else />
-
 	<HeaderNav />
 	<div class="docs container">
 		<nav>

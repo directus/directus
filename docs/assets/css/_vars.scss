@@ -78,7 +78,13 @@
 	--background--subdued: var(--bg-2);
 	--background--subtle: var(--bg-3);
 
-	--max-width: 1440px;
+
+	--width-md: 768px;
+	--width-lg: 1024px;
+	--width-xl: 1280px;
+	--width-2xl: 1440px;
+	--max-width: var(--width-2xl);
+
 	--sidebar-width: 280px;
 	--page-padding: 24px;
 	--border-radius: 6px;

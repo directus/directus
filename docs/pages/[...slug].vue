@@ -35,6 +35,7 @@ definePageMeta({
 		</main>
 		<aside>
 			<AsideTableOfContents v-if="data?.body?.toc?.links?.length > 0" :toc="toc" />
+			<AsideFeedback />
 			<AsideNewsletter />
 		</aside>
 	</div>
