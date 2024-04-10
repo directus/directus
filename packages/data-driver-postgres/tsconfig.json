@@ -1,4 +1,0 @@
-{
-	"extends": "@directus/tsconfig/node18-esm",
-	"include": ["src"]
-}
