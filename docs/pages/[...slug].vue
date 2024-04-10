@@ -32,6 +32,7 @@ definePageMeta({
 					</template>
 				</ContentRenderer>
 			</article>
+			<PrevNext class="prev-next" :path="contentDocPath" />
 		</main>
 		<aside>
 			<div v-if="data.body.toc.links?.length > 0" class="toc">
@@ -53,8 +54,8 @@ definePageMeta({
 }
 main {
 	margin-top: var(--nav-spacing-under);
-	article {
-		padding-bottom: var(--nav-spacing-under);
+	.prev-next {
+		padding: var(--nav-spacing-under) 0;
 	}
 }
 aside {

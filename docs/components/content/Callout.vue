@@ -25,7 +25,7 @@ const detailsOpen = ref(false)
 	<details v-if="toggleable" class="callout info" @toggle="detailsOpen = !detailsOpen">
 		<summary>
 			<span> {{ title }} </span>
-			<Badge :text="`Click to ${detailsOpen ? 'close' : 'open'}`" />
+			<Badge small :text="`Click to ${detailsOpen ? 'close' : 'open'}`" />
 		</summary>
 		<ContentSlot :use="$slots.default" />
 	</details>

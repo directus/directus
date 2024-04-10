@@ -4,11 +4,15 @@ defineProps({
 		type: String,
 		required: true
 	},
+	small: {
+		type: Boolean,
+		default: false
+	}
 })
 </script>
 
 <template>
-	<span>{{ text }}</span>
+	<span :class="{ small: small }">{{ text }}</span>
 </template>
 
 <style scoped>
@@ -17,8 +21,14 @@ span {
 	color: var(--typography--subdued);
 	border: 1px solid var(--typography--subdued);
 	border-radius: 100em;
-	padding: 0.1rem 0.5rem;
-	font-size: 0.75rem;
 	text-transform: uppercase;
+	text-decoration: none;
+	padding: 0.2rem 0.75rem 0.3rem;
+	font-weight: 500;
+}
+
+.small {
+	font-size: 0.75rem;
+	padding: 0.1rem 0.5rem;
 }
 </style>
