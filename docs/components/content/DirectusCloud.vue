@@ -18,10 +18,10 @@
 	padding: 1.25rem 1rem 1rem;
 }
 img {
-	width: 300px;
+	width: 200px;
 }
 p {
-	font-size: 1.25rem;
+	font-size: 1rem;
 	margin-bottom: 0;
 	font-family: var(--font--header);
 	font-weight: 500;

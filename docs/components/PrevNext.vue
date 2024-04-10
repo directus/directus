@@ -16,8 +16,6 @@ const [prev, next] = surround.value.map(link => {
 	const exception = routingExceptions.find(r => r.file == link._path)
 	return exception ? { ...link, _path: exception.path } : link
 })
-
-console.log({prev, next})
 </script>
 
 <template>
