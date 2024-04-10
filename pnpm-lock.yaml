@@ -635,8 +635,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
-        specifier: 0.17.14
-        version: 0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
+        specifier: 0.17.17
+        version: 0.17.17(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -960,8 +960,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@histoire/plugin-vue':
-        specifier: 0.17.14
-        version: 0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
+        specifier: 0.17.17
+        version: 0.17.17(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21)
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.1.4)(vue@3.4.21)
@@ -5110,9 +5110,9 @@ packages:
   /@histoire/app@0.17.14(vite@5.1.4):
     resolution: {integrity: sha512-LuYJ/JbX9XPFmTkT/A/yfOCX+jcqaSUbyLo/r3W3csRi3iIaZuNIuCSL8MtWWsxUMXrhBWHcytSw14clCQqGcg==}
     dependencies:
-      '@histoire/controls': 0.17.14(vite@5.1.4)
-      '@histoire/shared': 0.17.14(vite@5.1.4)
-      '@histoire/vendors': 0.17.14
+      '@histoire/controls': 0.17.17(vite@5.1.4)
+      '@histoire/shared': 0.17.17(vite@5.1.4)
+      '@histoire/vendors': 0.17.17
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.21
       shiki-es: 0.2.0
@@ -5130,21 +5130,37 @@ packages:
       '@codemirror/state': 6.3.3
       '@codemirror/theme-one-dark': 6.1.2
       '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.14(vite@5.1.4)
-      '@histoire/vendors': 0.17.14
+      '@histoire/shared': 0.17.17(vite@5.1.4)
+      '@histoire/vendors': 0.17.17
     transitivePeerDependencies:
       - vite
     dev: true
 
-  /@histoire/plugin-vue@0.17.14(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21):
-    resolution: {integrity: sha512-TRw5Ba9loqiPr82hxzk86ojZmxu5GlXiCE7ezbTZSOYJGYNp9lnBjZtjZQgDRCdINiqoXocfQ3gyiUD3fk2b/A==}
+  /@histoire/controls@0.17.17(vite@5.1.4):
+    resolution: {integrity: sha512-W22HZ/X078IZmE09XEKj4Fq7LxQPP/w/aMYAzm94V2NIGhI0fkiSaBDvyTUl7NYrGT66Wq5+9Po1IWPMllk3cQ==}
+    dependencies:
+      '@codemirror/commands': 6.3.2
+      '@codemirror/lang-json': 6.0.1
+      '@codemirror/language': 6.9.3
+      '@codemirror/lint': 6.4.2
+      '@codemirror/state': 6.3.3
+      '@codemirror/theme-one-dark': 6.1.2
+      '@codemirror/view': 6.22.3
+      '@histoire/shared': 0.17.17(vite@5.1.4)
+      '@histoire/vendors': 0.17.17
+    transitivePeerDependencies:
+      - vite
+    dev: true
+
+  /@histoire/plugin-vue@0.17.17(histoire@0.17.14)(vite@5.1.4)(vue@3.4.21):
+    resolution: {integrity: sha512-O5h/Ww6IT2CygVVT4onN27IZt11Z2qE8XeHeXJCEese3dxnnVWRhjMpsaWAU5XqgfjKNAiALJk86b49/6NQaRg==}
     peerDependencies:
-      histoire: ^0.17.14
+      histoire: ^0.17.17
       vue: ^3.2.47
     dependencies:
-      '@histoire/controls': 0.17.14(vite@5.1.4)
-      '@histoire/shared': 0.17.14(vite@5.1.4)
-      '@histoire/vendors': 0.17.14
+      '@histoire/controls': 0.17.17(vite@5.1.4)
+      '@histoire/shared': 0.17.17(vite@5.1.4)
+      '@histoire/vendors': 0.17.17
       change-case: 4.1.2
       globby: 13.2.2
       histoire: 0.17.14(sass@1.74.1)(vite@5.1.4)
@@ -5160,7 +5176,21 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
-      '@histoire/vendors': 0.17.14
+      '@histoire/vendors': 0.17.17
+      '@types/fs-extra': 9.0.13
+      '@types/markdown-it': 12.2.3
+      chokidar: 3.6.0
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      vite: 5.1.4(sass@1.74.1)
+    dev: true
+
+  /@histoire/shared@0.17.17(vite@5.1.4):
+    resolution: {integrity: sha512-ueGtURysonT0MujCObPCR57+mgZluMEXCrbc2FBgKAD/DoAt38tNwSGsmLldk2O6nTr7lr6ClbVSgWrLwgY6Xw==}
+    peerDependencies:
+      vite: ^2.9.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      '@histoire/vendors': 0.17.17
       '@types/fs-extra': 9.0.13
       '@types/markdown-it': 12.2.3
       chokidar: 3.6.0
@@ -5171,6 +5201,10 @@ packages:
 
   /@histoire/vendors@0.17.14:
     resolution: {integrity: sha512-glYgomCTptoV6W90Km7+a3BoTFWfugARChBFk0/BnswXZLGwBFp/mPDhBDVmBDaLyRzQ9bdBDqvz9a92SShftQ==}
+    dev: true
+
+  /@histoire/vendors@0.17.17:
+    resolution: {integrity: sha512-QZvmffdoJlLuYftPIkOU5Q2FPAdG2JjMuQ5jF7NmEl0n1XnmbMqtRkdYTZ4eF6CO1KLZ0Zyf6gBQvoT1uWNcjA==}
     dev: true
 
   /@humanwhocodes/config-array@0.11.14:
