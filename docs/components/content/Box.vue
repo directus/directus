@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="box">
 		<slot />
 	</div>
 </template>
