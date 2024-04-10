@@ -25,9 +25,21 @@ avatar: అవతార్
 application: అప్లికేషన్
 default_provider: డిఫాల్ట్
 draft: డ్రాఫ్ట్
+logs: లాగ్‌లు
 conditions: షరతులు
+condition_rules: కండిషన్ రూల్స్
+input: ఇన్పుట్
+maps: మ్యాప్స్
 dataset_too_large_currently_showing_n_items: డేటాసెట్ చాలా పెద్దది. ప్రస్తుతం మొదటి {n} అంశాలను చూపుతోంది.
+extension_interface: ఇంటర్ఫేస్
+extension_layout: లేఅవుట్
 extension_interfaces: ఇంటర్ఫేస్
+extension_displays: డిస్ప్లేలు
+extension_modules: మాడ్యూల్స్
+extension_panels: ప్యానెల్లు
+extension_themes: థీమ్
+extension_hooks: హుక్స్
+extension_endpoints: ఎండ్ పాయింట్
 extension_reload_required_copy: యాప్ ఎక్స్‌టెన్షన్‌లను ఎనేబుల్ లేదా డిసేబుల్ చేసిన తర్వాత మార్పులను చూడటానికి పేజీ రీలోడ్ అవసరం.
 extension_reload_now: ఇప్పుడే రీలోడ్ చేయండి
 compatible_with_your_project: మీ ప్రాజెక్ట్‌తో అనుకూలమైనది
