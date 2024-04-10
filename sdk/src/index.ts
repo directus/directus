@@ -4,4 +4,5 @@ export * from './graphql/index.js';
 export * from './realtime/index.js';
 export * from './rest/index.js';
 export * from './schema/index.js';
+export * from './utils/get-request-url.js';
 export type * from './types/index.js';
