@@ -1,0 +1,27 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_370_24449)">
+<g filter="url(#filter0_b_370_24449)">
+<rect x="-0.110352" y="59.723" width="33.7973" height="67.5946" rx="4" transform="rotate(-45 -0.110352 59.723)" fill="#6644FF"/>
+</g>
+<g filter="url(#filter1_b_370_24449)">
+<rect x="96.212" y="12.4068" width="33.7973" height="101.392" rx="4" transform="rotate(45 96.212 12.4068)" fill="#FF99DD"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_b_370_24449" x="-1.45349" y="34.4816" width="74.3812" height="74.3812" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feGaussianBlur in="BackgroundImageFix" stdDeviation="1.5"/>
+<feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_370_24449"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_370_24449" result="shape"/>
+</filter>
+<filter id="filter1_b_370_24449" x="23.174" y="11.0637" width="98.2795" height="98.2795" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feGaussianBlur in="BackgroundImageFix" stdDeviation="1.5"/>
+<feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_370_24449"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_370_24449" result="shape"/>
+</filter>
+<clipPath id="clip0_370_24449">
+<rect width="120" height="120" fill="white"/>
+</clipPath>
+</defs>
+</svg>

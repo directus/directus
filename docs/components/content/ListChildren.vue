@@ -5,13 +5,8 @@ const { data: pages } = await useAsyncData('home', () => queryContent(route.full
 
 <template>
 	<div>
-		<p>Pages in this section...</p>
-		<ol>
-			<li v-for="link of pages.slice(1)" :key="link._path">
-				<NuxtLink :to="link._path">
-					<span>{{ link.title }}</span>
-				</NuxtLink>
-			</li>
-		</ol>
+		<Callout v-for="link of pages.slice(1)" :key="link._path" type="link" :url="link._path">
+			{{ link.title }}
+		</Callout>
 	</div>
 </template>

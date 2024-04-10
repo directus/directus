@@ -9,9 +9,10 @@ const section = formatTitle(pathParts.join(' / '))
 
 const customContentDoc = routingExceptions.find(r => r.path == route.path)
 const contentDocPath = customContentDoc ? customContentDoc.file : route.path
+
 const { data } = await useAsyncData('page', () => queryContent(contentDocPath).findOne())
 
-const toc = data.value.body.toc.links.map(link => ({
+const toc = data?.value?.body?.toc.links.map(link => ({
 	_path: `#${link.id}`,
 	title: link.text
 }))
@@ -24,18 +25,19 @@ definePageMeta({
 <template>
 	<div class="slug">
 		<main>
-			<span v-if="section" class="section-title">{{ section }}</span>
 			<article>
-				<ContentRenderer class="prose" :value="data">
-					<template #not-found>
-						<h1>Document not found</h1>
+				<ContentRenderer :value="data">
+					<span v-if="section" class="section-title">{{ section }}</span>
+					<ContentRendererMarkdown class="prose" :value="data" />
+					<template #empty>
+						<p>No content found.</p>
 					</template>
 				</ContentRenderer>
 			</article>
 			<PrevNext class="prev-next" :path="contentDocPath" />
 		</main>
 		<aside>
-			<div v-if="data.body.toc.links?.length > 0" class="toc">
+			<div v-if="data?.body?.toc?.links?.length > 0" class="toc">
 				<span class="section-title">On This Page</span>
 				<nav>
 					<NavSectionList :list="toc" :highlight-active="false" />

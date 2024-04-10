@@ -23,7 +23,7 @@ span {
 	border-radius: 100em;
 	text-transform: uppercase;
 	text-decoration: none;
-	padding: 0.2rem 0.75rem 0.3rem;
+	padding: 0.2rem 0.75rem;
 	font-weight: 500;
 }
 

@@ -4,6 +4,10 @@ export default [
 		icon: 'material-symbols:info-outline',
 	},
 	{
+		type: 'link',
+		icon: 'material-symbols:link',
+	},
+	{
 		type: 'warning',
 		icon: 'material-symbols:warning-rounded',
 		color: 'var(--red)'
