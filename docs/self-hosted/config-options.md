@@ -1100,5 +1100,7 @@ For more information on what these options do, please refer to
 | `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             | —           |
 | `PM2_RESTART_DELAY`           | Time to wait before restarting a crashed app                       | `0`         |
 | `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`     |
+| `PM2_LOG_ERROR_FILE`          | Error file path                                                    | `$HOME/.pm2/logs/<app name>-error-<pid>.log` |
+| `PM2_LOG_OUT_FILE`            | Output file path                                                   | `$HOME/.pm2/logs/<app name>-out-<pid>.log`   |
 
 <sup>[1]</sup> [Redis](#redis) is required in case of multiple instances.
