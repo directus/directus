@@ -5,7 +5,7 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, Role } from '@directus/types';
+import type { PrimaryKey, Role, User } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import { respond } from '../middleware/respond.js';
@@ -14,6 +14,7 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
+import { SettingsService } from '../services/settings.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -496,6 +497,39 @@ router.post(
 		});
 
 		await service.disableTFA(req.params['pk']);
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/register',
+	asyncHandler(async (req, res, next) => {
+		const serviceOptions = { accountability: null, schema: req.schema };
+		const settingsService = new SettingsService(serviceOptions);
+		const settings = await settingsService.readSingleton({ fields: [/* TODO */ '*'] });
+
+		if (settings?.['is_public_registration_enabled'] == false) {
+			// TODO: also check that the default role is set!
+		}
+
+		// TODO: check for email validation setting
+
+		const usersService = new UsersService(serviceOptions);
+		const rolesService = new RolesService(serviceOptions);
+		const role = settings?.['public_registration_role'];
+
+		const partialUser: Partial<User> = {
+			email: req.body?.email,
+			password: req.body?.password,
+			role,
+		};
+
+		console.log('-------------- WE GOT A USER REGISTERING:', JSON.stringify(partialUser));
+		// const key = await usersService.createOne(partialUser);
+
+		// throw new ForbiddenError();
+
 		return next();
 	}),
 	respond,

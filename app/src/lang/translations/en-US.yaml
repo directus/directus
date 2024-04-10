@@ -1630,6 +1630,11 @@ select_interface: Select an interface
 select_display: Select a display
 settings: Settings
 register: Register
+registration_successful_note: |
+  Success! Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+dont_have_an_account: Don't have an account?
+already_have_an_account: Already have an account?
+sign_up_now: Sign up now
 sign_in: Sign In
 sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?

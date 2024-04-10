@@ -24,6 +24,8 @@ const appStore = useAppStore();
 const serverStore = useServerStore();
 const { auth, providerOptions } = storeToRefs(serverStore);
 
+const wasSuccessful = ref(false);
+
 const driver = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.driver : DEFAULT_AUTH_DRIVER);
 const provider = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.value : DEFAULT_AUTH_PROVIDER);
 
@@ -48,17 +50,29 @@ useHead({
 	<public-view>
 		<div class="header">
 			<h1 class="type-title">{{ t('register') }}</h1>
-			<router-link to="/login" class="login">
-				{{ t('sign_in') }}
-			</router-link>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
 		</div>
 
-		<register-form :provider="provider" />
+		<!-- TODO CHANGE KEY -->
+		<div v-if="wasSuccessful" class="after-success">
+			<div v-md="t('registration_successful_note')"></div>
+			<v-button large to="/login">{{ t('sign_in') }}</v-button>
+		</div>
 
-		<sso-links v-if="!authenticated" :providers="auth.providers" />
+		<register-form v-else @was-successful="wasSuccessful = $event" :provider="provider" />
+
+		<!-- TODO: SSO links should be dependent on the setting for generating users on login -->
+
+		<sso-links v-if="!authenticated && wasSuccessful == false" :providers="auth.providers" />
+
+		<div v-if="wasSuccessful == false" class="login-wrapper">
+			{{ t('already_have_an_account') }}
+			<router-link to="/login" class="login-link">
+				{{ t('sign_in') }}
+			</router-link>
+		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
@@ -103,5 +117,26 @@ h1 {
 	.provider-select {
 		margin-bottom: 8px;
 	}
+}
+
+.login-wrapper {
+	margin-top: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	text-align: center;
+	color: var(--theme--foreground-subdued);
+}
+
+.login-link {
+	color: var(--theme--foreground);
+}
+
+.after-success {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 </style>

@@ -22,8 +22,11 @@ const email = ref<string | null>(null);
 const password = ref<string | null>(null);
 const passwordVerification = ref<string | null>(null);
 const error = ref<RequestError | string | null>(null);
-
 const passwordsMatch = computed(() => password.value === passwordVerification.value);
+
+const emit = defineEmits<{
+	wasSuccessful: [boolean];
+}>();
 
 watch(provider, () => {
 	email.value = null;
@@ -66,12 +69,12 @@ async function onSubmit() {
 			password: password.value,
 		};
 
-		await api.post('/user/register', credentials);
+		await api.post('/users/register', credentials);
 
-		// Redirect to login because this role might require 2FA
-		router.push('/login');
+		emit('wasSuccessful', true);
 	} catch (err: any) {
 		error.value = err.errors?.[0]?.extensions?.code || err;
+		emit('wasSuccessful', false);
 	} finally {
 		isLoading.value = false;
 	}
@@ -80,15 +83,22 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<v-input v-model="password" type="password" :placeholder="t('password')" />
-		<v-input v-model="passwordVerification" type="password" :placeholder="t('password')" />
+		<v-input
+			v-model="email"
+			autofocus
+			autocomplete="username"
+			type="email"
+			:placeholder="t('email')"
+			:disabled="isLoading"
+		/>
+		<v-input v-model="password" type="password" :placeholder="t('password')" :disabled="isLoading" />
+		<v-input v-model="passwordVerification" type="password" :placeholder="t('password')" :disabled="isLoading" />
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="isLoading" large>{{ t('register') }}</v-button>
+			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ t('register') }}</v-button>
 		</div>
 	</form>
 </template>

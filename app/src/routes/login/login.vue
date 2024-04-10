@@ -49,9 +49,6 @@ useHead({
 	<public-view>
 		<div class="header">
 			<h1 class="type-title">{{ t('sign_in') }}</h1>
-			<router-link to="/register" class="register">
-				{{ t('register') }}
-			</router-link>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
@@ -64,6 +61,13 @@ useHead({
 		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
+
+		<div class="registration-wrapper">
+			{{ t('dont_have_an_account') }}
+			<router-link to="/register" class="registration-link">
+				{{ t('sign_up_now') }}
+			</router-link>
+		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
@@ -86,13 +90,19 @@ h1 {
 	margin-bottom: 20px;
 }
 
-.register {
+.registration-wrapper {
+	margin-top: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	text-align: center;
 	color: var(--theme--foreground-subdued);
-	transition: color var(--fast) var(--transition);
+}
 
-	&:hover {
-		color: var(--theme--foreground);
-	}
+.registration-link {
+	color: var(--theme--foreground);
 }
 
 .header {
