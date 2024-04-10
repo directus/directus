@@ -3,7 +3,9 @@ import { randomUUID } from 'node:crypto';
 
 /**
  * The public role used to be `null`, we gotta create a single new policy for the permissions
- * previously attached to the public role (marked through `role = null`)
+ * previously attached to the public role (marked through `role = null`).
+ *
+ * This UUID is a randomly generated arbitrary UUID.
  */
 const PUBLIC_POLICY = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
@@ -50,13 +52,15 @@ export async function up(knex: Knex) {
 		.into('directus_policies');
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Remove access control fields from directus roles
+	// Remove access control + add nesting to roles
 
 	await knex.schema.alterTable('directus_roles', (table) => {
 		table.dropColumn('ip_access');
 		table.dropColumn('enforce_tfa');
 		table.dropColumn('admin_access');
 		table.dropColumn('app_access');
+
+		table.uuid('parent').references('directus_roles.id');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,13 +122,20 @@ export async function up(knex: Knex) {
 
 export async function down(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Reinstate access control fields on directus roles
+	// Rename teams back to roles
+
+	await knex.schema.renameTable('directus_teams', 'directus_roles');
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Reinstate access control fields on directus roles + remove nesting
 
 	await knex.schema.alterTable('directus_roles', (table) => {
 		table.text('ip_access');
 		table.boolean('enforce_tfa').defaultTo(false).notNullable();
 		table.boolean('admin_access').defaultTo(false).notNullable();
 		table.boolean('app_access').defaultTo(true).notNullable();
+
+		table.dropColumn('parent');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
