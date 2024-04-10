@@ -2114,8 +2114,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.4)(sqlite3@5.1.7)(tedious@17.0.0)
       listr2:
-        specifier: 8.0.2
-        version: 8.0.2
+        specifier: 8.2.1
+        version: 8.2.1
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -13671,8 +13671,8 @@ packages:
       commander: 10.0.1
     dev: false
 
-  /listr2@8.0.2:
-    resolution: {integrity: sha512-v5jEMOeEJUpRjSXSB4U3w5A3YPmURYMUO/86f1PA4GGYcdbUQYpkbvKYT7Xaq1iu4Zjn51Rv1UeD1zsBXRijiQ==}
+  /listr2@8.2.1:
+    resolution: {integrity: sha512-irTfvpib/rNiD637xeevjO2l3Z5loZmuaRi0L0YE5LfijwVY96oyVn0DFD3o/teAok7nfobMG1THvvcHh/BP6g==}
     engines: {node: '>=18.0.0'}
     dependencies:
       cli-truncate: 4.0.0
@@ -15940,7 +15940,7 @@ packages:
       pino-abstract-transport: 0.5.0
       pump: 3.0.0
       readable-stream: 3.6.2
-      rfdc: 1.3.0
+      rfdc: 1.3.1
       secure-json-parse: 2.7.0
       sonic-boom: 2.8.0
       strip-json-comments: 3.1.1
@@ -17184,13 +17184,8 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  /rfdc@1.3.0:
-    resolution: {integrity: sha512-V2hovdzFbOi77/WajaSMXk2OLm+xNIeQdMMuB7icj7bk6zi2F8GGAxigcnDFpJHbNyNcgyJDiP+8nOrY5cZGrA==}
-    dev: false
-
   /rfdc@1.3.1:
     resolution: {integrity: sha512-r5a3l5HzYlIC68TpmYKlxWjmOP6wiPJ1vWv2HeLhNsRZMrCkxeqxiHlQ21oXmQ4F3SiryXBHhAD7JZqvOJjFmg==}
-    dev: true
 
   /right-pad@1.0.1:
     resolution: {integrity: sha512-bYBjgxmkvTAfgIYy328fmkwhp39v8lwVgWhhrzxPV3yHtcSqyYKe9/XOhvW48UFjATg3VuJbpsp5822ACNvkmw==}
