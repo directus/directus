@@ -1,4 +1,5 @@
 import {
+	ContainsNullValuesError,
 	ErrorCode,
 	ForbiddenError,
 	InvalidCredentialsError,
@@ -504,31 +505,36 @@ router.post(
 
 router.post(
 	'/register',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const serviceOptions = { accountability: null, schema: req.schema };
 		const settingsService = new SettingsService(serviceOptions);
-		const settings = await settingsService.readSingleton({ fields: [/* TODO */ '*'] });
+
+		const settings = await settingsService.readSingleton({
+			fields: ['public_registration_role', 'public_registration_role'],
+		});
+
+		const publicRegistrationRole = settings?.['public_registration_role'];
 
 		if (settings?.['is_public_registration_enabled'] == false) {
-			// TODO: also check that the default role is set!
+			throw new ForbiddenError();
 		}
 
-		// TODO: check for email validation setting
+		if (!publicRegistrationRole) {
+			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
+		}
 
-		const usersService = new UsersService(serviceOptions);
-		const rolesService = new RolesService(serviceOptions);
-		const role = settings?.['public_registration_role'];
+		// TODO: check for email validation setting & mailservice
 
 		const partialUser: Partial<User> = {
 			email: req.body?.email,
 			password: req.body?.password,
-			role,
+			role: publicRegistrationRole,
 		};
 
 		console.log('-------------- WE GOT A USER REGISTERING:', JSON.stringify(partialUser));
-		// const key = await usersService.createOne(partialUser);
 
-		// throw new ForbiddenError();
+		const usersService = new UsersService(serviceOptions);
+		await usersService.createOne(partialUser);
 
 		return next();
 	}),
