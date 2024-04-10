@@ -2,12 +2,13 @@
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
-import api from '@/api';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FolderTarget } from '@/types/folders';
+import { useSdk } from '@directus/composables';
+import { deleteFolder, readFiles, readFolders, updateFiles, updateFolder, updateFolders } from '@directus/sdk';
 
 const props = withDefaults(
 	defineProps<{
@@ -32,6 +33,7 @@ const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
 const { fetchFolders } = useFolders();
 
 function useRenameFolder() {
+	const sdk = useSdk();
 	const renameActive = ref(false);
 	const renameValue = ref(props.folder.name);
 	const renameSaving = ref(false);
@@ -42,9 +44,9 @@ function useRenameFolder() {
 		renameSaving.value = true;
 
 		try {
-			await api.patch(`/folders/${props.folder.id}`, {
+			await sdk.request(updateFolder(props.folder.id, {
 				name: renameValue.value,
-			});
+			}));
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -56,6 +58,7 @@ function useRenameFolder() {
 }
 
 function useMoveFolder() {
+	const sdk = useSdk();
 	const moveActive = ref(false);
 	const moveValue = ref(props.folder.parent);
 	const moveSaving = ref(false);
@@ -66,9 +69,9 @@ function useMoveFolder() {
 		moveSaving.value = true;
 
 		try {
-			await api.patch(`/folders/${props.folder.id}`, {
+			await sdk.request(updateFolder(props.folder.id, {
 				parent: moveValue.value,
-			});
+			}));
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -80,6 +83,7 @@ function useMoveFolder() {
 }
 
 function useDeleteFolder() {
+	const sdk = useSdk();
 	const deleteActive = ref(false);
 	const deleteSaving = ref(false);
 
@@ -89,51 +93,39 @@ function useDeleteFolder() {
 		deleteSaving.value = true;
 
 		try {
-			const foldersToUpdate = await api.get('/folders', {
-				params: {
-					filter: {
-						parent: {
-							_eq: props.folder.id,
-						},
+			const foldersToUpdate = await sdk.request(readFolders({
+				filter: {
+					parent: {
+						_eq: props.folder.id,
 					},
-					fields: ['id'],
 				},
-			});
+				fields: ['id'],
+			}));
 
-			const filesToUpdate = await api.get('/files', {
-				params: {
-					filter: {
-						folder: {
-							_eq: props.folder.id,
-						},
+			const filesToUpdate = await sdk.request(readFiles({
+				filter: {
+					folder: {
+						_eq: props.folder.id,
 					},
-					fields: ['id'],
 				},
-			});
+				fields: ['id'],
+			}));
 
 			const newParent = props.folder.parent || null;
 
-			const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
-			const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
+			const folderKeys = foldersToUpdate.map((folder: { id: string }) => folder.id);
+			const fileKeys = filesToUpdate.map((file: { id: string }) => file.id);
 
-			await api.delete(`/folders/${props.folder.id}`);
+			await sdk.request(deleteFolder(props.folder.id));
 
 			if (folderKeys.length > 0) {
-				await api.patch(`/folders`, {
-					keys: folderKeys,
-					data: {
-						parent: newParent,
-					},
-				});
+				await sdk.request(updateFolders(folderKeys, {
+					parent: newParent,
+				}));
 			}
 
 			if (fileKeys.length > 0) {
-				await api.patch(`/files`, {
-					keys: fileKeys,
-					data: {
-						folder: newParent,
-					},
-				});
+				await sdk.request(updateFiles(fileKeys, { folder: newParent }));
 			}
 
 			if (newParent) {
