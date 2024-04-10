@@ -1011,7 +1011,7 @@ width: Width
 height: Height
 transformation_preset_key: Transformation Preset Key
 source: Source
-url_placeholder: Enter an url...
+url_placeholder: Enter a URL...
 display_text: Display Text
 display_text_placeholder: Enter a display text...
 interface_group_text_and_numbers: Text & Numbers
@@ -1071,7 +1071,6 @@ wysiwyg_options:
   removeformat: Remove Format
   selectall: Select All
   table: Table
-  visualaid: View invisible elements
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality

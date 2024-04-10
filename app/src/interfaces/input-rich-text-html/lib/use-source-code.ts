@@ -1,4 +1,5 @@
 import { i18n } from '@/lang';
+import { Editor as TinyMCE } from 'tinymce';
 import { Ref, ref } from 'vue';
 
 type SourceCodeButton = {
@@ -15,7 +16,7 @@ type UsableSourceCode = {
 	sourceCodeButton: SourceCodeButton;
 };
 
-export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
+export function useSourceCode(editor: Ref<TinyMCE | undefined>): UsableSourceCode {
 	const codeDrawerOpen = ref(false);
 	const code = ref<string>();
 
@@ -23,6 +24,8 @@ export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 		icon: 'sourcecode',
 		tooltip: i18n.global.t('wysiwyg_options.source_code'),
 		onAction: () => {
+			if (!editor.value) return;
+
 			codeDrawerOpen.value = true;
 			code.value = editor.value.getContent();
 		},
@@ -32,12 +35,16 @@ export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 
 	function closeCodeDrawer() {
 		codeDrawerOpen.value = false;
+		editor.value?.focus();
 	}
 
 	function saveCode() {
-		editor.value.fire('focus');
+		if (!editor.value) {
+			closeCodeDrawer();
+			return;
+		}
 
-		editor.value.setContent(code.value);
+		editor.value.setContent(code.value || '');
 		editor.value.undoManager.add();
 		closeCodeDrawer();
 	}

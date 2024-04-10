@@ -850,6 +850,9 @@ importers:
       tinymce:
         specifier: 7.0.0
         version: 7.0.0
+      tinymce-i18n:
+        specifier: 24.3.11
+        version: 24.3.11
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -18628,6 +18631,10 @@ packages:
 
   /tinybench@2.6.0:
     resolution: {integrity: sha512-N8hW3PG/3aOoZAN5V/NSAEDz0ZixDSSt5b/a05iqtpgfLWMSVuCo7w0k2vVvEjdrIoeGqZzweX2WlyioNIHchA==}
+    dev: true
+
+  /tinymce-i18n@24.3.11:
+    resolution: {integrity: sha512-FH2TSbFwGi2sBejiwT5j+YPlCZ/UDtiWlh/IhcjfExEnYq10eZthTe8n1upk4zl6ICNOr9d37RHkAysM5d8ceg==}
     dev: true
 
   /tinymce@6.8.3:

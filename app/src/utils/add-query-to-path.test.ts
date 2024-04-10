@@ -18,3 +18,9 @@ test('Keeps existing query parameters intact', () => {
 
 	expect(output).toBe('/path/to/something?existing=param&test=hello&another=world');
 });
+
+test('Does not output separator when there are no queries', () => {
+	const output = addQueryToPath('/path/to/something?', {});
+
+	expect(output).toBe('/path/to/something');
+});

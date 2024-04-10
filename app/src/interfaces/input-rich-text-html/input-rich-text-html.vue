@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
+import { computedAsync } from '@vueuse/core';
+import { Editor as TinyMCE } from 'tinymce';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import getEditorStyles from './get-editor-styles';
-import useImage from './useImage';
-import useLink from './useLink';
-import useMedia from './useMedia';
-import useSourceCode from './useSourceCode';
+import { getEditorStyles } from './lib/get-editor-styles';
+import { getLanguage } from './lib/get-language';
+import { ImageButton, useImage } from './lib/use-image';
+import { LinkButton, useLink } from './lib/use-link';
+import { useMedia } from './lib/use-media';
+import { useSourceCode } from './lib/use-source-code';
 
 import 'tinymce/tinymce';
 
@@ -28,6 +32,7 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
+import './lib/icons';
 
 type CustomFormat = {
 	title: string;
@@ -77,10 +82,14 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const { t } = useI18n();
-const editorRef = ref<any | null>(null);
+const editorRef = ref<TinyMCE>();
 const editorElement = ref<ComponentPublicInstance | null>(null);
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
+const { darkMode } = useThemeConfiguration();
+
+const editorInitialized = ref(false);
+const count = ref(0);
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -90,11 +99,9 @@ if (settingsStore.settings?.storage_asset_transform) {
 	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
 }
 
-const count = ref(0);
-
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 	editorRef,
-	imageToken!,
+	imageToken,
 	{
 		storageAssetTransform,
 		storageAssetPresets,
@@ -113,11 +120,20 @@ const {
 	mediaWidth,
 	mediaSource,
 	mediaButton,
-} = useMedia(editorRef, imageToken!);
+} = useMedia(editorRef, imageToken);
 
 const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+
+watch(darkMode, () => {
+	const domStyleElement = editorRef.value?.iframeElement?.contentDocument?.getElementsByTagName('style')?.[1];
+
+	if (!domStyleElement) return;
+
+	const styles = getEditorStyles(props.font);
+	domStyleElement.innerHTML = styles;
+});
 
 const internalValue = computed({
 	get() {
@@ -130,28 +146,17 @@ const internalValue = computed({
 	},
 });
 
-const editorInitialized = ref(false);
-
 const editorDisabled = computed(() => {
 	if (!editorInitialized.value) return false;
 
 	return props.disabled;
 });
 
-watch(
-	() => [props.direction, editorRef],
-	() => {
-		if (editorRef.value) {
-			if (props.direction === 'rtl') {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
-			} else {
-				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
-			}
-		}
-	},
-);
+const language = computedAsync(getLanguage, null);
 
 const editorOptions = computed(() => {
+	if (language.value === null) return;
+
 	let styleFormats = null;
 
 	if (Array.isArray(props.customFormats) && props.customFormats.length > 0) {
@@ -159,8 +164,8 @@ const editorOptions = computed(() => {
 	}
 
 	let toolbarString = (props.toolbar ?? [])
-		.map((t) =>
-			t
+		.map((item) =>
+			item
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
@@ -175,7 +180,7 @@ const editorOptions = computed(() => {
 	return {
 		skin: false,
 		content_css: false,
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
+		content_style: getEditorStyles(props.font),
 		plugins: [
 			'media',
 			'table',
@@ -190,6 +195,7 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
+		icons: 'material',
 		license_key: 'gpl',
 		branding: false,
 		max_height: 1000,
@@ -206,6 +212,7 @@ const editorOptions = computed(() => {
 		link_default_protocol: 'https',
 		browser_spellcheck: true,
 		directionality: props.direction,
+		language: language.value,
 		paste_data_images: false,
 		setup,
 		...(props.tinymceOverrides || {}),
@@ -214,55 +221,60 @@ const editorOptions = computed(() => {
 
 const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
 
-let observer: MutationObserver;
-let emittedValue: any;
+let observer: MutationObserver | undefined;
+let emittedValue: string | null | undefined;
 
 function setCount() {
+	if (props.softLength === undefined) return;
+
 	const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
 	count.value = iframeContents?.textContent?.replace('\n', '')?.length ?? 0;
 }
 
 function contentUpdated() {
-	setCount();
+	if (!observer) {
+		setCount();
+		return;
+	}
 
-	if (!observer) return;
-
-	const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+	const newValue = editorRef.value?.getContent() || null;
 
 	if (newValue === emittedValue) return;
 
 	emittedValue = newValue;
 	emit('input', newValue);
+	setCount();
 }
 
 function setupContentWatcher() {
 	if (observer) return;
 
-	const iframeContents = editorRef.value.contentWindow.document.getElementById('tinymce');
+	const iframeContents = editorRef.value?.contentWindow.document.getElementById('tinymce');
 
-	observer = new MutationObserver((_mutations) => {
+	if (!iframeContents) return;
+
+	observer = new MutationObserver(() => {
 		contentUpdated();
 	});
 
-	const config = { characterData: true, childList: true, subtree: true };
-	observer.observe(iframeContents, config);
+	observer.observe(iframeContents, { characterData: true, childList: true, subtree: true });
 }
 
-function setup(editor: any) {
+function setup(editor: TinyMCE) {
 	editorRef.value = editor;
 
-	const linkShortcut = 'meta+k';
+	const LINK_SHORTCUT = 'meta+k';
 
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
-	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
+	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: LINK_SHORTCUT });
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.on('init', function () {
-		editor.shortcuts.remove(linkShortcut);
+		editor.shortcuts.remove(LINK_SHORTCUT);
 
-		editor.addShortcut(linkShortcut, 'Insert Link', () => {
-			editor.ui.registry.getAll().buttons.customlink.onAction();
+		editor.addShortcut(LINK_SHORTCUT, 'Insert Link', () => {
+			(editor.ui.registry.getAll().buttons.customlink as LinkButton).onAction();
 		});
 
 		setCount();
@@ -270,32 +282,31 @@ function setup(editor: any) {
 		editorInitialized.value = true;
 	});
 
-	editor.on('OpenWindow', function (e: any) {
-		if (e.dialog?.getData) {
-			const data = e.dialog?.getData();
+	editor.on('OpenWindow', (event) => {
+		if ('getData' in event.dialog) {
+			const data = event.dialog.getData();
 
-			if (data) {
-				if (data.url) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customlink.onAction();
-				}
+			if (!data) return;
 
-				if (data.src) {
-					e.dialog.close();
-					editor.ui.registry.getAll().buttons.customimage.onAction(true);
-				}
+			if (data.url) {
+				event.dialog.close();
+				(editor.ui.registry.getAll().buttons.customlink as LinkButton).onAction();
+			}
+
+			if (data.src) {
+				event.dialog.close();
+				(editor.ui.registry.getAll().buttons.customimage as ImageButton).onAction(true);
 			}
 		}
 	});
 }
 
-function setFocus(val: boolean) {
-	if (editorElement.value == null) return;
-	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
+function setFocus(value: boolean) {
+	const body = editorElement.value?.$el.parentElement?.querySelector('.tox-tinymce');
 
-	if (body == null) return;
+	if (!body) return;
 
-	if (val) {
+	if (value) {
 		body.classList.add('focus');
 	} else {
 		body.classList.remove('focus');
@@ -306,6 +317,7 @@ function setFocus(val: boolean) {
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
+			v-if="editorOptions"
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
@@ -327,6 +339,7 @@ function setFocus(val: boolean) {
 				{{ softLength - count }}
 			</span>
 		</template>
+
 		<v-dialog v-model="linkDrawerOpen">
 			<v-card>
 				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
@@ -484,15 +497,11 @@ function setFocus(val: boolean) {
 
 <style lang="scss">
 @import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
+@import './styles/tinymce-overrides.css';
 </style>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
-
-.body {
-	padding: 20px;
-}
 
 .grid {
 	@include form-grid;
@@ -507,14 +516,13 @@ function setFocus(val: boolean) {
 	text-align: right;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
-}
 
-.warning {
-	color: var(--theme--warning);
-}
-
-.danger {
-	color: var(--theme--danger);
+	&.warning {
+		color: var(--theme--warning);
+	}
+	&.danger {
+		color: var(--theme--danger);
+	}
 }
 
 .image-preview,

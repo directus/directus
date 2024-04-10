@@ -1,20 +1,21 @@
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
+import { File, SettingsStorageAssetPreset } from '@directus/types';
+import { Editor as TinyMCE } from 'tinymce';
 import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
-	alt: string;
+	alt: string | null;
 	lazy?: boolean;
-	width?: number;
-	height?: number;
+	width?: number | null;
+	height?: number | null;
 	transformationKey?: string | null;
 	previewUrl?: string;
 };
 
-type ImageButton = {
+export type ImageButton = {
 	icon: string;
 	tooltip: string;
 	onAction: (buttonApi: any) => void;
@@ -25,13 +26,13 @@ type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	imageSelection: Ref<ImageSelection | null>;
 	closeImageDrawer: () => void;
-	onImageSelect: (image: Record<string, any>) => void;
+	onImageSelect: (image: File) => void;
 	saveImage: () => void;
 	imageButton: ImageButton;
 };
 
-export default function useImage(
-	editor: Ref<any>,
+export function useImage(
+	editor: Ref<TinyMCE | undefined>,
 	imageToken: Ref<string | undefined>,
 	options: {
 		storageAssetTransform: Ref<string>;
@@ -56,14 +57,16 @@ export default function useImage(
 		},
 	);
 
-	const imageButton = {
+	const imageButton: ImageButton = {
 		icon: 'image',
 		tooltip: i18n.global.t('wysiwyg_options.image'),
-		onAction: (buttonApi: any) => {
+		onAction: (buttonApi) => {
+			if (!editor.value) return;
+
 			imageDrawerOpen.value = true;
 
 			if (buttonApi === true || buttonApi.isActive()) {
-				const node = editor.value.selection.getNode() as HTMLImageElement;
+				const node = editor.value.selection.getNode();
 				const imageUrl = node.getAttribute('src');
 				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
@@ -100,10 +103,10 @@ export default function useImage(
 				buttonApi.setActive(eventApi.element.tagName === 'IMG');
 			};
 
-			editor.value.on('NodeChange', onImageNodeSelect);
+			editor.value?.on('NodeChange', onImageNodeSelect);
 
 			return function () {
-				editor.value.off('NodeChange', onImageNodeSelect);
+				editor.value?.off('NodeChange', onImageNodeSelect);
 			};
 		},
 	};
@@ -113,9 +116,10 @@ export default function useImage(
 	function closeImageDrawer() {
 		imageSelection.value = null;
 		imageDrawerOpen.value = false;
+		editor.value?.focus();
 	}
 
-	function onImageSelect(image: Record<string, any>) {
+	function onImageSelect(image: File) {
 		const assetUrl = getPublicURL() + 'assets/' + image.id;
 
 		imageSelection.value = {
@@ -129,33 +133,37 @@ export default function useImage(
 	}
 
 	function saveImage() {
-		editor.value.fire('focus');
+		if (!editor.value) {
+			closeImageDrawer();
+			return;
+		}
 
-		const img = imageSelection.value;
-		if (img === null) return;
+		const image = imageSelection.value;
 
-		const queries: Record<string, any> = {};
-		const newURL = new URL(img.imageUrl);
+		if (!image) return;
+
+		const queries: Record<string, string> = {};
+		const newURL = new URL(image.imageUrl);
 
 		newURL.searchParams.delete('width');
 		newURL.searchParams.delete('height');
 		newURL.searchParams.delete('key');
 
 		if (options.storageAssetTransform.value === 'all') {
-			if (img.transformationKey) {
-				queries['key'] = img.transformationKey;
+			if (image.transformationKey) {
+				queries['key'] = image.transformationKey;
 			} else {
-				queries['width'] = img.width;
-				queries['height'] = img.height;
+				if (image.width) queries['width'] = String(image.width);
+				if (image.height) queries['height'] = String(image.height);
 			}
 		} else if (options.storageAssetTransform.value === 'presets') {
-			if (img.transformationKey) {
-				queries['key'] = img.transformationKey;
+			if (image.transformationKey) {
+				queries['key'] = image.transformationKey;
 			}
 		}
 
 		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy" ' : ''}/>`;
+		const imageHtml = `<img src="${resizedImageUrl}" alt="${image.alt}" ${image.lazy ? 'loading="lazy" ' : ''}/>`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
 		closeImageDrawer();

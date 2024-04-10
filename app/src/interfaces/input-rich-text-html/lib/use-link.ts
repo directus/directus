@@ -1,4 +1,5 @@
 import { i18n } from '@/lang';
+import { Editor as TinyMCE } from 'tinymce';
 import { Ref, ref } from 'vue';
 
 type LinkSelection = {
@@ -8,10 +9,10 @@ type LinkSelection = {
 	newTab: boolean;
 };
 
-type LinkButton = {
+export type LinkButton = {
 	icon: string;
 	tooltip: string;
-	onAction: (buttonApi: any) => void;
+	onAction: () => void;
 	onSetup: (buttonApi: any) => () => void;
 };
 
@@ -24,7 +25,7 @@ type UsableLink = {
 	linkButton: LinkButton;
 };
 
-export default function useLink(editor: Ref<any>): UsableLink {
+export function useLink(editor: Ref<TinyMCE | undefined>): UsableLink {
 	const linkDrawerOpen = ref(false);
 
 	const defaultLinkSelection = {
@@ -36,24 +37,22 @@ export default function useLink(editor: Ref<any>): UsableLink {
 
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
 	const linkNode: Ref<HTMLLinkElement | null> = ref(null);
-	const currentSelectionNode = ref<HTMLElement | null>(null);
+	const currentSelectionNode: Ref<HTMLElement | null> = ref(null);
 
 	const linkButton = {
 		icon: 'link',
 		tooltip: i18n.global.t('wysiwyg_options.link'),
 		onAction: () => {
-			if (editor.value.plugins.fullscreen.isFullscreen()) {
-				editor.value.execCommand('mceFullScreen');
-			}
+			if (!editor.value) return;
 
 			linkDrawerOpen.value = true;
 
-			if (linkNode.value) {
+			if (linkNode.value && currentSelectionNode.value) {
 				editor.value.selection.select(currentSelectionNode.value);
 
 				const url = linkNode.value.getAttribute('href');
 				const title = linkNode.value.getAttribute('title');
-				const displayText = linkNode.value.innerText;
+				const displayText = linkNode.value.innerHTML;
 				const target = linkNode.value.getAttribute('target');
 
 				if (url === null || displayText === null) {
@@ -95,10 +94,10 @@ export default function useLink(editor: Ref<any>): UsableLink {
 				buttonApi.setActive(!!linkNode.value);
 			};
 
-			editor.value.on('NodeChange', onLinkNodeSelect);
+			editor.value?.on('NodeChange', onLinkNodeSelect);
 
 			return function () {
-				editor.value.off('NodeChange', onLinkNodeSelect);
+				editor.value?.off('NodeChange', onLinkNodeSelect);
 			};
 		},
 	};
@@ -112,29 +111,35 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	function closeLinkDrawer() {
 		setLinkSelection();
 		linkDrawerOpen.value = false;
+		editor.value?.focus();
 	}
 
 	function saveLink() {
-		editor.value.fire('focus');
+		if (!editor.value) {
+			closeLinkDrawer();
+			return;
+		}
 
 		const link = linkSelection.value;
 
 		if (link.url === null) {
 			if (linkNode.value) {
-				editor.value.selection.setContent(linkNode.value.innerText);
+				editor.value.selection.setContent(linkNode.value.innerHTML);
 				closeLinkDrawer();
 			}
 
 			return;
 		}
 
-		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} ${
-			link.newTab ? 'target="_blank"' : ''
-		} >${link.displayText || link.url}</a>`;
-
 		// New anchor tag or current selection node is an anchor tag
 		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {
-			editor.value.selection.setContent(linkHtml);
+			const newLink = document.createElement('a');
+			newLink.href = link.url;
+			newLink.innerHTML = link.displayText || link.url;
+			if (link.title) newLink.setAttribute('title', link.title);
+			if (link.newTab) newLink.setAttribute('target', '_blank');
+
+			editor.value.selection.setNode(newLink);
 		}
 		// Parent node is an anchor tag
 		else if (currentSelectionNode.value) {
@@ -143,6 +148,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			linkNode.value.setAttribute('href', link.url);
 			if (link.title) linkNode.value.setAttribute('title', link.title);
 			linkNode.value.setAttribute('target', link.newTab ? '_blank' : '_self');
+
 			editor.value.selection.select(linkNode.value);
 			editor.value.selection.setNode(linkNode.value);
 		}

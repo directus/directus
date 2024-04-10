@@ -1,5 +1,6 @@
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
+import { Editor as TinyMCE } from 'tinymce';
 import { computed, Ref, ref, watch } from 'vue';
 
 type MediaSelection = {
@@ -33,7 +34,7 @@ type UsableMedia = {
 	mediaButton: MediaButton;
 };
 
-export default function useMedia(editor: Ref<any>, imageToken: Ref<string | undefined>): UsableMedia {
+export function useMedia(editor: Ref<TinyMCE | undefined>, imageToken: Ref<string | undefined>): UsableMedia {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video', 'audio']);
@@ -44,6 +45,8 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		icon: 'embed',
 		tooltip: i18n.global.t('wysiwyg_options.media'),
 		onAction: (buttonApi: any) => {
+			if (!editor.value) return;
+
 			mediaDrawerOpen.value = true;
 
 			if (buttonApi.isActive()) {
@@ -62,10 +65,10 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 				);
 			};
 
-			editor.value.on('NodeChange', onVideoNodeSelect);
+			editor.value?.on('NodeChange', onVideoNodeSelect);
 
 			return function () {
-				editor.value.off('NodeChange', onVideoNodeSelect);
+				editor.value?.off('NodeChange', onVideoNodeSelect);
 			};
 		},
 	};
@@ -166,6 +169,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		mediaSelection.value = null;
 		mediaDrawerOpen.value = false;
 		openMediaTab.value = ['video'];
+		editor.value?.focus();
 	}
 
 	function onMediaSelect(media: Record<string, any>) {
@@ -183,7 +187,10 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 	}
 
 	function saveMedia() {
-		editor.value.fire('focus');
+		if (!editor.value) {
+			closeMediaDrawer();
+			return;
+		}
 
 		if (embed.value === '') return;
 

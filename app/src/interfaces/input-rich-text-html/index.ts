@@ -213,10 +213,6 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.fullscreen',
 							},
 							{
-								value: 'visualaid',
-								text: '$t:wysiwyg_options.visualaid',
-							},
-							{
 								value: 'ltr rtl',
 								text: '$t:wysiwyg_options.directionality',
 							},

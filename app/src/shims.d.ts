@@ -44,3 +44,5 @@ declare module '@editorjs/inline-code';
 declare module '@editorjs/nested-list';
 declare module 'editorjs-text-alignment-blocktune';
 declare module 'editorjs-toggle-block';
+
+declare module 'tinymce-i18n/langs6/*';
