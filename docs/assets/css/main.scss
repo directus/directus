@@ -34,6 +34,11 @@ pre {
 	margin-right: auto;
 }
 
+.container .container {
+	padding-left: 0;
+	padding-right: 0;
+}
+
 .prose {
 	h1 {
 		font-size: 2rem;

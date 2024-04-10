@@ -1,7 +1,10 @@
 <template>
 	<a class="directus-cloud" href="https://directus.cloud/register" target="_blank">
 		<img src="~/assets/img/cloud-logo.svg" alt="directus Cloud">
-		<p>Everything you need to start building. Provisioned in 90 seconds. Sign up now.</p>
+		<div>
+			<p>Everything you need to start building. Provisioned in 90 seconds.</p>
+			<Button label="Get Started" type="span" color="white" size="small" />
+		</div>
 	</a>
 </template>
 
@@ -19,6 +22,12 @@
 }
 img {
 	width: 200px;
+}
+div {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
 }
 p {
 	font-size: 1rem;

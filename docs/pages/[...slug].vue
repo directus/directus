@@ -12,10 +12,7 @@ const contentDocPath = customContentDoc ? customContentDoc.file : route.path
 
 const { data } = await useAsyncData('page', () => queryContent(contentDocPath).findOne())
 
-const toc = data?.value?.body?.toc.links.map(link => ({
-	_path: `#${link.id}`,
-	title: link.text
-}))
+const toc = data?.value?.body?.toc
 
 definePageMeta({
 	layout: 'docs'
@@ -37,12 +34,8 @@ definePageMeta({
 			<PrevNext class="prev-next" :path="contentDocPath" />
 		</main>
 		<aside>
-			<div v-if="data?.body?.toc?.links?.length > 0" class="toc">
-				<span class="section-title">On This Page</span>
-				<nav>
-					<NavSectionList :list="toc" :highlight-active="false" />
-				</nav>
-			</div>
+			<AsideTableOfContents v-if="data?.body?.toc?.links?.length > 0" :toc="toc" />
+			<AsideNewsletter />
 		</aside>
 	</div>
 </template>
@@ -57,12 +50,18 @@ definePageMeta({
 main {
 	margin-top: var(--nav-spacing-under);
 	.prev-next {
-		padding: var(--nav-spacing-under) 0;
+		padding: var(--nav-spacing-under) 0 calc(var(--nav-spacing-under) + 1rem);
 	}
 }
 aside {
 	margin-top: var(--nav-spacing-under);
 	padding-left: 2rem;
 	border-left: 2px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	gap: calc(var(--nav-spacing-under) / 2);
+	> * {
+		width: 100%;
+	}
 }
 </style>

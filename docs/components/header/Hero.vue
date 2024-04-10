@@ -1,14 +1,18 @@
 <template>
 	<div class="hero">
 		<div class="container">
-			HERO HOME ONLY
+			<HeaderHat />
+			<div class="temp">Expanded header on homepage only</div>
 		</div>
 	</div>
 </template>
 
 <style scoped>
 .hero {
-	padding: 4rem 0;
 	background: var(--background--subtle);
+}
+.temp {
+	padding: 8rem 0;
+	text-align: center;
 }
 </style>

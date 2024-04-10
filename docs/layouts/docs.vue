@@ -9,6 +9,8 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 
 <template>
 	<HeaderHero v-if="route.path == '/'" />
+	<HeaderHat v-else />
+
 	<HeaderNav />
 	<div class="docs container">
 		<nav>
