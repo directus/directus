@@ -31,5 +31,10 @@ export default [
 		type: 'tutorials',
 		icon: 'material-symbols:school-outline',
 		color: 'var(--section--tutorials)'
-	}
+	},
+	{
+		type: 'community',
+		icon: 'material-symbols:groups',
+		color: 'var(--section--community)'
+	},
 ]

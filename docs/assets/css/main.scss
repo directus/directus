@@ -41,11 +41,11 @@ pre {
 	> h2 {
 		margin-top: 3rem;
 	}
-	p, h1, h2, h3, img, .callout, pre, .directus-cloud, .box {
+	p, h1, h2, h3, img, .callout, pre, .directus-cloud, .bo, ul, ol {
 		margin-bottom: 1rem;
 	}
 	ul, ol {
-		li {
+		li:not(:last-child) {
 			margin-bottom: 0.5rem;
 		}
 	}

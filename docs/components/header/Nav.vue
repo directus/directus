@@ -23,7 +23,8 @@ const nav = ref([
 	},
 	{
 		label: 'Community',
-		href: '/community'
+		href: '/community',
+		color: 'var(--section--community)',
 	},
 	{
 		label: 'Directus TV',

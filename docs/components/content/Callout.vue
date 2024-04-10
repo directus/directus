@@ -93,5 +93,12 @@ details.callout {
 .content :deep(> *:last-child) {
 	margin-bottom: 0;
 }
+
+.content :deep(p) {
+	margin-bottom: 0;
+}
+.content :deep(p + p) {
+	margin-top: 0.5rem;
+}
 </style>
 ~/utils/calloutDefinitions
