@@ -122,11 +122,6 @@ export async function up(knex: Knex) {
 
 export async function down(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Rename teams back to roles
-
-	await knex.schema.renameTable('directus_teams', 'directus_roles');
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Reinstate access control fields on directus roles + remove nesting
 
 	await knex.schema.alterTable('directus_roles', (table) => {
