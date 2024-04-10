@@ -34,7 +34,7 @@ definePageMeta({
 			</article>
 		</main>
 		<aside>
-			<div v-if="data.body.toc.links" class="toc">
+			<div v-if="data.body.toc.links?.length > 0" class="toc">
 				<span class="section-title">On This Page</span>
 				<nav>
 					<NavSectionList :list="toc" :highlight-active="false" />

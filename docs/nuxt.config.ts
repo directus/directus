@@ -5,22 +5,28 @@ export default defineNuxtConfig({
 		'@nuxt/content',
 		'@nuxt/image',
 		'nuxt-icon',
-		'nuxt-headlessui'
+		'nuxt-headlessui',
 	],
 	content: {
+		// highlight: {
+		// 	theme: {
+		// 		default: 'github-light',
+		// 		dark: 'github-dark',
+		// 	},
+		// },
 		markdown: {
 			toc: {
-				depth: 1
-			}
+				depth: 1,
+			},
 		}
 	},
 	image: {
 		provider: 'directus',
 		directus: {
 			baseURL: `${process.env.DIRECTUS_URL}/assets/`,
-		}
+		},
 	},
 	headlessui: {
-        prefix: 'H'
-    }
+        prefix: 'H',
+    },
 })
