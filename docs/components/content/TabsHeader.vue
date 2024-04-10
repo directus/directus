@@ -34,7 +34,23 @@ const updateTabs = ($event, i) => {
 
 
 <style scoped>
+.tabs-header {
+	width: 100%;
+	border-bottom: 1px solid var(--border);
+	background: var(--border);
+	position: relative;
+}
+button {
+	background: none;
+	border: none;
+	border-bottom: 1px solid transparent;
+	margin-bottom: -1px;
+	cursor: pointer;
+	padding: 0.5rem 0.75rem;
+	font-weight: 500;
+}
 button.active {
-	background: green;
+	border-color: var(--primary);
+	color: var(--primary);
 }
 </style>

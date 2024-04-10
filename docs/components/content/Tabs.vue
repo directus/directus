@@ -42,8 +42,16 @@ const render = () => {
   <render />
 </template>
 
-<style scoped>
+<style lang="scss">
 .tabs-container {
-	border: 1px solid black;
+	border: 1px solid var(--border);
+	border-radius: var(--border-radius);
+}
+.tabs-content {
+	padding: 1rem;
+	> div > *:last-child {
+		margin-bottom: 0;
+
+	}
 }
 </style>
