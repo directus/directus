@@ -123,10 +123,12 @@ const getItemCount = async () => {
 					count: ['*'],
 			  };
 
-		const response = await sdk.request(dynamicGet(collection.value, {
-			...pick(exportSettings, ['search', 'filter']),
-			aggregate,
-		}));
+		const response = await sdk.request(
+			dynamicGet(collection.value, {
+				...pick(exportSettings, ['search', 'filter']),
+				aggregate,
+			}),
+		);
 
 		let count;
 
@@ -310,7 +312,6 @@ function startExport() {
 }
 
 function exportDataLocal() {
-
 	const params: Record<string, unknown> = {
 		export: format.value,
 	};
@@ -334,12 +335,19 @@ async function exportDataFiles() {
 	exporting.value = true;
 
 	try {
-		await sdk.request(utilsExport(collection.value, (format.value as FileFormat), {
-				...exportSettings,
-				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
-		} as Query<any, any>, {
-				folder: folder.value,
-			}));
+		await sdk.request(
+			utilsExport(
+				collection.value,
+				format.value as FileFormat,
+				{
+					...exportSettings,
+					...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
+				} as Query<any, any>,
+				{
+					folder: folder.value,
+				},
+			),
+		);
 
 		exportDialogActive.value = false;
 
