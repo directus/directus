@@ -88,11 +88,17 @@ export async function up(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Setup junction table between roles/users and policies
 
+	// This could be a A2O style setup with a collection/item field rather than individual foreign
+	// keys, but we want to be able to show the reverse-relationship on the individual policies as
+	// well, which would require the O2A type to exist in Directus which currently doesn't.
+	// Shouldn't be the end of the world here, as we know we're only attaching policies to two other
+	// collections.
+
 	await knex.schema.createTable('directus_access', (table) => {
 		table.uuid('id').primary();
-		table.string('collection', 64).index();
-		table.uuid('item').index();
-		table.uuid('policy').references('directus_policies.id');
+		table.uuid('role').references('directus_roles.id').nullable();
+		table.uuid('user').references('directus_users.id').nullable();
+		table.uuid('policy').references('directus_policies.id').notNullable();
 		table.integer('sort');
 	});
 
@@ -101,8 +107,8 @@ export async function up(knex: Knex) {
 
 	const policyAttachments = roles.map((role) => ({
 		id: randomUUID(),
-		collection: 'directus_roles',
-		item: role.id,
+		role: role.id,
+		user: null,
 		policy: role.id,
 		sort: 1,
 	}));
@@ -113,8 +119,8 @@ export async function up(knex: Knex) {
 
 	await knex('directus_access').insert({
 		id: randomUUID(),
-		collection: 'directus_roles',
-		item: null, // item `null` in directus_roles is the public role
+		role: null,
+		user: null,
 		policy: PUBLIC_POLICY,
 		sort: 1,
 	});
@@ -161,7 +167,7 @@ export async function down(knex: Knex) {
 	// Reattach permissions to roles instead of permissions
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('role').nullable().references('directus_roles.id');
+		table.uuid('role').nullable();
 	});
 
 	await knex('directus_permissions').update({
@@ -175,6 +181,7 @@ export async function down(knex: Knex) {
 		.where({ role: PUBLIC_POLICY });
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
+		table.uuid('role').references('directus_roles.id').alter();
 		table.dropColumn('policy');
 	});
 
