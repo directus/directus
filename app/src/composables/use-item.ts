@@ -28,14 +28,14 @@ type UsableItem<T extends Item> = {
 	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
-	save: () => Promise<any>;
+	save: () => Promise<T>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
-	saveAsCopy: () => Promise<any>;
+	saveAsCopy: () => Promise<PrimaryKey>;
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
@@ -168,8 +168,8 @@ export function useItem<T extends Item>(
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err: any) {
-			saveErrorHandler(err);
+		} catch (error) {
+			saveErrorHandler(error);
 		} finally {
 			saving.value = false;
 		}
@@ -236,9 +236,9 @@ export function useItem<T extends Item>(
 					fieldsToFetch,
 				);
 
-				existingItems = existingItems.filter((i) => {
-					return newRelatedItem.delete.indexOf(i[relatedPrimaryKeyField.field]) === -1;
-				});
+				existingItems = existingItems.filter(
+					(item) => !newRelatedItem.delete.includes(item[relatedPrimaryKeyField.field]),
+				);
 
 				for (const item of newRelatedItem.update) {
 					updateJunctionRelatedKey(relation, existsJunctionRelated, item);
