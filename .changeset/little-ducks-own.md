@@ -3,7 +3,6 @@
 '@directus/storage-driver-cloudinary': patch
 '@directus/release-notes-generator': patch
 '@directus/storage-driver-supabase': patch
-'@directus/data-driver-postgres': patch
 '@directus/storage-driver-azure': patch
 '@directus/storage-driver-local': patch
 '@directus/extensions-registry': patch
@@ -18,7 +17,6 @@
 '@directus/extensions': patch
 '@directus/validation': patch
 '@directus/constants': patch
-'@directus/data-sql': patch
 '@directus/pressure': patch
 '@directus/storage': patch
 '@directus/errors': patch
@@ -30,11 +28,10 @@
 '@directus/specs': patch
 '@directus/types': patch
 '@directus/utils': patch
-'@directus/data': patch
 '@directus/env': patch
 '@directus/api': patch
 '@directus/app': patch
 '@directus/sdk': patch
 ---
 
-Update dependencies
+Updated dependencies
