@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifikator
 application: Aplikacija
 default_provider: Zadano
@@ -545,37 +525,37 @@ auto_fill: Automatsko popunjavanje
 corresponding_field: Pripadajuće polje
 errors:
   COLLECTION_NOT_FOUND: "Kolekcija ne postoji"
+  CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
   FIELD_NOT_FOUND: Polje nije pronađeno
   FORBIDDEN: Zabranjeno
+  ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
+  INTERNAL_SERVER_ERROR: Neočekivana greška
+  INVALID_CONFIG: Neispravna konfiguracija
   INVALID_CREDENTIALS: Pogrešno korisničko ime ili lozinka
+  INVALID_FOREIGN_KEY: Neispravan strani ključ
+  INVALID_IP: IP adresa nije dozvoljena
   INVALID_OTP: Pogrešna jednokratna lozinka
   INVALID_PAYLOAD: Neispravan payload
   INVALID_PROVIDER: Korisnik pripada drugom provajderu autorizacije
   INVALID_QUERY: Neispravan upit
-  INVALID_CONFIG: Neispravna konfiguracija
   INVALID_TOKEN: Nevažeći token
-  INVALID_IP: IP adresa nije dozvoljena
   INVALID_USER: Neuspjela autentifikacija korisnika
   ITEM_LIMIT_REACHED: Dostignut je limit stavke
   ITEM_NOT_FOUND: Stavka nije pronađena
-  ROUTE_NOT_FOUND: Nije pronađeno
-  RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
-  USER_SUSPENDED: Suspendovani korisnik
-  CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  INTERNAL_SERVER_ERROR: Neočekivana greška
-  NOT_NULL_VIOLATION: Vrijednost ne smije biti null
-  ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
-  VALUE_TOO_LONG: Vrijednost je preduga
-  VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
-  INVALID_FOREIGN_KEY: Neispravan strani ključ
-  UNKNOWN: Neočekivana greška
-  SERVICE_UNAVAILABLE: Usluga nije dostupna
-  UNSUPPORTED_MEDIA_TYPE: Nepodržan tip fajla
-  UNEXPECTED_RESPONSE: Neočekivani odgovor
-  TOKEN_EXPIRED: Token je istekao
-  RANGE_NOT_SATISFIABLE: Nevažeći raspon
   METHOD_NOT_ALLOWED: Metoda nije dozvoljena
+  NOT_NULL_VIOLATION: Vrijednost ne smije biti null
+  RANGE_NOT_SATISFIABLE: Nevažeći raspon
+  RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
   REQUESTS_EXCEEDED: Dostignut je limit zahtjeva
+  ROUTE_NOT_FOUND: Nije pronađeno
+  SERVICE_UNAVAILABLE: Usluga nije dostupna
+  TOKEN_EXPIRED: Token je istekao
+  UNEXPECTED_RESPONSE: Neočekivani odgovor
+  UNKNOWN: Neočekivana greška
+  UNSUPPORTED_MEDIA_TYPE: Nepodržan tip fajla
+  USER_SUSPENDED: Suspendovani korisnik
+  VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
+  VALUE_TOO_LONG: Vrijednost je preduga
 security: Sigurnost
 value_hashed: Sigurno kriptovana vrijednost
 bookmark_name: Naziv bookmarka...
