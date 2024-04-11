@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import api from '@/api';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
+import { useSdk } from '@directus/composables';
+import { readUser } from '@directus/sdk';
 import { User } from '@directus/types';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -11,6 +12,7 @@ const props = defineProps<{
 	user: string;
 }>();
 
+const sdk = useSdk();
 const { t } = useI18n();
 
 const router = useRouter();
@@ -48,13 +50,11 @@ async function fetchUser() {
 	error.value = null;
 
 	try {
-		const response = await api.get(`/users/${props.user}`, {
-			params: {
+		data.value = await sdk.request<User>(
+			readUser(props.user, {
 				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
-			},
-		});
-
-		data.value = response.data.data;
+			}),
+		);
 	} catch (err: any) {
 		error.value = err;
 	} finally {
