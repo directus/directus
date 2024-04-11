@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSdk } from '@directus/composables';
+import { readFile, updateFile } from '@directus/sdk';
 import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
 import { isEqual } from 'lodash';
@@ -33,6 +34,7 @@ const emit = defineEmits<{
 	(e: 'refresh'): void;
 }>();
 
+const sdk = useSdk();
 const { t, n } = useI18n();
 
 const settingsStore = useSettingsStore();
@@ -146,13 +148,7 @@ function useImage() {
 		try {
 			loading.value = true;
 
-			const response = await api.get(`/files/${props.id}`, {
-				params: {
-					fields: imageFields,
-				},
-			});
-
-			imageData.value = response.data.data;
+			imageData.value = await sdk.request<Image>(readFile(props.id, { fields: imageFields }));
 		} catch (err: any) {
 			error.value = err;
 		} finally {
@@ -182,7 +178,7 @@ function useImage() {
 
 						formData.append('file', blob, imageData.value?.filename_download);
 
-						api.patch(`/files/${props.id}`, formData).then(
+						sdk.request(updateFile(props.id, formData)).then(
 							() => resolve(),
 							(err) => reject(err),
 						);
@@ -225,10 +221,10 @@ function useImage() {
 		} else if (gotChangeForImg) {
 			patchRequest = saveImage();
 		} else if (gotChangeForFocalPoint) {
-			patchRequest = api.patch(`/files/${props.id}`, {
+			patchRequest = sdk.request(updateFile(props.id, {
 				focal_point_x: focalPointX,
 				focal_point_y: focalPointY,
-			} satisfies Partial<File>);
+			} satisfies Partial<File>));
 		}
 
 		try {
