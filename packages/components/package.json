@@ -30,10 +30,10 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@histoire/plugin-vue": "0.17.15",
+		"@histoire/plugin-vue": "0.17.17",
 		"@vitejs/plugin-vue": "5.0.4",
 		"@vitest/coverage-v8": "1.4.0",
-		"histoire": "0.17.15",
+		"histoire": "0.17.17",
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.1",
 		"typescript": "5.4.4",
@@ -41,7 +41,7 @@
 		"vite-plugin-dts": "3.8.1",
 		"vitest": "1.4.0",
 		"vue": "3.4.21",
-		"vue-i18n": "9.11.0",
+		"vue-i18n": "9.11.1",
 		"vue-router": "4.3.0"
 	},
 	"peerDependencies": {
