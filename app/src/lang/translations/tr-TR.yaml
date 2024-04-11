@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Tanımlayıcı
 avatar: Avatar
 application: Uygulama
@@ -619,37 +599,37 @@ auto_fill: Otomatik Doldur
 corresponding_field: İlgili Alan
 errors:
   COLLECTION_NOT_FOUND: "Koleksiyon yok"
+  CONTAINS_NULL_VALUES: Alan null değer içeriyor
   FIELD_NOT_FOUND: Alan Bulunamadı
   FORBIDDEN: Yetkisiz Erişim
+  ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
+  INTERNAL_SERVER_ERROR: Beklenmeyen Hata
+  INVALID_CONFIG: Geçersiz yapılandırma
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
+  INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
+  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_PROVIDER: Kullanıcı farklı bir yetkilendirme sağlayıcısına ait
   INVALID_QUERY: Geçersiz sorgu
-  INVALID_CONFIG: Geçersiz yapılandırma
   INVALID_TOKEN: Geçersiz belirteç
-  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
-  ROUTE_NOT_FOUND: Bulunamadı
-  RECORD_NOT_UNIQUE: Yinelenen değer algılandı
-  USER_SUSPENDED: Kullanıcı Askıya Alındı
-  CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  INTERNAL_SERVER_ERROR: Beklenmeyen Hata
-  NOT_NULL_VIOLATION: Değer null olamaz
-  ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
-  VALUE_TOO_LONG: Değer çok uzun
-  VALUE_OUT_OF_RANGE: Değer sınır dışında
-  INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
-  UNKNOWN: Beklenmeyen Hata
-  SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
-  UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
-  UNEXPECTED_RESPONSE: Beklenmeyen yanıt
-  TOKEN_EXPIRED: Belirteç süresi doldu
-  RANGE_NOT_SATISFIABLE: Geçersiz aralık
   METHOD_NOT_ALLOWED: İzin verilmeyen yöntem
+  NOT_NULL_VIOLATION: Değer null olamaz
+  RANGE_NOT_SATISFIABLE: Geçersiz aralık
+  RECORD_NOT_UNIQUE: Yinelenen değer algılandı
   REQUESTS_EXCEEDED: İstek sınırına ulaşıldı
+  ROUTE_NOT_FOUND: Bulunamadı
+  SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
+  TOKEN_EXPIRED: Belirteç süresi doldu
+  UNEXPECTED_RESPONSE: Beklenmeyen yanıt
+  UNKNOWN: Beklenmeyen Hata
+  UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
+  USER_SUSPENDED: Kullanıcı Askıya Alındı
+  VALUE_OUT_OF_RANGE: Değer sınır dışında
+  VALUE_TOO_LONG: Değer çok uzun
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...

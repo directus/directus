@@ -1,7 +1,15 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
+import type {
+	Accountability,
+	Item as AnyItem,
+	PermissionsAction,
+	PrimaryKey,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -11,20 +19,12 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
-import type {
-	AbstractService,
-	AbstractServiceOptions,
-	ActionEventParams,
-	Item as AnyItem,
-	MutationOptions,
-	PrimaryKey,
-} from '../types/index.js';
+import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getASTFromQuery from '../utils/get-ast-from-query.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
-import { isSystemCollection } from '@directus/system-data';
 
 const env = useEnv();
 
