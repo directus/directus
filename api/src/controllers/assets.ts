@@ -242,6 +242,8 @@ router.get(
 			.on('error', (e) => {
 				logger.error(e, `Couldn't stream file ${file.id} to the client`);
 
+				stream.unpipe(res);
+
 				if (!res.headersSent) {
 					res.removeHeader('Content-Type');
 					res.removeHeader('Content-Disposition');
