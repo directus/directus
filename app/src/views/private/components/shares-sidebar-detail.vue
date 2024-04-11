@@ -6,10 +6,11 @@ import { PrimaryKey, Share } from '@directus/types';
 import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { abbreviateNumber } from '@directus/utils';
 import ShareItem from './share-item.vue';
+import { useSdk } from '@directus/composables';
+import { createShare, deleteShare, inviteShare, readShares, updateShare } from '@directus/sdk';
 
 const props = defineProps<{
 	collection: string;
@@ -54,6 +55,7 @@ function onToggle(open: boolean) {
 }
 
 function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
+	const sdk = useSdk();
 	const shares = ref<Share[] | null>(null);
 	const sharesCount = ref(0);
 	const error = ref(null);
@@ -103,9 +105,9 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 
 		try {
 			if (shareToEdit.value === '+') {
-				await api.post('/shares', data);
+				await sdk.request(createShare(data));
 			} else {
-				await api.patch(`/shares/${shareToEdit.value}`, data);
+				await sdk.request(updateShare(shareToEdit.value!, data));
 			}
 
 			await refresh();
@@ -134,9 +136,11 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/shares`, {
-				params: {
+			shares.value = await sdk.request<Share[]>(
+				readShares({
 					filter: {
+						// TODO fix #20633
+						// @ts-ignore
 						_and: [
 							{
 								collection: {
@@ -151,10 +155,8 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 						],
 					},
 					sort: 'name',
-				},
-			});
-
-			shares.value = response.data.data;
+				}),
+			);
 		} catch (error: any) {
 			error.value = error;
 		} finally {
@@ -167,9 +169,11 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loadingCount.value = true;
 
 		try {
-			const response = await api.get(`/shares`, {
-				params: {
+			const response = await sdk.request(
+				readShares({
 					filter: {
+						// TODO fix #20633
+						// @ts-ignore
 						_and: [
 							{
 								collection: {
@@ -186,10 +190,10 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 					aggregate: {
 						count: 'id',
 					},
-				},
-			});
+				}),
+			);
 
-			sharesCount.value = Number(response.data.data[0].count.id);
+			sharesCount.value = Number(response[0]!.count.id);
 		} catch (error: any) {
 			error.value = error;
 		} finally {
@@ -203,7 +207,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		deleting.value = true;
 
 		try {
-			await api.delete(`/shares/${shareToDelete.value.id}`);
+			await sdk.request(deleteShare(shareToDelete.value.id));
 			await refresh();
 			shareToDelete.value = null;
 		} catch (error) {
@@ -224,10 +228,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 				.filter((e) => e)
 				.map((email) => email.trim());
 
-			await api.post('/shares/invite', {
-				emails: emailsParsed,
-				share: shareToSend.value.id,
-			});
+			await sdk.request(inviteShare(shareToSend.value.id, emailsParsed));
 
 			sendEmails.value = '';
 
