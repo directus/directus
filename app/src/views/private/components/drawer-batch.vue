@@ -77,10 +77,12 @@ function useActions() {
 		saving.value = true;
 
 		try {
-			await sdk.request(dynamicUpdate(collection.value, {
-				keys: props.primaryKeys,
-				data: internalEdits.value,
-			}))
+			await sdk.request(
+				dynamicUpdate(collection.value, {
+					keys: props.primaryKeys,
+					data: internalEdits.value,
+				}),
+			);
 
 			emit('refresh');
 

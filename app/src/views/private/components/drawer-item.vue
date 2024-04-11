@@ -228,9 +228,7 @@ function useItem() {
 
 		loading.value = true;
 
-		const primaryKey = isSystemCollection(props.collection)
-			? props.primaryKey
-			: encodeURIComponent(props.primaryKey);
+		const primaryKey = isSystemCollection(props.collection) ? props.primaryKey : encodeURIComponent(props.primaryKey);
 
 		const fields = ['*'];
 
@@ -274,7 +272,11 @@ function useItem() {
 }
 
 // TODO should perhaps be part of the SDK?
-function dynamicGet(collection: string, key: string | number, params: Record<string, any> = {}): RestCommand<Record<string, any>, any> {
+function dynamicGet(
+	collection: string,
+	key: string | number,
+	params: Record<string, any> = {},
+): RestCommand<Record<string, any>, any> {
 	const basePath = getEndpoint(collection);
 	return () => ({
 		path: `${basePath}/${key}`,
@@ -324,7 +326,6 @@ function useRelation() {
 		internalEdits.value[props.junctionField] = edits;
 	}
 }
-
 
 function useActions() {
 	return { save, cancel };

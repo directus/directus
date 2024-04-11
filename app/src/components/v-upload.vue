@@ -155,13 +155,15 @@ function useSelection() {
 		if (!selection) return;
 
 		if (props.multiple) {
-			const filesResponse = await sdk.request(readFiles({
+			const filesResponse = await sdk.request(
+				readFiles({
 					filter: {
 						id: {
 							_in: selection,
 						},
-					}
-				}));
+					},
+				}),
+			);
 
 			emit('input', filesResponse);
 		} else {

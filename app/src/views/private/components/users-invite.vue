@@ -64,11 +64,12 @@ async function inviteUsers() {
 }
 
 async function loadRoles() {
-
-	const response = await sdk.request<Pick<Role, 'id' | 'name'>[]>(readRoles({
-		fields: ['id', 'name'],
-		sort: 'name'
-	}));
+	const response = await sdk.request<Pick<Role, 'id' | 'name'>[]>(
+		readRoles({
+			fields: ['id', 'name'],
+			sort: 'name',
+		}),
+	);
 
 	roles.value = response.map((role) => ({
 		text: role.name,

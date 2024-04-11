@@ -44,9 +44,11 @@ function useRenameFolder() {
 		renameSaving.value = true;
 
 		try {
-			await sdk.request(updateFolder(props.folder.id, {
-				name: renameValue.value,
-			}));
+			await sdk.request(
+				updateFolder(props.folder.id, {
+					name: renameValue.value,
+				}),
+			);
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -69,9 +71,11 @@ function useMoveFolder() {
 		moveSaving.value = true;
 
 		try {
-			await sdk.request(updateFolder(props.folder.id, {
-				parent: moveValue.value,
-			}));
+			await sdk.request(
+				updateFolder(props.folder.id, {
+					parent: moveValue.value,
+				}),
+			);
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -93,23 +97,27 @@ function useDeleteFolder() {
 		deleteSaving.value = true;
 
 		try {
-			const foldersToUpdate = await sdk.request(readFolders({
-				filter: {
-					parent: {
-						_eq: props.folder.id,
+			const foldersToUpdate = await sdk.request(
+				readFolders({
+					filter: {
+						parent: {
+							_eq: props.folder.id,
+						},
 					},
-				},
-				fields: ['id'],
-			}));
+					fields: ['id'],
+				}),
+			);
 
-			const filesToUpdate = await sdk.request(readFiles({
-				filter: {
-					folder: {
-						_eq: props.folder.id,
+			const filesToUpdate = await sdk.request(
+				readFiles({
+					filter: {
+						folder: {
+							_eq: props.folder.id,
+						},
 					},
-				},
-				fields: ['id'],
-			}));
+					fields: ['id'],
+				}),
+			);
 
 			const newParent = props.folder.parent || null;
 
@@ -119,9 +127,11 @@ function useDeleteFolder() {
 			await sdk.request(deleteFolder(props.folder.id));
 
 			if (folderKeys.length > 0) {
-				await sdk.request(updateFolders(folderKeys, {
-					parent: newParent,
-				}));
+				await sdk.request(
+					updateFolders(folderKeys, {
+						parent: newParent,
+					}),
+				);
 			}
 
 			if (fileKeys.length > 0) {

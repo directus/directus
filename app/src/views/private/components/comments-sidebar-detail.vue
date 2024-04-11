@@ -156,7 +156,8 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 
 		try {
 			// TODO fix #20633
-			const response = await sdk.request(readActivities({
+			const response = await sdk.request(
+				readActivities({
 					filter: {
 						// @ts-ignore
 						_and: [
@@ -180,8 +181,8 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 					aggregate: {
 						count: 'id',
 					},
-				}));
-
+				}),
+			);
 
 			if (response[0]) {
 				activityCount.value = Number(response[0].count.id);
@@ -211,10 +212,12 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	});
 
 	if (uniqIds.length > 0) {
-		const response = await sdk.request(readUsers({
-			filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
-			fields: ['first_name', 'last_name', 'email', 'id'],
-		}));
+		const response = await sdk.request(
+			readUsers({
+				filter: { id: { _in: uniqIds.map((id) => id.substring(2)) } },
+				fields: ['first_name', 'last_name', 'email', 'id'],
+			}),
+		);
 
 		const userPreviews: Record<string, string> = {};
 

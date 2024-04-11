@@ -221,10 +221,12 @@ function useImage() {
 		} else if (gotChangeForImg) {
 			patchRequest = saveImage();
 		} else if (gotChangeForFocalPoint) {
-			patchRequest = sdk.request(updateFile(props.id, {
-				focal_point_x: focalPointX,
-				focal_point_y: focalPointY,
-			} satisfies Partial<File>));
+			patchRequest = sdk.request(
+				updateFile(props.id, {
+					focal_point_x: focalPointX,
+					focal_point_y: focalPointY,
+				} satisfies Partial<File>),
+			);
 		}
 
 		try {

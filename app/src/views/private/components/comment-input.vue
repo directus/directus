@@ -119,10 +119,12 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 
 	try {
 		// TODO implement cancelToken?
-		const result = await sdk.request<SearchUser[]>(readUsers({
-			filter: name === '' || !name ? undefined : filter,
-			fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
-		}));
+		const result = await sdk.request<SearchUser[]>(
+			readUsers({
+				filter: name === '' || !name ? undefined : filter,
+				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
+			}),
+		);
 
 		const newUsers = cloneDeep(userPreviews.value);
 
@@ -232,15 +234,19 @@ async function postComment() {
 
 	try {
 		if (props.existingComment) {
-			await sdk.request(updateComment(props.existingComment.id, {
-				comment: newCommentContent.value,
-			}));
+			await sdk.request(
+				updateComment(props.existingComment.id, {
+					comment: newCommentContent.value,
+				}),
+			);
 		} else {
-			await sdk.request(createComment({
-				collection: props.collection,
-				item: String(props.primaryKey),
-				comment: newCommentContent.value,
-			}));
+			await sdk.request(
+				createComment({
+					collection: props.collection,
+					item: String(props.primaryKey),
+					comment: newCommentContent.value,
+				}),
+			);
 		}
 
 		props.refresh();
