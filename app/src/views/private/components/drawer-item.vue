@@ -2,7 +2,6 @@
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
-import { isSystemCollection } from '@directus/system-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -10,6 +9,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection, useSdk } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
@@ -21,14 +21,14 @@ import { RestCommand } from '@directus/sdk';
 interface Props {
 	collection: string;
 	active?: boolean;
-	primaryKey?: string | number | null;
+	primaryKey?: PrimaryKey | null;
 	edits?: Record<string, any>;
 	junctionField?: string | null;
 	disabled?: boolean;
 	// There's an interesting case where the main form can be a newly created item ('+'), while
 	// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
 	// related data anyway.
-	relatedPrimaryKey?: string | number;
+	relatedPrimaryKey?: PrimaryKey;
 	// If this drawer-item is opened from a relational interface, we need to force-block the field
 	// that relates back to the parent item.
 	circularField?: string | null;
