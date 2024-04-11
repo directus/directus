@@ -2,6 +2,7 @@ import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -22,7 +23,6 @@ import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { isSystemCollection } from '@directus/system-data';
 
 let flowManager: FlowManager | undefined;
 
@@ -53,7 +53,7 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
-	private operations: Map<string, OperationHandler> = new Map();
+	private operations: Map<string, { handler: OperationHandler; isInternal: boolean }> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
@@ -97,8 +97,8 @@ class FlowManager {
 		messenger.publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
-	public addOperation(id: string, operation: OperationHandler): void {
-		this.operations.set(id, operation);
+	public addOperation(id: string, handler: OperationHandler, isInternal: boolean): void {
+		this.operations.set(id, { handler, isInternal });
 	}
 
 	public removeOperation(id: string): void {
@@ -419,14 +419,14 @@ class FlowManager {
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations.get(operation.type)!;
+		const { handler: handler, isInternal } = this.operations.get(operation.type)!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
 			let result = await handler(options, {
 				services,
-				env: useEnv(),
+				env: isInternal ? useEnv() : this.envs,
 				database: getDatabase(),
 				logger,
 				getSchema,
