@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import api from '@/api';
 import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useItems } from '@directus/composables';
+import { useItems, useSdk } from '@directus/composables';
+import { updateNotifications } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
 import { storeToRefs } from 'pinia';
@@ -18,6 +18,7 @@ type LocalNotification = Notification & {
 	to?: string;
 };
 
+const sdk = useSdk();
 const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
@@ -113,16 +114,18 @@ const notifications = computed<LocalNotification[]>(() => {
 });
 
 async function archiveAll() {
-	await api.patch('/notifications', {
-		query: {
-			recipient: {
-				_eq: userStore.currentUser!.id,
+	await sdk.request(
+		updateNotifications(
+			{
+				recipient: {
+					_eq: userStore.currentUser!.id,
+				},
 			},
-		},
-		data: {
-			status: 'archived',
-		},
-	});
+			{
+				status: 'archived',
+			},
+		),
+	);
 
 	await getItemCount();
 	await getItems();
@@ -131,12 +134,11 @@ async function archiveAll() {
 }
 
 async function toggleArchive() {
-	await api.patch('/notifications', {
-		keys: selection.value,
-		data: {
+	await sdk.request(
+		updateNotifications(selection.value, {
 			status: tab.value[0] === 'inbox' ? 'archived' : 'inbox',
-		},
-	});
+		}),
+	);
 
 	await getItemCount();
 	await getItems();

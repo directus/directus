@@ -19,17 +19,27 @@ export type UpdateNotificationOutput<
  */
 export const updateNotifications =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
-		keys: DirectusNotification<Schema>['id'][],
+		keysOrQuery: DirectusNotification<Schema>['id'][] | Query<Schema, DirectusNotification<Schema>>,
 		item: Partial<DirectusNotification<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(keys, 'Keys cannot be empty');
+		let payload: Record<string, any> = {};
+
+		if (Array.isArray(keysOrQuery)) {
+			throwIfEmpty(keysOrQuery, 'keysOrQuery cannot be empty');
+			payload = { keys: keysOrQuery };
+		} else {
+			throwIfEmpty(Object.keys(keysOrQuery), 'keysOrQuery cannot be empty');
+			payload = { query: keysOrQuery };
+		}
+
+		payload['data'] = item;
 
 		return {
 			path: `/notifications`,
 			params: query ?? {},
-			body: JSON.stringify({ keys, data: item }),
+			body: JSON.stringify(payload),
 			method: 'PATCH',
 		};
 	};
