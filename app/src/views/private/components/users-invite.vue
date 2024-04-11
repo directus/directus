@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import api from '@/api';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSdk } from '@directus/composables';
+import { inviteUser, readRoles } from '@directus/sdk';
 import { Role } from '@directus/types';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,6 +16,7 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
+const sdk = useSdk();
 const { t } = useI18n();
 
 const emails = ref<string>('');
@@ -40,10 +42,7 @@ async function inviteUsers() {
 			.filter((e) => e)
 			.map((email) => email.trim());
 
-		await api.post('/users/invite', {
-			email: emailsParsed,
-			role: roleSelected.value,
-		});
+		await sdk.request(inviteUser(emailsParsed, roleSelected.value!));
 
 		emails.value = '';
 		emit('update:modelValue', false);
@@ -65,14 +64,13 @@ async function inviteUsers() {
 }
 
 async function loadRoles() {
-	const response = await api.get<{ data: Pick<Role, 'id' | 'name'>[] }>('/roles', {
-		params: {
-			sort: 'name',
-			fields: ['id', 'name'],
-		},
-	});
 
-	roles.value = response.data.data.map((role) => ({
+	const response = await sdk.request<Pick<Role, 'id' | 'name'>[]>(readRoles({
+		fields: ['id', 'name'],
+		sort: 'name'
+	}));
+
+	roles.value = response.map((role) => ({
 		text: role.name,
 		value: role.id,
 	}));

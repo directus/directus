@@ -10,7 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const inviteUser =
-	<Schema extends object>(email: string, role: string, invite_url?: string): RestCommand<void, Schema> =>
+	<Schema extends object>(email: string | string[], role: string, invite_url?: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/invite`,
 		method: 'POST',
