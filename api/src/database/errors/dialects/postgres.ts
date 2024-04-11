@@ -109,9 +109,11 @@ function foreignKeyViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
+	const invalid = matches[1]!.slice(1, -1);
 
 	return new InvalidForeignKeyError({
 		collection,
 		field,
+		invalid,
 	});
 }
