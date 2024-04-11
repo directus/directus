@@ -1611,8 +1611,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       undici:
-        specifier: 6.11.1
-        version: 6.11.1
+        specifier: 6.12.0
+        version: 6.12.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -8310,7 +8310,7 @@ packages:
       strip-literal: 2.1.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.4.0(@types/node@18.19.29)
+      vitest: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -19370,6 +19370,11 @@ packages:
 
   /undici@6.11.1:
     resolution: {integrity: sha512-KyhzaLJnV1qa3BSHdj4AZ2ndqI0QWPxYzaIOio0WzcEJB9gvuysprJSLtpvc2D9mhR9jPDUk7xlJlZbH2KR5iw==}
+    engines: {node: '>=18.0'}
+    dev: false
+
+  /undici@6.12.0:
+    resolution: {integrity: sha512-d87yk8lqSFUYtR5fTFe2frpkMIrUEz+lgoJmhcL+J3StVl+8fj8ytE4lLnJOTPCE12YbumNGzf4LYsQyusdV5g==}
     engines: {node: '>=18.0'}
     dev: false
 
