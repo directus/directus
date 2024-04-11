@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection } from '@directus/composables';
+import { useCollection, useSdk } from '@directus/composables';
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
+import { triggerFlow } from '@directus/sdk';
 
 const props = withDefaults(
 	defineProps<{
@@ -25,6 +25,7 @@ const props = withDefaults(
 	},
 );
 
+const sdk = useSdk();
 const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
@@ -141,10 +142,10 @@ const runManualFlow = async (flowId: string) => {
 			selectedFlow.options?.requireSelection === false &&
 			selection.value.length === 0
 		) {
-			await api.post(`/flows/trigger/${flowId}`, { ...(unref(confirmValues) ?? {}), collection: collection.value });
+			await sdk.request(triggerFlow('POST', flowId, { ...(unref(confirmValues) ?? {}), collection: collection.value }));
 		} else {
 			const keys = primaryKey.value ? [primaryKey.value] : selection.value;
-			await api.post(`/flows/trigger/${flowId}`, { ...unref(confirmValues), collection: collection.value, keys });
+			await sdk.request(triggerFlow('POST', flowId, { ...unref(confirmValues), collection: collection.value, keys }));
 		}
 
 		emit('refresh');
