@@ -789,7 +789,7 @@ importers:
         version: 14.7.1
       histoire:
         specifier: 0.17.17
-        version: 0.17.17(sass@1.74.1)(vite@5.2.8)
+        version: 0.17.17(sass@1.75.0)(vite@5.2.8)
       html-entities:
         specifier: 2.5.2
         version: 2.5.2
@@ -839,8 +839,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       sass:
-        specifier: 1.74.1
-        version: 1.74.1
+        specifier: 1.75.0
+        version: 1.75.0
       semver:
         specifier: 7.6.0
         version: 7.6.0
@@ -852,10 +852,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(sass@1.74.1)
+        version: 5.2.8(sass@1.75.0)
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.5)
@@ -967,7 +967,7 @@ importers:
         version: 1.4.0(vitest@1.4.0)
       histoire:
         specifier: 0.17.17
-        version: 0.17.17(sass@1.74.1)(vite@5.2.8)
+        version: 0.17.17(sass@1.75.0)(vite@5.2.8)
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.21)
@@ -979,13 +979,13 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(sass@1.74.1)
+        version: 5.2.8(sass@1.75.0)
       vite-plugin-dts:
         specifier: 3.8.1
         version: 3.8.1(rollup@4.14.1)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.5)
@@ -1043,7 +1043,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.5)
@@ -1162,7 +1162,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/extensions:
     dependencies:
@@ -1278,7 +1278,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1375,7 +1375,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/format-title:
     devDependencies:
@@ -1390,7 +1390,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/memory:
     dependencies:
@@ -1455,7 +1455,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/random:
     devDependencies:
@@ -1597,7 +1597,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1631,7 +1631,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1662,7 +1662,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1727,7 +1727,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1761,7 +1761,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   packages/stores:
     dependencies:
@@ -1850,7 +1850,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8(sass@1.74.1)
+        version: 5.2.8(sass@1.75.0)
       vite-plugin-dts:
         specifier: 3.8.1
         version: 3.8.1(rollup@4.14.1)(typescript@5.4.5)(vite@5.2.8)
@@ -2030,7 +2030,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   sdk:
     dependencies:
@@ -2052,7 +2052,7 @@ importers:
         version: 5.3.3
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
 
   tests/blackbox:
     devDependencies:
@@ -2133,7 +2133,7 @@ importers:
         version: 4.3.2(typescript@5.4.5)
       vitest:
         specifier: 1.4.0
-        version: 1.4.0(happy-dom@14.7.1)(sass@1.74.1)
+        version: 1.4.0(happy-dom@14.7.1)(sass@1.75.0)
       ws:
         specifier: 8.16.0
         version: 8.16.0
@@ -4825,7 +4825,7 @@ packages:
       '@histoire/vendors': 0.17.17
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.17(sass@1.74.1)(vite@5.2.8)
+      histoire: 0.17.17(sass@1.75.0)(vite@5.2.8)
       launch-editor: 2.6.1
       pathe: 1.1.2
       vue: 3.4.21(typescript@5.4.5)
@@ -4844,7 +4844,7 @@ packages:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.8(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
     dev: true
 
   /@histoire/vendors@0.17.17:
@@ -7945,7 +7945,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.2.8(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
       vue: 3.4.21(typescript@5.4.5)
     dev: true
 
@@ -12244,7 +12244,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /histoire@0.17.17(sass@1.74.1)(vite@5.2.8):
+  /histoire@0.17.17(sass@1.75.0)(vite@5.2.8):
     resolution: {integrity: sha512-DAwY4sgIoP7NGE5ldaws2d3RWz4OOQcwhS8elRMiA2euqzLvDU2IXm+ZjeDDFVtGkvmQNQyfZBDKLCLHfRkSUg==}
     hasBin: true
     peerDependencies:
@@ -12280,8 +12280,8 @@ packages:
       sade: 1.8.1
       shiki-es: 0.2.0
       sirv: 2.0.4
-      vite: 5.2.8(sass@1.74.1)
-      vite-node: 0.34.7(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
+      vite-node: 0.34.7(sass@1.75.0)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -17263,8 +17263,8 @@ packages:
       postcss: 8.4.35
     dev: false
 
-  /sass@1.74.1:
-    resolution: {integrity: sha512-w0Z9p/rWZWelb88ISOLyvqTWGmtmu2QJICqDBGyNnfG4OUnPX9BBjjYIXUpXCMOOg5MQWNpqzt876la1fsTvUA==}
+  /sass@1.75.0:
+    resolution: {integrity: sha512-ShMYi3WkrDWxExyxSZPst4/okE9ts46xZmJDSawJQrnte7M1V9fScVB+uNXOVKRBt0PggHOwoZcn8mYX4trnBw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
@@ -19426,7 +19426,7 @@ packages:
       vfile-message: 3.1.4
     dev: true
 
-  /vite-node@0.34.7(sass@1.74.1):
+  /vite-node@0.34.7(sass@1.75.0):
     resolution: {integrity: sha512-0Yzb96QzHmqIKIs/x2q/sqG750V/EF6yDkS2p1WjJc1W2bgRSuQjf5vB9HY8h2nVb5j4pO5paS5Npcv3s69YUg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -19436,7 +19436,7 @@ packages:
       mlly: 1.6.1
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.8(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -19469,7 +19469,7 @@ packages:
       - terser
     dev: true
 
-  /vite-node@1.4.0(sass@1.74.1):
+  /vite-node@1.4.0(sass@1.75.0):
     resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19478,7 +19478,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.8(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -19507,7 +19507,7 @@ packages:
       kolorist: 1.8.0
       magic-string: 0.30.9
       typescript: 5.4.5
-      vite: 5.2.8(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
       vue-tsc: 1.8.27(typescript@5.4.5)
     transitivePeerDependencies:
       - '@types/node'
@@ -19637,7 +19637,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.2.8(sass@1.74.1):
+  /vite@5.2.8(sass@1.75.0):
     resolution: {integrity: sha512-OyZR+c1CE8yeHw5V5t59aXsUPPVTHMDjEZz8MgguLL/Q7NblxhZUlTu9xSPqlsUO/y+X7dlU05jdhvyycD55DA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19668,7 +19668,7 @@ packages:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.0
-      sass: 1.74.1
+      sass: 1.75.0
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -19784,7 +19784,7 @@ packages:
       - terser
     dev: true
 
-  /vitest@1.4.0(happy-dom@14.7.1)(sass@1.74.1):
+  /vitest@1.4.0(happy-dom@14.7.1)(sass@1.75.0):
     resolution: {integrity: sha512-gujzn0g7fmwf83/WzrDTnncZt2UiXP41mHuFYFrdwaLRVQ6JYQEiME2IfEjU3vcFL3VKa75XhI3lFgn+hfVsQw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19827,8 +19827,8 @@ packages:
       strip-literal: 2.1.0
       tinybench: 2.6.0
       tinypool: 0.8.3
-      vite: 5.2.8(sass@1.74.1)
-      vite-node: 1.4.0(sass@1.74.1)
+      vite: 5.2.8(sass@1.75.0)
+      vite-node: 1.4.0(sass@1.75.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
