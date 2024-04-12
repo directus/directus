@@ -11,6 +11,8 @@ export function extractFieldsFromQuery(
 	schema: SchemaOverview,
 	pathPrefix: FieldKey[] = [],
 ) {
+	if (!query) return;
+
 	const paths = extractPathsFromQuery(query);
 
 	for (const path of paths) {
