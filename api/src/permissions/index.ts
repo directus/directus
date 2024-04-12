@@ -1,1 +1,1 @@
-export * from './ast/validate.js';
+export * from './ast/process.js';

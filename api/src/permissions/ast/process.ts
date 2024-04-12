@@ -2,6 +2,7 @@ import type { PermissionsAction } from '@directus/system-data';
 import type { Accountability } from '@directus/types';
 import type { AST } from '../../types/ast.js';
 import { extractRequestedSchemaFromAst } from './lib/extract-requested-schema-from-ast.js';
+import type { FieldMap } from './types.js';
 
 /**
  * Permissions validation strategy (READ):
@@ -15,20 +16,17 @@ import { extractRequestedSchemaFromAst } from './lib/extract-requested-schema-fr
  * - Inject item access rules to AST
  */
 
-export async function validate(
+export async function process(
 	ast: AST,
 	action: PermissionsAction,
 	accountability: Accountability,
 ) {
-	const requestedSchema: Map<string, Set<string>> = extractRequestedSchemaFromAst(ast);
+	const requestedSchema: FieldMap = extractRequestedSchemaFromAst(ast);
 
-	// pseudo code:
 	// const collections = requestedSchema.keys();
 	// const permissions = await getPermissions(collections, action, accountability);
 
 	// validateAst(ast, permissions);
 
-	// ast = injectAccessRules(ast, permissions);
-
-	// return ast;
+	// return injectAccessRules(ast, permissions);
 }
