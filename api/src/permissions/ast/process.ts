@@ -1,7 +1,7 @@
 import type { PermissionsAction } from '@directus/system-data';
-import type { Accountability } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { AST } from '../../types/ast.js';
-import { extractRequestedSchemaFromAst } from './lib/extract-requested-schema-from-ast.js';
+import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import type { FieldMap } from './types.js';
 
 /**
@@ -20,10 +20,11 @@ export async function process(
 	ast: AST,
 	action: PermissionsAction,
 	accountability: Accountability,
+	schema: SchemaOverview,
 ) {
-	const requestedSchema: FieldMap = extractRequestedSchemaFromAst(ast);
+	const fieldMap: FieldMap = fieldMapFromAst(ast, schema);
 
-	// const collections = requestedSchema.keys();
+	// const collections = do magic with fieldMap;
 	// const permissions = await getPermissions(collections, action, accountability);
 
 	// validateAst(ast, permissions);
