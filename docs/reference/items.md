@@ -277,6 +277,8 @@ List a singleton item in Directus.
 
 ```graphql
 type Query {
+	<collection>(version: String): [<collection>]
+
 	<collection>_by_version(version: String): <collection>
 }
 ```
