@@ -3,6 +3,14 @@ import { expect, test } from 'vitest';
 import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
 
+test('Returns early when no filter is passed', () => {
+	const paths: Set<FieldKey[]> = new Set();
+
+	flattenFilter(paths, undefined);
+
+	expect(paths).toBe(paths);
+});
+
 test('Flattens single level', () => {
 	const paths: Set<FieldKey[]> = new Set();
 
