@@ -12,6 +12,7 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
+	// TODO move to policies
 	private async checkForOtherAdminRoles(excludeKeys: PrimaryKey[]): Promise<void> {
 		// Make sure there's at least one admin role left after this deletion is done
 		const otherAdminRoles = await this.knex
@@ -28,6 +29,7 @@ export class RolesService extends ItemsService {
 		}
 	}
 
+	// TODO move to policies
 	private async checkForOtherAdminUsers(
 		key: PrimaryKey,
 		users: Alterations<User, 'id'> | (string | Partial<User>)[],
@@ -81,6 +83,7 @@ export class RolesService extends ItemsService {
 			usersRemoved.push(...users.delete);
 		}
 
+		// TODO move to policies
 		if (role.admin_access === false || role.admin_access === 0) {
 			// Admin users might have moved in from other role, thus becoming non-admin
 			if (usersAdded.length > 0) {
@@ -150,6 +153,7 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
+	// TODO move to policies
 	private isIpAccessValid(value?: any[] | null): boolean {
 		if (value === undefined) return false;
 		if (value === null) return true;
@@ -169,6 +173,7 @@ export class RolesService extends ItemsService {
 		return true;
 	}
 
+	// TODO move to policies
 	private assertValidIpAccess(partialItem: Partial<Item>): void {
 		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
 			throw new InvalidPayloadError({

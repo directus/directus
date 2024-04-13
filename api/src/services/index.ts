@@ -1,3 +1,4 @@
+export * from './access.js';
 export * from './activity.js';
 export * from './assets.js';
 export * from './authentication.js';

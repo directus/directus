@@ -1,20 +1,13 @@
 import type { PermissionsAction } from '@directus/system-data';
 import type { Accountability, SchemaOverview } from '@directus/types';
+import { getDatabase } from '../../database/index.js';
+import { AccessService } from '../../services/access.js';
+import { RolesService } from '../../services/roles.js';
 import type { AST } from '../../types/ast.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import type { FieldMap } from './types.js';
-
-/**
- * Permissions validation strategy (READ):
- *
- * - AST + action + ip/role/user comes in
- * - Extract collections and fields within those collections used in AST
- * - Find policies for role (+ parents) + user
- * - Filter policies down by IP access
- * - Find permissions in remaining policies by collection + action
- * - Validate if field permissions exist for requested data
- * - Inject item access rules to AST
- */
+import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
+import { fetchRolesTree } from './utils/fetch-roles-tree.js';
 
 export async function process(
 	ast: AST,
@@ -22,12 +15,37 @@ export async function process(
 	accountability: Accountability,
 	schema: SchemaOverview,
 ) {
+	const rolesService = new RolesService({
+		schema,
+		knex: getDatabase(),
+	});
+
+	const roles = await fetchRolesTree(rolesService, accountability.role);
+
+	// If roles length == 1 use policies for role `null`
+
+	// Fetch all policies (id, ip, admin) nested through accessService where role is in roles, user
+	// is user
+
+	// Check if a policy contains admin, exit early
+
+	// Filter policies down by IP address access
+
+	// Fetch permissions nested with policies by collection+action
+
+	// Sort policies by priority (global defaults -> role -> user)
+
+	// Validate fieldMap against fetched permissions
+
+	const accessService = new AccessService({
+		schema,
+		knex: getDatabase(),
+	});
+
 	const fieldMap: FieldMap = fieldMapFromAst(ast, schema);
+	const collections = collectionsInFieldMap(fieldMap);
 
-	// const collections = do magic with fieldMap;
-	// const permissions = await getPermissions(collections, action, accountability);
+	// Inject read access filter rules in ast
 
-	// validateAst(ast, permissions);
-
-	// return injectAccessRules(ast, permissions);
+	// return, ?, profit
 }
