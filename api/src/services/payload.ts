@@ -171,11 +171,12 @@ export class PayloadService {
 
 				for (const [aliasName, fieldName] of aliasEntries) {
 					if (fieldName === name) {
-						specialFieldsInCollection.push([aliasName, field]);
+						specialFieldsInCollection.push([aliasName, { ...field, field: aliasName }]);
 					}
 				}
 			}
 		}
+
 
 		if (action === 'read') {
 			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {
