@@ -14,7 +14,7 @@ import { filterPoliciesByIp } from './utils/filter-policies-by-ip.js';
 import { orderPoliciesByPriority } from './utils/order-policies-by-priority.js';
 import { validatePath } from './utils/validate-path.js';
 
-export async function process(
+export async function processAst(
 	ast: AST,
 	action: PermissionsAction,
 	accountability: Accountability,
@@ -26,7 +26,9 @@ export async function process(
 	const permissionsService = new PermissionsService({ schema, knex });
 	const accessService = new AccessService({ schema, knex });
 
-	// Current request is made by an unauthenticated user
+	// TODO maybe move roles+policies fetching/filtering to middleware so it's available as
+	// accountability.admin still to avoid a massive refactor?
+
 	const isPublic = accountability.role === null;
 
 	// All roles in the current role's parent tree, ordered by specificity (parent -> child)
@@ -41,8 +43,6 @@ export async function process(
 	const isAdmin = policies.some(({ policy }) => policy.admin_access);
 
 	if (isAdmin) {
-		// If the current request is made by an admin user, we don't have to validate for any access,
-		// or inject any additional read permissions.
 		return ast;
 	}
 

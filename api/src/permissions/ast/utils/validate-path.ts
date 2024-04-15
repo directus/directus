@@ -2,11 +2,13 @@ import { ForbiddenError } from '@directus/errors';
 import type { Permission } from '@directus/types';
 
 export function validatePath(path: string, permissions: Permission[], collection: string, fields: Set<string>) {
+	const pathSuffix = path === '' ? 'root' : `"${path}"`;
+
 	const permissionsForCollection = permissions.filter((permission) => permission.collection === collection);
 
 	if (permissionsForCollection.length === 0) {
 		throw new ForbiddenError({
-			reason: `You don't have permission to access collection "${collection}" or it does not exist. Queried in "${path}".`,
+			reason: `You don't have permission to access collection "${collection}" or it does not exist. Queried in ${pathSuffix}.`,
 		});
 	}
 
@@ -36,8 +38,8 @@ export function validatePath(path: string, permissions: Permission[], collection
 		throw new ForbiddenError({
 			reason:
 				forbiddenFields.length === 1
-					? `You don't have permission to access field ${fieldStr} in collection "${collection}" or it does not exist. Queried in "${path}".`
-					: `You don't have permission to access fields ${fieldStr} in collection "${collection}" or they do not exist. Queried in "${path}".`,
+					? `You don't have permission to access field ${fieldStr} in collection "${collection}" or it does not exist. Queried in ${pathSuffix}.`
+					: `You don't have permission to access fields ${fieldStr} in collection "${collection}" or they do not exist. Queried in ${pathSuffix}.`,
 		});
 	}
 }
