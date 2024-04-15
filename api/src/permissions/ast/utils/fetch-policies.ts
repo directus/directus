@@ -1,4 +1,4 @@
-import { AccessService } from '../../../services/access.js';
+import type { AccessService } from '../../../services/access.js';
 import type { AccessRow } from '../types.js';
 
 /**
@@ -18,27 +18,23 @@ export async function fetchPolicies(
 	roles: string[],
 	user: string | null | undefined,
 ) {
-	let policies: AccessRow[] = [];
-
 	// If the current accountability indicates that the request is made using the public role, we can
 	// ignore the user policies (as there's no users in the "public" role)
 	if (isPublic) {
-		policies = (await accessService.readByQuery({
+		return (await accessService.readByQuery({
 			fields: ['policy.id', 'policy.admin_access', 'policy.ip_access', 'sort', 'role'],
 			sort: ['sort'],
 			filter: { role: { _null: true } },
 		})) as AccessRow[];
-	} else {
-		const roleFilter = { role: { _in: roles } };
-
-		const filter = user ? { _or: [{ user: { _eq: user } }, roleFilter] } : roleFilter;
-
-		policies = (await accessService.readByQuery({
-			fields: ['policy', 'sort', 'role'],
-			sort: ['role', 'sort'],
-			filter,
-		})) as AccessRow[];
 	}
 
-	return policies;
+	const roleFilter = { role: { _in: roles } };
+
+	const filter = user ? { _or: [{ user: { _eq: user } }, roleFilter] } : roleFilter;
+
+	return (await accessService.readByQuery({
+		fields: ['policy', 'sort', 'role'],
+		sort: ['role', 'sort'],
+		filter,
+	})) as AccessRow[];
 }
