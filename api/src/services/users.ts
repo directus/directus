@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Query } from '@directus/types';
+import type { Item, PrimaryKey, Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
@@ -9,7 +9,7 @@ import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';

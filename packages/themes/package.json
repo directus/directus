@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "0.3.5",
+	"version": "0.3.6",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.32.15",
+		"@sinclair/typebox": "0.32.20",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21"
@@ -39,7 +39,7 @@
 		"@unhead/vue": "1.8.10",
 		"@vitejs/plugin-vue": "5.0.4",
 		"pinia": "2.1.7",
-		"rollup-plugin-node-externals": "7.0.1",
+		"rollup-plugin-node-externals": "7.1.1",
 		"typescript": "5.3.3",
 		"vite": "5.1.4",
 		"vite-plugin-dts": "3.8.1",

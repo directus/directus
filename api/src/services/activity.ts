@@ -1,10 +1,10 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';

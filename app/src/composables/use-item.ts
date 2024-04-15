@@ -207,12 +207,14 @@ export function useItem<T extends Record<string, any>>(
 				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
 			});
 
-			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
-				const fieldsToFetch = fields
-					.filter((field) => field.startsWith(relation.meta!.one_field!))
-					.map((field) => field.split('.').slice(1).join('.'));
+			const oneField = relation.meta?.one_field;
 
-				if (Array.isArray(newItem[relation.meta.one_field])) {
+			if (oneField && oneField in newItem) {
+				const fieldsToFetch = fields
+					.filter((field) => field.split('.')[0] === oneField || field === '*')
+					.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
+
+				if (Array.isArray(newItem[oneField])) {
 					const existingItems = await findExistingRelatedItems(
 						newItem,
 						relation,
@@ -220,7 +222,7 @@ export function useItem<T extends Record<string, any>>(
 						fieldsToFetch,
 					);
 
-					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
+					newItem[oneField] = newItem[oneField].map((relatedItem: any) => {
 						if (typeof relatedItem !== 'object' && existingItems.length > 0) {
 							relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
 						}
@@ -231,9 +233,9 @@ export function useItem<T extends Record<string, any>>(
 						return relatedItem;
 					});
 				} else {
-					const createdRelatedItems = newItem[relation.meta.one_field]?.create;
-					const updatedRelatedItems = newItem[relation.meta.one_field]?.update;
-					const deletedRelatedItems = newItem[relation.meta.one_field]?.delete;
+					const createdRelatedItems = newItem[oneField]?.create;
+					const updatedRelatedItems = newItem[oneField]?.update;
+					const deletedRelatedItems = newItem[oneField]?.delete;
 
 					let existingItems: any[] = await findExistingRelatedItems(
 						item.value,
@@ -302,7 +304,7 @@ export function useItem<T extends Record<string, any>>(
 				const response = await api.get(getEndpoint(relation.collection), {
 					params: {
 						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
-						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
 					},
 				});
 
@@ -335,7 +337,7 @@ export function useItem<T extends Record<string, any>>(
 				for (const col of columns) {
 					const colName = col.split('.')[1];
 
-					if (colName !== undefined) {
+					if (colName && colName in updatedItem) {
 						item[colName] = updatedItem[colName];
 					}
 				}

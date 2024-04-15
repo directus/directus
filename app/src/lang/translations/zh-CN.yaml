@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
@@ -644,39 +624,39 @@ auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
   COLLECTION_NOT_FOUND: "模型不存在"
+  CONTAINS_NULL_VALUES: 字段包含空值
+  CONTENT_TOO_LARGE: 提交的项目/文件太大了
   FIELD_NOT_FOUND: 字段未找到
   FORBIDDEN: 禁止
+  ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
+  INTERNAL_SERVER_ERROR: 未知错误
+  INVALID_CONFIG: 无效配置
   INVALID_CREDENTIALS: 错误的用户名或密码
+  INVALID_FOREIGN_KEY: 无效的外键
+  INVALID_IP: IP地址不允许访问
   INVALID_OTP: 错误的一次性密码
   INVALID_PAYLOAD: 无效的内容
   INVALID_PROVIDER: 用户属于另一个认证提供商
   INVALID_QUERY: 无效的查询
-  INVALID_CONFIG: 无效配置
   INVALID_TOKEN: 令牌无效
-  INVALID_IP: IP地址不允许访问
   INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
   ITEM_NOT_FOUND: 找不到条目
-  ROUTE_NOT_FOUND: 未找到
-  RECORD_NOT_UNIQUE: 检测到重复的值
-  USER_SUSPENDED: 用户已禁用
-  CONTAINS_NULL_VALUES: 字段包含空值
-  UNPROCESSABLE_CONTENT: 不可处理的内容
-  INTERNAL_SERVER_ERROR: 未知错误
-  NOT_NULL_VIOLATION: 值不能为null
-  ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
-  VALUE_TOO_LONG: 数值太长
-  VALUE_OUT_OF_RANGE: 数值超出范围
-  INVALID_FOREIGN_KEY: 无效的外键
-  UNKNOWN: 未知错误
-  SERVICE_UNAVAILABLE: 服务不可用
-  UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
-  UNEXPECTED_RESPONSE: 响应异常
-  TOKEN_EXPIRED: 令牌已过期
-  RANGE_NOT_SATISFIABLE: 无效的范围
   METHOD_NOT_ALLOWED: 不被允许的方法
+  NOT_NULL_VIOLATION: 值不能为null
+  RANGE_NOT_SATISFIABLE: 无效的范围
+  RECORD_NOT_UNIQUE: 检测到重复的值
   REQUESTS_EXCEEDED: 已达到请求数量限制
-  CONTENT_TOO_LARGE: 提交的项目/文件太大了
+  ROUTE_NOT_FOUND: 未找到
+  SERVICE_UNAVAILABLE: 服务不可用
+  TOKEN_EXPIRED: 令牌已过期
+  UNEXPECTED_RESPONSE: 响应异常
+  UNKNOWN: 未知错误
+  UNPROCESSABLE_CONTENT: 不可处理的内容
+  UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
+  USER_SUSPENDED: 用户已禁用
+  VALUE_OUT_OF_RANGE: 数值超出范围
+  VALUE_TOO_LONG: 数值太长
 security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称

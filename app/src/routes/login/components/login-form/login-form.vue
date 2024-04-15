@@ -88,10 +88,10 @@ async function onSubmit() {
 
 		router.push(redirectQuery || lastPage || '/content');
 	} catch (err: any) {
-		if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
+		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
 		} else {
-			error.value = err.response?.data?.errors?.[0]?.extensions?.code || err;
+			error.value = err.errors?.[0]?.extensions?.code || err;
 		}
 	} finally {
 		loggingIn.value = false;
