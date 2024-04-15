@@ -38,9 +38,9 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@types/validate-npm-package-name": "4.0.2",
-		"@vitest/coverage-v8": "1.4.0",
+		"@vitest/coverage-v8": "1.5.0",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.4.0"
+		"vitest": "1.5.0"
 	}
 }
