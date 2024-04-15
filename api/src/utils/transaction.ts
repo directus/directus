@@ -1,15 +1,16 @@
 import type { Knex } from 'knex';
 
 /**
- * Execute the given callback in a transaction if the current knex state isn't a transaction yet.
+ * Execute the given handler within the current transaction or a newly created one
+ * if the current knex state isn't a transaction yet.
  *
- * Can be used to ensure the nested callback is run within a transaction, without nesting
- * transactions
+ * Can be used to ensure the handler is run within a transaction,
+ * while preventing nested transactions.
  */
-export const transaction = async <T = unknown>(knex: Knex, callback: (knex: Knex) => Promise<T>): Promise<T> => {
+export const transaction = <T = unknown>(knex: Knex, handler: (knex: Knex) => Promise<T>): Promise<T> => {
 	if (knex.isTransaction) {
-		return await callback(knex);
+		return handler(knex);
 	} else {
-		return await knex.transaction(async (trx) => await callback(trx));
+		return knex.transaction((trx) => handler(trx));
 	}
 };
