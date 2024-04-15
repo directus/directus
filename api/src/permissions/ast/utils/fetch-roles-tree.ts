@@ -1,9 +1,7 @@
 import type { RolesService } from '../../../services/roles.js';
 
-export async function fetchRolesTree(service: RolesService, start: string | null): Promise<string[]> {
+export async function fetchRolesTree(service: RolesService, start: string): Promise<string[]> {
 	// TODO add caching
-
-	if (!start) return [];
 
 	let parent: string | null = start;
 	const roles: string[] = [];
