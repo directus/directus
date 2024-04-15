@@ -1,5 +1,6 @@
 import type { PermissionsAction } from '@directus/system-data';
 import type { Accountability, SchemaOverview } from '@directus/types';
+import { groupBy, mapValues, orderBy } from 'lodash-es';
 import { getDatabase } from '../../database/index.js';
 import { AccessService } from '../../services/access.js';
 import { PoliciesService } from '../../services/policies.js';
@@ -34,6 +35,10 @@ export async function process(
 
 	let policies: AccessRow[] = [];
 
+	// If the current request is not a public request, this will hold a list of ordered IDs from the
+	// outermost parent role down to the current user's role.
+	let roles: string[] = [];
+
 	// If the current accountability indicates that the request is made using the public role, we can
 	// ignore the user policies (as there's no users in the "public" role)
 	if (isPublic) {
@@ -43,7 +48,7 @@ export async function process(
 			filter: { role: { _null: true } },
 		})) as AccessRow[];
 	} else {
-		const roles = await fetchRolesTree(rolesService, accountability.role!);
+		roles = await fetchRolesTree(rolesService, accountability.role!);
 
 		const roleFilter = { role: { _in: roles } };
 
@@ -80,14 +85,39 @@ export async function process(
 		return ipInNetworks(accountability.ip, ipAllowList);
 	});
 
-	const rolePolicies = policies.filter(({ user }) => user === null);
-	const userPolicies = policies.filter(({ user }) => user !== null);
-
 	// The order of all policies should be:
+	//
+	// - Public
 	// - Role, sorted by tree (eg grandparent -> parent -> current), followed by `sort`
 	// - User, sorted by `sort`
+	//
+	// where the latter two are optional in public requests
 
-	let policies = [];
+	// To sort the policies attached to roles, we'll start by..
+	let rolePolicies = policies.filter(({ user }) => user === null);
+
+	// grouping them by their roles, after which..
+	const rolePoliciesGrouped = groupBy(rolePolicies, 'role');
+
+	// we can sort each individual policy role group by it's configured sort value, after which..
+	const rolePoliciesGroupedSorted = mapValues(rolePoliciesGrouped, (value) => {
+		return orderBy(value, 'sort');
+	});
+
+	// we will reconstruct the policies list in order of public -> outer parent -> parent -> current
+	rolePolicies = [
+		...(rolePoliciesGroupedSorted['null'] ?? []),
+		...roles.map((role) => rolePoliciesGroupedSorted[role] ?? []).flat(),
+	];
+
+	// User policies are nice and easy to sort as there's no parent "user" grouping like with roles.
+	const userPolicies = orderBy(
+		policies.filter(({ user }) => user !== null),
+		'sort',
+	);
+
+	// Policies is now in order of priority (least to most)
+	policies = [...rolePolicies, ...userPolicies];
 
 	const policyIds = policies.map(({ policy }) => policy.id);
 
