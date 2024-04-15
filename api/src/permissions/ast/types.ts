@@ -7,3 +7,10 @@ export type QueryPath = string[];
  * Value contains collection context for that path, and fields fetched within
  */
 export type FieldMap = Map<string, { collection: CollectionKey; fields: Set<FieldKey> }>;
+
+export interface AccessRow {
+	policy: { id: string; admin_access: boolean; ip_access: string };
+	sort: number;
+	role: null | string;
+	user: null | string;
+}
