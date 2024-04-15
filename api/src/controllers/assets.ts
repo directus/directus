@@ -239,10 +239,8 @@ router.get(
 		}
 
 		stream
-			.on('error', (e) => {
-				logger.error(e, `Couldn't stream file ${file.id} to the client`);
-
-				stream.unpipe(res);
+			.on('error', (error) => {
+				logger.error(error, `Couldn't stream file ${file.id} to the client`);
 
 				if (!res.headersSent) {
 					res.removeHeader('Content-Type');
@@ -259,6 +257,8 @@ router.get(
 							},
 						],
 					});
+				} else {
+					res.end();
 				}
 			})
 			.pipe(res);
