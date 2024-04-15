@@ -178,7 +178,10 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		if (user.enforce_tfa && (!user.tfa_secret || !options?.otp)) {
+		const requiresTfa = user.enforce_tfa || user.tfa_secret;
+		const hasTfa = user.tfa_secret && options?.otp;
+
+		if (requiresTfa && !hasTfa) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
 			throw new InvalidOtpError();
