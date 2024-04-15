@@ -63,7 +63,7 @@ const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 
 const src = computed(() => {
-	if (!image.value?.type) return null;
+	if (loading.value || !image.value?.type) return null;
 
 	if (image.value.type.includes('svg')) {
 		return getAssetUrl(image.value.id);

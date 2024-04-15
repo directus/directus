@@ -16,6 +16,7 @@ export function useRelationSingle<T extends Record<string, any>>(
 ) {
 	const displayItem: Ref<T | null> = ref(null);
 	const loading = ref(false);
+	let lastRequestId = 0;
 
 	watch([value, previewQuery, relation], getDisplayItem, { immediate: true });
 
@@ -68,6 +69,7 @@ export function useRelationSingle<T extends Record<string, any>>(
 		fields.add(pkField);
 
 		loading.value = true;
+		const requestId = ++lastRequestId;
 
 		try {
 			const response = await api.get(getEndpoint(relatedCollection) + `/${encodeURIComponent(id)}`, {
@@ -75,6 +77,8 @@ export function useRelationSingle<T extends Record<string, any>>(
 					fields: Array.from(fields),
 				},
 			});
+
+			if (lastRequestId !== requestId) return;
 
 			if (typeof val === 'object') {
 				displayItem.value = merge({}, response.data.data, val);
@@ -89,7 +93,7 @@ export function useRelationSingle<T extends Record<string, any>>(
 				unexpectedError(error);
 			}
 		} finally {
-			loading.value = false;
+			loading.value = lastRequestId !== requestId;
 		}
 	}
 }
