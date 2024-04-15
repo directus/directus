@@ -40,7 +40,7 @@
 		"@vitejs/plugin-vue": "5.0.4",
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.1",
-		"typescript": "5.3.3",
+		"typescript": "5.4.5",
 		"vite": "5.1.4",
 		"vite-plugin-dts": "3.8.1",
 		"vue": "3.4.21"

@@ -139,7 +139,7 @@
 		"sass": "1.75.0",
 		"semver": "7.6.0",
 		"tinymce": "7.0.0",
-		"typescript": "5.3.3",
+		"typescript": "5.4.5",
 		"vite": "5.1.4",
 		"vitest": "1.3.1",
 		"vue": "3.4.21",
