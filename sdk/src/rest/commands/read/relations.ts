@@ -3,10 +3,11 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadRelationOutput<
+export type ReadRelationOutput<Schema, Item extends object = DirectusRelation<Schema>> = ApplyQueryFields<
 	Schema,
-	Item extends object = DirectusRelation<Schema>,
-> = ApplyQueryFields<Schema, Item, '*'>;
+	Item,
+	'*'
+>;
 
 /**
  * List all Relations that exist in Directus.
@@ -27,9 +28,7 @@ export const readRelations =
  * @throws Will throw if collection is empty
  */
 export const readRelationByCollection =
-	<Schema>(
-		collection: DirectusRelation<Schema>['collection'],
-	): RestCommand<ReadRelationOutput<Schema>, Schema> =>
+	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations/${collection}`,
 		method: 'GET',

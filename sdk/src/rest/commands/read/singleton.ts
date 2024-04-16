@@ -19,11 +19,7 @@ export type ReadSingletonOutput<
  * @throws Will throw if collection is empty
  */
 export const readSingleton =
-	<
-		Schema,
-		Collection extends SingletonCollections<Schema>,
-		const TQuery extends QueryItem<Schema, Schema[Collection]>,
-	>(
+	<Schema, Collection extends SingletonCollections<Schema>, const TQuery extends QueryItem<Schema, Schema[Collection]>>(
 		collection: Collection,
 		query?: TQuery,
 	): RestCommand<ReadSingletonOutput<Schema, Collection, TQuery>, Schema> =>

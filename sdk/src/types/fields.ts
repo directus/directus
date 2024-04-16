@@ -6,11 +6,7 @@ import type { IfNever, UnpackList } from './utils.js';
 /**
  * Fields querying, including nested relational fields
  */
-export type QueryFields<Schema, Item> = WrapQueryFields<
-	Schema,
-	Item,
-	QueryFieldsRelational<Schema, UnpackList<Item>>
->;
+export type QueryFields<Schema, Item> = WrapQueryFields<Schema, Item, QueryFieldsRelational<Schema, UnpackList<Item>>>;
 
 /**
  * Wrap array of fields

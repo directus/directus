@@ -51,10 +51,7 @@ export const deleteItems =
  * @throws Will throw if key is empty
  */
 export const deleteItem =
-	<Schema, Collection extends keyof Schema>(
-		collection: Collection,
-		key: string | number,
-	): RestCommand<void, Schema> =>
+	<Schema, Collection extends keyof Schema>(collection: Collection, key: string | number): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use deleteItem for core collections');

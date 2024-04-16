@@ -3,10 +3,11 @@ import type { ApplyQueryFields } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadCollectionOutput<
+export type ReadCollectionOutput<Schema, Item extends object = DirectusCollection<Schema>> = ApplyQueryFields<
 	Schema,
-	Item extends object = DirectusCollection<Schema>,
-> = ApplyQueryFields<Schema, Item, '*'>;
+	Item,
+	'*'
+>;
 
 /**
  * List the available collections.
@@ -26,9 +27,7 @@ export const readCollections =
  * @throws Will throw if collection is empty
  */
 export const readCollection =
-	<Schema>(
-		collection: DirectusCollection<Schema>['collection'],
-	): RestCommand<ReadCollectionOutput<Schema>, Schema> =>
+	<Schema>(collection: DirectusCollection<Schema>['collection']): RestCommand<ReadCollectionOutput<Schema>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');
 

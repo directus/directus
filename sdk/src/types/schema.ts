@@ -33,11 +33,7 @@ export type SingletonCollections<Schema> = {
 /**
  * Returns a list of regular collections in the schema
  */
-export type RegularCollections<Schema> = IfAny<
-	Schema,
-	string,
-	Exclude<keyof Schema, SingletonCollections<Schema>>
->;
+export type RegularCollections<Schema> = IfAny<Schema, string, Exclude<keyof Schema, SingletonCollections<Schema>>>;
 
 /**
  * Return string keys of all Primitive fields in the given schema Item
