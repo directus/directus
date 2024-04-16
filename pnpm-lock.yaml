@@ -1645,8 +1645,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@google-cloud/storage':
-        specifier: 7.8.0
-        version: 7.8.0
+        specifier: 7.10.0
+        version: 7.10.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -4973,8 +4973,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /@google-cloud/storage@7.8.0:
-    resolution: {integrity: sha512-4q8rKdLp35z8msAtrhr0pbos7BeD8T0tr6rMbBINewp9cfrwj7ROIElVwBluU8fZ596OvwQcjb6QCyBzTmkMRQ==}
+  /@google-cloud/storage@7.10.0:
+    resolution: {integrity: sha512-aBNejLVzHpI7C8eJSMpBpfdq1lxvYuHqG+zy/xvs032RyPRxuu45DLMeXuAbgwyx1VBsxWGYifrPDx+O7hJrmw==}
     engines: {node: '>=14'}
     dependencies:
       '@google-cloud/paginator': 5.0.0
@@ -4982,14 +4982,12 @@ packages:
       '@google-cloud/promisify': 4.0.0
       abort-controller: 3.0.0
       async-retry: 1.3.3
-      compressible: 2.0.18
       duplexify: 4.1.3
       ent: 2.2.0
       fast-xml-parser: 4.3.2
       gaxios: 6.1.1
       google-auth-library: 9.7.0
       mime: 3.0.0
-      mime-types: 2.1.35
       p-limit: 3.1.0
       retry-request: 7.0.1
       teeny-request: 9.0.0
@@ -9870,13 +9868,6 @@ packages:
   /component-emitter@1.3.1:
     resolution: {integrity: sha512-T0+barUSQRTUQASh8bx02dl+DhF54GtIDY13Y3m9oWTklKbb3Wv974meRpeZ3lp1JpLVECWWNHC4vaG2XHXouQ==}
     dev: true
-
-  /compressible@2.0.18:
-    resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
-    engines: {node: '>= 0.6'}
-    dependencies:
-      mime-db: 1.52.0
-    dev: false
 
   /computeds@0.0.1:
     resolution: {integrity: sha512-7CEBgcMjVmitjYo5q8JTJVra6X5mQ20uTThdK+0kR7UEaDrAWEQcRiBtWJzga4eRpP6afNwwLsX2SET2JhVB1Q==}
