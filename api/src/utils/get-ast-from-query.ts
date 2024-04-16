@@ -42,6 +42,7 @@ export default async function getASTFromQuery(
 		name: collection,
 		query: query,
 		children: [],
+		cases: [],
 	};
 
 	let fields = ['*'];
@@ -182,6 +183,7 @@ export default async function getASTFromQuery(
 								fieldKey,
 								query: {},
 								relatedCollection: foundRelation.collection,
+								whenCase: [],
 							});
 
 							continue;
@@ -189,7 +191,7 @@ export default async function getASTFromQuery(
 					}
 				}
 
-				children.push({ type: 'field', name, fieldKey });
+				children.push({ type: 'field', name, fieldKey, whenCase: [] });
 			}
 		}
 
@@ -230,6 +232,7 @@ export default async function getASTFromQuery(
 					parentKey: schema.collections[parentCollection]!.primary,
 					fieldKey: fieldKey,
 					relation: relation,
+					cases: [],
 				};
 
 				for (const relatedCollection of allowedCollections) {
@@ -261,6 +264,7 @@ export default async function getASTFromQuery(
 					relation: relation,
 					query: getDeepQuery(deep?.[fieldKey] || {}),
 					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[fieldKey] || {}),
+					cases: [],
 				};
 
 				if (relationType === 'o2m' && !child!.query.sort) {

@@ -398,6 +398,7 @@ function applyParentFilters(
 					type: 'field',
 					name: nestedNode.relation.field,
 					fieldKey: nestedNode.relation.field,
+					whenCase: [],
 				});
 			}
 
@@ -406,6 +407,7 @@ function applyParentFilters(
 					type: 'field',
 					name: nestedNode.relation.meta.sort_field,
 					fieldKey: nestedNode.relation.meta.sort_field,
+					whenCase: [],
 				});
 			}
 

@@ -1,4 +1,4 @@
-import type { Query, Relation } from '@directus/types';
+import type { Filter, Query, Relation } from '@directus/types';
 
 export type M2ONode = {
 	type: 'm2o';
@@ -9,6 +9,11 @@ export type M2ONode = {
 	relation: Relation;
 	parentKey: string;
 	relatedKey: string;
+
+	/**
+	 * Permissions rules for the item access of this current item.
+	 */
+	cases: Filter[];
 };
 
 export type A2MNode = {
@@ -26,6 +31,11 @@ export type A2MNode = {
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
+
+	/**
+	 * Permissions rules for the item access of this current item.
+	 */
+	cases: Filter[];
 };
 
 export type O2MNode = {
@@ -37,6 +47,11 @@ export type O2MNode = {
 	relation: Relation;
 	parentKey: string;
 	relatedKey: string;
+
+	/**
+	 * Permissions rules for the item access of this current item.
+	 */
+	cases: Filter[];
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
@@ -45,6 +60,11 @@ export type FieldNode = {
 	type: 'field';
 	name: string;
 	fieldKey: string;
+
+	/**
+	 * Which permission cases have to be met on the current item for this field to return a value
+	 */
+	whenCase: number[];
 };
 
 export type FunctionFieldNode = {
@@ -53,6 +73,11 @@ export type FunctionFieldNode = {
 	fieldKey: string;
 	query: Query;
 	relatedCollection: string;
+
+	/**
+	 * Which permission cases have to be met on the current item for this field to return a value
+	 */
+	whenCase: number[];
 };
 
 export type AST = {
@@ -60,4 +85,9 @@ export type AST = {
 	name: string;
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
 	query: Query;
+
+	/**
+	 * Permissions rules for the item access of this current item.
+	 */
+	cases: Filter[];
 };
