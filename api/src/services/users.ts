@@ -13,6 +13,7 @@ import type { AbstractServiceOptions, MutationOptions } from '../types/index.js'
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
+import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
@@ -239,7 +240,7 @@ export class UsersService extends ItemsService {
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const service = new UsersService({
 				accountability: this.accountability,
 				knex: trx,

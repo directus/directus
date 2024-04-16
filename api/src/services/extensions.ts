@@ -9,6 +9,7 @@ import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
 export class ExtensionReadError extends Error {
@@ -195,7 +196,7 @@ export class ExtensionsService {
 	}
 
 	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
-		const result = await this.knex.transaction(async (trx) => {
+		const result = await transaction(this.knex, async (trx) => {
 			if (!isObject(data.meta)) {
 				throw new InvalidPayloadError({ reason: `"meta" is required` });
 			}
