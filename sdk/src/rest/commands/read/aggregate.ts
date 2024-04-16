@@ -13,7 +13,7 @@ import { isSystemCollection } from '@directus/system-data';
  */
 export const aggregate =
 	<
-		Schema extends object,
+		Schema,
 		Collection extends AllCollections<Schema>,
 		Options extends AggregationOptions<Schema, Collection>,
 	>(

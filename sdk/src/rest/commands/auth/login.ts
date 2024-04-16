@@ -12,7 +12,7 @@ import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
  * @returns Authentication data.
  */
 export const login =
-	<Schema extends object>(
+	<Schema>(
 		email: string,
 		password: string,
 		options: LoginOptions = {},

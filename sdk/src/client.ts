@@ -18,7 +18,7 @@ const defaultGlobals: ClientGlobals = {
  *
  * @returns A Directus client.
  */
-export const createDirectus = <Schema extends object = any>(
+export const createDirectus = <Schema = any>(
 	url: string,
 	options: ClientOptions = {},
 ): DirectusClient<Schema> => {

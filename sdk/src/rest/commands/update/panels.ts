@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdatePanelOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusPanel<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdatePanelOutput<
  * @throws Will throw if keys is empty
  */
 export const updatePanels =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		keys: DirectusPanel<Schema>['id'][],
 		item: Partial<DirectusPanel<Schema>>,
 		query?: TQuery,
@@ -43,7 +43,7 @@ export const updatePanels =
  * @throws Will throw if key is empty
  */
 export const updatePanel =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		key: DirectusPanel<Schema>['id'],
 		item: Partial<DirectusPanel<Schema>>,
 		query?: TQuery,
