@@ -14,7 +14,7 @@ export function injectCases(ast: AST, permissions: Permission[]) {
 	ast.cases = processChildren(ast.name, ast.children, permissions);
 }
 
-export function processChildren(
+function processChildren(
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	permissions: Permission[],
@@ -62,7 +62,7 @@ export function processChildren(
 		// When there are no access rules for this field, and no rules for "all" fields `*`, we missed something in the validation
 		// and should abort.
 		if (!globalWhenCase && !fieldWhenCase) {
-			throw new Error(`Cannot extract access permissions for field "${child.fieldKey}" in collection "${ast.name}"`);
+			throw new Error(`Cannot extract access permissions for field "${child.fieldKey}" in collection "${collection}"`);
 		}
 
 		// Global and field can't both be undefined as per the error check prior

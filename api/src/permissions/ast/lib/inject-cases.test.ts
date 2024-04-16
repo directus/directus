@@ -120,5 +120,220 @@ test('Errors out when there are no permissions for the requested fields', () => 
 });
 
 test('Adds the cases to each field if affected fields is *', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'test-collection-a',
+		cases: [],
+		children: [
+			{ fieldKey: 'test-field-a', whenCase: [] },
+			{ fieldKey: 'test-field-b', whenCase: [] },
+			{ fieldKey: 'test-field-c', whenCase: [] },
+		],
+	};
 
-})
+	const permissions: DeepPartial<Permission>[] = [
+		{
+			collection: 'test-collection-a',
+			permissions: { status: { _eq: 'published' } },
+			fields: ['*'],
+		},
+		{
+			collection: 'test-collection-a',
+			permissions: { status: { _eq: 'draft' } },
+			fields: ['test-field-b', 'test-field-c'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.children).toEqual([
+		{
+			fieldKey: 'test-field-a',
+			whenCase: [0],
+		},
+		{
+			fieldKey: 'test-field-b',
+			whenCase: [0, 1],
+		},
+		{
+			fieldKey: 'test-field-c',
+			whenCase: [0, 1],
+		},
+	]);
+});
+
+test('Processes m2o children recursively', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'test-collection-a',
+		cases: [],
+		children: [
+			{ fieldKey: 'test-field-a', whenCase: [] },
+			{
+				type: 'm2o',
+				fieldKey: 'test-field-b',
+				relation: { related_collection: 'test-collection-b' },
+				children: [
+					{ fieldKey: 'test-field-related-a', whenCase: [] },
+					{ fieldKey: 'test-field-related-b', whenCase: [] },
+				],
+			},
+		],
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{
+			collection: 'test-collection-a',
+			permissions: { status: { _eq: 'published' } },
+			fields: ['*'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'draft' } },
+			fields: ['test-field-related-a'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'under-review' } },
+			fields: ['test-field-related-b'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.children).toEqual([
+		{ fieldKey: 'test-field-a', whenCase: [0] },
+		{
+			type: 'm2o',
+			fieldKey: 'test-field-b',
+			relation: { related_collection: 'test-collection-b' },
+			cases: [{ status: { _eq: 'draft' } }, { status: { _eq: 'under-review' } }],
+			whenCase: [0],
+			children: [
+				{ fieldKey: 'test-field-related-a', whenCase: [0] },
+				{ fieldKey: 'test-field-related-b', whenCase: [1] },
+			],
+		},
+	]);
+});
+
+test('Processes o2m children recursively', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'test-collection-a',
+		cases: [],
+		children: [
+			{ fieldKey: 'test-field-a', whenCase: [] },
+			{
+				type: 'o2m',
+				fieldKey: 'test-field-b',
+				relation: { collection: 'test-collection-b' },
+				children: [
+					{ fieldKey: 'test-field-related-a', whenCase: [] },
+					{ fieldKey: 'test-field-related-b', whenCase: [] },
+				],
+			},
+		],
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{
+			collection: 'test-collection-a',
+			permissions: { status: { _eq: 'published' } },
+			fields: ['*'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'draft' } },
+			fields: ['test-field-related-a'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'under-review' } },
+			fields: ['test-field-related-b'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.children).toEqual([
+		{ fieldKey: 'test-field-a', whenCase: [0] },
+		{
+			type: 'o2m',
+			fieldKey: 'test-field-b',
+			relation: { collection: 'test-collection-b' },
+			cases: [{ status: { _eq: 'draft' } }, { status: { _eq: 'under-review' } }],
+			whenCase: [0],
+			children: [
+				{ fieldKey: 'test-field-related-a', whenCase: [0] },
+				{ fieldKey: 'test-field-related-b', whenCase: [1] },
+			],
+		},
+	]);
+});
+
+test('Processes a2o children recursively', () => {
+	const ast: DeepPartial<AST> = {
+		name: 'test-collection-a',
+		cases: [],
+		children: [
+			{ fieldKey: 'test-field-a', whenCase: [] },
+			{
+				type: 'a2o',
+				fieldKey: 'test-field-b',
+				names: ['test-collection-b', 'test-collection-c'],
+				cases: {},
+				children: {
+					'test-collection-b': [
+						{ fieldKey: 'test-field-related-a', whenCase: [] },
+						{ fieldKey: 'test-field-related-b', whenCase: [] },
+					],
+					'test-collection-c': []
+				},
+			},
+		],
+	};
+
+	const permissions: DeepPartial<Permission>[] = [
+		{
+			collection: 'test-collection-a',
+			permissions: { status: { _eq: 'published' } },
+			fields: ['*'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'draft' } },
+			fields: ['test-field-related-a'],
+		},
+		{
+			collection: 'test-collection-b',
+			permissions: { status: { _eq: 'under-review' } },
+			fields: ['test-field-related-b'],
+		},
+		{
+			collection: 'test-collection-c',
+			permissions: {},
+			fields: ['*'],
+		},
+	];
+
+	injectCases(ast as AST, permissions as Permission[]);
+
+	expect(ast.children).toEqual([
+		{ fieldKey: 'test-field-a', whenCase: [0] },
+		{
+			type: 'a2o',
+			fieldKey: 'test-field-b',
+			names: ['test-collection-b', 'test-collection-c'],
+			cases: {
+				'test-collection-b': [{ status: { _eq: 'draft' } }, { status: { _eq: 'under-review' } }],
+				'test-collection-c': [{}],
+			},
+			whenCase: [0],
+			children: {
+				'test-collection-b': [
+					{ fieldKey: 'test-field-related-a', whenCase: [0] },
+					{ fieldKey: 'test-field-related-b', whenCase: [1] },
+				],
+				'test-collection-c': [],
+			},
+		},
+	]);
+});
