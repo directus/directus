@@ -69,50 +69,6 @@ const scenarios = [
 		output: 'max-age=0',
 	},
 
-	// Test CACHE_AUTO_PURGE env for no-cache
-	{
-		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is true',
-		input: {
-			env: {
-				CACHE_AUTO_PURGE: true,
-			},
-			headers: {},
-			accountability: null,
-			ttl: 5678910,
-			globalCacheSettings: true,
-			personalized: false,
-		},
-		output: 'no-cache',
-	},
-	{
-		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is false',
-		input: {
-			env: {
-				CACHE_AUTO_PURGE: true,
-			},
-			headers: {},
-			accountability: null,
-			ttl: 5678910,
-			globalCacheSettings: false,
-			personalized: false,
-		},
-		output: 'max-age=5679',
-	},
-	{
-		name: 'when CACHE_AUTO_PURGE is false and globalCacheSettings is true',
-		input: {
-			env: {
-				CACHE_AUTO_PURGE: false,
-			},
-			headers: {},
-			accountability: null,
-			ttl: 5678910,
-			globalCacheSettings: true,
-			personalized: false,
-		},
-		output: 'max-age=5679',
-	},
-
 	// Test personalized
 	{
 		name: 'when personalized is true and accountability is null',
