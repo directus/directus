@@ -58,7 +58,7 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
+		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
 	if (query.group) {
@@ -805,11 +805,13 @@ export function applyFilter(
 }
 
 export async function applySearch(
+	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
 ): Promise<void> {
+	const helpers = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
 	dbQuery.andWhere(function () {
@@ -821,7 +823,7 @@ export async function applySearch(
 
 				// only cast finite base10 numeric values
 				if (validateNumber(searchQuery, number)) {
-					this.orWhere({ [`${collection}.${name}`]: number });
+					helpers.search.orWhere(this, collection, name, number);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
