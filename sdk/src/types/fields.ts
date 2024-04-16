@@ -21,21 +21,19 @@ export type WrapQueryFields<Schema, Item, NestedFields> = readonly (
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-export type QueryFieldsRelational<Schema, Item> = RelationalFields<Schema, Item> extends infer Relations
-	? IfNever<
-			Relations,
-			never,
-			{
-				[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
-					? RelatedCollection extends any[]
-						? HasManyToAnyRelation<RelatedCollection> extends never
-							? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
-							: ManyToAnyFields<Schema, RelatedCollection> // many to any
-						: QueryFields<Schema, RelatedCollection> // many-to-one
-					: never;
-			}
-	  >
-	: never;
+export type QueryFieldsRelational<Schema, Item> = IfNever<
+	RelationalFields<Schema, Item>,
+	never,
+	{
+		[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
+			? RelatedCollection extends any[]
+				? HasManyToAnyRelation<RelatedCollection> extends never
+					? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
+					: ManyToAnyFields<Schema, RelatedCollection> // many to any
+				: QueryFields<Schema, RelatedCollection> // many-to-one
+			: never;
+	}
+>;
 
 /**
  * Deal with many-to-any relational fields
