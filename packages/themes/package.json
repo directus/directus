@@ -41,7 +41,7 @@
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.1",
 		"typescript": "5.4.5",
-		"vite": "5.2.8",
+		"vite": "5.2.9",
 		"vite-plugin-dts": "3.8.3",
 		"vue": "3.4.22"
 	},
