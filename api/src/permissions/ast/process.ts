@@ -13,6 +13,7 @@ import { fetchRolesTree } from './utils/fetch-roles-tree.js';
 import { filterPoliciesByIp } from './utils/filter-policies-by-ip.js';
 import { orderPoliciesByPriority } from './utils/order-policies-by-priority.js';
 import { validatePath } from './utils/validate-path.js';
+import { injectCases } from './lib/inject-cases.js';
 
 export async function processAst(
 	ast: AST,
@@ -66,10 +67,5 @@ export async function processAst(
 		validatePath(path, permissions, collection, fields);
 	}
 
-	// Inject read access filter rules in ast
-	// TODO This is where you gotta redesign the AST, good luck! 🫡
-	// Each collection AST (root/nested collection) takes a `cases` array of filters
-	// Each field node gets a `caseWhen` array of indexes pointing to the cases array
-
-	return ast;
+	return injectCases(ast, permissions);
 }

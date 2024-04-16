@@ -11,9 +11,14 @@ export type M2ONode = {
 	relatedKey: string;
 
 	/**
-	 * Permissions rules for the item access of this current item.
+	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
-	cases: Filter[];
+	whenCase: number[];
+
+	/**
+	 * Permissions rules for the item access of the children of this item.
+	 */
+	cases: (Filter | null)[];
 };
 
 export type A2MNode = {
@@ -28,14 +33,22 @@ export type A2MNode = {
 	relatedKey: {
 		[collection: string]: string;
 	};
+
+	/**
+	 * Permissions rules for the item access of the children of this item.
+	 */
+	cases: {
+		[collection: string]: (Filter | null)[];
+	};
+
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
 
 	/**
-	 * Permissions rules for the item access of this current item.
+	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
-	cases: Filter[];
+	whenCase: number[];
 };
 
 export type O2MNode = {
@@ -49,9 +62,14 @@ export type O2MNode = {
 	relatedKey: string;
 
 	/**
-	 * Permissions rules for the item access of this current item.
+	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
-	cases: Filter[];
+	whenCase: number[];
+
+	/**
+	 * Permissions rules for the item access of the children of this item.
+	 */
+	cases: (Filter | null)[];
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
@@ -87,7 +105,7 @@ export type AST = {
 	query: Query;
 
 	/**
-	 * Permissions rules for the item access of this current item.
+	 * Permissions rules for the item access of the children of this item.
 	 */
-	cases: Filter[];
+	cases: (Filter | null)[];
 };
