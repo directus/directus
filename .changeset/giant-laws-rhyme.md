@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Don't influence Cache-Control header trough `CACHE_AUTO_PURGE` environment variable
+Ensured the `CACHE_AUTO_PURGE` config doesn't influence the Cache-Control header
