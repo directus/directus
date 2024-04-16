@@ -13,7 +13,7 @@ test('Returns without throwing if field set contains *', () => {
 			'test.path',
 			[{ collection: 'test-collection', fields: ['*'] } as Permission],
 			'test-collection',
-			new Set(),
+			new Set(['test-field-b']),
 		),
 	).not.toThrow();
 });

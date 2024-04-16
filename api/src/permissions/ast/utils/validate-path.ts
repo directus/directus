@@ -25,7 +25,7 @@ export function validatePath(path: string, permissions: Permission[], collection
 		}
 	}
 
-	if (fields.has('*')) {
+	if (allowedFields.has('*')) {
 		return;
 	}
 

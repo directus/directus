@@ -82,3 +82,51 @@ test('Validates all paths in AST', async () => {
 		},
 	});
 });
+
+test('Injects permission cases for the provided AST', async () => {
+	const ast = {
+		type: 'root',
+		name: 'test-collection',
+		children: [
+			{
+				fieldKey: 'test-field-a',
+			},
+		],
+	} as unknown as AST;
+
+	const acc = {} as Accountability;
+
+	const sch = {} as SchemaOverview;
+
+	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
+
+	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue([
+		{
+			policy: 'test-policy-1',
+			collection: 'test-collection',
+			action: 'read',
+			fields: ['*'],
+			permissions: { status: { _eq: 'published' } },
+		},
+	]);
+
+	await processAst(ast, 'read', acc, sch);
+
+	expect(ast).toEqual({
+		type: 'root',
+		name: 'test-collection',
+		cases: [
+			{
+				status: {
+					_eq: 'published',
+				},
+			},
+		],
+		children: [
+			{
+				fieldKey: 'test-field-a',
+				whenCase: [0],
+			},
+		],
+	});
+});

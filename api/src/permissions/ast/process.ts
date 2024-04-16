@@ -6,6 +6,7 @@ import { PermissionsService } from '../../services/permissions/index.js';
 import { RolesService } from '../../services/roles.js';
 import type { AST } from '../../types/ast.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
+import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
 import { fetchPolicies } from './utils/fetch-policies.js';
@@ -13,7 +14,6 @@ import { fetchRolesTree } from './utils/fetch-roles-tree.js';
 import { filterPoliciesByIp } from './utils/filter-policies-by-ip.js';
 import { orderPoliciesByPriority } from './utils/order-policies-by-priority.js';
 import { validatePath } from './utils/validate-path.js';
-import { injectCases } from './lib/inject-cases.js';
 
 export async function processAst(
 	ast: AST,
@@ -67,5 +67,7 @@ export async function processAst(
 		validatePath(path, permissions, collection, fields);
 	}
 
-	return injectCases(ast, permissions);
+	injectCases(ast, permissions);
+
+	return ast;
 }
