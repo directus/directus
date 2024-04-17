@@ -2,7 +2,8 @@ export default defineAppConfig({
 	nuxtIcon: {
 		size: '20px',
 		aliases: {
-			'nuxt': 'logos:nuxt-icon',
+			'checked': 'material-symbols:check-box-outline-rounded',
+			'not-checked': 'material-symbols:check-box-outline-blank',
 		}
 	}
 })
