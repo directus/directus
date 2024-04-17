@@ -39,6 +39,8 @@ export async function processAst(
 	// most priority
 	let policies = await fetchPolicies(accessService, isPublic, roles, accountability.user);
 	policies = filterPoliciesByIp(policies, accountability.ip);
+
+	// TODO remove order, no longer necessary
 	policies = orderPoliciesByPriority(policies, roles);
 
 	const isAdmin = policies.some(({ policy }) => policy.admin_access);
