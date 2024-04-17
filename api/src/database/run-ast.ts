@@ -476,21 +476,18 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
 
+			const limit = nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
+
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1),
-				);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(limit * (nestedNode.query.page - 1));
 			}
 
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
 			}
 
-			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					0,
-					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']),
-				);
+			if (limit !== -1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, limit);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {

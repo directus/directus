@@ -505,6 +505,7 @@ const allowDrag = computed(
 .actions {
 	margin-top: 8px;
 	display: flex;
+	align-items: end;
 	gap: 8px;
 
 	.v-pagination {
