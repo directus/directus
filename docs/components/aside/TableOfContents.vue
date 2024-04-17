@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
 	toc: {
-		type: Array,
+		type: [Array, Object],
 		required: true
 	}
 })

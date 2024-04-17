@@ -23,7 +23,7 @@ export default [
 		color: 'var(--section--user-guide)'
 	},
 	{
-		type: 'api-ref',
+		type: 'api-reference',
 		icon: 'material-symbols:code-blocks-rounded',
 		color: 'var(--section--api-reference)'
 	},

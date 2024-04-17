@@ -64,11 +64,12 @@ const product = products[props.product]
 
 <style scoped lang="scss">
 a {
-	display: inline;
+	display: inline-block;
 	justify-content: flex-start;
 	align-items: center;
 	text-decoration: none;
 	margin-right: 0.25rem;
+	margin-left: 0.25rem;
 	img {
 		position: relative;
 		display: inline;
@@ -87,6 +88,7 @@ a {
 		background-image: linear-gradient(45deg, var(--primary), var(--secondary));
 		background-size: 100%;
   		background-repeat: repeat;
+		background-clip: text;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		-moz-background-clip: text;

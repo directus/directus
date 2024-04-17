@@ -57,6 +57,7 @@ main {
 aside {
 	margin-top: var(--nav-spacing-under);
 	padding-left: 2rem;
+	padding-right: 1em;
 	border-left: 2px solid var(--border);
 	display: flex;
 	flex-direction: column;
