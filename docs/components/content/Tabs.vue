@@ -44,7 +44,7 @@ const render = () => {
 
 <style lang="scss">
 .tabs-container {
-	border: 1px solid var(--border);
+	border: 1px solid var(--border-2);
 	border-radius: var(--border-radius);
 }
 .tabs-content {

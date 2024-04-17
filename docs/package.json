@@ -16,7 +16,8 @@
     "@nuxt/content": "^2.12.1",
     "@nuxt/image": "^1.5.0",
     "nuxt": "^3.11.2",
-    "sass": "^1.74.1"
+    "sass": "^1.74.1",
+    "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
     "nuxt-headlessui": "1.2.0",

@@ -60,6 +60,9 @@ const detailsOpen = ref(false)
 	&.warning {
 		background: var(--red--light-3)
 	}
+	&:after {
+		display: none !important;
+	}
 }
 
 a.callout {
@@ -97,6 +100,11 @@ details.callout {
 
 .content :deep(> *:last-child) {
 	margin-bottom: 0;
+}
+
+.content :deep(ul),
+.content :deep(ol) {
+	padding-left: 1.25rem;
 }
 </style>
 ~/utils/calloutDefinitions

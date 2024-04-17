@@ -27,7 +27,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 <style lang="scss" scoped>
 .docs {
 	display: grid;
-	grid-template-columns: 200px auto;
+	grid-template-columns: 200px minmax(0, 1fr);
 	gap: 3rem;
 	> nav {
 		margin-top: var(--nav-spacing-under);

@@ -44,7 +44,7 @@ definePageMeta({
 <style lang="scss" scoped>
 .slug {
 	display: grid;
-	grid-template-columns: auto 250px;
+	grid-template-columns: minmax(0, 1fr) 250px;
 	width: 100%;
 	gap: 3rem;
 }

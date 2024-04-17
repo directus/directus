@@ -33,12 +33,14 @@ const updateTabs = ($event, i) => {
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 .tabs-header {
 	width: 100%;
-	border-bottom: 1px solid var(--border);
-	background: var(--border);
+	border-bottom: 1px solid var(--border-2);
+	background: var(--background--subdued);
 	position: relative;
+	border-top-left-radius: var(--border-radius);
+	border-top-right-radius: var(--border-radius);
 }
 button {
 	background: none;
@@ -48,9 +50,12 @@ button {
 	cursor: pointer;
 	padding: 0.5rem 0.75rem;
 	font-weight: 500;
+	&:not(:last-child) {
+		border-right: 1px solid var(--border-2);
+	}
 }
 button.active {
-	border-color: var(--primary);
+	border-bottom-color: var(--primary);
 	color: var(--primary);
 }
 </style>

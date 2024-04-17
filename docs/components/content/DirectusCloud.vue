@@ -4,7 +4,7 @@
 			<img src="~/assets/img/cloud-logo.svg" alt="directus Cloud">
 			<Button label="Get Started" type="span" color="white" />
 		</div>
-			<p>Everything you need to start building. Provisioned in 90 seconds.</p>
+		<p>Everything you need to start building. Provisioned in 90 seconds.</p>
 	</a>
 </template>
 
@@ -37,5 +37,8 @@ p {
 	margin-bottom: 0;
 	font-family: var(--font--header);
 	font-weight: 500;
+}
+.directus-cloud:after {
+	display: none !important;
 }
 </style>

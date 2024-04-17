@@ -52,7 +52,7 @@ pre {
 	> h2 + h3 {
 		margin-top: 1rem;
 	}
-	p, h1, h2, h3, img, .callout, pre, .directus-cloud, .box, ul, ol, table {
+	p, h1, h2, h3, img, .callout, .prose-pre, .directus-cloud, .box, ul, ol, table {
 		margin-bottom: 1rem;
 	}
 	ul, ol {
@@ -60,7 +60,7 @@ pre {
 			margin-bottom: 0.5rem;
 		}
 	}
-	a[href*='//']:after {
+	a:not([href*='directus.io']):not([href*='directus.cloud']):not([href*='localhost']):not([href*='127.0.0.1'])[href*='//']:after {
 		--size: 1rem;
 		content: '';
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZD0ibTE2IDguNGwtOC45IDguOXEtLjI3NS4yNzUtLjcuMjc1dC0uNy0uMjc1dC0uMjc1LS43dC4yNzUtLjdMMTQuNiA3SDdxLS40MjUgMC0uNzEyLS4yODhUNiA2dC4yODgtLjcxMlQ3IDVoMTBxLjQyNSAwIC43MTMuMjg4VDE4IDZ2MTBxMCAuNDI1LS4yODguNzEzVDE3IDE3dC0uNzEyLS4yODhUMTYgMTZ6Ii8+PC9zdmc+');
@@ -69,11 +69,6 @@ pre {
 		width: var(--size);
 		height: var(--size);
 	}
-	pre {
-		border: 1px solid black;
-		padding: 1rem;
-		border-radius: var(--border-radius);
-	}
 	img {
 		border-radius: var(--border-radius);
 		display: block;
@@ -81,6 +76,9 @@ pre {
 	}
 	code {
 		font-weight: bold;
+	}
+	pre code {
+		font-weight: normal;
 	}
 	table, td, th {
 		border: 1px solid var(--border-2);
@@ -105,4 +103,12 @@ pre {
 	text-transform: uppercase;
 	font-size: var(--nav-font);
 	font-weight: 500;
+}
+
+pre {
+	font-weight: normal;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	background: var(--background--subdued);
+	border: 1px solid var(--border-2);
 }
