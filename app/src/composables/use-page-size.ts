@@ -1,8 +1,8 @@
 import { useServerStore } from '@/stores/server';
-import { ComputedRef, computed } from 'vue';
+import { ComputedRef, computed, MaybeRef, toValue } from 'vue';
 
 export function usePageSize<T = any>(
-	availableSizes: number[],
+	availableSizes: MaybeRef<number[]>,
 	mapCallback: (value: number, index: number, array: number[]) => T,
 	defaultSize = 25,
 ): { sizes: ComputedRef<T[]>; selected: number } {
@@ -12,10 +12,10 @@ export function usePageSize<T = any>(
 
 	const pageSizes = computed<T[]>(() => {
 		if (queryLimit === undefined || queryLimit.max === -1) {
-			return availableSizes.map(mapCallback);
+			return toValue(availableSizes).map(mapCallback);
 		}
 
-		const sizes = availableSizes.filter((size) => size <= queryLimit.max);
+		const sizes = toValue(availableSizes).filter((size) => size <= queryLimit.max);
 
 		if (sizes.length === 0) {
 			sizes.push(queryLimit.max);

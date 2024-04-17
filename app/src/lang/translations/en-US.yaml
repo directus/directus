@@ -1661,6 +1661,7 @@ delete_item: Delete Item
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.
+    sorting_disabled: Sorting is disabled because there are more items than can fit on one page.
   filter:
     name: Filter
     description: Configure a filter object.
