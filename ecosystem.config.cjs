@@ -24,5 +24,9 @@ module.exports = [
 		max_restarts: process.env.PM2_MAX_RESTARTS,
 		restart_delay: process.env.PM2_RESTART_DELAY ?? 0,
 		autorestart: process.env.PM2_AUTO_RESTART === 'true',
+
+		// Logs
+		error_file: process.env.PM2_LOG_ERROR_FILE,
+		out_file: process.env.PM2_LOG_OUT_FILE,
 	},
 ];
