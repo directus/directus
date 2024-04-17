@@ -64,17 +64,22 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const TIMEOUT = 10000;
 
 			let timeout: NodeJS.Timeout;
 
 			const callback = async () => {
-				if (timeout) clearTimeout(timeout);
+				try {
+					if (timeout) clearTimeout(timeout);
 
-				const schema = await getSchema(options, attempt + 1);
-				resolve(schema);
-				bus.unsubscribe(messageKey, callback);
+					const schema = await getSchema(options, attempt + 1);
+					resolve(schema);
+				} catch (error) {
+					reject(error);
+				} finally {
+					bus.unsubscribe(messageKey, callback);
+				}
 			};
 
 			bus.subscribe(messageKey, callback);
