@@ -139,7 +139,7 @@ export const getExtensionsSettings = async ({
 		if (!existingSettings) {
 			generateSettingsEntry(folder, extension, 'registry');
 		} else if (extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, moduleSettings, 'module');
+			updateBundleEntriesSettings(existingSettings, extension, registrySettings, 'registry');
 		}
 	}
 
