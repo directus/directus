@@ -73,7 +73,7 @@ export async function getSchema(
 
 			const timeout: NodeJS.Timeout = setTimeout(() => {
 				logger.trace('Did not receive schema callback message in time. Pulling schema...');
-				callback();
+				callback().catch(reject);
 			}, TIMEOUT);
 
 			bus.subscribe(messageKey, callback);
