@@ -99,9 +99,8 @@ const pageCount = computed(() => Math.ceil(totalItemCount.value / limitWritable.
 const page = ref(1);
 
 watch(limitWritable, (newLimit, oldLimit) => {
-	const low = Math.min(newLimit, oldLimit);
-	const high = Math.max(newLimit, oldLimit);
-	page.value = Math.ceil((page.value * low) / high);
+	const offset = (page.value - 1) * oldLimit;
+	page.value = Math.floor(offset / newLimit + 1);
 });
 
 const query = computed<RelationQueryMultiple>(() => ({
@@ -232,8 +231,8 @@ function stageEdits(item: Record<string, any>) {
 
 function deleteItem(item: DisplayItem) {
 	if (
-		page.value === Math.ceil(totalItemCount.value / limit.value) &&
-		page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
+		page.value === Math.ceil(totalItemCount.value / limitWritable.value) &&
+		page.value !== Math.ceil((totalItemCount.value - 1) / limitWritable.value)
 	) {
 		page.value = Math.max(1, page.value - 1);
 	}
@@ -346,7 +345,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		<v-notice v-if="canDrag && !allowDrag">{{ t('interfaces.list-m2a.sorting_disabled') }}</v-notice>
 		<template v-if="loading">
 			<v-skeleton-loader
-				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+				v-for="n in clamp(totalItemCount - (page - 1) * limitWritable, 1, limitWritable)"
 				:key="n"
 				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
