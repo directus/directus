@@ -24,9 +24,6 @@ export function getCacheControlHeader(
 	// When the resource / current request shouldn't be cached
 	if (ttl === undefined || ttl < 0) return 'no-cache';
 
-	// When the API cache can invalidate at any moment
-	if (globalCacheSettings && env['CACHE_AUTO_PURGE'] === true) return 'no-cache';
-
 	const headerValues = [];
 
 	// When caching depends on the authentication status of the users
