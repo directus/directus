@@ -71,7 +71,7 @@ export async function getSchema(
 		return new Promise((resolve, reject) => {
 			const TIMEOUT = 10000;
 
-			const timeout: NodeJS.Timeout = setTimeout(async () => {
+			const timeout: NodeJS.Timeout = setTimeout(() => {
 				logger.trace('Did not receive schema callback message in time. Pulling schema...');
 				callback();
 			}, TIMEOUT);
