@@ -258,7 +258,15 @@ export class VersionsService extends ItemsService {
 			delta: revisionDelta,
 		});
 
-		const finalVersionDelta = assign({}, version['delta'], revisionDelta ? JSON.parse(revisionDelta) : null);
+		let existingDelta = version['delta'];
+
+		if (!existingDelta) {
+			const saves = await this.getVersionSavesById(key);
+
+			existingDelta = assign({}, ...saves);
+		}
+
+		const finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
 
 		await this.updateOne(key, { delta: finalVersionDelta });
 
