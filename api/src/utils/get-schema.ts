@@ -59,6 +59,10 @@ export async function getSchema(
 	const messageKey = 'schemaCache--done';
 	const processId = await lock.increment(lockKey);
 
+	if (processId >= 100) {
+		await lock.delete(lockKey);
+	}
+
 	const currentProcessShouldHandleOperation = processId === 1;
 
 	if (currentProcessShouldHandleOperation === false) {
