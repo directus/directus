@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "10.1.7",
+	"version": "10.1.8",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
