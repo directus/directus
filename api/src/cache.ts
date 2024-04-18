@@ -130,6 +130,7 @@ export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
 	const { localSchemaCache, sharedSchemaCache } = getCache();
 	const schemaHash = getSimpleHash(JSON.stringify(schema));
 
+	await sharedSchemaCache.set('schema', schema);
 	await sharedSchemaCache.set('hash', schemaHash);
 
 	await localSchemaCache.set('schema', schema);
@@ -139,13 +140,18 @@ export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
 export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
 	const { localSchemaCache, sharedSchemaCache } = getCache();
 
-	const sharedSchemaHash = await sharedSchemaCache.get('hash');
+	const [localSchemaHash, sharedSchemaHash] = await Promise.all([
+		localSchemaCache.get('hash'),
+		sharedSchemaCache.get('hash'),
+	])
+
 	if (!sharedSchemaHash) return;
 
-	const localSchemaHash = await localSchemaCache.get('hash');
-	if (!localSchemaHash || localSchemaHash !== sharedSchemaHash) return;
+	if (localSchemaHash && sharedSchemaHash && localSchemaHash === sharedSchemaHash) {
+		return await localSchemaCache.get('schema');
+	}
 
-	return await localSchemaCache.get('schema');
+	return await sharedSchemaCache.get('schema');
 }
 
 export async function setCacheValue(

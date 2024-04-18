@@ -33,17 +33,18 @@ export async function getSchema(
 ): Promise<SchemaOverview> {
 	const MAX_ATTEMPTS = 3;
 
-	const env = useEnv();
-
 	if (attempt >= MAX_ATTEMPTS) {
-		throw new Error(`Failed to get Schema information: hit infinite loop`);
+		throw new Error(`Failed to get Schema information after ${MAX_ATTEMPTS} attempts`);
 	}
 
-	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
-		const database = options?.database || getDatabase();
-		const schemaInspector = createInspector(database);
+	const env = useEnv();
+	const lock = useLock();
+	const bus = useBus();
+	const lockKey = 'schemaCache--preparing';
+	const messageKey = 'schemaCache--done';
 
-		return await getDatabaseSchema(database, schemaInspector);
+	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
+		return await fetchAndCacheSchema();
 	}
 
 	const cached = await getSchemaCache();
@@ -52,57 +53,71 @@ export async function getSchema(
 		return cached;
 	}
 
-	const lock = useLock();
-	const bus = useBus();
+	return await handleSchemaCaching();
 
-	const lockKey = 'schemaCache--preparing';
-	const messageKey = 'schemaCache--done';
-	const processId = await lock.increment(lockKey);
+	async function fetchAndCacheSchema(): Promise<SchemaOverview> {
+		const database = options?.database || getDatabase();
+		const schemaInspector = createInspector(database);
+		const schema = await getDatabaseSchema(database, schemaInspector);
+		await setSchemaCache(schema);
 
-	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
 		await lock.delete(lockKey);
+		bus.publish(messageKey, { ready: true });
+
+		return schema;
 	}
 
-	const currentProcessShouldHandleOperation = processId === 1;
+	async function handleSchemaCaching(): Promise<SchemaOverview> {
+		const processId = await lock.increment(lockKey);
 
-	if (currentProcessShouldHandleOperation === false) {
-		logger.trace('Schema cache is prepared in another process, waiting for result.');
+		if (processId < 1) {
+			await lock.set(lockKey, 1);
+		}
 
+		if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
+			await lock.delete(lockKey);
+			throw new Error('Maximum iterations reached for schema caching.');
+		}
+
+		if (processId > 1) {
+			// Wait for schema cache
+
+			try {
+				const schema = await waitForSchemaCache();
+				// Got schema from someone else
+				await lock.increment(lockKey, -1);
+				return schema;
+			} catch (error) {
+				logger.warn(error);
+				// Since we couldn't get schema from others, let's fetch it ourselves
+			}
+		}
+
+		return await fetchAndCacheSchema();
+	}
+
+	async function waitForSchemaCache(): Promise<SchemaOverview> {
+		const TIMEOUT = 5000;
 		return new Promise((resolve, reject) => {
-			const TIMEOUT = 10000;
-
-			const timeout: NodeJS.Timeout = setTimeout(() => {
-				logger.trace('Did not receive schema callback message in time. Pulling schema...');
-				callback().catch(reject);
-			}, TIMEOUT);
+			const timeout = setTimeout(() => {
+				// Timeout reached. Pulling schema directly.
+				callback();
+			}, Math.random() * TIMEOUT + 2000);
 
 			bus.subscribe(messageKey, callback);
 
-			async function callback() {
-				try {
-					if (timeout) clearTimeout(timeout);
+			async function callback(): Promise<void> {
+				clearTimeout(timeout);
+				bus.unsubscribe(messageKey, callback);
 
+				try {
 					const schema = await getSchema(options, attempt + 1);
 					resolve(schema);
 				} catch (error) {
 					reject(error);
-				} finally {
-					bus.unsubscribe(messageKey, callback);
 				}
 			}
 		});
-	}
-
-	try {
-		const database = options?.database || getDatabase();
-		const schemaInspector = createInspector(database);
-
-		const schema = await getDatabaseSchema(database, schemaInspector);
-		await setSchemaCache(schema);
-		return schema;
-	} finally {
-		await lock.delete(lockKey);
-		bus.publish(messageKey, { ready: true });
 	}
 }
 
