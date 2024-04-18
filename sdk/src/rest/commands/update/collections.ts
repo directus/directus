@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateCollectionOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusCollection<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateCollectionOutput<
  * @throws Will throw if collection is empty
  */
 export const updateCollection =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
 		collection: DirectusCollection<Schema>['collection'],
 		item: NestedPartial<DirectusCollection<Schema>>,
 		query?: TQuery,

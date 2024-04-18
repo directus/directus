@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateNotificationOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusNotification<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateNotificationOutput<
  * @throws Will throw if keys is empty
  */
 export const updateNotifications =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		keys: DirectusNotification<Schema>['id'][],
 		item: Partial<DirectusNotification<Schema>>,
 		query?: TQuery,
@@ -43,7 +43,7 @@ export const updateNotifications =
  * @throws Will throw if key is empty
  */
 export const updateNotification =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		key: DirectusNotification<Schema>['id'],
 		item: Partial<DirectusNotification<Schema>>,
 		query?: TQuery,
