@@ -143,7 +143,7 @@ export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
 	const [localSchemaHash, sharedSchemaHash] = await Promise.all([
 		localSchemaCache.get('hash'),
 		sharedSchemaCache.get('hash'),
-	])
+	]);
 
 	if (!sharedSchemaHash) return;
 

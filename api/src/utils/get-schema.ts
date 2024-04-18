@@ -99,10 +99,14 @@ export async function getSchema(
 	async function waitForSchemaCache(): Promise<SchemaOverview> {
 		const TIMEOUT = 5000;
 		return new Promise((resolve, reject) => {
-			const timeout = setTimeout(() => {
-				// Timeout reached. Pulling schema directly.
-				callback();
-			}, Math.random() * TIMEOUT + 2000);
+			const timeout = setTimeout(
+				() => {
+					// Timeout reached. Pulling schema directly.
+					callback();
+				},
+				// Offput subsequent calls on the same container
+				Math.random() * TIMEOUT + 2000,
+			);
 
 			bus.subscribe(messageKey, callback);
 
