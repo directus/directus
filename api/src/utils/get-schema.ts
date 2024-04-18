@@ -59,30 +59,37 @@ export async function getSchema(
 	const messageKey = 'schemaCache--done';
 	const processId = await lock.increment(lockKey);
 
+	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
+		await lock.delete(lockKey);
+	}
+
 	const currentProcessShouldHandleOperation = processId === 1;
 
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const TIMEOUT = 10000;
 
-			let timeout: NodeJS.Timeout;
-
-			const callback = async () => {
-				if (timeout) clearTimeout(timeout);
-
-				const schema = await getSchema(options, attempt + 1);
-				resolve(schema);
-				bus.unsubscribe(messageKey, callback);
-			};
+			const timeout: NodeJS.Timeout = setTimeout(() => {
+				logger.trace('Did not receive schema callback message in time. Pulling schema...');
+				callback().catch(reject);
+			}, TIMEOUT);
 
 			bus.subscribe(messageKey, callback);
 
-			timeout = setTimeout(async () => {
-				logger.trace('Did not receive schema callback message in time. Pulling schema...');
-				callback();
-			}, TIMEOUT);
+			async function callback() {
+				try {
+					if (timeout) clearTimeout(timeout);
+
+					const schema = await getSchema(options, attempt + 1);
+					resolve(schema);
+				} catch (error) {
+					reject(error);
+				} finally {
+					bus.unsubscribe(messageKey, callback);
+				}
+			}
 		});
 	}
 
