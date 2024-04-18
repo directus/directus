@@ -56,7 +56,7 @@ export default defineDisplay({
 
 		const fieldsStore = useFieldsStore();
 
-		const fieldKeys = getFieldsFromTemplate(options.template);
+		const fieldKeys = getFieldsFromTemplate(options.template ?? null);
 
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
@@ -93,7 +93,7 @@ export default defineDisplay({
 			set(stringValues, key, stringValue);
 		}
 
-		return renderPlainStringTemplate(options.template, stringValues);
+		return renderPlainStringTemplate(options.template ?? null, stringValues);
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
