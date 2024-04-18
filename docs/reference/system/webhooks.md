@@ -11,7 +11,8 @@ pageClass: page-reference
 
 ::: warning
 
-Webhooks are deprecated since v10.10.5. Please use [Flows](/reference/system/flows.html#flows) instead.
+Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
+Flows.
 
 :::
 
