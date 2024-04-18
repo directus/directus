@@ -219,8 +219,9 @@ const downloadName = computed(() => {
 	const junctionField = relationInfo.value.junctionField.field;
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]))?.directus_files_id
-		?.filename_download;
+	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]) === relatedPrimaryKey.value)?.[
+		junctionField
+	]?.filename_download;
 });
 
 const downloadUrl = computed(() => {
@@ -236,6 +237,13 @@ function getFilename(junctionRow: Record<string, any>) {
 	if (!key) return null;
 
 	return key;
+}
+
+function getDownloadName(junctionRow: Record<string, any>) {
+	const junctionField = relationInfo.value?.junctionField.field;
+	if (!junctionField) return;
+
+	return junctionRow[junctionField]?.filename_download;
 }
 
 const customFilter = computed(() => {
@@ -335,7 +343,7 @@ const allowDrag = computed(
 								</v-list-item>
 								<v-list-item
 									clickable
-									:download="element.directus_files_id.filename_download"
+									:download="getDownloadName(element)"
 									:href="getAssetUrl(getFilename(element), true)"
 								>
 									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
