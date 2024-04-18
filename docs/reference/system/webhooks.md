@@ -12,7 +12,7 @@ pageClass: page-reference
 ::: warning
 
 Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
-Flows.
+[Flows](/app/flows).
 
 :::
 
