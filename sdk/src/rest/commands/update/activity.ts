@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateActivityOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusActivity<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateActivityOutput<
  * @throws Will throw if key is empty
  */
 export const updateComment =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		key: DirectusActivity<Schema>['id'],
 		item: Partial<DirectusActivity<Schema>>,
 		query?: TQuery,

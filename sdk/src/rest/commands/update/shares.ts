@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateShareOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusShare<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateShareOutput<
  * @throws Will throw if keys is empty
  */
 export const updateShares =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		keys: DirectusShare<Schema>['id'][],
 		item: Partial<DirectusShare<Schema>>,
 		query?: TQuery,
@@ -43,7 +43,7 @@ export const updateShares =
  * @throws Will throw if key is empty
  */
 export const updateShare =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
 		item: Partial<DirectusShare<Schema>>,
 		query?: TQuery,

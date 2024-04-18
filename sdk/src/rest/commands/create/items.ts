@@ -3,7 +3,7 @@ import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../
 import type { RestCommand } from '../../types.js';
 
 export type CreateItemOutput<
-	Schema extends object,
+	Schema,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]>,
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type CreateItemOutput<
  * @returns Returns the item objects of the item that were created.
  */
 export const createItems =
-	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		items: Partial<UnpackList<Schema[Collection]>>[],
 		query?: TQuery,
@@ -48,7 +48,7 @@ export const createItems =
  * @returns Returns the item objects of the item that were created.
  */
 export const createItem =
-	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		item: Partial<UnpackList<Schema[Collection]>>,
 		query?: TQuery,

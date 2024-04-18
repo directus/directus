@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Empty body.
  */
 export const passwordReset =
-	<Schema extends object>(token: string, password: string): RestCommand<void, Schema> =>
+	<Schema>(token: string, password: string): RestCommand<void, Schema> =>
 	() => ({
 		path: '/auth/password/reset',
 		method: 'POST',

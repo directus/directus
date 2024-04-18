@@ -3,11 +3,7 @@ import type { ApplyQueryFields } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadFieldOutput<Schema extends object, Item extends object = DirectusField<Schema>> = ApplyQueryFields<
-	Schema,
-	Item,
-	'*'
->;
+export type ReadFieldOutput<Schema, Item extends object = DirectusField<Schema>> = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
  * List the available fields.
@@ -15,7 +11,7 @@ export type ReadFieldOutput<Schema extends object, Item extends object = Directu
  * @returns An array of field objects.
  */
 export const readFields =
-	<Schema extends object>(): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
+	<Schema>(): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
 	() => ({
 		path: `/fields`,
 		method: 'GET',
@@ -28,9 +24,7 @@ export const readFields =
  * @throws Will throw if collection is empty
  */
 export const readFieldsByCollection =
-	<Schema extends object>(
-		collection: DirectusField<Schema>['collection'],
-	): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
+	<Schema>(collection: DirectusField<Schema>['collection']): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');
 
@@ -49,7 +43,7 @@ export const readFieldsByCollection =
  * @throws Will throw if field is empty
  */
 export const readField =
-	<Schema extends object>(
+	<Schema>(
 		collection: DirectusField<Schema>['collection'],
 		field: DirectusField<Schema>['field'],
 	): RestCommand<ReadFieldOutput<Schema>, Schema> =>
