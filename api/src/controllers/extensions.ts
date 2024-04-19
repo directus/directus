@@ -49,8 +49,7 @@ router.get(
 			throw new ForbiddenError();
 		}
 
-		const { search, limit, offset, type, sort } = req.query;
-		const { filter } = req.sanitizedQuery as { filter?: { by?: FieldFilterOperator } };
+		const { search, limit, offset, sort, filter } = req.sanitizedQuery;
 
 		const query: ListQuery = {};
 
