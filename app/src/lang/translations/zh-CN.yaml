@@ -557,7 +557,6 @@ replace_from_url: 从 URL 中替换文件
 no_image_selected: 未选择图像
 no_file_selected: 未选择文件
 download_file: 下载文件
-open_file_in_tab: 在新标签页中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
 exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
