@@ -298,7 +298,7 @@ const allowDrag = computed(
 			/>
 		</template>
 
-		<v-list v-else>
+		<v-list v-else class="files">
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
@@ -416,7 +416,7 @@ const allowDrag = computed(
 </template>
 
 <style lang="scss" scoped>
-.v-list {
+.v-list.files {
 	--v-list-padding: 0 0 4px;
 
 	.v-list-item.deleted {

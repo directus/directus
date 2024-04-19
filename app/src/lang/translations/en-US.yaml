@@ -571,7 +571,7 @@ replace_from_url: Replace File from URL
 no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
-open_file_in_tab: Open file in new tab
+open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
