@@ -10,9 +10,9 @@ import {
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
-import type { FieldFilterOperator } from '@directus/types';
 import { isIn } from '@directus/utils';
 import express from 'express';
+import { get, isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
@@ -53,32 +53,37 @@ router.get(
 
 		const query: ListQuery = {};
 
-		if (typeof search === 'string') {
+		if (!isNil(search)) {
 			query.search = search;
 		}
 
-		if (typeof limit === 'string') {
-			query.limit = Number(limit);
+		if (!isNil(limit)) {
+			query.limit = limit;
 		}
 
-		if (typeof offset === 'string') {
-			query.offset = Number(offset);
+		if (!isNil(offset)) {
+			query.offset = offset;
 		}
 
-		if (filter?.by) {
-			query.by = filter.by._eq as string;
-		}
+		if (filter) {
+			const by = get(filter, 'by._eq');
+			const type = get(filter, 'type._eq');
 
-		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent', 'downloads'] as const)) {
-			query.sort = sort;
-		}
-
-		if (typeof type === 'string') {
-			if (isIn(type, EXTENSION_TYPES) === false) {
-				throw new ForbiddenError();
+			if (typeof by === 'string') {
+				query.by = by;
 			}
 
-			query.type = type;
+			if (typeof type === 'string') {
+				if (isIn(type, EXTENSION_TYPES) === false) {
+					throw new ForbiddenError();
+				}
+
+				query.type = type;
+			}
+		}
+
+		if (!isNil(sort) && sort[0] && isIn(sort[0], ['popular', 'recent', 'downloads'] as const)) {
+			query.sort = sort[0];
 		}
 
 		if (env['MARKETPLACE_TRUST'] === 'sandbox') {
