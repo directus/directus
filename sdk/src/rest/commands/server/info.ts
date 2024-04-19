@@ -46,7 +46,7 @@ export type ServerInfoOutput = {
  * @returns Information about the current installation.
  */
 export const serverInfo =
-	<Schema extends object>(): RestCommand<ServerInfoOutput, Schema> =>
+	<Schema>(): RestCommand<ServerInfoOutput, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/server/info',

@@ -11,7 +11,7 @@ import { throwIfEmpty } from '../../utils/index.js';
  * @returns Returns the extension that was updated
  */
 export const updateExtension =
-	<Schema extends object>(
+	<Schema>(
 		bundle: string | null,
 		name: string,
 		data: NestedPartial<DirectusExtension<Schema>>,
