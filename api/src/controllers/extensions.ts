@@ -3,16 +3,17 @@ import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '
 import { EXTENSION_TYPES } from '@directus/extensions';
 import {
 	account,
-	type AccountOptions,
 	describe,
-	type DescribeOptions,
 	list,
+	type AccountOptions,
+	type DescribeOptions,
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
+import type { FieldFilter } from '@directus/types';
 import { isIn } from '@directus/utils';
 import express from 'express';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
@@ -66,14 +67,20 @@ router.get(
 		}
 
 		if (filter) {
-			const by = get(filter, 'by._eq');
-			const type = get(filter, 'type._eq');
+			const getFilterValue = (key: string) => {
+				const field = (filter as FieldFilter)[key];
+				if (!field || !('_eq' in field) || typeof field._eq !== 'string') return;
+				return field._eq;
+			};
 
-			if (typeof by === 'string') {
+			const by = getFilterValue('by');
+			const type = getFilterValue('type');
+
+			if (by) {
 				query.by = by;
 			}
 
-			if (typeof type === 'string') {
+			if (type) {
 				if (isIn(type, EXTENSION_TYPES) === false) {
 					throw new ForbiddenError();
 				}
