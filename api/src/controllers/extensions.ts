@@ -1,15 +1,16 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import {
 	account,
-	describe,
-	list,
 	type AccountOptions,
+	describe,
 	type DescribeOptions,
+	list,
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
+import type { FieldFilterOperator } from '@directus/types';
 import { isIn } from '@directus/utils';
 import express from 'express';
 import { UUID_REGEX } from '../constants.js';
@@ -49,6 +50,7 @@ router.get(
 		}
 
 		const { search, limit, offset, type, by, sort } = req.query;
+		const { filter } = req.sanitizedQuery as { filter?: { by?: FieldFilterOperator } };
 
 		const query: ListQuery = {};
 
@@ -64,8 +66,8 @@ router.get(
 			query.offset = Number(offset);
 		}
 
-		if (typeof by === 'string') {
-			query.by = by;
+		if (filter?.by) {
+			query.by = filter.by._eq as string;
 		}
 
 		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent', 'downloads'] as const)) {
