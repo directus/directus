@@ -556,7 +556,6 @@ replace_from_url: Remplacer le fichier à partir d'une URL
 no_image_selected: Aucune image sélectionnée
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
-open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
 start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
