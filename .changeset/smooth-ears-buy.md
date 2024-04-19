@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Fixed a caching issue which could lead to wrong extensions being listed under an account inside Marketplace
+Fixed a caching issue which could lead to wrong extensions being listed under Marketplace when filtering by type / account
