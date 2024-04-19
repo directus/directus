@@ -70,11 +70,9 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loading.value = true;
 
 		try {
-			// TODO fix #20633
 			const response = await sdk.request<Activity[]>(
 				readActivities({
 					filter: {
-						// @ts-ignore
 						_and: [
 							{ collection: { _eq: collection.value } },
 							{ item: { _eq: primaryKey.value } },
@@ -155,11 +153,9 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loadingCount.value = true;
 
 		try {
-			// TODO fix #20633
 			const response = await sdk.request(
 				readActivities({
 					filter: {
-						// @ts-ignore
 						_and: [
 							{
 								collection: {

@@ -139,8 +139,6 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 			shares.value = await sdk.request<Share[]>(
 				readShares({
 					filter: {
-						// TODO fix #20633
-						// @ts-ignore
 						_and: [
 							{
 								collection: {
@@ -172,8 +170,6 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 			const response = await sdk.request(
 				readShares({
 					filter: {
-						// TODO fix #20633
-						// @ts-ignore
 						_and: [
 							{
 								collection: {
