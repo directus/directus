@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed live preview accessed through bookmarked collections
+Fixed an endless refresh loop in the live preview of an item accessed through a bookmarked view
