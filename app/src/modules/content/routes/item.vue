@@ -258,7 +258,7 @@ watch(
 		}
 
 		const targetUrl = new URL(window.location.href);
-		targetUrl.pathname += '/preview';
+		targetUrl.pathname += targetUrl.pathname.endsWith('/') ? 'preview' : '/preview';
 
 		popupWindow = window.open(
 			targetUrl,
