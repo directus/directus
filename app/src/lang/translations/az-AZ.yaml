@@ -82,6 +82,7 @@ extension_bundles: Paketlər
 extension_missing: Tapılmadı
 extension_reload_required: Səhifənin yenilənməsi tələb olunur
 extension_reload_required_copy: Əlavənin statusu dəyişdikdən sonra dəyişiklərin əks olunması üçün səhifənin yenilənməsi tələb olunur.
+extension_reload_now: İndi yenilə
 published_relative: '{relativeTime} dərc olundu'
 compatible_with_your_project: Proyektinizə uyğundur
 compatible_with_your_project_copy: Müəllif bu əlavənin uyğunluq versiyasını {hostVersion} təyin etmişdir. Hansı ki sizin proyekt versiyanıza ({currentVersion}) uyğundur
@@ -119,6 +120,47 @@ show_archived_items: Arxivlənmiş obyektləri göstər
 show_all_items: Bütün obyektləri göstər
 edited: Dəyərə düzəliş edildi
 required: Tələb olunur
+required_for_app_access: Tətbiq girişi üçün məcbur
+requires_value: Dəyər daxil olunmalıdır
+create_preset: Şablon yarat
+create_panel: Panel yarat
+create_role: Rol yarat
+create_user: İstifadəçi yarat
+message: Mesaj
+delete_panel: Panel sil
+create_webhook: Webhook yarat
+create_custom_translation: Tərcümə yarat
+edit_custom_translation: Tərcüməni tənzimlə
+no_custom_translations: Tərcümə olmasın
+no_custom_translations_copy: Tərcümə hələ yoxdur.
+invite_users: İstifadəçi dəvət et
+invite: Dəvət et
+email_already_invited: '{email} artıq dəvət olunub'
+subject: Mövzü
+inbox: Gələn qutusu
+emails: Emaillər
+connection_excellent: Əlaqə əladır
+connection_good: Əlaqə yaxşıdır
+connection_fair: Əlaqə ortadır
+connection_poor: Əlaqə zəifdir
+primary: Əsas
+rename_folder: Qovluğu yenidən adlandır
+delete_folder: Qovluğu sil
+prefix: Prefiks
+suffix: Son şəkilçi
+keep: Saxla
+version: Versiya
+version_key: Versiya açarı
+version_name: Versiya adı
+main_version: Əsas
+switch_version: Versiyanı dəyiş
+switch_version_copy: Versiyanı {version} nömrəli versiyaya dəyişmək istədiyinizdən əminmisiniz? Yadda saxlanılmamış dəyişikliklər itəcək.
+create_version: Versiya yarat
+rename_version: Versiyanın adını dəyiş
+compare_version: Versiyaları müqayisə et
+save_version: Versiyanı yadda saxla
+promote_version: Versiyanı promote et
+promote_version_disabled: Dəyişiklik yoxdur
 source_registry: Marketplace
 fields:
   directus_settings:
@@ -127,3 +169,18 @@ fields:
     translation: Sütun adlarının tərcüməsi
   directus_roles:
     name: Rol adı
+interfaces:
+  presentation-links:
+    primary: Əsas
+displays:
+  datetime:
+    suffix: Son şəkilçi
+  formatted-value:
+    prefix: Prefiks
+    suffix: Son şəkilçi
+operations:
+  log:
+    message: Mesaj
+  notification:
+    message: Mesaj
+    subject: Mövzü
