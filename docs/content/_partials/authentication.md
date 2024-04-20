@@ -15,5 +15,10 @@ Requests can be authenticated in the following ways:
 
 	::tab{label="Query Parameter"}
 	Append the following query parameter: `?access_token=<token>`
+
+		::callout{type="info" title="Exercise caution when using query parameters for authentication"}
+		Using a query parameter for authentication can lead to it being revealed or logged. If possible, use another method.
+		::
+
 	::
 ::

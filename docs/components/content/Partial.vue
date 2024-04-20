@@ -1,16 +1,22 @@
 <script setup>
 defineProps({
     content: {
-		type: Object,
+		type: String,
         required: true
     }
 });
 </script>
 
 <template>
-    <div>
+    <div class="prose">
         <ContentQuery v-slot="{ data }" :path="`/_partials/${content}`" find="one">
             <ContentRenderer :value="data" />
         </ContentQuery>
     </div>
 </template>
+
+<style scoped>
+.prose {
+	margin-bottom: 1rem;
+}
+</style>

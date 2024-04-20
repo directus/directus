@@ -41,4 +41,24 @@ export default [
 		path: '/getting-started/directus-academy/extending-directus',
 		highlight: '/getting-started/directus-academy'
 	},
+	{
+		path: '/auth/sso/openid',
+		highlight: '/auth/sso'
+	},
+	{
+		path: '/auth/sso/oauth2',
+		highlight: '/auth/sso'
+	},
+	{
+		path: '/auth/sso/ldap',
+		highlight: '/auth/sso'
+	},
+	{
+		path: '/auth/sso/saml',
+		highlight: '/auth/sso'
+	},
+	{
+		path: '/auth/sso/seamless',
+		highlight: '/auth/sso'
+	},
 ]

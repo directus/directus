@@ -15,7 +15,7 @@ const renderSlots = () => {
       style: {
         display: index === activeTabIndex.value ? 'block' : 'none',
       },
-    }, (slot.children)?.default() || h('div'))
+    }, (slot.children)?.default?.() || h('div'))
   })
 }
 

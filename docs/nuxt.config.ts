@@ -12,7 +12,7 @@ export default defineNuxtConfig({
 				default: 'github-light',
 				dark: 'github-dark',
 			},
-			langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'bash', 'swift', 'python'],
+			langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'bash', 'swift', 'python', 'graphql', 'http'],
 		},
 		markdown: {
 			toc: {
