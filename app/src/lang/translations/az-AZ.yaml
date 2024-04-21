@@ -161,6 +161,46 @@ compare_version: Versiyaları müqayisə et
 save_version: Versiyanı yadda saxla
 promote_version: Versiyanı promote et
 promote_version_disabled: Dəyişiklik yoxdur
+promote_version_drawer_title: '{version} versiyasını Əsas et'
+promote_version_changes: Dəyişikliklər
+promote_version_preview: Ön baxış
+outdated_notice: >-
+  Bu versiya yaradılandan bəri əsas element yeniləndi. Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
+promote_notice: >-
+  Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
+delete_version: Versiyanı sil
+delete_version_copy: >-
+  "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
+validationError:
+  nistarts_with: Dəyər {substring} ilə başlaya bilməz
+  ends_with: Dəyər {substring} ilə bitməlidir
+  iends_with: Dəyər {substring} ilə bitməlidir
+  nends_with: Dəyər {substring} ilə bitə bilməz
+  niends_with: Dəyər {substring} ilə bitə bilməz
+all_access: Bütün Giriş
+no_access: Giriş yoxdur
+use_custom: Özəl halı istifadə et
+nullable: Null edilə bilən
+allow_null_value: NULL dəyərinə icazə verin
+allow_multiple: Çoxluğa icazə verin
+allow_multiple_to_be_open: Çoxluğun açılmasına icazə verin
+enter_value_to_replace_nulls: Lütfən, bu sahədə hazırda NULL-ləri əvəz etmək üçün yeni dəyər daxil edin.
+field_standard: Standart
+field_presentation: Təqdimat və Ləqəblər
+field_file: Tək Fayl
+field_files: Çoxlu Fayllar
+field_m2o: Many to One Əlaqə
+field_m2a: Many to All Əlaqə
+field_o2m: One to Many Əlaqə
+field_m2m: Many to Many Əlaqə
+field_translations: Tərcümələr
+field_group: Xana qrupu
+item_permissions: Element İcazələri
+field_permissions: Xanal İcazələri
+field_validation: Xana doğrulaması
+field_presets: Xana ayarları
+permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
+fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
 source_registry: Marketplace
 fields:
   directus_settings:
@@ -184,3 +224,4 @@ operations:
   notification:
     message: Mesaj
     subject: Mövzü
+standard: Standart
