@@ -113,6 +113,7 @@ branch: Branch
 leaf: Yarpaq
 indeterminate: Qeyri-müəyyən
 edit_collection: Kolleksiyaya düzəliş et
+exclusive: Ciddi
 children: Uşaqlar
 db_only_click_to_configure: 'Yalnız verilənlər bazasında: Düzəliş etmək üçün klik edin'
 show_active_items: Aktiv obyektləri göstər
@@ -171,6 +172,9 @@ promote_notice: >-
 delete_version: Versiyanı sil
 delete_version_copy: >-
   "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
+delete_bookmark_copy: >-
+  "{bookmark}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
+delete_personal_bookmark: Şəxsi əlfəcini sil
 validationError:
   nistarts_with: Dəyər {substring} ilə başlaya bilməz
   ends_with: Dəyər {substring} ilə bitməlidir
