@@ -13,3 +13,7 @@ export interface GraphqlConfig {
 export type GqlResult<Schema, Collection extends keyof Schema> = {
 	[Key in Collection]: Schema[Collection][];
 };
+
+export type SingletonGqlResult<Schema, Collection extends keyof Schema> = {
+	[Key in Collection]: Schema[Collection];
+};
