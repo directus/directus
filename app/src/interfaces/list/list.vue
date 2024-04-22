@@ -244,8 +244,8 @@ function closeDrawer() {
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-            <v-icon v-if="!disabled" name="content_copy" @click.stop="duplicateItem(element)" />
-            <v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+						<v-icon v-if="!disabled" name="content_copy" @click.stop="duplicateItem(element)" />
+						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
           </v-list-item>
 				</template>
 			</draggable>
