@@ -213,7 +213,7 @@ function emitValue() {
 	}
 
 	.icon-filter {
-		margin: 0 8px 0 0;
+		margin-right: 8px;
 	}
 
 	&:hover {
