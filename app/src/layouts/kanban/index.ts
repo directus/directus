@@ -127,20 +127,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			groupTitleFields,
 			groupsCollection,
 			changeGroupSort,
+			getGroups,
 			addGroup,
 			editGroup,
 			deleteGroup,
 			isRelational,
 		} = useGrouping();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields,
-			filter,
-			search,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
+			collection,
+			{
+				sort,
+				limit,
+				page,
+				fields,
+				filter,
+				search,
+			},
+		);
 
 		const limitWarning = computed(() => items.value.length >= limit.value);
 
@@ -250,6 +254,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			showUngrouped,
 			limitWarning,
 			userFieldType,
+			resetPresetAndRefresh,
+			refresh,
 		};
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
@@ -304,6 +310,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}` + fit;
 			return url;
+		}
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
+
+		function refresh() {
+			getItems();
+			if (isRelational.value) getGroups();
 		}
 
 		function useLayoutOptions() {
@@ -450,6 +466,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				groupsPrimaryKeyField,
 				groupsSortField,
 				groupsCollection,
+				getGroups,
 				addGroup,
 				editGroup,
 				deleteGroup,
