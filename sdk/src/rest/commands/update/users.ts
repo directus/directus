@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { DirectusUser } from '../../../schema/user.js';
 
 export type UpdateUserOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusUser<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -20,7 +20,7 @@ export type UpdateUserOutput<
  * @throws Will throw if keys is empty
  */
 export const updateUsers =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		keys: DirectusUser<Schema>['id'][],
 		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery,
@@ -47,7 +47,7 @@ export const updateUsers =
  * @throws Will throw if key is empty
  */
 export const updateUser =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		key: DirectusUser<Schema>['id'],
 		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery,
@@ -72,7 +72,7 @@ export const updateUser =
  * @returns Returns the updated user object for the authenticated user.
  */
 export const updateMe =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>

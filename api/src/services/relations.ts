@@ -14,6 +14,7 @@ import emitter from '../emitter.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService, type QueryOptions } from './items.js';
 import { PermissionsService } from './permissions/index.js';
 
@@ -191,7 +192,7 @@ export class RelationsService {
 				one_collection: relation.related_collection || null,
 			};
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
 					await trx.schema.alterTable(relation.collection!, async (table) => {
 						this.alterType(table, relation, fieldSchema.nullable);
@@ -290,7 +291,7 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (existingRelation.related_collection) {
 					await trx.schema.alterTable(collection, async (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
@@ -404,7 +405,7 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const existingConstraints = await this.schemaInspector.foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 

@@ -2,7 +2,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { systemCollectionRows } from '@directus/system-data';
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { flushCaches, getCache } from '../cache.js';
+import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import type { AbstractServiceOptions } from '../types/index.js';
@@ -148,11 +148,17 @@ export class UtilsService {
 		);
 	}
 
-	async clearCache(): Promise<void> {
+	async clearCache({ system }: { system: boolean }): Promise<void> {
 		if (this.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
 
-		return flushCaches(true);
+		const { cache } = getCache();
+
+		if (system) {
+			await clearSystemCache({ forced: true });
+		}
+
+		return cache?.clear();
 	}
 }

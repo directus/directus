@@ -476,12 +476,15 @@ const result = await client.request(
 
 ## Clear the Internal Cache
 
-Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
+Resets the data cache of Directus. Optionally, can also clear system cache. This endpoint is only available to admin
+users.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /utils/cache/clear`
+
+`POST /utils/cache/clear?system`
 
 </template>
 <template #graphql>
