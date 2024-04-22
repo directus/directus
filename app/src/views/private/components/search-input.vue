@@ -58,10 +58,8 @@ watch(
 	{ immediate: true },
 );
 
-watch(active, (newActive: boolean) => {
-	if (newActive === true && input.value !== null) {
-		input.value.focus();
-	}
+watch([active, input], ([newActive, newInput]) => {
+	if (newActive) newInput?.focus();
 });
 
 const activeFilterCount = computed(() => {
