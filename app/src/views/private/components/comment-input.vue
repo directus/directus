@@ -116,10 +116,13 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 
 	try {
 		const result = await sdk.request<SearchUser[]>(
-			withOptions(readUsers({
-				filter: name === '' || !name ? undefined : filter,
-				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
-			}), { signal: abortController.signal })
+			withOptions(
+				readUsers({
+					filter: name === '' || !name ? undefined : filter,
+					fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
+				}),
+				{ signal: abortController.signal },
+			),
 		);
 
 		const newUsers = cloneDeep(userPreviews.value);
