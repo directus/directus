@@ -1,7 +1,7 @@
 import type { MappedFieldNames } from './functions.js';
 import type { FieldOutputMap } from './output.js';
 import type { RelationalFields } from './schema.js';
-import type { IfNever, IsDateTime, IsNumber, IsString, MergeOptional, UnpackList } from './utils.js';
+import type { IfNever, IsDateTime, IsNumber, IsString, Merge, UnpackList } from './utils.js';
 
 /**
  * Filters
@@ -12,7 +12,7 @@ export type QueryFilter<Schema, Item> = WrapLogicalFilters<NestedQueryFilter<Sch
  * Query filters without logical filters
  */
 export type NestedQueryFilter<Schema, Item> = UnpackList<Item> extends infer FlatItem
-	? MergeOptional<
+	? Partial<Merge<
 			{
 				[Field in keyof FlatItem]?: NestedRelationalFilter<Schema, FlatItem, Field>;
 			},
@@ -25,7 +25,7 @@ export type NestedQueryFilter<Schema, Item> = UnpackList<Item> extends infer Fla
 							: never;
 				  }
 				: never
-	  >
+	  >>
 	: never;
 
 /**
@@ -99,9 +99,9 @@ export type WrapRelationalFilters<Filters> =
  */
 export type LogicalFilterOperators = '_or' | '_and';
 
-export type WrapLogicalFilters<Filters extends object> = MergeOptional<
-	{
+export type WrapLogicalFilters<Filters extends object> =
+	| {
 		[Operator in LogicalFilterOperators]?: WrapLogicalFilters<Filters>[];
-	},
-	Filters
->;
+	}
+	| Filters
+;
