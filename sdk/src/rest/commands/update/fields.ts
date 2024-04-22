@@ -37,3 +37,29 @@ export const updateField =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Updates multiple fields in the given collection.
+ *
+ * @param collection
+ * @param items
+ * @param query
+ * @returns
+ * @throws Will throw if collection is empty
+ */
+export const updateFields =
+	<Schema, const TQuery extends Query<Schema, DirectusField<Schema>>>(
+		collection: DirectusField<Schema>['collection'],
+		items: NestedPartial<DirectusField<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(collection, 'Keys cannot be empty');
+
+		return {
+			path: `/fields/${collection}`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};

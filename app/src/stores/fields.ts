@@ -6,7 +6,7 @@ import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
+import { Field, FieldRaw, Relation } from '@directus/types';
 import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -15,7 +15,10 @@ import {
 	readFields as readFieldsCmd,
 	createField as createFieldCmd,
 	updateField as updateFieldCmd,
+	updateFields as updateFieldsCmd,
 	deleteField as deleteFieldCmd,
+	type DirectusField,
+	type NestedPartial,
 } from '@directus/sdk';
 import sdk from '@/sdk';
 
@@ -167,7 +170,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		});
 	}
 
-	async function upsertField(collection: string, field: string, values: DeepPartial<Field>) {
+	async function upsertField(collection: string, field: string, values: NestedPartial<DirectusField<any>>) {
 		const existing = getField(collection, field);
 
 		// Strip out auto-generated fields the app might've added
@@ -182,15 +185,13 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		}
 	}
 
-	async function createField(collectionKey: string, newField: DeepPartial<Field>) {
+	async function createField(collectionKey: string, newField: NestedPartial<DirectusField<any>>) {
 		const stateClone = [...fields.value];
 
 		// Save to API, and update local state again to make sure everything is in sync with the
 		// API
 		try {
-			// TODO fix type here (any was actually needed here weird!)
-			const fixedType = newField as any;
-			const result = await sdk.request<FieldRaw>(createFieldCmd(collectionKey, fixedType));
+			const result = await sdk.request<FieldRaw>(createFieldCmd(collectionKey, newField));
 
 			const createdField = parseField(result);
 
@@ -202,9 +203,11 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 			fields.value = stateClone;
 			unexpectedError(error);
 		}
+
+		return;
 	}
 
-	async function updateField(collectionKey: string, fieldKey: string, updates: DeepPartial<Field>) {
+	async function updateField(collectionKey: string, fieldKey: string, updates: NestedPartial<DirectusField<any>>) {
 		const stateClone = [...fields.value];
 
 		// Update locally first, so the changes are visible immediately
@@ -219,9 +222,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		// Save to API, and update local state again to make sure everything is in sync with the
 		// API
 		try {
-			// TODO fix the type
-			const fixedType = updates as Parameters<typeof updateFieldCmd>[2];
-			const response = await sdk.request<FieldRaw>(updateFieldCmd(collectionKey, fieldKey, fixedType));
+			const response = await sdk.request<FieldRaw>(updateFieldCmd(collectionKey, fieldKey, updates));
 
 			fields.value = fields.value.map((field) => {
 				if (field.collection === collectionKey && field.field === fieldKey) {
@@ -237,7 +238,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		}
 	}
 
-	async function updateFields(collectionKey: string, updates: DeepPartial<Field>[]) {
+	async function updateFields(collectionKey: string, updates: NestedPartial<DirectusField<any>>[]) {
 		const updateID = nanoid();
 		const stateClone = [...fields.value];
 
@@ -259,13 +260,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		try {
 			// Save to API, and update local state again to make sure everything is in sync with the
 			// API
-
-			// TODO make actual command for this
-			const response = await sdk.request<FieldRaw[]>(() => ({
-				path: `/fields/${collectionKey}`,
-				method: 'PATCH',
-				body: JSON.stringify(updates),
-			}));
+			const response = await sdk.request<FieldRaw[]>(updateFieldsCmd(collectionKey, updates));
 
 			if (currentUpdate === updateID) {
 				fields.value = fields.value.map((field) => {
