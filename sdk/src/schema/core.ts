@@ -19,7 +19,7 @@ import type { DirectusUser } from './user.js';
 import type { DirectusVersion } from './version.js';
 import type { DirectusWebhook } from './webhook.js';
 
-export interface CoreSchema<Schema = object> {
+export interface CoreSchema<Schema = any> {
 	directus_activity: DirectusActivity<Schema>[];
 	directus_collections: DirectusCollection<Schema>[];
 	directus_dashboards: DirectusDashboard<Schema>[];

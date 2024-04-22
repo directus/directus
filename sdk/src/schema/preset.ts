@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusPreset<Schema> = MergeCoreCollection<
+export type DirectusPreset<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_presets',
 	{

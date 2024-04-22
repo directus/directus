@@ -1,7 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusDashboard<Schema> = MergeCoreCollection<
+export type DirectusDashboard<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_dashboards',
 	{
