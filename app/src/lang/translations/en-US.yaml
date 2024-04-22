@@ -1362,6 +1362,10 @@ fields:
     custom_aspect_ratios: Custom Aspect Ratios
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
+    public_registration: Public registrations
+    label_email_validation: Validate Email
+    # TODO add translations for the new column (labels)
+    # require_email_validation: Require Email Validation
   directus_shares:
     name: Name
     role: Role

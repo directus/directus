@@ -200,6 +200,43 @@ fields:
       placeholder: $t:unlimited
     width: half
 
+  - field: public_registration_divider
+    interface: presentation-divider
+    options:
+      icon: person_add
+      title: $t:fields.directus_settings.public_registration
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: is_public_registration_enabled
+    options:
+      label: $t:enabled
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: public_registration_role
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: require_public_registration_email_validation
+    options:
+      label: $t:fields.directus_settings.label_email_validation
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
   - field: files_divider
     interface: presentation-divider
     options:
