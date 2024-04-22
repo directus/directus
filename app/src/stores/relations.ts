@@ -49,8 +49,8 @@ export const useRelationsStore = defineStore({
 
 					this.relations = [...this.relations, createdRelationResponse];
 				}
-			} catch (error) {
-				unexpectedError(error);
+			} catch (error: any) {
+				unexpectedError(error?.errors?.[0]);
 			}
 		},
 		/**
