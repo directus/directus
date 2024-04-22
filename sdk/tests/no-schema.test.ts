@@ -23,7 +23,7 @@ describe('Test Schema Fallback', () => {
 	});
 
 	test('core collection fallback', () => {
-		type CoreCollection = MergeCoreCollection<any, 'directus_test', { test: string; }>;
+		type CoreCollection = MergeCoreCollection<any, 'directus_test', { test: string }>;
 
 		assertType<CoreCollection>({ test: 'string' });
 		// @ts-expect-error
