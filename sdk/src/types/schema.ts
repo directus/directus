@@ -59,17 +59,17 @@ export type RemoveRelationships<Schema, Item> = {
 /**
  * Merge a core collection from the schema with the builtin schema
  */
-export type MergeCoreCollection<
+export type MergeCoreCollection<Schema, Collection extends keyof Schema | string, BuiltinCollection> = IfAny<
 	Schema,
-	Collection extends keyof Schema | string,
 	BuiltinCollection,
-> = Collection extends keyof Schema
-	? UnpackList<Schema[Collection]> extends infer Item
-		? {
-				[Field in Exclude<keyof Item, keyof BuiltinCollection>]: Item[Field];
-		  } & BuiltinCollection
-		: never
-	: BuiltinCollection;
+	Collection extends keyof Schema
+		? UnpackList<Schema[Collection]> extends infer Item
+			? {
+					[Field in Exclude<keyof Item, keyof BuiltinCollection>]: Item[Field];
+			  } & BuiltinCollection
+			: never
+		: BuiltinCollection
+>;
 
 /**
  * Merge custom and core schema objects
