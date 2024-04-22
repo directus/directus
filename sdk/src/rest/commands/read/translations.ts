@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadTranslationOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusTranslation<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -15,7 +15,7 @@ export type ReadTranslationOutput<
  * @returns An array of up to limit Translation objects. If no items are available, data will be an empty array.
  */
 export const readTranslations =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -32,7 +32,7 @@ export const readTranslations =
  * @throws Will throw if key is empty
  */
 export const readTranslation =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>, Schema> =>

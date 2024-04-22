@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
@@ -87,15 +88,24 @@ const fields = computed(() => {
 	return fields;
 });
 
+const { sizes: pageSizes, selected: selectedPageSize } = usePageSize<string>(
+	computed(() => [10, 25, 50, 100, limit.value].filter((v) => v >= limit.value).sort((a, b) => a - b)),
+	(value) => String(value),
+	limit.value,
+);
+
+const limitWritable = ref(selectedPageSize);
+const pageCount = computed(() => Math.ceil(totalItemCount.value / limitWritable.value));
 const page = ref(1);
 
-watch([limit], () => {
-	page.value = 1;
+watch(limitWritable, (newLimit, oldLimit) => {
+	const offset = (page.value - 1) * oldLimit;
+	page.value = Math.floor(offset / newLimit + 1);
 });
 
 const query = computed<RelationQueryMultiple>(() => ({
 	fields: fields.value,
-	limit: limit.value,
+	limit: limitWritable.value,
 	page: page.value,
 }));
 
@@ -112,8 +122,6 @@ const {
 	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
-
-const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
@@ -223,8 +231,8 @@ function stageEdits(item: Record<string, any>) {
 
 function deleteItem(item: DisplayItem) {
 	if (
-		page.value === Math.ceil(totalItemCount.value / limit.value) &&
-		page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
+		page.value === Math.ceil(totalItemCount.value / limitWritable.value) &&
+		page.value !== Math.ceil((totalItemCount.value - 1) / limitWritable.value)
 	) {
 		page.value = Math.max(1, page.value - 1);
 	}
@@ -326,22 +334,18 @@ const createCollections = computed(() => {
 	});
 });
 
-const allowDrag = computed(
-	() =>
-		totalItemCount.value <= limit.value &&
-		relationInfo.value?.sortField !== undefined &&
-		!props.disabled &&
-		updateAllowed.value,
-);
+const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
+const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
 </script>
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
 	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ t('no_singleton_relations') }}</v-notice>
 	<div v-else class="m2a-builder">
+		<v-notice v-if="canDrag && !allowDrag">{{ t('interfaces.list-m2a.sorting_disabled') }}</v-notice>
 		<template v-if="loading">
 			<v-skeleton-loader
-				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+				v-for="n in clamp(totalItemCount - (page - 1) * limitWritable, 1, limitWritable)"
 				:key="n"
 				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
@@ -445,7 +449,19 @@ const allowDrag = computed(
 				</v-list>
 			</v-menu>
 
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+			<div v-if="pageCount > 1 || limitWritable !== limit" class="pagination">
+				<div v-if="pageSizes.length > 1" class="per-page">
+					<span>{{ t('per_page') }}</span>
+					<v-select
+						:model-value="`${limitWritable}`"
+						:items="pageSizes"
+						inline
+						@update:model-value="limitWritable = +$event"
+					/>
+				</div>
+
+				<v-pagination v-model="page" :length="pageCount" :total-visible="5" />
+			</div>
 		</div>
 
 		<drawer-collection
@@ -475,6 +491,11 @@ const allowDrag = computed(
 </template>
 
 <style lang="scss" scoped>
+.m2a-builder {
+	.v-notice {
+		margin-bottom: 8px;
+	}
+}
 .v-list {
 	--v-list-padding: 0 0 4px;
 }
@@ -506,13 +527,34 @@ const allowDrag = computed(
 	margin-top: 8px;
 	display: flex;
 	align-items: end;
+	flex-wrap: wrap;
 	gap: 8px;
 
-	.v-pagination {
+	.pagination {
 		margin-left: auto;
+		display: flex;
+		gap: 8px 16px;
 
-		::v-deep(.v-button) {
-			display: inline-flex;
+		.v-pagination {
+			::v-deep(.v-button) {
+				display: inline-flex;
+			}
+		}
+
+		.per-page {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			color: var(--theme--foreground-subdued);
+
+			span {
+				width: auto;
+				margin-right: 4px;
+			}
+
+			.v-select {
+				color: var(--theme--foreground);
+			}
 		}
 	}
 }

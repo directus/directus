@@ -10,10 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns The new access and refresh tokens for the session.
  */
 export const refresh =
-	<Schema extends object>(
-		mode: AuthenticationMode = 'cookie',
-		refresh_token?: string,
-	): RestCommand<AuthenticationData, Schema> =>
+	<Schema>(mode: AuthenticationMode = 'cookie', refresh_token?: string): RestCommand<AuthenticationData, Schema> =>
 	() => ({
 		path: '/auth/refresh',
 		method: 'POST',

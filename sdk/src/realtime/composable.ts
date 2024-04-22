@@ -18,7 +18,7 @@ import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
 import type { ConsoleInterface, WebSocketInterface } from '../index.js';
 
-type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
+type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
 const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
@@ -38,7 +38,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
  * @returns A Directus realtime client.
  */
 export function realtime(config: WebSocketConfig = {}) {
-	return <Schema extends object>(client: DirectusClient<Schema>) => {
+	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
 
