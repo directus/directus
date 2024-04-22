@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 import type { DirectusDashboard } from './dashboard.js';
 
-export type DirectusPanel<Schema extends object> = MergeCoreCollection<
+export type DirectusPanel<Schema> = MergeCoreCollection<
 	Schema,
 	'directus_panels',
 	{

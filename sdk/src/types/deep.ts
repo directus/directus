@@ -5,7 +5,7 @@ import type { UnpackList } from './utils.js';
 /**
  * Deep filter object
  */
-export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+export type QueryDeep<Schema, Item> = UnpackList<Item> extends infer FlatItem
 	? RelationalFields<Schema, FlatItem> extends never
 		? never
 		: {
@@ -24,4 +24,4 @@ export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends in
 		  }
 	: never;
 
-type ExtractCollection<Schema extends object, Item> = Extract<Item, ItemType<Schema>>;
+type ExtractCollection<Schema, Item> = Extract<Item, ItemType<Schema>>;

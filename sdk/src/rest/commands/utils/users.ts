@@ -10,7 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const inviteUser =
-	<Schema extends object>(email: string, role: string, invite_url?: string): RestCommand<void, Schema> =>
+	<Schema>(email: string, role: string, invite_url?: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/invite`,
 		method: 'POST',
@@ -30,7 +30,7 @@ export const inviteUser =
  * @returns Nothing
  */
 export const acceptUserInvite =
-	<Schema extends object>(token: string, password: string): RestCommand<void, Schema> =>
+	<Schema>(token: string, password: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/invite/accept`,
 		method: 'POST',
@@ -48,7 +48,7 @@ export const acceptUserInvite =
  * @returns A two-factor secret
  */
 export const generateTwoFactorSecret =
-	<Schema extends object>(password: string): RestCommand<{ secret: string; otpauth_url: string }, Schema> =>
+	<Schema>(password: string): RestCommand<{ secret: string; otpauth_url: string }, Schema> =>
 	() => ({
 		path: `/users/me/tfa/generate`,
 		method: 'POST',
@@ -66,7 +66,7 @@ export const generateTwoFactorSecret =
  * @returns Nothing
  */
 export const enableTwoFactor =
-	<Schema extends object>(secret: string, otp: string): RestCommand<void, Schema> =>
+	<Schema>(secret: string, otp: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/me/tfa/enable`,
 		method: 'POST',
@@ -84,7 +84,7 @@ export const enableTwoFactor =
  * @returns Nothing
  */
 export const disableTwoFactor =
-	<Schema extends object>(otp: string): RestCommand<void, Schema> =>
+	<Schema>(otp: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/me/tfa/disable`,
 		method: 'POST',
