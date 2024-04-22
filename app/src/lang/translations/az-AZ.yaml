@@ -1,0 +1,129 @@
+---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Haqqında
+identifier: İdentifikator
+avatar: Profil Şəkli
+application: Applikasiya
+default_provider: Standart
+method: Metod
+published: Dərc edilib
+draft: Qaralama
+archived: Arxiv
+marketplace: Marketplace
+extensions: Əlavələr
+modules: Modullar
+module_bar: Modul çərçivəsi
+logs: Loglar
+unknown: Naməlum
+reset_width: Eni sıfırla
+tile_size: Xana ölçüsü
+edit_field: Sütuna düzəliş et
+conditions: Şərtlər
+location: Məkan
+collection_names_are_case_sensitive: Cədvəl adları şriftin böyük və ya kiçik olmasına həssasdır
+condition_rules: Şərtlər məntiqi
+input: İnput
+maps: Xəritələr
+switch_user: İstifadəçi dəyişdir
+item_creation: Obyekt yaratmaq
+item_revision: Obyektin revisyası
+enter_a_name: Ad daxil edin...
+duplicate_field: Sütunun surətini çıxar
+half_width: Yarım en
+full_width: Tam en
+group: Qrup
+popular: Məşhur
+recent: Son istifadə edilən
+export_items: Obyektləri eksport et
+and: Və
+or: Və ya
+init: İnit
+dataset_too_large_currently_showing_n_items: Verilənlər çoxdur. Hal hazırda {n} sıra göstərilir.
+modifier: Modifikator
+extension_interface: İnterfeys
+extension_display: Görüntü
+extension_layout: Nizam
+extension_module: Modul
+extension_panel: Panel
+extension_theme: Tema
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Əməliyyat
+extension_bundle: Paket
+extension_interfaces: İnterfeyslər
+extension_displays: Görüntülər
+extension_layouts: Nizamlar
+extension_modules: Modullar
+extension_panels: Panellər
+extension_themes: Temalar
+extension_hooks: Hooklar
+extension_endpoints: Endpointlər
+extension_operations: Əməliyyatlar
+extension_bundles: Paketlər
+extension_missing: Tapılmadı
+extension_reload_required: Səhifənin yenilənməsi tələb olunur
+extension_reload_required_copy: Əlavənin statusu dəyişdikdən sonra dəyişiklərin əks olunması üçün səhifənin yenilənməsi tələb olunur.
+published_relative: '{relativeTime} dərc olundu'
+compatible_with_your_project: Proyektinizə uyğundur
+compatible_with_your_project_copy: Müəllif bu əlavənin uyğunluq versiyasını {hostVersion} təyin etmişdir. Hansı ki sizin proyekt versiyanıza ({currentVersion}) uyğundur
+last_updated_relative: Son yenilənmə tarixi {relativeTime}
+n_files: '{n} fayl'
+verified: Təsdiqlənib
+homepage: Ana Səhifə
+repository: Repository
+reload_required: Səhifənin yenilənməsi tələb olunur
+report_an_issue: Problem bildirin
+website: Vebsayt
+github: Github
+beta: Beta
+n_downloads: 'Endirilmə sayı {n}'
+downloads: Endirilmə sayı
+compatibility_not_guaranteed: Uyğunluğa zəmanət verilmir
+compatibility_not_guaranteed_copy: Müəllif bu əlavənin uyğunluq versiyasını {hostVersion} təyin etmişdir. Hansı ki sizin proyekt versiyanıza ({currentVersion}) uyğundur deyil
+enable: Aktiv et
+disable: Deaktiv et
+custom: Özəl
+hook: Hook
+fill_width: Tam en
+field_name_translations: Sütun adlarının tərcüməsi
+enter_password_to_enable_tfa: İki faktorlu autentifikasiyanı aktivləşdirmək üçün şifrənizi daxil edin
+add_field: Sütun əlavə et
+role_name: Rol adı
+branch: Branch
+leaf: Yarpaq
+indeterminate: Qeyri-müəyyən
+edit_collection: Kolleksiyaya düzəliş et
+children: Uşaqlar
+db_only_click_to_configure: 'Yalnız verilənlər bazasında: Düzəliş etmək üçün klik edin'
+show_active_items: Aktiv obyektləri göstər
+show_archived_items: Arxivlənmiş obyektləri göstər
+show_all_items: Bütün obyektləri göstər
+edited: Dəyərə düzəliş edildi
+required: Tələb olunur
+source_registry: Marketplace
+fields:
+  directus_settings:
+    module_bar: Modul çərçivəsi
+  directus_fields:
+    translation: Sütun adlarının tərcüməsi
+  directus_roles:
+    name: Rol adı

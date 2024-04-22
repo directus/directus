@@ -32,7 +32,7 @@ const MAX_INT32 = 2 ** 31 - 1;
  * @returns A Directus authentication client.
  */
 export const authentication = (mode: AuthenticationMode = 'cookie', config: Partial<AuthenticationConfig> = {}) => {
-	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
+	return <Schema>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		const authConfig = { ...defaultConfigValues, ...config };
 		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
