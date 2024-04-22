@@ -28,7 +28,7 @@ const { t } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
-const active = ref(props.modelValue !== null || props.autofocus);
+const active = ref(props.autofocus);
 const filterActive = ref(false);
 const filterBorder = ref(false);
 
