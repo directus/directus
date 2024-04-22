@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -17,6 +17,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		loading?: boolean;
 		folder?: string;
 		collection: string;
 		field: string;
@@ -54,7 +55,7 @@ const {
 	refresh,
 } = useRelationSingle<
 	Pick<File, 'id' | 'title' | 'width' | 'height' | 'filesize' | 'type' | 'filename_download' | 'modified_on'>
->(value, query, relationInfo);
+>(value, query, relationInfo, { enabled: computed(() => !props.loading) });
 
 const { t, n, te } = useI18n();
 
@@ -66,13 +67,13 @@ const src = computed(() => {
 	if (!image.value?.type) return null;
 
 	if (image.value.type.includes('svg')) {
-		return '/assets/' + image.value.id;
+		return getAssetUrl(image.value.id);
 	}
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = `/assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
-		return addTokenToURL(url);
+		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`);
+		return url;
 	}
 
 	return null;

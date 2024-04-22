@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { useUserStore } from '@/stores/user';
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,6 +18,7 @@ const { activeGroups, showHidden } = useNavigation(currentCollection);
 const search = ref('');
 
 const collectionsStore = useCollectionsStore();
+const userStore = useUserStore();
 
 const rootItems = computed(() => {
 	const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
@@ -52,6 +54,16 @@ const hasHiddenCollections = computed(
 			:mandatory="false"
 			:dense="dense"
 		>
+			<v-button
+				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"
+				full-width
+				outlined
+				dashed
+				to="/settings/data-model/+"
+			>
+				{{ t('create_collection') }}
+			</v-button>
+
 			<navigation-item
 				v-for="collection in rootItems"
 				:key="collection.collection"
@@ -61,14 +73,16 @@ const hasHiddenCollections = computed(
 			/>
 
 			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
-				<v-list-item clickable @click="showHidden = !showHidden">
-					<v-list-item-icon>
-						<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
-					</v-list-item-content>
-				</v-list-item>
+				<v-list>
+					<v-list-item clickable @click="showHidden = !showHidden">
+						<v-list-item-icon>
+							<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
 			</v-menu>
 		</v-list>
 	</div>
@@ -126,6 +140,6 @@ const hasHiddenCollections = computed(
 	z-index: 2;
 	padding: 12px;
 	padding-bottom: 0;
-	background-color: var(--theme--background-normal);
+	background-color: var(--theme--navigation--background);
 }
 </style>

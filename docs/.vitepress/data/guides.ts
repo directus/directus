@@ -14,6 +14,7 @@ export const sections = {
 				items: [
 					{ display: 'SDK Quickstart', path: '/guides/sdk/getting-started' },
 					{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
+					{ display: 'SDK Types', path: '/guides/sdk/types' },
 				],
 			},
 			{
@@ -35,20 +36,27 @@ export const sections = {
 			{
 				title: 'Next.js',
 				items: [
-					{ display: 'Build a Website With Next.js', path: '/guides/headless-cms/build-static-website/next-13' },
+					{ display: 'Get Started with Next.js', path: '/guides/headless-cms/build-static-website/next' },
 					{ display: 'Set Up Live Preview With Next.js', path: '/guides/headless-cms/live-preview/nextjs' },
 				],
 			},
 			{
 				title: 'Nuxt',
 				items: [
-					{ display: 'Build a Website With Nuxt', path: '/guides/headless-cms/build-static-website/nuxt-3' },
+					{ display: 'Get Started with Nuxt', path: '/guides/headless-cms/build-static-website/nuxt-3' },
 					{ display: 'Set Up Live Preview With Nuxt', path: '/guides/headless-cms/live-preview/nuxt-3' },
 				],
 			},
 			{
 				title: 'From the Blog',
-				items: [{ display: 'Build a Website With SvelteKit', path: '/blog/getting-started-directus-sveltekit' }],
+				items: [
+					{ display: 'Get Started with SvelteKit', path: '/blog/getting-started-directus-sveltekit' },
+					{ display: 'Get Started with Astro', path: '/blog/getting-started-directus-astro' },
+					{ display: 'Get Started with Remix', path: '/blog/getting-started-with-directus-and-remix' },
+					{ display: 'Get Started with Eleventy', path: '/blog/getting-started-directus-and-eleventy-11ty-3' },
+					{ display: 'Get Started with SolidStart', path: '/blog/getting-started-solidstart' },
+					{ display: 'Get Started with Gatsby', path: '/blog/getting-started-with-directus-and-gatsby' },
+				],
 			},
 		],
 	},

@@ -1,15 +1,15 @@
 ---
-description: Learn about the Directus Secure Extensions Framework to isolate and build trust in your extensions.
+description: Learn about the Directus Sandboxed Extensions Framework to isolate and build trust in your extensions.
 contributors: Nils Twelker, Kevin Lewis, Esther Agbaje
 ---
 
-# Secure Extensions
+# Sandboxed Extensions
 
-The Secure Extensions Framework is designed to provide robust security to your data and maintain strict control over
+The Sandboxed Extensions Framework is designed to provide robust security to your data and maintain strict control over
 interactions with the external environment by running extension code in an isolated _sandbox_. The main purpose of this
 sandbox is to allow configurations that limit how extensions access your information and communicate externally.
 
-The Secure Extensions Framework is available for API and Hybrid Extensions.
+The Sandboxed Extensions Framework is available for API and Hybrid Extensions.
 
 ## Understanding the Sandbox
 
@@ -22,7 +22,7 @@ Isolates only have access to
 [JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects).
 This means that common runtime functions such as `console` and `setTimeout` are not available.
 
-## Creating Secure Extensions
+## Creating Sandboxed Extensions
 
 To mark your extension to use the sandbox, add the `sandbox` configuration to your extension's `package.json` file, and
 set enabled to `true` as follows:

@@ -1,3 +1,4 @@
+import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
 	ClientFilterOperator,
@@ -13,13 +14,12 @@ import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/u
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
-import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
-import { InvalidQueryError } from '@directus/errors';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
+import { isValidUuid } from './is-valid-uuid.js';
 import { stripFunction } from './strip-function.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -184,7 +184,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 
 				rootQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
 					joinClause
-						.onVal(relation.meta!.one_collection_field!, '=', pathScope)
+						.onVal(`${aliasedParentCollection}.${relation.meta!.one_collection_field!}`, '=', pathScope)
 						.andOn(
 							`${aliasedParentCollection}.${relation.field}`,
 							'=',
@@ -201,7 +201,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
 					joinClause
-						.onVal(relation.meta!.one_collection_field!, '=', parentCollection)
+						.onVal(`${alias}.${relation.meta!.one_collection_field!}`, '=', parentCollection)
 						.andOn(
 							`${alias}.${relation.field}`,
 							'=',
@@ -823,7 +823,7 @@ export async function applySearch(
 				if (validateNumber(searchQuery, number)) {
 					this.orWhere({ [`${collection}.${name}`]: number });
 				}
-			} else if (field.type === 'uuid' && validate(searchQuery)) {
+			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
 		});

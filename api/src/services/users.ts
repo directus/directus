@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Query } from '@directus/types';
+import type { Item, PrimaryKey, Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
@@ -8,16 +8,19 @@ import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { useLogger } from '../logger.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
+import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -237,7 +240,7 @@ export class UsersService extends ItemsService {
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const service = new UsersService({
 				accountability: this.accountability,
 				knex: trx,
@@ -406,17 +409,21 @@ export class UsersService extends ItemsService {
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
-				await mailService.send({
-					to: user?.email ?? email,
-					subject: subjectLine,
-					template: {
-						name: 'user-invitation',
-						data: {
-							url: this.inviteUrl(user?.email ?? email, url),
-							email: user?.email ?? email,
+				mailService
+					.send({
+						to: user?.email ?? email,
+						subject: subjectLine,
+						template: {
+							name: 'user-invitation',
+							data: {
+								url: this.inviteUrl(user?.email ?? email, url),
+								email: user?.email ?? email,
+							},
 						},
-					},
-				});
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send user invitation mail`);
+					});
 			}
 		}
 	}
@@ -474,17 +481,21 @@ export class UsersService extends ItemsService {
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		await mailService.send({
-			to: user.email,
-			subject: subjectLine,
-			template: {
-				name: 'password-reset',
-				data: {
-					url: acceptURL,
-					email: user.email,
+		mailService
+			.send({
+				to: user.email,
+				subject: subjectLine,
+				template: {
+					name: 'password-reset',
+					data: {
+						url: acceptURL,
+						email: user.email,
+					},
 				},
-			},
-		});
+			})
+			.catch((error) => {
+				logger.error(error, `Could not send password reset mail`);
+			});
 
 		await stall(STALL_TIME, timeStart);
 	}

@@ -128,9 +128,9 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			return;
 		}
 
-		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} target="${
-			link.newTab ? '_blank' : '_self'
-		}" >${link.displayText || link.url}</a>`;
+		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} ${
+			link.newTab ? 'target="_blank"' : ''
+		} >${link.displayText || link.url}</a>`;
 
 		// New anchor tag or current selection node is an anchor tag
 		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {

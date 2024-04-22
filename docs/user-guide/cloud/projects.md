@@ -138,8 +138,9 @@ tandem with the Directus Core Team.
 
 ## Destroy a Project
 
-Destroying a Directus Cloud Project completely removes all its data, assets, settings and users from the platform. To
-destroy a Directus Cloud Project, follow these steps:
+Destroying a Directus Cloud Project completely removes all its data, assets, settings and users from the platform. It
+also cancels the Directus Cloud Subscription associated with the project. To destroy a Directus Cloud Project, follow
+these steps:
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects page.

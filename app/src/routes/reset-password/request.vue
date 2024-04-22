@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
+import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -38,6 +39,10 @@ async function onSubmit() {
 		sending.value = false;
 	}
 }
+
+useHead({
+	title: t('reset_password'),
+});
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
-import type { Notification } from '@directus/types';
+import type { Notification, PrimaryKey } from '@directus/types';
 import { useLogger } from '../logger.js';
-import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
@@ -52,18 +52,18 @@ export class NotificationsService extends ItemsService {
 			const html = data.message ? md(data.message) : '';
 
 			if (user['email'] && user['email_notifications'] === true) {
-				try {
-					await this.mailService.send({
+				this.mailService
+					.send({
 						template: {
 							name: 'base',
 							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
 						to: user['email'],
 						subject: data.subject,
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send notification via mail`);
 					});
-				} catch (error: any) {
-					logger.error(error.message);
-				}
 			}
 		}
 	}

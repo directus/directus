@@ -22,14 +22,14 @@ Icon displayed in the Admin App for the flow.
 `color` **string**\
 Color of the icon displayed in the Admin App for the flow.
 
-`note` **text**\
+`description` **text**\
 Short description displayed in the Admin App.
 
 `status` **string**\
 Current status of the flow. One of `active`, `inactive`. Defaults to `active` when not specified.
 
 `trigger` **string**\
-Type of trigger for the flow. One of `hook`, `webhook`, `operation`, `schedule`, `manual`.
+Type of trigger for the flow. One of `event`, `webhook`, `operation`, `schedule`, `manual`.
 
 `options` **json**\
 Options of the selected trigger for the flow.
@@ -52,7 +52,7 @@ UUID of the operation connected to the trigger in the flow.
 	"name": "My Flow",
 	"icon": "bolt",
 	"color": "#112233",
-	"note": "Note for my flow",
+	"description": "Description for my flow",
 	"status": "active",
 	"trigger": "manual",
 	"accountability": "$trigger",

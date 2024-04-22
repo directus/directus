@@ -1,8 +1,10 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { setRelatedOneFieldForCorrespondingField } from './m2m';
+import { collectionExists } from '../../../utils/collection-exists';
+import { fieldExists } from '../../../utils/field-exists';
+import { getAutomaticJunctionCollectionName } from '../../../utils/get-junction-collection-name';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -118,14 +120,6 @@ export function setJunctionFields(updates: StateUpdates, _state: State, { getCur
 	set(updates, 'relations.m2o.meta.junction_field', getCurrent('relations.o2m.field'));
 }
 
-function collectionExists(collection: string) {
-	return !!useCollectionsStore().getCollection(collection);
-}
-
-function fieldExists(collection: string, field: string) {
-	return !!useFieldsStore().getField(collection, field);
-}
-
 export function generateCollections(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
 	const junctionCollection = getCurrent('relations.o2m.collection');
 
@@ -224,7 +218,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 
-	const junctionName = getAutomaticJunctionCollectionName(currentCollection);
+	const junctionName = getAutomaticJunctionCollectionName(currentCollection, 'files');
 
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
@@ -241,28 +235,5 @@ export function matchJunctionCollectionName(updates: StateUpdates) {
 
 	if (updates?.relations?.m2o?.collection && updates.relations.m2o.collection !== updates.relations.o2m?.collection) {
 		set(updates, 'relations.o2m.collection', updates.relations.m2o.collection);
-	}
-}
-
-export function getAutomaticJunctionCollectionName(collectionA: string) {
-	let index = 0;
-	let name = getName(index);
-
-	while (collectionExists(name)) {
-		index++;
-		name = getName(index);
-	}
-
-	return name;
-
-	function getName(index: number) {
-		let name = `${collectionA}_files`;
-
-		if (name.startsWith('directus_')) {
-			name = 'junction_' + name;
-		}
-
-		if (index) return name + '_' + index;
-		return name;
 	}
 }

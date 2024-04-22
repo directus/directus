@@ -1,14 +1,11 @@
+import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
-import fs from 'node:fs';
-import { createRequire } from 'node:module';
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import type { ImportWorkerData } from '../services/import-export/import-worker.js';
-import { ExportService } from '../services/import-export/index.js';
+import { ExportService, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -107,6 +104,11 @@ router.post(
 			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 		}
 
+		const service = new ImportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		let headers;
 
 		if (req.headers['content-type']) {
@@ -121,38 +123,13 @@ router.post(
 		const busboy = Busboy({ headers });
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			const { createTmpFile } = await import('@directus/utils/node');
-			const { getWorkerPool } = await import('../worker-pool.js');
+			try {
+				await service.import(req.params['collection']!, mimeType, fileStream);
+			} catch (err: any) {
+				return next(err);
+			}
 
-			const tmpFile = await createTmpFile().catch(() => null);
-
-			if (!tmpFile) throw new Error('Failed to create temporary file for import');
-
-			fileStream.pipe(fs.createWriteStream(tmpFile.path));
-
-			fileStream.on('end', async () => {
-				const workerPool = getWorkerPool();
-
-				const require = createRequire(import.meta.url);
-				const filename = require.resolve('../services/import-export/import-worker');
-
-				const workerData: ImportWorkerData = {
-					collection: req.params['collection']!,
-					mimeType,
-					filePath: tmpFile.path,
-					accountability: req.accountability,
-					schema: req.schema,
-				};
-
-				try {
-					await workerPool.run(workerData, { filename });
-					res.status(200).end();
-				} catch (error) {
-					next(error);
-				} finally {
-					await tmpFile.cleanup();
-				}
-			});
+			return res.status(200).end();
 		});
 
 		busboy.on('error', (err: Error) => next(err));
@@ -198,7 +175,9 @@ router.post(
 			schema: req.schema,
 		});
 
-		await service.clearCache();
+		const clearSystemCache = 'system' in req.query && (req.query['system'] === '' || Boolean(req.query['system']));
+
+		await service.clearCache({ system: clearSystemCache });
 
 		res.status(200).end();
 	}),

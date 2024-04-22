@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { usePermissions } from '@/composables/use-permissions';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -10,24 +10,25 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection } from '@directus/composables';
-import { Field, Relation } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
+import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { Ref, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 interface Props {
 	collection: string;
 	active?: boolean;
-	primaryKey?: string | number | null;
+	primaryKey?: PrimaryKey | null;
 	edits?: Record<string, any>;
 	junctionField?: string | null;
 	disabled?: boolean;
 	// There's an interesting case where the main form can be a newly created item ('+'), while
 	// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
 	// related data anyway.
-	relatedPrimaryKey?: string | number;
+	relatedPrimaryKey?: PrimaryKey;
 	// If this drawer-item is opened from a relational interface, we need to force-block the field
 	// that relates back to the parent item.
 	circularField?: string | null;
@@ -62,7 +63,7 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelation
 const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
-const { collection } = toRefs(props);
+const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
@@ -101,15 +102,15 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: relatedCollectionFields } = usePermissions(
-	relatedCollection as any,
-	computed(() => initialValues.value && initialValues.value[props.junctionField as any]),
+const { fields: fieldsWithPermissions } = useItemPermissions(
+	collection,
+	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: fieldsWithPermissions } = usePermissions(
-	collection,
-	initialValues,
+const { fields: relatedCollectionFields } = useItemPermissions(
+	relatedCollection as Ref<string>,
+	relatedPrimaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
@@ -228,7 +229,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(props.collection);
 
-		const endpoint = props.collection.startsWith('directus_')
+		const endpoint = isSystemCollection(props.collection)
 			? `${baseEndpoint}/${props.primaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
 
@@ -258,7 +259,7 @@ function useItem() {
 
 		const baseEndpoint = getEndpoint(collection);
 
-		const endpoint = collection.startsWith('directus_')
+		const endpoint = isSystemCollection(collection)
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 

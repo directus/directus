@@ -32,10 +32,16 @@ export const DEFAULTS = {
 	RATE_LIMITER_GLOBAL_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
+
 	REFRESH_TOKEN_TTL: '7d',
+	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
-	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
+
+	SESSION_COOKIE_TTL: '1d',
+	SESSION_COOKIE_NAME: 'directus_session_token',
+	SESSION_COOKIE_SECURE: false,
+	SESSION_COOKIE_SAME_SITE: 'lax',
 
 	LOGIN_STALL_TIME: 500,
 	SERVER_SHUTDOWN_TIMEOUT: 1000,
@@ -58,6 +64,7 @@ export const DEFAULTS = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'directus_activity,directus_presets',
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
+	CACHE_SCHEMA_MAX_ITERATIONS: 100,
 	CACHE_PERMISSIONS: true,
 	CACHE_VALUE_MAX_SIZE: false,
 	CACHE_SKIP_ALLOWED: false,
@@ -72,11 +79,16 @@ export const DEFAULTS = {
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
 
+	MIGRATIONS_PATH: './migrations',
+
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
+	EMAIL_TEMPLATES_PATH: './templates',
+
+	MARKETPLACE_TRUST: 'sandbox',
 
 	TELEMETRY: true,
 	TELEMETRY_URL: 'https://telemetry.directus.io',
@@ -99,7 +111,7 @@ export const DEFAULTS = {
 
 	EXPORT_BATCH_SIZE: 5000,
 
-	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
+	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	GRAPHQL_INTROSPECTION: true,
 
