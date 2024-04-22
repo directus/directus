@@ -188,7 +188,7 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -196,7 +196,7 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" />
+					<v-text-overflow :text="item.description" class="description" :highlight="search" />
 				</template>
 			</v-table>
 		</div>
