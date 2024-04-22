@@ -319,6 +319,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			// potentially reload the related group items, if the group field is relational
 			if (isRelational.value) getGroups();
 		}
 
