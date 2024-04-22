@@ -246,7 +246,7 @@ function closeDrawer() {
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="content_copy" @click.stop="duplicateItem(element)" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
-          </v-list-item>
+					</v-list-item>
 				</template>
 			</draggable>
 		</v-list>
