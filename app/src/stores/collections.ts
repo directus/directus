@@ -5,7 +5,7 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
+import { Collection as CollectionRaw } from '@directus/types';
 import { getCollectionType } from '@directus/utils';
 import { isEqual, isNil, omit, orderBy } from 'lodash';
 import { defineStore } from 'pinia';
@@ -13,6 +13,8 @@ import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 import { isSystemCollection } from '@directus/system-data';
 import {
+	DirectusCollection,
+	NestedPartial,
 	createCollection as createCollectionCmd,
 	deleteCollection as deleteCollectionCmd,
 	readCollections as readCollectionsCmd,
@@ -136,7 +138,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		});
 	}
 
-	async function upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
+	async function upsertCollection(collection: string, values: NestedPartial<DirectusCollection<any>>) {
 		const existing = getCollection(collection);
 
 		// Strip out any fields the app might've auto-generated at some point
@@ -146,10 +148,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			if (existing) {
 				if (isEqual(existing, values)) return;
 
-				// TODO fix this type error
-				const typeFixed = rawValues as Parameters<typeof updateCollectionCmd>[1];
-
-				const updatedCollectionResponse = await sdk.request<CollectionRaw>(updateCollectionCmd(collection, typeFixed));
+				const updatedCollectionResponse = await sdk.request<CollectionRaw>(updateCollectionCmd(collection, rawValues));
 
 				collections.value = collections.value.map((existingCollection: Collection) => {
 					if (existingCollection.collection === collection) {
@@ -159,10 +158,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 					return existingCollection;
 				});
 			} else {
-				// TODO fix this type error
-				const typeFixed = rawValues as Parameters<typeof createCollectionCmd>[0];
-
-				const createdCollectionResponse = await sdk.request<CollectionRaw>(createCollectionCmd(typeFixed));
+				const createdCollectionResponse = await sdk.request<CollectionRaw>(createCollectionCmd(rawValues));
 
 				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse)];
 			}
@@ -171,12 +167,9 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		}
 	}
 
-	async function updateCollection(collection: string, updates: DeepPartial<Collection>) {
+	async function updateCollection(collection: string, updates: NestedPartial<DirectusCollection<any>>) {
 		try {
-			// TODO fix this type error
-			const typeFixed = updates as Parameters<typeof updateCollectionCmd>[1];
-
-			await sdk.request(updateCollectionCmd(collection, typeFixed));
+			await sdk.request(updateCollectionCmd(collection, updates));
 			await hydrate();
 
 			notify({

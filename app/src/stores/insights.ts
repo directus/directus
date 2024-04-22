@@ -5,7 +5,7 @@ import { Dashboard } from '@/types/insights';
 import { fetchAll } from '@/utils/fetch-all';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DirectusPanel, createPanels, deletePanels, updatePanelsBatch } from '@directus/sdk';
+import { type DirectusPanel, createPanels, deletePanels, updatePanelsBatch } from '@directus/sdk';
 import { isSystemCollection } from '@directus/system-data';
 import type { Item } from '@directus/types';
 import { applyOptionsData, getSimpleHash, toArray } from '@directus/utils';

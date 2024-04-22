@@ -1,8 +1,8 @@
 import sdk from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { createRelation, readRelations, updateRelation } from '@directus/sdk';
-import { Relation, DeepPartial } from '@directus/types';
+import { DirectusRelation, NestedPartial, createRelation, readRelations, updateRelation } from '@directus/sdk';
+import { Relation } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
@@ -24,16 +24,14 @@ export const useRelationsStore = defineStore({
 				return relation.collection === collection || relation.related_collection === collection;
 			});
 		},
-		async upsertRelation(collection: string, field: string, values: DeepPartial<Relation>) {
+		async upsertRelation(collection: string, field: string, values: NestedPartial<DirectusRelation<any>>) {
 			const existing = this.getRelationForField(collection, field);
 
 			try {
 				if (existing) {
 					if (isEqual(existing, values)) return;
 
-					// TODO fix the type
-					const fixedType = values as Parameters<typeof updateRelation>[2];
-					const updatedRelationResponse = await sdk.request<Relation>(updateRelation(collection, field, fixedType));
+					const updatedRelationResponse = await sdk.request<Relation>(updateRelation(collection, field, values));
 
 					this.relations = this.relations.map((relation) => {
 						if (relation.collection === collection && relation.field === field) {
@@ -43,9 +41,7 @@ export const useRelationsStore = defineStore({
 						return relation;
 					});
 				} else {
-					// TODO fix the type
-					const fixedType = values as Parameters<typeof createRelation>[0];
-					const createdRelationResponse = await sdk.request<Relation>(createRelation(fixedType));
+					const createdRelationResponse = await sdk.request<Relation>(createRelation(values));
 
 					this.relations = [...this.relations, createdRelationResponse];
 				}
