@@ -95,7 +95,7 @@
 		"@types/qrcode": "1.5.5",
 		"@types/semver": "7.5.8",
 		"@types/wellknown": "0.5.8",
-		"@unhead/addons": "1.8.10",
+		"@unhead/addons": "1.9.7",
 		"@unhead/vue": "1.8.10",
 		"@vitejs/plugin-vue": "5.0.4",
 		"@vue/test-utils": "2.4.4",
