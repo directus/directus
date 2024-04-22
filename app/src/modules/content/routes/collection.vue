@@ -135,6 +135,8 @@ const archiveFilter = computed<Filter | null>(() => {
 	}
 });
 
+const isPageDownloadSupported = computed(() => !!layoutRef.value?.state.download);
+
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
 }
@@ -529,6 +531,7 @@ function clearFilters() {
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
 					:layout-query="layoutQuery"
+					:page-download-available="isPageDownloadSupported"
 					@download="download"
 					@refresh="refresh"
 				/>

@@ -26,6 +26,7 @@ const props = defineProps<{
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
+	pageDownloadAvailable?: boolean;
 }>();
 
 const emit = defineEmits(['refresh', 'download']);
@@ -421,6 +422,7 @@ async function exportDataFiles() {
 				</v-button>
 
 				<button
+					v-if="pageDownloadAvailable"
 					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
 					class="download-local"
 					@click="$emit('download')"
