@@ -154,6 +154,16 @@ function updateValues(index: number, updatedValues: any) {
 	}
 }
 
+function duplicateItem(item: Record<string, any>, index: number) {
+	if (value.value && Array.isArray(internalValue.value)) {
+    const newValue = internalValue.value.slice();
+    newValue.splice(index, 0, Object.assign({}, item));
+		emitValue(newValue);
+	} else {
+		emitValue(null);
+	}
+}
+
 function removeItem(item: Record<string, any>) {
 	if (value.value) {
 		emitValue(internalValue.value?.filter((i) => i !== item));
@@ -234,8 +244,9 @@ function closeDrawer() {
 							:template="templateWithDefaults"
 						/>
 						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
-					</v-list-item>
+            <v-icon v-if="!disabled" name="content_copy" @click.stop="duplicateItem(element)" />
+            <v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+          </v-list-item>
 				</template>
 			</draggable>
 		</v-list>
