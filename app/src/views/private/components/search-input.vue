@@ -96,6 +96,7 @@ function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElem
 function disable() {
 	active.value = false;
 	filterActive.value = false;
+	input.value?.blur();
 }
 
 function emitValue() {
