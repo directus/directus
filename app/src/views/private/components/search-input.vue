@@ -120,6 +120,7 @@ function emitValue() {
 				'filter-border': filterBorder,
 				'show-filter': showFilter,
 			}"
+			role="search"
 			@click="active = true"
 		>
 			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
@@ -128,8 +129,14 @@ function emitValue() {
 				:value="modelValue"
 				:placeholder="placeholder ?? t('search_items')"
 				:autofocus="autofocus"
+				type="search"
+				spellcheck="false"
+				autocapitalize="off"
+				autocorrect="off"
+				autocomplete="off"
 				@input="emitValue"
 				@paste="emitValue"
+				@keydown.esc="disable"
 			/>
 			<v-icon
 				v-if="modelValue"
