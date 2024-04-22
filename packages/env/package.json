@@ -1,6 +1,6 @@
 {
 	"name": "@directus/env",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Utilities around using global env configuration",
 	"homepage": "https://directus.io",
 	"repository": {

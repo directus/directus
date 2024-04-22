@@ -1,4 +1,4 @@
-export interface GraphqlClient<_Schema extends object> {
+export interface GraphqlClient<_Schema> {
 	query<Output extends object = Record<string, any>>(
 		query: string,
 		variables?: Record<string, unknown>,
@@ -10,6 +10,6 @@ export interface GraphqlConfig {
 	credentials?: RequestCredentials;
 }
 
-export type GqlResult<Schema extends object, Collection extends keyof Schema> = {
+export type GqlResult<Schema, Collection extends keyof Schema> = {
 	[Key in Collection]: Schema[Collection][];
 };

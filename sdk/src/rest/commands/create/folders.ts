@@ -3,7 +3,7 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateFolderOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFolder<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -17,7 +17,7 @@ export type CreateFolderOutput<
  * @returns Returns the folder object of the folder that was created.
  */
 export const createFolders =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		items: Partial<DirectusFolder<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>[], Schema> =>
@@ -37,7 +37,7 @@ export const createFolders =
  * @returns Returns the folder object of the folder that was created.
  */
 export const createFolder =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		item: Partial<DirectusFolder<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>, Schema> =>

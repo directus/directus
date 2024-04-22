@@ -11,13 +11,13 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
-import { isSystemCollection } from '@directus/system-data';
 import { Field, Query, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
+import { getEndpoint } from '@directus/utils';
+import { isSystemCollection } from '@directus/system-data';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -337,7 +337,7 @@ export function useItem<T extends Record<string, any>>(
 				for (const col of columns) {
 					const colName = col.split('.')[1];
 
-					if (colName !== undefined) {
+					if (colName && colName in updatedItem) {
 						item[colName] = updatedItem[colName];
 					}
 				}
