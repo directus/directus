@@ -1,4 +1,4 @@
-import { assertType, describe, expectTypeOf, test } from 'vitest';
+import { describe, expectTypeOf, test } from 'vitest';
 import { createDirectus, readItems, rest } from '../src/index.js';
 import type { TestSchema } from './schema.js';
 
@@ -36,7 +36,6 @@ describe('Test QueryFilters', () => {
 				}),
 			);
 
-		// make sure the output types are identical since filtering should not affect output
 		type TypeWithConditional = Awaited<ReturnType<typeof withConditional>>;
 		type TypeWithoutConditional = Awaited<ReturnType<typeof withoutConditional>>;
 
@@ -48,8 +47,6 @@ describe('Test QueryFilters', () => {
 			},
 		];
 
-		expectTypeOf(resultA).toEqualTypeOf<TypeWithoutConditional>();
-
 		const resultB: TypeWithoutConditional = [
 			{
 				id: 1,
@@ -58,6 +55,8 @@ describe('Test QueryFilters', () => {
 			},
 		];
 
+		// make sure the output types are identical since filtering should not affect output types
+		expectTypeOf(resultA).toEqualTypeOf<TypeWithoutConditional>();
 		expectTypeOf(resultB).toEqualTypeOf<TypeWithConditional>();
 	});
 });
