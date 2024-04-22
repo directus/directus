@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, test } from 'vitest';
+import { assertType, describe, expectTypeOf, test } from 'vitest';
 import { createDirectus, readItems, rest } from '../src/index.js';
 import type { TestSchema } from './schema.js';
 
