@@ -11,6 +11,8 @@ const props = withDefaults(
 		showFilter?: boolean;
 		collection?: string;
 		filter?: Filter | null;
+		autofocus?: boolean;
+		placeholder?: string;
 	}>(),
 	{
 		showFilter: true,
@@ -26,7 +28,7 @@ const { t } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
-const active = ref(props.modelValue !== null);
+const active = ref(props.modelValue !== null || props.autofocus);
 const filterActive = ref(false);
 const filterBorder = ref(false);
 
@@ -123,7 +125,14 @@ function emitValue() {
 			@click="active = true"
 		>
 			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
+			<input
+				ref="input"
+				:value="modelValue"
+				:placeholder="placeholder ?? t('search_items')"
+				:autofocus="autofocus"
+				@input="emitValue"
+				@paste="emitValue"
+			/>
 			<v-icon
 				v-if="modelValue"
 				clickable
@@ -180,14 +189,14 @@ function emitValue() {
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		width: 68px;
+		width: 69px;
 	}
 
 	.icon-empty {
 		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: none;
-		margin-left: 8px;
+		margin: 0 8px;
 
 		&:hover {
 			--v-icon-color: var(--theme--danger);
@@ -200,13 +209,11 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 9px; // visually center in closed filter
-		margin-right: 4px;
+		margin: 0 4px 0 9px; // visually center in closed filter
 	}
 
 	.icon-filter {
-		margin: 0 8px;
-		margin-left: 0;
+		margin: 0 8px 0 0;
 	}
 
 	&:hover {
@@ -227,10 +234,16 @@ function emitValue() {
 		input {
 			opacity: 1;
 		}
+
+		&.show-filter {
+			.icon-empty {
+				margin-right: 0;
+			}
+		}
 	}
 
 	input {
-		width: 0px;
+		width: 0;
 		height: 100%;
 		margin: 0;
 		padding: 0;

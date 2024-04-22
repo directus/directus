@@ -3,6 +3,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -150,21 +151,12 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #actions>
-			<v-input
+			<search-input
 				v-model="search"
-				class="search"
 				:autofocus="roles.length > 25"
-				type="search"
 				:placeholder="t('search_role')"
-				:full-width="false"
-			>
-				<template #prepend>
-					<v-icon name="search" outline />
-				</template>
-				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
-				</template>
-			</v-input>
+				:show-filter="false"
+			/>
 
 			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
@@ -213,18 +205,6 @@ function navigateToRole({ item }: { item: Role }) {
 </template>
 
 <style lang="scss" scoped>
-.v-input.search {
-	--v-input-border-radius: calc(44px / 2);
-	height: 44px;
-	width: 200px;
-	margin-left: auto;
-
-	@media (min-width: 600px) {
-		width: 300px;
-		margin-top: 0px;
-	}
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
