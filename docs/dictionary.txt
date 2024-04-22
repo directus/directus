@@ -22,9 +22,11 @@
 (C|c)omposables?
 (C|c)onfigs?
 (C|c)ustomizable
+(D|d)ashboarding
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)ebounce
 (D|d)elisting
 (D|d)ev
 (D|d)onut
@@ -37,6 +39,7 @@
 (F|f)ormatter
 (F|f)rontend
 (F|f)rontmatter
+(G|g)roupBy
 (H|h)ardcode
 (H|h)ealthcheck
 (H|h)ostname
@@ -49,7 +52,7 @@
 (M|m)ultitenancy
 (N|n)atively
 (N|n)on-(S|s)andboxed
-(P|p)olyfill
+(P|p)olyfill(ing)?
 (Q|q)uickstart
 (R|r)eal-(T|t)ime
 (R|r)ealtime
@@ -69,6 +72,7 @@
 (S|s)upabase
 (T|t)extarea
 (T|t)imeseries
+(T|t)imezone(s)
 (T|t)ooltips?
 (T|t)riage
 (T|t)riaging
@@ -92,6 +96,7 @@
 (W|w)ebhooks?
 (W|w)ebSocket
 (W|w)ebSockets
+(W|w)hitespace
 [0-9]*(KB|MB|GB|K|px|pm|am)
 [0-9]*[Kk]i?B
 [0-9]*x[0-9]*
@@ -126,6 +131,7 @@ AWS
 backend
 Base64
 Blackbox
+BSL
 buildout
 Butterfield
 Butterfield
@@ -219,6 +225,7 @@ GCP
 GCS
 GDPR
 geo-coordinates
+GeoJSON
 geospatial
 Geospatial
 getter
@@ -235,6 +242,7 @@ hardcoded
 headshot
 Heya
 Hoppscotch
+HTTPie
 HTTPS?
 IAM
 IETF
@@ -250,7 +258,7 @@ iss
 ItemsService
 iteratively
 Jamstack
-Javascript
+js
 JPG
 JS
 JS-SDK
@@ -337,7 +345,7 @@ PNG
 pnpm
 PokéAPI
 Pokémon
-Polyfilling
+PostGIS
 Postgres
 Postgres13
 PR
@@ -396,6 +404,7 @@ slugifying
 SMS
 SMTP
 socio-economic
+SpatiaLite
 src
 SSG
 SSL
@@ -458,7 +467,6 @@ WebDAV
 webhosting
 webpage
 whitelabeling
-whitespace
 wireframe
 XSS
 yaml
@@ -472,3 +480,6 @@ api-reference
 dev-docs
 toggleable
 sso
+
+# urls
+security-cors
