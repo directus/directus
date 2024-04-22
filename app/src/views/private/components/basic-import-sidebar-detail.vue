@@ -77,8 +77,7 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			//TODO check error
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const code = error?.errors?.[0]?.extensions?.code;
 
 			notify({
 				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
