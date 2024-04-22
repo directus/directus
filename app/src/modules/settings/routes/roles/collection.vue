@@ -33,6 +33,17 @@ const lastAdminRoleId = computed(() => {
 	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
 });
 
+const search = ref<string | null>(null);
+
+const filteredRoles = computed(() => {
+	const normalizedSearch = search.value?.toLowerCase();
+	if (!normalizedSearch) return roles.value;
+	return roles.value.filter(
+		(role) =>
+			role.name?.toLowerCase().includes(normalizedSearch) || role.description?.toLowerCase().includes(normalizedSearch),
+	);
+});
+
 const tableHeaders = ref<TableHeader[]>([
 	{
 		text: '',
@@ -139,6 +150,22 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #actions>
+			<v-input
+				v-model="search"
+				class="search"
+				:autofocus="roles.length > 25"
+				type="search"
+				:placeholder="t('search_role')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
+
 			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
@@ -158,7 +185,7 @@ function navigateToRole({ item }: { item: Role }) {
 			<v-table
 				v-model:headers="tableHeaders"
 				show-resize
-				:items="roles"
+				:items="filteredRoles"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -186,6 +213,18 @@ function navigateToRole({ item }: { item: Role }) {
 </template>
 
 <style lang="scss" scoped>
+.v-input.search {
+	--v-input-border-radius: calc(44px / 2);
+	height: 44px;
+	width: 200px;
+	margin-left: auto;
+
+	@media (min-width: 600px) {
+		width: 300px;
+		margin-top: 0px;
+	}
+}
+
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
