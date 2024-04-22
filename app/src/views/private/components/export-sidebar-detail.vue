@@ -26,10 +26,10 @@ const props = defineProps<{
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
-	pageDownloadAvailable?: boolean;
+	onDownload?: () => Promise<void>;
 }>();
 
-const emit = defineEmits(['refresh', 'download']);
+const emit = defineEmits(['refresh']);
 
 const { t, n, te } = useI18n();
 
@@ -422,10 +422,10 @@ async function exportDataFiles() {
 				</v-button>
 
 				<button
-					v-if="pageDownloadAvailable"
+					v-if="onDownload"
 					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
 					class="download-local"
-					@click="$emit('download')"
+					@click="onDownload"
 				>
 					{{ t('download_page_as_csv') }}
 				</button>
