@@ -7,9 +7,8 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import { useSdk } from '@directus/composables';
-import { createComment, readUsers, updateComment } from '@directus/sdk';
+import { createComment, readUsers, updateComment, withOptions } from '@directus/sdk';
 import { User } from '@directus/types';
-import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -56,9 +55,7 @@ watch(
 const saving = ref(false);
 const showMentionDropDown = ref(false);
 
-// TODO better name and better place
 type SearchUser = Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
-
 const searchResult = ref<SearchUser[]>([]);
 const userPreviews = ref<Record<string, string>>({});
 
@@ -78,14 +75,14 @@ watch(
 let triggerCaretPosition = 0;
 const selectedKeyboardIndex = ref<number>(0);
 
-let cancelToken: CancelTokenSource | null = null;
+let abortController: AbortController | null = null;
 
 const loadUsers = throttle(async (name: string): Promise<any> => {
-	if (cancelToken !== null) {
-		cancelToken.cancel();
+	if (abortController !== null) {
+		abortController.abort();
 	}
 
-	cancelToken = axios.CancelToken.source();
+	abortController = new AbortController();
 
 	const regex = /\s@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
 
@@ -118,12 +115,11 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 	}
 
 	try {
-		// TODO implement cancelToken?
 		const result = await sdk.request<SearchUser[]>(
-			readUsers({
+			withOptions(readUsers({
 				filter: name === '' || !name ? undefined : filter,
 				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
-			}),
+			}), { signal: abortController.signal })
 		);
 
 		const newUsers = cloneDeep(userPreviews.value);

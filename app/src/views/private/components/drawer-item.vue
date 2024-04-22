@@ -10,7 +10,7 @@ import { validateItem } from '@/utils/validate-item';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection, useSdk } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Field, Relation } from '@directus/types';
+import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
 import { Ref, computed, ref, toRefs, watch } from 'vue';
@@ -271,7 +271,6 @@ function useItem() {
 	}
 }
 
-// TODO should perhaps be part of the SDK?
 function dynamicGet(
 	collection: string,
 	key: string | number,

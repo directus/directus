@@ -113,7 +113,6 @@ function useActions() {
 	}
 }
 
-// TODO should perhaps be part of the SDK?
 function dynamicUpdate(collection: string, payload: Record<string, any>): RestCommand<unknown, any> {
 	return () => ({
 		path: getEndpoint(collection),
