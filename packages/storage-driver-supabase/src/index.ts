@@ -81,27 +81,20 @@ export class DriverSupabase implements Driver {
 		return Readable.fromWeb(response.body);
 	}
 
-	async head(filepath: string) {
-		const response = await fetch(this.getAuthenticatedUrl(filepath), {
-			method: 'HEAD',
-			headers: {
-				Authorization: `Bearer ${this.config.serviceRole}`,
-			},
-		});
+	async stat(filepath: string) {
+		filepath = this.getFullPath(filepath);
+		const folder = filepath.split('/').slice(0, -1).join('/');
+		const filename = filepath.split('/').pop() || '';
 
-		if (response.status >= 400) {
+		const { data, error } = await this.bucket.list(folder, { search: filename, limit: 1 });
+
+		if (error || data.length === 0) {
 			throw new Error('File not found');
 		}
 
-		return response.headers;
-	}
-
-	async stat(filepath: string) {
-		const headers = await this.head(filepath);
-
 		return {
-			size: parseInt(headers.get('content-length') || ''),
-			modified: new Date(headers.get('last-modified') || ''),
+			size: data[0]?.metadata['contentLength'] ?? 0,
+			modified: new Date(data[0]?.metadata['lastModified'] || ''),
 		};
 	}
 
