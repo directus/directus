@@ -229,13 +229,15 @@ fields:
     display_options:
       template: '{{ name }}'
 
-  - field: require_public_registration_email_validation
+  - field: public_registration_email_filter
+    interface: system-filter
     options:
-      label: $t:fields.directus_settings.label_email_validation
-    interface: boolean
+      collectionName: directus_users
+      collectionField: email
+      fieldName: email
     special:
-      - cast-boolean
-    width: half
+      - cast-json
+    width: full
 
   - field: files_divider
     interface: presentation-divider
