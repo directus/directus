@@ -1,8 +1,7 @@
-import type { RolesService } from '../../services/roles.js';
+import type { Knex } from 'knex';
 import { useCache } from '../cache.js';
-import { getRolesCacheKey } from '../utils/get-roles-cache-key.js';
 
-export async function fetchRolesTree(service: RolesService, start: string | null): Promise<string[]> {
+export async function fetchRolesTree(knex: Knex, start: string | null): Promise<string[]> {
 	if (!start) return [];
 
 	const cacheKey = getRolesCacheKey(start);
@@ -18,9 +17,14 @@ export async function fetchRolesTree(service: RolesService, start: string | null
 	const roles: string[] = [];
 
 	while (parent) {
-		const role = (await service.readOne(start, {
-			fields: ['id', 'parent'],
-		})) as { id: string; parent: string | null };
+		const role: { id: string; parent: string | null } = await knex
+			.select('id', 'parent')
+			.from('directus_roles')
+			.where({ id: start })
+			.first();
+
+		// TODO infinite loop through recursive parent prevention
+		// might be as easy as checking here if roles already contains role we're about to add
 
 		roles.push(role.id);
 		parent = role.parent;
@@ -31,4 +35,8 @@ export async function fetchRolesTree(service: RolesService, start: string | null
 	cache.set(cacheKey, roles);
 
 	return roles;
+}
+
+export function getRolesCacheKey(role: string) {
+	return `roles-tree-${role}`;
 }
