@@ -6,7 +6,6 @@ export type ShareScope = {
 export type Accountability = {
 	role: string | null;
 	roles?: string[];
-	policies?: string[];
 	user?: string | null;
 	admin?: boolean;
 	app?: boolean;
