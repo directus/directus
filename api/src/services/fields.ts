@@ -156,26 +156,28 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read';
-			});
+			// TODO Add permissions util to lookup read access to fields
 
-			const allowedFieldsInCollection: Record<string, string[]> = {};
+			// const permissions = this.accountability.permissions!.filter((permission) => {
+			// 	return permission.action === 'read';
+			// });
 
-			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
-			});
+			// const allowedFieldsInCollection: Record<string, string[]> = {};
 
-			if (collection && collection in allowedFieldsInCollection === false) {
-				throw new ForbiddenError();
-			}
+			// permissions.forEach((permission) => {
+			// 	allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
+			// });
 
-			return result.filter((field) => {
-				if (field.collection in allowedFieldsInCollection === false) return false;
-				const allowedFields = allowedFieldsInCollection[field.collection]!;
-				if (allowedFields[0] === '*') return true;
-				return allowedFields.includes(field.field);
-			});
+			// if (collection && collection in allowedFieldsInCollection === false) {
+			// 	throw new ForbiddenError();
+			// }
+
+			// return result.filter((field) => {
+			// 	if (field.collection in allowedFieldsInCollection === false) return false;
+			// 	const allowedFields = allowedFieldsInCollection[field.collection]!;
+			// 	if (allowedFields[0] === '*') return true;
+			// 	return allowedFields.includes(field.field);
+			// });
 		}
 
 		// Update specific database type overrides
@@ -198,16 +200,18 @@ export class FieldsService {
 				throw new ForbiddenError();
 			}
 
-			const permissions = this.accountability.permissions!.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
+			// TODO Add permissions util to lookup read access to fields
 
-			if (!permissions || !permissions.fields) throw new ForbiddenError();
+			// const permissions = this.accountability.permissions!.find((permission) => {
+			// 	return permission.action === 'read' && permission.collection === collection;
+			// });
 
-			if (permissions.fields.includes('*') === false) {
-				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenError();
-			}
+			// if (!permissions || !permissions.fields) throw new ForbiddenError();
+
+			// if (permissions.fields.includes('*') === false) {
+			// 	const allowedFields = permissions.fields;
+			// 	if (allowedFields.includes(field) === false) throw new ForbiddenError();
+			// }
 		}
 
 		let column = undefined;

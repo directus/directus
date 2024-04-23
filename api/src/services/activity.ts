@@ -51,8 +51,6 @@ export class ActivityService extends ItemsService {
 					app: user['role']?.app_access ?? null,
 				};
 
-				accountability.permissions = await getPermissions(accountability, this.schema);
-
 				const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
 				const usersService = new UsersService({ schema: this.schema, accountability });
 

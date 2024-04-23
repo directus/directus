@@ -364,19 +364,22 @@ export class CollectionsService {
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read' && collectionKeys.includes(permission.collection);
-			});
 
-			if (collectionKeys.length !== permissions.length) {
-				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
+			// TODO Add permissions util to lookup read access to collection
 
-				for (const collectionKey of collectionKeys) {
-					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenError();
-					}
-				}
-			}
+			// const permissions = this.accountability.permissions!.filter((permission) => {
+			// 	return permission.action === 'read' && collectionKeys.includes(permission.collection);
+			// });
+
+			// if (collectionKeys.length !== permissions.length) {
+			// 	const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
+
+			// 	for (const collectionKey of collectionKeys) {
+			// 		if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
+			// 			throw new ForbiddenError();
+			// 		}
+			// 	}
+			// }
 		}
 
 		const collections = await this.readByQuery();

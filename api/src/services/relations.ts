@@ -83,16 +83,18 @@ export class RelationsService {
 				throw new ForbiddenError();
 			}
 
-			const permissions = this.accountability.permissions?.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
+			// TODO Add permissions util to lookup read access to relations
 
-			if (!permissions || !permissions.fields) throw new ForbiddenError();
+			// const permissions = this.accountability.permissions?.find((permission) => {
+			// 	return permission.action === 'read' && permission.collection === collection;
+			// });
 
-			if (permissions.fields.includes('*') === false) {
-				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenError();
-			}
+			// if (!permissions || !permissions.fields) throw new ForbiddenError();
+
+			// if (permissions.fields.includes('*') === false) {
+			// 	const allowedFields = permissions.fields;
+			// 	if (allowedFields.includes(field) === false) throw new ForbiddenError();
+			// }
 		}
 
 		const metaRow = await this.relationsItemService.readByQuery({
