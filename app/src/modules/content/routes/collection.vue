@@ -500,6 +500,20 @@ function clearFilters() {
 						</template>
 					</v-info>
 				</template>
+
+				<template #error="{ error, reset }">
+					<v-info type="danger" :title="t('unexpected_error')" icon="error" center>
+						{{ t('unexpected_error_copy') }}
+
+						<template #append>
+							<v-error :error="error" />
+
+							<v-button small class="reset-preset" @click="reset">
+								{{ t('reset_page_preferences') }}
+							</v-button>
+						</template>
+					</v-info>
+				</template>
 			</component>
 
 			<drawer-batch
@@ -561,6 +575,10 @@ function clearFilters() {
 
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
+}
+
+.reset-preset {
+	margin-top: 24px;
 }
 
 .bookmark-controls {
