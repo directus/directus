@@ -422,9 +422,11 @@ async function exportDataFiles() {
 				</v-button>
 
 				<button
-					v-if="onDownload"
-					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
+					v-tooltip.bottom="
+						!!onDownload ? t('presentation_text_values_cannot_be_reimported') : t('download_page_as_csv_unsupported')
+					"
 					class="download-local"
+					:disabled="!onDownload"
 					@click="onDownload"
 				>
 					{{ t('download_page_as_csv') }}
@@ -636,8 +638,8 @@ async function exportDataFiles() {
 	justify-content: center;
 	height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 0px;
-	padding-bottom: 0px;
+	padding-top: 0;
+	padding-bottom: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -718,6 +720,11 @@ async function exportDataFiles() {
 
 	&:hover {
 		color: var(--theme--primary);
+	}
+
+	&:disabled {
+		color: var(--theme--foreground-subdued);
+		cursor: not-allowed;
 	}
 }
 </style>
