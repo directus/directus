@@ -363,8 +363,6 @@ describe('#stat', () => {
 			}),
 		} as any;
 
-		git;
-
 		const stat = await driver.stat(sample.path.input);
 
 		expect(stat).toEqual({
