@@ -510,10 +510,11 @@ router.post(
 		const settingsService = new SettingsService(serviceOptions);
 
 		const settings = await settingsService.readSingleton({
-			fields: ['public_registration_role', 'public_registration_role'],
+			fields: ['is_public_registration_enabled', 'public_registration_role', 'public_registration_email_filter'],
 		});
 
 		const publicRegistrationRole = settings?.['public_registration_role'];
+		const emailFilter = settings?.['public_registration_email_filter'];
 
 		if (settings?.['is_public_registration_enabled'] == false) {
 			throw new ForbiddenError();
@@ -523,7 +524,12 @@ router.post(
 			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
 		}
 
-		// TODO: check for email validation setting & mailservice
+		if (emailFilter) {
+			// TODO Check if the email is valid according to the specified filter
+			console.log('------ YOU GOT A LOICENSE FOR DAT EMAIL??:', JSON.stringify(emailFilter, null, 2));
+		}
+
+		// TODO MAIL SERVICE
 
 		const partialUser: Partial<User> = {
 			email: req.body?.email,
