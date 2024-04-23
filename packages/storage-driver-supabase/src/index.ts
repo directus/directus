@@ -82,7 +82,7 @@ export class DriverSupabase implements Driver {
 	}
 
 	async stat(filepath: string) {
-		const { data, error } = await this.bucket.list(this.config.root ?? '', {
+		const { data, error } = await this.bucket.list(this.config.root, {
 			search: filepath,
 			limit: 1,
 		});
