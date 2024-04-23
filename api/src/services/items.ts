@@ -20,6 +20,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run/run.js';
 import emitter from '../emitter.js';
+import { processAst } from '../permissions/modules/process-ast/process.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -420,16 +421,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				: query;
 
 		let ast = await getAstFromQuery(this.collection, updatedQuery, this.schema, this.accountability);
-
-		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
-
-			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
-		}
+		ast = await processAst(ast, 'read', this.accountability, this.schema);
 
 		const records = await runAST(ast, this.schema, {
 			knex: this.knex,
@@ -437,6 +429,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
 
+		// TODO when would this happen?
 		if (records === null) {
 			throw new ForbiddenError();
 		}

@@ -14,10 +14,12 @@ import { validatePath } from './utils/validate-path.js';
 export async function processAst(
 	ast: AST,
 	action: PermissionsAction,
-	accountability: Accountability,
+	accountability: Accountability | null,
 	schema: SchemaOverview,
 ) {
-	if (accountability.admin) {
+	if (!accountability || accountability.admin) {
+		// TODO this should still go through validatePath to check for non-existing
+		// collections/fields
 		return ast;
 	}
 
