@@ -1,23 +1,17 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
+import { type DirectusError, ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Aggregate, Filter, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
-import type {
-	ArgumentNode,
-	ExecutionResult,
-	FieldNode,
-	FormattedExecutionResult,
-	FragmentDefinitionNode,
-	GraphQLNullableType,
-	GraphQLResolveInfo,
-	InlineFragmentNode,
-	SelectionNode,
-	ValueNode,
-} from 'graphql';
 import {
+	type ArgumentNode,
+	execute,
+	type ExecutionResult,
+	type FieldNode,
+	type FormattedExecutionResult,
+	type FragmentDefinitionNode,
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLError,
@@ -26,15 +20,20 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
+	type GraphQLNullableType,
 	GraphQLObjectType,
+	type GraphQLResolveInfo,
 	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
+	type InlineFragmentNode,
+	Kind,
 	NoSchemaIntrospectionCustomRule,
-	execute,
+	type SelectionNode,
 	specifiedRules,
 	validate,
+	type ValueNode,
 } from 'graphql';
 import type {
 	InputTypeComposerFieldConfigMapDefinition,
@@ -45,7 +44,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { cloneDeep, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import {
 	DEFAULT_AUTH_PROVIDER,
@@ -1978,9 +1977,19 @@ export class GraphQLService {
 
 		const result = flatten(
 			selections.map((selection) => {
-				// Fragments can contains fragments themselves. This allows for nested fragments
+				// Fragments can contain fragments themselves. This allows for nested fragments
 				if (selection.kind === 'FragmentSpread') {
-					return this.replaceFragmentsInSelections(fragments[selection.name.value]!.selectionSet.selections, fragments);
+					const fragment = fragments[selection.name.value]!;
+
+					// Transform FragmentDefinition into corresponding InlineFragment
+					selection = {
+						...cloneDeep(pick(fragment, 'typeCondition', 'directives')),
+						kind: Kind.INLINE_FRAGMENT,
+						selectionSet: {
+							...fragment.selectionSet,
+							selections: this.replaceFragmentsInSelections(fragment.selectionSet.selections, fragments) ?? [],
+						},
+					};
 				}
 
 				// Nested relational fields can also contain fragments
