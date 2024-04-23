@@ -15,6 +15,7 @@ import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
+import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
@@ -277,6 +278,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);
+	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
