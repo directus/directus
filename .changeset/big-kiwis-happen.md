@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Hide "Download Page as CSV" button if the selected layout does not support his action
+Ensured "Download Page as CSV" button is disabled if the selected layout does not support that action
