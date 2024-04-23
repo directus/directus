@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { AccessService } from '../../../services/access.js';
+import type { AccessService } from '../../../../services/access.js';
 import { fetchPolicies } from './fetch-policies.js';
 
 let service: AccessService;

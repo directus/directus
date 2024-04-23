@@ -1,4 +1,4 @@
-import { ipInNetworks } from '../../../utils/ip-in-networks.js';
+import { ipInNetworks } from '../../../../utils/ip-in-networks.js';
 import type { AccessRow } from '../types.js';
 
 export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | undefined) {

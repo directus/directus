@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import type { RolesService } from '../../../services/roles.js';
+import type { RolesService } from '../../services/roles.js';
 import { fetchRolesTree } from './fetch-roles-tree.js';
 
 test('Returns parent tree in reversed order', async () => {

@@ -1,4 +1,4 @@
-import type { AccessService } from '../../../services/access.js';
+import type { AccessService } from '../../../../services/access.js';
 import type { AccessRow } from '../types.js';
 
 /**

@@ -1,5 +1,5 @@
 import type { Filter, Permission } from '@directus/types';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import type { FieldKey } from '../types.js';
 import { dedupeAccess } from '../utils/dedupe-access.js';
 import { hasItemPermissions } from '../utils/has-item-permissions.js';

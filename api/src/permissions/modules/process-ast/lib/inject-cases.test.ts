@@ -1,6 +1,6 @@
 import type { DeepPartial, Permission } from '@directus/types';
 import { expect, test } from 'vitest';
-import type { AST } from '../../../types/ast.js';
+import type { AST } from '../../../../types/ast.js';
 import { injectCases } from './inject-cases.js';
 
 test('Injects cases related to ast', () => {

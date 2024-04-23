@@ -1,1 +1,1 @@
-export * from './ast/process.js';
+export * from './modules/process-ast/process.js';

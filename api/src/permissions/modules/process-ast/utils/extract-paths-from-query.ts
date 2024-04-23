@@ -1,6 +1,6 @@
 import type { Query } from '@directus/types';
 import type { FieldKey } from '../types.js';
-import { flattenFilter } from '../utils/flatten-filter.js';
+import { flattenFilter } from './flatten-filter.js';
 
 /**
  * Converts the passed Query object into a Set of path arrays, for example:

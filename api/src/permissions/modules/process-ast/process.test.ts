@@ -1,12 +1,12 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { AST } from '../../types/ast.js';
+import type { AST } from '../../../types/ast.js';
 import { processAst } from './process.js';
 
-import { AccessService } from '../../services/access.js';
-import { PermissionsService } from '../../services/permissions/index.js';
-import { RolesService } from '../../services/roles.js';
+import { AccessService } from '../../../services/access.js';
+import { PermissionsService } from '../../../services/permissions/index.js';
+import { RolesService } from '../../../services/roles.js';
 
 vi.mock('../../database/index.js');
 vi.mock('../../services/access.js');

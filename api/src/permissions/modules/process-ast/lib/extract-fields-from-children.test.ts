@@ -1,6 +1,6 @@
 import type { DeepPartial, SchemaOverview } from '@directus/types';
 import { describe, expect, it } from 'vitest';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import { extractFieldsFromChildren } from './extract-fields-from-children.js';
 
 describe('Global', () => {

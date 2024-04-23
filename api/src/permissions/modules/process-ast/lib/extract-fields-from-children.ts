@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
-import { stripFunction } from '../../../utils/strip-function.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import { stripFunction } from '../../../../utils/strip-function.js';
 import type { FieldMap, QueryPath } from '../types.js';
 import { formatA2oKey } from '../utils/format-a2o-key.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
