@@ -15,12 +15,12 @@ import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
+import getASTFromQuery from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import runAST from '../database/run-ast.js';
+import runAST from '../database/run/run.js';
 import emitter from '../emitter.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
-import getASTFromQuery from '../utils/get-ast-from-query.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
@@ -419,14 +419,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				  )
 				: query;
 
-		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
-			accountability: this.accountability,
-			// By setting the permissions action, you can read items using the permissions for another
-			// operation's permissions. This is used to dynamically check if you have update/delete
-			// access to (a) certain item(s)
-			action: opts?.permissionsAction || 'read',
-			knex: this.knex,
-		});
+		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
