@@ -8,7 +8,7 @@ export async function convertWildcards(
 	parentCollection: string,
 	fields: string[],
 	query: Query,
-	accountability: Accountability,
+	accountability: Accountability | null,
 ) {
 	fields = cloneDeep(fields);
 
@@ -16,7 +16,7 @@ export async function convertWildcards(
 
 	let allowedFields: string[] | null = fieldsInCollection;
 
-	if (accountability.admin !== false) {
+	if (accountability && accountability.admin !== false) {
 		allowedFields = await getAllowedFields(schema, accountability, parentCollection, 'read');
 	}
 

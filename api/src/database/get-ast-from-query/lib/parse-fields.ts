@@ -13,7 +13,7 @@ export async function parseFields(
 	parentCollection: string,
 	fields: string[] | null,
 	query: Query,
-	accountability: Accountability,
+	accountability: Accountability | null,
 	deep?: Record<string, any>,
 ) {
 	if (!fields) return [];

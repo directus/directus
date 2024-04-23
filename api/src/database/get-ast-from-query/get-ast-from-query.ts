@@ -11,7 +11,7 @@ export async function getAstFromQuery(
 	collection: string,
 	query: Query,
 	schema: SchemaOverview,
-	accountability: Accountability,
+	accountability: Accountability | null,
 ): Promise<AST> {
 	query = cloneDeep(query);
 
