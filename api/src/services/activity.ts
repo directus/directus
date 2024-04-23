@@ -5,7 +5,6 @@ import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { getPermissions } from '../utils/get-permissions.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -47,6 +46,9 @@ export class ActivityService extends ItemsService {
 				const accountability: Accountability = {
 					user: userID,
 					role: user['role']?.id ?? null,
+
+					// TODO search for all uses of admin_access & app_access to make sure we're not
+					// trying to pull them from a role anymore
 					admin: user['role']?.admin_access ?? null,
 					app: user['role']?.app_access ?? null,
 				};
