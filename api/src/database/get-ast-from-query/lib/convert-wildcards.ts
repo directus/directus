@@ -1,5 +1,6 @@
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep } from 'lodash-es';
+import { getAllowedFields } from '../../../permissions/modules/get-allowed-fields/get-allowed-fields.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export async function convertWildcards(
@@ -7,12 +8,17 @@ export async function convertWildcards(
 	parentCollection: string,
 	fields: string[],
 	query: Query,
+	accountability: Accountability,
 ) {
 	fields = cloneDeep(fields);
 
 	const fieldsInCollection = Object.entries(schema.collections[parentCollection]!.fields).map(([name]) => name);
 
 	let allowedFields: string[] | null = fieldsInCollection;
+
+	if (accountability.admin !== false) {
+		allowedFields = await getAllowedFields(schema, accountability, parentCollection, 'read');
+	}
 
 	if (!allowedFields || allowedFields.length === 0) return [];
 

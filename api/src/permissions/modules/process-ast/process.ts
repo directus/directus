@@ -4,13 +4,11 @@ import { getDatabase } from '../../../database/index.js';
 import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/permissions/index.js';
 import type { AST } from '../../../types/ast.js';
+import { fetchPolicies } from '../../lib/fetch-policies.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
-import { fetchPolicies } from './utils/fetch-policies.js';
-import { filterPoliciesByIp } from './utils/filter-policies-by-ip.js';
-import { orderPoliciesByPriority } from './utils/order-policies-by-priority.js';
 import { validatePath } from './utils/validate-path.js';
 
 export async function processAst(
@@ -19,32 +17,18 @@ export async function processAst(
 	accountability: Accountability,
 	schema: SchemaOverview,
 ) {
+	if (accountability.admin) {
+		return ast;
+	}
+
+	// TODO this might have to be a parameter as well to support this process being used in nested
+	// transactions
 	const knex = getDatabase();
 
 	const permissionsService = new PermissionsService({ schema, knex });
 	const accessService = new AccessService({ schema, knex });
 
-	// TODO maybe move roles+policies fetching/filtering to middleware so it's available as
-	// accountability.admin still to avoid a massive refactor?
-
-	const isPublic = accountability.role === null;
-
-	// All roles in the current role's parent tree, ordered by specificity (parent -> child)
-	const roles = accountability.roles ?? [];
-
-	// All policies related to the current accountability, filtered down by IP, sorted from least to
-	// most priority
-	let policies = await fetchPolicies(accessService, isPublic, roles, accountability.user);
-	policies = filterPoliciesByIp(policies, accountability.ip);
-
-	// TODO remove order, no longer necessary
-	policies = orderPoliciesByPriority(policies, roles);
-
-	const isAdmin = policies.some(({ policy }) => policy.admin_access);
-
-	if (isAdmin) {
-		return ast;
-	}
+	const policies = await fetchPolicies(accessService, accountability);
 
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
@@ -55,11 +39,12 @@ export async function processAst(
 	const permissions = (await permissionsService.readByQuery({
 		filter: {
 			_and: [
-				{ policy: { _in: policies.map(({ policy }) => policy.id) } },
+				{ policy: { _in: policies } },
 				{ collection: { _in: Array.from(collections) } },
 				{ action: { _eq: action } },
 			],
 		},
+		limit: -1,
 	})) as Permission[];
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {

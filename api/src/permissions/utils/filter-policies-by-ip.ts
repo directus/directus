@@ -1,5 +1,5 @@
-import { ipInNetworks } from '../../../../utils/ip-in-networks.js';
-import type { AccessRow } from '../types.js';
+import { ipInNetworks } from '../../utils/ip-in-networks.js';
+import type { AccessRow } from '../modules/process-ast/types.js';
 
 export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | undefined) {
 	return policies.filter(({ policy }) => {

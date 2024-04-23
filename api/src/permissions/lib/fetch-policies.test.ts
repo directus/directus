@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { AccessService } from '../../../../services/access.js';
+import type { AccessService } from '../../services/access.js';
 import { fetchPolicies } from './fetch-policies.js';
 
 let service: AccessService;
@@ -14,7 +14,7 @@ test('Fetches and returns policies from the access service where role is null wh
 	const mockServiceOutput: any[] = [];
 	vi.mocked(service.readByQuery).mockResolvedValue(mockServiceOutput);
 
-	const output = await fetchPolicies(service, true, [], null);
+	const output = await fetchPolicies(service, [], null);
 
 	expect(output).toBe(mockServiceOutput);
 
@@ -29,7 +29,7 @@ test('Inserts filter for passed roles array', async () => {
 	const mockServiceOutput: any[] = [];
 	vi.mocked(service.readByQuery).mockResolvedValue(mockServiceOutput);
 
-	const output = await fetchPolicies(service, false, ['test-role-a', 'test-role-b'], undefined);
+	const output = await fetchPolicies(service, ['test-role-a', 'test-role-b'], undefined);
 
 	expect(output).toBe(mockServiceOutput);
 
@@ -46,7 +46,7 @@ test('Inserts additional or filter for optional user ID', async () => {
 	const mockServiceOutput: any[] = [];
 	vi.mocked(service.readByQuery).mockResolvedValue(mockServiceOutput);
 
-	const output = await fetchPolicies(service, false, ['test-role-a', 'test-role-b'], 'test-user-id');
+	const output = await fetchPolicies(service, ['test-role-a', 'test-role-b'], 'test-user-id');
 
 	expect(output).toBe(mockServiceOutput);
 

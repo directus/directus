@@ -2,12 +2,17 @@
  * Generate an AST based on a given collection and query
  */
 
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep, uniq } from 'lodash-es';
 import type { AST } from '../../types/index.js';
 import { parseFields } from './lib/parse-fields.js';
 
-export default async function getASTFromQuery(collection: string, query: Query, schema: SchemaOverview): Promise<AST> {
+export async function getAstFromQuery(
+	collection: string,
+	query: Query,
+	schema: SchemaOverview,
+	accountability: Accountability,
+): Promise<AST> {
 	query = cloneDeep(query);
 
 	const ast: AST = {
@@ -71,7 +76,7 @@ export default async function getASTFromQuery(collection: string, query: Query, 
 		delete query.sort;
 	}
 
-	ast.children = await parseFields(schema, collection, fields, query, deep);
+	ast.children = await parseFields(schema, collection, fields, query, accountability, deep);
 
 	return ast;
 }

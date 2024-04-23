@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import type { AccessRow } from '../types.js';
+import type { AccessRow } from '../modules/process-ast/types.js';
 import { filterPoliciesByIp } from './filter-policies-by-ip.js';
 
 test('Keeps policies that do not have a ip access rule set configured when IP is null', () => {

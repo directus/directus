@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { isEmpty } from 'lodash-es';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
@@ -13,11 +13,12 @@ export async function parseFields(
 	parentCollection: string,
 	fields: string[] | null,
 	query: Query,
+	accountability: Accountability,
 	deep?: Record<string, any>,
 ) {
 	if (!fields) return [];
 
-	fields = await convertWildcards(schema, parentCollection, fields, query);
+	fields = await convertWildcards(schema, parentCollection, fields, query, accountability);
 
 	if (!fields || !Array.isArray(fields)) return [];
 
