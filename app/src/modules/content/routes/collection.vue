@@ -139,9 +139,7 @@ async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
 }
 
-async function download() {
-	await layoutRef.value?.state?.download?.();
-}
+const downloadHandler = computed(() => layoutRef.value?.state?.download);
 
 async function batchRefresh() {
 	selection.value = [];
@@ -529,7 +527,7 @@ function clearFilters() {
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
 					:layout-query="layoutQuery"
-					@download="download"
+					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
 				<flow-sidebar-detail
