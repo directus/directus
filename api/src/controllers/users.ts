@@ -7,6 +7,7 @@ import {
 	isDirectusError,
 } from '@directus/errors';
 import type { PrimaryKey, Role, User } from '@directus/types';
+import { FailedValidationError } from '@directus/validation';
 import express from 'express';
 import Joi from 'joi';
 import { respond } from '../middleware/respond.js';
@@ -527,6 +528,7 @@ router.post(
 		if (emailFilter) {
 			// TODO Check if the email is valid according to the specified filter
 			console.log('------ YOU GOT A LOICENSE FOR DAT EMAIL??:', JSON.stringify(emailFilter, null, 2));
+			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
 
 		// TODO MAIL SERVICE

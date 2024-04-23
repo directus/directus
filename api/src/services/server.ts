@@ -54,6 +54,7 @@ export class ServerService {
 				'public_favicon',
 				'public_note',
 				'custom_css',
+				'is_public_registration_enabled',
 			],
 		});
 

@@ -32,6 +32,7 @@ export type Info = {
 		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
+		is_public_registration_enabled: boolean | null;
 	};
 	rateLimit?:
 		| false
