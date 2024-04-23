@@ -2,6 +2,7 @@ import defaults from './_defaults.yaml';
 
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
+import commentsFields from './comments.yaml';
 import fieldFields from './fields.yaml';
 import fileFields from './files.yaml';
 import folderFields from './folders.yaml';
@@ -31,6 +32,7 @@ export const systemFieldRows: FieldMeta[] = [];
 
 processFields(activityFields);
 processFields(collectionFields);
+processFields(commentsFields);
 processFields(fieldFields);
 processFields(fileFields);
 processFields(folderFields);
