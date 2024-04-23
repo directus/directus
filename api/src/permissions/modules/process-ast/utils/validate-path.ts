@@ -1,6 +1,8 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Permission } from '@directus/types';
 
+// TODO add validation against schema object for non-existing fields and collections
+
 export function validatePath(path: string, permissions: Permission[], collection: string, fields: Set<string>) {
 	const pathSuffix = path === '' ? 'root' : `"${path}"`;
 
