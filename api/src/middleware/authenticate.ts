@@ -14,6 +14,8 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
+		roles: [],
+		policies: [],
 		admin: false,
 		app: false,
 		ip: getIPFromReq(req),
