@@ -2,4 +2,4 @@
 '@directus/sdk': minor
 ---
 
-Added singleton response type for graphql queries
+Added GraphQL singleton helper type for the SDK
