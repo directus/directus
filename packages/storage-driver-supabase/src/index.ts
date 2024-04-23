@@ -82,11 +82,10 @@ export class DriverSupabase implements Driver {
 	}
 
 	async stat(filepath: string) {
-		filepath = this.getFullPath(filepath);
-		const folder = filepath.split('/').slice(0, -1).join('/');
-		const filename = filepath.split('/').pop() || '';
-
-		const { data, error } = await this.bucket.list(folder, { search: filename, limit: 1 });
+		const { data, error } = await this.bucket.list(this.config.root ?? '', {
+			search: filepath,
+			limit: 1,
+		});
 
 		if (error || data.length === 0) {
 			throw new Error('File not found');
