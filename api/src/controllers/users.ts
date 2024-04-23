@@ -383,28 +383,30 @@ router.post(
 
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
+			// TODO support enforce_tfa from policies
 
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
+			// if (role && role.enforce_tfa) {
+			// 	const existingPermission = await req.accountability.permissions?.find(
+			// 		(p) => p.collection === 'directus_users' && p.action === 'update',
+			// 	);
+
+			// 	if (existingPermission) {
+			// 		existingPermission.fields = ['tfa_secret'];
+			// 		existingPermission.permissions = { id: { _eq: req.accountability.user } };
+			// 		existingPermission.presets = null;
+			// 		existingPermission.validation = null;
+			// 	} else {
+			// 		(req.accountability.permissions || (req.accountability.permissions = [])).push({
+			// 			action: 'update',
+			// 			collection: 'directus_users',
+			// 			fields: ['tfa_secret'],
+			// 			permissions: { id: { _eq: req.accountability.user } },
+			// 			presets: null,
+			// 			role: req.accountability.role,
+			// 			validation: null,
+			// 		});
+			// 	}
+			// }
 		}
 
 		const service = new TFAService({
@@ -438,28 +440,30 @@ router.post(
 
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
+			// TODO support enforce_tfa from policies
 
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
+			// if (role && role.enforce_tfa) {
+			// 	const existingPermission = await req.accountability.permissions?.find(
+			// 		(p) => p.collection === 'directus_users' && p.action === 'update',
+			// 	);
+
+			// 	if (existingPermission) {
+			// 		existingPermission.fields = ['tfa_secret'];
+			// 		existingPermission.permissions = { id: { _eq: req.accountability.user } };
+			// 		existingPermission.presets = null;
+			// 		existingPermission.validation = null;
+			// 	} else {
+			// 		(req.accountability.permissions || (req.accountability.permissions = [])).push({
+			// 			action: 'update',
+			// 			collection: 'directus_users',
+			// 			fields: ['tfa_secret'],
+			// 			permissions: { id: { _eq: req.accountability.user } },
+			// 			presets: null,
+			// 			role: req.accountability.role,
+			// 			validation: null,
+			// 		});
+			// 	}
+			// }
 		}
 
 		const service = new TFAService({
