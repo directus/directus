@@ -13,14 +13,16 @@ import type {
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
+import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
-import { generateAlias } from './generate-alias.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
 import { stripFunction } from './strip-function.js';
+
+export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**
  * Apply the Query to a given Knex query builder instance

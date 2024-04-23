@@ -1,7 +1,6 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { applyFilter } from '../../../utils/apply-query.js';
-import { generateAlias } from '../../../utils/generate-alias.js';
+import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
 import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
