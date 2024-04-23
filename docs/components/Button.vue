@@ -62,11 +62,11 @@ const buttonProps = computed(() => {
 }
 .size-small {
 	font-size: 14px;
-	padding: 0.2rem 0.4rem;
+	padding: 0.2rem 0.6rem;
 }
 .size-medium {
 	font-size: 1rem;
-	padding: 0.25rem 0.5rem;
+	padding: 0.25rem 0.75rem;
 }
 .color-primary {
 	background: var(--primary);

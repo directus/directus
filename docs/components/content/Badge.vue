@@ -14,11 +14,15 @@ defineProps({
 	iconAfter: {
 		type: String
 	},
+	color: {
+		type: String,
+		default: 'gray'
+	}
 })
 </script>
 
 <template>
-	<span class="badge" :class="{ small: small }">
+	<span :class="`badge color-${color} ${small ? 'small' : ''}`">
 		<Icon v-if="iconBefore" :name="iconBefore" :size="small ? '0.75rem' : '1rem'" />
 		<span>{{ text }}</span>
 		<Icon v-if="iconAfter" :name="iconAfter" :size="small ? '0.75rem' : '1rem'" />

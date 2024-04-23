@@ -30,19 +30,21 @@ const detailsOpen = ref(false)
 	<details v-if="toggleable" class="callout info" @toggle="detailsOpen = !detailsOpen">
 		<summary>
 			<span> {{ title }} </span>
-			<Badge small :text="`Click to ${detailsOpen ? 'close' : 'open'}`" />
+			<!-- <Badge small :text="`Click to ${detailsOpen ? 'close' : 'open'}`" /> -->
+			<Icon name="material-symbols:keyboard-arrow-down-rounded" :class="{ toggle: true, open: detailsOpen }" />
 		</summary>
 		<ContentSlot :use="$slots.default" />
 	</details>
 
 	<!-- STATIC -->
 	<component :is="componentType()" v-else :href="url" class="callout" :class="type" :style="`border-color: ${section.color};`">
-		<Icon :name="section.icon" :color="section.color" />
+		<Icon :name="section.icon" :color="section.color" class="icon main" />
 		<div class="content">
-			<p v-if="title"><b>{{ title }}</b></p>
+			<p v-if="title" class="title"><b>{{ title }}</b></p>
 			<ContentSlot :use="$slots.default" />
 		</div>
-		<Icon v-if="componentType == 'a'" class="arrow" name="material-symbols:arrow-forward-ios-rounded" :color="section.color"  />
+		<!-- TODO: FIX ARROW ON LINK -->
+		<Icon v-if="componentType == 'a' || componentType().name == 'NuxtLink'" class="arrow" name="material-symbols:arrow-forward-ios-rounded" :color="section.color"  />
 	</component>
 </template>
 
@@ -75,11 +77,12 @@ a.callout {
 	}
 	.arrow {
 		margin-left: auto;
+		margin-top: 5px;
 	}
 }
 
-svg {
-	margin-top: 2px;
+.icon.main {
+	margin-top: 4px;
 }
 
 details.callout {
@@ -96,15 +99,26 @@ details.callout {
 			margin-top: 1rem;
 		}
 	}
+	.toggle {
+		&.open {
+			transform: rotate(180deg);
+		}
+	}
 }
 
-.content :deep(> *:last-child) {
-	margin-bottom: 0;
-}
+.content {
+	width: 100%;
+	:deep(p) {
+		margin-bottom: 0.5rem;
+	}
 
-.content :deep(ul),
-.content :deep(ol) {
-	padding-left: 1.25rem;
+	:deep(> *:last-child) {
+		margin-bottom: 0;
+	}
+
+	:deep(ul),
+	:deep(ol) {
+		padding-left: 1.25rem;
+	}
 }
 </style>
-~/utils/calloutDefinitions

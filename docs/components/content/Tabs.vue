@@ -49,9 +49,12 @@ const render = () => {
 }
 .tabs-content {
 	padding: 1rem;
+
+	> div > *:first-child {
+		margin-top: 0;
+	}
 	> div > *:last-child {
 		margin-bottom: 0;
-
 	}
 }
 </style>

@@ -17,11 +17,6 @@ const nav = ref([
 		color: 'var(--section--tutorials)',
 	},
 	{
-		label: 'User Guide',
-		href: '/user-guide',
-		color: 'var(--section--user-guide)',
-	},
-	{
 		label: 'Community',
 		href: '/community',
 		color: 'var(--section--community)',

@@ -2,15 +2,18 @@
 	<a class="directus-cloud" href="https://directus.cloud/register" target="_blank">
 		<div>
 			<img src="~/assets/img/cloud-logo.svg" alt="directus Cloud">
-			<Button label="Get Started" type="span" color="white" />
+			<p>Everything you need to start building. Provisioned in 90 seconds.</p>
 		</div>
-		<p>Everything you need to start building. Provisioned in 90 seconds.</p>
+		<Button label="Get Started" type="span" color="white" />
 	</a>
 </template>
 
 <style scoped>
 .directus-cloud {
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
 	background-image: url('~/assets/img/cloud-cta-bg.svg');
 	background-size: cover;
 	background-position: center bottom;
@@ -18,16 +21,14 @@
 	border-radius: var(--border-radius);
 	text-decoration: none;
 	color: white;
-	padding: 1rem;
-}
-img {
-	width: 225px;
+	padding: 1rem 1.8rem 1rem 1.25rem;
 }
 div {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 1rem;
+	img {
+		width: 225px;
+		margin-bottom: 0.25rem;
+		margin-top: 0.25rem;
+	}
 	.button {
 		margin-bottom: 1rem;
 	}

@@ -5,7 +5,8 @@ const props = defineProps({
 		required: true
 	},
 	compact: {
-		type: Boolean
+		type: Boolean,
+		default: true
 	}
 })
 
@@ -68,8 +69,6 @@ a {
 	justify-content: flex-start;
 	align-items: center;
 	text-decoration: none;
-	margin-right: 0.25rem;
-	margin-left: 0.25rem;
 	img {
 		position: relative;
 		display: inline;
@@ -81,7 +80,7 @@ a {
 	}
 	span {
 		display: inline;
-		margin-left: 0.5em;
+		margin-left: 0.3rem;
 		font-family: var(--font--header);
 		font-weight: 500;
 		background-color: var(--typography);

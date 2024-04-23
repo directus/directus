@@ -16,7 +16,7 @@
 			<a href="https://directus.chat">
 				<Icon name="ri:discord-fill" />
 			</a>
-			<Button type="a" label="Register" href="https://directus.cloud/register" target="_blank" color="outline-only" size="small" />
+			<Button type="a" label="Register" href="https://directus.cloud/register" target="_blank" color="outline-only" size="small" class="register" />
 			<Button type="a" label="Sign In" href="https://directus.cloud" target="_blank" color="primary" size="small" />
 		</div>
 	</header>
@@ -52,9 +52,13 @@ header {
 	align-items: center;
 	.icon {
 		color: var(--typography--subdued);
+		margin-bottom: 1px;
 		&:hover {
 			color: var(--typography);
 		}
+	}
+	.register {
+		margin-right: -0.5rem;
 	}
 }
 </style>
