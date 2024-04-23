@@ -36,6 +36,7 @@ export async function getAccountabilityForToken(
 
 			accountability.role = payload.role;
 			accountability.roles = await fetchRolesTree(database, payload.role);
+
 			const { admin, app } = await fetchGlobalAccess(database, accountability.roles, accountability.user ?? undefined);
 
 			accountability.admin = admin;
