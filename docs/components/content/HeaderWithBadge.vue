@@ -30,7 +30,7 @@ function slugify(str) {
 	<component :is="`h${h}`" :id="`#${slugify(text)}`" class="header-with-badge">
 		<a :href="`#${slugify(text)}`">
 			<span>{{ text }}</span>
-			<Badge :text="badge" small />
+			<Badge :text="badge" color="primary" small />
 		</a>
 	</component>
 </template>

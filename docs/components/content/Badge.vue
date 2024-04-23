@@ -16,7 +16,10 @@ defineProps({
 	},
 	color: {
 		type: String,
-		default: 'gray'
+		default: 'gray',
+		validator(value) {
+			return ['gray', 'primary'].includes(value)
+		}
 	}
 })
 </script>
@@ -43,6 +46,12 @@ defineProps({
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
+}
+
+.color-primary {
+	background-color: var(--purple);
+	border: 1px solid var(--purple--dark-1);
+	color: white;
 }
 
 .small {
