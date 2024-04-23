@@ -51,9 +51,11 @@ const fields = computed({
 
 		const appMinimal = new Set(props.appMinimal ?? []);
 		const previousFields = new Set(permissionSync.value.fields ?? []);
+		const allSelected = fieldsInCollection.value.every(({ value }) => newFields?.includes(value));
 
 		for (const field of newFields ?? []) {
 			if (appMinimal.has(field) && !previousFields.has(field)) continue;
+			if (field === '*' && !allSelected) continue;
 			fields.push(field);
 		}
 
