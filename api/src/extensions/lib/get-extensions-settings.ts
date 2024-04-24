@@ -1,4 +1,4 @@
-import type { BundleExtension, Extension, ExtensionSettings } from '@directus/extensions';
+import type { Extension, ExtensionSettings } from '@directus/extensions';
 import { randomUUID } from 'node:crypto';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
@@ -34,6 +34,36 @@ export const getExtensionsSettings = async ({
 	const registrySettings = existingSettings.filter(({ source }) => source === 'registry');
 	const moduleSettings = existingSettings.filter(({ source }) => source === 'module');
 
+	const updateBundleEntriesSettings = (
+		extensionSettings: ExtensionSettings,
+		extension: Extension,
+		settings: ExtensionSettings[],
+	) => {
+		if (extension.type !== 'bundle') return;
+
+		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === extensionSettings.id);
+
+		for (const entry of bundleEntriesSettings) {
+			const entryInBundle = extension.entries.some(({ name }) => name === entry.folder);
+			if (entryInBundle) continue;
+
+			removedSettingIds.push(entry.id);
+		}
+
+		for (const entry of extension.entries) {
+			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
+			if (settingsExist) continue;
+
+			newSettings.push({
+				id: randomUUID(),
+				enabled: true,
+				source: extensionSettings.source,
+				bundle: extensionSettings.id,
+				folder: entry.name,
+			});
+		}
+	};
+
 	const generateSettingsEntry = (folder: string, extension: Extension, source: 'local' | 'registry' | 'module') => {
 		if (extension.type === 'bundle') {
 			const bundleId = randomUUID();
@@ -66,41 +96,11 @@ export const getExtensionsSettings = async ({
 		}
 	};
 
-	const updateBundleEntriesSettings = (
-		bundleSettings: ExtensionSettings,
-		bundleExtension: BundleExtension,
-		settings: ExtensionSettings[],
-		source: 'local' | 'registry' | 'module',
-	) => {
-		const bundleId = bundleSettings.id;
-		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === bundleId);
-
-		for (const entry of bundleEntriesSettings) {
-			const entryExists = bundleExtension.entries.some(({ name }) => name === entry.folder);
-			if (entryExists) continue;
-
-			removedSettingIds.push(entry.id);
-		}
-
-		for (const entry of bundleExtension.entries) {
-			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
-			if (settingsExist) continue;
-
-			newSettings.push({
-				id: randomUUID(),
-				enabled: true,
-				source: source,
-				bundle: bundleId,
-				folder: entry.name,
-			});
-		}
-	};
-
 	for (const [folder, extension] of local.entries()) {
 		const existingSettings = localSettings.find((settings) => settings.folder === folder);
 
 		if (existingSettings) {
-			if (extension.type === 'bundle') updateBundleEntriesSettings(existingSettings, extension, localSettings, 'local');
+			updateBundleEntriesSettings(existingSettings, extension, localSettings);
 			continue;
 		}
 
@@ -129,7 +129,7 @@ export const getExtensionsSettings = async ({
 		if (!existingSettings) {
 			generateSettingsEntry(folder, extension, 'module');
 		} else if (extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, moduleSettings, 'module');
+			updateBundleEntriesSettings(existingSettings, extension, moduleSettings);
 		}
 	}
 
@@ -139,7 +139,7 @@ export const getExtensionsSettings = async ({
 		if (!existingSettings) {
 			generateSettingsEntry(folder, extension, 'registry');
 		} else if (extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, registrySettings, 'registry');
+			updateBundleEntriesSettings(existingSettings, extension, registrySettings);
 		}
 	}
 
