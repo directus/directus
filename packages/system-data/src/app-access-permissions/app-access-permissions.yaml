@@ -13,6 +13,18 @@
     comment:
       _nnull: true
 
+- collection: directus_comments
+  action: read
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
+
+- collection: directus_comments
+  action: create
+  validation:
+    comment:
+      _nnull: true
+
 - collection: directus_presets
   action: read
   permissions:
