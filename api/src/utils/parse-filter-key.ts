@@ -8,7 +8,7 @@
 const FILTER_KEY_REGEX = /^([^()]+)(\(([^)]+)\))?/;
 
 /**
- * Strip the function declarations from a list of fields
+ * Parses a filter key, returning its field name and function name (if defined) separately.
  */
 export function parseFilterKey(key: string) {
 	const match = key.match(FILTER_KEY_REGEX);
