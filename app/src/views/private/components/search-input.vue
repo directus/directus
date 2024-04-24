@@ -2,7 +2,7 @@
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { Ref, computed, inject, ref, watch } from 'vue';
+import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -11,6 +11,8 @@ const props = withDefaults(
 		showFilter?: boolean;
 		collection?: string;
 		filter?: Filter | null;
+		autofocus?: boolean;
+		placeholder?: string;
 	}>(),
 	{
 		showFilter: true,
@@ -26,7 +28,7 @@ const { t } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
-const active = ref(props.modelValue !== null);
+const active = ref(props.autofocus);
 const filterActive = ref(false);
 const filterBorder = ref(false);
 
@@ -40,11 +42,12 @@ watch(
 	() => {
 		if (!filterElement.value) return;
 
-		const searchElement = filterElement.value.parentElement!;
-		const minWidth = searchElement.offsetWidth - 4;
 		const headerElement = mainElement?.value?.firstElementChild;
 
 		if (!headerElement) return;
+
+		const searchElement = filterElement.value.parentElement!;
+		const minWidth = searchElement.offsetWidth - 4;
 
 		const maxWidth =
 			searchElement.getBoundingClientRect().right -
@@ -56,10 +59,8 @@ watch(
 	{ immediate: true },
 );
 
-watch(active, (newActive: boolean) => {
-	if (newActive === true && input.value !== null) {
-		input.value.focus();
-	}
+onMounted(() => {
+	if (active.value) input.value?.focus();
 });
 
 const activeFilterCount = computed(() => {
@@ -86,16 +87,32 @@ const activeFilterCount = computed(() => {
 	}
 });
 
-function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
-	const path = e.path || e.composedPath!();
-	if (path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
-
+function onClickOutside(event: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
+	const path = event.path || event.composedPath!();
+	if (path.some((element) => element?.classList?.contains('v-menu-content'))) return false;
 	return true;
+}
+
+function activate() {
+	if (!active.value) input.value?.focus();
+	active.value = true;
+}
+
+function toggleFilter() {
+	filterActive.value = !filterActive.value;
+	active.value = true;
+	input.value?.focus();
+}
+
+function clear() {
+	emit('update:modelValue', null);
+	if (active.value) input.value?.focus();
 }
 
 function disable() {
 	active.value = false;
 	filterActive.value = false;
+	input.value?.blur();
 }
 
 function emitValue() {
@@ -111,6 +128,7 @@ function emitValue() {
 			v-click-outside="{
 				handler: disable,
 				middleware: onClickOutside,
+				disabled: !active,
 			}"
 			class="search-input"
 			:class="{
@@ -120,25 +138,46 @@ function emitValue() {
 				'filter-border': filterBorder,
 				'show-filter': showFilter,
 			}"
-			@click="active = true"
+			role="search"
+			@click="activate"
 		>
-			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
+			<v-icon
+				v-tooltip.bottom="!active ? t('search') : undefined"
+				name="search"
+				class="icon-search"
+				:clickable="!active"
+				@click="input?.focus()"
+			/>
+			<input
+				ref="input"
+				:value="modelValue"
+				:placeholder="placeholder ?? t('search_items')"
+				type="search"
+				spellcheck="false"
+				autocapitalize="off"
+				autocorrect="off"
+				autocomplete="off"
+				:tabindex="!active && !modelValue ? -1 : undefined"
+				@input="emitValue"
+				@paste="emitValue"
+				@keydown.esc="disable"
+			/>
+			<div class="spacer" />
 			<v-icon
 				v-if="modelValue"
+				v-tooltip.bottom="t('clear_value')"
 				clickable
-				class="icon-empty"
+				class="icon-clear"
 				name="close"
-				@click.stop="$emit('update:modelValue', null)"
+				@click.stop="clear"
 			/>
-
 			<template v-if="showFilter">
 				<v-icon
 					v-tooltip.bottom="t('filter')"
 					clickable
 					class="icon-filter"
 					name="filter_list"
-					@click="filterActive = !filterActive"
+					@click.stop="toggleFilter"
 				/>
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
@@ -180,57 +219,11 @@ function emitValue() {
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		width: 68px;
-	}
-
-	.icon-empty {
-		--v-icon-color: var(--theme--foreground-subdued);
-
-		display: none;
-		margin-left: 8px;
-
-		&:hover {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
-
-	.icon-search,
-	.icon-filter {
-		--v-icon-color-hover: var(--theme--primary);
-	}
-
-	.icon-search {
-		margin: 0 9px; // visually center in closed filter
-		margin-right: 4px;
-	}
-
-	.icon-filter {
-		margin: 0 8px;
-		margin-left: 0;
-	}
-
-	&:hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
-
-	&.has-content {
-		width: 200px;
-
-		.icon-empty {
-			display: block;
-		}
-
-		.icon-filter {
-			margin-left: 0;
-		}
-
-		input {
-			opacity: 1;
-		}
+		width: 69px;
 	}
 
 	input {
-		width: 0px;
+		width: 0;
 		height: 100%;
 		margin: 0;
 		padding: 0;
@@ -248,13 +241,57 @@ function emitValue() {
 		}
 	}
 
+	.spacer {
+		width: 8px;
+	}
+
+	.icon-clear {
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--danger);
+
+		min-width: auto;
+		overflow: hidden;
+	}
+
+	.icon-search,
+	.icon-filter {
+		--v-icon-color-hover: var(--theme--primary);
+	}
+
+	.icon-search {
+		margin: 0 4px 0 9px; // visually center in closed filter
+	}
+
+	.icon-filter {
+		margin-right: 8px;
+	}
+
+	&:focus-within,
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
+
+	&.has-content {
+		width: 200px;
+
+		.icon-clear {
+			margin-right: 8px;
+		}
+
+		input {
+			opacity: 1;
+		}
+
+		&.show-filter {
+			.icon-clear {
+				margin-right: 0;
+			}
+		}
+	}
+
 	&.active {
 		width: 300px;
 		border-color: var(--theme--form--field--input--border-color-focus);
-
-		.icon-empty {
-			display: block;
-		}
 
 		input {
 			opacity: 1;
@@ -304,12 +341,6 @@ function emitValue() {
 	}
 }
 
-.value {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
 .filter {
 	position: absolute;
 	top: 100%;
@@ -326,10 +357,10 @@ function emitValue() {
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);
 	}
-}
 
-.filter-input {
-	/* Use margin instead of padding to make sure transition expand takes it into account */
-	margin: 10px 8px;
+	.filter-input {
+		/* Use margin instead of padding to make sure transition expand takes it into account */
+		margin: 10px 8px;
+	}
 }
 </style>
