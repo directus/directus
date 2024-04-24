@@ -65,9 +65,35 @@ export const getExtensionsSettings = async ({
 		}
 	};
 
+	const upsertBundleEntries = (
+		extension: Extension,
+		existingSetting: ExtensionSettings,
+		sourceSettings: ExtensionSettings[],
+	) => {
+		if (extension.type !== 'bundle') return;
+
+		for (const entry of extension.entries) {
+			const entrySettingsExist = sourceSettings.some((settings) => settings.folder === entry.name);
+
+			if (!entrySettingsExist) {
+				newSettings.push({
+					id: randomUUID(),
+					enabled: true,
+					source: existingSetting.source,
+					bundle: existingSetting.id,
+					folder: entry.name,
+				});
+			}
+		}
+	};
+
 	for (const [folder, extension] of local.entries()) {
-		const settingsExist = localSettings.some((settings) => settings.folder === folder);
-		if (settingsExist) continue;
+		const settingsExist = localSettings.find((settings) => settings.folder === folder);
+
+		if (settingsExist) {
+			upsertBundleEntries(extension, settingsExist, localSettings);
+			continue;
+		}
 
 		const settingsForName = localSettings.find((settings) => settings.folder === extension.name);
 
@@ -89,13 +115,23 @@ export const getExtensionsSettings = async ({
 	}
 
 	for (const [folder, extension] of module.entries()) {
-		const settingsExist = moduleSettings.some((settings) => settings.folder === folder);
-		if (!settingsExist) generateSettingsEntry(folder, extension, 'module');
+		const settingsExist = moduleSettings.find((settings) => settings.folder === folder);
+
+		if (settingsExist) {
+			upsertBundleEntries(extension, settingsExist, moduleSettings);
+		} else {
+			generateSettingsEntry(folder, extension, 'module');
+		}
 	}
 
 	for (const [folder, extension] of registry.entries()) {
-		const settingsExist = registrySettings.some((settings) => settings.folder === folder);
-		if (!settingsExist) generateSettingsEntry(folder, extension, 'registry');
+		const settingsExist = registrySettings.find((settings) => settings.folder === folder);
+
+		if (settingsExist) {
+			upsertBundleEntries(extension, settingsExist, moduleSettings);
+		} else {
+			generateSettingsEntry(folder, extension, 'registry');
+		}
 	}
 
 	if (newSettings.length > 0) {
