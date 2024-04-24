@@ -151,7 +151,7 @@ export function useItem<T extends Item>(
 		try {
 			let response;
 
-			if (isNew.value === true) {
+			if (isNew.value) {
 				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
@@ -346,7 +346,7 @@ export function useItem<T extends Item>(
 				});
 
 			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
+				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
 			);
 
 			if (otherErrors.length > 0) {
@@ -435,7 +435,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value === true) {
+		if (isNew.value) {
 			item.value = null;
 		} else {
 			getItem();
