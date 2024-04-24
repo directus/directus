@@ -6,12 +6,12 @@ import type { IfNever, IsDateTime, IsNumber, IsString, MergeOptional, UnpackList
 /**
  * Filters
  */
-export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<NestedQueryFilter<Schema, Item>>;
+export type QueryFilter<Schema, Item> = WrapLogicalFilters<NestedQueryFilter<Schema, Item>>;
 
 /**
  * Query filters without logical filters
  */
-export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+export type NestedQueryFilter<Schema, Item> = UnpackList<Item> extends infer FlatItem
 	? MergeOptional<
 			{
 				[Field in keyof FlatItem]?: NestedRelationalFilter<Schema, FlatItem, Field>;
@@ -31,7 +31,7 @@ export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> ex
 /**
  * Allow for relational filters
  */
-export type NestedRelationalFilter<Schema extends object, Item, Field extends keyof Item> =
+export type NestedRelationalFilter<Schema, Item, Field extends keyof Item> =
 	| (Field extends RelationalFields<Schema, Item>
 			? WrapRelationalFilters<NestedQueryFilter<Schema, Item[Field]>>
 			: never)

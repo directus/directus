@@ -53,7 +53,11 @@ watchEffect(async () => {
 				search: search.value,
 				limit: perPage,
 				offset: (page.value - 1) * perPage,
-				type: type.value,
+				filter: {
+					type: {
+						_eq: type.value,
+					},
+				},
 				sort: sort.value,
 			},
 		});

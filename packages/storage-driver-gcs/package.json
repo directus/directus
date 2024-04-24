@@ -28,7 +28,7 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@google-cloud/storage": "7.8.0"
+		"@google-cloud/storage": "7.10.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",

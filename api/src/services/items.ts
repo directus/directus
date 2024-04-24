@@ -22,6 +22,7 @@ import emitter from '../emitter.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getASTFromQuery from '../utils/get-ast-from-query.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
@@ -119,7 +120,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// changes in the DB if any of the parts contained within throws an error. This also means
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
-		const primaryKey: PrimaryKey = await this.knex.transaction(async (trx) => {
+		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
 			// We're creating new services instances so they can use the transaction as their Knex interface
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
@@ -344,11 +345,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
+		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
-				knex: trx,
+				knex: knex,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -560,7 +561,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const keys: PrimaryKey[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const service = new ItemsService(this.collection, {
 					accountability: this.accountability,
 					knex: trx,
@@ -649,7 +650,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw opts.preMutationError;
 		}
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
@@ -836,7 +837,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async upsertMany(payloads: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const primaryKeys = await this.knex.transaction(async (trx) => {
+		const primaryKeys = await transaction(this.knex, async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
@@ -927,7 +928,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			);
 		}
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
