@@ -152,6 +152,7 @@ function navigateToRole({ item }: { item: Role }) {
 
 		<template #actions>
 			<search-input
+				v-if="!loading"
 				v-model="search"
 				:autofocus="roles.length > 25"
 				:placeholder="t('search_role')"
