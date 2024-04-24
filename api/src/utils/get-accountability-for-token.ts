@@ -28,7 +28,7 @@ export async function getAccountabilityForToken(
 				const database = getDatabase();
 
 				const session = await database
-					.select('*')
+					.select('token', 'user', 'expires', 'ip')
 					.from('directus_sessions')
 					.where({
 						'token': payload['session'],
