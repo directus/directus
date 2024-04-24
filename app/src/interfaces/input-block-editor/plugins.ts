@@ -9,6 +9,14 @@ import { useBus } from './bus';
  * We include an uploader to directly use Directus file manager, along with a modified version of the attaches and image tools.
  */
 
+type Tune = {
+	name?: string;
+	title: string;
+	icon: string;
+	onActivate?: () => void;
+	toggle: boolean;
+};
+
 class Uploader {
 	getCurrentFile: any;
 	config: any;
@@ -161,39 +169,46 @@ export class ImageTool extends BaseImageTool {
 	}
 
 	renderSettings() {
-		const items = [
+		const tunes: Tune[] = [
 			{
 				icon: 'open_in_new',
-				label: 'Open Image',
-				onClick: () => {
+				title: 'Open Image',
+				toggle: false,
+				onActivate: () => {
 					const bus = useBus();
 					bus.emit({ type: 'open-url', payload: this.data.file.fileURL });
 				},
 			},
+			...ImageTool.tunes,
 		];
 
 		const wrapperElement = document.createElement('div');
 		wrapperElement.classList.add('ce-popover__items');
 
-		for (const item of items) {
-			const itemElement = document.createElement('div');
-			itemElement.classList.add('ce-popover-item');
+		for (const tune of tunes) {
+			const tuneElement = document.createElement('div');
+			tuneElement.classList.add('ce-popover-item');
 
 			const iconElement = document.createElement('div');
 			iconElement.classList.add('ce-popover-item__icon');
 			const iElement = document.createElement('i');
-			iElement.innerHTML = item.icon;
+			iElement.innerHTML = tune.icon;
 			iconElement.appendChild(iElement);
-			itemElement.appendChild(iconElement);
+			tuneElement.appendChild(iconElement);
 
 			const titleElement = document.createElement('div');
 			titleElement.classList.add('ce-popover-item__title');
-			titleElement.innerHTML = item.label;
-			itemElement.appendChild(titleElement);
+			titleElement.innerHTML = tune.title;
+			tuneElement.appendChild(titleElement);
 
-			itemElement.addEventListener('click', item.onClick);
+			if (tune.onActivate) tuneElement.addEventListener('click', tune.onActivate);
+			else if (tune.toggle)
+				tuneElement.addEventListener('click', () => {
+					this.tuneToggled(tune.name);
+					tuneElement.classList.toggle('ce-popover-item--active');
+				});
 
-			wrapperElement.appendChild(itemElement);
+			wrapperElement.appendChild(tuneElement);
 		}
 
 		return wrapperElement;
