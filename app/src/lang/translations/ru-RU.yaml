@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -144,6 +124,8 @@ promote_version_changes: Изменения
 promote_version_preview: Предпросмотр
 outdated_notice: >-
   Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
+promote_notice: >-
+  .
 delete_version: Удалить версию
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
@@ -630,38 +612,38 @@ auto_fill: Автозаполнение
 corresponding_field: Соответствующее поле
 errors:
   COLLECTION_NOT_FOUND: "Коллекция не существует"
+  CONTAINS_NULL_VALUES: Поле содержит значения NULL
+  CONTENT_TOO_LARGE: Отправленный файл слишком большой
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
+  ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
+  INTERNAL_SERVER_ERROR: Неожиданная ошибка
+  INVALID_CONFIG: Недействительная конфигурация
   INVALID_CREDENTIALS: Неверное имя пользователя или пароль
+  INVALID_FOREIGN_KEY: Недействительный внешний ключ
+  INVALID_IP: Недопустимый IP
   INVALID_OTP: Неверный одноразовый пароль
   INVALID_PAYLOAD: Недействительное содержимое
   INVALID_PROVIDER: Пользователь принадлежит другому провайдеру аутентификации
   INVALID_QUERY: Недействительный запрос
-  INVALID_CONFIG: Недействительная конфигурация
   INVALID_TOKEN: Недействительный токен
-  INVALID_IP: Недопустимый IP
   INVALID_USER: Не удалось аутентифицировать пользователя
   ITEM_LIMIT_REACHED: Достигнуто максимальное количество элементов
   ITEM_NOT_FOUND: Элемент не найден
-  ROUTE_NOT_FOUND: Не найдено
-  RECORD_NOT_UNIQUE: Обнаружен дубликат значения
-  USER_SUSPENDED: Пользователь заблокирован
-  CONTAINS_NULL_VALUES: Поле содержит значения NULL
-  INTERNAL_SERVER_ERROR: Неожиданная ошибка
-  NOT_NULL_VIOLATION: Значение не может быть NULL
-  ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
-  VALUE_TOO_LONG: Значение слишком длинное
-  VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
-  INVALID_FOREIGN_KEY: Недействительный внешний ключ
-  UNKNOWN: Неожиданная ошибка
-  SERVICE_UNAVAILABLE: Сервис недоступен
-  UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
-  UNEXPECTED_RESPONSE: Неожиданный ответ
-  TOKEN_EXPIRED: Токен с истёкшим сроком действия
-  RANGE_NOT_SATISFIABLE: Недопустимый диапазон
   METHOD_NOT_ALLOWED: Метод не разрешён
+  NOT_NULL_VIOLATION: Значение не может быть NULL
+  RANGE_NOT_SATISFIABLE: Недопустимый диапазон
+  RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   REQUESTS_EXCEEDED: Достигнуто максимальное количество запросов
-  CONTENT_TOO_LARGE: Отправленный файл слишком большой
+  ROUTE_NOT_FOUND: Не найдено
+  SERVICE_UNAVAILABLE: Сервис недоступен
+  TOKEN_EXPIRED: Токен с истёкшим сроком действия
+  UNEXPECTED_RESPONSE: Неожиданный ответ
+  UNKNOWN: Неожиданная ошибка
+  UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
+  USER_SUSPENDED: Пользователь заблокирован
+  VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
+  VALUE_TOO_LONG: Значение слишком длинное
 security: Безопасность
 value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
@@ -1186,6 +1168,8 @@ fields:
     last_access: Последний доступ
     email_notifications: Уведомления по e-mail
     appearance: Внешний вид
+    theme_light: Светлая тема
+    theme_dark: Тёмная тема
     theme_light_overrides: Настройка Светлой Темы
     theme_dark_overrides: Настройка Тёмной Темы
   directus_settings:
@@ -1214,6 +1198,9 @@ fields:
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
+    default_appearance: Внешний вид по умолчанию
+    default_theme_light: Светлая тема по умолчанию
+    default_theme_dark: Тёмная тема по умолчанию
     auth_password_policy: Минимальная сложность пароля
     auth_login_attempts: Попыток войти
     files_and_thumbnails: Хранилище файлов
@@ -2154,6 +2141,7 @@ operations:
     query: Запрос
   json-web-token:
     operation: Действие
+    secret: Секрет
     payload: Содержимое
     token: Ключ доступа
     options: Параметры

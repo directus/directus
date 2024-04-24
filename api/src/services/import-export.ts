@@ -25,6 +25,7 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
@@ -78,7 +79,7 @@ export class ImportService {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		return this.knex.transaction((trx) => {
+		return transaction(this.knex, (trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -126,7 +127,7 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		return this.knex.transaction((trx) => {
+		return transaction(this.knex, (trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -274,7 +275,7 @@ export class ExportService {
 
 			const database = getDatabase();
 
-			await database.transaction(async (trx) => {
+			await transaction(database, async (trx) => {
 				const service = new ItemsService(collection, {
 					accountability: this.accountability,
 					schema: this.schema,
