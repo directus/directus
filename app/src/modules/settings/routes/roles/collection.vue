@@ -236,6 +236,10 @@ function navigateToRole({ item }: { item: Role }) {
 
 .description {
 	color: var(--theme--foreground-subdued);
+
+	:deep(.highlight) {
+		background-color: var(--theme--background-accent);
+	}
 }
 
 .public {
