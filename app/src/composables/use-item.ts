@@ -35,7 +35,7 @@ type UsableItem<T extends Item> = {
 	archive: () => Promise<void>;
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
-	saveAsCopy: () => Promise<PrimaryKey>;
+	saveAsCopy: () => Promise<PrimaryKey | null>;
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
