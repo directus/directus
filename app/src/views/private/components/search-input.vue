@@ -2,7 +2,7 @@
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { Ref, computed, inject, ref, watch } from 'vue';
+import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -42,11 +42,12 @@ watch(
 	() => {
 		if (!filterElement.value) return;
 
-		const searchElement = filterElement.value.parentElement!;
-		const minWidth = searchElement.offsetWidth - 4;
 		const headerElement = mainElement?.value?.firstElementChild;
 
 		if (!headerElement) return;
+
+		const searchElement = filterElement.value.parentElement!;
+		const minWidth = searchElement.offsetWidth - 4;
 
 		const maxWidth =
 			searchElement.getBoundingClientRect().right -
@@ -58,8 +59,8 @@ watch(
 	{ immediate: true },
 );
 
-watch([active, input], ([newActive, newInput]) => {
-	if (newActive) newInput?.focus();
+onMounted(() => {
+	if (active.value) input.value?.focus();
 });
 
 const activeFilterCount = computed(() => {
@@ -86,11 +87,26 @@ const activeFilterCount = computed(() => {
 	}
 });
 
-function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
-	const path = e.path || e.composedPath!();
-	if (path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
-
+function onClickOutside(event: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
+	const path = event.path || event.composedPath!();
+	if (path.some((element) => element?.classList?.contains('v-menu-content'))) return false;
 	return true;
+}
+
+function activate() {
+	if (!active.value) input.value?.focus();
+	active.value = true;
+}
+
+function toggleFilter() {
+	filterActive.value = !filterActive.value;
+	active.value = true;
+	input.value?.focus();
+}
+
+function clear() {
+	emit('update:modelValue', null);
+	if (active.value) input.value?.focus();
 }
 
 function disable() {
@@ -112,6 +128,7 @@ function emitValue() {
 			v-click-outside="{
 				handler: disable,
 				middleware: onClickOutside,
+				disabled: !active,
 			}"
 			class="search-input"
 			:class="{
@@ -122,38 +139,45 @@ function emitValue() {
 				'show-filter': showFilter,
 			}"
 			role="search"
-			@click="active = true"
+			@click="activate"
 		>
-			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
+			<v-icon
+				v-tooltip.bottom="!active ? t('search') : undefined"
+				name="search"
+				class="icon-search"
+				:clickable="!active"
+				@click="input?.focus()"
+			/>
 			<input
 				ref="input"
 				:value="modelValue"
 				:placeholder="placeholder ?? t('search_items')"
-				:autofocus="autofocus"
 				type="search"
 				spellcheck="false"
 				autocapitalize="off"
 				autocorrect="off"
 				autocomplete="off"
+				:tabindex="!active && !modelValue ? -1 : undefined"
 				@input="emitValue"
 				@paste="emitValue"
 				@keydown.esc="disable"
 			/>
+			<div class="spacer" />
 			<v-icon
 				v-if="modelValue"
+				v-tooltip.bottom="t('clear_value')"
 				clickable
-				class="icon-empty"
+				class="icon-clear"
 				name="close"
-				@click.stop="$emit('update:modelValue', null)"
+				@click.stop="clear"
 			/>
-
 			<template v-if="showFilter">
 				<v-icon
 					v-tooltip.bottom="t('filter')"
 					clickable
 					class="icon-filter"
 					name="filter_list"
-					@click="filterActive = !filterActive"
+					@click.stop="toggleFilter"
 				/>
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
@@ -198,56 +222,6 @@ function emitValue() {
 		width: 69px;
 	}
 
-	.icon-empty {
-		--v-icon-color: var(--theme--foreground-subdued);
-
-		display: none;
-		margin: 0 8px;
-
-		&:hover {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
-
-	.icon-search,
-	.icon-filter {
-		--v-icon-color-hover: var(--theme--primary);
-	}
-
-	.icon-search {
-		margin: 0 4px 0 9px; // visually center in closed filter
-	}
-
-	.icon-filter {
-		margin-right: 8px;
-	}
-
-	&:hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
-
-	&.has-content {
-		width: 200px;
-
-		.icon-empty {
-			display: block;
-		}
-
-		.icon-filter {
-			margin-left: 0;
-		}
-
-		input {
-			opacity: 1;
-		}
-
-		&.show-filter {
-			.icon-empty {
-				margin-right: 0;
-			}
-		}
-	}
-
 	input {
 		width: 0;
 		height: 100%;
@@ -267,13 +241,57 @@ function emitValue() {
 		}
 	}
 
+	.spacer {
+		width: 8px;
+	}
+
+	.icon-clear {
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--danger);
+
+		min-width: auto;
+		overflow: hidden;
+	}
+
+	.icon-search,
+	.icon-filter {
+		--v-icon-color-hover: var(--theme--primary);
+	}
+
+	.icon-search {
+		margin: 0 4px 0 9px; // visually center in closed filter
+	}
+
+	.icon-filter {
+		margin-right: 8px;
+	}
+
+	&:focus-within,
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+	}
+
+	&.has-content {
+		width: 200px;
+
+		.icon-clear {
+			margin-right: 8px;
+		}
+
+		input {
+			opacity: 1;
+		}
+
+		&.show-filter {
+			.icon-clear {
+				margin-right: 0;
+			}
+		}
+	}
+
 	&.active {
 		width: 300px;
 		border-color: var(--theme--form--field--input--border-color-focus);
-
-		.icon-empty {
-			display: block;
-		}
 
 		input {
 			opacity: 1;
@@ -323,12 +341,6 @@ function emitValue() {
 	}
 }
 
-.value {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
 .filter {
 	position: absolute;
 	top: 100%;
@@ -345,10 +357,10 @@ function emitValue() {
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);
 	}
-}
 
-.filter-input {
-	/* Use margin instead of padding to make sure transition expand takes it into account */
-	margin: 10px 8px;
+	.filter-input {
+		/* Use margin instead of padding to make sure transition expand takes it into account */
+		margin: 10px 8px;
+	}
 }
 </style>
