@@ -5,18 +5,15 @@ import type {
 	Item,
 	Permission,
 	PermissionsAction,
-	PrimaryKey,
-	Query,
-	SchemaOverview,
+	SchemaOverview
 } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import type { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge } from 'lodash-es';
+import { cloneDeep, flatten, isNil, merge } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 
 export class AuthorizationService {
