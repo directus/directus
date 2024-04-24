@@ -146,6 +146,7 @@ logoutReason:
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+no_description: Keine Beschreibung ...
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -546,6 +547,7 @@ collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
+search_extensions: Durchsuche Erweiterungen ...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
