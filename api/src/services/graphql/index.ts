@@ -1,17 +1,23 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { type DirectusError, ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Aggregate, Filter, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
+import type {
+	ArgumentNode,
+	ExecutionResult,
+	FieldNode,
+	FormattedExecutionResult,
+	FragmentDefinitionNode,
+	GraphQLNullableType,
+	GraphQLResolveInfo,
+	InlineFragmentNode,
+	SelectionNode,
+	ValueNode,
+} from 'graphql';
 import {
-	type ArgumentNode,
-	execute,
-	type ExecutionResult,
-	type FieldNode,
-	type FormattedExecutionResult,
-	type FragmentDefinitionNode,
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLError,
@@ -20,20 +26,16 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	type GraphQLNullableType,
 	GraphQLObjectType,
-	type GraphQLResolveInfo,
 	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	type InlineFragmentNode,
 	Kind,
 	NoSchemaIntrospectionCustomRule,
-	type SelectionNode,
+	execute,
 	specifiedRules,
 	validate,
-	type ValueNode,
 } from 'graphql';
 import type {
 	InputTypeComposerFieldConfigMapDefinition,
