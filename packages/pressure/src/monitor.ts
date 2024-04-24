@@ -74,7 +74,7 @@ export class PressureMonitor {
 
 	private updateEventLoopUsage() {
 		this.eventLoopUtilization = performance.eventLoopUtilization().utilization;
-		// histogram is in nanoseconds. 1 nanosecond = 1e6 milliseconds
+		// histogram is in nanoseconds. 1e6 nanosecond = 1 milliseconds
 		this.eventLoopDelay = Math.round(this.histogram.mean / 1e6);
 		this.histogram.reset();
 	}

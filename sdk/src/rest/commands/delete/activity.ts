@@ -7,7 +7,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const deleteComment =
-	<Schema extends object>(key: DirectusActivity<Schema>['id']): RestCommand<void, Schema> =>
+	<Schema>(key: DirectusActivity<Schema>['id']): RestCommand<void, Schema> =>
 	() => ({
 		path: `/activity/comment/${key}`,
 		method: 'DELETE',

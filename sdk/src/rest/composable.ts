@@ -12,7 +12,7 @@ const defaultConfigValues: RestConfig = {};
  * @returns A Directus REST client.
  */
 export const rest = (config: Partial<RestConfig> = {}) => {
-	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
+	return <Schema>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		const restConfig = { ...defaultConfigValues, ...config };
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
