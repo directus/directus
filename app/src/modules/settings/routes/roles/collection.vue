@@ -235,11 +235,9 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .description {
-	color: var(--theme--foreground-subdued);
+	--v-highlight-color: var(--theme--background-accent);
 
-	:deep(.highlight) {
-		background-color: var(--theme--background-accent);
-	}
+	color: var(--theme--foreground-subdued);
 }
 
 .public {
