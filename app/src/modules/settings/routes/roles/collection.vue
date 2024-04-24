@@ -174,7 +174,7 @@ function navigateToRole({ item }: { item: Role }) {
 			</sidebar-detail>
 		</template>
 
-		<div v-if="filteredRoles.length > 0" class="roles">
+		<div v-if="!search || filteredRoles.length > 0" class="roles">
 			<v-table
 				v-model:headers="tableHeaders"
 				show-resize
