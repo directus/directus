@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: حول
 identifier: المعرِّف
 avatar: الصورة الرمزية
 application: التطبيق
@@ -11,6 +32,7 @@ extensions: الإضافات
 modules: الوحدات
 module_bar: شريط الوحدة
 logs: السجلات
+unknown: غير معروف
 reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
@@ -28,6 +50,8 @@ duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 group: المجموعة
+popular: شائع
+recent: الأخيرة
 export_items: تصدير عنصر
 and: و
 or: أو
@@ -54,9 +78,11 @@ extension_hooks: روابط
 extension_endpoints: نقطة الوصول
 extension_operations: عمليات
 extension_bundles: حُزَم
+extension_missing: مفقود
 extension_reload_required: مطلوب إعادة تحميل الصفحة
 extension_reload_required_copy: مطلوب إعادة تحميل الصفحة لرؤية التغييرات بعد تفعيل أو تعطيل إضافات التطبيق.
 extension_reload_now: إعادة التحميل الآن
+published_relative: نشر {relativeTime}
 enable: تفعيل
 disable: تعطيل
 custom: تخصيص

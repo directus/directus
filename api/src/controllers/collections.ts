@@ -1,11 +1,10 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
+import type { Item } from '@directus/types';
 import { Router } from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';
 import { MetaService } from '../services/meta.js';
-import type { Item } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();

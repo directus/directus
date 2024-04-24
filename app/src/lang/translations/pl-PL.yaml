@@ -615,6 +615,10 @@ no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
 webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
+webhooks_deprecation_notice: |
+  Webhooki są przestarzałe i ich dalsze używanie jest odradzane.
+
+  Zamiast tego użyj **Flows** z operacją [Webhook / Request URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
 no_notifications: Brak powiadomień
 no_notifications_copy: Jesteś na bieżąco z wiadomościami!
@@ -1162,6 +1166,7 @@ install_extension: Zainstaluj rozszerzenie
 uninstall_locked: Nie można odinstalować rozszerzeń, które nie zostały zainstalowane za pośrednictwem Marketplace
 uninstall: Odinstaluj
 installed: Zainstalowany
+reinstall: Zainstaluj ponownie
 open_in_marketplace: Otwórz w Marketplace
 source_registry: Marketplace
 source_local: Lokalny

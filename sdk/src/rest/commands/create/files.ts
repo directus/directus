@@ -3,7 +3,7 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateFileOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFile<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -17,7 +17,7 @@ export type CreateFileOutput<
  * @returns Returns the file object for the uploaded file, or an array of file objects if multiple files were uploaded at once.
  */
 export const uploadFiles =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		data: FormData,
 		query?: TQuery,
 	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
@@ -39,7 +39,7 @@ export const uploadFiles =
  * @returns Returns the file object for the imported file.
  */
 export const importFile =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		url: string,
 		data: Partial<DirectusFile<Schema>> = {},
 		query?: TQuery,
