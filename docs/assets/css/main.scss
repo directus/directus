@@ -72,7 +72,7 @@ pre {
 			margin-top: 0.5rem;
 		}
 	}
-	a:not([href*='directus.io']):not([href*='directus.cloud']):not([href*='localhost']):not([href*='127.0.0.1'])[href*='//']{
+	a:not(.callout):not([href*='directus.io']):not([href*='directus.cloud']):not([href*='localhost']):not([href*='127.0.0.1'])[href*='//']{
 		display: inline-block;
 		&:after {
 			--size: 1rem;
