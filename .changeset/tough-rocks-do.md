@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed the deselection of field permissions in the access control settings when changing the "All Access" preset
+Fixed the deselection of fields for permissions which previously had the "All Access" preset applied
