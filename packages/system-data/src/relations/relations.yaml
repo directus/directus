@@ -17,6 +17,19 @@ data:
     many_field: group
     one_collection: directus_collections
 
+  ### Comments
+  - many_collection: directus_comments
+    many_field: collection
+    one_collection: directus_collections
+
+  - many_collection: directus_comments
+    many_field: user_created
+    one_collection: directus_users
+
+  - many_collection: directus_comments
+    many_field: user_updated
+    one_collection: directus_users
+
   ### Users
   - many_collection: directus_users
     many_field: role
