@@ -174,7 +174,7 @@ function navigateToRole({ item }: { item: Role }) {
 			</sidebar-detail>
 		</template>
 
-		<div class="roles">
+		<div v-if="filteredRoles.length > 0" class="roles">
 			<v-table
 				v-model:headers="tableHeaders"
 				show-resize
@@ -201,6 +201,15 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 			</v-table>
 		</div>
+
+		<v-info v-else icon="search" :title="t('no_results')" center>
+			{{ t('no_results_copy') }}
+
+			<template #append>
+				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
 		<router-view name="add" />
 	</private-view>
 </template>
