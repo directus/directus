@@ -31,6 +31,10 @@ export class CommentsService extends ItemsService {
 			throw new InvalidPayloadError({ reason: 'Missing required fields' });
 		}
 
+		const authorizationService = new AuthorizationService({ schema: this.schema, accountability: this.accountability });
+
+		await authorizationService.checkAccess('read', data['collection'], data['item']);
+
 		const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
 		const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
