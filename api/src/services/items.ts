@@ -18,9 +18,10 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import runAST from '../database/run/run.js';
+import { runAst } from '../database/run/run.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -421,9 +422,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				: query;
 
 		let ast = await getAstFromQuery(this.collection, updatedQuery, this.schema, this.accountability);
-		ast = await processAst(ast, 'read', this.accountability, this.schema);
+		ast = await processAst(this.knex, ast, 'read', this.accountability, this.schema);
 
-		const records = await runAST(ast, this.schema, {
+		const records = await runAst(ast, this.schema, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
@@ -625,7 +626,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		keys.sort();
 
 		if (this.accountability) {
-			await authorizationService.checkAccess('update', this.collection, keys);
+			await validateAccess(this.knex, this.schema, this.accountability, 'update', this.collection, keys);
 		}
 
 		const payloadWithPresets = this.accountability
@@ -885,14 +886,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
-		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: this.knex,
-			});
-
-			await authorizationService.checkAccess('delete', this.collection, keys);
+		if (this.accountability) {
+			await validateAccess(this.knex, this.schema, this.accountability, 'delete', this.collection, keys);
 		}
 
 		if (opts.preMutationError) {

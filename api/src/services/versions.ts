@@ -7,25 +7,17 @@ import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { ActivityService } from './activity.js';
-import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
 export class VersionsService extends ItemsService {
-	authorizationService: AuthorizationService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
-
-		this.authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
 	}
 
 	private async validateCreateData(data: Partial<Item>): Promise<void> {
@@ -68,12 +60,16 @@ export class VersionsService extends ItemsService {
 		}
 
 		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', data['collection'], data['item']);
+		if (this.accountability) {
+			await validateAccess(this.knex, this.schema, this.accountability, 'read', data['collection'], [data['item']]);
+		}
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
 		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', collection, item);
+		if (this.accountability) {
+			await validateAccess(this.knex, this.schema, this.accountability, 'read', collection, [item]);
+		}
 
 		const itemsService = new ItemsService(collection, {
 			knex: this.knex,
@@ -266,7 +262,9 @@ export class VersionsService extends ItemsService {
 		const { id, collection, item } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
-		await this.authorizationService.checkAccess('update', collection, item);
+		if (this.accountability) {
+			await validateAccess(this.knex, this.schema, this.accountability, 'update', collection, [item]);
+		}
 
 		const { outdated } = await this.verifyHash(collection, item, mainHash);
 

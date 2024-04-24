@@ -6,7 +6,7 @@ import {
 	ServiceUnavailableError,
 } from '@directus/errors';
 import type { Range, Stat } from '@directus/storage';
-import type { Accountability, File } from '@directus/types';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -18,12 +18,12 @@ import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
-import { AuthorizationService } from './authorization.js';
 import { FilesService } from './files.js';
 
 const env = useEnv();
@@ -32,14 +32,14 @@ const logger = useLogger();
 export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
-	authorizationService: AuthorizationService;
 	filesService: FilesService;
+	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.filesService = new FilesService({ ...options, accountability: null });
-		this.authorizationService = new AuthorizationService(options);
+		this.schema = options.schema;
 	}
 
 	async getAsset(
@@ -63,8 +63,8 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
-		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		if (systemPublicKeys.includes(id) === false && this.accountability) {
+			await validateAccess(this.knex, this.schema, this.accountability, 'read', 'directus_files', [id]);
 		}
 
 		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;

@@ -4,11 +4,11 @@ import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
@@ -53,11 +53,12 @@ export class ActivityService extends ItemsService {
 					app: user['role']?.app_access ?? null,
 				};
 
-				const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
 				const usersService = new UsersService({ schema: this.schema, accountability });
 
 				try {
-					await authorizationService.checkAccess('read', data['collection'], data['item']);
+					if (this.accountability) {
+						await validateAccess(this.knex, this.schema, this.accountability, 'read', data['collection'], data['item']);
+					}
 
 					const templateData = await usersService.readByQuery({
 						fields: ['id', 'first_name', 'last_name', 'email'],

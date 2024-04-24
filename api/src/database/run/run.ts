@@ -14,7 +14,7 @@ import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 /**
  * Execute a given AST using Knex. Returns array of items based on requested AST.
  */
-export default async function runAST(
+export async function runAst(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
 	options?: RunASTOptions,

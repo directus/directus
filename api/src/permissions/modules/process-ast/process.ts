@@ -1,9 +1,8 @@
 import type { PermissionsAction } from '@directus/system-data';
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
-import { getDatabase } from '../../../database/index.js';
-import { AccessService } from '../../../services/access.js';
-import { PermissionsService } from '../../../services/permissions/index.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import type { AST } from '../../../types/ast.js';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
@@ -12,6 +11,7 @@ import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
 import { validatePath } from './utils/validate-path.js';
 
 export async function processAst(
+	knex: Knex,
 	ast: AST,
 	action: PermissionsAction,
 	accountability: Accountability | null,
@@ -23,31 +23,13 @@ export async function processAst(
 		return ast;
 	}
 
-	// TODO this might have to be a parameter as well to support this process being used in nested
-	// transactions
-	const knex = getDatabase();
-
-	const permissionsService = new PermissionsService({ schema, knex });
-	const accessService = new AccessService({ schema, knex });
-
-	const policies = await fetchPolicies(accessService, accountability);
+	const policies = await fetchPolicies(knex, schema, accountability);
 
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(ast, schema);
 	const collections = collectionsInFieldMap(fieldMap);
-
-	// Fetch permissions nested with policies by collection+action
-	const permissions = (await permissionsService.readByQuery({
-		filter: {
-			_and: [
-				{ policy: { _in: policies } },
-				{ collection: { _in: Array.from(collections) } },
-				{ action: { _eq: action } },
-			],
-		},
-		limit: -1,
-	})) as Permission[];
+	const permissions = await fetchPermissions(knex, schema, action, policies, collections);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
 		validatePath(path, permissions, collection, fields);

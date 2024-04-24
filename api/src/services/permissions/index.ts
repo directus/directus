@@ -2,8 +2,8 @@ import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PermissionsAction, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../../cache.js';
+import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../../types/index.js';
-import { AuthorizationService } from '../authorization.js';
 import type { QueryOptions } from '../items.js';
 import { ItemsService } from '../items.js';
 import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
@@ -156,19 +156,17 @@ export class PermissionsService extends ItemsService {
 			}
 		}
 
-		const authorizationService = new AuthorizationService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
 		await Promise.all(
 			Object.keys(itemPermissions).map((key) => {
 				const action = key as keyof ItemPermissions;
 				const checkAction = action === 'update' ? updateAction : action;
 
-				return authorizationService
-					.checkAccess(checkAction, collection, primaryKey)
+				if (!this.accountability) {
+					itemPermissions[action].access = true;
+					return Promise.resolve();
+				}
+
+				return validateAccess(this.knex, this.schema, this.accountability, checkAction, collection, [primaryKey])
 					.then(() => (itemPermissions[action].access = true))
 					.catch(() => {});
 			}),
