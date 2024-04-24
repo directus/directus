@@ -1,6 +1,7 @@
 import BaseAttachesTool from '@editorjs/attaches';
 import BaseImageTool from '@editorjs/image';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useBus } from './bus';
 
 /**
  * This file is a modified version of the attaches and image tool from editorjs to work with the Directus file manager.
@@ -157,5 +158,44 @@ export class ImageTool extends BaseImageTool {
 			const imageUrl = `${file.url}${separator}key=system-large-contain`;
 			this.ui.fillImage(imageUrl);
 		}
+	}
+
+	renderSettings() {
+		const items = [
+			{
+				icon: 'open_in_new',
+				label: 'Open Image',
+				onClick: () => {
+					const bus = useBus();
+					bus.emit({ type: 'open-url', payload: this.data.file.fileURL });
+				},
+			},
+		];
+
+		const wrapperElement = document.createElement('div');
+		wrapperElement.classList.add('ce-popover__items');
+
+		for (const item of items) {
+			const itemElement = document.createElement('div');
+			itemElement.classList.add('ce-popover-item');
+
+			const iconElement = document.createElement('div');
+			iconElement.classList.add('ce-popover-item__icon');
+			const iElement = document.createElement('i');
+			iElement.innerHTML = item.icon;
+			iconElement.appendChild(iElement);
+			itemElement.appendChild(iconElement);
+
+			const titleElement = document.createElement('div');
+			titleElement.classList.add('ce-popover-item__title');
+			titleElement.innerHTML = item.label;
+			itemElement.appendChild(titleElement);
+
+			itemElement.addEventListener('click', item.onClick);
+
+			wrapperElement.appendChild(itemElement);
+		}
+
+		return wrapperElement;
 	}
 }
