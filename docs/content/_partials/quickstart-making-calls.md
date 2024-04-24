@@ -1,0 +1,1 @@
+You can use a visual API testing tool like [Postman](https://www.postman.com/) or [Hoppscotch](https://hoppscotch.io/), a terminal-based based tool like [curl](https://curl.se/) or [HTTPie](https://httpie.io/cli), or make HTTP requests directly in a script written in your programming language of choice.
