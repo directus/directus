@@ -71,6 +71,9 @@ describe('Integration Tests', () => {
 	beforeEach(() => {
 		tracker.on.any('directus_users').response({});
 
+		// mock comments update query in deleteOne/deleteMany/deleteByQuery methods
+		tracker.on.update('directus_comments').response({});
+
 		// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_notifications').response({});
 
