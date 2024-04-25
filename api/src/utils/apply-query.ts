@@ -837,7 +837,7 @@ export async function applySearch(
 
 				// only cast finite base10 numeric values
 				if (validateNumber(searchQuery, number)) {
-					helpers.search.orWhere(this, collection, name, number);
+					helpers.search.orWhere(this, collection, name, number, field.type);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });

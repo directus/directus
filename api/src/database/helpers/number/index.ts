@@ -4,4 +4,4 @@ export { NumberSearchHelperDefault as cockroachdb } from './dialects/default.js'
 export { NumberSearchHelperDefault as oracle } from './dialects/default.js';
 export { NumberSearchHelperDefault as sqlite } from './dialects/default.js';
 export { NumberSearchHelperDefault as mysql } from './dialects/default.js';
-export { NumberSearchHelperDefault as mssql } from './dialects/default.js';
+export { NumberSearchHelperMSSQL as mssql } from './dialects/mssql.js';
