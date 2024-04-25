@@ -113,12 +113,8 @@ paths:
   # Activity
   /activity:
     $ref: './paths/activity/activities.yaml'
-  /activity/comment:
-    $ref: './paths/activity/activity-comments.yaml'
   /activity/{id}:
     $ref: './paths/activity/activity.yaml'
-  /activity/comment/{id}:
-    $ref: './paths/activity/activity-comment.yaml'
 
   # Assets
   /assets/{id}:
@@ -157,6 +153,12 @@ paths:
     $ref: './paths/collections/collections.yaml'
   /collections/{id}:
     $ref: './paths/collections/collection.yaml'
+
+  # Comments
+  /comments:
+    $ref: './paths/collections/comments.yaml'
+  /comments/{id}:
+    $ref: './paths/collections/comment.yaml'
 
   # Extensions
   /extensions:
