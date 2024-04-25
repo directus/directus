@@ -156,9 +156,9 @@ paths:
 
   # Comments
   /comments:
-    $ref: './paths/collections/comments.yaml'
+    $ref: './paths/comments/comments.yaml'
   /comments/{id}:
-    $ref: './paths/collections/comment.yaml'
+    $ref: './paths/comments/comment.yaml'
 
   # Extensions
   /extensions:
