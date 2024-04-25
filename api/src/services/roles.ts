@@ -2,6 +2,7 @@ import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions/index.js';
 import { PresetsService } from './presets.js';
@@ -263,7 +264,7 @@ export class RolesService extends ItemsService {
 			opts.preMutationError = err;
 		}
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const itemsService = new ItemsService('directus_roles', {
 				knex: trx,
 				accountability: this.accountability,

@@ -398,9 +398,9 @@ export default function App() {
     <div className='App'>
       <form onSubmit={loginSubmit}>
         <label htmlFor='email'>Email</label>
-        <input type='email' id='email' defaultValue='esther@directus.io' />
+        <input type='email' id='email' defaultValue='admin@example.com' />
         <label htmlFor='password'>Password</label>
-        <input type='password' id='password' defaultValue='*yb@o2DtuJvb' />
+        <input type='password' id='password' defaultValue='d1r3ctu5' />
         <input type='submit' />
       </form>
 
