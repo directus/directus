@@ -1,6 +1,9 @@
+import { useEnv } from '@directus/env';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash-es';
+import { SESSION_COOKIE_OPTIONS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -10,7 +13,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-export const handler = async (req: Request, _res: Response, next: NextFunction) => {
+export const handler = async (req: Request, res: Response, next: NextFunction) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
@@ -45,7 +48,18 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 		return next();
 	}
 
-	req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
+	try {
+		req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
+	} catch (error) {
+		// Clear the session cookie if the provided token is invalid,
+		// allowing the client to login again
+		if (isDirectusError(error, ErrorCode.InvalidToken) && req.tokenSource === 'cookie') {
+			const env = useEnv();
+			res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
+		}
+
+		throw error;
+	}
 
 	return next();
 };
