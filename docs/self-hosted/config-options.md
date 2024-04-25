@@ -363,8 +363,8 @@ Redis is required when you run Directus load balanced across multiple containers
 | `HSTS_ENABLED`                      | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                            | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
 
-<sup>[1]</sup> when `SECRET` is not set, it will be a random value. Sessions won't persist across system restarts or
-horizontally scaled deployments. Not for production usage.
+<sup>[1]</sup> When `SECRET` is not set, a random value will be used. This means sessions won't persist across system
+restarts or horizontally scaled deployments. Must be explicitly set to a secure random value in production.
 
 <sup>[2]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
 both if you want to specifically block localhost.
