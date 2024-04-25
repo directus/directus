@@ -1,5 +1,5 @@
-import { toArray } from '@directus/utils';
-import { toString } from 'lodash-es';
+import { toArray, toBoolean } from '@directus/utils';
+import { toNumber, toString } from 'lodash-es';
 import { getTypeFromMap } from '../utils/get-type-from-map.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
@@ -17,14 +17,16 @@ export const cast = (value: unknown, key?: string): unknown => {
 		case 'string':
 			return toString(value);
 		case 'number':
+			return toNumber(value);
 		case 'boolean':
-		case 'json':
-			return tryJson(value);
+			return toBoolean(value);
 		case 'regex':
 			return new RegExp(String(value));
 		case 'array':
 			return toArray(value)
 				.map((v) => cast(v))
 				.filter((v) => v !== '');
+		case 'json':
+			return tryJson(value);
 	}
 };
