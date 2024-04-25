@@ -10,11 +10,11 @@ declare global {
 	namespace Express {
 		export interface Request {
 			token: string | null;
-			tokenSource?: 'query' | 'headers' | 'cookie';
 			collection: string;
 			sanitizedQuery: Query;
 			schema: SchemaOverview;
 
+			tokenSource?: 'query' | 'headers' | 'cookie';
 			accountability?: Accountability;
 			singleton?: boolean;
 		}

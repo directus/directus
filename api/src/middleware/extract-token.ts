@@ -53,6 +53,8 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		}
 	}
 
+	req.token ??= null;
+
 	next();
 };
 
