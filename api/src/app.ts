@@ -75,7 +75,7 @@ export default async function createApp(): Promise<express.Application> {
 	const logger = useLogger();
 	const helmet = await import('helmet');
 
-	validateEnv(['KEY', 'SECRET']);
+	validateEnv(['SECRET']);
 
 	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
