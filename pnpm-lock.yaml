@@ -920,6 +920,9 @@ importers:
       eslint-plugin-react:
         specifier: 7.34.1
         version: 7.34.1(eslint@8.57.0)
+      markdown-it-for-inline:
+        specifier: 2.0.1
+        version: 2.0.1
       marked:
         specifier: 12.0.1
         version: 12.0.1
@@ -8245,6 +8248,9 @@ packages:
 
   markdown-it-emoji@2.0.2:
     resolution: {integrity: sha512-zLftSaNrKuYl0kR5zm4gxXjHaOI3FAOEaloKmRA5hijmJZvSjmxcokOLlzycb/HXlUFWzXqpIEoyEMCE4i9MvQ==}
+
+  markdown-it-for-inline@2.0.1:
+    resolution: {integrity: sha512-JGOi3/Ohhzehs+1qSA4CkDydmVBtiYi2q2BD//YtTbSK+75InrGJX2MtPq1AdMeC4BV7rwEhq1+3pLnwGbsgzA==}
 
   markdown-it@12.3.2:
     resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
@@ -19084,6 +19090,8 @@ snapshots:
       markdown-it: 12.3.2
 
   markdown-it-emoji@2.0.2: {}
+
+  markdown-it-for-inline@2.0.1: {}
 
   markdown-it@12.3.2:
     dependencies:

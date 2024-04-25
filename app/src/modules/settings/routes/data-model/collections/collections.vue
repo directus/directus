@@ -4,6 +4,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { merge, sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -156,21 +157,12 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<template #actions>
-			<v-input
+			<search-input
 				v-model="search"
-				class="search"
+				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
-				type="search"
 				:placeholder="t('search_collection')"
-				:full-width="false"
-			>
-				<template #prepend>
-					<v-icon name="search" outline />
-				</template>
-				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
-				</template>
-			</v-input>
+			/>
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
@@ -277,18 +269,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 </template>
 
 <style scoped lang="scss">
-.v-input.search {
-	--v-input-border-radius: calc(44px / 2);
-	height: 44px;
-	width: 200px;
-	margin-left: auto;
-
-	@media (min-width: 600px) {
-		width: 300px;
-		margin-top: 0px;
-	}
-}
-
 .padding-box {
 	padding: var(--content-padding);
 	padding-top: 0;
