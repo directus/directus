@@ -34,8 +34,7 @@ tags:
       alter the schema of the database.
     x-collection: directus_collections
   - name: Comments
-    description:
-      Comments can be added to items.
+    description: Comments can be added to items.
     x-collection: directus_comments
   - name: Extensions
     description:
