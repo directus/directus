@@ -49,7 +49,9 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 				}
 			}
 
-			throw new Error(`Transaction still failing after ${MAX_ATTEMPTS} attempts`, { cause: error });
+			/** Initial execution + additional attempts */
+			const attempts = 1 + MAX_ATTEMPTS;
+			throw new Error(`Transaction failed after ${attempts} attempts`, { cause: error });
 		}
 	}
 };
