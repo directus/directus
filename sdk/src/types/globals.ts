@@ -3,7 +3,7 @@ export type FetchInterface = (input: string | any, init?: RequestInit | any) => 
 
 export type UrlInterface = typeof URL;
 
-/** While the standard envisages 'string | URL', some implementations (e.g. React Native) only accept 'string' */
+/** While the standard says 'string | URL' for the 'url' parameter, some implementations (e.g. React Native) only accept 'string' */
 export type WebSocketConstructor = {
 	new (url: string, protocols?: string | string[]): WebSocketInterface;
 };
