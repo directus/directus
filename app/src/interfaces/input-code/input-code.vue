@@ -76,6 +76,10 @@ onMounted(async () => {
 					return emit('input', null);
 				}
 
+				if (isInterpolation(content)) {
+					return emit('input', content);
+				}
+
 				try {
 					const parsedJson = JSON.parse(content);
 					if (typeof parsedJson !== 'string') return emit('input', parsedJson);
@@ -92,6 +96,8 @@ onMounted(async () => {
 
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
+
+	if (isInterpolation(props.value)) return props.value;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -126,6 +132,9 @@ async function setLanguage() {
 
 			CodeMirror.registerHelper('lint', 'json', (text: string) => {
 				const found: Record<string, any>[] = [];
+
+				if (isInterpolation(text)) return found;
+
 				const parser = jsonlint.parser;
 
 				parser.parseError = (str: string, hash: any) => {
@@ -277,6 +286,10 @@ function fillTemplate() {
 	} else {
 		emit('input', props.template);
 	}
+}
+
+function isInterpolation(value: any) {
+	return typeof value === 'string' && value.startsWith('{{') && value.endsWith('}}');
 }
 </script>
 
