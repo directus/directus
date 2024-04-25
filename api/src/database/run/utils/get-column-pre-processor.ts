@@ -2,7 +2,7 @@ import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
 import { getColumn } from '../../../utils/get-column.js';
-import { stripFunction } from '../../../utils/strip-function.js';
+import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../helpers/index.js';
 
 export function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
@@ -18,7 +18,8 @@ export function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table:
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
+			const { fieldName } = parseFilterKey(fieldNode.name);
+			field = schema.collections[table]!.fields[fieldName];
 		} else {
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}

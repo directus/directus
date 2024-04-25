@@ -1,6 +1,6 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
-import { stripFunction } from '../../../utils/strip-function.js';
+import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
 export async function parseCurrentLevel(
 	schema: SchemaOverview,
@@ -16,7 +16,7 @@ export async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
-			const fieldName = stripFunction(child.name);
+			const { fieldName } = parseFilterKey(child.name);
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);

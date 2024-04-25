@@ -254,8 +254,19 @@ export default defineLayout<LayoutOptions>({
 			showingCount,
 			createCalendar,
 			destroyCalendar,
+			resetPresetAndRefresh,
+			refresh,
 			download,
 		};
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
+
+		function refresh() {
+			getItems();
+		}
 
 		function download() {
 			if (!collection.value) return;

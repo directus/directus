@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
-import { stripFunction } from '../../../../utils/strip-function.js';
+import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import type { FieldMap, QueryPath } from '../types.js';
 import { formatA2oKey } from '../utils/format-a2o-key.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
@@ -52,14 +52,16 @@ export function extractFieldsFromChildren(
 				child.fieldKey,
 			]);
 		} else if (child.type === 'functionField') {
-			info.fields.add(stripFunction(child.fieldKey));
+			const { fieldName } = parseFilterKey(child.fieldKey);
+			info.fields.add(fieldName);
 
 			// functionFields operate on a related o2m collection, we have to make sure we include a
 			// no-field read check to the related collection
 			extractFieldsFromChildren(child.relatedCollection, [], fieldMap, schema, [...path, child.fieldKey]);
 			extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, [...path, child.fieldKey]);
 		} else {
-			info.fields.add(stripFunction(child.fieldKey));
+			const { fieldName } = parseFilterKey(child.fieldKey);
+			info.fields.add(fieldName);
 		}
 	}
 }
