@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { randomUUID } from 'crypto';
+import { nanoid } from 'nanoid';
 import { useLogger } from '../logger.js';
 
 export const _cache: { secret: string | null } = { secret: null };
@@ -20,7 +20,7 @@ export const getSecret = () => {
 		`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
 	);
 
-	_cache.secret = randomUUID();
+	_cache.secret = nanoid(32);
 
 	return _cache.secret;
 };
