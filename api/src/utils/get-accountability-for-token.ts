@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
+import { getSecret } from './get-secret.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
@@ -9,8 +9,6 @@ export async function getAccountabilityForToken(
 	token?: string | null,
 	accountability?: Accountability,
 ): Promise<Accountability> {
-	const env = useEnv();
-
 	if (!accountability) {
 		accountability = {
 			user: null,
@@ -22,7 +20,7 @@ export async function getAccountabilityForToken(
 
 	if (token) {
 		if (isDirectusJWT(token)) {
-			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+			const payload = verifyAccessJWT(token, getSecret());
 
 			accountability.role = payload.role;
 			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
