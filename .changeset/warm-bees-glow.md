@@ -3,4 +3,4 @@
 "create-directus-project": patch
 ---
 
-Drop extension folder creation
+Dropped creation of typed extension folders during project initialization 
