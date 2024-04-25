@@ -7,6 +7,7 @@ import {
 	isDirectusError,
 } from '@directus/errors';
 import type { PrimaryKey, Role, User } from '@directus/types';
+import { validatePayload } from '@directus/utils';
 import { FailedValidationError } from '@directus/validation';
 import express from 'express';
 import Joi from 'joi';
@@ -14,11 +15,13 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
+import { MailService } from '../services/index.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
 import { SettingsService } from '../services/settings.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
+import type { AbstractServiceOptions } from '../types/services.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -507,7 +510,7 @@ router.post(
 router.post(
 	'/register',
 	asyncHandler(async (req, _res, next) => {
-		const serviceOptions = { accountability: null, schema: req.schema };
+		const serviceOptions: AbstractServiceOptions = { accountability: null, schema: req.schema };
 		const settingsService = new SettingsService(serviceOptions);
 
 		const settings = await settingsService.readSingleton({
@@ -525,16 +528,18 @@ router.post(
 			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
 		}
 
-		if (emailFilter) {
-			// TODO Check if the email is valid according to the specified filter
-			console.log('------ YOU GOT A LOICENSE FOR DAT EMAIL??:', JSON.stringify(emailFilter, null, 2));
+		const email = req.body?.email;
+
+		if (typeof email !== 'string') {
 			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
 
-		// TODO MAIL SERVICE
+		if (emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+			throw new FailedValidationError({ field: 'email', type: 'email' });
+		}
 
 		const partialUser: Partial<User> = {
-			email: req.body?.email,
+			email,
 			password: req.body?.password,
 			role: publicRegistrationRole,
 		};
@@ -543,6 +548,21 @@ router.post(
 
 		const usersService = new UsersService(serviceOptions);
 		await usersService.createOne(partialUser);
+
+		// TODO MAIL SERVICE
+		const mailService = new MailService(serviceOptions);
+
+		mailService.send({
+			// TODO: from?
+			to: email,
+			subject: 'TODO MAKE SUBJECT FOR PUBLIC REGISTRATION',
+			// TODO?: text or template
+			// text: ''
+			// template: {
+			// 	name: 'base',
+			// 	data: {} // TODO: might need to add
+			// },
+		});
 
 		return next();
 	}),
