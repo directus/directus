@@ -59,7 +59,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
 
 		const withStrictAuth = async (url: URL | string, currentClient: AuthWSClient<Schema>) => {
-			const newUrl = typeof url === 'string' ? new client.globals.URL(url) : url;
+			const newUrl = new client.globals.URL(url);
 
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
 				const token = await currentClient.getToken();
