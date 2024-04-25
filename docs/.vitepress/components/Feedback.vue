@@ -98,7 +98,7 @@ async function handleSubmission(rating?: number) {
 					<div>
 						<span>{{ getRatingOption(feedback.rating)?.label }}</span>
 						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
-							<span mi icon>close</span>
+							<span mi icon translate="no">close</span>
 						</button>
 					</div>
 				</div>
