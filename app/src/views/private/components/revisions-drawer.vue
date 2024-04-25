@@ -73,8 +73,8 @@ function revert() {
 
 	const revertToValues: Record<string, any> = {};
 
-	for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
-		const previousValue = previousRevision.value?.data[field] ?? null;
+	for (const [field, newValue] of Object.entries(currentRevision.value.delta ?? {})) {
+		const previousValue = previousRevision.value?.data?.[field] ?? null;
 		if (isEqual(newValue, previousValue)) continue;
 		revertToValues[field] = previousValue;
 	}

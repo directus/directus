@@ -8,7 +8,7 @@ import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
  */
 export type ApplyQueryFields<
 	// input types
-	Schema extends object,
+	Schema,
 	Collection extends object,
 	ReadonlyFields,
 	// calculated types
@@ -48,7 +48,7 @@ export type ApplyQueryFields<
  */
 export type ApplyManyToAnyFields<
 	// input types
-	Schema extends object,
+	Schema,
 	JunctionCollection,
 	FieldsList,
 	// calculated types
@@ -72,7 +72,7 @@ export type ApplyManyToAnyFields<
 /**
  * wrapper to aid in recursion
  */
-export type ApplyNestedQueryFields<Schema extends object, Collection, Fields> = Collection extends object
+export type ApplyNestedQueryFields<Schema, Collection, Fields> = Collection extends object
 	? ApplyQueryFields<Schema, Collection, Readonly<UnpackList<Fields>>>
 	: never;
 

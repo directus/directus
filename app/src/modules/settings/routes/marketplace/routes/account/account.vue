@@ -48,7 +48,7 @@ watchEffect(async () => {
 		params: {
 			limit: perPage,
 			offset: (page.value - 1) * perPage,
-			by: props.accountId,
+			filter: { by: { _eq: props.accountId } },
 		},
 	});
 

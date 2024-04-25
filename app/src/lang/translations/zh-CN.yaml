@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: 关于
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
@@ -7,10 +28,12 @@ method: 方法
 published: 已发布
 draft: 草稿
 archived: 已存档
+marketplace: 扩展集市
 extensions: 扩展
 modules: 模块
 module_bar: 模块栏
 logs: 日志
+unknown: 未知
 reset_width: 重置宽度
 tile_size: 瓦块大小
 edit_field: 编辑
@@ -28,6 +51,8 @@ duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
 group: 分组
+popular: 热门
+recent: 最近
 export_items: 导出
 and: 与
 or: 或
@@ -49,11 +74,32 @@ extension_displays: 显示
 extension_layouts: 布局
 extension_modules: 模块
 extension_panels: 面板
+extension_themes: 主题
 extension_hooks: 钩子
 extension_endpoints: 端点
 extension_operations: 操作
 extension_bundles: 包
+extension_missing: 缺失
 extension_reload_required: 需要重新加载页面
+extension_reload_required_copy: 启用或禁用应用扩展后需要重新加载页面才能看到更改。
+extension_reload_now: 立即重新加载
+published_relative: 已发布 {relativeTime}
+compatible_with_your_project: 与您的项目兼容
+compatible_with_your_project_copy: 作者已将此扩展的兼容性版本定为 {hostVersion}，它与您的项目版本 ({currentVersion}) 不匹配
+last_updated_relative: 最近更新 {relativeTime}
+n_files: '{n} 个文件'
+verified: 已验证
+homepage: 首页
+repository: 存储库
+reload_required: 需要重载
+report_an_issue: 反馈问题
+website: 网站
+github: GitHub
+beta: 测试版
+n_downloads: '{n} 次下载'
+downloads: 下载数
+compatibility_not_guaranteed: 兼容性没有保障
+compatibility_not_guaranteed_copy: 作者已将此扩展的兼容性版本定为 {hostVersion}，它与您的项目版本 ({currentVersion}) 不匹配
 enable: 启用
 disable: 禁用
 custom: 自定义
@@ -142,6 +188,8 @@ logoutReason:
 public_label: 公开
 public_description: 设置哪些API无需身份验证。
 admin_description: 不受限制的 App/ API 访问权限的初始管理角色
+no_description: 没有描述。
+reached_maximum_number_of_extensions: 您已达到此项目的最大扩展数 ({n})。请联系您的系统管理员以获取更多信息。
 not_allowed: 不允许
 archive: 存档
 archive_confirm: 您确定要归档所选吗？
@@ -281,9 +329,20 @@ time: 时间
 timestamp: 时间戳
 uuid: UUID
 hash: Hash
+geometry:
+  All: 几何要素(全部)
+  Point: 点
+  LineString: 线段
+  Polygon: 多边形
+  MultiPoint: 多点
+  MultiLineString: 多段线
+  MultiPolygon: 复杂多边型
 theme_auto: 自动(基于系统)
 theme_light: 亮色模式
 theme_dark: 暗色模式
+theme_directus_default: 默认设置
+theme_directus_minimal: 迷你设置
+theme_directus_colormatch: 色彩匹配
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -295,6 +354,7 @@ auto_generate: 自动生成
 this_will_auto_setup_fields_relations: 这将自动设置所有必填字段和关系。
 click_here: 点击
 to_manually_setup_translations: 手动设置翻译。
+manage: 管理
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
@@ -464,7 +524,11 @@ months:
   november: 11 月
   december: 12 月
 drag_mode: 拖动模式
+move_tool: 移动工具
+crop_tool: 裁剪工具
+focal_point_tool: 焦点工具
 cancel_crop: 取消裁剪。
+cancel_selection: 取消选择
 original: 原始
 url: URl
 import_label: 导入
@@ -532,6 +596,7 @@ collapse: 收起
 select_item: 选择条目
 no_items: 无条目
 search_items: 搜索项
+search_extensions: 搜索扩展
 disabled: 禁用
 information: 信息
 report_bug: 反馈Bug
@@ -550,6 +615,10 @@ no_files_copy: 没有任何文件。
 user_count: '没有用户 | 一个用户 | {count} 个用户'
 no_users_copy: 该角色下还没有用户。
 webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
+webhooks_deprecation_notice: |
+  Webhook 已被弃用，并且不鼓励进一步使用。
+
+  请改用 **Flows** 和 [Webhook / 请求 URL 操作](https://docs.directus.io/app/flows/operations.html#webhook-request-url)。
 no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 no_notifications: 无通知
 no_notifications_copy: 你已全部搞定！
@@ -613,6 +682,10 @@ select_an_item: 选择一个条目...
 edit: 编辑
 edit_item: 编辑条目
 enabled: 已启用
+partially_enabled: 部分启用
+enable_all: 全部启用
+disable_all: 全部禁用
+enabled_dev_tooltip: 应用程序扩展总是在开发模式下启用
 disable_tfa: 停用双重认证
 admin_disable_tfa_text: 您确定要为此用户禁用2FA吗？
 tfa_setup: 设置 2FA
@@ -628,6 +701,7 @@ errors:
   CONTENT_TOO_LARGE: 提交的项目/文件太大了
   FIELD_NOT_FOUND: 字段未找到
   FORBIDDEN: 禁止
+  GRAPHQL_VALIDATION: GraphQL 验证
   ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
   INTERNAL_SERVER_ERROR: 未知错误
   INVALID_CONFIG: 无效配置
@@ -642,6 +716,7 @@ errors:
   INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
   ITEM_NOT_FOUND: 找不到条目
+  LIMIT_EXCEEDED: '超出限制'
   METHOD_NOT_ALLOWED: 不被允许的方法
   NOT_NULL_VIOLATION: 值不能为null
   RANGE_NOT_SATISFIABLE: 无效的范围
@@ -765,6 +840,7 @@ operators:
   regex: 匹配正则表达式
 custom_validation_message: 自定义验证消息
 loading: 正在载入...
+extension_readme_missing: 此扩展没有README 文件。
 drop_to_upload: 拖拽文件并上传
 item: 条目
 items: 条目
@@ -1071,6 +1147,9 @@ page_help_users_item: >-
   **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
 page_help_insights_overview: '**Insights** — 您可以访问的工作台列表。'
 page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
+page_help_marketplace_account: '**Account** - 发布者或已发布扩展的维护者。'
+page_help_marketplace_registry: '**Registry** — Directus 市场中提供的扩展。'
+page_help_marketplace_extension: '**Extension** — Directus 市场中提供的扩展。'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -1083,6 +1162,15 @@ cancel: 取消
 no_upscale: 不要放大图片
 no_extensions: 无扩展
 no_extensions_copy: 尚未安装扩展。
+install_extension: 安装扩展
+uninstall_locked: 无法卸载未通过市场安装的扩展
+uninstall: 卸载
+installed: 已安装
+reinstall: 重新安装
+open_in_marketplace: 在市场中打开
+source_registry: 扩展集市
+source_local: 本地
+source_module: Node模块
 collection: 数据模型
 collections: 数据模型
 content: 内容
@@ -1205,6 +1293,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: 反馈中
     mapping: 映射
     basemaps: 底图
     basemaps_raster: 栅格化
@@ -1351,11 +1440,13 @@ field_options:
     description: 可选描述...
     location: 可选位置...
     storage_divider: 文件名
+    focal_point_divider: 聚焦点
     filename_disk: 服务端的名称...
     filename_download: 下载时的文件名
   directus_roles:
     name: 角色名称...
     description: 角色介绍...
+    ip_access: 添加允许的 IP 地址、 IP 范围和 CIDR 块。留空以允许所有...
     fields:
       icon_name: 图标
       name_name: 名称
@@ -1804,6 +1895,7 @@ interfaces:
     no_collection: 暂无模型
     toggle_split_view: 切换视图
     enable: 启用
+    default_split_view_state: 默认分割视图状态
     user_language: 使用当前用户语言
     default_language: 默认语言
     language_field: 语言指示字段
@@ -1824,7 +1916,9 @@ interfaces:
     description: 富文本编辑器
     toolbar: 工具栏
     custom_formats: 自定义格式
+    custom_formats_note: TinyMCE 内容格式列表。有关更多信息，请参阅有关 [内容格式](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) 的 TinyMCE 文档。
     options_override: 覆盖选项
+    options_override_note: TinyMCE 自定义格式快捷键及其值。有关更多信息，请参阅有关 [自定义格式](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) 的 TinyMCE 文档。
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
@@ -1965,6 +2059,7 @@ displays:
     description: 显示对象的格式化版本
   hash:
     hash: Hash
+    description: 显示对象的格式化版本
   icon:
     icon: 图标
     description: 显示图标

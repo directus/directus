@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Σχετικά
 identifier: Ταυτοποιητής
 avatar: Άβαταρ
 application: Εφαρμογή
@@ -11,6 +32,7 @@ extensions: Επεκτάσεις
 modules: Ενότητες
 module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
+unknown: Άγνωστο
 reset_width: Επαναφορά πλάτους
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
@@ -28,6 +50,8 @@ duplicate_field: Αντίγραφο Πεδίου
 half_width: Μισό Πλάτος
 full_width: Πλήρες Πλάτος
 group: Ομάδα
+popular: Δημοφιλές
+recent: Πρόσφατο
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
@@ -57,6 +81,13 @@ extension_bundles: Πακέτα
 extension_reload_required: Απαιτείται Επαναφόρτωση Σελίδας
 extension_reload_required_copy: Απαιτείται επαναφόρτωση σελίδας για να δείτε τις αλλαγές μετά την ενεργοποίηση ή απενεργοποίηση των επεκτάσεων εφαρμογών.
 extension_reload_now: Επαναφόρτωση τώρα
+homepage: Αρχική σελίδα
+github: GitHub
+beta: Beta (Δοκιμαστική)
+n_downloads: '{n} Λήψεις'
+downloads: Λήψεις
+compatibility_not_guaranteed: Μη εγγυημένη συμβατότητα
+compatibility_not_guaranteed_copy: Ο συγγραφέας έχει υποδείξει τη συμβατότητα αυτής της επέκτασης να είναι η{hostVersion}, η οποία δεν ταιριάζει με την τρέχουσα έκδοση σας ({currentVersion})
 enable: Ενεργοποίηση
 disable: Απενεργοποίηση
 custom: Προσαρμοσμένο
@@ -153,6 +184,7 @@ validationError:
   required: Η τιμή είναι απαραίτητη
   unique: Η τιμή πρέπει να είναι μοναδική
   regex: Η τιμή δεν έχει τη σωστή μορφή
+  nistarts_with: Η τιμή δεν μπορεί να ξεκινάει με {substring}
 all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
 use_custom: Χρήση προσαρμοσμένου

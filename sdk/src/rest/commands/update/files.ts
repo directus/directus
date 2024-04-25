@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateFileOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFile<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateFileOutput<
  * @throws Will throw if keys is empty
  */
 export const updateFiles =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
 		item: Partial<DirectusFile<Schema>>,
 		query?: TQuery,
@@ -43,7 +43,7 @@ export const updateFiles =
  * @throws Will throw if key is empty
  */
 export const updateFile =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
 		item: Partial<DirectusFile<Schema>> | FormData,
 		query?: TQuery,

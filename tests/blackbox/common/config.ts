@@ -78,6 +78,7 @@ const directusConfig = {
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
 	CACHE_SCHEMA: 'true',
+	CACHE_SCHEMA_MAX_ITERATIONS: 100,
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',
