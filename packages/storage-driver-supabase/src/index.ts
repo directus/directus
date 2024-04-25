@@ -16,12 +16,16 @@ export type DriverSupabaseConfig = {
 };
 
 export class DriverSupabase implements Driver {
-	private config: DriverSupabaseConfig;
+	private config: DriverSupabaseConfig & { root: string };
 	private client: StorageClient;
 	private bucket: ReturnType<StorageClient['from']>;
 
 	constructor(config: DriverSupabaseConfig) {
-		this.config = config;
+		this.config = {
+			...config,
+			root: normalizePath(config.root ?? '', { removeLeading: true }),
+		};
+
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
 	}
@@ -53,12 +57,12 @@ export class DriverSupabase implements Driver {
 		return this.client.from(this.config.bucket);
 	}
 
-	private getFullPath(filepath: string) {
-		return this.config.root ? normalizePath(join(this.config.root, filepath)) : filepath;
+	private fullPath(filepath: string) {
+		return normalizePath(join(this.config.root, filepath));
 	}
 
 	private getAuthenticatedUrl(filepath: string) {
-		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.getFullPath(filepath))}`;
+		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.fullPath(filepath))}`;
 	}
 
 	async read(filepath: string, range?: Range) {
@@ -115,15 +119,15 @@ export class DriverSupabase implements Driver {
 	}
 
 	async move(src: string, dest: string) {
-		await this.bucket.move(this.getFullPath(src), this.getFullPath(dest));
+		await this.bucket.move(this.fullPath(src), this.fullPath(dest));
 	}
 
 	async copy(src: string, dest: string) {
-		await this.bucket.copy(this.getFullPath(src), this.getFullPath(dest));
+		await this.bucket.copy(this.fullPath(src), this.fullPath(dest));
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		await this.bucket.upload(this.getFullPath(filepath), content, {
+		await this.bucket.upload(this.fullPath(filepath), content, {
 			contentType: type ?? '',
 			cacheControl: '3600',
 			upsert: true,
@@ -132,16 +136,16 @@ export class DriverSupabase implements Driver {
 	}
 
 	async delete(filepath: string) {
-		await this.bucket.remove([this.getFullPath(filepath)]);
+		await this.bucket.remove([this.fullPath(filepath)]);
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncIterable<string> {
 		const limit = 1000;
 		let offset = 0;
 		let itemCount = 0;
 
 		do {
-			const { data, error } = await this.bucket.list(this.config.root, { limit, offset, search: prefix });
+			const { data, error } = await this.bucket.list(this.fullPath(prefix), { limit, offset });
 
 			if (!data || error) {
 				break;
@@ -151,7 +155,13 @@ export class DriverSupabase implements Driver {
 			offset += itemCount;
 
 			for (const item of data) {
-				yield item.name;
+				if (item.id !== null) {
+					// the API only return the pure filename, join it with the prefix for a relative path without root
+					yield normalizePath(join(prefix, item.name), { removeLeading: true });
+				} else {
+					// this is a directory, recursively list it
+					yield* this.list(normalizePath(join(prefix, item.name)));
+				}
 			}
 		} while (itemCount === limit);
 	}

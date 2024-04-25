@@ -10,6 +10,7 @@ import {
 	randPastDate,
 	randText,
 	randGitShortSha as randUnique,
+	randFileName,
 } from '@ngneat/falso';
 import { Response, fetch } from 'undici';
 import { Readable } from 'node:stream';
@@ -49,7 +50,7 @@ beforeEach(() => {
 			serviceRole: randAlphaNumeric({ length: 40 }).join(''),
 			bucket: randBucket(),
 			projectId: randAlphaNumeric({ length: 10 }).join(''),
-			root: randDirectoryPath(),
+			root: randUnique() + randDirectoryPath(),
 			endpoint: randDomainName(),
 		},
 		path: {
@@ -170,7 +171,7 @@ describe('#getClient', () => {
 	});
 });
 
-describe('#getFullPath', () => {
+describe('#fullPath', () => {
 	test('Returns the input value if no root is given', () => {
 		const driver = new DriverSupabase({
 			serviceRole: sample.config.serviceRole,
@@ -178,7 +179,7 @@ describe('#getFullPath', () => {
 			endpoint: sample.config.endpoint,
 		});
 
-		const result = driver['getFullPath'](sample.path.input);
+		const result = driver['fullPath'](sample.path.input);
 		expect(result).toBe(sample.path.input);
 	});
 
@@ -190,7 +191,7 @@ describe('#getFullPath', () => {
 			root: sample.config.root,
 		});
 
-		const result = driver['getFullPath'](sample.path.input);
+		const result = driver['fullPath'](sample.path.input);
 		expect(result).toBe(`${sample.config.root}/${sample.path.input}`);
 	});
 });
@@ -462,11 +463,11 @@ describe('#write', () => {
 		});
 	});
 
-	test('Ensures input is passed to getFullPath', async () => {
-		driver['getFullPath'] = vi.fn();
+	test('Ensures input is passed to fullPath', async () => {
+		driver['fullPath'] = vi.fn();
 
 		await driver.write(sample.path.input, sample.stream);
-		expect(driver['getFullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 
 	test('Optionally sets ContentType', async () => {
@@ -482,15 +483,15 @@ describe('#write', () => {
 });
 
 describe('#delete', () => {
-	test('Ensures input is passed to getFullPath', async () => {
+	test('Ensures input is passed to fullPath', async () => {
 		driver['bucket'] = {
 			remove: vi.fn(),
 		} as any;
 
-		driver['getFullPath'] = vi.fn();
+		driver['fullPath'] = vi.fn();
 
 		await driver.delete(sample.path.input);
-		expect(driver['getFullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 });
 
@@ -501,25 +502,25 @@ describe('#list', () => {
 			list: vi.fn().mockReturnValue({ data: [], error: null }),
 		} as any;
 
-		await driver.list(sample.path.input).next();
+		await driver.list(sample.path.input)[Symbol.asyncIterator]().next();
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith(undefined, {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(sample.path.input, {
 			limit: 1000,
 			offset: 0,
-			search: sample.path.input,
 		});
 	});
 
 	test('Yields file name omitting root', async () => {
 		const sampleRoot = randDirectoryPath();
-		const sampleFile = randFilePath();
+		const sampleFile = randFileName();
+		const sampleFull = `${sample.path.input}/${sampleFile}`;
 
-		// TODO: Probably a better way to do this?
 		driver['bucket'] = {
 			list: vi.fn().mockReturnValue({
 				data: [
 					{
 						name: sampleFile,
+						id: randUnique(),
 					},
 				],
 				error: null,
@@ -535,13 +536,82 @@ describe('#list', () => {
 			output.push(filepath);
 		}
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith(sampleRoot, {
-			limit: 1000,
-			offset: 0,
-			search: sample.path.input,
-		});
+		expect(output).toStrictEqual([sampleFull]);
+	});
 
-		expect(output).toStrictEqual([sampleFile]);
+	test('Recursively fetches all nested directories and yields only the files', async () => {
+		const sampleRoot = randDirectoryPath();
+		const samplePrefix = randUnique() + randDirectoryPath();
+
+		/*
+		sampleFile
+		sampleDirectory/
+		├─ sampleFileNested
+		├─ sampleDirectoryNested/
+		│  ├─ sampleFileDeeplyNested
+		 */
+		const sampleDirectory = randUnique();
+		const sampleDirectoryNested = randUnique();
+		const sampleFile = randFileName();
+		const sampleFileNested = randFileName();
+		const sampleFileDeeplyNested = randFileName();
+
+		const fullSampleDirectory = `${samplePrefix}/${sampleDirectory}`;
+		const fullSampleFile = `${samplePrefix}/${sampleFile}`;
+		const fullSampleDirectoryNested = `${fullSampleDirectory}/${sampleDirectoryNested}`;
+		const fullSampleFileNested = `${fullSampleDirectory}/${sampleFileNested}`;
+		const fullSampleFileDeeplyNested = `${fullSampleDirectoryNested}/${sampleFileDeeplyNested}`;
+
+		driver['bucket'] = {
+			list: vi
+				.fn()
+				.mockResolvedValueOnce({
+					data: [
+						{
+							name: sampleFile,
+							id: randUnique(),
+						},
+						{
+							name: sampleDirectory,
+							id: null,
+						},
+					],
+					error: null,
+				})
+				.mockResolvedValueOnce({
+					data: [
+						{
+							name: sampleFileNested,
+							id: randUnique(),
+						},
+						{
+							name: sampleDirectoryNested,
+							id: null,
+						},
+					],
+					error: null,
+				})
+				.mockResolvedValueOnce({
+					data: [
+						{
+							name: sampleFileDeeplyNested,
+							id: randUnique(),
+						},
+					],
+				}),
+		} as any;
+
+		driver['config'].root = sampleRoot;
+
+		const iterator = driver.list(samplePrefix);
+		const output: string[] = [];
+
+		for await (const filepath of iterator) {
+			output.push(filepath);
+		}
+
+		expect(driver['bucket'].list).toHaveBeenCalledTimes(3);
+		expect(output).toStrictEqual([fullSampleFile, fullSampleFileNested, fullSampleFileDeeplyNested]);
 	});
 
 	test('Continuously fetches until all pages are returned', async () => {
