@@ -1,4 +1,4 @@
-import { Action, FUNCTIONS } from '@directus/constants';
+import { FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -64,7 +64,6 @@ import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-vers
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
 import { ExtensionsService } from '../extensions.js';
@@ -2004,7 +2003,6 @@ export class GraphQLService {
 			CreateCollectionTypes,
 			ReadCollectionTypes,
 			UpdateCollectionTypes,
-			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
