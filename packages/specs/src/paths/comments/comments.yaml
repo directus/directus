@@ -47,7 +47,7 @@ post:
       application/json:
         schema:
           type: object
-          required: [collection]
+          required: [collection, item, comment]
           properties:
             collection:
               type: string

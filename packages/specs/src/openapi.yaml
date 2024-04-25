@@ -304,6 +304,8 @@ components:
       $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
+    Comments:
+      $ref: './components/comment.yaml'
     Diff:
       $ref: './components/diff.yaml'
     Extensions:
