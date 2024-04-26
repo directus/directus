@@ -72,12 +72,12 @@ test('Runs and returns basic counts', async () => {
 	const report = await getReport();
 
 	expect(getItemCount).toHaveBeenCalledWith(mockDb, [
-		'directus_dashboards',
-		'directus_extensions',
-		'directus_files',
-		'directus_flows',
-		'directus_roles',
-		'directus_shares',
+		{ collection: 'directus_dashboards' },
+		{ collection: 'directus_extensions', where: ['enabled', '=', true] },
+		{ collection: 'directus_files' },
+		{ collection: 'directus_flows', where: ['status', '=', 'active'] },
+		{ collection: 'directus_roles' },
+		{ collection: 'directus_shares' },
 	]);
 
 	expect(report.dashboards).toBe(mockItemCount.directus_dashboards);

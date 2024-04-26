@@ -29,6 +29,7 @@ beforeEach(() => {
 		select: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
 		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
 		groupBy: vi.fn().mockResolvedValue(mockResult),
 	} as unknown as Knex;
 });
@@ -43,6 +44,7 @@ test('Fetches counts from the database', async () => {
 	expect(mockDb.count).toHaveBeenCalledWith('directus_users.id', { as: 'count' });
 	expect(mockDb.select).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 	expect(mockDb.from).toHaveBeenCalledWith('directus_users');
+	expect(mockDb.where).toHaveBeenCalledWith('directus_users.status', '=', 'active');
 	expect(mockDb.leftJoin).toHaveBeenCalledWith('directus_roles', 'directus_users.role', '=', 'directus_roles.id');
 	expect(mockDb.groupBy).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 });
