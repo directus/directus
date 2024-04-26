@@ -211,12 +211,12 @@ fields:
     width: full
 
   - field: is_public_registration_enabled
+    interface: boolean
+    width: half
     options:
       label: $t:enabled
-    interface: boolean
     special:
       - cast-boolean
-    width: half
 
   - field: public_registration_role
     interface: select-dropdown-m2o
@@ -229,6 +229,14 @@ fields:
     display_options:
       template: '{{ name }}'
 
+  - field: is_public_registration_email_validation_enabled
+    interface: boolean
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
   - field: public_registration_email_filter
     interface: system-filter
     options:
@@ -237,7 +245,7 @@ fields:
       fieldName: email
     special:
       - cast-json
-    width: full
+    width: half
 
   - field: files_divider
     interface: presentation-divider

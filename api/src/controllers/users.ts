@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ContainsNullValuesError,
 	ErrorCode,
@@ -11,6 +12,8 @@ import { validatePayload } from '@directus/utils';
 import { FailedValidationError } from '@directus/validation';
 import express from 'express';
 import Joi from 'joi';
+import jwt from 'jsonwebtoken';
+import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -24,6 +27,7 @@ import { UsersService } from '../services/users.js';
 import type { AbstractServiceOptions } from '../types/services.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { Url } from '../utils/url.js';
 
 const router = express.Router();
 
@@ -514,7 +518,12 @@ router.post(
 		const settingsService = new SettingsService(serviceOptions);
 
 		const settings = await settingsService.readSingleton({
-			fields: ['is_public_registration_enabled', 'public_registration_role', 'public_registration_email_filter'],
+			fields: [
+				'is_public_registration_enabled',
+				'is_public_registration_email_validation_enabled',
+				'public_registration_role',
+				'public_registration_email_filter',
+			],
 		});
 
 		const publicRegistrationRole = settings?.['public_registration_role'];
@@ -534,35 +543,66 @@ router.post(
 			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
 
-		if (emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
-			throw new FailedValidationError({ field: 'email', type: 'email' });
-		}
+		const hasEmailValidation = settings?.['is_public_registration_email_validation_enabled'];
+		const usersService = new UsersService(serviceOptions);
 
 		const partialUser: Partial<User> = {
 			email,
 			password: req.body?.password,
 			role: publicRegistrationRole,
+			status: 'draft', // TODO: Do we want to have a dedicated "unverified" status?
 		};
 
-		console.log('-------------- WE GOT A USER REGISTERING:', JSON.stringify(partialUser));
+		if (hasEmailValidation) {
+			// await usersService.inviteUser(email, publicRegistrationRole, null, 'TODO SUBJECT', 'user-registration');
+			if (emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+				throw new FailedValidationError({ field: 'email', type: 'email' });
+			}
 
-		const usersService = new UsersService(serviceOptions);
-		await usersService.createOne(partialUser);
+			// TODO generate verification url for mail service
+		} else {
+			partialUser.status = 'active';
+		}
 
-		// TODO MAIL SERVICE
-		const mailService = new MailService(serviceOptions);
+		try {
+			await usersService.createOne(partialUser);
+		} catch (error: unknown) {
+			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
+			console.log('USER SERVICE ERROR:', JSON.stringify(error, null, 2));
 
-		mailService.send({
-			// TODO: from?
-			to: email,
-			subject: 'TODO MAKE SUBJECT FOR PUBLIC REGISTRATION',
-			// TODO?: text or template
-			// text: ''
-			// template: {
-			// 	name: 'base',
-			// 	data: {} // TODO: might need to add
-			// },
-		});
+			if (isDirectusError(error) && error.code !== 'RECORD_NOT_UNIQUE') {
+				throw error;
+			}
+		}
+
+		if (hasEmailValidation) {
+			// TODO MAIL SERVICE
+			// This is for local testing copy pasted from user services' inviteUser
+
+			const mailService = new MailService(serviceOptions);
+			const env = useEnv();
+			const logger = useLogger();
+			const payload = { email, scope: 'pending-registration' };
+			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+			const inviteURL = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'verify-email');
+			inviteURL.setQuery('token', token);
+
+			mailService
+				.send({
+					to: email,
+					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
+					template: {
+						name: 'user-registration',
+						data: {
+							url: inviteURL.toString(),
+							email,
+						},
+					},
+				})
+				.catch((error) => {
+					logger.error(error, 'Could not send email verification mail');
+				});
+		}
 
 		return next();
 	}),
