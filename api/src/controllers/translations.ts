@@ -1,9 +1,9 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { TranslationsService } from '../services/translations.js';
 import asyncHandler from '../utils/async-handler.js';

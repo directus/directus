@@ -1,9 +1,8 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { RelationsService } from '../services/relations.js';
 import asyncHandler from '../utils/async-handler.js';

@@ -1,11 +1,10 @@
 import { Action } from '@directus/constants';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { ActivityService } from '../services/activity.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';

@@ -1,11 +1,12 @@
-import Joi from 'joi';
 import { InvalidPayloadError } from '@directus/errors';
-import asyncHandler from '../utils/async-handler.js';
+import type { RequestHandler } from 'express';
+import Joi from 'joi';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';
 
-export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
-	asyncHandler(async (req, _res, next) => {
+const validateBatchMiddleware =
+	(scope: 'read' | 'update' | 'delete'): RequestHandler =>
+	(req, _res, next) => {
 		if (req.method.toLowerCase() === 'get') {
 			req.body = {};
 			return next();
@@ -52,4 +53,6 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		}
 
 		return next();
-	});
+	};
+
+export default validateBatchMiddleware;

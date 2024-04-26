@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { parseGraphQL } from '../middleware/graphql.js';
-import { respond } from '../middleware/respond.js';
+import graphQl from '../middleware/graphql.js';
+import respond from '../middleware/respond.js';
 import { GraphQLService } from '../services/graphql/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
@@ -8,7 +8,7 @@ const router = Router();
 
 router.use(
 	'/system',
-	parseGraphQL,
+	graphQl,
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
@@ -29,7 +29,7 @@ router.use(
 
 router.use(
 	'/',
-	parseGraphQL,
+	graphQl,
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,

@@ -11,7 +11,7 @@ import { useEnv } from '@directus/env';
  *
  * and store it under req.token
  */
-const extractToken: RequestHandler = (req, _res, next) => {
+const extractTokenMiddleware: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
 
 	let token: string | null = null;
@@ -50,7 +50,8 @@ const extractToken: RequestHandler = (req, _res, next) => {
 	}
 
 	req.token = token;
-	next();
+
+	return next();
 };
 
-export default extractToken;
+export default extractTokenMiddleware;

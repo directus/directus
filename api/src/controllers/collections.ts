@@ -1,8 +1,8 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Item } from '@directus/types';
 import { Router } from 'express';
-import { respond } from '../middleware/respond.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import respond from '../middleware/respond.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';

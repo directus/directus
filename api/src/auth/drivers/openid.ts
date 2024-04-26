@@ -21,7 +21,7 @@ import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
-import { respond } from '../../middleware/respond.js';
+import respond from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';

@@ -1,5 +1,4 @@
 import type { Accountability } from '@directus/types';
-import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -10,7 +9,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-export const handler = async (req: Request, _res: Response, next: NextFunction) => {
+const authenticateMiddleware = asyncHandler(async (req, _res, next) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
@@ -48,6 +47,6 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 	req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
 
 	return next();
-};
+});
 
-export default asyncHandler(handler);
+export default authenticateMiddleware;

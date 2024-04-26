@@ -48,7 +48,7 @@ vi.mock('./flows', () => ({
 }));
 
 vi.mock('./middleware/check-ip', () => ({
-	checkIP: Router(),
+	default: Router(),
 }));
 
 vi.mock('./middleware/schema', () => ({

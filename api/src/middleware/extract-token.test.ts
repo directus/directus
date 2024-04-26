@@ -1,11 +1,10 @@
 import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
 import extractToken from './extract-token.js';
-import '../types/express.d.ts';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction = vi.fn();
+const next = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};
@@ -20,9 +19,9 @@ test('Token from query', () => {
 		},
 	};
 
-	extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+	extractToken(mockRequest as Request, mockResponse as Response, next);
 	expect(mockRequest.token).toBe('test');
-	expect(nextFunction).toBeCalledTimes(1);
+	expect(next).toBeCalledTimes(1);
 });
 
 test('Token from Authorization header (capitalized)', () => {
@@ -32,9 +31,9 @@ test('Token from Authorization header (capitalized)', () => {
 		},
 	};
 
-	extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+	extractToken(mockRequest as Request, mockResponse as Response, next);
 	expect(mockRequest.token).toBe('test');
-	expect(nextFunction).toBeCalledTimes(1);
+	expect(next).toBeCalledTimes(1);
 });
 
 test('Token from Authorization header (lowercase)', () => {
@@ -44,9 +43,9 @@ test('Token from Authorization header (lowercase)', () => {
 		},
 	};
 
-	extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+	extractToken(mockRequest as Request, mockResponse as Response, next);
 	expect(mockRequest.token).toBe('test');
-	expect(nextFunction).toBeCalledTimes(1);
+	expect(next).toBeCalledTimes(1);
 });
 
 test('Ignore the token if authorization header is too many parts', () => {
@@ -56,13 +55,13 @@ test('Ignore the token if authorization header is too many parts', () => {
 		},
 	};
 
-	extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+	extractToken(mockRequest as Request, mockResponse as Response, next);
 	expect(mockRequest.token).toBeNull();
-	expect(nextFunction).toBeCalledTimes(1);
+	expect(next).toBeCalledTimes(1);
 });
 
 test('Null if no token passed', () => {
-	extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+	extractToken(mockRequest as Request, mockResponse as Response, next);
 	expect(mockRequest.token).toBeNull();
-	expect(nextFunction).toBeCalledTimes(1);
+	expect(next).toBeCalledTimes(1);
 });

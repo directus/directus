@@ -1,11 +1,10 @@
 import { InvalidIpError } from '@directus/errors';
-import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
 import asyncHandler from '../utils/async-handler.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
-export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
+const checkIpMiddleware = asyncHandler(async (req, _res, next) => {
 	const database = getDatabase();
 	const logger = useLogger();
 
@@ -44,3 +43,5 @@ export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
 
 	return next();
 });
+
+export default checkIpMiddleware;

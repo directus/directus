@@ -4,7 +4,7 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import collectionExists from '../middleware/collection-exists.js';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';

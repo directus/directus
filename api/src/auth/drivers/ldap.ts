@@ -14,17 +14,17 @@ import { Router } from 'express';
 import Joi from 'joi';
 import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
 import ldap from 'ldapjs';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
-import { respond } from '../../middleware/respond.js';
+import respond from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { AuthDriver } from '../auth.js';
-import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 interface UserInfo {
 	dn: string;

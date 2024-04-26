@@ -1,14 +1,14 @@
+import type { RequestHandler } from 'express';
+
 /**
  * Set req.collection for use in other middleware. Used as an alternative on validate-collection for
- * system collections
+ * system collections.
  */
-import type { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler.js';
-
-const useCollection = (collection: string): RequestHandler =>
-	asyncHandler(async (req, _res, next) => {
+const useCollectionMiddleware =
+	(collection: string): RequestHandler =>
+	(req, _res, next) => {
 		req.collection = collection;
-		next();
-	});
+		return next();
+	};
 
-export default useCollection;
+export default useCollectionMiddleware;

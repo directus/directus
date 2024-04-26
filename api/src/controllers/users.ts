@@ -8,9 +8,9 @@ import {
 import type { PrimaryKey, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';

@@ -2,11 +2,11 @@ import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
 import '../types/express.d.ts';
 import { InvalidPayloadError } from '@directus/errors';
-import { validateBatch } from './validate-batch.js';
+import validateBatch from './validate-batch.js';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction = vi.fn();
+const next = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};
@@ -14,45 +14,44 @@ beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-test('Sets body to empty, calls next on GET requests', async () => {
+test('Sets body to empty, calls next on GET requests', () => {
 	mockRequest.method = 'GET';
 
-	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
+	validateBatch('read')(mockRequest as Request, mockResponse as Response, next);
 
 	expect(mockRequest.body).toEqual({});
-	expect(nextFunction).toHaveBeenCalledTimes(1);
+	expect(next).toHaveBeenCalledTimes(1);
 });
 
-test(`Short circuits on singletons that aren't queried through SEARCH`, async () => {
+test(`Short circuits on singletons that aren't queried through SEARCH`, () => {
 	mockRequest.method = 'PATCH';
 	mockRequest.singleton = true;
 	mockRequest.body = { title: 'test' };
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
+	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
 
-	expect(nextFunction).toHaveBeenCalledTimes(1);
+	expect(next).toHaveBeenCalledTimes(1);
 });
 
-test('Throws InvalidPayloadError on missing body', async () => {
+test('Throws InvalidPayloadError on missing body', () => {
 	mockRequest.method = 'SEARCH';
 
-	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
-
-	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
+	expect(() => validateBatch('read')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
+		InvalidPayloadError,
+	);
 });
 
-test(`Short circuits on Array body in update/delete use`, async () => {
+test(`Short circuits on Array body in update/delete use`, () => {
 	mockRequest.method = 'PATCH';
 	mockRequest.body = [1, 2, 3];
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
+	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
 
 	expect(mockRequest.sanitizedQuery).toBe(undefined);
-	expect(nextFunction).toHaveBeenCalled();
+	expect(next).toHaveBeenCalled();
 });
 
-test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
+test(`Sets sanitizedQuery based on body.query in read operations`, () => {
 	mockRequest.method = 'SEARCH';
 
 	mockRequest.body = {
@@ -61,14 +60,14 @@ test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
 		},
 	};
 
-	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
+	validateBatch('read')(mockRequest as Request, mockResponse as Response, next);
 
 	expect(mockRequest.sanitizedQuery).toEqual({
 		sort: ['id'],
 	});
 });
 
-test(`Doesn't allow both query and keys in a batch delete`, async () => {
+test(`Doesn't allow both query and keys in a batch delete`, () => {
 	mockRequest.method = 'DELETE';
 
 	mockRequest.body = {
@@ -76,13 +75,12 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
-
-	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
+	expect(() => validateBatch('delete')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
+		InvalidPayloadError,
+	);
 });
 
-test(`Requires 'data' on batch update`, async () => {
+test(`Requires 'data' on batch update`, () => {
 	mockRequest.method = 'PATCH';
 
 	mockRequest.body = {
@@ -90,13 +88,12 @@ test(`Requires 'data' on batch update`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
-
-	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
+	expect(() => validateBatch('update')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
+		InvalidPayloadError,
+	);
 });
 
-test(`Calls next when all is well`, async () => {
+test(`Calls next when all is well`, () => {
 	mockRequest.method = 'PATCH';
 
 	mockRequest.body = {
@@ -104,8 +101,8 @@ test(`Calls next when all is well`, async () => {
 		data: {},
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
+	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
 
-	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeUndefined();
+	expect(next).toHaveBeenCalledTimes(1);
+	expect(vi.mocked(next).mock.calls[0][0]).toBeUndefined();
 });

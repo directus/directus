@@ -16,7 +16,7 @@ import express from 'express';
 import { isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';

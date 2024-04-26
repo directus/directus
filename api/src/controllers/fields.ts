@@ -1,12 +1,11 @@
 import { TYPES } from '@directus/constants';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Field, RawField, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { FieldsService } from '../services/fields.js';
 import asyncHandler from '../utils/async-handler.js';

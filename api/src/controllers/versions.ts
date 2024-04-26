@@ -2,9 +2,9 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';

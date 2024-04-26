@@ -1,7 +1,7 @@
 import express from 'express';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
+import validateBatch from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { RevisionsService } from '../services/revisions.js';
 import asyncHandler from '../utils/async-handler.js';

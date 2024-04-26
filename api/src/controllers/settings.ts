@@ -1,7 +1,6 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
-import { respond } from '../middleware/respond.js';
+import respond from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';

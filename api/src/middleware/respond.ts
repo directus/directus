@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
-import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import { useLogger } from '../logger.js';
 import { ExportService } from '../services/import-export.js';
@@ -11,7 +10,7 @@ import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
 
-export const respond: RequestHandler = asyncHandler(async (req, res) => {
+const respondMiddleware = asyncHandler(async (req, res) => {
 	const env = useEnv();
 	const logger = useLogger();
 
@@ -38,8 +37,8 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		try {
 			await setCacheValue(cache, key, res.locals['payload'], getMilliseconds(env['CACHE_TTL']));
 			await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + getMilliseconds(env['CACHE_TTL'], 0) });
-		} catch (err: any) {
-			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
+		} catch (error) {
+			logger.warn(error, `[cache] Couldn't set key ${key}`);
 		}
 
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['CACHE_TTL']), true, true));
@@ -92,7 +91,9 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		return res.end(res.locals['payload']);
 	} else if (res.locals['payload']) {
 		return res.json(res.locals['payload']);
-	} else {
-		return res.status(204).end();
 	}
+
+	return res.status(204).end();
 });
+
+export default respondMiddleware;

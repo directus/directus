@@ -53,13 +53,13 @@ import { getFlowManager } from './flows.js';
 import { createExpressLogger, useLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
-import { checkIP } from './middleware/check-ip.js';
+import checkIp from './middleware/check-ip.js';
 import cors from './middleware/cors.js';
 import errorHandler from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
 import getPermissions from './middleware/get-permissions.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
-import rateLimiter from './middleware/rate-limiter-ip.js';
+import rateLimiterIp from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import { initTelemetry } from './telemetry/index.js';
@@ -249,14 +249,14 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	if (env['RATE_LIMITER_ENABLED'] === true) {
-		app.use(rateLimiter);
+		app.use(rateLimiterIp);
 	}
 
 	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 
-	app.use(checkIP);
+	app.use(checkIp);
 
 	app.use(sanitizeQuery);
 
