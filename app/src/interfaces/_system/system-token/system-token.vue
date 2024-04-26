@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
-import { HTMLInputElement } from 'happy-dom';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
