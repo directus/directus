@@ -7,11 +7,16 @@ const MIN_BIGINT = (-2n) ** 63n;
 const MAX_INT = 2 ** 31 - 1;
 const MIN_INT = (-2) ** 31;
 
-const MAX_DECIMAL = (10 ** (10-6)) - (10 ** (-6));
-const MIN_DECIMAL = -(10 ** (10-6)) + (10 ** (-6));
+const MAX_DECIMAL = 10 ** (10 - 6) - 10 ** -6;
+const MIN_DECIMAL = -(10 ** (10 - 6)) + 10 ** -6;
 
 export class NumberSearchHelperMSSQL extends NumberSearchHelper {
-	override orWhere(dbQuery: Knex.QueryBuilder, collection: string, name: string, value: number | bigint): Knex.QueryBuilder {
+	override orWhere(
+		dbQuery: Knex.QueryBuilder,
+		collection: string,
+		name: string,
+		value: number | bigint,
+	): Knex.QueryBuilder {
 		// MS SQL requires big int sized numbers to be formatted as string
 		if (value > Number.MAX_SAFE_INTEGER) {
 			return dbQuery.orWhere({ [`${collection}.${name}`]: String(value) });
