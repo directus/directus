@@ -105,7 +105,8 @@ describe('#constructor', () => {
 
 	test('Saves passed config to local property', () => {
 		const driver = new DriverSupabase(sample.config);
-		expect(driver['config']).toBe(sample.config);
+
+		expect(driver['config']).toStrictEqual(sample.config);
 	});
 
 	test('Creates shared client', () => {
@@ -115,7 +116,7 @@ describe('#constructor', () => {
 	});
 
 	test('Defaults root to empty string', () => {
-		expect(driver['config'].root).toBe(undefined);
+		expect(driver['config'].root).toBe('');
 	});
 });
 
@@ -497,26 +498,31 @@ describe('#delete', () => {
 
 describe('#list', () => {
 	test('Constructs list objects params based on input prefix', async () => {
+		const sampleFile = randFileName();
+		const sampleDirectory = randDirectoryPath();
+		const fullSample = `${sampleDirectory}/${sampleFile}`;
+
 		// TODO: Probably a better way to do this?
 		driver['bucket'] = {
 			list: vi.fn().mockReturnValue({ data: [], error: null }),
 		} as any;
 
-		await driver.list(sample.path.input)[Symbol.asyncIterator]().next();
+		await driver.list(fullSample)[Symbol.asyncIterator]().next();
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith(sample.path.input, {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(sampleDirectory, {
+			search: sampleFile,
 			limit: 1000,
 			offset: 0,
 		});
 	});
 
-	test('Yields file name omitting root', async () => {
+	test('Yields file name omitting root if prefix is the full file path', async () => {
 		const sampleRoot = randDirectoryPath();
 		const sampleFile = randFileName();
 		const sampleFull = `${sample.path.input}/${sampleFile}`;
 
 		driver['bucket'] = {
-			list: vi.fn().mockReturnValue({
+			list: vi.fn().mockResolvedValueOnce({
 				data: [
 					{
 						name: sampleFile,
@@ -529,7 +535,7 @@ describe('#list', () => {
 
 		driver['config'].root = sampleRoot;
 
-		const iterator = driver.list(sample.path.input);
+		const iterator = driver.list(sampleFull);
 		const output: string[] = [];
 
 		for await (const filepath of iterator) {
@@ -539,28 +545,12 @@ describe('#list', () => {
 		expect(output).toStrictEqual([sampleFull]);
 	});
 
-	test('Recursively fetches all nested directories and yields only the files', async () => {
+	test('Yields file name omitting root if prefix is the parent directory', async () => {
 		const sampleRoot = randDirectoryPath();
-		const samplePrefix = randUnique() + randDirectoryPath();
-
-		/*
-		sampleFile
-		sampleDirectory/
-		├─ sampleFileNested
-		├─ sampleDirectoryNested/
-		│  ├─ sampleFileDeeplyNested
-		 */
-		const sampleDirectory = randUnique();
-		const sampleDirectoryNested = randUnique();
 		const sampleFile = randFileName();
-		const sampleFileNested = randFileName();
-		const sampleFileDeeplyNested = randFileName();
-
-		const fullSampleDirectory = `${samplePrefix}/${sampleDirectory}`;
-		const fullSampleFile = `${samplePrefix}/${sampleFile}`;
-		const fullSampleDirectoryNested = `${fullSampleDirectory}/${sampleDirectoryNested}`;
-		const fullSampleFileNested = `${fullSampleDirectory}/${sampleFileNested}`;
-		const fullSampleFileDeeplyNested = `${fullSampleDirectoryNested}/${sampleFileDeeplyNested}`;
+		const sampleParentDir = randUnique();
+		const sampleInput = `${sample.path.input}/${sampleParentDir}`;
+		const sampleFull = `${sampleInput}/${sampleFile}`;
 
 		driver['bucket'] = {
 			list: vi
@@ -568,37 +558,106 @@ describe('#list', () => {
 				.mockResolvedValueOnce({
 					data: [
 						{
+							name: sampleParentDir,
+							id: null,
+						},
+					],
+					error: null,
+				})
+				.mockResolvedValueOnce({
+					data: [
+						{
 							name: sampleFile,
 							id: randUnique(),
 						},
-						{
-							name: sampleDirectory,
-							id: null,
-						},
 					],
 					error: null,
-				})
-				.mockResolvedValueOnce({
-					data: [
-						{
-							name: sampleFileNested,
-							id: randUnique(),
-						},
-						{
-							name: sampleDirectoryNested,
-							id: null,
-						},
-					],
-					error: null,
-				})
-				.mockResolvedValueOnce({
-					data: [
-						{
-							name: sampleFileDeeplyNested,
-							id: randUnique(),
-						},
-					],
 				}),
+		} as any;
+
+		driver['config'].root = sampleRoot;
+
+		const iterator = driver.list(sampleInput);
+		const output: string[] = [];
+
+		for await (const filepath of iterator) {
+			output.push(filepath);
+		}
+
+		expect(driver['bucket'].list).toHaveBeenCalledTimes(2);
+		expect(output).toStrictEqual([sampleFull]);
+	});
+
+	test('Yields file name omitting root if prefix is part of the file name', async () => {
+		const sampleRoot = randDirectoryPath();
+		const sampleFilePrefix = randFileName();
+		const sampleFiles = [1, 2, 3].map((i) => `${sampleFilePrefix}_postfix${i}`);
+		const sampleInput = `${sample.path.input}/${sampleFilePrefix}`;
+		const sampleFilesFull = sampleFiles.map((name) => `${sample.path.input}/${name}`);
+
+		driver['bucket'] = {
+			list: vi.fn().mockResolvedValueOnce({
+				data: sampleFiles.map((name) => ({
+					name,
+					id: randUnique(),
+				})),
+				error: null,
+			}),
+		} as any;
+
+		driver['config'].root = sampleRoot;
+
+		const iterator = driver.list(sampleInput);
+		const output: string[] = [];
+
+		for await (const filepath of iterator) {
+			output.push(filepath);
+		}
+
+		expect(output).toStrictEqual(sampleFilesFull);
+	});
+
+	test('Recursively fetches all nested directories and yields only the files', async () => {
+		const sampleRoot = randUnique() + randDirectoryPath();
+		const samplePrefixBase = randUnique() + randDirectoryPath();
+		const samplePrefixLastDir = randUnique();
+		const samplePrefix = `${samplePrefixBase}/${samplePrefixLastDir}`;
+
+		/*
+		sampleFile
+		sampleDirectory/
+		├─ sampleFileNested
+		 */
+		const sampleDirectory = randUnique();
+		const sampleFile = randFileName();
+		const sampleFileNested = randFileName();
+
+		const fullSampleDirectory = `${samplePrefix}/${sampleDirectory}`;
+		const fullSampleFile = `${samplePrefix}/${sampleFile}`;
+		const fullSampleFileNested = `${fullSampleDirectory}/${sampleFileNested}`;
+
+		driver['bucket'] = {
+			list: vi.fn(async (path, options): Promise<any> => {
+				// query for parent dir, return the contained dir
+				if (path === `${sampleRoot}/${samplePrefixBase}` && options?.search === samplePrefixLastDir)
+					return { data: [{ name: samplePrefixLastDir, id: null }], error: null };
+				// query for the contents of the samplePrefix, return file and directory
+				if (path === `${sampleRoot}/${samplePrefix}/` && options?.search === '')
+					return {
+						data: [
+							{ name: sampleDirectory, id: null },
+							{ name: sampleFile, id: randUnique() },
+						],
+						error: null,
+					};
+				// query for the contents of the sampleDirectory, return the nested file
+				if (path === `${sampleRoot}/${fullSampleDirectory}/` && options?.search === '')
+					return {
+						data: [{ name: sampleFileNested, id: randUnique() }],
+						error: null,
+					};
+				throw Error();
+			}),
 		} as any;
 
 		driver['config'].root = sampleRoot;
@@ -611,7 +670,7 @@ describe('#list', () => {
 		}
 
 		expect(driver['bucket'].list).toHaveBeenCalledTimes(3);
-		expect(output).toStrictEqual([fullSampleFile, fullSampleFileNested, fullSampleFileDeeplyNested]);
+		expect(output).toStrictEqual([fullSampleFileNested, fullSampleFile]);
 	});
 
 	test('Continuously fetches until all pages are returned', async () => {
