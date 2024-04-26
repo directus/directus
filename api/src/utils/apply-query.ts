@@ -835,12 +835,17 @@ export async function applySearch(
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				let number: number | bigint = Number(searchQuery);
 
+				if (isNaN(number) || !Number.isFinite(number)) {
+					return; // invalid numbers
+				}
+
 				if (number > Number.MAX_SAFE_INTEGER) {
 					number = BigInt(searchQuery);
 				}
 
-				// only cast finite base10 numeric values
-				if (validateNumber(searchQuery, number) && searchHelper.numberInRange(field.type, number)) {
+				// casting parsed value back to string should be equal the original value
+				// (prevent unintended number parsing, e.g. String(7) !== "ob111")
+				if (String(number) === searchQuery && searchHelper.numberInRange(field.type, number)) {
 					searchHelper.orWhere(this, collection, name, number);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
@@ -848,16 +853,6 @@ export async function applySearch(
 			}
 		});
 	});
-}
-
-function validateNumber(value: string, parsed: number | bigint) {
-	if (typeof parsed === 'number' && (isNaN(parsed) || !Number.isFinite(parsed))) {
-		return false;
-	}
-
-	// casting parsed value back to string should be equal the original value
-	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
-	return String(parsed) === value;
 }
 
 export function applyAggregate(
