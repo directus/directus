@@ -20,6 +20,7 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+			.where('directus_users.status', '=', 'active')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
 
