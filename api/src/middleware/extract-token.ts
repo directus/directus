@@ -14,7 +14,9 @@ import type { RequestHandler } from 'express';
 const extractToken: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
 
-	if (typeof req.query['access_token'] === 'string') {
+	req.token = null;
+
+	if (req.query['access_token'] && typeof req.query['access_token'] === 'string') {
 		req.token = req.query['access_token'];
 		req.tokenSource = 'query';
 	}
@@ -35,7 +37,7 @@ const extractToken: RequestHandler = (req, _res, next) => {
 			}
 
 			req.token = token;
-			req.tokenSource = 'headers';
+			req.tokenSource = 'header';
 		}
 	}
 
@@ -52,8 +54,6 @@ const extractToken: RequestHandler = (req, _res, next) => {
 			req.tokenSource = 'cookie';
 		}
 	}
-
-	req.token ??= null;
 
 	next();
 };

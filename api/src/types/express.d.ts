@@ -14,7 +14,7 @@ declare global {
 			sanitizedQuery: Query;
 			schema: SchemaOverview;
 
-			tokenSource?: 'query' | 'headers' | 'cookie';
+			tokenSource?: 'query' | 'header' | 'cookie';
 			accountability?: Accountability;
 			singleton?: boolean;
 		}
