@@ -1,5 +1,5 @@
-export * from './activity.js';
 export * from './collections.js';
+export * from './comments.js';
 export * from './dashboards.js';
 export * from './fields.js';
 export * from './files.js';
