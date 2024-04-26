@@ -6,13 +6,19 @@ import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
 
-const basicCountCollections = [
-	'directus_dashboards',
-	'directus_extensions',
-	'directus_files',
-	'directus_flows',
-	'directus_roles',
-	'directus_shares',
+const basicCountTasks = [
+	{ collection: 'directus_dashboards' },
+	{
+		collection: 'directus_extensions',
+		where: ['enabled', '=', true],
+	},
+	{ collection: 'directus_files' },
+	{
+		collection: 'directus_flows',
+		where: ['status', '=', 'active'],
+	},
+	{ collection: 'directus_roles' },
+	{ collection: 'directus_shares' },
 ] as const;
 
 /**
@@ -23,7 +29,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const env = useEnv();
 
 	const [basicCounts, userCounts, userItemCount] = await Promise.all([
-		getItemCount(db, basicCountCollections),
+		getItemCount(db, basicCountTasks),
 		getUserCount(db),
 		getUserItemCount(db),
 	]);
