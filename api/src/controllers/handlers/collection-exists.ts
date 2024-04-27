@@ -3,7 +3,7 @@ import { systemCollectionRows } from '@directus/system-data';
 import type { RequestHandler } from 'express';
 
 /**
- * Check if requested collection exists, and store it under `req.collection`.
+ * Check if requested collection exists, and store it under `req.collection` along with `req.singleton`.
  */
 export const collectionExists: RequestHandler = (req, _res, next) => {
 	const collection = req.params['collection'];

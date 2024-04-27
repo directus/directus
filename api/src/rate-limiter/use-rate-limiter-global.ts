@@ -9,7 +9,7 @@ const _cache = {
 };
 
 /**
- * Returns globally shared IP rate limiter instance.
+ * Returns globally shared global rate limiter instance.
  */
 export const useRateLimiterGlobal = () => {
 	if (_cache.rateLimiterGlobal) return _cache.rateLimiterGlobal;

@@ -1,7 +1,8 @@
 import type { RequestHandler } from 'express';
 
 /**
- * Set req.collection for use in other middleware. Used as an alternative on validate-collection for
+ * Set `req.collection` for use in other middleware.
+ * Used as an alternative on validate-collection for
  * system collections.
  */
 export const useCollection =
