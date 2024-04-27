@@ -10,13 +10,13 @@ import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import validateBatch from '../middleware/validate-batch.js';
 import { FilesService } from '../services/files.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
+import { validateBatch } from './handlers/validate-batch.js';
 
 const router = express.Router();
 const env = useEnv();

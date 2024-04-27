@@ -6,8 +6,7 @@ import type { Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import '../types/express.d.ts';
-import authenticate from './authenticate.js';
+import { authenticate } from './authenticate.js';
 
 vi.mock('../database/index');
 
@@ -254,6 +253,7 @@ test('Sets accountability to user information when static token is used', async 
 	testUser.admin_access = 1 as never;
 	testUser.app_access = 0 as never;
 	await authenticate(req, res, next);
+
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
 
@@ -264,6 +264,7 @@ test('Sets accountability to user information when static token is used', async 
 	expectedAccountability.admin = false;
 	expectedAccountability.app = true;
 	await authenticate(req, res, next);
+
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
 });

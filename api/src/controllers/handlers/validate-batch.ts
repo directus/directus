@@ -1,10 +1,10 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import Joi from 'joi';
-import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { validateQuery } from '../utils/validate-query.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
 
-const validateBatchMiddleware =
+export const validateBatch =
 	(scope: 'read' | 'update' | 'delete'): RequestHandler =>
 	(req, _res, next) => {
 		if (req.method.toLowerCase() === 'get') {
@@ -54,5 +54,3 @@ const validateBatchMiddleware =
 
 		return next();
 	};
-
-export default validateBatchMiddleware;

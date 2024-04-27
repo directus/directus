@@ -1,16 +1,16 @@
 import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
-import { getCache, setCacheValue } from '../cache.js';
-import { useLogger } from '../logger.js';
-import { ExportService } from '../services/import-export.js';
-import asyncHandler from '../utils/async-handler.js';
-import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import { getCacheKey } from '../utils/get-cache-key.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { stringByteSize } from '../utils/get-string-byte-size.js';
+import { getCache, setCacheValue } from '../../cache.js';
+import { useLogger } from '../../logger.js';
+import { ExportService } from '../../services/import-export.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getCacheControlHeader } from '../../utils/get-cache-headers.js';
+import { getCacheKey } from '../../utils/get-cache-key.js';
+import { getDateFormatted } from '../../utils/get-date-formatted.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { stringByteSize } from '../../utils/get-string-byte-size.js';
 
-const respondMiddleware = asyncHandler(async (req, res) => {
+export const respond = asyncHandler(async (req, res) => {
 	const env = useEnv();
 	const logger = useLogger();
 
@@ -95,5 +95,3 @@ const respondMiddleware = asyncHandler(async (req, res) => {
 
 	return res.status(204).end();
 });
-
-export default respondMiddleware;

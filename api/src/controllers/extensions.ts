@@ -16,12 +16,12 @@ import express from 'express';
 import { isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
 import { ExtensionReadError, ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
 
 const router = express.Router();
 const env = useEnv();

@@ -3,10 +3,10 @@ import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import type { DocumentNode } from 'graphql';
 import { Source, getOperationAST, parse } from 'graphql';
-import { GraphQLValidationError } from '../services/graphql/errors/validation.js';
-import type { GraphQLParams } from '../types/index.js';
+import { GraphQLValidationError } from '../../../services/graphql/errors/validation.js';
+import type { GraphQLParams } from '../../../types/index.js';
 
-const graphQlMiddleware: RequestHandler = (req, res, next) => {
+export const graphQl: RequestHandler = (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
 		throw new MethodNotAllowedError({ allowed: ['GET', 'POST'], current: req.method });
 	}
@@ -73,5 +73,3 @@ const graphQlMiddleware: RequestHandler = (req, res, next) => {
 
 	return next();
 };
-
-export default graphQlMiddleware;

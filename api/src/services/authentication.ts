@@ -16,7 +16,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
+import { RateLimiterRes, createRateLimiter } from '../rate-limiter/index.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stall } from '../utils/stall.js';

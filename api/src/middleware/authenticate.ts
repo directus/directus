@@ -9,7 +9,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-const authenticateMiddleware = asyncHandler(async (req, _res, next) => {
+export const authenticate = asyncHandler(async (req, _res, next) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
@@ -48,5 +48,3 @@ const authenticateMiddleware = asyncHandler(async (req, _res, next) => {
 
 	return next();
 });
-
-export default authenticateMiddleware;

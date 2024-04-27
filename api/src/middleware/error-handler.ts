@@ -8,7 +8,7 @@ import { useLogger } from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next
-const errorHandlerMiddleware: ErrorRequestHandler = (err, req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	const logger = useLogger();
 
 	let payload: any = {
@@ -101,5 +101,3 @@ const errorHandlerMiddleware: ErrorRequestHandler = (err, req, res, _next) => {
 			return res.json({ ...payload, errors: updatedErrors });
 		});
 };
-
-export default errorHandlerMiddleware;

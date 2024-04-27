@@ -1,9 +1,9 @@
 import { isObject } from '@directus/utils';
-import { VersionsService } from '../services/versions.js';
-import asyncHandler from '../utils/async-handler.js';
-import { mergeVersionsRaw, mergeVersionsRecursive } from '../utils/merge-version-data.js';
+import { VersionsService } from '../../../services/versions.js';
+import asyncHandler from '../../../utils/async-handler.js';
+import { mergeVersionsRaw, mergeVersionsRecursive } from '../../../utils/merge-version-data.js';
 
-const mergeContentVersionsMiddleware = asyncHandler(async (req, res, next) => {
+export const mergeContentVersions = asyncHandler(async (req, res, next) => {
 	if (
 		req.sanitizedQuery.version &&
 		req.collection &&
@@ -34,5 +34,3 @@ const mergeContentVersionsMiddleware = asyncHandler(async (req, res, next) => {
 
 	return next();
 });
-
-export default mergeContentVersionsMiddleware;

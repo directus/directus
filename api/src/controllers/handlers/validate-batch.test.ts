@@ -1,23 +1,22 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
-import '../types/express.d.ts';
-import { InvalidPayloadError } from '@directus/errors';
-import validateBatch from './validate-batch.js';
+import { validateBatch } from './validate-batch.js';
 
-let mockRequest: Partial<Request & { token?: string }>;
-let mockResponse: Partial<Response>;
+let mockRequest: Request;
+let mockResponse: Response;
 const next = vi.fn();
 
 beforeEach(() => {
-	mockRequest = {};
-	mockResponse = {};
+	mockRequest = {} as Request;
+	mockResponse = {} as Response;
 	vi.clearAllMocks();
 });
 
 test('Sets body to empty, calls next on GET requests', () => {
 	mockRequest.method = 'GET';
 
-	validateBatch('read')(mockRequest as Request, mockResponse as Response, next);
+	validateBatch('read')(mockRequest, mockResponse, next);
 
 	expect(mockRequest.body).toEqual({});
 	expect(next).toHaveBeenCalledTimes(1);
@@ -28,7 +27,7 @@ test(`Short circuits on singletons that aren't queried through SEARCH`, () => {
 	mockRequest.singleton = true;
 	mockRequest.body = { title: 'test' };
 
-	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
+	validateBatch('update')(mockRequest, mockResponse, next);
 
 	expect(next).toHaveBeenCalledTimes(1);
 });
@@ -36,16 +35,14 @@ test(`Short circuits on singletons that aren't queried through SEARCH`, () => {
 test('Throws InvalidPayloadError on missing body', () => {
 	mockRequest.method = 'SEARCH';
 
-	expect(() => validateBatch('read')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
-		InvalidPayloadError,
-	);
+	expect(() => validateBatch('read')(mockRequest, mockResponse, next)).toThrowError(InvalidPayloadError);
 });
 
 test(`Short circuits on Array body in update/delete use`, () => {
 	mockRequest.method = 'PATCH';
 	mockRequest.body = [1, 2, 3];
 
-	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
+	validateBatch('update')(mockRequest, mockResponse, next);
 
 	expect(mockRequest.sanitizedQuery).toBe(undefined);
 	expect(next).toHaveBeenCalled();
@@ -60,7 +57,7 @@ test(`Sets sanitizedQuery based on body.query in read operations`, () => {
 		},
 	};
 
-	validateBatch('read')(mockRequest as Request, mockResponse as Response, next);
+	validateBatch('read')(mockRequest, mockResponse, next);
 
 	expect(mockRequest.sanitizedQuery).toEqual({
 		sort: ['id'],
@@ -75,9 +72,7 @@ test(`Doesn't allow both query and keys in a batch delete`, () => {
 		query: { filter: {} },
 	};
 
-	expect(() => validateBatch('delete')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
-		InvalidPayloadError,
-	);
+	expect(() => validateBatch('delete')(mockRequest, mockResponse, next)).toThrowError(InvalidPayloadError);
 });
 
 test(`Requires 'data' on batch update`, () => {
@@ -88,9 +83,7 @@ test(`Requires 'data' on batch update`, () => {
 		query: { filter: {} },
 	};
 
-	expect(() => validateBatch('update')(mockRequest as Request, mockResponse as Response, next)).toThrowError(
-		InvalidPayloadError,
-	);
+	expect(() => validateBatch('update')(mockRequest, mockResponse, next)).toThrowError(InvalidPayloadError);
 });
 
 test(`Calls next when all is well`, () => {
@@ -101,7 +94,7 @@ test(`Calls next when all is well`, () => {
 		data: {},
 	};
 
-	validateBatch('update')(mockRequest as Request, mockResponse as Response, next);
+	validateBatch('update')(mockRequest, mockResponse, next);
 
 	expect(next).toHaveBeenCalledTimes(1);
 	expect(vi.mocked(next).mock.calls[0][0]).toBeUndefined();

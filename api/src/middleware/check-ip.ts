@@ -4,7 +4,7 @@ import { useLogger } from '../logger.js';
 import asyncHandler from '../utils/async-handler.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
-const checkIpMiddleware = asyncHandler(async (req, _res, next) => {
+export const checkIp = asyncHandler(async (req, _res, next) => {
 	const database = getDatabase();
 	const logger = useLogger();
 
@@ -43,5 +43,3 @@ const checkIpMiddleware = asyncHandler(async (req, _res, next) => {
 
 	return next();
 });
-
-export default checkIpMiddleware;

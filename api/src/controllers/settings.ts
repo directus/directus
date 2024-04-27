@@ -1,9 +1,9 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import express from 'express';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
 import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
 
 const router = express.Router();
 

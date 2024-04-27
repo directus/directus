@@ -8,9 +8,6 @@ import {
 import type { PrimaryKey, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import validateBatch from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
@@ -18,6 +15,9 @@ import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
+import { validateBatch } from './handlers/validate-batch.js';
 
 const router = express.Router();
 

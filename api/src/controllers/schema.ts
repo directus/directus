@@ -5,11 +5,11 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
 import { useLogger } from '../logger.js';
-import respond from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { respond } from './handlers/respond.js';
 
 const router = express.Router();
 

@@ -6,7 +6,7 @@ import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
 import { shouldSkipCache } from '../utils/should-skip-cache.js';
 
-const cacheMiddleware = asyncHandler(async (req, res, next) => {
+export const cache = asyncHandler(async (req, res, next) => {
 	const env = useEnv();
 	const { cache } = getCache();
 	const logger = useLogger();
@@ -55,5 +55,3 @@ const cacheMiddleware = asyncHandler(async (req, res, next) => {
 
 	return next();
 });
-
-export default cacheMiddleware;

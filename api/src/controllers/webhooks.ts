@@ -1,12 +1,12 @@
 import { ErrorCode, createError } from '@directus/errors';
 import express from 'express';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import validateBatch from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { WebhooksService } from '../services/webhooks.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
+import { validateBatch } from './handlers/validate-batch.js';
 
 const router = express.Router();
 

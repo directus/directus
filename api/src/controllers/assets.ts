@@ -8,7 +8,6 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
-import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
 import type { TransformationFormat, TransformationParams } from '../types/assets.js';
@@ -17,6 +16,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { useCollection } from './handlers/use-collection.js';
 
 const router = Router();
 

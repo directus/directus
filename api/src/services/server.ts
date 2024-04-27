@@ -10,8 +10,8 @@ import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useLogger } from '../logger.js';
 import getMailer from '../mailer.js';
-import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
-import { rateLimiterIp } from '../middleware/rate-limiter-ip.js';
+import { useRateLimiterGlobal } from '../rate-limiter/use-rate-limiter-global.js';
+import { useRateLimiterIp } from '../rate-limiter/use-rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
@@ -289,6 +289,8 @@ export class ServerService {
 		}
 
 		async function testRateLimiter(): Promise<Record<string, HealthCheck[]>> {
+			const rateLimiterIp = useRateLimiterIp();
+
 			if (!rateLimiterIp) {
 				return {};
 			}
@@ -329,6 +331,8 @@ export class ServerService {
 		}
 
 		async function testRateLimiterGlobal(): Promise<Record<string, HealthCheck[]>> {
+			const rateLimiterGlobal = useRateLimiterGlobal();
+
 			if (!rateLimiterGlobal) {
 				return {};
 			}

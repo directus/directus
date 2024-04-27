@@ -48,15 +48,15 @@ vi.mock('./flows', () => ({
 }));
 
 vi.mock('./middleware/check-ip', () => ({
-	default: Router(),
+	checkIp: Router(),
 }));
 
 vi.mock('./middleware/schema', () => ({
-	default: Router(),
+	schema: Router(),
 }));
 
 vi.mock('./middleware/get-permissions', () => ({
-	default: Router(),
+	getPermissions: Router(),
 }));
 
 vi.mock('./auth', () => ({

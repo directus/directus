@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
+import cookie from 'cookie';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import { randomUUID } from 'node:crypto';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
@@ -11,7 +12,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
-import { createRateLimiter } from '../../rate-limiter.js';
+import { createRateLimiter } from '../../rate-limiter/index.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
@@ -21,7 +22,6 @@ import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 import { registerWebSocketEvents } from './hooks.js';
-import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 

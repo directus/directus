@@ -6,7 +6,7 @@ import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
-import respond from '../../middleware/respond.js';
+import { respond } from '../../controllers/handlers/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';

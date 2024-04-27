@@ -3,15 +3,15 @@ import { InvalidPayloadError } from '@directus/errors';
 import { useEnv } from '@directus/env';
 
 /**
- * Extract access token from
+ * Try to extract access token from
  *
  * - 'access_token' query parameter
  * - 'Authorization' header
- * - Session cookie
+ * - 'Session' cookie
  *
- * and store it under req.token
+ * and store it under `req.token`.
  */
-const extractTokenMiddleware: RequestHandler = (req, _res, next) => {
+export const extractToken: RequestHandler = (req, _res, next) => {
 	const env = useEnv();
 
 	let token: string | null = null;
@@ -53,5 +53,3 @@ const extractTokenMiddleware: RequestHandler = (req, _res, next) => {
 
 	return next();
 };
-
-export default extractTokenMiddleware;

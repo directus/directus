@@ -2,13 +2,13 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
-import respond from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import validateBatch from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { respond } from './handlers/respond.js';
+import { useCollection } from './handlers/use-collection.js';
+import { validateBatch } from './handlers/validate-batch.js';
 
 const router = express.Router();
 

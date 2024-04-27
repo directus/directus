@@ -12,7 +12,6 @@ import {
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger.js';
-import respond from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
 import type { AuthenticationMode } from '../types/auth.js';
@@ -21,6 +20,7 @@ import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
+import { respond } from './handlers/respond.js';
 
 const router = Router();
 const env = useEnv();
