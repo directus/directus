@@ -6,7 +6,7 @@ import { Source, getOperationAST, parse } from 'graphql';
 import { GraphQLValidationError } from '../../../services/graphql/errors/validation.js';
 import type { GraphQLParams } from '../../../types/index.js';
 
-export const graphQl: RequestHandler = (req, res, next) => {
+export const parseGraphQl: RequestHandler = (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
 		throw new MethodNotAllowedError({ allowed: ['GET', 'POST'], current: req.method });
 	}
