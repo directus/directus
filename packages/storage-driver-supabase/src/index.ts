@@ -6,11 +6,6 @@ import { Readable } from 'node:stream';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 
-// dirname implementation that always uses '/' to split and returns '' in case of no separator present
-function dirname(path: string) {
-	return path.split('/').slice(0, -1).join('/');
-}
-
 export type DriverSupabaseConfig = {
 	bucket: string;
 	serviceRole: string;
@@ -212,3 +207,10 @@ export class DriverSupabase implements Driver {
 }
 
 export default DriverSupabase;
+
+/**
+ * dirname implementation that always uses '/' to split and returns '' in case of no separator present.
+ */
+function dirname(path: string) {
+	return path.split('/').slice(0, -1).join('/');
+}
