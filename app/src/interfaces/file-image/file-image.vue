@@ -149,6 +149,14 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</span>
 			</div>
 
+			<div v-else-if="!image.height && !image.width" class="image-error">
+				<v-icon large name="error" />
+
+				<span class="message">
+					{{ t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+				</span>
+			</div>
+
 			<v-image
 				v-else-if="image.type?.startsWith('image')"
 				:src="src"

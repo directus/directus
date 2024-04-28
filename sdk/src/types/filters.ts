@@ -58,6 +58,7 @@ export type FilterOperators<
 	_nbetween: IsDateTime<FieldType, [T, T], IsNumber<T, [T, T], never>>;
 	_contains: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_ncontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
+	_icontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_starts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_istarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_nstarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;

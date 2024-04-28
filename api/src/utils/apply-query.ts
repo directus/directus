@@ -10,7 +10,7 @@ import type {
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
+import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -20,7 +20,7 @@ import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
-import { stripFunction } from './strip-function.js';
+import { parseFilterKey } from './parse-filter-key.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -540,9 +540,9 @@ export function applyFilter(
 
 				if (!columnPath) continue;
 
-				const { type, special } = validateFilterField(
+				const { type, special } = getFilterType(
 					schema.collections[targetCollection]!.fields,
-					stripFunction(filterPath[filterPath.length - 1]!),
+					filterPath.at(-1)!,
 					targetCollection,
 				)!;
 
@@ -550,11 +550,7 @@ export function applyFilter(
 
 				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else {
-				const { type, special } = validateFilterField(
-					schema.collections[collection]!.fields,
-					stripFunction(filterPath[0]!),
-					collection,
-				)!;
+				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateFilterOperator(type, filterOperator, special);
 
@@ -562,15 +558,33 @@ export function applyFilter(
 			}
 		}
 
-		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
-			if (fields[key] === undefined) {
+		function getFilterType(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			const { fieldName, functionName } = parseFilterKey(key);
+
+			const field = fields[fieldName];
+
+			if (!field) {
 				throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
 			}
 
-			return fields[key];
+			const { type } = field;
+
+			if (functionName) {
+				const availableFunctions: string[] = getFunctionsForType(type);
+
+				if (!availableFunctions.includes(functionName)) {
+					throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
+				}
+
+				const functionType = getOutputTypeForFunction(functionName as FieldFunction);
+
+				return { type: functionType };
+			}
+
+			return { type, special: field.special };
 		}
 
-		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
+		function validateFilterOperator(type: Type, filterOperator: string, special?: string[]) {
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
@@ -582,7 +596,7 @@ export function applyFilter(
 			}
 
 			if (
-				special.includes('conceal') &&
+				special?.includes('conceal') &&
 				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
 			) {
 				throw new InvalidQueryError({
