@@ -375,6 +375,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_role: Search Role...
 search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
@@ -460,6 +461,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
+download_page_as_csv_unsupported: This layout does not support downloading the current page.
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
