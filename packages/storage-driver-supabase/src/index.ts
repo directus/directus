@@ -58,7 +58,10 @@ export class DriverSupabase implements Driver {
 	}
 
 	private fullPath(filepath: string) {
-		return normalizePath(join(this.config.root, filepath));
+		const path = join(this.config.root, filepath);
+		// Supabase expects an empty string for current directory
+		if (path === '.') return '';
+		return normalizePath(path);
 	}
 
 	private getAuthenticatedUrl(filepath: string) {
