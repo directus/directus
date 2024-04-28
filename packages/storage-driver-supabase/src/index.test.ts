@@ -349,7 +349,7 @@ describe('#stat', () => {
 			modified: sample.file.modified,
 		});
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith(undefined, {
+		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
 			limit: 1,
 			search: sample.path.input,
 		});
