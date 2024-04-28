@@ -333,70 +333,69 @@ describe('#read', () => {
 	});
 });
 
-describe('#head', () => {
-	test('Returns object headers', async () => {
-		vi.mocked(fetch).mockReturnValue({
-			status: 200,
-			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
-		} as unknown as Promise<Response>);
-
-		const result = await driver.head(sample.path.input);
-
-		expect(result).toStrictEqual({ 'content-length': sample.file.size, 'last-modified': sample.file.modified });
-	});
-
-	test('Ensures input is passed to getAuthenticatedUrl', async () => {
-		vi.mocked(fetch).mockReturnValue({
-			status: 200,
-			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
-		} as unknown as Promise<Response>);
-
-		driver['getAuthenticatedUrl'] = vi.fn();
-
-		await driver.head(sample.path.input);
-
-		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
-	});
-
-	test('Throws an error when a status >= 400 is sent', async () => {
-		vi.mocked(fetch).mockReturnValue({
-			status: 400,
-			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
-		} as unknown as Promise<Response>);
-
-		expect(driver.head(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
-	});
-});
-
 describe('#stat', () => {
-	test('Returns size/modified from returned send data', async () => {
-		vi.mocked(fetch).mockReturnValue({
-			status: 200,
-			headers: {
-				get(key: any) {
-					if (key === 'content-length') {
-						return sample.file.size;
-					} else if (key === 'last-modified') {
-						return sample.file.modified;
-					}
+	test('Returns the size/modified from metadata', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
 
-					return null;
-				},
-			},
-		} as unknown as Promise<Response>);
+		const stat = await driver.stat(sample.path.input);
 
-		const result = await driver.stat(sample.path.input);
-
-		expect(result).toStrictEqual({
+		expect(stat).toEqual({
 			size: sample.file.size,
 			modified: sample.file.modified,
 		});
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+			limit: 1,
+			search: sample.path.input,
+		});
 	});
 
-	test('Throws an error when a status >= 400 is sent', async () => {
-		vi.mocked(fetch).mockReturnValue({
-			status: 400,
-		} as unknown as Promise<Response>);
+	test('Uses the configured root directory', async () => {
+		driver['config'].root = 'root';
+
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
+
+		const stat = await driver.stat(sample.path.input);
+
+		expect(stat).toEqual({
+			size: sample.file.size,
+			modified: sample.file.modified,
+		});
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith('root', {
+			limit: 1,
+			search: sample.path.input,
+		});
+	});
+
+	test('Throws an error no file is returned by list', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [],
+				error: null,
+			}),
+		} as any;
+
+		expect(driver.stat(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
+	});
+
+	test('Throws an error if storage error is returned', async () => {
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: null,
+				error: true,
+			}),
+		} as any;
 
 		expect(driver.stat(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
 	});
