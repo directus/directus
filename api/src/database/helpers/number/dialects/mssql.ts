@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 import { numberInRange } from '../utils/number-in-range.js';
 import { NumberDatabaseHelper, type NumberInfo, type NumericValue } from '../types.js';
 
-export class NumberWhereHelperMSSQL extends NumberDatabaseHelper {
+export class NumberHelperMSSQL extends NumberDatabaseHelper {
 	override orWhere(
 		dbQuery: Knex.QueryBuilder,
 		collection: string,
