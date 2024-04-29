@@ -584,7 +584,7 @@ router.post(
 			const logger = useLogger();
 			const payload = { email, scope: 'pending-registration' };
 			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const inviteURL = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'verify-email');
+			const inviteURL = new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email');
 			inviteURL.setQuery('token', token);
 
 			mailService
@@ -605,6 +605,31 @@ router.post(
 		}
 
 		return next();
+	}),
+	respond,
+);
+
+const verifyRegistrationSchema = Joi.string();
+
+router.get(
+	'/register/verify-email',
+	asyncHandler(async (req, res, _next) => {
+		const token = req.query['token'];
+		const { error } = verifyRegistrationSchema.validate(token);
+		const redirectTo = '/admin/login';
+
+		if (error) {
+			return res.redirect(redirectTo);
+		}
+
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.verifyRegistration(token as string);
+
+		return res.redirect(redirectTo);
 	}),
 	respond,
 );

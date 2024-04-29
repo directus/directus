@@ -451,6 +451,30 @@ export class UsersService extends ItemsService {
 		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
+	async verifyRegistration(token: string): Promise<void> {
+		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+			email: string;
+			scope: string;
+		};
+
+		if (scope !== 'pending-registration') throw new ForbiddenError();
+
+		const user = await this.getUserByEmail(email);
+
+		// TODO: might want to have their own status?
+		if (user?.status !== 'draft') {
+			throw new InvalidPayloadError({ reason: `Invalid verification code` });
+		}
+
+		// Allow unauthenticated update
+		const service = new UsersService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		await service.updateOne(user.id, { status: 'active' });
+	}
+
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
