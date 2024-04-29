@@ -438,7 +438,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
-
 		const records = await runAST(ast, this.schema, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless

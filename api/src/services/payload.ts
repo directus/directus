@@ -1,5 +1,13 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Accountability, Alterations, Item, PrimaryKey, FieldOverview, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	Alterations,
+	Item,
+	PrimaryKey,
+	FieldOverview,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
@@ -140,13 +148,13 @@ export class PayloadService {
 	};
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>
+	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
 	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>): Promise<Partial<Item>>;
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
-		aliasMap: Record<string, string> = {}
+		aliasMap: Record<string, string> = {},
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
@@ -169,7 +177,6 @@ export class PayloadService {
 				}
 			}
 		}
-
 
 		if (action === 'read') {
 			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {

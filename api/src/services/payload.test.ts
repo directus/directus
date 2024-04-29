@@ -253,8 +253,6 @@ describe('Integration Tests', () => {
 					]);
 				});
 			});
-
-
 		});
 
 		describe('processValues', () => {
@@ -323,10 +321,14 @@ describe('Integration Tests', () => {
 			});
 
 			test('redacting aliassed values', async () => {
-				const result = await service.processValues('read', {
-					other_string: 'not-redacted',
-					other_hidden: 'secret',
-				}, { other_string: 'string', other_hidden: 'hidden' });
+				const result = await service.processValues(
+					'read',
+					{
+						other_string: 'not-redacted',
+						other_hidden: 'secret',
+					},
+					{ other_string: 'string', other_hidden: 'hidden' },
+				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
 			});
