@@ -839,7 +839,7 @@ export async function applySearch(
 					return; // invalid numbers
 				}
 
-				if (number > Number.MAX_SAFE_INTEGER) {
+				if (number > Number.MAX_SAFE_INTEGER || number < Number.MIN_SAFE_INTEGER) {
 					number = BigInt(searchQuery);
 				}
 
