@@ -1,4 +1,5 @@
-import { NumberDatabaseHelper, type NumberInfo, type NumericValue } from '../types.js';
+import type { NumericValue } from '@directus/types';
+import { NumberDatabaseHelper, type NumberInfo } from '../types.js';
 import { numberInRange } from '../utils/number-in-range.js';
 
 export class NumberHelperPostgres extends NumberDatabaseHelper {

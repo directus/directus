@@ -5,6 +5,8 @@ import type {
 	FieldFunction,
 	FieldOverview,
 	Filter,
+	NumericType,
+	NumericValue,
 	Query,
 	Relation,
 	SchemaOverview,
@@ -21,7 +23,6 @@ import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
 import { parseFilterKey } from './parse-filter-key.js';
-import type { NumericType, NumericValue } from '../database/helpers/number/types.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
