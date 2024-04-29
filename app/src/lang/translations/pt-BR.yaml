@@ -598,7 +598,7 @@ collapse: Recolher
 select_item: Selecionar item
 no_items: Nenhum item
 search_items: Pesquisar Itens...
-search_extensions: Pesquisar extensões
+search_extensions: Pesquisar extensões...
 disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
@@ -1165,7 +1165,7 @@ no_upscale: Não ampliar imagens
 no_extensions: Sem extensões
 no_extensions_copy: Nenhuma extensão foi instalada.
 install_extension: Instalar Extensão
-uninstall_locked: Não é possível desinstalar extensões que não foram instaladas pelo Marketplace
+uninstall_locked: Não é possível desinstalar as extensões que não foram instaladas através do Marketplace
 uninstall: Desinstalar
 installed: Instalado
 reinstall: Reinstalar
@@ -1379,7 +1379,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_color_note: Fundo de Login & Logo
-    project_logo_note: 40x40 SVG/PNG (Branco)
+    project_logo_note: SVG/PNG 40x40 Branco
     project_favicon_note: 32×32 ICO
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
@@ -1770,11 +1770,11 @@ interfaces:
     description: Um modal para selecionar opções de uma interface
   system-display:
     display: Exibir
-    description: Selecionar um display existente
-    placeholder: Selecionar um display...
+    description: Selecione uma exibição existente
+    placeholder: Selecione uma exibição...
   system-display-options:
     display-options: Opções de exibição
-    description: Um modal para selecionar opções de um display
+    description: Um modal para selecionar opções de exibição
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
