@@ -1,3 +1,4 @@
+import { NUMERIC_TYPES } from '@directus/constants/src/index.js';
 import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
@@ -834,21 +835,14 @@ export async function applySearch(
 		fields.forEach(([name, field]) => {
 			if (['text', 'string'].includes(field.type)) {
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
-			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
+			} else if (isNumericField(field)) {
 				const number = parseNumericString(searchQuery);
 
 				if (number === null) {
 					return; // unable to parse
 				}
 
-				// creating a new object for now because TS doesnt recuce the FieldOverview type
-				const numberOptions = {
-					type: field.type as NumericType,
-					precision: field.precision,
-					scale: field.scale,
-				};
-
-				if (numberHelper.isNumberValid(number, numberOptions)) {
+				if (numberHelper.isNumberValid(number, field)) {
 					numberHelper.orWhere(this, collection, name, number);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
@@ -961,4 +955,8 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 	}
 
 	return getOperation(Object.keys(value)[0]!, Object.values(value)[0]);
+}
+
+function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
+	return NUMERIC_TYPES.includes(field.type);
 }
