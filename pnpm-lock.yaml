@@ -1404,14 +1404,14 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ioredis:
-        specifier: 5.3.2
-        version: 5.3.2
+        specifier: 5.4.1
+        version: 5.4.1
       lru-cache:
-        specifier: 10.2.0
-        version: 10.2.0
+        specifier: 10.2.2
+        version: 10.2.2
       rate-limiter-flexible:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 5.0.3
+        version: 5.0.3
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -2569,10 +2569,6 @@ packages:
 
   '@babel/helper-string-parser@7.23.4':
     resolution: {integrity: sha512-803gmbQdqwdf4olxrX4AJyFBV/RTr3rSmOj0rKwesmzlfhYNDEs+/iOcznzpNWlJlIlTJC2QfPFcHB6DlzdVLQ==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/helper-string-parser@7.24.1':
-    resolution: {integrity: sha512-2ofRCjnnA9y+wk8b9IAREroeUP02KHp431N2mhKniy2yKIDKpbrHv9eXwm8cBeWQYcJmzv5qKCu65P47eCF7CQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-identifier@7.22.20':
@@ -7587,10 +7583,6 @@ packages:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
     engines: {node: '>= 0.10'}
 
-  ioredis@5.3.2:
-    resolution: {integrity: sha512-1DKMMzlIHM02eBBVOFQ1+AolGjs6+xEcM4PDL7NqOS6szq7H9jSaEkIUH6/a5Hl241LzW6JLSiAbNvTQjUupUA==}
-    engines: {node: '>=12.22.0'}
-
   ioredis@5.4.1:
     resolution: {integrity: sha512-2YZsvl7jopIa1gaePkeMtd9rAcSjOOjPtpcLlOeusyO+XH2SK5ZcT+UCrElPP+WVIInh2TzeI4XW9ENaSLVVHA==}
     engines: {node: '>=12.22.0'}
@@ -9797,9 +9789,6 @@ packages:
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
-
-  rate-limiter-flexible@5.0.0:
-    resolution: {integrity: sha512-ivCyLBwPtR5IRrz+aZnztVwX16ZK3iAjdlW21I/vjHq56at5Zb8eIefDzODg8R7hwPOHpBtb6Pj9Zdmn0nRb8g==}
 
   rate-limiter-flexible@5.0.3:
     resolution: {integrity: sha512-lWx2y8NBVlTOLPyqs+6y7dxfEpT6YFqKy3MzWbCy95sTTOhOuxufP2QvRyOHpfXpB9OUJPbVLybw3z3AVAS5fA==}
@@ -12991,8 +12980,6 @@ snapshots:
 
   '@babel/helper-string-parser@7.23.4': {}
 
-  '@babel/helper-string-parser@7.24.1': {}
-
   '@babel/helper-validator-identifier@7.22.20': {}
 
   '@babel/highlight@7.23.4':
@@ -13003,7 +12990,7 @@ snapshots:
 
   '@babel/parser@7.24.4':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/runtime@7.23.6':
     dependencies:
@@ -13017,7 +13004,7 @@ snapshots:
 
   '@babel/types@7.24.0':
     dependencies:
-      '@babel/helper-string-parser': 7.24.1
+      '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
@@ -18683,20 +18670,6 @@ snapshots:
 
   interpret@2.2.0: {}
 
-  ioredis@5.3.2:
-    dependencies:
-      '@ioredis/commands': 1.2.0
-      cluster-key-slot: 1.1.2
-      debug: 4.3.4
-      denque: 2.1.0
-      lodash.defaults: 4.2.0
-      lodash.isarguments: 3.1.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
-
   ioredis@5.4.1:
     dependencies:
       '@ioredis/commands': 1.2.0
@@ -20657,7 +20630,7 @@ snapshots:
 
   path-scurry@1.10.2:
     dependencies:
-      lru-cache: 10.2.2
+      lru-cache: 10.2.0
       minipass: 7.0.4
 
   path-temp@2.1.0:
@@ -21243,8 +21216,6 @@ snapshots:
       safe-buffer: 5.2.1
 
   range-parser@1.2.1: {}
-
-  rate-limiter-flexible@5.0.0: {}
 
   rate-limiter-flexible@5.0.3: {}
 
