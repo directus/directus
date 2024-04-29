@@ -1072,8 +1072,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.2.18
-        version: 9.2.18
+        specifier: 9.2.20
+        version: 9.2.20
 
   packages/create-directus-project:
     dependencies:
