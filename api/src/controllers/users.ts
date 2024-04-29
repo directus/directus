@@ -550,18 +550,11 @@ router.post(
 			email,
 			password: req.body?.password,
 			role: publicRegistrationRole,
-			status: 'draft', // TODO: Do we want to have a dedicated "unverified" status?
+			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
 		};
 
-		if (hasEmailValidation) {
-			// await usersService.inviteUser(email, publicRegistrationRole, null, 'TODO SUBJECT', 'user-registration');
-			if (emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
-				throw new FailedValidationError({ field: 'email', type: 'email' });
-			}
-
-			// TODO generate verification url for mail service
-		} else {
-			partialUser.status = 'active';
+		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
 
 		try {
@@ -574,16 +567,17 @@ router.post(
 		}
 
 		if (hasEmailValidation) {
-			// TODO MAIL SERVICE
+			// TODO
 			// This is for local testing copy pasted from user services' inviteUser
+			// Might want to move it there
 
 			const mailService = new MailService(serviceOptions);
 			const env = useEnv();
 			const logger = useLogger();
 			const payload = { email, scope: 'pending-registration' };
 			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const inviteURL = new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email');
-			inviteURL.setQuery('token', token);
+			const verificationURL = new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email');
+			verificationURL.setQuery('token', token);
 
 			mailService
 				.send({
@@ -592,7 +586,7 @@ router.post(
 					template: {
 						name: 'user-registration',
 						data: {
-							url: inviteURL.toString(),
+							url: verificationURL.toString(),
 							email,
 						},
 					},
