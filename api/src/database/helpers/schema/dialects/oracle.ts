@@ -40,4 +40,15 @@ export class SchemaHelperOracle extends SchemaHelper {
 
 		return field.type;
 	}
+
+	override async getDatabaseSize(): Promise<number> {
+		try {
+			// const result = await this.knex.raw('select sum(bytes) as "size" from dba_segments');
+			const result = await this.knex.raw('select SUM(bytes) from dba_segments');
+
+			return result[0]?.['SUM(BYTES)'] ? Number(result[0]?.['SUM(BYTES)']) : 0;
+		} catch {
+			return 0;
+		}
+	}
 }

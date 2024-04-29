@@ -78,4 +78,9 @@ export interface TelemetryReport {
 	 * Number of fields in the system
 	 */
 	fields_total: number;
+
+	/**
+	 * Size of the database
+	 */
+	database_size: number;
 }

@@ -20,4 +20,14 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 	override formatUUID(uuid: string): string {
 		return uuid.toUpperCase();
 	}
+
+	override async getDatabaseSize(): Promise<number> {
+		try {
+			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');
+
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : 0;
+		} catch {
+			return 0;
+		}
+	}
 }

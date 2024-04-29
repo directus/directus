@@ -139,4 +139,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by default
 	}
+
+	async getDatabaseSize(): Promise<number> {
+		return 0;
+	}
 }
