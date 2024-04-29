@@ -1952,8 +1952,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       joi:
-        specifier: 17.12.3
-        version: 17.12.3
+        specifier: 17.13.0
+        version: 17.13.0
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
