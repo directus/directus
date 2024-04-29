@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import type { TelemetryReport } from '../types/report.js';
+import { getFieldCount } from '../utils/get-fields-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
@@ -28,10 +29,11 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const env = useEnv();
 
-	const [basicCounts, userCounts, userItemCount] = await Promise.all([
+	const [basicCounts, userCounts, userItemCount, fieldsCounts] = await Promise.all([
 		getItemCount(db, basicCountTasks),
 		getUserCount(db),
 		getUserItemCount(db),
+		getFieldCount(db),
 	]);
 
 	return {
@@ -52,5 +54,8 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 		collections: userItemCount.collections,
 		items: userItemCount.items,
+
+		fields_max: fieldsCounts.max,
+		fields_total: fieldsCounts.total,
 	};
 };
