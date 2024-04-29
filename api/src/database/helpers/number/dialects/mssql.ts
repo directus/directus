@@ -1,14 +1,13 @@
-import type { Type } from '@directus/types';
 import type { Knex } from 'knex';
-import { numberInRange } from '../number-in-range.js';
-import { NumberWhereHelpers } from '../types.js';
+import { numberInRange } from '../utils/number-in-range.js';
+import { NumberDatabaseHelper, type NumberInfo, type NumericValue } from '../types.js';
 
-export class NumberWhereHelperMSSQL extends NumberWhereHelpers {
+export class NumberWhereHelperMSSQL extends NumberDatabaseHelper {
 	override orWhere(
 		dbQuery: Knex.QueryBuilder,
 		collection: string,
 		name: string,
-		value: number | bigint,
+		value: NumericValue,
 	): Knex.QueryBuilder {
 		// MS SQL requires big int sized numbers to be formatted as string
 		if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
@@ -18,7 +17,7 @@ export class NumberWhereHelperMSSQL extends NumberWhereHelpers {
 		return dbQuery.orWhere({ [`${collection}.${name}`]: Number(value) });
 	}
 
-	override numberValid(value: number | bigint, info: { type: Type; precision: number | null; scale: number | null }) {
+	override isNumberValid(value: NumericValue, info: NumberInfo) {
 		return numberInRange(value, info);
 	}
 }

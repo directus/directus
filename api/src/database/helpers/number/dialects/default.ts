@@ -1,3 +1,3 @@
-import { NumberWhereHelpers } from '../types.js';
+import { NumberDatabaseHelper } from '../types.js';
 
-export class NumberWhereHelperDefault extends NumberWhereHelpers {}
+export class NumberHelperDefault extends NumberDatabaseHelper {}

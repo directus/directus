@@ -1,11 +1,10 @@
-import type { Type } from '@directus/types';
-import { NumberWhereHelpers } from '../types.js';
-import { numberInRange } from '../number-in-range.js';
+import { NumberDatabaseHelper, type NumberInfo, type NumericValue } from '../types.js';
+import { numberInRange } from '../utils/number-in-range.js';
 
-export class NumberWhereHelperPostgres extends NumberWhereHelpers {
-	override numberValid(
-		value: number | bigint,
-		info: { type: Type; precision: number | null; scale: number | null },
+export class NumberWhereHelperPostgres extends NumberDatabaseHelper {
+	override isNumberValid(
+		value: NumericValue,
+		info: NumberInfo,
 	): boolean {
 		// Check that number is within the range of the type and ensure that only integer values are passed for integer types
 		return (
