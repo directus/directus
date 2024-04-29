@@ -18,7 +18,7 @@ export class NumberSearchHelperMSSQL extends NumberSearchHelper {
 		value: number | bigint,
 	): Knex.QueryBuilder {
 		// MS SQL requires big int sized numbers to be formatted as string
-		if (value > Number.MAX_SAFE_INTEGER) {
+		if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
 			return dbQuery.orWhere({ [`${collection}.${name}`]: String(value) });
 		}
 
