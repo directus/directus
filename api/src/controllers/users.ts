@@ -568,8 +568,6 @@ router.post(
 			await usersService.createOne(partialUser);
 		} catch (error: unknown) {
 			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
-			console.log('USER SERVICE ERROR:', JSON.stringify(error, null, 2));
-
 			if (isDirectusError(error) && error.code !== 'RECORD_NOT_UNIQUE') {
 				throw error;
 			}
