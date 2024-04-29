@@ -2,11 +2,7 @@ import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '
 import type { NumberInfo, NumericValue } from '../types.js';
 import { calculateDecimalLimit } from './decimal-limit.js';
 
-
-export function numberInRange(
-	value: NumericValue,
-	info: NumberInfo,
-) {
+export function numberInRange(value: NumericValue, info: NumberInfo) {
 	switch (info.type) {
 		case 'bigInteger':
 			return value >= MIN_SAFE_INT64 && value <= MAX_SAFE_INT64;
@@ -27,4 +23,3 @@ export function numberInRange(
 			return false;
 	}
 }
-

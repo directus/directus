@@ -9,4 +9,3 @@ export const MIN_SAFE_INT64 = (-2n) ** 63n;
 // Extremes for integer type
 export const MAX_SAFE_INT32 = 2 ** 31 - 1;
 export const MIN_SAFE_INT32 = (-2) ** 31;
-
