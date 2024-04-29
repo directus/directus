@@ -35,14 +35,14 @@
 		"@vitest/coverage-v8": "1.5.2",
 		"histoire": "0.17.17",
 		"pinia": "2.1.7",
-		"rollup-plugin-node-externals": "7.1.1",
+		"rollup-plugin-node-externals": "7.1.2",
 		"typescript": "5.4.5",
-		"vite": "5.2.9",
-		"vite-plugin-dts": "3.8.3",
+		"vite": "5.2.10",
+		"vite-plugin-dts": "3.9.0",
 		"vitest": "1.5.2",
 		"vue": "3.4.26",
-		"vue-i18n": "9.12.1",
-		"vue-router": "4.3.0"
+		"vue-i18n": "9.13.1",
+		"vue-router": "4.3.2"
 	},
 	"peerDependencies": {
 		"pinia": "2",
