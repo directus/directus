@@ -1614,8 +1614,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       undici:
-        specifier: 6.13.0
-        version: 6.13.0
+        specifier: 6.14.1
+        version: 6.14.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -11069,6 +11069,10 @@ packages:
   undici@6.13.0:
     resolution: {integrity: sha512-Q2rtqmZWrbP8nePMq7mOJIN98M0fYvSgV89vwl/BQRT4mDOeY2GXZngfGpcBBhtky3woM7G24wZV3Q304Bv6cw==}
     engines: {node: '>=18.0'}
+
+  undici@6.14.1:
+    resolution: {integrity: sha512-mAel3i4BsYhkeVPXeIPXVGPJKeBzqCieZYoFsbWfUzd68JmHByhc1Plit5WlylxXFaGpgkZB8mExlxnt+Q1p7A==}
+    engines: {node: '>=18.17'}
 
   unhead@1.9.5:
     resolution: {integrity: sha512-eBKDPO9IMltRze9mHNYIVdosjlqoNFbwJRbykGT/7z/S5uYR2QRCXmIhEsJT4crffy6KQyB5ywLPqjRPx0s57A==}
@@ -22836,6 +22840,8 @@ snapshots:
   undici-types@5.26.5: {}
 
   undici@6.13.0: {}
+
+  undici@6.14.1: {}
 
   unhead@1.9.5:
     dependencies:
