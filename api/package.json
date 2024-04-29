@@ -212,12 +212,12 @@
 		"@types/stream-json": "1.7.7",
 		"@types/wellknown": "0.5.8",
 		"@types/ws": "8.5.10",
-		"@vitest/coverage-v8": "1.5.0",
+		"@vitest/coverage-v8": "1.5.2",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.1",
 		"typescript": "5.4.5",
-		"vitest": "1.5.0"
+		"vitest": "1.5.2"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.8.4",
