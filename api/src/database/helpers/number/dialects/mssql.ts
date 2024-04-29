@@ -1,16 +1,9 @@
+import type { Type } from '@directus/types';
 import type { Knex } from 'knex';
-import { NumberSearchHelper } from '../types.js';
+import { numberInRange } from '../number-in-range.js';
+import { NumberWhereHelpers } from '../types.js';
 
-const MAX_BIGINT = 2n ** 63n - 1n;
-const MIN_BIGINT = (-2n) ** 63n;
-
-const MAX_INT = 2 ** 31 - 1;
-const MIN_INT = (-2) ** 31;
-
-const MAX_DECIMAL = 10 ** (10 - 6) - 10 ** -6;
-const MIN_DECIMAL = -(10 ** (10 - 6)) + 10 ** -6;
-
-export class NumberSearchHelperMSSQL extends NumberSearchHelper {
+export class NumberWhereHelperMSSQL extends NumberWhereHelpers {
 	override orWhere(
 		dbQuery: Knex.QueryBuilder,
 		collection: string,
@@ -25,18 +18,7 @@ export class NumberSearchHelperMSSQL extends NumberSearchHelper {
 		return dbQuery.orWhere({ [`${collection}.${name}`]: Number(value) });
 	}
 
-	override numberInRange(type: string, value: number | bigint) {
-		switch (type) {
-			case 'bigInteger':
-				return value >= MIN_BIGINT && value <= MAX_BIGINT;
-			case 'decimal':
-				return value >= MIN_DECIMAL && value <= MAX_DECIMAL;
-			case 'integer':
-				return value >= MIN_INT && value <= MAX_INT;
-			case 'float':
-				return true; // Not sure how to calculate the float limits
-			default:
-				return false;
-		}
+	override numberValid(value: number | bigint, info: { type: Type; precision: number | null; scale: number | null }) {
+		return numberInRange(value, info);
 	}
 }

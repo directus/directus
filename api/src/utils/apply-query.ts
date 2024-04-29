@@ -845,7 +845,7 @@ export async function applySearch(
 
 				// casting parsed value back to string should be equal the original value
 				// (prevent unintended number parsing, e.g. String(7) !== "ob111")
-				if (String(number) === searchQuery && searchHelper.numberInRange(field.type, number)) {
+				if (String(number) === searchQuery && searchHelper.numberValid(number, field)) {
 					searchHelper.orWhere(this, collection, name, number);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {

@@ -93,3 +93,6 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/tiff',
 	'image/avif',
 ];
+
+export const DEFAULT_NUMERIC_PRECISION = 10;
+export const DEFAULT_NUMERIC_SCALE = 5;

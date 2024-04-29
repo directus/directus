@@ -8,7 +8,7 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
-import { ALIAS_TYPES } from '../constants.js';
+import { ALIAS_TYPES, DEFAULT_NUMERIC_PRECISION, DEFAULT_NUMERIC_SCALE } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -738,7 +738,12 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
+
+			column = table[type](
+				field.field,
+				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
 		} else if (field.type === 'hash') {

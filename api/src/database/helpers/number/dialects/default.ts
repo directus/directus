@@ -1,3 +1,3 @@
-import { NumberSearchHelper } from '../types.js';
+import { NumberWhereHelpers } from '../types.js';
 
-export class NumberSearchHelperDefault extends NumberSearchHelper {}
+export class NumberWhereHelperDefault extends NumberWhereHelpers {}
