@@ -1,4 +1,4 @@
-import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '../constants.js';
+import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '../../../../constants.js';
 import type { NumberInfo, NumericValue } from '../types.js';
 import { calculateDecimalLimit } from './decimal-limit.js';
 
