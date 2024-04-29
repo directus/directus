@@ -1,8 +1,9 @@
 import { useEnv } from '@directus/env';
-import { InvalidCredentialsError, InvalidTokenError } from '@directus/errors';
+import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import isDirectusJWT from './is-directus-jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
@@ -25,21 +26,7 @@ export async function getAccountabilityForToken(
 			const payload = verifyAccessJWT(token, env['SECRET'] as string);
 
 			if ('session' in payload) {
-				const database = getDatabase();
-
-				const session = await database
-					.select('token', 'user', 'expires', 'ip')
-					.from('directus_sessions')
-					.where({
-						'token': payload['session'],
-						'user': payload['id'],
-					})
-					.andWhere('expires', '>=', new Date())
-					.first();
-
-				if (!session) {
-					throw new InvalidTokenError();
-				}
+				verifySessionJWT(payload);
 			}
 
 			accountability.role = payload.role;
