@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-gcs",
-	"version": "10.0.18",
+	"version": "10.0.19",
 	"description": "GCS file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,7 +28,7 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@google-cloud/storage": "7.8.0"
+		"@google-cloud/storage": "7.10.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",

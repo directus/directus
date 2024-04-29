@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: 識別
 avatar: 頭像
 application: 應用程式
@@ -552,37 +532,37 @@ auto_fill: 自動填入
 corresponding_field: 對應欄位
 errors:
   COLLECTION_NOT_FOUND: "集合不存在"
+  CONTAINS_NULL_VALUES: 欄位含有空白值
   FIELD_NOT_FOUND: 找不到欄位
   FORBIDDEN: 被禁止
+  ILLEGAL_ASSET_TRANSFORMATION: 原始檔案過大，無法預覽
+  INTERNAL_SERVER_ERROR: 未預期的錯誤
+  INVALID_CONFIG: 無效組態
   INVALID_CREDENTIALS: 錯誤的帳號或密碼
+  INVALID_FOREIGN_KEY: 外部鍵值錯誤
+  INVALID_IP: 不允許的主機或IP地址
   INVALID_OTP: OTP驗證錯誤
   INVALID_PAYLOAD: 附載的資料無效
   INVALID_PROVIDER: 使用者屬於其他的登入服務
   INVALID_QUERY: 無效的查詢
-  INVALID_CONFIG: 無效組態
   INVALID_TOKEN: 無效的 token
-  INVALID_IP: 不允許的主機或IP地址
   INVALID_USER: 無法認證使用者
   ITEM_LIMIT_REACHED: 資料已達上限
   ITEM_NOT_FOUND: 找不到項目
-  ROUTE_NOT_FOUND: 找不到
-  RECORD_NOT_UNIQUE: 偵測到重複資料
-  USER_SUSPENDED: 用戶已停用
-  CONTAINS_NULL_VALUES: 欄位含有空白值
-  INTERNAL_SERVER_ERROR: 未預期的錯誤
-  NOT_NULL_VIOLATION: 值不能為null
-  ILLEGAL_ASSET_TRANSFORMATION: 原始檔案過大，無法預覽
-  VALUE_TOO_LONG: 數值過長
-  VALUE_OUT_OF_RANGE: 內容值超出範圍
-  INVALID_FOREIGN_KEY: 外部鍵值錯誤
-  UNKNOWN: 未預期的錯誤
-  SERVICE_UNAVAILABLE: 服務暫時不可用
-  UNSUPPORTED_MEDIA_TYPE: 不支援的媒體類型
-  UNEXPECTED_RESPONSE: 非預期的伺服器回應
-  TOKEN_EXPIRED: Token 已過期
-  RANGE_NOT_SATISFIABLE: 範圍無效
   METHOD_NOT_ALLOWED: 不支援此方式
+  NOT_NULL_VIOLATION: 值不能為null
+  RANGE_NOT_SATISFIABLE: 範圍無效
+  RECORD_NOT_UNIQUE: 偵測到重複資料
   REQUESTS_EXCEEDED: 已達到要求數量限制
+  ROUTE_NOT_FOUND: 找不到
+  SERVICE_UNAVAILABLE: 服務暫時不可用
+  TOKEN_EXPIRED: Token 已過期
+  UNEXPECTED_RESPONSE: 非預期的伺服器回應
+  UNKNOWN: 未預期的錯誤
+  UNSUPPORTED_MEDIA_TYPE: 不支援的媒體類型
+  USER_SUSPENDED: 用戶已停用
+  VALUE_OUT_OF_RANGE: 內容值超出範圍
+  VALUE_TOO_LONG: 數值過長
 security: 安全
 value_hashed: 值已安全加密
 bookmark_name: 書籤名稱...

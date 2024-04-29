@@ -102,9 +102,6 @@ applications, you can set `AUTH_<PROVIDER>_MODE=cookie`. This will however not w
 This affects App extensions that are currently extracting the token from `axios`. This will no longer be either possible
 or necessary, as the App now uses a session cookie, which will be sent with each request from the browser.
 
-This also means that the `<v-image>` component being deprecated as it does not add any value over using the native
-`<img>` tag anymore.
-
 ::: details Migration/Mitigation
 
 ::: code-group

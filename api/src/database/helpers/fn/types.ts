@@ -1,6 +1,6 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { applyFilter } from '../../../utils/apply-query.js';
+import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
 import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
@@ -41,10 +41,12 @@ export abstract class FnHelper extends DatabaseHelper {
 			throw new Error(`Field ${collectionName}.${column} isn't a nested relational collection`);
 		}
 
+		const alias = generateAlias();
+
 		let countQuery = this.knex
 			.count('*')
-			.from(relation.collection)
-			.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]));
+			.from({ [alias]: relation.collection })
+			.where(this.knex.raw(`??.??`, [alias, relation.field]), '=', this.knex.raw(`??.??`, [table, currentPrimary]));
 
 		if (options?.query?.filter) {
 			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, {}).query;
