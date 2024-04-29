@@ -28,7 +28,7 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
-marketplace: marketplace
+marketplace: Marketplace
 extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
@@ -1170,7 +1170,7 @@ uninstall: Desinstalar
 installed: Instalado
 reinstall: Reinstalar
 open_in_marketplace: Abrir no Marketplace
-source_registry: marketplace
+source_registry: Marketplace
 source_local: Local
 source_module: Módulo Node
 collection: Coleção
@@ -1610,6 +1610,7 @@ export_started: Exportação iniciada
 export_started_copy: A exportação foi iniciada. Você será notificado quando estiver pronto para download.
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
+disable_sort: Desativar Ordenação
 template: Template
 require_value_to_be_set: Requer que o valor seja definido na criação
 translation: Tradução
@@ -1629,6 +1630,9 @@ undo_removed_item: Desfazer Item Removido
 remove_item: Remover Item
 delete_item: Excluir item
 interfaces:
+  list-m2a:
+    prefix_note: Utiliza o nome da coleção do item relacionado por padrão.
+    sorting_disabled: Ordenação está desabilitada por não haver mais itens que caibam em uma página.
   filter:
     name: Filtro
     description: Configurar um filtro de objeto.
@@ -1766,8 +1770,11 @@ interfaces:
     description: Um modal para selecionar opções de uma interface
   system-display:
     display: Exibir
+    description: Selecionar um display existente
+    placeholder: Selecionar um display...
   system-display-options:
     display-options: Opções de exibição
+    description: Um modal para selecionar opções de um display
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
@@ -1777,6 +1784,9 @@ interfaces:
     many-to-one: Muitos para um
     description: Selecione um único item relacionado
     display_template: Modelo de exibição
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdown de Itens de Coleção
+    description: Selecionar um item de uma coleção em formato JSON
   input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
@@ -1811,12 +1821,15 @@ interfaces:
     notice: Aviso
     description: Mostrar um breve aviso
     text: Digite o conteúdo do aviso aqui...
+    no_text: Nenhum texto configurado...
   list-o2m:
     one-to-many: Um para muitos
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
   system-folder:
+    folder: Pasta Raíz
     description: Selecionar uma pasta
+    field_hint: Pasta padrão para arquivos enviados que não especifiquem uma pasta. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1885,6 +1898,7 @@ interfaces:
     no_collection: Nenhuma coleção
     toggle_split_view: Alternar Visualização Dividida
     enable: Habilitar
+    default_split_view_state: Estado Padrão da Visualização Dividida
     user_language: Usar o Idioma do Usuário Atual
     default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
@@ -1905,20 +1919,33 @@ interfaces:
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
+    custom_formats_note: Lista de formatos do TinyMCE. Consulte a documentação do TinyMCE sobre [Formatação de Conteúdo](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para mais informações.
     options_override: Sobrescrever opções
+    options_override_note: Chaves e valores da formatação de usuário do TinyMCE. Consulte a documentação sobre [Formatação do Usuário](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para mais informações.
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token de Acesso Estático
     imageToken_label: Token de acesso estático é adicionado à URL dos conteúdos
   input-block-editor:
+    input-block-editor: Editor em Blocos
+    description: Editor baseado em blocos para conteúdos focados em mídia que produz dados em JSON utilizando Editor.js
     tools: Barra de ferramentas
     tools_options:
       header: Cabeçalho
       nestedlist: Lista
       embed: Incorporar
+      paragraph: Parágrafo
       code: Código
       image: Imagem
+      attaches: Anexos
       table: Tabela
+      quote: Citação
       underline: Sublinhado
+      inlinecode: Código embutido
+      delimiter: Delimitador
+      checklist: Lista de controle
+      toggle: Alternar Bloco
+      alignment: Alinhamento
+      raw: HTML puro
   input-autocomplete-api:
     input-autocomplete-api: Entrada de preenchimento automático (API)
     description: Um tipo de pesquisa para valores de API externos.
@@ -1993,7 +2020,11 @@ displays:
     strict: Estrito
     strict_label: Usar unidades rigorosas
     strict_note: Remove palavras como 'quase', 'sobre', 'menos que'
+    round: Arredondamento
     round_note: Escolha uma função de arredondamento para usar
+    down: Baixo
+    nearest: Mais próximo
+    up: Cima
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -2016,7 +2047,9 @@ displays:
     prefix: Prefixo
     prefix_label: Texto prefixo
     suffix: Sufixo
+    suffix_label: Texto Anexado
     color: Cor
+    background: Plano de fundo
     icon: Ícone
     border: Borda
     border_label: Mostrar bordas
@@ -2029,6 +2062,7 @@ displays:
     description: Exibe uma versão formatada do objeto
   hash:
     hash: Hash
+    description: Exibe uma versão redigida do valor
   icon:
     icon: Ícone
     description: Exibir um ícone
@@ -2091,15 +2125,55 @@ layouts:
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
     optional: Opcional
+    first_day: Primeiro Dia da Semana
   map:
     map: Mapa
+    basemap: Basemap
+    layers: Camadas
+    cluster_options: Opções de agrupamento
+    cluster: Agrupar Dados Próximos
+    cluster_radius: Raio de agrupamento
+    cluster_minpoints: Quantidade mínima para agrupamento
+    cluster_maxzoom: Zoom máximo para agrupamento
+    field: Campo Geo-espacial
     invalid_geometry: Geometria inválida
     find_location: Encontrar localização...
+    default_template: Utilizando Padrão da Coleção...
+    no_compatible_fields: Não há campos compatíveis
   kanban:
+    name: Kanban
+    group_field: Agrupar Por
+    group_field_placeholder: Campo para agrupamento...
+    group_title: Título do Grupo
+    group_title_placeholder: Campo para título de grupos...
+    title: Título do Cartão
+    title_placeholder: Campo optional de título...
+    text: Texto do Cartão
+    text_placeholder: Campo opcional de texto...
+    date: Data do Cartão
+    date_placeholder: Campo optional de data...
+    tags: Tags do Cartão
+    tags_placeholder: Campo optional de tags...
+    user: Usuário do Cartão
+    user_placeholder: Campo opcional de usuário...
+    image: Imagem do Cartão
+    image_placeholder: Campo opcional de imagem...
+    image_fit: Ajuste de imagem do Cartão
     crop: Recortar
     advanced: Avançado
+    edit_group: Editar Grupo
+    delete_group: Deletar Grupo
+    add_group: Adicionar Grupo
+    add_group_placeholder: Digite um novo título do grupo...
+    show_ungrouped: Mostrar os não agrupados
+    show: Mostrar
+    no_group: Sem Grupo
+    not_all_loaded: Só foi possível carregar os primeiros 1000 itens.
 horizontal: Horizontal
+vertical: Vertical
+x_axis: Eixo X
 y_axis: Eixo Y
+y_axis_function: Função do Eixo Y
 show_x_only: Mostrar Apenas o Eixo X
 show_y_only: Mostrar Apenas o Eixo Y
 show_data_label: Mostrar rótulo de dados
@@ -2179,9 +2253,41 @@ triggers:
   event:
     name: Eventos
     description: Acionado quando eventos da plataforma ou dados forem disparados
+    action: 'Ação (Não bloqueante)'
+    filter: 'Filtro (bloqueante)'
   webhook:
+    name: Webhook
+    description: Acionado ao receber uma requisição HTTP
     method: Método
+    async: Assíncrono
+  operation:
+    name: Outro Fluxo
+    description: Acionado por outro fluxo, utilizado para encadeamento
+    preview: Acionado por uma operação presente em outro fluxo
+  schedule:
+    name: Agendado (CRON)
+    description: Acionado em intervalos de tempo
+    cron: Intervalo
+  manual:
+    name: Manual
+    description: Acionado manualmente nas coleções selecionadas
+    collection_and_item: Página de Coleção & Item
+    collection_only: Somente página de Coleção
+    item_only: Somente página de Item
+    collection_page: Página de Coleção
+    require_selection: Requer Seleção
+a_flow_uuid: Selecione um Fluxo para acionamento...
+any_string_or_json: Qualquer texto ou JSON...
+item_payload_placeholder: Este é o JSON utilizado para atualizar os campos do item...
+operation_variables_note: Você pode acessar dados do fluxo com variáveis como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, ou referenciar operações prévias utilizando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condição
+    description: Direciona um fluxo utilizando lógica Se / Se não
+  exec:
+    name: Executar Script
+    description: Executa código arbitrário para modificação do payload
+    modules: 'Módulos **node** que podem ser utilizados:'
   item-create:
     name: Criar Dados
     description: Criar itens no banco de dados
@@ -2192,18 +2298,36 @@ operations:
     description: Apagar itens no banco de dados
     emit_events: Emitir eventos
     key: IDs
+    query: Query
   item-read:
+    name: Ler Dados
+    description: Realiza leitura de itens do banco de dados
     key: IDs
+    query: Query
     emit_events: Emitir eventos
   item-update:
+    name: Atualizar Dados
+    description: Atualiza itens no banco de dados
     emit_events: Emitir eventos
     key: IDs
     payload: Payload
+    query: Query
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Assina e valida JSON Web Tokens
+    operation: Operação
+    secret: Secreto
+    secret_placeholder: Especifique um segredo...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opções
+    options_placeholder: 'Consulte https://www.npmjs.com/package/jsonwebtoken#usage para mais opções disponíveis'
+    sign: Assinar Token
+    verify: Verificar Token
+    decode: Decodificar Token
   log:
+    name: Escrever no Console
     description: Emita algo para o console
     message: Mensagem
     message_placeholder: Digite uma mensagem a ser exibida no console...
@@ -2221,6 +2345,7 @@ operations:
     recipient: Usuário
     recipient_placeholder: Digite um UUID...
     recipient_note: Adicione o UUID do usuário e pressione Enter...
+    item_note: Chave do Item ou URL relativa
     message: Mensagem
     subject: Assunto
   request:
@@ -2254,8 +2379,12 @@ operations:
     batch: Lote
     batch_size: Tamanho do lote
     cache: Cache
+unit: Unidade
 standard: Padrão
+scientific: Científica
+engineering: Engenharia
 compact: Compacto
+currency: Unidade monetária
 notation: Notação
 style: Estilo
 fonts:
