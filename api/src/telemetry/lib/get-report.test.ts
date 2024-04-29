@@ -3,12 +3,21 @@ import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
+import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount, type UserCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
 
 vi.mock('../../database/index.js');
+
+vi.mock('../../database/helpers/index.js', () => ({
+	getHelpers: vi.fn().mockImplementation(() => ({
+		schema: {
+			getDatabaseSize: vi.fn().mockReturnValue(0),
+		},
+	})),
+}));
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
@@ -18,11 +27,13 @@ vi.mock('../utils/get-item-count.js');
 vi.mock('../utils/get-storage.js');
 vi.mock('../utils/get-user-item-count.js');
 vi.mock('../utils/get-user-count.js');
+vi.mock('../utils/get-field-count.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
 let mockUserCounts: UserCount;
 let mockUserItemCounts: UserItemCount;
+let mockFieldCounts: FieldCount;
 
 beforeEach(() => {
 	mockEnv = {
@@ -35,12 +46,15 @@ beforeEach(() => {
 
 	mockUserItemCounts = { collections: 25, items: 15000 };
 
+	mockFieldCounts = { max: 28, total: 88 };
+
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
 	vi.mocked(getItemCount).mockResolvedValue({});
 	vi.mocked(getUserCount).mockResolvedValue(mockUserCounts);
 	vi.mocked(getUserItemCount).mockResolvedValue(mockUserItemCounts);
+	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
 });
 
 afterEach(() => {
@@ -102,6 +116,15 @@ test('Runs and returns user item counts', async () => {
 	const report = await getReport();
 
 	expect(getUserItemCount).toHaveBeenCalledWith(mockDb);
+
+	expect(report.collections).toBe(mockUserItemCounts.collections);
+	expect(report.items).toBe(mockUserItemCounts.items);
+});
+
+test('Runs and returns field counts', async () => {
+	const report = await getReport();
+
+	expect(getFieldCount).toHaveBeenCalledWith(mockDb);
 
 	expect(report.collections).toBe(mockUserItemCounts.collections);
 	expect(report.items).toBe(mockUserItemCounts.items);
