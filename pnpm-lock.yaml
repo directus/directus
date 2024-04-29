@@ -1645,8 +1645,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@google-cloud/storage':
-        specifier: 7.10.0
-        version: 7.10.0(encoding@0.1.13)
+        specifier: 7.10.2
+        version: 7.10.2(encoding@0.1.13)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -3401,8 +3401,8 @@ packages:
     resolution: {integrity: sha512-Orxzlfb9c67A15cq2JQEyVc7wEsmFBmHjZWZYQMUyJ1qivXyMwdyNOs9odi79hze+2zqdTtu1E19IM/FtqZ10g==}
     engines: {node: '>=14'}
 
-  '@google-cloud/storage@7.10.0':
-    resolution: {integrity: sha512-aBNejLVzHpI7C8eJSMpBpfdq1lxvYuHqG+zy/xvs032RyPRxuu45DLMeXuAbgwyx1VBsxWGYifrPDx+O7hJrmw==}
+  '@google-cloud/storage@7.10.2':
+    resolution: {integrity: sha512-NaCyhwu0cSqwj6waZO+8WiyzCXUBUfVE7T1fHAGRHEJ+CRy5on2ah/jfC0ZPYXL0q4JoPj98VtMW4bEgtFfKHw==}
     engines: {node: '>=14'}
 
   '@gwhitney/detect-indent@7.0.1':
@@ -5251,10 +5251,6 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
 
-  agent-base@7.1.0:
-    resolution: {integrity: sha512-o/zjMZRhJxny7OyEF+Op8X+efiELC7k7yOjMzgfzVqOzXqkBkWI79YoTdOtsuWd5BWhAGAuOY/Xa6xpiaWXiNg==}
-    engines: {node: '>= 14'}
-
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
@@ -6906,8 +6902,8 @@ packages:
     resolution: {integrity: sha512-B9/wizE4WngqQftFPmdaMYlXoJlJOYxGQOanC77fq9k8+Z0v5dDSVh+3glErdIROP//s/jgb7ZuxKfB8nVyo0g==}
     hasBin: true
 
-  fast-xml-parser@4.3.2:
-    resolution: {integrity: sha512-rmrXUXwbJedoXkStenj1kkljNF7ugn5ZjR9FJcwmCfcCbtOMDghPajbc+Tck6vE6F5XsDmx+Pr2le9fw8+pXBg==}
+  fast-xml-parser@4.3.6:
+    resolution: {integrity: sha512-M2SovcRxD4+vC493Uc2GZVcZaj66CCJhWurC4viynVSTvrpErCShNcDz1lAho6n9REQKvL/ll4A4/fw6Y9z8nw==}
     hasBin: true
 
   fastq@1.16.0:
@@ -7125,8 +7121,8 @@ packages:
     resolution: {integrity: sha512-f9m+BEN5jkg6a0fZjleidjN51VE1X+mPFQ2DJ0uv1V39oCLCbsGe6yjbBnp7eK7z/+GAon99a3nHuqbuuthyPg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
 
-  gaxios@6.1.1:
-    resolution: {integrity: sha512-bw8smrX+XlAoo9o1JAksBwX+hi/RG15J+NTSxmNPIclKC3ZVK6C2afwY8OSdRvOK0+ZLecUJYtj2MmjOt3Dm0w==}
+  gaxios@6.5.0:
+    resolution: {integrity: sha512-R9QGdv8j4/dlNoQbX3hSaK/S0rkMijqjVvW3YM06CoBdbU/VdKd159j4hePpng0KuE6Lh6JJ7UdmVGJZFcAG1w==}
     engines: {node: '>=14'}
 
   gcp-metadata@6.1.0:
@@ -7261,8 +7257,8 @@ packages:
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
-  google-auth-library@9.7.0:
-    resolution: {integrity: sha512-I/AvzBiUXDzLOy4iIZ2W+Zq33W4lcukQv1nl7C8WUA6SQwyQwUwu3waNmWNAvzds//FG8SZ+DnKnW/2k6mQS8A==}
+  google-auth-library@9.9.0:
+    resolution: {integrity: sha512-9l+zO07h1tDJdIHN74SpnWIlNR+OuOemXlWJlLP9pXy6vFtizgpEzMuwJa4lqY9UAdiAv5DVd5ql0Am916I+aA==}
     engines: {node: '>=14'}
 
   gopd@1.0.1:
@@ -7314,8 +7310,8 @@ packages:
   grid-index@1.1.0:
     resolution: {integrity: sha512-HZRwumpOGUrHyxO5bqKZL0B0GlUpwtCAzZ42sgxUPniu33R1LSFH5yrIcBCHjkctCAh3mtWKcKd9J4vDDdeVHA==}
 
-  gtoken@7.0.1:
-    resolution: {integrity: sha512-KcFVtoP1CVFtQu0aSk3AyAt2og66PFhZAlkUOuWKwzMLoulHXG5W5wE5xAnHb+yl3/wEFoqGW7/cDGMU8igDZQ==}
+  gtoken@7.1.0:
+    resolution: {integrity: sha512-pCcEwRi+TKpMlxAQObHDQ56KawURgyAf6jtIY046fJ5tIv3zDe/LEIubckAO8fj6JnAxLdmWkUfNyulQ2iKdEw==}
     engines: {node: '>=14.0.0'}
 
   happy-dom@14.7.1:
@@ -7465,10 +7461,6 @@ packages:
   https-proxy-agent@5.0.1:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
     engines: {node: '>= 6'}
-
-  https-proxy-agent@7.0.2:
-    resolution: {integrity: sha512-NmLNjm6ucYwtcUmL7JQC1ZQ57LmHP4lT15FQ8D61nak1rO6DH+fz5qNK2Ap5UN4ZapYICE3/0KodcLYSPsPbaA==}
-    engines: {node: '>= 14'}
 
   https-proxy-agent@7.0.4:
     resolution: {integrity: sha512-wlwpilI7YdjSkWaQ/7omYBMTliDcmCN8OLihO6I9B86g06lMyAoqgoDpV0XqoaPOKj+0DIdAvnsWfyAAhmimcg==}
@@ -10008,8 +10000,8 @@ packages:
   retimer@3.0.0:
     resolution: {integrity: sha512-WKE0j11Pa0ZJI5YIk0nflGI7SQsfl2ljihVy7ogh7DeQSeYAUi0ubZ/yEueGtDfUPk6GH5LRw1hBdLq4IwUBWA==}
 
-  retry-request@7.0.1:
-    resolution: {integrity: sha512-ZI6vJp9rfB71mrZpw+n9p/B6HCsd7QJlSEQftZ+xfJzr3cQ9EPGKw1FF0BnViJ0fYREX6FhymBD2CARpmsFciQ==}
+  retry-request@7.0.2:
+    resolution: {integrity: sha512-dUOvLMJ0/JJYEn8NrpOaGNE7X3vpI5XlZS/u0ANjqtcZVKnIxP7IgCFwrKTxENw29emmwug53awKtaMm4i9g5w==}
     engines: {node: '>=14'}
 
   retry@0.12.0:
@@ -13668,7 +13660,7 @@ snapshots:
 
   '@google-cloud/promisify@4.0.0': {}
 
-  '@google-cloud/storage@7.10.0(encoding@0.1.13)':
+  '@google-cloud/storage@7.10.2(encoding@0.1.13)':
     dependencies:
       '@google-cloud/paginator': 5.0.0
       '@google-cloud/projectify': 4.0.0
@@ -13677,12 +13669,12 @@ snapshots:
       async-retry: 1.3.3
       duplexify: 4.1.3
       ent: 2.2.0
-      fast-xml-parser: 4.3.2
-      gaxios: 6.1.1(encoding@0.1.13)
-      google-auth-library: 9.7.0(encoding@0.1.13)
+      fast-xml-parser: 4.3.6
+      gaxios: 6.5.0(encoding@0.1.13)
+      google-auth-library: 9.9.0(encoding@0.1.13)
       mime: 3.0.0
       p-limit: 3.1.0
-      retry-request: 7.0.1(encoding@0.1.13)
+      retry-request: 7.0.2(encoding@0.1.13)
       teeny-request: 9.0.0(encoding@0.1.13)
       uuid: 8.3.2
     transitivePeerDependencies:
@@ -15981,18 +15973,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  agent-base@7.1.0:
-    dependencies:
-      debug: 4.3.4(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
   agent-base@7.1.1:
     dependencies:
       debug: 4.3.4(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   agentkeepalive@4.5.0:
     dependencies:
@@ -17858,7 +17843,7 @@ snapshots:
     dependencies:
       strnum: 1.0.5
 
-  fast-xml-parser@4.3.2:
+  fast-xml-parser@4.3.6:
     dependencies:
       strnum: 1.0.5
 
@@ -18110,19 +18095,20 @@ snapshots:
       wide-align: 1.1.5
     optional: true
 
-  gaxios@6.1.1(encoding@0.1.13):
+  gaxios@6.5.0(encoding@0.1.13):
     dependencies:
       extend: 3.0.2
-      https-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.4
       is-stream: 2.0.1
       node-fetch: 2.7.0(encoding@0.1.13)
+      uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
 
   gcp-metadata@6.1.0(encoding@0.1.13):
     dependencies:
-      gaxios: 6.1.1(encoding@0.1.13)
+      gaxios: 6.5.0(encoding@0.1.13)
       json-bigint: 1.0.0
     transitivePeerDependencies:
       - encoding
@@ -18271,13 +18257,13 @@ snapshots:
 
   globrex@0.1.2: {}
 
-  google-auth-library@9.7.0(encoding@0.1.13):
+  google-auth-library@9.9.0(encoding@0.1.13):
     dependencies:
       base64-js: 1.5.1
       ecdsa-sig-formatter: 1.0.11
-      gaxios: 6.1.1(encoding@0.1.13)
+      gaxios: 6.5.0(encoding@0.1.13)
       gcp-metadata: 6.1.0(encoding@0.1.13)
-      gtoken: 7.0.1(encoding@0.1.13)
+      gtoken: 7.1.0(encoding@0.1.13)
       jws: 4.0.0
     transitivePeerDependencies:
       - encoding
@@ -18337,9 +18323,9 @@ snapshots:
 
   grid-index@1.1.0: {}
 
-  gtoken@7.0.1(encoding@0.1.13):
+  gtoken@7.1.0(encoding@0.1.13):
     dependencies:
-      gaxios: 6.1.1(encoding@0.1.13)
+      gaxios: 6.5.0(encoding@0.1.13)
       jws: 4.0.0
     transitivePeerDependencies:
       - encoding
@@ -18543,20 +18529,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.2:
-    dependencies:
-      agent-base: 7.1.0
-      debug: 4.3.4(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
   https-proxy-agent@7.0.4:
     dependencies:
       agent-base: 7.1.1
       debug: 4.3.4(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   human-id@1.0.2: {}
 
@@ -21556,10 +21534,9 @@ snapshots:
 
   retimer@3.0.0: {}
 
-  retry-request@7.0.1(encoding@0.1.13):
+  retry-request@7.0.2(encoding@0.1.13):
     dependencies:
       '@types/request': 2.48.12
-      debug: 4.3.4(supports-color@5.5.0)
       extend: 3.0.2
       teeny-request: 9.0.0(encoding@0.1.13)
     transitivePeerDependencies:
