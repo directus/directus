@@ -551,13 +551,7 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadError({ reason: `Invalid verification code` });
 		}
 
-		// Allow unauthenticated update
-		const service = new UsersService({
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		await service.updateOne(user.id, { status: 'active' });
+		await this.updateOne(user.id, { status: 'active' });
 
 		return user.id;
 	}
