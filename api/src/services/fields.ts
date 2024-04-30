@@ -1,4 +1,9 @@
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import {
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
+	DEFAULT_NUMERIC_PRECISION,
+	DEFAULT_NUMERIC_SCALE,
+} from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -8,7 +13,7 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
-import { ALIAS_TYPES, DEFAULT_NUMERIC_PRECISION, DEFAULT_NUMERIC_SCALE } from '../constants.js';
+import { ALIAS_TYPES } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
