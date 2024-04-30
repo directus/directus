@@ -610,10 +610,9 @@ router.get(
 	asyncHandler(async (req, res, _next) => {
 		const token = req.query['token'];
 		const { error } = verifyRegistrationSchema.validate(token);
-		const redirectTo = '/admin/login';
 
 		if (error) {
-			return res.redirect(redirectTo);
+			return res.redirect('/admin/login');
 		}
 
 		const service = new UsersService({
@@ -623,7 +622,9 @@ router.get(
 
 		await service.verifyRegistration(token as string);
 
-		return res.redirect(redirectTo);
+		// TODO: This is buggy and doesnt let you edit your user in the app
+		// because of the $CURRENT_USER id access filter for the role mhh
+		return res.redirect('/admin/users/me');
 	}),
 	respond,
 );
