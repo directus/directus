@@ -827,20 +827,29 @@ export async function applySearch(
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
 	dbQuery.andWhere(function () {
+		let needsFallbackCondition = true;
+
 		fields.forEach(([name, field]) => {
 			if (['text', 'string'].includes(field.type)) {
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+				needsFallbackCondition = false;
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				const number = Number(searchQuery);
 
 				// only cast finite base10 numeric values
 				if (validateNumber(searchQuery, number)) {
 					this.orWhere({ [`${collection}.${name}`]: number });
+					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+				needsFallbackCondition = false;
 			}
 		});
+
+		if (needsFallbackCondition) {
+			this.orWhereRaw('1 = 0');
+		}
 	});
 }
 
