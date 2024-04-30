@@ -620,11 +620,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		await service.verifyRegistration(token as string);
+		const id = await service.verifyRegistration(token as string);
 
-		// TODO: This is buggy and doesnt let you edit your user in the app
-		// because of the $CURRENT_USER id access filter for the role mhh
-		return res.redirect('/admin/users/me');
+		return res.redirect(`/admin/users/${id}`);
 	}),
 	respond,
 );

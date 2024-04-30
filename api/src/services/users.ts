@@ -451,7 +451,11 @@ export class UsersService extends ItemsService {
 		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
-	async verifyRegistration(token: string): Promise<void> {
+	async registerUser(email: string, password: string) {
+		// TODO
+	}
+
+	async verifyRegistration(token: string): Promise<string> {
 		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
 			email: string;
 			scope: string;
@@ -473,6 +477,8 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { status: 'active' });
+
+		return user.id;
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
