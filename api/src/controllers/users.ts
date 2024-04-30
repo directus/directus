@@ -1,33 +1,23 @@
-import { useEnv } from '@directus/env';
 import {
-	ContainsNullValuesError,
 	ErrorCode,
 	ForbiddenError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, Role, User } from '@directus/types';
-import { validatePayload } from '@directus/utils';
-import { FailedValidationError } from '@directus/validation';
+import type { PrimaryKey, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import jwt from 'jsonwebtoken';
-import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
-import { MailService } from '../services/index.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
-import { SettingsService } from '../services/settings.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
-import type { AbstractServiceOptions } from '../types/services.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { Url } from '../utils/url.js';
 
 const router = express.Router();
 
@@ -511,92 +501,19 @@ router.post(
 	respond,
 );
 
+const registerSchema = Joi.object<{ email: string; password: string }>({
+	email: Joi.string().email().required(),
+	password: Joi.string().required(),
+});
+
 router.post(
 	'/register',
 	asyncHandler(async (req, _res, next) => {
-		const serviceOptions: AbstractServiceOptions = { accountability: null, schema: req.schema };
-		const settingsService = new SettingsService(serviceOptions);
+		const { error, value } = registerSchema.validate(req.body);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		const settings = await settingsService.readSingleton({
-			fields: [
-				'is_public_registration_enabled',
-				'is_public_registration_email_validation_enabled',
-				'public_registration_role',
-				'public_registration_email_filter',
-			],
-		});
-
-		const publicRegistrationRole = settings?.['public_registration_role'];
-		const emailFilter = settings?.['public_registration_email_filter'];
-
-		if (settings?.['is_public_registration_enabled'] == false) {
-			throw new ForbiddenError();
-		}
-
-		if (!publicRegistrationRole) {
-			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
-		}
-
-		const email = req.body?.email;
-
-		if (typeof email !== 'string') {
-			throw new FailedValidationError({ field: 'email', type: 'email' });
-		}
-
-		const hasEmailValidation = settings?.['is_public_registration_email_validation_enabled'];
-		const usersService = new UsersService(serviceOptions);
-
-		const partialUser: Partial<User> = {
-			email,
-			password: req.body?.password,
-			role: publicRegistrationRole,
-			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
-		};
-
-		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
-			throw new FailedValidationError({ field: 'email', type: 'email' });
-		}
-
-		try {
-			await usersService.createOne(partialUser);
-		} catch (error: unknown) {
-			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
-			if (isDirectusError(error) && error.code === 'RECORD_NOT_UNIQUE') {
-				return next();
-			}
-
-			throw error;
-		}
-
-		if (hasEmailValidation) {
-			// TODO
-			// This is for local testing copy pasted from user services' inviteUser
-			// Might want to move it there
-
-			const mailService = new MailService(serviceOptions);
-			const env = useEnv();
-			const logger = useLogger();
-			const payload = { email, scope: 'pending-registration' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const verificationURL = new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email');
-			verificationURL.setQuery('token', token);
-
-			mailService
-				.send({
-					to: email,
-					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
-					template: {
-						name: 'user-registration',
-						data: {
-							url: verificationURL.toString(),
-							email,
-						},
-					},
-				})
-				.catch((error) => {
-					logger.error(error, 'Could not send email verification mail');
-				});
-		}
+		const usersService = new UsersService({ accountability: null, schema: req.schema });
+		await usersService.registerUser(value.email, value.password);
 
 		return next();
 	}),
@@ -608,19 +525,14 @@ const verifyRegistrationSchema = Joi.string();
 router.get(
 	'/register/verify-email',
 	asyncHandler(async (req, res, _next) => {
-		const token = req.query['token'];
-		const { error } = verifyRegistrationSchema.validate(token);
+		const { error, value } = verifyRegistrationSchema.validate(req.query['token']);
 
 		if (error) {
 			return res.redirect('/admin/login');
 		}
 
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const id = await service.verifyRegistration(token as string);
+		const service = new UsersService({ accountability: null, schema: req.schema });
+		const id = await service.verifyRegistration(value);
 
 		return res.redirect(`/admin/users/${id}`);
 	}),

@@ -1,7 +1,14 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Item, PrimaryKey, Query } from '@directus/types';
-import { getSimpleHash, toArray } from '@directus/utils';
+import {
+	ContainsNullValuesError,
+	ForbiddenError,
+	InvalidPayloadError,
+	RecordNotUniqueError,
+	UnprocessableContentError,
+	isDirectusError,
+} from '@directus/errors';
+import type { Item, PrimaryKey, Query, User } from '@directus/types';
+import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
@@ -452,7 +459,81 @@ export class UsersService extends ItemsService {
 	}
 
 	async registerUser(email: string, password: string) {
-		// TODO
+		// TODO STALL TIME
+
+		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
+		const settingsService = new SettingsService(serviceOptions);
+
+		const settings = await settingsService.readSingleton({
+			fields: [
+				'is_public_registration_enabled',
+				'is_public_registration_email_validation_enabled',
+				'public_registration_role',
+				'public_registration_email_filter',
+			],
+		});
+
+		if (settings?.['is_public_registration_enabled'] == false) {
+			throw new ForbiddenError();
+		}
+
+		const publicRegistrationRole = settings?.['public_registration_role'];
+
+		if (!publicRegistrationRole) {
+			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
+		}
+
+		const hasEmailValidation = settings?.['is_public_registration_email_validation_enabled'];
+
+		const partialUser: Partial<User> = {
+			email,
+			password,
+			role: publicRegistrationRole,
+			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
+		};
+
+		const emailFilter = settings?.['public_registration_email_filter'];
+
+		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+			throw new FailedValidationError({ field: 'email', type: 'email' });
+		}
+
+		try {
+			await this.createOne(partialUser);
+		} catch (error: unknown) {
+			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
+			if (isDirectusError(error) && error.code === 'RECORD_NOT_UNIQUE') {
+				return;
+			}
+
+			throw error;
+		}
+
+		if (hasEmailValidation) {
+			const mailService = new MailService(serviceOptions);
+			const payload = { email, scope: 'pending-registration' };
+			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+
+			const verificationURL = new Url(env['PUBLIC_URL'] as string)
+				.addPath('users', 'register', 'verify-email')
+				.setQuery('token', token);
+
+			mailService
+				.send({
+					to: email,
+					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
+					template: {
+						name: 'user-registration',
+						data: {
+							url: verificationURL.toString(),
+							email,
+						},
+					},
+				})
+				.catch((error) => {
+					logger.error(error, 'Could not send email verification mail');
+				});
+		}
 	}
 
 	async verifyRegistration(token: string): Promise<string> {
