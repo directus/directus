@@ -15,6 +15,7 @@ export function numberInRange(value: NumericValue, info: NumberInfo) {
 
 		case 'integer':
 			return value >= MIN_SAFE_INT32 && value <= MAX_SAFE_INT32;
+
 		case 'float':
 			// Not sure how to calculate the logical limits of float
 			// Let the database decide and error;
