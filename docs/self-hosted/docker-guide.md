@@ -122,6 +122,7 @@ services:
       DB_PASSWORD: "directus"
 
       CACHE_ENABLED: "true"
+      CACHE_AUTO_PURGE: "true"
       CACHE_STORE: "redis"
       REDIS: "redis://cache:6379"
 
