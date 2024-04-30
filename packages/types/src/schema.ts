@@ -3,7 +3,7 @@ import type { Relation } from './relations.js';
 import type { Filter } from './filter.js';
 
 export type FieldOverview = {
-	field: Type;
+	field: string;
 	defaultValue: any;
 	nullable: boolean;
 	generated: boolean;
