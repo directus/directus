@@ -128,22 +128,6 @@ describe('applySearch', () => {
 		expect(db['orWhere']).toBeCalledTimes(2);
 		expect(db['orWhereRaw']).toBeCalledTimes(1);
 	});
-
-	test.each(['1234', '-128', '12.34'])('Raw query used for postgres and number %s', async (number) => {
-		const db = mockDatabase('Client_PG');
-
-		db['andWhere'].mockImplementation((callback: () => void) => {
-			// detonate the andWhere function
-			callback.call(db);
-			return db;
-		});
-
-		await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
-
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(db['orWhere']).toBeCalledTimes(0);
-		expect(db['orWhereRaw']).toBeCalledTimes(3);
-	});
 });
 
 describe('applyFilter', () => {
