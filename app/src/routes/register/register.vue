@@ -55,15 +55,12 @@ useHead({
 			</div>
 		</div>
 
-		<!-- TODO CHANGE KEY -->
 		<div v-if="wasSuccessful" class="after-success">
 			<div v-md="t('registration_successful_note')"></div>
 			<v-button large to="/login">{{ t('sign_in') }}</v-button>
 		</div>
 
 		<register-form v-else :provider="provider" @was-successful="wasSuccessful = $event" />
-
-		<!-- TODO: SSO links should be dependent on the setting for generating users on login -->
 
 		<sso-links v-if="!authenticated && wasSuccessful == false" :providers="auth.providers" />
 
