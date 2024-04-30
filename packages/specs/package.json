@@ -33,7 +33,7 @@
 		"openapi3-ts": "4.3.1"
 	},
 	"devDependencies": {
-		"npm-watch": "0.11.0",
+		"npm-watch": "0.12.0",
 		"swagger-cli": "4.0.4",
 		"swagger-ui-watcher": "2.1.14"
 	},

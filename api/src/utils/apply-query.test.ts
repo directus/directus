@@ -79,8 +79,13 @@ const FAKE_SCHEMA: SchemaOverview = {
 class Client_SQLite3 extends MockClient {}
 
 describe('applySearch', () => {
-	function mockDatabase() {
+	function mockDatabase(dbClient: string = 'Client_SQLite3') {
 		const self: Record<string, any> = {
+			client: {
+				constructor: {
+					name: dbClient,
+				},
+			},
 			andWhere: vi.fn(() => self),
 			orWhere: vi.fn(() => self),
 			orWhereRaw: vi.fn(() => self),
@@ -100,11 +105,12 @@ describe('applySearch', () => {
 				return db;
 			});
 
-			await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+			await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
 			expect(db['orWhereRaw']).toBeCalledTimes(1);
+			expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
 		},
 	);
 
@@ -117,11 +123,33 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+		await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
 		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
+	});
+
+	test('Query is falsy if no other clause is added', async () => {
+		const db = mockDatabase();
+
+		const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
+
+		delete schemaWithStringFieldRemoved.collections.test.fields.text;
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		await applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('1 = 0');
 	});
 });
 
