@@ -222,6 +222,9 @@ fields:
     interface: select-dropdown-m2o
     options:
       template: '{{ name }}'
+      filter:
+        admin_access:
+          _eq: false
     special:
       - m2o
     width: half
