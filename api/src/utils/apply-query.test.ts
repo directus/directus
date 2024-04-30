@@ -105,6 +105,7 @@ describe('applySearch', () => {
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
 			expect(db['orWhereRaw']).toBeCalledTimes(1);
+			expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
 		},
 	);
 
@@ -122,6 +123,28 @@ describe('applySearch', () => {
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
 		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
+	});
+
+	test('Query is falsy if no other clause is added', async () => {
+		const db = mockDatabase();
+
+		const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
+
+		delete schemaWithStringFieldRemoved.collections.test.fields.text;
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		await applySearch(schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('1 = 0');
 	});
 });
 
