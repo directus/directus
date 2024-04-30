@@ -79,8 +79,13 @@ const FAKE_SCHEMA: SchemaOverview = {
 class Client_SQLite3 extends MockClient {}
 
 describe('applySearch', () => {
-	function mockDatabase() {
+	function mockDatabase(dbClient: string = 'Client_SQLite3') {
 		const self: Record<string, any> = {
+			client: {
+				constructor: {
+					name: dbClient,
+				},
+			},
 			andWhere: vi.fn(() => self),
 			orWhere: vi.fn(() => self),
 			orWhereRaw: vi.fn(() => self),
@@ -100,7 +105,7 @@ describe('applySearch', () => {
 				return db;
 			});
 
-			await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+			await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
@@ -118,7 +123,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+		await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
@@ -139,7 +144,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+		await applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(0);

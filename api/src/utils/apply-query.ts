@@ -1,3 +1,4 @@
+import { NUMERIC_TYPES } from '@directus/constants';
 import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
@@ -5,12 +6,13 @@ import type {
 	FieldFunction,
 	FieldOverview,
 	Filter,
+	NumericType,
 	Query,
 	Relation,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction } from '@directus/utils';
+import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction, isIn } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -21,6 +23,7 @@ import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
 import { parseFilterKey } from './parse-filter-key.js';
+import { parseNumericString } from './parse-numeric-string.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -58,7 +61,7 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
+		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
 	if (query.group) {
@@ -819,11 +822,13 @@ export function applyFilter(
 }
 
 export async function applySearch(
+	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
 ): Promise<void> {
+	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
 	dbQuery.andWhere(function () {
@@ -833,12 +838,15 @@ export async function applySearch(
 			if (['text', 'string'].includes(field.type)) {
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
 				needsFallbackCondition = false;
-			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
-				const number = Number(searchQuery);
+			} else if (isNumericField(field)) {
+				const number = parseNumericString(searchQuery);
 
-				// only cast finite base10 numeric values
-				if (validateNumber(searchQuery, number)) {
-					this.orWhere({ [`${collection}.${name}`]: number });
+				if (number === null) {
+					return; // unable to parse
+				}
+
+				if (numberHelper.isNumberValid(number, field)) {
+					numberHelper.addSearchCondition(this, collection, name, number);
 					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
@@ -851,13 +859,6 @@ export async function applySearch(
 			this.orWhereRaw('1 = 0');
 		}
 	});
-}
-
-function validateNumber(value: string, parsed: number) {
-	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
-	// casting parsed value back to string should be equal the original value
-	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
-	return String(parsed) === value;
 }
 
 export function applyAggregate(
@@ -942,4 +943,8 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 	}
 
 	return getOperation(Object.keys(value)[0]!, Object.values(value)[0]);
+}
+
+function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
+	return isIn(field.type, NUMERIC_TYPES);
 }
