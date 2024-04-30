@@ -49,7 +49,7 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title">{{ t('register') }}</h1>
+			<h1 class="type-title">{{ wasSuccessful ? t('registration_successful_headline') : t('register') }}</h1>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>

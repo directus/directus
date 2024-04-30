@@ -1637,8 +1637,9 @@ select_interface: Select an interface
 select_display: Select a display
 settings: Settings
 register: Register
+registration_successful_headline: Success!
 registration_successful_note: |
-  Success! Please note that before you can sign in, you may need to verify your email address by clicking on the verification link sent to you.
+  Please note that before you can sign in, you may need to verify your email address by clicking on the verification link sent to you.
 dont_have_an_account: Don't have an account?
 already_have_an_account: Already have an account?
 sign_up_now: Sign up now
