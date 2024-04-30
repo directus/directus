@@ -23,34 +23,46 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('user_updated').references('id').inTable('directus_users');
 	});
 
-	const comments = await knex
-		.select('id', 'collection', 'item', 'comment', 'user', 'timestamp')
-		.from('directus_activity')
-		.whereNotNull('comment');
+	let lastId = 0;
+	let commentsFound = 0;
 
-	for (const comment of comments) {
-		await knex.transaction(async (trx) => {
-			const newCommentId = randomUUID();
+	do {
+		const comments = await knex
+			.select('id', 'collection', 'item', 'comment', 'user', 'timestamp')
+			.from('directus_activity')
+			.whereNotNull('comment')
+			.andWhere('id', '>', lastId)
+			.orderBy('id')
+			.limit(100);
 
-			await trx('directus_comments').insert({
-				id: newCommentId,
-				collection: comment.collection,
-				item: comment.item,
-				comment: comment.comment,
-				user_created: comment.user,
-				date_created: comment.timestamp,
+		commentsFound = comments.length;
+
+		for (const comment of comments) {
+			await knex.transaction(async (trx) => {
+				const newCommentId = randomUUID();
+
+				await trx('directus_comments').insert({
+					id: newCommentId,
+					collection: comment.collection,
+					item: comment.item,
+					comment: comment.comment,
+					user_created: comment.user,
+					date_created: comment.timestamp,
+				});
+
+				await trx('directus_activity')
+					.update({
+						action: Action.CREATE,
+						collection: 'directus_comments',
+						item: newCommentId,
+						comment: null,
+					})
+					.where('id', '=', comment.id);
 			});
 
-			await trx('directus_activity')
-				.update({
-					action: Action.CREATE,
-					collection: 'directus_comments',
-					item: newCommentId,
-					comment: null,
-				})
-				.where('id', '=', comment.id);
-		});
-	}
+			lastId = comment.id;
+		}
+	} while (commentsFound > 0);
 }
 
 export async function down(knex: Knex): Promise<void> {
