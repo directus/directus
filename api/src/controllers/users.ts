@@ -561,9 +561,11 @@ router.post(
 			await usersService.createOne(partialUser);
 		} catch (error: unknown) {
 			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
-			if (isDirectusError(error) && error.code !== 'RECORD_NOT_UNIQUE') {
-				throw error;
+			if (isDirectusError(error) && error.code === 'RECORD_NOT_UNIQUE') {
+				return next();
 			}
+
+			throw error;
 		}
 
 		if (hasEmailValidation) {
