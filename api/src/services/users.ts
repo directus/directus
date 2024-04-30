@@ -459,8 +459,8 @@ export class UsersService extends ItemsService {
 	}
 
 	async registerUser(email: string, password: string) {
-		// TODO STALL TIME
-
+		const STALL_TIME = 750;
+		const timeStart = performance.now();
 		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
 		const settingsService = new SettingsService(serviceOptions);
 
@@ -474,12 +474,14 @@ export class UsersService extends ItemsService {
 		});
 
 		if (settings?.['is_public_registration_enabled'] == false) {
+			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}
 
 		const publicRegistrationRole = settings?.['public_registration_role'];
 
 		if (!publicRegistrationRole) {
+			await stall(STALL_TIME, timeStart);
 			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
 		}
 
@@ -495,6 +497,7 @@ export class UsersService extends ItemsService {
 		const emailFilter = settings?.['public_registration_email_filter'];
 
 		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+			await stall(STALL_TIME, timeStart);
 			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
 
@@ -503,9 +506,11 @@ export class UsersService extends ItemsService {
 		} catch (error: unknown) {
 			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
 			if (isDirectusError(error) && error.code === 'RECORD_NOT_UNIQUE') {
+				await stall(STALL_TIME, timeStart);
 				return;
 			}
 
+			await stall(STALL_TIME, timeStart);
 			throw error;
 		}
 
@@ -534,6 +539,8 @@ export class UsersService extends ItemsService {
 					logger.error(error, 'Could not send email verification mail');
 				});
 		}
+
+		await stall(STALL_TIME, timeStart);
 	}
 
 	async verifyRegistration(token: string): Promise<string> {
