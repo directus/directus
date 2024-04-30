@@ -144,7 +144,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+		await applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(0);
