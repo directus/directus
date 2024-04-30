@@ -32,6 +32,10 @@ describe('number', () => {
 		expect(guessType('9007199254740992')).toBe('json');
 	});
 
+	test('Returns json for numbers smaller than the min safe integer', () => {
+		expect(guessType('-9007199254740992')).toBe('json');
+	});
+
 	test('Returns number for values of type number', () => {
 		expect(guessType(12345)).toBe('number');
 	});
