@@ -13,7 +13,7 @@ import type {
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction } from '@directus/utils';
+import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction, isIn } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -958,5 +958,5 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 }
 
 function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
-	return NUMERIC_TYPES.includes(field.type);
+	return isIn(field.type, NUMERIC_TYPES);
 }
