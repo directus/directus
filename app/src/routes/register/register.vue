@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
-import { useServerStore } from '@/stores/server';
 import { useAppStore } from '@directus/stores';
 import { useHead } from '@unhead/vue';
-import { storeToRefs } from 'pinia';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SsoLinks from '../login/components/sso-links.vue';
 import RegisterForm from './register-form.vue';
 
 withDefaults(
@@ -19,27 +15,9 @@ withDefaults(
 );
 
 const { t, te } = useI18n();
-
 const appStore = useAppStore();
-const serverStore = useServerStore();
-const { auth, providerOptions } = storeToRefs(serverStore);
-
-const wasSuccessful = ref(false);
-
-const driver = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.driver : DEFAULT_AUTH_DRIVER);
-const provider = ref(unref(auth).disableDefault ? unref(providerOptions)?.[0]?.value : DEFAULT_AUTH_PROVIDER);
-
-const providerSelect = computed({
-	get() {
-		return provider.value;
-	},
-	set(value: string) {
-		provider.value = value;
-		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? DEFAULT_AUTH_DRIVER;
-	},
-});
-
 const authenticated = computed(() => appStore.authenticated);
+const wasSuccessful = ref(false);
 
 useHead({
 	title: t('register'),
@@ -50,9 +28,6 @@ useHead({
 	<public-view>
 		<div class="header">
 			<h1 class="type-title">{{ wasSuccessful ? t('registration_successful_headline') : t('register') }}</h1>
-			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
-				<v-select v-model="providerSelect" inline :items="providerOptions" label />
-			</div>
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
@@ -60,9 +35,7 @@ useHead({
 			<v-button large to="/login">{{ t('sign_in') }}</v-button>
 		</div>
 
-		<register-form v-else :provider="provider" @was-successful="wasSuccessful = $event" />
-
-		<sso-links v-if="!authenticated && wasSuccessful == false" :providers="auth.providers" />
+		<register-form v-else @was-successful="wasSuccessful = $event" />
 
 		<div v-if="wasSuccessful == false" class="login-wrapper">
 			{{ t('already_have_an_account') }}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Credentials = {
@@ -9,12 +9,7 @@ type Credentials = {
 	password: string;
 };
 
-const props = defineProps<{
-	provider: string;
-}>();
-
 const { t } = useI18n();
-const { provider } = toRefs(props);
 const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
@@ -25,12 +20,6 @@ const passwordsMatch = computed(() => password.value === passwordVerification.va
 const emit = defineEmits<{
 	wasSuccessful: [boolean];
 }>();
-
-watch(provider, () => {
-	email.value = null;
-	password.value = null;
-	error.value = null;
-});
 
 const errorFormatted = computed(() => {
 	// Show "Wrong username or password" for wrongly formatted emails as well
