@@ -843,7 +843,7 @@ export async function applySearch(
 				}
 
 				if (numberHelper.isNumberValid(number, field)) {
-					numberHelper.orWhere(this, collection, name, number);
+					numberHelper.addSearchCondition(this, collection, name, number);
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });

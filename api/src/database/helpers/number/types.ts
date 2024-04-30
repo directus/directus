@@ -9,8 +9,12 @@ export type NumberInfo = {
 };
 
 export abstract class NumberDatabaseHelper extends DatabaseHelper {
-	// maybe call this "addSearchCondition"?
-	orWhere(dbQuery: Knex.QueryBuilder, collection: string, name: string, value: NumericValue): Knex.QueryBuilder {
+	addSearchCondition(
+		dbQuery: Knex.QueryBuilder,
+		collection: string,
+		name: string,
+		value: NumericValue,
+	): Knex.QueryBuilder {
 		return dbQuery.orWhere({ [`${collection}.${name}`]: value });
 	}
 

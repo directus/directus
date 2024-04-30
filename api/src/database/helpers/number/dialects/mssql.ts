@@ -4,7 +4,7 @@ import { NumberDatabaseHelper, type NumberInfo } from '../types.js';
 import type { NumericValue } from '@directus/types';
 
 export class NumberHelperMSSQL extends NumberDatabaseHelper {
-	override orWhere(
+	override addSearchCondition(
 		dbQuery: Knex.QueryBuilder,
 		collection: string,
 		name: string,
