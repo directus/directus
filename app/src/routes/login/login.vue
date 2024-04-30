@@ -62,7 +62,7 @@ useHead({
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
-		<div v-if="serverStore.info.project?.is_public_registration_enabled" class="registration-wrapper">
+		<div v-if="!authenticated && serverStore.info.project?.is_public_registration_enabled" class="registration-wrapper">
 			{{ t('dont_have_an_account') }}
 			<router-link to="/register" class="registration-link">
 				{{ t('sign_up_now') }}
@@ -91,7 +91,7 @@ h1 {
 }
 
 .registration-wrapper {
-	margin-top: 20px;
+	margin-top: 3rem;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;

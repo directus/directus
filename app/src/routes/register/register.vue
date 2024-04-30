@@ -120,7 +120,7 @@ h1 {
 }
 
 .login-wrapper {
-	margin-top: 20px;
+	margin-top: 3rem;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
