@@ -32,8 +32,8 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"knex": "3.1.0",
-		"typescript": "5.3.3",
-		"vue": "3.4.23"
+		"typescript": "5.4.5",
+		"vue": "3.4.26"
 	},
 	"peerDependencies": {
 		"knex": "3",
