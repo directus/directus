@@ -1,4 +1,4 @@
-import { NUMERIC_TYPES } from '@directus/constants/src/index.js';
+import { NUMERIC_TYPES } from '@directus/constants';
 import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
