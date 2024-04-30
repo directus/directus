@@ -10,7 +10,7 @@ export function parseNumericString(stringValue: string): NumericValue | null {
 	if (number > Number.MAX_SAFE_INTEGER || number < Number.MIN_SAFE_INTEGER) {
 		try {
 			number = BigInt(stringValue);
-		} catch (_) {
+		} catch {
 			// BigInt parsing failed, e.g. it was a float larger than MAX_SAFE_INTEGER
 			return null;
 		}
