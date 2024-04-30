@@ -4,21 +4,20 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import type { AST } from '../../../types/ast.js';
 import { processAst } from './process.js';
 
-import { AccessService } from '../../../services/access.js';
-import { PermissionsService } from '../../../services/permissions/index.js';
-import { RolesService } from '../../../services/roles.js';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/permissions/index.js';
 
-vi.mock('../../database/index.js');
-vi.mock('../../services/access.js');
-vi.mock('../../services/permissions/index.js');
-vi.mock('../../services/roles.js');
+let accessService: AccessService;
+let permissionsService: PermissionsService;
 
 beforeEach(() => {
-	vi.clearAllMocks();
+	accessService = {
+		readByQuery: vi.fn(),
+	} as unknown as AccessService;
 
-	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([]);
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue([]);
-	vi.mocked(RolesService.prototype.readByQuery).mockResolvedValue([]);
+	permissionsService = {
+		readByQuery: vi.fn(),
+	} as unknown as PermissionsService;
 });
 
 test('Throws if no policies exist for user', async () => {
@@ -26,10 +25,10 @@ test('Throws if no policies exist for user', async () => {
 	const acc = {} as Accountability;
 	const sch = {} as SchemaOverview;
 
-	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([]);
+	vi.mocked(accessService.readByQuery).mockResolvedValue([]);
 
 	try {
-		await processAst(ast, 'read', acc, sch);
+		await processAst(accessService, permissionsService, ast, 'read', acc, sch);
 	} catch (err) {
 		expect(err).toBeInstanceOf(ForbiddenError);
 	}
@@ -40,9 +39,9 @@ test('Returns AST unmodified and unverified is current user is admin', async () 
 	const acc = {} as Accountability;
 	const sch = {} as SchemaOverview;
 
-	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([{ policy: { admin_access: true } }]);
+	vi.mocked(accessService.readByQuery).mockResolvedValue([{ policy: { admin_access: true } }]);
 
-	const output = await processAst(ast, 'read', acc, sch);
+	const output = await processAst(accessService, permissionsService, ast, 'read', acc, sch);
 
 	expect(output).toBe(ast);
 });
@@ -52,15 +51,15 @@ test('Validates all paths in AST', async () => {
 	const acc = {} as Accountability;
 	const sch = {} as SchemaOverview;
 
-	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
+	vi.mocked(accessService.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
 
 	try {
-		await processAst(ast, 'read', acc, sch);
+		await processAst(accessService, permissionsService, ast, 'read', acc, sch);
 	} catch (err) {
 		expect(err).toBeInstanceOf(ForbiddenError);
 	}
 
-	expect(PermissionsService.prototype.readByQuery).toHaveBeenCalledWith({
+	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_and: [
 				{
@@ -98,9 +97,9 @@ test('Injects permission cases for the provided AST', async () => {
 
 	const sch = {} as SchemaOverview;
 
-	vi.mocked(AccessService.prototype.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
+	vi.mocked(accessService.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
 
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue([
+	vi.mocked(permissionsService.readByQuery).mockResolvedValue([
 		{
 			policy: 'test-policy-1',
 			collection: 'test-collection',
@@ -110,7 +109,7 @@ test('Injects permission cases for the provided AST', async () => {
 		},
 	]);
 
-	await processAst(ast, 'read', acc, sch);
+	await processAst(accessService, permissionsService, ast, 'read', acc, sch);
 
 	expect(ast).toEqual({
 		type: 'root',

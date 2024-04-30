@@ -3,10 +3,8 @@ import type { AccessRow } from '../modules/process-ast/types.js';
 
 export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | undefined) {
 	return policies.filter(({ policy }) => {
-		const ipAllowList = policy.ip_access?.split(',') ?? null;
-
 		// Keep policies that don't have an ip address allow list configured
-		if (!ipAllowList) {
+		if (!policy.ip_access) {
 			return true;
 		}
 
@@ -16,6 +14,6 @@ export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | un
 			return false;
 		}
 
-		return ipInNetworks(ip, ipAllowList);
+		return ipInNetworks(ip, policy.ip_access);
 	});
 }

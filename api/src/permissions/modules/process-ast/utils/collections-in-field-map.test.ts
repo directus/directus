@@ -8,5 +8,5 @@ test('Returns set of collections in given map', () => {
 		['relation', { collection: 'test-collection-2', fields: new Set() }],
 	]);
 
-	expect(collectionsInFieldMap(fieldMap)).toEqual(new Set(['test-collection-1', 'test-collection-2']));
+	expect(collectionsInFieldMap(fieldMap)).toEqual(['test-collection-1', 'test-collection-2']);
 });

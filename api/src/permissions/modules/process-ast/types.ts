@@ -9,8 +9,5 @@ export type QueryPath = string[];
 export type FieldMap = Map<string, { collection: CollectionKey; fields: Set<FieldKey> }>;
 
 export interface AccessRow {
-	policy: { id: string; admin_access: boolean; ip_access: string | null };
-	sort: number;
-	role: null | string;
-	user: null | string;
+	policy: { id: string; ip_access: string[] | null };
 }

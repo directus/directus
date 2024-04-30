@@ -1,20 +1,13 @@
-import type { Accountability, Filter, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { AccessService } from '../../services/access.js';
+import type { Accountability, Filter } from '@directus/types';
+import type { AccessService } from '../../services/access.js';
 import type { AccessRow } from '../modules/process-ast/types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 
 /**
  * Fetch the policies associated with the current user accountability
  */
-export async function fetchPolicies(
-	knex: Knex,
-	schema: SchemaOverview,
-	accountability: Accountability,
-): Promise<string[]> {
+export async function fetchPolicies(accessService: AccessService, accountability: Accountability): Promise<string[]> {
 	// TODO add cache
-
-	const accessService = new AccessService({ knex, schema });
 
 	const { user, roles } = accountability;
 

@@ -1,6 +1,7 @@
 import type { PermissionsAction } from '@directus/system-data';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/index.js';
 import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
@@ -11,7 +12,8 @@ import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
 import { validatePath } from './utils/validate-path.js';
 
 export async function processAst(
-	knex: Knex,
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	ast: AST,
 	action: PermissionsAction,
 	accountability: Accountability | null,
@@ -23,13 +25,13 @@ export async function processAst(
 		return ast;
 	}
 
-	const policies = await fetchPolicies(knex, schema, accountability);
+	const policies = await fetchPolicies(accessService, accountability);
 
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(ast, schema);
 	const collections = collectionsInFieldMap(fieldMap);
-	const permissions = await fetchPermissions(knex, schema, action, policies, collections);
+	const permissions = await fetchPermissions(permissionsService, action, policies, collections);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
 		validatePath(path, permissions, collection, fields);
