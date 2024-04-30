@@ -1638,7 +1638,7 @@ select_display: Select a display
 settings: Settings
 register: Register
 registration_successful_note: |
-  Success! You may need to verify your email by clicking on the verification link sent to you before you can sign in.
+  Success! Please note that before you can sign in, you may need to verify your email address by clicking on the verification link sent to you.
 dont_have_an_account: Don't have an account?
 already_have_an_account: Already have an account?
 sign_up_now: Sign up now
