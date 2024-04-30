@@ -8,7 +8,12 @@ export function parseNumericString(stringValue: string): NumericValue | null {
 	}
 
 	if (number > Number.MAX_SAFE_INTEGER || number < Number.MIN_SAFE_INTEGER) {
-		number = BigInt(stringValue);
+		try {
+			number = BigInt(stringValue);
+		} catch (_) {
+			// BigInt parsing failed, e.g. it was a float larger than MAX_SAFE_INTEGER
+			return null;
+		}
 	}
 
 	// casting parsed value back to string should be equal the original value
