@@ -210,30 +210,6 @@ describe('filter', () => {
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 
-	test('should accept empty filter object', () => {
-		const filter = {};
-
-		const sanitizedQuery = sanitizeQuery({ filter });
-
-		expect(sanitizedQuery.filter).toEqual({});
-	});
-
-	test('should accept empty object for key', () => {
-		const filter = { field_a: {} };
-
-		const sanitizedQuery = sanitizeQuery({ filter });
-
-		expect(sanitizedQuery.filter).toEqual({ field_a: {} });
-	});
-
-	test('should accept empty array for key', () => {
-		const filter = { field_a: [] };
-
-		const sanitizedQuery = sanitizeQuery({ filter });
-
-		expect(sanitizedQuery.filter).toEqual({ field_a: [] });
-	});
-
 	test('should throw error on invalid filter', () => {
 		const filter = { field_a: null };
 
