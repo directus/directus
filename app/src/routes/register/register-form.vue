@@ -3,7 +3,6 @@ import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 type Credentials = {
 	email: string;
@@ -15,7 +14,6 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const router = useRouter();
 const { provider } = toRefs(props);
 const isLoading = ref(false);
 const email = ref<string | null>(null);
