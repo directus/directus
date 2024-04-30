@@ -37,7 +37,7 @@ importers:
     dependencies:
       '@authenio/samlify-node-xmllint':
         specifier: 2.0.0
-        version: 2.0.0(samlify@2.8.11)
+        version: 2.0.0(samlify@2.8.10)
       '@aws-sdk/client-ses':
         specifier: 3.552.0
         version: 3.552.0
@@ -336,8 +336,8 @@ importers:
         specifier: 4.12.0
         version: 4.12.0
       samlify:
-        specifier: 2.8.11
-        version: 2.8.11
+        specifier: 2.8.10
+        version: 2.8.10
       sanitize-html:
         specifier: 2.13.0
         version: 2.13.0
@@ -9983,8 +9983,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  samlify@2.8.11:
-    resolution: {integrity: sha512-EDO9CMba0rtHSek2NyUcS8brIxK1E521X5fT+1qLKTRkm1dddITeuPqU8/by4Lcf95ngMKjsn5Z600eVhXDqxQ==}
+  samlify@2.8.10:
+    resolution: {integrity: sha512-g2M1Qq2uL7GHtmBRaTVYcJD0Vb+XOyvXHsPARHCoqQ54Vp7m5h3NMUGzvLEIFGujxaamyM3BhEi9fdVAkJMvHw==}
 
   sanitize-html@2.13.0:
     resolution: {integrity: sha512-Xff91Z+4Mz5QiNSLdLWwjgBDm5b1RU6xBT0+12rapjiaR7SwfRdjw8f+6Rir2MXKLrDicRFHdb51hGOAxmsUIA==}
@@ -11488,9 +11488,6 @@ packages:
     resolution: {integrity: sha512-qVurBUOQrmvlgmZqIVBqmb06TD2a/PpEUfFPgD7BuBfjmoH4zgkqaWSIJrnymlCvM2GGt9x+XtJFA+ttoAufqg==}
     engines: {node: '>=4.0.0'}
 
-  xml-escape@1.1.0:
-    resolution: {integrity: sha512-B/T4sDK8Z6aUh/qNr7mjKAwwncIljFuUP+DO/D5hloYFj+90O88z8Wf7oSucZTHxBAsC1/CTP4rtx/x1Uf72Mg==}
-
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -11760,10 +11757,10 @@ snapshots:
 
   '@assemblyscript/loader@0.19.23': {}
 
-  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.8.11)':
+  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.8.10)':
     dependencies:
       node-xmllint: 1.0.0
-      samlify: 2.8.11
+      samlify: 2.8.10
 
   '@authenio/xml-encryption@2.0.2':
     dependencies:
@@ -21211,7 +21208,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  samlify@2.8.11:
+  samlify@2.8.10:
     dependencies:
       '@authenio/xml-encryption': 2.0.2
       '@xmldom/xmldom': 0.8.10
@@ -21222,7 +21219,6 @@ snapshots:
       uuid: 8.3.2
       xml: 1.0.1
       xml-crypto: 3.2.0
-      xml-escape: 1.1.0
       xpath: 0.0.32
 
   sanitize-html@2.13.0:
@@ -23019,8 +23015,6 @@ snapshots:
     dependencies:
       '@xmldom/xmldom': 0.8.10
       xpath: 0.0.32
-
-  xml-escape@1.1.0: {}
 
   xml-name-validator@4.0.0: {}
 
