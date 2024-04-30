@@ -4,5 +4,5 @@
 '@directus/api': patch
 ---
 
-Fixed search functionality for large and real numbers in PostgreSQL, MSSQL and SQLite
+Fixed search functionality for large and real numbers in PostgreSQL, MSSQL, OracleDB and SQLite
 
