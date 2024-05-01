@@ -9,7 +9,7 @@ import { Readable } from 'node:stream';
 import Queue from 'p-queue';
 import { join } from 'path';
 import type { ReadableStream } from 'stream/web';
-import tar from 'tar';
+import { extract } from 'tar';
 import { useLogger } from '../../../logger.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
@@ -48,7 +48,7 @@ export class InstallationManager {
 			 */
 			const extractedPath = 'package';
 
-			await tar.extract({
+			await extract({
 				file: tarPath,
 				cwd: tempDir,
 			});
