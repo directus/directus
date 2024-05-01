@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: Sobre
+about: Acerca
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -28,9 +28,12 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
+marketplace: Mercado
+extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulo
 logs: Registo de Eventos
+unknown: Desconhecido
 reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
 edit_field: Editar campo
@@ -713,6 +716,7 @@ all: Todos
 batch_delete_confirm: >-
   Nenhum item foi selecionado. Tem certeza de que deseja remover este item? Esta ação não pode ser desfeita. Tem certeza que deseja remover estes {count} itens? Esta ação não pode ser desfeita.
 cancel: Cancelar
+source_registry: Mercado
 collection: Coleção
 content: Conteúdo
 fields:
