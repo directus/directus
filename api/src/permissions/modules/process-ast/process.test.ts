@@ -12,17 +12,17 @@ let permissionsService: PermissionsService;
 
 beforeEach(() => {
 	accessService = {
-		readByQuery: vi.fn(),
+		readByQuery: vi.fn().mockResolvedValue([]),
 	} as unknown as AccessService;
 
 	permissionsService = {
-		readByQuery: vi.fn(),
+		readByQuery: vi.fn().mockResolvedValue([]),
 	} as unknown as PermissionsService;
 });
 
 test('Throws if no policies exist for user', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const acc = {} as Accountability;
+	const acc = { user: null, roles: [] } as unknown as Accountability;
 	const sch = {} as SchemaOverview;
 
 	vi.mocked(accessService.readByQuery).mockResolvedValue([]);
@@ -34,12 +34,20 @@ test('Throws if no policies exist for user', async () => {
 	}
 });
 
-test('Returns AST unmodified and unverified is current user is admin', async () => {
+test('Returns AST unmodified if accountability is null', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const acc = {} as Accountability;
+	const acc = null;
 	const sch = {} as SchemaOverview;
 
-	vi.mocked(accessService.readByQuery).mockResolvedValue([{ policy: { admin_access: true } }]);
+	const output = await processAst(accessService, permissionsService, ast, 'read', acc, sch);
+
+	expect(output).toBe(ast);
+})
+
+test('Returns AST unmodified and unverified is current user is admin', async () => {
+	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
+	const acc = { user: null, roles: [], admin: true, } as unknown as Accountability;
+	const sch = {} as SchemaOverview;
 
 	const output = await processAst(accessService, permissionsService, ast, 'read', acc, sch);
 
@@ -48,7 +56,7 @@ test('Returns AST unmodified and unverified is current user is admin', async () 
 
 test('Validates all paths in AST', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const acc = {} as Accountability;
+	const acc = { user: null, roles: [] } as unknown as Accountability;
 	const sch = {} as SchemaOverview;
 
 	vi.mocked(accessService.readByQuery).mockResolvedValue([{ policy: { id: 'test-policy-1' } }]);
@@ -79,6 +87,7 @@ test('Validates all paths in AST', async () => {
 				},
 			],
 		},
+		limit: -1,
 	});
 });
 
@@ -93,7 +102,7 @@ test('Injects permission cases for the provided AST', async () => {
 		],
 	} as unknown as AST;
 
-	const acc = {} as Accountability;
+	const acc = { user: null, roles: [] } as unknown as Accountability;
 
 	const sch = {} as SchemaOverview;
 
