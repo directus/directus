@@ -21,12 +21,12 @@ import getDatabase from '../database/index.js';
 import { runAst } from '../database/run/run.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process.js';
+import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -106,6 +106,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
+		const { AccessService } = await import('./access.js');
+		const { PermissionsService } = await import('./permissions/index.js');
 		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -123,18 +125,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, {
+			const serviceOptions: AbstractServiceOptions = {
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
-			});
+			};
 
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, serviceOptions);
+			const accessService = new AccessService(serviceOptions);
+			const permissionsService = new PermissionsService(serviceOptions);
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
@@ -157,7 +157,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? processPayload(
+						accessService,
+						permissionsService,
+						this.schema,
+						this.accountability,
+						'create',
+						this.collection,
+						payloadAfterHooks,
+				  )
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -603,8 +611,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payload: Partial<AnyItem> = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		const authorizationService = new AuthorizationService(serviceOptions);
-
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
 		const payloadAfterHooks =
@@ -629,11 +635,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
+		const accessService = new AccessService(serviceOptions);
+		const permissionsService = new PermissionsService(serviceOptions);
+
 		if (this.accountability) {
 			await validateAccess(
 				this.knex,
-				new AccessService(serviceOptions),
-				new PermissionsService(serviceOptions),
+				accessService,
+				permissionsService,
 				this.schema,
 				this.accountability,
 				'update',
@@ -643,7 +652,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const payloadWithPresets = this.accountability
-			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? processPayload(
+					accessService,
+					permissionsService,
+					this.schema,
+					this.accountability,
+					'update',
+					this.collection,
+					payloadAfterHooks,
+			  )
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {

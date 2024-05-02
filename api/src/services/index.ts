@@ -2,7 +2,6 @@ export * from './access.js';
 export * from './activity.js';
 export * from './assets.js';
 export * from './authentication.js';
-export * from './authorization.js';
 export * from './collections.js';
 export * from './dashboards.js';
 export * from './extensions.js';
