@@ -115,8 +115,9 @@ export const useServerStore = defineStore('serverStore', () => {
 			} else {
 				const { duration, points } = serverInfoResponse.data.data.rateLimit;
 				const intervalCap = 1;
+				/** Interval for 1 point */
 				const interval = Math.ceil((duration * 1000) / points);
-				await replaceQueue({ intervalCap, interval, carryoverConcurrencyCount: true, concurrency: 1 });
+				await replaceQueue({ intervalCap, interval });
 			}
 		}
 	};
