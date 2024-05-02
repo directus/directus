@@ -47,7 +47,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getPayload(subscription, accountability, schema, eventData);
+					const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -65,7 +65,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getPayload(subscription, accountability, schema, eventData);
+						const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 						yield {
 							[event]: {
