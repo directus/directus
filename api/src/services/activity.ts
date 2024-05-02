@@ -1,3 +1,5 @@
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
@@ -46,17 +48,17 @@ export class ActivityService extends ItemsService {
 				const userID = mention.substring(1);
 
 				const user = await this.usersService.readOne(userID, {
-					fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
+					fields: ['id', 'first_name', 'last_name', 'email', 'role'],
 				});
+
+				const roles = await fetchRolesTree(this.knex, user['role']);
+				const globalAccess = await fetchGlobalAccess(this.knex, roles, user['id']);
 
 				const accountability: Accountability = {
 					user: userID,
 					role: user['role']?.id ?? null,
-
-					// TODO search for all uses of admin_access & app_access to make sure we're not
-					// trying to pull them from a role anymore
-					admin: user['role']?.admin_access ?? null,
-					app: user['role']?.app_access ?? null,
+					roles,
+					...globalAccess,
 				};
 
 				const usersService = new UsersService({ schema: this.schema, accountability });

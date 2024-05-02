@@ -15,6 +15,7 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 	};
 
 	const result = <{ count: number | string; admin_access: number | boolean; app_access: number | boolean }[]>(
+		// TODO get from policies
 		await db
 			.count('directus_users.id', { as: 'count' })
 			.select('directus_roles.admin_access', 'directus_roles.app_access')

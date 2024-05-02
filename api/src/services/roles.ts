@@ -235,6 +235,7 @@ export class RolesService extends ItemsService {
 		this.assertValidIpAccess(data);
 
 		try {
+			// TODO move to policies
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
 			}

@@ -1,6 +1,7 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 
 export async function getAccountabilityForRole(
 	role: null | string,
@@ -29,23 +30,14 @@ export async function getAccountabilityForRole(
 			app: true,
 		};
 	} else {
-		const roleInfo = await context.database
-			.select(['app_access', 'admin_access'])
-			.from('directus_roles')
-			.where({ id: role })
-			.first();
-
-		if (!roleInfo) {
-			throw new Error(`Configured role "${role}" isn't a valid role ID or doesn't exist.`);
-		}
+		const roles = await fetchRolesTree(context.database, role);
+		const globalAccess = await fetchGlobalAccess(context.database, roles);
 
 		generatedAccountability = {
 			role,
-			roles: await fetchRolesTree(context.database, role),
+			roles,
 			user: null,
-			// TODO get global access 👇🏻
-			admin: roleInfo.admin_access === 1 || roleInfo.admin_access === '1' || roleInfo.admin_access === true,
-			app: roleInfo.app_access === 1 || roleInfo.app_access === '1' || roleInfo.app_access === true,
+			...globalAccess,
 		};
 	}
 

@@ -105,6 +105,7 @@ export class UsersService extends ItemsService {
 
 	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
 		// Make sure there's at least one admin user left after this deletion is done
+		// TODO this needs to come from policies
 		const otherAdminUsers = await this.knex
 			.count('*', { as: 'count' })
 			.from('directus_users')
