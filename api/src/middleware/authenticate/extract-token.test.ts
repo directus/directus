@@ -19,10 +19,10 @@ beforeEach(() => {
 });
 
 describe('General', () => {
-	test('Null if no token passed', () => {
+	test('Null if no token in request', () => {
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 
@@ -49,7 +49,7 @@ describe('General', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBe('test');
+		expect(result.token).toBe('test');
 		expect(result.source).toBe('query');
 	});
 });
@@ -62,7 +62,7 @@ describe('Query', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBe('test');
+		expect(result.token).toBe('test');
 		expect(result.source).toBe('query');
 	});
 
@@ -73,7 +73,7 @@ describe('Query', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 
@@ -84,7 +84,7 @@ describe('Query', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 });
@@ -97,7 +97,7 @@ describe('Header', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBe('test');
+		expect(result.token).toBe('test');
 		expect(result.source).toBe('header');
 	});
 
@@ -108,7 +108,7 @@ describe('Header', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBe('test');
+		expect(result.token).toBe('test');
 		expect(result.source).toBe('header');
 	});
 
@@ -119,7 +119,7 @@ describe('Header', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 
@@ -130,7 +130,7 @@ describe('Header', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 });
@@ -143,7 +143,7 @@ describe('Cookie', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBe('test');
+		expect(result.token).toBe('test');
 		expect(result.source).toBe('cookie');
 	});
 
@@ -154,7 +154,7 @@ describe('Cookie', () => {
 
 		const result = extractToken(mockRequest);
 
-		expect(mockRequest.token).toBeNull();
+		expect(result.token).toBeNull();
 		expect(result.source).toBeNull();
 	});
 });

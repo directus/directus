@@ -6,20 +6,21 @@ import isDirectusJWT from './is-directus-jwt.js';
 import { verifySessionJWT } from './verify-session-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
+/**
+ * Get accountability for JWT or static token.
+ */
 export async function getAccountabilityForToken(
 	token?: string | null,
 	accountability?: Accountability,
 ): Promise<Accountability> {
 	const env = useEnv();
 
-	if (!accountability) {
-		accountability = {
-			user: null,
-			role: null,
-			admin: false,
-			app: false,
-		};
-	}
+	accountability ??= {
+		user: null,
+		role: null,
+		admin: false,
+		app: false,
+	};
 
 	if (token) {
 		if (isDirectusJWT(token)) {
@@ -29,13 +30,16 @@ export async function getAccountabilityForToken(
 				await verifySessionJWT(payload);
 			}
 
-			accountability.role = payload.role;
-			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
-			accountability.app = payload.app_access === true || payload.app_access == 1;
+			const { role, admin_access, app_access, id, share, share_scope } = payload;
 
-			if (payload.share) accountability.share = payload.share;
-			if (payload.share_scope) accountability.share_scope = payload.share_scope;
-			if (payload.id) accountability.user = payload.id;
+			Object.assign(accountability, {
+				role,
+				admin: admin_access === true || admin_access == 1,
+				app: app_access === true || app_access == 1,
+				...(id && { user: id }),
+				...(share && { share }),
+				...(share_scope && { share_scope }),
+			});
 		} else {
 			// Try finding the user with the provided token
 			const database = getDatabase();
@@ -54,10 +58,14 @@ export async function getAccountabilityForToken(
 				throw new InvalidCredentialsError();
 			}
 
-			accountability.user = user.id;
-			accountability.role = user.role;
-			accountability.admin = user.admin_access === true || user.admin_access == 1;
-			accountability.app = user.app_access === true || user.app_access == 1;
+			const { id, role, admin_access, app_access } = user;
+
+			Object.assign(accountability, {
+				user: id,
+				role,
+				admin: admin_access === true || admin_access == 1,
+				app: app_access === true || app_access == 1,
+			});
 		}
 	}
 

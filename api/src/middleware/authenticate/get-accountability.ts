@@ -8,6 +8,8 @@ import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 
 /**
  * Get accountability for request / token.
+ *
+ * @throws If provided token is invalid.
  */
 export async function getAccountability(req: Request, token: string | null) {
 	const defaultAccountability: Accountability = {

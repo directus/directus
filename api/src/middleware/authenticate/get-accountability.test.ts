@@ -30,7 +30,7 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test('Short-circuits when "authenticate" filter is used', async () => {
+test('Short-circuit when "authenticate" filter is used', async () => {
 	const customAccountability = {};
 
 	vi.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability);
@@ -40,7 +40,7 @@ test('Short-circuits when "authenticate" filter is used', async () => {
 	expect(result).toBe(customAccountability);
 });
 
-test('Uses default public accountability when no token is given', async () => {
+test('Use default public accountability when no token is given', async () => {
 	vi.spyOn(emitter, 'emitFilter').mockImplementation(async (_, payload) => payload);
 
 	const result = await getAccountability(mockRequest, null);
@@ -56,7 +56,7 @@ test('Uses default public accountability when no token is given', async () => {
 	});
 });
 
-test('Gets accountability from token if valid token is passed', async () => {
+test('Get accountability from token if valid token is passed', async () => {
 	vi.spyOn(emitter, 'emitFilter').mockImplementation(async (_, payload) => payload);
 
 	const tokenAccountability = {} as Accountability;

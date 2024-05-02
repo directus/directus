@@ -1,201 +1,192 @@
-import { useEnv } from '@directus/env';
-import jwt from 'jsonwebtoken';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { getAccountabilityForToken } from './get-accountability-for-token.js';
-import knex, { Knex } from 'knex';
-import { Tracker, MockClient, createTracker } from 'knex-mock-client';
-import getDatabase from '../database/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
+import knex from 'knex';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import getDatabase from '../database/index.js';
+import type { DirectusTokenPayload } from '../types/auth.js';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import isDirectusJWT from './is-directus-jwt.js';
+import { verifyAccessJWT } from './jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 
-vi.mock('@directus/env');
-vi.mock('../database/index.js');
-
-let db: MockedFunction<Knex>;
-let tracker: Tracker;
-
-beforeAll(async () => {
-	db = vi.mocked(knex.default({ client: MockClient }));
-	tracker = createTracker(db);
-
-	vi.mocked(getDatabase).mockReturnValue(db);
-});
-
-afterEach(() => {
-	tracker.reset();
-	vi.clearAllMocks();
-});
-
-const mockSecret = 'super-secure-secret';
-
-beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
-		SECRET: mockSecret,
-		EXTENSIONS_PATH: './extensions',
-	});
-});
+vi.mock('../database/index');
+vi.mock('./jwt');
+vi.mock('./is-directus-jwt');
+vi.mock('./verify-session-jwt');
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 describe('No token', () => {
-	test('Returns default accountability', async () => {
-		const result = await getAccountabilityForToken();
+	const token = null;
+
+	test('Return default accountability', async () => {
+		const result = await getAccountabilityForToken(token);
 
 		expect(result).toStrictEqual({ user: null, role: null, admin: false, app: false });
 	});
 
-	test('Uses passed-in accountability object', async () => {
+	test('Use passed-in accountability object', async () => {
 		const accountability = {} as Accountability;
 
-		const result = await getAccountabilityForToken(null, accountability);
+		const result = await getAccountabilityForToken(token, accountability);
 
 		expect(result).toBe(accountability);
 	});
 });
 
 describe('JWT', () => {
-	test('Minimal token payload', async () => {
-		const token = jwt.sign({ role: '123-456-789', admin_access: true, app_access: false }, mockSecret, {
-			issuer: 'directus',
-		});
+	const token = 'mock-token';
 
-		const result = await getAccountabilityForToken(token);
-
-		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
+	beforeEach(() => {
+		vi.mocked(isDirectusJWT).mockReturnValue(true);
 	});
 
-	test('Token with numeric access properties', async () => {
-		const token = jwt.sign({ role: '123-456-789', admin_access: 1, app_access: 0 }, mockSecret, {
-			issuer: 'directus',
-		});
+	test('Map token payload to accountability', async () => {
+		const jwtPayload = {
+			id: 'user-id',
+			role: 'role-id',
+			admin_access: true,
+			app_access: true,
+			share: 'share-id',
+			share_scope: { collection: 'collection', item: 'item' },
+		};
 
-		const result = await getAccountabilityForToken(token);
-
-		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
-	});
-
-	test('Token with stringified numeric access properties', async () => {
-		const token = jwt.sign({ role: '123-456-789', admin_access: '1', app_access: '0' }, mockSecret, {
-			issuer: 'directus',
-		});
-
-		const result = await getAccountabilityForToken(token);
-
-		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
-	});
-
-	test('Full token payload', async () => {
-		const token = jwt.sign(
-			{
-				share: 'share-id',
-				share_scope: 'share-scope',
-				id: 'user-id',
-				role: 'role-id',
-				admin_access: true,
-				app_access: true,
-			},
-			mockSecret,
-			{ issuer: 'directus' },
-		);
+		vi.mocked(verifyAccessJWT).mockReturnValue(jwtPayload);
 
 		const result = await getAccountabilityForToken(token);
 
 		expect(result).toEqual({
-			admin: true,
-			app: true,
-			user: 'user-id',
-			role: 'role-id',
-			share: 'share-id',
-			share_scope: 'share-scope',
+			user: jwtPayload.id,
+			role: jwtPayload.role,
+			admin: jwtPayload.admin_access,
+			app: jwtPayload.app_access,
+			share: jwtPayload.share,
+			share_scope: jwtPayload.share_scope,
 		});
 	});
 
-	test('Throws when token has expired', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, mockSecret, { issuer: 'directus', expiresIn: -1 });
+	test('Use passed-in accountability object', async () => {
+		const accountability = {} as Accountability;
+		const jwtPayload = {} as DirectusTokenPayload;
 
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
+		vi.mocked(verifyAccessJWT).mockReturnValue(jwtPayload);
+
+		const result = await getAccountabilityForToken(token, accountability);
+
+		expect(result).toBe(accountability);
 	});
 
-	test('Throws when token is invalid', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret', { issuer: 'directus' });
+	test('Cast token with numeric access properties', async () => {
+		const jwtPayload = { admin_access: 1, app_access: 0 } as DirectusTokenPayload;
 
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid token.');
+		vi.mocked(verifyAccessJWT).mockReturnValue(jwtPayload);
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toMatchObject({ admin: true, app: false });
+	});
+
+	test('Cast token with stringified numeric access properties', async () => {
+		const jwtPayload = { admin_access: '1', app_access: '0' } as unknown as DirectusTokenPayload;
+
+		vi.mocked(verifyAccessJWT).mockReturnValue(jwtPayload);
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toMatchObject({ admin: true, app: false });
+	});
+
+	test('Verify session JWT', async () => {
+		const jwtPayload = {
+			session: 'session-token',
+		} as DirectusTokenPayload;
+
+		vi.mocked(verifyAccessJWT).mockReturnValue(jwtPayload);
+
+		await getAccountabilityForToken(token);
+
+		expect(verifySessionJWT).toHaveBeenCalledWith(jwtPayload);
 	});
 });
 
 describe('Static Token', () => {
-	test('Find user in database', async () => {
-		tracker.on.select('select').response([
-			{
-				id: 'user-id',
-				role: 'role-id',
-				admin_access: false,
-				app_access: true,
-			},
-		]);
+	const token = 'static-token';
 
-		const token = 'static-token';
+	let tracker: Tracker;
+
+	beforeEach(() => {
+		vi.mocked(isDirectusJWT).mockReturnValue(false);
+
+		const db = vi.mocked(knex.default({ client: MockClient }));
+		tracker = createTracker(db);
+
+		vi.mocked(getDatabase).mockReturnValue(db);
+	});
+
+	afterEach(() => {
+		tracker.reset();
+	});
+
+	test('Map user from database to accountability', async () => {
+		const user = {
+			id: 'user-id',
+			role: 'role-id',
+			admin_access: false,
+			app_access: true,
+		};
+
+		tracker.on.select('select').response([user]);
 
 		const result = await getAccountabilityForToken(token);
 
-		expect(result).toStrictEqual({
-			user: 'user-id',
-			role: 'role-id',
-			admin: false,
-			app: true,
+		expect(result).toEqual({
+			user: user.id,
+			role: user.role,
+			admin: user.admin_access,
+			app: user.app_access,
 		});
 	});
 
-	test('Casts numeric access properties', async () => {
-		tracker.on.select('select').response([
-			{
-				id: 'user-id',
-				role: 'role-id',
-				admin_access: 0,
-				app_access: 1,
-			},
-		]);
+	test('Use passed-in accountability object', async () => {
+		const user = {};
 
-		const token = 'static-token';
+		tracker.on.select('select').response([user]);
+
+		const accountability = {} as Accountability;
+
+		const result = await getAccountabilityForToken(token, accountability);
+
+		expect(result).toBe(accountability);
+	});
+
+	test('Cast numeric access properties', async () => {
+		const user = { admin_access: 1, app_access: 0 };
+
+		tracker.on.select('select').response([user]);
 
 		const result = await getAccountabilityForToken(token);
 
-		expect(result).toStrictEqual({
-			user: 'user-id',
-			role: 'role-id',
-			admin: false,
-			app: true,
-		});
+		expect(result).toMatchObject({ admin: true, app: false });
 	});
 
-	test('Casts stringified numeric access properties', async () => {
-		tracker.on.select('select').response([
-			{
-				id: 'user-id',
-				role: 'role-id',
-				admin_access: '0',
-				app_access: '1',
-			},
-		]);
+	test('Cast stringified numeric access properties', async () => {
+		const user = { admin_access: '1', app_access: '0' };
 
-		const token = 'static-token';
+		tracker.on.select('select').response([user]);
 
 		const result = await getAccountabilityForToken(token);
 
-		expect(result).toStrictEqual({
-			user: 'user-id',
-			role: 'role-id',
-			admin: false,
-			app: true,
-		});
+		expect(result).toMatchObject({ admin: true, app: false });
 	});
 
-	test('Throws when user does not exist', async () => {
+	test('Throw when user does not exist', async () => {
 		tracker.on.select('select').response([]);
 
 		const token = 'invalid-static-token';
 
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid user credentials.');
+		expect(() => getAccountabilityForToken(token)).rejects.toThrow(InvalidCredentialsError);
 	});
 });
