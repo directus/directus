@@ -19,7 +19,8 @@ export async function fetchGlobalAccessForQuery(
 
 	const access = await query
 		.select('directus_policies.admin_access', 'directus_policies.app_access')
-		.from('directus_access');
+		.from('directus_access')
+		.leftJoin('directus_policies', 'directus_policies.id', 'directus_access.policy');
 
 	for (const { admin_access, app_access } of access) {
 		if (app === false && (app_access === true || app_access === 1)) {
@@ -27,6 +28,7 @@ export async function fetchGlobalAccessForQuery(
 		}
 
 		if (admin === false && (admin_access === true || admin_access === 1)) {
+			app = true;
 			admin = true;
 		}
 	}

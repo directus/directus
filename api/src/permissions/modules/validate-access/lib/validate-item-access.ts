@@ -2,10 +2,14 @@ import type { Accountability, PermissionsAction, PrimaryKey, Query, SchemaOvervi
 import type { Knex } from 'knex';
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
 import { runAst } from '../../../../database/run/run.js';
+import type { AccessService } from '../../../../services/access.js';
+import type { PermissionsService } from '../../../../services/index.js';
 import { processAst } from '../../process-ast/process.js';
 
 export async function validateItemAccess(
 	knex: Knex,
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	schema: SchemaOverview,
 	accountability: Accountability,
 	action: PermissionsAction,
@@ -34,7 +38,7 @@ export async function validateItemAccess(
 	};
 
 	const ast = await getAstFromQuery(collection, query, schema, accountability);
-	await processAst(knex, ast, action, accountability, schema);
+	await processAst(accessService, permissionsService, ast, action, accountability, schema);
 	const items = await runAst(ast, schema, { knex });
 
 	if (items && items.length === primaryKeys.length) {

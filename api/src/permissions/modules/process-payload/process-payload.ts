@@ -2,8 +2,9 @@ import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PermissionsAction, SchemaOverview } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import type { Knex } from 'knex';
 import { difference, uniq } from 'lodash-es';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/index.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 
@@ -12,7 +13,8 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
  * for each level of nested insert separately
  */
 export async function processPayload(
-	knex: Knex,
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	schema: SchemaOverview,
 	accountability: Accountability,
 	action: PermissionsAction,
@@ -23,8 +25,8 @@ export async function processPayload(
 		return;
 	}
 
-	const policies = await fetchPolicies(knex, schema, accountability);
-	const permissions = await fetchPermissions(knex, schema, action, policies, [collection]);
+	const policies = await fetchPolicies(accessService, accountability);
+	const permissions = await fetchPermissions(permissionsService, action, policies, [collection]);
 
 	if (permissions.length === 0) {
 		throw new ForbiddenError({
@@ -50,7 +52,7 @@ export async function processPayload(
 		}
 	}
 
-	const fieldValidationRules = Object.values(schema.collections[collection]!.fields).map(
+	const fieldValidationRules = Object.values(schema.collections[collection]?.fields ?? {}).map(
 		(field) => field.validation ?? {},
 	);
 

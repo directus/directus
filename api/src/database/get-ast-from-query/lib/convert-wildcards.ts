@@ -1,6 +1,6 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep } from 'lodash-es';
-import { getAllowedFields } from '../../../permissions/modules/get-allowed-fields/get-allowed-fields.js';
+import { getAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export async function convertWildcards(

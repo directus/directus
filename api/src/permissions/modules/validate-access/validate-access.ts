@@ -1,6 +1,8 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, PermissionsAction, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/index.js';
 import { validateCollectionAccess } from './lib/validate-collection-access.js';
 import { validateItemAccess } from './lib/validate-item-access.js';
 
@@ -11,6 +13,8 @@ import { validateItemAccess } from './lib/validate-item-access.js';
  */
 export async function validateAccess(
 	knex: Knex,
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	schema: SchemaOverview,
 	accountability: Accountability,
 	action: PermissionsAction,
@@ -27,9 +31,18 @@ export async function validateAccess(
 	// from the database. If no keys are passed, we can simply check if the collection+action combo
 	// exists within permissions
 	if (primaryKeys) {
-		access = await validateItemAccess(knex, schema, accountability, action, collection, primaryKeys);
+		access = await validateItemAccess(
+			knex,
+			accessService,
+			permissionsService,
+			schema,
+			accountability,
+			action,
+			collection,
+			primaryKeys,
+		);
 	} else {
-		access = await validateCollectionAccess(knex, schema, accountability, action, collection);
+		access = await validateCollectionAccess(accessService, permissionsService, accountability, action, collection);
 	}
 
 	if (!access) {

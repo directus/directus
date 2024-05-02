@@ -1,6 +1,5 @@
-import type { Accountability, PermissionsAction, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
-import getDatabase from '../../../database/index.js';
 import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
@@ -12,19 +11,14 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
  * Done by looking up all available policies for the current accountability object, and reading all
  * permissions that exist for the collection+action+policy combination
  */
-export async function getAllowedFields(
-	schema: SchemaOverview,
+export async function fetchAllowedFields(
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	accountability: Accountability,
 	collection: string,
 	action: PermissionsAction,
 ): Promise<string[]> {
 	// TODO add cache
-
-	// TODO needs to be able to overriden through params
-	const knex = getDatabase();
-
-	const accessService = new AccessService({ knex, schema });
-	const permissionsService = new PermissionsService({ knex, schema });
 
 	const policies = await fetchPolicies(accessService, accountability);
 

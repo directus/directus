@@ -1,5 +1,6 @@
-import type { Accountability, PermissionsAction, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
+import type { Accountability, PermissionsAction } from '@directus/types';
+import type { AccessService } from '../../../../services/access.js';
+import type { PermissionsService } from '../../../../services/index.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';
 
@@ -8,13 +9,13 @@ import { fetchPolicies } from '../../../lib/fetch-policies.js';
  * permission rule available for the collection and action combo
  */
 export async function validateCollectionAccess(
-	knex: Knex,
-	schema: SchemaOverview,
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	accountability: Accountability,
 	action: PermissionsAction,
 	collection: string,
 ) {
-	const policies = await fetchPolicies(knex, schema, accountability);
-	const permissions = await fetchPermissions(knex, schema, action, policies, [collection]);
+	const policies = await fetchPolicies(accessService, accountability);
+	const permissions = await fetchPermissions(permissionsService, action, policies, [collection]);
 	return permissions.length > 0;
 }
