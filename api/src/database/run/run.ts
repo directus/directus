@@ -83,7 +83,7 @@ export async function runAst(
 						},
 					});
 
-					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
+					nestedItems = (await runAst(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
@@ -100,7 +100,7 @@ export async function runAst(
 					query: { limit: -1 },
 				});
 
-				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
+				nestedItems = (await runAst(node, schema, { knex, nested: true })) as Item[] | null;
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
