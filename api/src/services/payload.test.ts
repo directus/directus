@@ -311,7 +311,7 @@ describe('Integration Tests', () => {
 				});
 			});
 
-			test('redacting values', async () => {
+			test('processing special fields', async () => {
 				const result = await service.processValues('read', {
 					string: 'not-redacted',
 					hidden: 'secret',
@@ -320,7 +320,7 @@ describe('Integration Tests', () => {
 				expect(result).toMatchObject({ string: 'not-redacted', hidden: REDACT_STR });
 			});
 
-			test('redacting aliassed values', async () => {
+			test('processing aliassed special fields', async () => {
 				const result = await service.processValues(
 					'read',
 					{

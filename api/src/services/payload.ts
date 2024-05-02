@@ -164,22 +164,22 @@ export class PayloadService {
 		const fieldEntries = Object.entries(this.schema.collections[this.collection]!.fields);
 		const aliasEntries = Object.entries(aliasMap);
 
-		let specialFieldsInCollection: [string, FieldOverview][] = [];
+		let specialFields: [string, FieldOverview][] = [];
 
 		for (const [name, field] of fieldEntries) {
 			if (field.special && field.special.length > 0) {
-				specialFieldsInCollection.push([name, field]);
+				specialFields.push([name, field]);
 
 				for (const [aliasName, fieldName] of aliasEntries) {
 					if (fieldName === name) {
-						specialFieldsInCollection.push([aliasName, { ...field, field: aliasName }]);
+						specialFields.push([aliasName, { ...field, field: aliasName }]);
 					}
 				}
 			}
 		}
 
 		if (action === 'read') {
-			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {
+			specialFields = specialFields.filter(([name]) => {
 				return fieldsInPayload.includes(name);
 			});
 		}
@@ -187,7 +187,7 @@ export class PayloadService {
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
-					specialFieldsInCollection.map(async ([name, field]) => {
+					specialFields.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[name] = newValue;
 					}),
