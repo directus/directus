@@ -14,5 +14,8 @@ export async function fetchPermissions(
 		limit: -1,
 	})) as Permission[];
 
+	// TODO add in permissions processing to allow for dynamic fields (like $CURRENT_USER)
+	// See https://github.com/directus/directus/blob/main/api/src/utils/get-permissions.ts for current impl
+
 	return permissions;
 }
