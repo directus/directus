@@ -1,18 +1,15 @@
 import { useEnv } from '@directus/env';
-import type { Request, Response } from 'express';
+import type { Request } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import extractToken from './extract-token.js';
+import { extractToken } from './extract-token.js';
 import { InvalidPayloadError } from '@directus/errors';
 
 vi.mock('@directus/env');
 
 let mockRequest: Request;
-let mockResponse: Response;
-const next = vi.fn();
 
 beforeEach(() => {
 	mockRequest = { query: {}, headers: {}, cookies: {} } as Request;
-	mockResponse = {} as Response;
 
 	vi.clearAllMocks();
 
@@ -23,11 +20,10 @@ beforeEach(() => {
 
 describe('General', () => {
 	test('Null if no token passed', () => {
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 
 	test('Disallow multi auth method', () => {
@@ -39,7 +35,7 @@ describe('General', () => {
 			authorization: 'Bearer test',
 		};
 
-		expect(() => extractToken(mockRequest, mockResponse, next)).toThrowError(InvalidPayloadError);
+		expect(() => extractToken(mockRequest)).toThrowError(InvalidPayloadError);
 	});
 
 	test('Allow multi auth method with cookie', () => {
@@ -51,11 +47,10 @@ describe('General', () => {
 			authorization: 'Bearer test',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBe('test');
-		expect(mockRequest.tokenSource).toBe('query');
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBe('query');
 	});
 });
 
@@ -65,11 +60,10 @@ describe('Query', () => {
 			access_token: 'test',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBe('test');
-		expect(mockRequest.tokenSource).toBe('query');
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBe('query');
 	});
 
 	test('Ignore the token if it is empty', () => {
@@ -77,11 +71,10 @@ describe('Query', () => {
 			access_token: '',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 
 	test('Ignore the token if query is an array', () => {
@@ -89,11 +82,10 @@ describe('Query', () => {
 			access_token: ['test'],
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 });
 
@@ -103,11 +95,10 @@ describe('Header', () => {
 			authorization: 'Bearer test',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBe('test');
-		expect(mockRequest.tokenSource).toBe('header');
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBe('header');
 	});
 
 	test('Token from authorization header (lowercase)', () => {
@@ -115,11 +106,10 @@ describe('Header', () => {
 			authorization: 'bearer test',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBe('test');
-		expect(mockRequest.tokenSource).toBe('header');
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBe('header');
 	});
 
 	test('Ignore the token if authorization header contains too few parts', () => {
@@ -127,11 +117,10 @@ describe('Header', () => {
 			authorization: 'bearer',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 
 	test('Ignore the token if authorization header contains too many parts', () => {
@@ -139,11 +128,10 @@ describe('Header', () => {
 			authorization: 'bearer test what another one',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 });
 
@@ -153,11 +141,10 @@ describe('Cookie', () => {
 			session: 'test',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBe('test');
-		expect(mockRequest.tokenSource).toBe('cookie');
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBe('cookie');
 	});
 
 	test('Ignore the token if the cookie is empty', () => {
@@ -165,10 +152,9 @@ describe('Cookie', () => {
 			session: '',
 		};
 
-		extractToken(mockRequest, mockResponse, next);
+		const result = extractToken(mockRequest);
 
 		expect(mockRequest.token).toBeNull();
-		expect(mockRequest.tokenSource).toBeUndefined();
-		expect(next).toBeCalledTimes(1);
+		expect(result.source).toBeNull();
 	});
 });

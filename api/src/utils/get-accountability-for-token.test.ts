@@ -1,26 +1,35 @@
 import { useEnv } from '@directus/env';
 import jwt from 'jsonwebtoken';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import getDatabase from '../database/index.js';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import knex, { Knex } from 'knex';
+import { Tracker, MockClient, createTracker } from 'knex-mock-client';
+import getDatabase from '../database/index.js';
+import type { Accountability } from '@directus/types';
 
 vi.mock('@directus/env');
+vi.mock('../database/index.js');
 
-vi.mock('../database/index', () => {
-	const self: Record<string, any> = {
-		select: vi.fn(() => self),
-		from: vi.fn(() => self),
-		leftJoin: vi.fn(() => self),
-		where: vi.fn(() => self),
-		first: vi.fn(),
-	};
+let db: MockedFunction<Knex>;
+let tracker: Tracker;
 
-	return { default: vi.fn(() => self) };
+beforeAll(async () => {
+	db = vi.mocked(knex.default({ client: MockClient }));
+	tracker = createTracker(db);
+
+	vi.mocked(getDatabase).mockReturnValue(db);
 });
+
+afterEach(() => {
+	tracker.reset();
+	vi.clearAllMocks();
+});
+
+const mockSecret = 'super-secure-secret';
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
-		SECRET: 'super-secure-secret',
+		SECRET: mockSecret,
 		EXTENSIONS_PATH: './extensions',
 	});
 });
@@ -29,60 +38,105 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('getAccountabilityForToken', async () => {
-	test('minimal token payload', async () => {
-		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, 'super-secure-secret', {
+describe('No token', () => {
+	test('Returns default accountability', async () => {
+		const result = await getAccountabilityForToken();
+
+		expect(result).toStrictEqual({ user: null, role: null, admin: false, app: false });
+	});
+
+	test('Uses passed-in accountability object', async () => {
+		const accountability = {} as Accountability;
+
+		const result = await getAccountabilityForToken(null, accountability);
+
+		expect(result).toBe(accountability);
+	});
+});
+
+describe('JWT', () => {
+	test('Minimal token payload', async () => {
+		const token = jwt.sign({ role: '123-456-789', admin_access: true, app_access: false }, mockSecret, {
 			issuer: 'directus',
 		});
 
 		const result = await getAccountabilityForToken(token);
-		expect(result).toStrictEqual({ admin: false, app: false, role: '123-456-789', user: null });
+
+		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
 	});
 
-	test('full token payload', async () => {
+	test('Token with numeric access properties', async () => {
+		const token = jwt.sign({ role: '123-456-789', admin_access: 1, app_access: 0 }, mockSecret, {
+			issuer: 'directus',
+		});
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
+	});
+
+	test('Token with stringified numeric access properties', async () => {
+		const token = jwt.sign({ role: '123-456-789', admin_access: '1', app_access: '0' }, mockSecret, {
+			issuer: 'directus',
+		});
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toStrictEqual({ role: '123-456-789', user: null, admin: true, app: false });
+	});
+
+	test('Full token payload', async () => {
 		const token = jwt.sign(
 			{
 				share: 'share-id',
 				share_scope: 'share-scope',
 				id: 'user-id',
 				role: 'role-id',
-				admin_access: 1,
-				app_access: 1,
+				admin_access: true,
+				app_access: true,
 			},
-			'super-secure-secret',
+			mockSecret,
 			{ issuer: 'directus' },
 		);
 
 		const result = await getAccountabilityForToken(token);
-		expect(result.admin).toBe(true);
-		expect(result.app).toBe(true);
-		expect(result.role).toBe('role-id');
-		expect(result.share).toBe('share-id');
-		expect(result.share_scope).toBe('share-scope');
-		expect(result.user).toBe('user-id');
+
+		expect(result).toEqual({
+			admin: true,
+			app: true,
+			user: 'user-id',
+			role: 'role-id',
+			share: 'share-id',
+			share_scope: 'share-scope',
+		});
 	});
 
-	test('throws token expired error', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, 'super-secure-secret', { issuer: 'directus', expiresIn: -1 });
+	test('Throws when token has expired', async () => {
+		const token = jwt.sign({ role: '123-456-789' }, mockSecret, { issuer: 'directus', expiresIn: -1 });
+
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
 	});
 
-	test('throws token invalid error', async () => {
+	test('Throws when token is invalid', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret', { issuer: 'directus' });
+
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid token.');
 	});
+});
 
-	test('find user in database', async () => {
-		const db = getDatabase();
+describe('Static Token', () => {
+	test('Find user in database', async () => {
+		tracker.on.select('select').response([
+			{
+				id: 'user-id',
+				role: 'role-id',
+				admin_access: false,
+				app_access: true,
+			},
+		]);
 
-		vi.spyOn(db, 'first').mockReturnValue({
-			id: 'user-id',
-			role: 'role-id',
-			admin_access: false,
-			app_access: true,
-		} as any);
+		const token = 'static-token';
 
-		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret');
 		const result = await getAccountabilityForToken(token);
 
 		expect(result).toStrictEqual({
@@ -93,10 +147,55 @@ describe('getAccountabilityForToken', async () => {
 		});
 	});
 
-	test('no user found', async () => {
-		const db = getDatabase();
-		vi.spyOn(db, 'first').mockReturnValue(false as any);
-		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret');
+	test('Casts numeric access properties', async () => {
+		tracker.on.select('select').response([
+			{
+				id: 'user-id',
+				role: 'role-id',
+				admin_access: 0,
+				app_access: 1,
+			},
+		]);
+
+		const token = 'static-token';
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toStrictEqual({
+			user: 'user-id',
+			role: 'role-id',
+			admin: false,
+			app: true,
+		});
+	});
+
+	test('Casts stringified numeric access properties', async () => {
+		tracker.on.select('select').response([
+			{
+				id: 'user-id',
+				role: 'role-id',
+				admin_access: '0',
+				app_access: '1',
+			},
+		]);
+
+		const token = 'static-token';
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toStrictEqual({
+			user: 'user-id',
+			role: 'role-id',
+			admin: false,
+			app: true,
+		});
+	});
+
+	test('Throws when user does not exist', async () => {
+		tracker.on.select('select').response([]);
+
+		const token = 'invalid-static-token';
+
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid user credentials.');
 	});
 });

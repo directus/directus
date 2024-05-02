@@ -1,32 +1,31 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
-import type { RequestHandler } from 'express';
+import type { Request } from 'express';
 
 /**
- * Try to extract access token from
+ * Try to extract access token from request via
  *
  * - 'access_token' query parameter
  * - 'Authorization' header
  * - Session cookie
- *
- * and store it under req.token
  */
-const extractToken: RequestHandler = (req, _res, next) => {
+export function extractToken(req: Request) {
 	const env = useEnv();
 
-	req.token = null;
+	let token: string | null = null;
+	let source: 'query' | 'header' | 'cookie' | null = null;
 
 	if (req.query['access_token'] && typeof req.query['access_token'] === 'string') {
-		req.token = req.query['access_token'];
-		req.tokenSource = 'query';
+		token = req.query['access_token'];
+		source = 'query';
 	}
 
 	if (req.headers.authorization) {
 		const parts = req.headers.authorization.split(' ');
-		const [scheme, token] = parts;
+		const [scheme, param] = parts;
 
-		if (parts.length === 2 && scheme?.toLowerCase() === 'bearer' && token) {
-			if (req.token !== null) {
+		if (parts.length === 2 && scheme?.toLowerCase() === 'bearer' && param) {
+			if (token) {
 				/*
 				 * RFC6750 compliance (https://datatracker.ietf.org/doc/html/rfc6750#section-2)
 				 * > Clients MUST NOT use more than one method to transmit the token in each request.
@@ -36,8 +35,8 @@ const extractToken: RequestHandler = (req, _res, next) => {
 				});
 			}
 
-			req.token = token;
-			req.tokenSource = 'header';
+			token = param;
+			source = 'header';
 		}
 	}
 
@@ -49,13 +48,11 @@ const extractToken: RequestHandler = (req, _res, next) => {
 		 * - to not break external apps running under the same domain as the Data Studio
 		 *   while using a different method
 		 */
-		if (req.token === null) {
-			req.token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
-			req.tokenSource = 'cookie';
+		if (!token) {
+			token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
+			source = 'cookie';
 		}
 	}
 
-	next();
-};
-
-export default extractToken;
+	return { token, source };
+}
