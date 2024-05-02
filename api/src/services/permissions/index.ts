@@ -4,12 +4,14 @@ import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../../types/index.js';
+import { AccessService } from '../access.js';
 import type { QueryOptions } from '../items.js';
 import { ItemsService } from '../items.js';
 import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
+	accessService: AccessService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
@@ -17,6 +19,7 @@ export class PermissionsService extends ItemsService {
 		const { systemCache } = getCache();
 
 		this.systemCache = systemCache;
+		this.accessService = new AccessService(options);
 	}
 
 	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
@@ -166,7 +169,16 @@ export class PermissionsService extends ItemsService {
 					return Promise.resolve();
 				}
 
-				return validateAccess(this.knex, this.schema, this.accountability, checkAction, collection, [primaryKey])
+				return validateAccess(
+					this.knex,
+					this.accessService,
+					this,
+					this.schema,
+					this.accountability,
+					checkAction,
+					collection,
+					[primaryKey],
+				)
 					.then(() => (itemPermissions[action].access = true))
 					.catch(() => {});
 			}),

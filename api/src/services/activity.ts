@@ -9,8 +9,10 @@ import type { AbstractServiceOptions, MutationOptions } from '../types/index.js'
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
+import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
+import { PermissionsService } from './permissions/index.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -19,11 +21,15 @@ const logger = useLogger();
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
 	usersService: UsersService;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_activity', options);
 		this.notificationsService = new NotificationsService({ schema: this.schema });
 		this.usersService = new UsersService({ schema: this.schema });
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -57,7 +63,16 @@ export class ActivityService extends ItemsService {
 
 				try {
 					if (this.accountability) {
-						await validateAccess(this.knex, this.schema, this.accountability, 'read', data['collection'], data['item']);
+						await validateAccess(
+							this.knex,
+							this.accessService,
+							this.permissionsService,
+							this.schema,
+							this.accountability,
+							'read',
+							data['collection'],
+							data['item'],
+						);
 					}
 
 					const templateData = await usersService.readByQuery({

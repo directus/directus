@@ -581,7 +581,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
+		const { AccessService } = await import('./access.js');
+		const { PermissionsService } = await import('./permissions/index.js');
 		const { RevisionsService } = await import('./revisions.js');
+
+		const serviceOptions: AbstractServiceOptions = {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		};
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
@@ -595,11 +603,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payload: Partial<AnyItem> = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
+		const authorizationService = new AuthorizationService(serviceOptions);
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
@@ -626,7 +630,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		keys.sort();
 
 		if (this.accountability) {
-			await validateAccess(this.knex, this.schema, this.accountability, 'update', this.collection, keys);
+			await validateAccess(
+				this.knex,
+				new AccessService(serviceOptions),
+				new PermissionsService(serviceOptions),
+				this.schema,
+				this.accountability,
+				'update',
+				this.collection,
+				keys,
+			);
 		}
 
 		const payloadWithPresets = this.accountability
@@ -882,12 +895,29 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
+		const { AccessService } = await import('./access.js');
+		const { PermissionsService } = await import('./permissions/index.js');
+
+		const serviceOptions: AbstractServiceOptions = {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		};
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		if (this.accountability) {
-			await validateAccess(this.knex, this.schema, this.accountability, 'delete', this.collection, keys);
+			await validateAccess(
+				this.knex,
+				new AccessService(serviceOptions),
+				new PermissionsService(serviceOptions),
+				this.schema,
+				this.accountability,
+				'delete',
+				this.collection,
+				keys,
+			);
 		}
 
 		if (opts.preMutationError) {

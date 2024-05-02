@@ -24,7 +24,9 @@ import type { AbstractServiceOptions, Transformation, TransformationSet } from '
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
+import { AccessService } from './access.js';
 import { FilesService } from './files.js';
+import { PermissionsService } from './permissions/index.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -32,14 +34,18 @@ const logger = useLogger();
 export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
-	filesService: FilesService;
 	schema: SchemaOverview;
+	filesService: FilesService;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
-		this.filesService = new FilesService({ ...options, accountability: null });
 		this.schema = options.schema;
+		this.filesService = new FilesService({ ...options, accountability: null });
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 	}
 
 	async getAsset(
@@ -64,7 +70,16 @@ export class AssetsService {
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability) {
-			await validateAccess(this.knex, this.schema, this.accountability, 'read', 'directus_files', [id]);
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+				'directus_files',
+				[id],
+			);
 		}
 
 		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
