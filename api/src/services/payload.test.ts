@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
@@ -39,7 +39,7 @@ describe('Integration Tests', () => {
 			});
 
 			describe('csv', () => {
-				it('Returns undefined for illegal values', async () => {
+				test('Returns undefined for illegal values', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: 123,
 						action: 'read',
@@ -52,7 +52,7 @@ describe('Integration Tests', () => {
 					expect(result).toBe(undefined);
 				});
 
-				it('Returns [] for empty strings', async () => {
+				test('Returns [] for empty strings', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: '',
 						action: 'read',
@@ -65,7 +65,7 @@ describe('Integration Tests', () => {
 					expect(result).toMatchObject([]);
 				});
 
-				it('Returns array values as is', async () => {
+				test('Returns array values as is', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: ['test', 'directus'],
 						action: 'read',
@@ -78,7 +78,7 @@ describe('Integration Tests', () => {
 					expect(result).toEqual(['test', 'directus']);
 				});
 
-				it('Splits the CSV string', async () => {
+				test('Splits the CSV string', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: 'test,directus',
 						action: 'read',
@@ -91,7 +91,7 @@ describe('Integration Tests', () => {
 					expect(result).toMatchObject(['test', 'directus']);
 				});
 
-				it('Saves array values as joined string', async () => {
+				test('Saves array values as joined string', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: ['test', 'directus'],
 						action: 'create',
@@ -104,7 +104,7 @@ describe('Integration Tests', () => {
 					expect(result).toBe('test,directus');
 				});
 
-				it('Saves string values as is', async () => {
+				test('Saves string values as is', async () => {
 					const result = await service.transformers['cast-csv']!({
 						value: 'test,directus',
 						action: 'create',
@@ -190,7 +190,7 @@ describe('Integration Tests', () => {
 			});
 
 			describe('processes dates', () => {
-				it('with zero values', () => {
+				test('with zero values', () => {
 					const result = service.processDates(
 						[
 							{
@@ -211,7 +211,7 @@ describe('Integration Tests', () => {
 					]);
 				});
 
-				it('with typical values', () => {
+				test('with typical values', () => {
 					const result = service.processDates(
 						[
 							{
@@ -232,7 +232,7 @@ describe('Integration Tests', () => {
 					]);
 				});
 
-				it('with date object values', () => {
+				test('with date object values', () => {
 					const result = service.processDates(
 						[
 							{
@@ -252,6 +252,85 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+			});
+		});
+
+		describe('processValues', () => {
+			let service: PayloadService;
+
+			const concealedField = 'hidden';
+			const stringField = 'string';
+			const REDACT_STR = '**********';
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema: {
+						collections: {
+							test: {
+								collection: 'test',
+								primary: 'id',
+								singleton: false,
+								sortField: null,
+								note: null,
+								accountability: null,
+								fields: {
+									[concealedField]: {
+										field: concealedField,
+										defaultValue: null,
+										nullable: true,
+										generated: false,
+										type: 'hash',
+										dbType: 'nvarchar',
+										precision: null,
+										scale: null,
+										special: ['hash', 'conceal'],
+										note: null,
+										validation: null,
+										alias: false,
+									},
+									[stringField]: {
+										field: stringField,
+										defaultValue: null,
+										nullable: true,
+										generated: false,
+										type: 'string',
+										dbType: 'nvarchar',
+										precision: null,
+										scale: null,
+										special: [],
+										note: null,
+										validation: null,
+										alias: false,
+									},
+								},
+							},
+						},
+						relations: [],
+					},
+				});
+			});
+
+			test('processing special fields', async () => {
+				const result = await service.processValues('read', {
+					string: 'not-redacted',
+					hidden: 'secret',
+				});
+
+				expect(result).toMatchObject({ string: 'not-redacted', hidden: REDACT_STR });
+			});
+
+			test('processing aliassed special fields', async () => {
+				const result = await service.processValues(
+					'read',
+					{
+						other_string: 'not-redacted',
+						other_hidden: 'secret',
+					},
+					{ other_string: 'string', other_hidden: 'hidden' },
+				);
+
+				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
 			});
 		});
 	});
