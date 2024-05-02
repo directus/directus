@@ -73,20 +73,20 @@ export async function replaceQueue(options?: Options<any, QueueAddOptions>) {
 
 function onRequestEnd(response?: AxiosResponse | Response) {
 	// Note: Cancelled requests don't respond with the config
-	const { id, start } = response?.config as InternalRequestConfig;
+	const config = response?.config as InternalRequestConfig | undefined;
 
-	if (id) {
+	if (config?.id) {
 		const requestsStore = useRequestsStore();
-		requestsStore.endRequest(id);
+		requestsStore.endRequest(config.id);
 	}
 
-	if (start) {
+	if (config?.start) {
 		const end = performance.now();
 		const latencyStore = useLatencyStore();
 
 		latencyStore.save({
 			timestamp: new Date(),
-			latency: end - start,
+			latency: end - config.start,
 		});
 	}
 }
