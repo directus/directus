@@ -1,7 +1,8 @@
-import { expect, expectTypeOf, test } from 'vitest';
+import { expectTypeOf, test } from 'vitest';
 import { ErrorCode } from './codes.js';
 import { type DirectusError } from './create-error.js';
-import type { ContainsNullValuesErrorExtensions } from './errors/contains-null-values.js';
+import { ContainsNullValuesError, type ContainsNullValuesErrorExtensions } from './errors/contains-null-values.js';
+import { ContentTooLargeError } from './errors/content-too-large.js';
 import { isDirectusError } from './is-directus-error.js';
 
 test('Guards input as DirectusError', () => {
@@ -9,23 +10,33 @@ test('Guards input as DirectusError', () => {
 });
 
 test('Returns specific type when provided code for built-in error', () => {
-	const error = { name: 'DirectusError', code: ErrorCode.ContainsNullValues };
+	const contentTooLargeError = new ContentTooLargeError();
 
-	expect.assertions(1);
+	if (isDirectusError(contentTooLargeError, ErrorCode.ContentTooLarge)) {
+		expectTypeOf(contentTooLargeError).toEqualTypeOf<DirectusError<never>>();
+	}
 
-	if (isDirectusError(error, ErrorCode.ContainsNullValues)) {
-		expectTypeOf(error).toMatchTypeOf<DirectusError<ContainsNullValuesErrorExtensions>>();
+	const containsNullValuesError = new ContainsNullValuesError({ collection: 'sample', field: 'sample' });
+
+	if (isDirectusError(containsNullValuesError, ErrorCode.ContainsNullValues)) {
+		expectTypeOf(containsNullValuesError).toEqualTypeOf<DirectusError<ContainsNullValuesErrorExtensions>>();
+	}
+});
+
+test('Returns unknown when provided code is not a built-in error', () => {
+	const error = { name: 'DirectusError', code: 'CustomError' };
+
+	if (isDirectusError(error, error.code)) {
+		expectTypeOf(error).toEqualTypeOf<DirectusError<unknown>>();
 	}
 });
 
 test('Allows to pass custom extensions type', () => {
 	const error = { name: 'DirectusError' };
 
-	expect.assertions(1);
-
 	type CustomDirectusErrorExtensions = { custom: string };
 
 	if (isDirectusError<CustomDirectusErrorExtensions>(error)) {
-		expectTypeOf(error).toMatchTypeOf<DirectusError<CustomDirectusErrorExtensions>>();
+		expectTypeOf(error).toEqualTypeOf<DirectusError<CustomDirectusErrorExtensions>>();
 	}
 });

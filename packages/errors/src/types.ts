@@ -19,38 +19,25 @@ import type { ValueTooLongErrorExtensions } from './errors/value-too-long.js';
 
 type Map = {
 	[ErrorCode.ContainsNullValues]: ContainsNullValuesErrorExtensions;
-	[ErrorCode.ContentTooLarge]: never;
-	[ErrorCode.Forbidden]: never;
 	[ErrorCode.IllegalAssetTransformation]: IllegalAssetTransformationErrorExtensions;
-	[ErrorCode.InvalidCredentials]: never;
 	[ErrorCode.InvalidForeignKey]: InvalidForeignKeyErrorExtensions;
-	[ErrorCode.InvalidIp]: never;
-	[ErrorCode.InvalidOtp]: never;
 	[ErrorCode.InvalidPayload]: InvalidPayloadErrorExtensions;
-	[ErrorCode.InvalidProvider]: never;
 	[ErrorCode.InvalidProviderConfig]: InvalidProviderConfigErrorExtensions;
 	[ErrorCode.InvalidQuery]: InvalidQueryErrorExtensions;
-	[ErrorCode.InvalidToken]: never;
-	[ErrorCode.LimitExceeded]: never;
 	[ErrorCode.MethodNotAllowed]: MethodNotAllowedErrorExtensions;
 	[ErrorCode.NotNullViolation]: NotNullViolationErrorExtensions;
-	[ErrorCode.OutOfDate]: never;
 	[ErrorCode.RangeNotSatisfiable]: RangeNotSatisfiableErrorExtensions;
 	[ErrorCode.RecordNotUnique]: RecordNotUniqueErrorExtensions;
 	[ErrorCode.RequestsExceeded]: HitRateLimitErrorExtensions;
 	[ErrorCode.RouteNotFound]: RouteNotFoundErrorExtensions;
 	[ErrorCode.ServiceUnavailable]: ServiceUnavailableErrorExtensions;
-	[ErrorCode.TokenExpired]: never;
-	[ErrorCode.UnexpectedResponse]: never;
 	[ErrorCode.UnprocessableContent]: UnprocessableContentErrorExtensions;
 	[ErrorCode.UnsupportedMediaType]: UnsupportedMediaTypeErrorExtensions;
-	[ErrorCode.UserSuspended]: never;
 	[ErrorCode.ValueOutOfRange]: ValueOutOfRangeErrorExtensions;
 	[ErrorCode.ValueTooLong]: ValueTooLongErrorExtensions;
 };
 
-/** Verify all error codes are covered in the map. */
-type Extends<T, U extends T> = U;
-
 /** Map error codes to error extensions. */
-export type ExtensionsMap = Extends<Record<(typeof ErrorCode)[keyof typeof ErrorCode], any>, Map>;
+export type ExtensionsMap = {
+	[code in ErrorCode]: code extends keyof Map ? Map[code] : never;
+};
