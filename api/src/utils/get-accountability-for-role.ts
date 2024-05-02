@@ -1,6 +1,6 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { getPermissions } from './get-permissions.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 
 export async function getAccountabilityForRole(
 	role: null | string,
@@ -15,19 +15,18 @@ export async function getAccountabilityForRole(
 	if (role === null) {
 		generatedAccountability = {
 			role: null,
+			roles: [],
 			user: null,
 			admin: false,
 			app: false,
 		};
-
-		generatedAccountability.permissions = await getPermissions(generatedAccountability, context.schema);
 	} else if (role === 'system') {
 		generatedAccountability = {
 			user: null,
 			role: null,
+			roles: [],
 			admin: true,
 			app: true,
-			permissions: [],
 		};
 	} else {
 		const roleInfo = await context.database
@@ -42,12 +41,12 @@ export async function getAccountabilityForRole(
 
 		generatedAccountability = {
 			role,
+			roles: await fetchRolesTree(context.database, role),
 			user: null,
+			// TODO get global access 👇🏻
 			admin: roleInfo.admin_access === 1 || roleInfo.admin_access === '1' || roleInfo.admin_access === true,
 			app: roleInfo.app_access === 1 || roleInfo.app_access === '1' || roleInfo.app_access === true,
 		};
-
-		generatedAccountability.permissions = await getPermissions(generatedAccountability, context.schema);
 	}
 
 	return generatedAccountability;
