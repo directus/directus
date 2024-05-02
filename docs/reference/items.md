@@ -152,10 +152,11 @@ Get an item that exists in Directus.
 
 ```graphql
 type Query {
-	<collection>_by_id(id: ID!): <collection>
+	<collection>_by_id(id: ID!, version: String): <collection>
 }
+
 type Query {
-	<collection>_by_version(id: ID!, version String!): <collection_version>
+	<collection>_by_version(id: ID!, version: String!): <collection_version_raw>
 }
 ```
 
@@ -277,7 +278,11 @@ List a singleton item in Directus.
 
 ```graphql
 type Query {
-	<collection>_by_version(version: String): <collection>
+	<collection>(version: String): <collection>
+}
+
+type Query {
+	<collection>_by_version(version: String!): <collection_version_raw>
 }
 ```
 

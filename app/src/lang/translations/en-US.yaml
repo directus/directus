@@ -375,6 +375,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_role: Search Role...
 search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
@@ -460,6 +461,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
+download_page_as_csv_unsupported: This layout does not support downloading the current page.
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -571,7 +573,7 @@ replace_from_url: Replace File from URL
 no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
-open_file_in_tab: Open file in new tab
+open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
@@ -630,6 +632,10 @@ no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks are deprecated and further use is discouraged.
+
+  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
@@ -1188,6 +1194,7 @@ install_extension: Install Extension
 uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
 uninstall: Uninstall
 installed: Installed
+reinstall: Reinstall
 open_in_marketplace: Open in Marketplace
 source_registry: Marketplace
 source_local: Local
@@ -1656,6 +1663,7 @@ delete_item: Delete Item
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.
+    sorting_disabled: Sorting is disabled because there are more items than can fit on one page.
   filter:
     name: Filter
     description: Configure a filter object.

@@ -20,7 +20,7 @@ import { createDirectus, authentication } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(authentication());
 
-await client.login(email, password);
+await client.login(email, password, options);
 await client.refresh();
 await client.logout();
 ```
@@ -35,9 +35,9 @@ import { createDirectus, rest, login, refresh, logout } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
-const user = await client.request(login(email, password));
+const user = await client.request(login(email, password, options));
 const authData = await client.request(refresh(mode, refresh_token));
-await client.request(logout(refresh_token));
+await client.request(logout(refresh_token, mode));
 ```
 
 The `mode` will either be `'json'`, `'cookie'` or `'session'`. If cookies are used, you don't need to set the second
@@ -60,6 +60,22 @@ When using Directus Realtime's [default 'handshake' authentication strategy](/gu
 first message sent must include authentication details. This example uses the `email` & `password` combination, but
 tokens can be used as well (see
 [Authenticate Realtime Connection with a Token](#authenticate-realtime-connection-with-a-token)).
+
+### Login Options
+
+Both the `authentication` and `rest` composable `login` functions accept a login options object, which has the following
+signature:
+
+```ts
+type LoginOptions = {
+	/** The user's one-time-password (if MFA is enabled). */
+	otp?: string;
+	/** Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`. */
+	mode?: AuthenticationMode;
+	/** Use a specific authentication provider (does not work for SSO that relies on browser redirects). */
+	provider?: string;
+};
+```
 
 ## Set a Token
 

@@ -843,10 +843,12 @@ const result = await client.request(
 
 ## Authenticate a Share
 
-Shares work by publicly giving you an access/refresh token combination (as you would get with the regular /auth/login
-endpoints). These tokens are limited to a permissions set that only allows access to the item that was shared, and any
-relationally linked items that that associated role has access to. This means that all regular endpoints can be used
-with the credentials set returned by this endpoint.
+Authenticate as a share user.
+
+> Shares work by returning a token, as it is the case with the regular login endpoint. These tokens are limited to a
+> permissions set that only allows access to the item that was shared, and any relationally linked items that that
+> associated role has access to. This means that all regular endpoints can be used with the token returned by this
+> endpoint.
 
 ### Request
 
