@@ -4,10 +4,14 @@
 
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep, uniq } from 'lodash-es';
+import { AccessService } from '../../services/access.js';
+import { PermissionsService } from '../../services/index.js';
 import type { AST } from '../../types/index.js';
 import { parseFields } from './lib/parse-fields.js';
 
 export async function getAstFromQuery(
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	collection: string,
 	query: Query,
 	schema: SchemaOverview,
@@ -76,7 +80,16 @@ export async function getAstFromQuery(
 		delete query.sort;
 	}
 
-	ast.children = await parseFields(schema, collection, fields, query, accountability, deep);
+	ast.children = await parseFields(
+		accessService,
+		permissionsService,
+		schema,
+		collection,
+		fields,
+		query,
+		accountability,
+		deep,
+	);
 
 	return ast;
 }

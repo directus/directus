@@ -429,8 +429,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				  )
 				: query;
 
-		let ast = await getAstFromQuery(this.collection, updatedQuery, this.schema, this.accountability);
-		ast = await processAst(this.knex, ast, 'read', this.accountability, this.schema);
+		const { AccessService } = await import('./access.js');
+		const { PermissionsService } = await import('./permissions/index.js');
+
+		const serviceOptions: AbstractServiceOptions = {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		};
+
+		const accessService = new AccessService(serviceOptions);
+		const permissionsService = new PermissionsService(serviceOptions);
+
+		let ast = await getAstFromQuery(accessService, permissionsService, this.collection, updatedQuery, this.schema, this.accountability);
+		ast = await processAst(accessService, permissionsService, ast, 'read', this.accountability, this.schema);
 
 		const records = await runAst(ast, this.schema, {
 			knex: this.knex,

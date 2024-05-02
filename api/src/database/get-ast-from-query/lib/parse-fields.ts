@@ -1,6 +1,8 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { isEmpty } from 'lodash-es';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/index.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
 import { convertWildcards } from '../lib/convert-wildcards.js';
@@ -9,6 +11,8 @@ import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export async function parseFields(
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	schema: SchemaOverview,
 	parentCollection: string,
 	fields: string[] | null,
@@ -18,7 +22,15 @@ export async function parseFields(
 ) {
 	if (!fields) return [];
 
-	fields = await convertWildcards(schema, parentCollection, fields, query, accountability);
+	fields = await convertWildcards(
+		accessService,
+		permissionsService,
+		schema,
+		parentCollection,
+		fields,
+		query,
+		accountability,
+	);
 
 	if (!fields || !Array.isArray(fields)) return [];
 
@@ -162,6 +174,8 @@ export async function parseFields(
 
 			for (const relatedCollection of allowedCollections) {
 				child.children[relatedCollection] = await parseFields(
+					accessService,
+					permissionsService,
 					schema,
 					relatedCollection,
 					Array.isArray(nestedFields)
@@ -192,7 +206,7 @@ export async function parseFields(
 				relatedKey: schema.collections[relatedCollection]!.primary,
 				relation: relation,
 				query: getDeepQuery(deep?.[fieldKey] || {}),
-				children: await parseFields(schema, relatedCollection, nestedFields as string[], query, deep?.[fieldKey] || {}),
+				children: await parseFields(accessService, permissionsService, schema, relatedCollection, nestedFields as string[], query, deep?.[fieldKey] || {}),
 				cases: [],
 				whenCase: [],
 			};

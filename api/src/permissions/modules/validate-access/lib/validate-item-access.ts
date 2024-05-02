@@ -37,7 +37,7 @@ export async function validateItemAccess(
 		},
 	};
 
-	const ast = await getAstFromQuery(collection, query, schema, accountability);
+	const ast = await getAstFromQuery(accessService, permissionsService, collection, query, schema, accountability);
 	await processAst(accessService, permissionsService, ast, action, accountability, schema);
 	const items = await runAst(ast, schema, { knex });
 

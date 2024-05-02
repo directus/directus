@@ -1,9 +1,13 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep } from 'lodash-es';
-import { getAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import type { AccessService } from '../../../services/access.js';
+import type { PermissionsService } from '../../../services/index.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export async function convertWildcards(
+	accessService: AccessService,
+	permissionsService: PermissionsService,
 	schema: SchemaOverview,
 	parentCollection: string,
 	fields: string[],
@@ -17,7 +21,13 @@ export async function convertWildcards(
 	let allowedFields: string[] | null = fieldsInCollection;
 
 	if (accountability && accountability.admin !== false) {
-		allowedFields = await getAllowedFields(schema, accountability, parentCollection, 'read');
+		allowedFields = await fetchAllowedFields(
+			accessService,
+			permissionsService,
+			accountability,
+			parentCollection,
+			'read',
+		);
 	}
 
 	if (!allowedFields || allowedFields.length === 0) return [];
