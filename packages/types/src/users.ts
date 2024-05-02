@@ -43,3 +43,10 @@ export type User = {
 	tags: string[] | null;
 	email_notifications: boolean;
 };
+
+export type RegisterUserInput = {
+	email: NonNullable<User['email']>;
+	password: NonNullable<User['password']>;
+	first_name?: User['first_name'];
+	last_name?: User['last_name'];
+};

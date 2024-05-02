@@ -5,7 +5,7 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, Role } from '@directus/types';
+import type { PrimaryKey, RegisterUserInput, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import { respond } from '../middleware/respond.js';
@@ -501,9 +501,11 @@ router.post(
 	respond,
 );
 
-const registerSchema = Joi.object<{ email: string; password: string }>({
+const registerSchema = Joi.object<RegisterUserInput>({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
+	first_name: Joi.string(),
+	last_name: Joi.string(),
 });
 
 router.post(
@@ -513,7 +515,7 @@ router.post(
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const usersService = new UsersService({ accountability: null, schema: req.schema });
-		await usersService.registerUser(value.email, value.password);
+		await usersService.registerUser(value);
 
 		return next();
 	}),

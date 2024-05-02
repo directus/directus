@@ -7,7 +7,7 @@ import {
 	UnprocessableContentError,
 	isDirectusError,
 } from '@directus/errors';
-import type { Item, PrimaryKey, Query, User } from '@directus/types';
+import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
@@ -458,7 +458,7 @@ export class UsersService extends ItemsService {
 		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
-	async registerUser(email: string, password: string) {
+	async registerUser(input: RegisterUserInput) {
 		const STALL_TIME = 750;
 		const timeStart = performance.now();
 		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
@@ -488,15 +488,20 @@ export class UsersService extends ItemsService {
 		const hasEmailValidation = settings?.['is_public_registration_email_validation_enabled'];
 
 		const partialUser: Partial<User> = {
-			email,
-			password,
+			// Required fields
+			email: input.email,
+			password: input.password,
 			role: publicRegistrationRole,
 			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
+
+			// Optional fields
+			first_name: input.first_name ?? null,
+			last_name: input.last_name ?? null,
 		};
 
 		const emailFilter = settings?.['public_registration_email_filter'];
 
-		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email }).length !== 0) {
+		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
 			await stall(STALL_TIME, timeStart);
 			throw new FailedValidationError({ field: 'email', type: 'email' });
 		}
@@ -516,7 +521,7 @@ export class UsersService extends ItemsService {
 
 		if (hasEmailValidation) {
 			const mailService = new MailService(serviceOptions);
-			const payload = { email, scope: 'pending-registration' };
+			const payload = { email: input.email, scope: 'pending-registration' };
 			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
 
 			const verificationURL = new Url(env['PUBLIC_URL'] as string)
@@ -525,13 +530,15 @@ export class UsersService extends ItemsService {
 
 			mailService
 				.send({
-					to: email,
+					to: input.email,
 					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
 					template: {
 						name: 'user-registration',
 						data: {
 							url: verificationURL.toString(),
-							email,
+							email: input.email,
+							first_name: input.first_name,
+							last_name: input.last_name,
 						},
 					},
 				})
