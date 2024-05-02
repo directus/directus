@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Prevent rate limit hit when having multiple different relationships
+Ensured that the rate limit is adhered to when having multiple different relationships
