@@ -251,7 +251,7 @@ const unsortableJunctionFields = computed(() => {
 
 			top: 50%;
 			transform: translateY(-50%);
-			right: -26px;
+			right: -26px; // moves it to the center of the column-gap ( icon-width + (gap - icon-width) / 2 )
 		}
 	}
 
