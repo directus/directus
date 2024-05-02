@@ -26,7 +26,7 @@ export async function getAccountabilityForToken(
 			const payload = verifyAccessJWT(token, env['SECRET'] as string);
 
 			if ('session' in payload) {
-				verifySessionJWT(payload);
+				await verifySessionJWT(payload);
 			}
 
 			accountability.role = payload.role;
