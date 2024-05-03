@@ -468,7 +468,7 @@ export class UsersService extends ItemsService {
 		const settings = await settingsService.readSingleton({
 			fields: [
 				'public_registration',
-				'is_public_registration_email_validation_enabled',
+				'public_registration_verify_email',
 				'public_registration_role',
 				'public_registration_email_filter',
 			],
@@ -486,7 +486,7 @@ export class UsersService extends ItemsService {
 			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
 		}
 
-		const hasEmailValidation = settings?.['is_public_registration_email_validation_enabled'];
+		const hasEmailValidation = settings?.['public_registration_verify_email'];
 
 		const partialUser: Partial<User> = {
 			// Required fields

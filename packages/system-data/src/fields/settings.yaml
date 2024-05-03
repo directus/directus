@@ -232,7 +232,7 @@ fields:
     display_options:
       template: '{{ name }}'
 
-  - field: is_public_registration_email_validation_enabled
+  - field: public_registration_verify_email
     interface: boolean
     width: half
     options:

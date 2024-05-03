@@ -1367,7 +1367,7 @@ fields:
     public_registration: Public registration
     public_registration_role: Role
     public_registration_email_filter: Email Filter
-    is_public_registration_email_validation_enabled: Send verification email
+    public_registration_verify_email: Send verification email
   directus_shares:
     name: Name
     role: Role
