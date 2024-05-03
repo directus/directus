@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import {
 	ContainsNullValuesError,
+	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
 	RecordNotUniqueError,
@@ -510,7 +511,7 @@ export class UsersService extends ItemsService {
 			await this.createOne(partialUser);
 		} catch (error: unknown) {
 			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
-			if (isDirectusError(error) && error.code === 'RECORD_NOT_UNIQUE') {
+			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
 				await stall(STALL_TIME, timeStart);
 				return;
 			}
