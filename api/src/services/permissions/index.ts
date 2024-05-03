@@ -22,31 +22,6 @@ export class PermissionsService extends ItemsService {
 		this.accessService = new AccessService(options);
 	}
 
-	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
-		const results =
-			this.accountability?.permissions?.filter((permission) => {
-				let matchesCollection = true;
-
-				if (collection) {
-					matchesCollection = permission.collection === collection;
-				}
-
-				const matchesAction = permission.action === action;
-
-				return collection ? matchesCollection && matchesAction : matchesAction;
-			}) ?? [];
-
-		const fieldsPerCollection: Record<string, string[]> = {};
-
-		for (const result of results) {
-			const { collection, fields } = result;
-			if (!fieldsPerCollection[collection]) fieldsPerCollection[collection] = [];
-			fieldsPerCollection[collection]!.push(...(fields ?? []));
-		}
-
-		return fieldsPerCollection;
-	}
-
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
 		const result = (await super.readByQuery(query, opts)) as Permission[];
 
