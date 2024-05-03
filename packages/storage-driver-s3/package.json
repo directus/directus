@@ -26,8 +26,8 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "3.564.0",
-		"@aws-sdk/lib-storage": "3.564.0",
+		"@aws-sdk/client-s3": "3.568.0",
+		"@aws-sdk/lib-storage": "3.568.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@smithy/node-http-handler": "2.5.0"
@@ -35,9 +35,9 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "7.2.0",
-		"@vitest/coverage-v8": "1.5.2",
+		"@vitest/coverage-v8": "1.5.3",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.5.2"
+		"vitest": "1.5.3"
 	}
 }
