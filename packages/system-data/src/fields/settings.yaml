@@ -210,7 +210,7 @@ fields:
       - no-data
     width: full
 
-  - field: is_public_registration_enabled
+  - field: public_registration
     interface: boolean
     width: half
     options:

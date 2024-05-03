@@ -467,14 +467,14 @@ export class UsersService extends ItemsService {
 
 		const settings = await settingsService.readSingleton({
 			fields: [
-				'is_public_registration_enabled',
+				'public_registration',
 				'is_public_registration_email_validation_enabled',
 				'public_registration_role',
 				'public_registration_email_filter',
 			],
 		});
 
-		if (settings?.['is_public_registration_enabled'] == false) {
+		if (settings?.['public_registration'] == false) {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}

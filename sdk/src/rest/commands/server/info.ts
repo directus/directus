@@ -5,7 +5,7 @@ export type ServerInfoOutput = {
 	project: {
 		project_name: string;
 		default_language: string;
-		is_public_registration_enabled: boolean; // TODO Get opinion from @Brainslug
+		public_registration: boolean;
 	};
 	rateLimit?:
 		| {
