@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
+import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -23,8 +24,8 @@ const emit = defineEmits<{
 
 const errorFormatted = computed(() => {
 	// Show "Wrong username or password" for wrongly formatted emails as well
-	if (error.value === 'INVALID_PAYLOAD') {
-		return translateAPIError('INVALID_CREDENTIALS');
+	if (error.value === ErrorCode.InvalidPayload) {
+		return translateAPIError(ErrorCode.InvalidCredentials);
 	}
 
 	if (error.value) {
@@ -44,7 +45,7 @@ async function onSubmit() {
 		password.value === null ||
 		passwordsMatch.value === false
 	) {
-		error.value = 'INVALID_PAYLOAD';
+		error.value = ErrorCode.InvalidPayload;
 		return;
 	}
 
