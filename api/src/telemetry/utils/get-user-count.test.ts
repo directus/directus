@@ -2,7 +2,7 @@ import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getUserCount } from './get-user-count.js';
 
-let mockResult: { admin_access: number; app_access: number; count: string }[];
+let mockResult: { admin_access: number | null; app_access: number | null; count: string }[];
 let mockDb: Knex;
 
 beforeEach(() => {
@@ -21,6 +21,17 @@ beforeEach(() => {
 			admin_access: 0,
 			app_access: 0,
 			count: '25',
+		},
+		{
+			admin_access: 1,
+			app_access: 0,
+			count: '30',
+		},
+		{
+			// For users with no role
+			admin_access: null,
+			app_access: null,
+			count: '35',
 		},
 	];
 
@@ -53,8 +64,8 @@ test('Sets final counts based on combination of admin/app access', async () => {
 	const res = await getUserCount(mockDb);
 
 	expect(res).toEqual({
-		admin: 15,
+		admin: 45,
 		app: 20,
-		api: 25,
+		api: 60,
 	});
 });
