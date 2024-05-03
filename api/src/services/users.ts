@@ -461,7 +461,7 @@ export class UsersService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: {
-				...(this.accountability ?? { role: null }),
+				...(this.accountability ?? { role: null, roles: [], user: null, admin: false, app: false }),
 				admin: true, // We need to skip permissions checks for the update call below
 			},
 		});
