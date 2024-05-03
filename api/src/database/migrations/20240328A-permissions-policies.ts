@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
+import { processChunk } from '@directus/utils';
 
 /**
  * The public role used to be `null`, we gotta create a single new policy for the permissions
@@ -8,13 +9,6 @@ import { randomUUID } from 'node:crypto';
  * This UUID is a randomly generated arbitrary UUID.
  */
 const PUBLIC_POLICY = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
-
-async function processChunk<T = unknown>(arr: T[], size: number, callback: (chunk: T[]) => Promise<void>) {
-	for (let i = 0; i < arr.length; i += size) {
-		const chunk = arr.slice(i, i + size);
-		await callback(chunk);
-	}
-}
 
 export async function up(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////

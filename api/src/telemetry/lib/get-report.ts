@@ -1,9 +1,9 @@
 import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
+import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getItemCount } from '../utils/get-item-count.js';
-import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
 
 const basicCountCollections = [
@@ -24,7 +24,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 	const [basicCounts, userCounts, userItemCount] = await Promise.all([
 		getItemCount(db, basicCountCollections),
-		getUserCount(db),
+		fetchUserCount(db),
 		getUserItemCount(db),
 	]);
 

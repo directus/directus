@@ -6,10 +6,11 @@ import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 /**
  * Fetch the policies associated with the current user accountability
  */
-export async function fetchPolicies(accessService: AccessService, accountability: Accountability): Promise<string[]> {
+export async function fetchPolicies(
+	accessService: AccessService,
+	{ user, roles, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
+): Promise<string[]> {
 	// TODO add cache
-
-	const { user, roles } = accountability;
 
 	let filter: Filter = {};
 
@@ -27,7 +28,7 @@ export async function fetchPolicies(accessService: AccessService, accountability
 		limit: -1,
 	})) as AccessRow[];
 
-	const filteredAccessRows = filterPoliciesByIp(accessRows, accountability.ip);
+	const filteredAccessRows = filterPoliciesByIp(accessRows, ip);
 
 	return filteredAccessRows.map(({ policy }) => policy.id);
 }
