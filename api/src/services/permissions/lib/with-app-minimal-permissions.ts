@@ -9,8 +9,6 @@ export function withAppMinimalPermissions(
 ): Permission[] {
 	if (accountability?.app === true) {
 		const filteredAppMinimalPermissions = filterItems(appAccessMinimalPermissions, filter);
-
-		// TODO typescript shenanigans
 		return [...permissions, ...filteredAppMinimalPermissions];
 	}
 
