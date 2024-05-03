@@ -34,8 +34,11 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	for (const error of receivedErrors) {
 		if (getNodeEnv() === 'development') {
 			// If available, expose stack trace under error's extensions data
-			if (isObject(error) && error['stack']) {
-				(error['extensions'] ??= {} as any).stack = error['stack'];
+			if (isObject(error) && error['stack'] && (error['extensions'] === undefined || isObject(error['extensions']))) {
+				error['extensions'] = {
+					...error['extensions'],
+					stack: error['stack'],
+				}
 			}
 		}
 
