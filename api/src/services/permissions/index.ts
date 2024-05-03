@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Item, ItemPermissions, Permission, PermissionsAction, PrimaryKey, Query } from '@directus/types';
+import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
