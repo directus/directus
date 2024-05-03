@@ -1,13 +1,5 @@
 import { useEnv } from '@directus/env';
-import {
-	ContainsNullValuesError,
-	ErrorCode,
-	ForbiddenError,
-	InvalidPayloadError,
-	RecordNotUniqueError,
-	UnprocessableContentError,
-	isDirectusError,
-} from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
@@ -478,14 +470,11 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenError();
 		}
 
-		const publicRegistrationRole = settings?.['public_registration_role'];
-
-		if (!publicRegistrationRole) {
-			await stall(STALL_TIME, timeStart);
-			throw new ContainsNullValuesError({ collection: 'directus_settings', field: 'public_registration_role' });
-		}
-
+		const publicRegistrationRole = settings?.['public_registration_role'] ?? null;
 		const hasEmailValidation = settings?.['public_registration_verify_email'];
+		const emailFilter = settings?.['public_registration_email_filter'];
+		const first_name = input.first_name ?? null;
+		const last_name = input.last_name ?? null;
 
 		const partialUser: Partial<User> = {
 			// Required fields
@@ -495,28 +484,25 @@ export class UsersService extends ItemsService {
 			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
 
 			// Optional fields
-			first_name: input.first_name ?? null,
-			last_name: input.last_name ?? null,
+			first_name,
+			last_name,
 		};
-
-		const emailFilter = settings?.['public_registration_email_filter'];
 
 		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
 			await stall(STALL_TIME, timeStart);
-			throw new FailedValidationError({ field: 'email', type: 'email' });
+			throw new ForbiddenError();
 		}
 
-		try {
-			await this.createOne(partialUser);
-		} catch (error: unknown) {
-			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
-			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
-				await stall(STALL_TIME, timeStart);
-				return;
-			}
+		const user = await this.getUserByEmail(input.email);
 
+		if (isEmpty(user)) {
+			await this.createOne(partialUser);
+		}
+		// We want to be able to re-send the verification email
+		else if (user.status !== 'draft') {
+			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
 			await stall(STALL_TIME, timeStart);
-			throw error;
+			return;
 		}
 
 		if (hasEmailValidation) {
@@ -537,8 +523,8 @@ export class UsersService extends ItemsService {
 						data: {
 							url: verificationURL.toString(),
 							email: input.email,
-							first_name: input.first_name,
-							last_name: input.last_name,
+							first_name,
+							last_name,
 						},
 					},
 				})
