@@ -122,7 +122,7 @@ export function updateJunctionRelated(updates: StateUpdates, _state: State, { ge
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
 
 	const relatedCollectionPrimaryKeyField =
-		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ?? 'id';
+		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ?? 'code';
 
 	set(updates, 'relations.m2o.field', `${relatedCollection}_${relatedCollectionPrimaryKeyField}`);
 }
