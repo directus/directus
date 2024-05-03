@@ -271,6 +271,11 @@ function addKeyAsNode() {
 	.buttons {
 		padding: 0 10px;
 		font-weight: 600;
+
+		button {
+			display: inline-flex;
+			align-items: center;
+		}
 	}
 
 	&.empty {
@@ -346,8 +351,6 @@ function addKeyAsNode() {
 .field .buttons {
 	button {
 		color: var(--theme--primary);
-		display: inline-flex;
-		align-items: center;
 		cursor: pointer;
 	}
 
