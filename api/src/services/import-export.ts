@@ -23,14 +23,17 @@ import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
+import { AccessService } from './access.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
+import { PermissionsService } from './permissions/index.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -42,26 +45,39 @@ export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
-		const createPermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'create',
-		);
-
-		const updatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'update',
-		);
-
-		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'create',
+				collection,
+			);
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'update',
+				collection,
+			);
 		}
 
 		switch (mimetype) {
