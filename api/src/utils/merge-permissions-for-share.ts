@@ -11,7 +11,7 @@ export function mergePermissionsForShare(
 ): Permission[] {
 	const defaults: Permission = {
 		action: 'read',
-		role: accountability.role,
+		role: accountability.role, // TODO shares should rely on policies instead of roles
 		collection: '',
 		permissions: {},
 		validation: null,

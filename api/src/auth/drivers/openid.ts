@@ -385,6 +385,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,
+				roles: [],
+				user: null,
+				admin: false,
+				app: false,
 			};
 
 			const userAgent = req.get('user-agent')?.substring(0, 1024);

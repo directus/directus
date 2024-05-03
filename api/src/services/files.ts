@@ -20,11 +20,14 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
+import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
+import { PermissionsService } from './permissions/index.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -32,8 +35,14 @@ const logger = useLogger();
 type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
 export class FilesService extends ItemsService {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
+
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 	}
 
 	/**
@@ -356,12 +365,16 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create',
-		);
-
-		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'create',
+				'directus_files',
+			);
 		}
 
 		let fileResponse;

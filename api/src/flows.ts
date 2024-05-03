@@ -371,6 +371,7 @@ class FlowManager {
 					data: {
 						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
 						data: redactObject(
+							keyedData,
 							{
 								keys: [
 									['**', 'headers', 'authorization'],

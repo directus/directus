@@ -377,11 +377,11 @@ router.post(
 
 		// Override permissions only when enforce TFA is enabled in role
 		if (req.accountability.role) {
-			const rolesService = new RolesService({
-				schema: req.schema,
-			});
+			// const rolesService = new RolesService({
+			// 	schema: req.schema,
+			// });
 
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
+			// const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			// TODO support enforce_tfa from policies
 
@@ -438,7 +438,7 @@ router.post(
 				schema: req.schema,
 			});
 
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
+			// const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			// TODO support enforce_tfa from policies
 
