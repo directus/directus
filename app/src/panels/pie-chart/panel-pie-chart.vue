@@ -8,6 +8,12 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { monoThemeGenerator } from './color-generator';
 
+type ConditionalFillFormat = {
+	operator: StringConditionalFillOperators;
+	color: string;
+	value: number;
+};
+
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
@@ -22,11 +28,7 @@ const props = withDefaults(
 		color?: string;
 		height: number;
 		width: number;
-		conditionalFill?: {
-			operator: StringConditionalFillOperators;
-			color: string;
-			value: number;
-		}[];
+		conditionalFill?: ConditionalFillFormat[] | null;
 	}>(),
 	{
 		showHeader: false,
@@ -106,10 +108,7 @@ async function setupChart() {
 
 	const total = series.reduce((acc, val) => acc + val, 0);
 
-	const baseColors: string[] = monoThemeGenerator(
-		props.color ? props.color : cssVar('--theme--primary'),
-		labels.length,
-	);
+	const baseColors: string[] = monoThemeGenerator(props.color || cssVar('--theme--primary'), labels.length);
 
 	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
 
@@ -220,7 +219,7 @@ function getPercentage(value: number) {
 }
 
 function formatColor(color: string | number, value?: string | number) {
-	if (isNil(value) || props.conditionalFill.length === 0) return color;
+	if (isNil(value) || !props.conditionalFill?.length) return color;
 	let formattedColor = color;
 
 	for (const format of props.conditionalFill) {
@@ -231,10 +230,7 @@ function formatColor(color: string | number, value?: string | number) {
 	return formattedColor;
 }
 
-function checkMatchingConditionalFill(
-	value: string | number,
-	format: (typeof props)['conditionalFill'][number],
-): boolean {
+function checkMatchingConditionalFill(value: string | number, format: ConditionalFillFormat): boolean {
 	let baseValue: string | number = value;
 	let compareValue: string | number = format.value;
 

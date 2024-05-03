@@ -24,7 +24,7 @@ interface Props {
 	suffix?: string | null;
 	minimumFractionDigits?: number;
 	maximumFractionDigits?: number;
-	conditionalFormatting?: Record<string, any>[];
+	conditionalFormatting?: Record<string, any>[] | null;
 	textAlign?: CSSProperties['text-align'];
 	fontSize?: string;
 	fontWeight?: number | undefined;
@@ -166,7 +166,7 @@ const color = computed(() => {
 		}
 	}
 
-	return matchingFormat ? matchingFormat.color || cssVar('--theme-primary') : null;
+	return (matchingFormat ? matchingFormat.color : null) || cssVar('--theme--primary');
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof metric.value === 'string') {

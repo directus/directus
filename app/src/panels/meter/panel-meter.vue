@@ -3,6 +3,12 @@ import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+type ConditionalFillFormat = {
+	operator: BaseConditionalFillOperators;
+	color: string;
+	value: number;
+};
+
 interface Props {
 	showHeader: boolean;
 	collection: string;
@@ -18,7 +24,7 @@ interface Props {
 	showPercentage?: boolean;
 	color?: string;
 	max?: number;
-	conditionalFill?: { operator: BaseConditionalFillOperators; color: string; value: number }[];
+	conditionalFill?: ConditionalFillFormat[] | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -97,7 +103,7 @@ const dashOffset = computed(() => {
 const conditionalColor = computed(() => {
 	const defaultColor = props.color ?? 'var(--theme--primary)';
 
-	if (!unref(percent) || props.conditionalFill.length === 0) {
+	if (!unref(percent) || !props.conditionalFill?.length) {
 		return defaultColor;
 	}
 

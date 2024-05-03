@@ -2213,6 +2213,7 @@ layouts:
 
 horizontal: Horizontal
 vertical: Vertical
+axis: Axis
 x_axis: X-Axis
 y_axis: Y-Axis
 y_axis_function: Y-Axis Function

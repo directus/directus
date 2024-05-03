@@ -2,7 +2,7 @@
 import type { DeepPartial } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, toRefs, unref } from 'vue';
-import { useFonts, useTheme } from '../composables/index.js';
+import { provideTheme, useFonts, useTheme } from '../composables/index.js';
 import type { Theme } from '../schemas/index.js';
 import { rulesToCssVars } from '../utils/index.js';
 
@@ -28,6 +28,8 @@ const props = withDefaults(
 const { darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides } = toRefs(props);
 
 const { theme } = useTheme(darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides);
+
+provideTheme(theme);
 
 const cssVariables = computed(() => {
 	return rulesToCssVars(unref(theme).rules);
