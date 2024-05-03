@@ -115,7 +115,7 @@ function getColor(input?: number) {
 		}
 	}
 
-	return (matchingFormat ? matchingFormat.color : null) || cssVar('--theme--primary');
+	return matchingFormat?.color || cssVar('--theme--primary');
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof input === 'string') {
