@@ -3,8 +3,8 @@ import { createDirectus, readItems, rest } from '../src/index.js';
 import type { TestSchema } from './schema.js';
 
 describe('Test QueryFilters', () => {
-	test('issue #20633 resolving _and/_or filters', () => {
-		const client = createDirectus<TestSchema>('http://localhost:8055').with(rest());
+	test('resolving _and/_or filters (issue #20633)', () => {
+		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
 
 		const withConditional = () =>
 			client.request(
