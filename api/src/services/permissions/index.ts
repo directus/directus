@@ -152,7 +152,7 @@ export class PermissionsService extends ItemsService {
 					this.accountability,
 					checkAction,
 					collection,
-					[primaryKey],
+					primaryKey ? [primaryKey] : undefined,
 				)
 					.then(() => (itemPermissions[action].access = true))
 					.catch(() => {});
