@@ -1364,10 +1364,16 @@ fields:
     custom_aspect_ratios: Custom Aspect Ratios
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
-    public_registration: Public registration
-    public_registration_role: Role
-    public_registration_email_filter: Email Filter
-    public_registration_verify_email: Send verification email
+    public_registration: User Registration
+    public_registration_note: Allows users to register via the [registration route](/admin/register).
+    public_registration_role: User Role
+    public_registration_role_note:
+      This role is assigned to users who register using this method. Does not affect already registered users.
+    public_registration_email_filter: Email Address Filter
+    public_registration_email_filter_note: Only email addresses matching this filter can register.
+    public_registration_verify_email: Verify Email
+    public_registration_verify_email_note:
+      Sends an email to the registering user asking them to click on a verification link before they can sign in.
   directus_shares:
     name: Name
     role: Role

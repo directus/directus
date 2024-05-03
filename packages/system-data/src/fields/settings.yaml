@@ -212,6 +212,7 @@ fields:
 
   - field: public_registration
     interface: boolean
+    note: $t:fields.directus_settings.public_registration_note
     width: half
     options:
       label: $t:enabled
@@ -220,6 +221,7 @@ fields:
 
   - field: public_registration_role
     interface: select-dropdown-m2o
+    note: $t:fields.directus_settings.public_registration_role_note
     options:
       template: '{{ name }}'
       filter:
@@ -234,6 +236,7 @@ fields:
 
   - field: public_registration_verify_email
     interface: boolean
+    note: $t:fields.directus_settings.public_registration_verify_email_note
     width: half
     options:
       label: $t:enabled
@@ -242,6 +245,7 @@ fields:
 
   - field: public_registration_email_filter
     interface: system-filter
+    note: $t:fields.directus_settings.public_registration_email_filter_note
     options:
       collectionName: directus_users
       collectionField: email
