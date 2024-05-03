@@ -30,11 +30,11 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 		const count = Number(record.count);
 
 		if (adminAccess) {
-			counts.admin = count;
+			counts.admin += count;
 		} else if (appAccess) {
-			counts.app = count;
+			counts.app += count;
 		} else {
-			counts.api = count;
+			counts.api += count;
 		}
 	}
 
