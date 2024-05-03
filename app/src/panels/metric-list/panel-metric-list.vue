@@ -36,7 +36,6 @@ const props = withDefaults(
 		minimumFractionDigits?: number;
 		maximumFractionDigits?: number;
 		conditionalFormatting?: Record<string, any>[];
-
 		collection: string;
 		dashboard: string;
 		data: Array<DataPoint>;
