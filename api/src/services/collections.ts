@@ -14,12 +14,16 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { AccessService } from './access.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { PermissionsService } from './permissions/index.js';
 
 export type RawCollection = {
 	collection: string;
@@ -36,6 +40,8 @@ export class CollectionsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -43,6 +49,9 @@ export class CollectionsService {
 		this.accountability = options.accountability || null;
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
+
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 
 		const { cache, systemCache } = getCache();
 		this.cache = cache;
@@ -292,11 +301,13 @@ export class CollectionsService {
 				{},
 			);
 
-			let collectionsYouHavePermissionToRead: string[] = this.accountability
-				.permissions!.filter((permission) => {
-					return permission.action === 'read';
-				})
-				.map(({ collection }) => collection);
+			let collectionsYouHavePermissionToRead = await fetchAllowedCollections(
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {
 				const group = collectionsGroups[collection];
@@ -363,23 +374,20 @@ export class CollectionsService {
 	 * Read many collections by name
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-
-			// TODO Add permissions util to lookup read access to collection
-
-			// const permissions = this.accountability.permissions!.filter((permission) => {
-			// 	return permission.action === 'read' && collectionKeys.includes(permission.collection);
-			// });
-
-			// if (collectionKeys.length !== permissions.length) {
-			// 	const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
-
-			// 	for (const collectionKey of collectionKeys) {
-			// 		if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-			// 			throw new ForbiddenError();
-			// 		}
-			// 	}
-			// }
+		if (this.accountability) {
+			await Promise.all(
+				collectionKeys.map((collection) =>
+					validateAccess(
+						this.knex,
+						this.accessService,
+						this.permissionsService,
+						this.schema,
+						this.accountability!,
+						'read',
+						collection,
+					),
+				),
+			);
 		}
 
 		const collections = await this.readByQuery();
