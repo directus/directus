@@ -11,10 +11,14 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
+import { AccessService } from './access.js';
 import { ItemsService, type QueryOptions } from './items.js';
 import { PermissionsService } from './permissions/index.js';
 
@@ -27,10 +31,12 @@ export class RelationsService {
 	relationsItemService: ItemsService<RelationMeta>;
 	systemCache: Keyv<any>;
 	helpers: Helpers;
+	accessService: AccessService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.permissionsService = new PermissionsService(options);
+		this.accessService = new AccessService(options);
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
@@ -48,8 +54,16 @@ export class RelationsService {
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
-		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+				'directus_relations',
+			);
 		}
 
 		const metaReadQuery: Query = {
@@ -78,23 +92,28 @@ export class RelationsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Relation> {
-		if (this.accountability && this.accountability.admin !== true) {
-			if (this.hasReadAccess === false) {
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+				'directus_relations',
+			);
+
+			const allowedFields = await fetchAllowedFields(
+				this.accessService,
+				this.permissionsService,
+				this.accountability,
+				collection,
+				'read',
+			);
+
+			if (allowedFields.includes(field) === false) {
 				throw new ForbiddenError();
 			}
-
-			// TODO Add permissions util to lookup read access to relations
-
-			// const permissions = this.accountability.permissions?.find((permission) => {
-			// 	return permission.action === 'read' && permission.collection === collection;
-			// });
-
-			// if (!permissions || !permissions.fields) throw new ForbiddenError();
-
-			// if (permissions.fields.includes('*') === false) {
-			// 	const allowedFields = permissions.fields;
-			// 	if (allowedFields.includes(field) === false) throw new ForbiddenError();
-			// }
 		}
 
 		const metaRow = await this.relationsItemService.readByQuery({
@@ -464,15 +483,6 @@ export class RelationsService {
 	}
 
 	/**
-	 * Whether or not the current user has read access to relations
-	 */
-	private get hasReadAccess() {
-		return !!this.accountability?.permissions?.find((permission) => {
-			return permission.collection === 'directus_relations' && permission.action === 'read';
-		});
-	}
-
-	/**
 	 * Combine raw schema foreign key information with Directus relations meta rows to form final
 	 * Relation objects
 	 */
@@ -522,14 +532,14 @@ export class RelationsService {
 	private async filterForbidden(relations: Relation[]): Promise<Relation[]> {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
-		const allowedCollections =
-			this.accountability.permissions
-				?.filter((permission) => {
-					return permission.action === 'read';
-				})
-				.map(({ collection }) => collection) ?? [];
-
-		const allowedFields = this.permissionsService.getAllowedFields('read');
+		const allowedFields = await fetchAllowedFieldMap(
+			this.accessService,
+			this.permissionsService,
+			this.schema,
+			this.accountability,
+			'read',
+		);
+		const allowedCollections = Object.keys(allowedFields);
 
 		relations = toArray(relations);
 
