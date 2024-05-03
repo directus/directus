@@ -19,6 +19,9 @@ import 'codemirror/addon/search/searchcursor.js';
 
 import 'codemirror/keymap/sublime.js';
 
+/** Regex to check for interpolation, e.g. `{{ $trigger }}` */
+const INTERPOLATION_REGEX = /^\{\{\s*[^}\s]+\s*\}\}$/;
+
 const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
@@ -97,7 +100,7 @@ onMounted(async () => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (isInterpolation(props.value)) return props.value;
+	if (props.type === 'json' && isInterpolation(props.value)) return props.value;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -289,7 +292,7 @@ function fillTemplate() {
 }
 
 function isInterpolation(value: any) {
-	return typeof value === 'string' && value.startsWith('{{') && value.endsWith('}}');
+	return typeof value === 'string' && value.match(INTERPOLATION_REGEX);
 }
 </script>
 
