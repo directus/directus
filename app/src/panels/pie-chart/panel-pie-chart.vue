@@ -36,7 +36,7 @@ const props = withDefaults(
 		function: 'count',
 		legend: 'none',
 		showLabels: false,
-		color: cssVar('--primary'),
+		color: cssVar('--theme--primary'),
 		conditionalFill: () => [],
 	},
 );
@@ -106,7 +106,10 @@ async function setupChart() {
 
 	const total = series.reduce((acc, val) => acc + val, 0);
 
-	const baseColors: string[] = monoThemeGenerator(props.color ? props.color : cssVar('--primary'), labels.length);
+	const baseColors: string[] = monoThemeGenerator(
+		props.color ? props.color : cssVar('--theme--primary'),
+		labels.length,
+	);
 
 	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
 

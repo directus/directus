@@ -35,7 +35,7 @@ const props = withDefaults(
 		data: () => [],
 		horizontal: false,
 		decimals: 2,
-		color: cssVar('--primary'),
+		color: cssVar('--theme-primary'),
 		function: 'max',
 		filter: () => ({}),
 		showAxisLabels: 'both',

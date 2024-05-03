@@ -18,7 +18,7 @@ const svg = (color: string, addDirectusLogo: boolean) => `
 </svg>`;
 
 export const generateFavicon = (color: string, addDirectusLogo = true) => {
-	color = color || cssVar('--primary');
+	color = color || cssVar('--theme-primary');
 
 	const icon = svg(color, addDirectusLogo);
 	const wrapper = document.createElement('div');

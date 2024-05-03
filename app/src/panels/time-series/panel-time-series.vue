@@ -47,7 +47,7 @@ const props = withDefaults(
 		showHeader: false,
 		data: () => [],
 		precision: 'hour',
-		color: cssVar('--primary'),
+		color: cssVar('--theme-primary'),
 		range: '1 week',
 		fillType: 'gradient',
 		curveType: 'smooth',
@@ -136,7 +136,7 @@ function setupChart() {
 	);
 
 	chart.value = new ApexCharts(chartEl.value, {
-		colors: [props.color ? props.color : cssVar('--primary')],
+		colors: [props.color ? props.color : cssVar('--theme-primary')],
 		chart: {
 			type: props.fillType === 'disabled' ? 'line' : 'area',
 			height: '100%',
@@ -179,12 +179,12 @@ function setupChart() {
 					[
 						{
 							offset: 0,
-							color: props.color ? props.color : cssVar('--primary'),
+							color: props.color ? props.color : cssVar('--theme-primary'),
 							opacity: 0.25,
 						},
 						{
 							offset: 100,
-							color: props.color ? props.color : cssVar('--primary'),
+							color: props.color ? props.color : cssVar('--theme-primary'),
 							opacity: 0,
 						},
 					],

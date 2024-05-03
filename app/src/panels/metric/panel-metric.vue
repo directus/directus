@@ -166,7 +166,7 @@ const color = computed(() => {
 		}
 	}
 
-	return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
+	return matchingFormat ? matchingFormat.color || cssVar('--theme-primary') : null;
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof metric.value === 'string') {
