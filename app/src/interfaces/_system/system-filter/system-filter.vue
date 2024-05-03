@@ -193,7 +193,7 @@ function addKeyAsNode() {
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<v-icon v-if="inline" name="add" class="add" small />
-						<v-text-overflow :text="t('interfaces.filter.add_filter')" />
+						<span>{{ t('interfaces.filter.add_filter') }}</span>
 						<v-icon name="expand_more" class="expand_more" />
 					</button>
 				</template>
@@ -271,6 +271,10 @@ function addKeyAsNode() {
 	.buttons {
 		padding: 0 10px;
 		font-weight: 600;
+
+		span {
+			white-space: nowrap;
+		}
 	}
 
 	&.empty {
