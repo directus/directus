@@ -346,7 +346,8 @@ function addKeyAsNode() {
 .field .buttons {
 	button {
 		color: var(--theme--primary);
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
 		cursor: pointer;
 	}
 
