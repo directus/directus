@@ -5,18 +5,26 @@ import type { Knex } from 'knex';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { AccessService } from './access.js';
+import { PermissionsService } from './permissions/index.js';
 
 export class UtilsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 	}
 
 	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
@@ -30,16 +38,24 @@ export class UtilsService {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
-		if (this.accountability?.admin !== true) {
-			const permissions = this.accountability?.permissions?.find((permission) => {
-				return permission.collection === collection && permission.action === 'update';
-			});
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'update',
+				collection,
+			);
 
-			if (!permissions) {
-				throw new ForbiddenError();
-			}
-
-			const allowedFields = permissions.fields ?? [];
+			const allowedFields = await fetchAllowedFields(
+				this.accessService,
+				this.permissionsService,
+				this.accountability,
+				collection,
+				'update',
+			);
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
 				throw new ForbiddenError();
