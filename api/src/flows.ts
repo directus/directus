@@ -250,6 +250,12 @@ class FlowManager {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
+					const hasAccountability = Boolean((context['accountability'] as Accountability | null)?.user);
+
+					if (!hasAccountability) {
+						logger.warn(`Manual trigger requires an user authenticated request`);
+						throw new ForbiddenError();
+					}
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
