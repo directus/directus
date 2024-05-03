@@ -271,6 +271,10 @@ function addKeyAsNode() {
 	.buttons {
 		padding: 0 10px;
 		font-weight: 600;
+
+		span {
+			white-space: nowrap;
+		}
 	}
 
 	&.empty {

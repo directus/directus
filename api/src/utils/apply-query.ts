@@ -1,3 +1,4 @@
+import { NUMERIC_TYPES } from '@directus/constants';
 import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
@@ -5,12 +6,13 @@ import type {
 	FieldFunction,
 	FieldOverview,
 	Filter,
+	NumericType,
 	Query,
 	Relation,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
+import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction, isIn } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -20,7 +22,8 @@ import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
-import { stripFunction } from './strip-function.js';
+import { parseFilterKey } from './parse-filter-key.js';
+import { parseNumericString } from './parse-numeric-string.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -58,7 +61,7 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
+		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
 	if (query.group) {
@@ -540,9 +543,9 @@ export function applyFilter(
 
 				if (!columnPath) continue;
 
-				const { type, special } = validateFilterField(
+				const { type, special } = getFilterType(
 					schema.collections[targetCollection]!.fields,
-					stripFunction(filterPath[filterPath.length - 1]!),
+					filterPath.at(-1)!,
 					targetCollection,
 				)!;
 
@@ -550,11 +553,7 @@ export function applyFilter(
 
 				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else {
-				const { type, special } = validateFilterField(
-					schema.collections[collection]!.fields,
-					stripFunction(filterPath[0]!),
-					collection,
-				)!;
+				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateFilterOperator(type, filterOperator, special);
 
@@ -562,15 +561,33 @@ export function applyFilter(
 			}
 		}
 
-		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
-			if (fields[key] === undefined) {
+		function getFilterType(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			const { fieldName, functionName } = parseFilterKey(key);
+
+			const field = fields[fieldName];
+
+			if (!field) {
 				throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
 			}
 
-			return fields[key];
+			const { type } = field;
+
+			if (functionName) {
+				const availableFunctions: string[] = getFunctionsForType(type);
+
+				if (!availableFunctions.includes(functionName)) {
+					throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
+				}
+
+				const functionType = getOutputTypeForFunction(functionName as FieldFunction);
+
+				return { type: functionType };
+			}
+
+			return { type, special: field.special };
 		}
 
-		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
+		function validateFilterOperator(type: Type, filterOperator: string, special?: string[]) {
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
@@ -582,7 +599,7 @@ export function applyFilter(
 			}
 
 			if (
-				special.includes('conceal') &&
+				special?.includes('conceal') &&
 				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
 			) {
 				throw new InvalidQueryError({
@@ -805,36 +822,43 @@ export function applyFilter(
 }
 
 export async function applySearch(
+	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
 ): Promise<void> {
+	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
 	dbQuery.andWhere(function () {
+		let needsFallbackCondition = true;
+
 		fields.forEach(([name, field]) => {
 			if (['text', 'string'].includes(field.type)) {
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
-			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
-				const number = Number(searchQuery);
+				needsFallbackCondition = false;
+			} else if (isNumericField(field)) {
+				const number = parseNumericString(searchQuery);
 
-				// only cast finite base10 numeric values
-				if (validateNumber(searchQuery, number)) {
-					this.orWhere({ [`${collection}.${name}`]: number });
+				if (number === null) {
+					return; // unable to parse
+				}
+
+				if (numberHelper.isNumberValid(number, field)) {
+					numberHelper.addSearchCondition(this, collection, name, number);
+					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+				needsFallbackCondition = false;
 			}
 		});
-	});
-}
 
-function validateNumber(value: string, parsed: number) {
-	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
-	// casting parsed value back to string should be equal the original value
-	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
-	return String(parsed) === value;
+		if (needsFallbackCondition) {
+			this.orWhereRaw('1 = 0');
+		}
+	});
 }
 
 export function applyAggregate(
@@ -919,4 +943,8 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 	}
 
 	return getOperation(Object.keys(value)[0]!, Object.values(value)[0]);
+}
+
+function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
+	return isIn(field.type, NUMERIC_TYPES);
 }

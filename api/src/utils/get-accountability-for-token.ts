@@ -3,6 +3,7 @@ import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import isDirectusJWT from './is-directus-jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
@@ -23,6 +24,10 @@ export async function getAccountabilityForToken(
 	if (token) {
 		if (isDirectusJWT(token)) {
 			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+
+			if ('session' in payload) {
+				await verifySessionJWT(payload);
+			}
 
 			accountability.role = payload.role;
 			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
