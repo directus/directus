@@ -1,4 +1,5 @@
 import { ErrorCode, isDirectusError } from '@directus/errors';
+import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
@@ -32,14 +33,9 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 
 	for (const error of receivedErrors) {
-		if (getNodeEnv() === 'development') {
-			// If available, expose stack trace under error's extensions data
-			if (isObject(error) && error['stack'] && (error['extensions'] === undefined || isObject(error['extensions']))) {
-				error['extensions'] = {
-					...error['extensions'],
-					stack: error['stack'],
-				};
-			}
+		// In dev mode, if available, expose stack trace under error's extensions data
+		if (getNodeEnv() === 'development' && error instanceof Error && error.stack) {
+			((error as DeepPartial<ApiError>).extensions ??= {})['stack'] = error.stack;
 		}
 
 		if (isDirectusError(error)) {
