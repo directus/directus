@@ -939,8 +939,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2(typedoc@0.25.13(typescript@5.4.5))
       typedoc-vitepress-theme:
-        specifier: 1.0.0-next.10
-        version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
+        specifier: 1.0.0-next.11
+        version: 1.0.0-next.11(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -9957,6 +9957,7 @@ packages:
   right-pad@1.0.1:
     resolution: {integrity: sha512-bYBjgxmkvTAfgIYy328fmkwhp39v8lwVgWhhrzxPV3yHtcSqyYKe9/XOhvW48UFjATg3VuJbpsp5822ACNvkmw==}
     engines: {node: '>= 0.10'}
+    deprecated: Please use String.prototype.padEnd() over this package.
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
@@ -10937,8 +10938,8 @@ packages:
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x
 
-  typedoc-vitepress-theme@1.0.0-next.10:
-    resolution: {integrity: sha512-VtEoqO4VLG3NsyzsqAFLFeg4L18UotZughdJbW5pRhLaKKfpflr9zbJAnLcA6t1Z1JvkJZa8c26iCM3akOURdQ==}
+  typedoc-vitepress-theme@1.0.0-next.11:
+    resolution: {integrity: sha512-v+nkDD4QloEn0iAyTTBjrZGUZrE4zgnDlFH5UNdAFOP8NBIYbqZX07CqUT0BHOp8TgnUd2JE+H+/mkJGKX7gjw==}
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0-next.51'
 
@@ -22391,7 +22392,7 @@ snapshots:
     dependencies:
       typedoc: 0.25.13(typescript@5.4.5)
 
-  typedoc-vitepress-theme@1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))):
+  typedoc-vitepress-theme@1.0.0-next.11(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))):
     dependencies:
       typedoc-plugin-markdown: 4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))
 
