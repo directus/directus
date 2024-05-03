@@ -716,8 +716,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@unhead/addons':
-        specifier: 1.9.7
-        version: 1.9.7(rollup@4.17.1)
+        specifier: 1.9.8
+        version: 1.9.8(rollup@4.17.1)
       '@unhead/vue':
         specifier: 1.9.7
         version: 1.9.7(vue@3.4.26(typescript@5.4.5))
@@ -2547,10 +2547,6 @@ packages:
 
   '@babel/runtime@7.23.6':
     resolution: {integrity: sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/types@7.23.9':
-    resolution: {integrity: sha512-dQjSq/7HaSjRM43FFGnv5keM2HsxpmyV1PfaSVm0nzzjwwTmjOe6J4bC8e3+pTEIgHaHj+1ZlLThRJ2auc/w1Q==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.24.0':
@@ -4940,8 +4936,8 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@unhead/addons@1.9.7':
-    resolution: {integrity: sha512-+1DeUNvOhDNPdvxiZcYJakLEqdQvFeUwmYZcILBtZD/nJ+80pzS9Z7pIy1FC658lx3OuE+i7reD/gQzORescMg==}
+  '@unhead/addons@1.9.8':
+    resolution: {integrity: sha512-t7PyIIk8dE9tSwGyiAikvnH2McB5ggtErLVPieSPUtdztfNkwdDqfKpg0FxDYms+gzXYjTPHvKyG6zcO9mno0Q==}
 
   '@unhead/dom@1.9.7':
     resolution: {integrity: sha512-suZVi8apZCNEMKuasGboBB3njJJm+gd8G0NA89geVozJ0bz40FvLyLEJZ9LirbzpujmhgHhsUSvlq4QyslRqdQ==}
@@ -4949,8 +4945,14 @@ packages:
   '@unhead/schema@1.9.7':
     resolution: {integrity: sha512-naQGY1gQqq8DmQCxVTOeeXIqaRwbqnLEgvQl12zPEDviYxmg7TCbmKyN9uT4ZarQbJ2WYT2UtYvdSrmTXcwlBw==}
 
+  '@unhead/schema@1.9.8':
+    resolution: {integrity: sha512-jh5oT5kQpwWOPRN1wxi0wjsHj34EjvG3ODyx38WG5XJwGSWhShCkqhC16ZNAX+qShNdKe5l3bygGufth7rrgpA==}
+
   '@unhead/shared@1.9.7':
     resolution: {integrity: sha512-srji+qaBkkGOTdtTmFxt3AebFYcpt1qQHeQva7X3dSm5nZJDoKj35BJJTZfBSRCjgvkTtsdVUT14f9p9/4BCMA==}
+
+  '@unhead/shared@1.9.8':
+    resolution: {integrity: sha512-JkKSpPgodn/Ku0B8kBjoAL0A7mBaa4n4nB5xe7Y5vHhI8HszZ3IXWogMGTo9cWs50NXyZ6IB8hibQTjVo1DriA==}
 
   '@unhead/vue@1.9.7':
     resolution: {integrity: sha512-c5pcNvi3FwMfqd+lfD3XUyRKPDv/AVPrep84CFXaqB7ebb+2OQTgtxBiCoRsa8+DtdhYI50lYJ/yeVdfLI9XUw==}
@@ -8584,11 +8586,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  mlly@1.5.0:
-    resolution: {integrity: sha512-NPVQvAY1xr1QoVeG0cy8yUYC7FQcOx6evl/RjT1wL5FvzPnzOysoqB/jmx/DhssT2dYa8nxECLAaFI/+gVLhDQ==}
-
   mlly@1.6.1:
     resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
+
+  mlly@1.7.0:
+    resolution: {integrity: sha512-U9SDaXGEREBYQgfejV97coK0UL1r+qnF2SyO9A3qcI8MzKnsIFKHNVEkrDyNncQTKQQumsasmeq84eNMdBfsNQ==}
 
   mnemonist@0.39.8:
     resolution: {integrity: sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==}
@@ -9957,6 +9959,7 @@ packages:
   right-pad@1.0.1:
     resolution: {integrity: sha512-bYBjgxmkvTAfgIYy328fmkwhp39v8lwVgWhhrzxPV3yHtcSqyYKe9/XOhvW48UFjATg3VuJbpsp5822ACNvkmw==}
     engines: {node: '>= 0.10'}
+    deprecated: Please use String.prototype.padEnd() over this package.
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
@@ -10968,9 +10971,6 @@ packages:
 
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
-
-  ufo@1.3.2:
-    resolution: {integrity: sha512-o+ORpgGwaYQXgqGDwd+hkS4PuZ3QnmqMMxRuajK/a38L6fTpcE5GPIfrf+L/KemFzfUpeUQc1rRS1iDBozvnFA==}
 
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -12621,8 +12621,8 @@ snapshots:
 
   '@babel/generator@7.23.6':
     dependencies:
-      '@babel/types': 7.23.9
-      '@jridgewell/gen-mapping': 0.3.3
+      '@babel/types': 7.24.0
+      '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
 
@@ -12643,12 +12643,6 @@ snapshots:
   '@babel/runtime@7.23.6':
     dependencies:
       regenerator-runtime: 0.14.1
-
-  '@babel/types@7.23.9':
-    dependencies:
-      '@babel/helper-string-parser': 7.23.4
-      '@babel/helper-validator-identifier': 7.22.20
-      to-fast-properties: 2.0.0
 
   '@babel/types@7.24.0':
     dependencies:
@@ -15278,13 +15272,13 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@unhead/addons@1.9.7(rollup@4.17.1)':
+  '@unhead/addons@1.9.8(rollup@4.17.1)':
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.17.1)
-      '@unhead/schema': 1.9.7
-      '@unhead/shared': 1.9.7
+      '@unhead/schema': 1.9.8
+      '@unhead/shared': 1.9.8
       magic-string: 0.30.10
-      mlly: 1.6.1
+      mlly: 1.7.0
       ufo: 1.5.3
       unplugin: 1.10.1
       unplugin-ast: 0.9.0(rollup@4.17.1)
@@ -15301,9 +15295,18 @@ snapshots:
       hookable: 5.5.3
       zhead: 2.2.4
 
+  '@unhead/schema@1.9.8':
+    dependencies:
+      hookable: 5.5.3
+      zhead: 2.2.4
+
   '@unhead/shared@1.9.7':
     dependencies:
       '@unhead/schema': 1.9.7
+
+  '@unhead/shared@1.9.8':
+    dependencies:
+      '@unhead/schema': 1.9.8
 
   '@unhead/vue@1.9.7(vue@3.4.26(typescript@5.4.5))':
     dependencies:
@@ -19528,18 +19531,18 @@ snapshots:
 
   mkdirp@3.0.1: {}
 
-  mlly@1.5.0:
-    dependencies:
-      acorn: 8.11.3
-      pathe: 1.1.2
-      pkg-types: 1.0.3
-      ufo: 1.3.2
-
   mlly@1.6.1:
     dependencies:
       acorn: 8.11.3
       pathe: 1.1.2
       pkg-types: 1.0.3
+      ufo: 1.5.3
+
+  mlly@1.7.0:
+    dependencies:
+      acorn: 8.11.3
+      pathe: 1.1.2
+      pkg-types: 1.1.0
       ufo: 1.5.3
 
   mnemonist@0.39.8:
@@ -20416,13 +20419,13 @@ snapshots:
   pkg-types@1.0.3:
     dependencies:
       jsonc-parser: 3.2.0
-      mlly: 1.5.0
+      mlly: 1.7.0
       pathe: 1.1.2
 
   pkg-types@1.1.0:
     dependencies:
       confbox: 0.1.7
-      mlly: 1.6.1
+      mlly: 1.7.0
       pathe: 1.1.2
 
   pngjs@5.0.0: {}
@@ -22413,8 +22416,6 @@ snapshots:
 
   uc.micro@1.0.6: {}
 
-  ufo@1.3.2: {}
-
   ufo@1.5.3: {}
 
   unbox-primitive@1.0.2:
@@ -22683,7 +22684,7 @@ snapshots:
     dependencies:
       cac: 6.7.14
       debug: 4.3.4(supports-color@5.5.0)
-      mlly: 1.6.1
+      mlly: 1.7.0
       pathe: 1.1.2
       picocolors: 1.0.0
       vite: 5.2.10(@types/node@18.19.31)(sass@1.75.0)(terser@5.30.4)
