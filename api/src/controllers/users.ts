@@ -5,7 +5,7 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, Role } from '@directus/types';
+import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import { respond } from '../middleware/respond.js';
@@ -380,16 +380,12 @@ router.post(
 			// const rolesService = new RolesService({
 			// 	schema: req.schema,
 			// });
-
 			// const role = (await rolesService.readOne(req.accountability.role)) as Role;
-
 			// TODO support enforce_tfa from policies
-
 			// if (role && role.enforce_tfa) {
 			// 	const existingPermission = await req.accountability.permissions?.find(
 			// 		(p) => p.collection === 'directus_users' && p.action === 'update',
 			// 	);
-
 			// 	if (existingPermission) {
 			// 		existingPermission.fields = ['tfa_secret'];
 			// 		existingPermission.permissions = { id: { _eq: req.accountability.user } };
