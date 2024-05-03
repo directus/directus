@@ -38,7 +38,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 				error['extensions'] = {
 					...error['extensions'],
 					stack: error['stack'],
-				}
+				};
 			}
 		}
 
