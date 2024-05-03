@@ -32,6 +32,7 @@
 	"devDependencies": {
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
