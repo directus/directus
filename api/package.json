@@ -204,7 +204,7 @@
 		"@types/ms": "0.7.34",
 		"@types/node": "18.19.31",
 		"@types/node-schedule": "2.1.7",
-		"@types/nodemailer": "6.4.14",
+		"@types/nodemailer": "6.4.15",
 		"@types/object-hash": "3.0.6",
 		"@types/papaparse": "5.3.14",
 		"@types/qs": "6.9.15",
