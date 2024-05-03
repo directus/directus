@@ -43,6 +43,7 @@ export const getExtensionsSettings = async ({
 
 		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === extensionSettings.id);
 
+		// Remove settings of removed bundle entries from the DB
 		for (const entry of bundleEntriesSettings) {
 			const entryInBundle = extension.entries.some(({ name }) => name === entry.folder);
 			if (entryInBundle) continue;
@@ -50,6 +51,7 @@ export const getExtensionsSettings = async ({
 			removedSettingIds.push(entry.id);
 		}
 
+		// Add new bundle entries to the settings
 		for (const entry of extension.entries) {
 			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
 			if (settingsExist) continue;
