@@ -475,7 +475,6 @@ export class UsersService extends ItemsService {
 		});
 
 		if (settings?.['public_registration'] == false) {
-			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}
 
