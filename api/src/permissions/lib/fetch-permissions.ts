@@ -23,5 +23,7 @@ export async function fetchPermissions(
 	// TODO add in permissions processing to allow for dynamic fields (like $CURRENT_USER)
 	// See https://github.com/directus/directus/blob/main/api/src/utils/get-permissions.ts for current impl
 
+	// TODO merge in permissions coming from the share scope
+
 	return permissions;
 }
