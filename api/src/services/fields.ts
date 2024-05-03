@@ -1,8 +1,8 @@
 import {
-	KNEX_TYPES,
-	REGEX_BETWEEN_PARENS,
 	DEFAULT_NUMERIC_PRECISION,
 	DEFAULT_NUMERIC_SCALE,
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
 } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
@@ -19,6 +19,9 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
@@ -27,8 +30,10 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
+import { PermissionsService } from './permissions/index.js';
 import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -43,6 +48,8 @@ export class FieldsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -51,6 +58,8 @@ export class FieldsService {
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
+		this.accessService = new AccessService(options);
+		this.permissionsService = new PermissionsService(options);
 		this.schema = options.schema;
 
 		const { cache, systemCache } = getCache();
@@ -59,17 +68,19 @@ export class FieldsService {
 		this.systemCache = systemCache;
 	}
 
-	private get hasReadAccess() {
-		return !!this.accountability?.permissions?.find((permission) => {
-			return permission.collection === 'directus_fields' && permission.action === 'read';
-		});
-	}
-
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
 
-		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+				'directus_fields',
+			);
 		}
 
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
@@ -161,28 +172,30 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			// TODO Add permissions util to lookup read access to fields
+			const policies = await fetchPolicies(this.accessService, this.accountability);
+			const permissions = await fetchPermissions(
+				this.permissionsService,
+				'read',
+				policies,
+				collection ? [collection] : undefined,
+			);
 
-			// const permissions = this.accountability.permissions!.filter((permission) => {
-			// 	return permission.action === 'read';
-			// });
+			const allowedFieldsInCollection: Record<string, string[]> = {};
 
-			// const allowedFieldsInCollection: Record<string, string[]> = {};
+			permissions.forEach((permission) => {
+				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
+			});
 
-			// permissions.forEach((permission) => {
-			// 	allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
-			// });
+			if (collection && collection in allowedFieldsInCollection === false) {
+				throw new ForbiddenError();
+			}
 
-			// if (collection && collection in allowedFieldsInCollection === false) {
-			// 	throw new ForbiddenError();
-			// }
-
-			// return result.filter((field) => {
-			// 	if (field.collection in allowedFieldsInCollection === false) return false;
-			// 	const allowedFields = allowedFieldsInCollection[field.collection]!;
-			// 	if (allowedFields[0] === '*') return true;
-			// 	return allowedFields.includes(field.field);
-			// });
+			return result.filter((field) => {
+				if (field.collection in allowedFieldsInCollection === false) return false;
+				const allowedFields = allowedFieldsInCollection[field.collection]!;
+				if (allowedFields[0] === '*') return true;
+				return allowedFields.includes(field.field);
+			});
 		}
 
 		// Update specific database type overrides
@@ -200,23 +213,34 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
-		if (this.accountability && this.accountability.admin !== true) {
-			if (this.hasReadAccess === false) {
-				throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				this.knex,
+				this.accessService,
+				this.permissionsService,
+				this.schema,
+				this.accountability,
+				'read',
+				collection,
+			);
+
+			const policies = await fetchPolicies(this.accessService, this.accountability);
+			const permissions = await fetchPermissions(this.permissionsService, 'read', policies, [collection]);
+
+			let hasAccess = false;
+
+			for (const permission of permissions) {
+				if (permission.fields) {
+					if (permission.fields.includes('*') || permission.fields.includes(field)) {
+						hasAccess = true;
+						break;
+					}
+				}
 			}
 
-			// TODO Add permissions util to lookup read access to fields
-
-			// const permissions = this.accountability.permissions!.find((permission) => {
-			// 	return permission.action === 'read' && permission.collection === collection;
-			// });
-
-			// if (!permissions || !permissions.fields) throw new ForbiddenError();
-
-			// if (permissions.fields.includes('*') === false) {
-			// 	const allowedFields = permissions.fields;
-			// 	if (allowedFields.includes(field) === false) throw new ForbiddenError();
-			// }
+			if (!hasAccess) {
+				throw new ForbiddenError();
+			}
 		}
 
 		let column = undefined;

@@ -24,7 +24,26 @@ test('Returns permissions read through service', async () => {
 
 	expect(service.readByQuery).toHaveBeenCalledWith({
 		filter: {
-			_and: [{ policy: { _in: policies } }, { collection: { _in: collections } }, { action: { _eq: 'read' } }],
+			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }, { collection: { _in: collections } }],
+		},
+		limit: -1,
+	});
+});
+
+test('Fetches for all collections when collections filter is undefined', async () => {
+	const permissions: Permission[] = [];
+	const policies = [] as string[];
+	const collections = undefined;
+
+	vi.mocked(service.readByQuery).mockResolvedValue(permissions);
+
+	const res = await fetchPermissions(service, 'read', policies, collections);
+
+	expect(res).toBe(permissions);
+
+	expect(service.readByQuery).toHaveBeenCalledWith({
+		filter: {
+			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }],
 		},
 		limit: -1,
 	});
