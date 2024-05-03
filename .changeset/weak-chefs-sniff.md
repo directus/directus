@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Deprecated KEY env var, make SECRET optional
+Deprecated KEY env var, made SECRET optional (for test environments)
