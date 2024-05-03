@@ -7,7 +7,6 @@ import type { ExtensionsMap } from './types.js';
  * @param value - Any value
  * @param code - Error code to check for
  */
-
 export const isDirectusError = <T = never, C extends string = string>(
 	value: unknown,
 	code?: C,
