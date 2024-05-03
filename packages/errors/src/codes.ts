@@ -3,6 +3,7 @@ export enum ErrorCode {
 	ContentTooLarge = 'CONTENT_TOO_LARGE',
 	Forbidden = 'FORBIDDEN',
 	IllegalAssetTransformation = 'ILLEGAL_ASSET_TRANSFORMATION',
+	Internal = 'INTERNAL_SERVER_ERROR',
 	InvalidCredentials = 'INVALID_CREDENTIALS',
 	InvalidForeignKey = 'INVALID_FOREIGN_KEY',
 	InvalidIp = 'INVALID_IP',

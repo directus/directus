@@ -3,6 +3,7 @@ export { ContentTooLargeError } from './content-too-large.js';
 export { ForbiddenError } from './forbidden.js';
 export { HitRateLimitError } from './hit-rate-limit.js';
 export { IllegalAssetTransformationError } from './illegal-asset-transformation.js';
+export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidIpError } from './invalid-ip.js';

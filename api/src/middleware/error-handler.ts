@@ -1,4 +1,4 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, InternalServerError, isDirectusError } from '@directus/errors';
 import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
@@ -15,13 +15,7 @@ type ApiError = {
 	};
 };
 
-const FALLBACK_ERROR = {
-	status: 500,
-	message: 'An unexpected error occurred.',
-	extensions: {
-		code: 'INTERNAL_SERVER_ERROR',
-	},
-};
+const FALLBACK_ERROR = new InternalServerError();
 
 export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	const logger = useLogger();
@@ -79,14 +73,14 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 					{
 						message: message || FALLBACK_ERROR.message,
 						extensions: {
-							code: FALLBACK_ERROR.extensions.code,
+							code: FALLBACK_ERROR.code,
 							...(localError['extensions'] ?? {}),
 						},
 					},
 				];
 			} else {
 				// Don't expose unknown errors to non-admin users
-				errors = [FALLBACK_ERROR];
+				errors = [{ message: FALLBACK_ERROR.message, extensions: { code: FALLBACK_ERROR.code } }];
 			}
 		}
 	}
@@ -119,6 +113,6 @@ function asyncErrorHandler(fn: ErrorRequestHandler) {
 			}
 
 			res.status(FALLBACK_ERROR.status);
-			return res.json({ errors: [FALLBACK_ERROR] });
+			return res.json({ errors: [{ message: FALLBACK_ERROR.message, extensions: { code: FALLBACK_ERROR.code } }] });
 		});
 }
