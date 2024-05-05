@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import chroma from 'chroma-js';
 import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/utils/browser';
@@ -35,7 +36,6 @@ const props = withDefaults(
 		minimumFractionDigits?: number;
 		maximumFractionDigits?: number;
 		conditionalFormatting?: Record<string, any>[];
-
 		collection: string;
 		dashboard: string;
 		data: Array<DataPoint>;
@@ -59,6 +59,9 @@ const props = withDefaults(
 	},
 );
 
+const { locale } = useI18n();
+const { darkMode } = useThemeConfiguration();
+
 const sortedData = computed(() => {
 	const dataArray = unref(props.data);
 
@@ -75,8 +78,6 @@ const sortedData = computed(() => {
 		return props.sortDirection === 'desc' ? bValue - aValue : aValue - bValue;
 	});
 });
-
-const { locale } = useI18n();
 
 function widthOfRow(row: any) {
 	const aggFunc = props.aggregateFunction;
@@ -111,7 +112,7 @@ function getColor(input?: number) {
 		}
 	}
 
-	return matchingFormat ? matchingFormat.color || cssVar('--primary') : '#6644FF';
+	return matchingFormat?.color || cssVar('--theme--primary');
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof input === 'string') {
@@ -172,7 +173,11 @@ function getColor(input?: number) {
 
 						<div
 							class="metric-bar-number"
-							:style="{ color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField])).darken(2).hex()}` }"
+							:style="{
+								color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField]))
+									.darken(darkMode ? -2 : 2)
+									.hex()}`,
+							}"
 						>
 							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
 						</div>
@@ -216,6 +221,7 @@ function getColor(input?: number) {
 .metric-bar-text {
 	padding: 0 6px;
 	white-space: pre;
+	overflow: hidden;
 }
 
 .metric-bar-number {
