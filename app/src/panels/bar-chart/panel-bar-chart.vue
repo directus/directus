@@ -2,7 +2,6 @@
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import type { Filter } from '@directus/types';
-import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -26,7 +25,7 @@ const props = withDefaults(
 		function?: PanelFunction;
 		yAxis: string;
 		decimals?: number;
-		color?: string;
+		color?: string | null;
 		filter?: Filter;
 		showAxisLabels?: string;
 		showDataLabel?: boolean;
@@ -37,7 +36,7 @@ const props = withDefaults(
 		data: () => [],
 		horizontal: false,
 		decimals: 2,
-		color: cssVar('--theme--primary'),
+		color: 'var(--theme--primary)',
 		function: 'max',
 		filter: () => ({}),
 		showAxisLabels: 'both',
@@ -238,7 +237,7 @@ function setUpChart() {
 	chart.value.render();
 
 	function getFillColor(x: string | number, y: string | number) {
-		let fillColor = props.color || cssVar('--theme--primary');
+		let fillColor = props.color || 'var(--theme--primary)';
 		if (isNil(x) || isNil(y) || !props.conditionalFill?.length) return fillColor;
 
 		for (const format of props.conditionalFill) {

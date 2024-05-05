@@ -59,6 +59,9 @@ const props = withDefaults(
 	},
 );
 
+const { locale } = useI18n();
+const { darkMode } = useThemeConfiguration();
+
 const sortedData = computed(() => {
 	const dataArray = unref(props.data);
 
@@ -75,11 +78,6 @@ const sortedData = computed(() => {
 		return props.sortDirection === 'desc' ? bValue - aValue : aValue - bValue;
 	});
 });
-
-const { locale } = useI18n();
-const { darkMode } = useThemeConfiguration();
-
-const labelDarkenValue = computed(() => (darkMode.value ? -2 : 2));
 
 function widthOfRow(row: any) {
 	const aggFunc = props.aggregateFunction;
@@ -176,7 +174,9 @@ function getColor(input?: number) {
 						<div
 							class="metric-bar-number"
 							:style="{
-								color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField])).darken(labelDarkenValue).hex()}`,
+								color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField]))
+									.darken(darkMode ? -2 : 2)
+									.hex()}`,
 							}"
 						>
 							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
@@ -221,6 +221,7 @@ function getColor(input?: number) {
 .metric-bar-text {
 	padding: 0 6px;
 	white-space: pre;
+	overflow: hidden;
 }
 
 .metric-bar-number {

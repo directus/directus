@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
-import { cssVar } from '@directus/utils/browser';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -23,7 +22,7 @@ interface Props {
 	strokeWidth?: number;
 	roundedStroke?: boolean;
 	showPercentage?: boolean;
-	color?: string;
+	color?: string | null;
 	max?: number;
 	conditionalFill?: ConditionalFillFormat[] | null;
 }
@@ -102,7 +101,7 @@ const dashOffset = computed(() => {
 });
 
 const conditionalColor = computed(() => {
-	const defaultColor = props.color ?? cssVar('--theme--primary');
+	const defaultColor = props.color ?? 'var(--theme--primary)';
 
 	if (!unref(percent) || !props.conditionalFill?.length) {
 		return defaultColor;

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -166,7 +165,7 @@ const color = computed(() => {
 		}
 	}
 
-	return matchingFormat?.color || cssVar('--theme--primary');
+	return matchingFormat?.color || 'var(--theme--primary)';
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof metric.value === 'string') {

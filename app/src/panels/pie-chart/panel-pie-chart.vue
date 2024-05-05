@@ -25,7 +25,7 @@ const props = withDefaults(
 		function?: PanelFunction;
 		legend?: 'none' | 'right' | 'bottom';
 		showLabels?: boolean;
-		color?: string;
+		color?: string | null;
 		height: number;
 		width: number;
 		conditionalFill?: ConditionalFillFormat[] | null;
