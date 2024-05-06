@@ -128,7 +128,7 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 
 export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
 	const { localSchemaCache, sharedSchemaCache } = getCache();
-	const schemaHash = await getSimpleHash(JSON.stringify(schema));
+	const schemaHash = getSimpleHash(JSON.stringify(schema));
 
 	await sharedSchemaCache.set('hash', schemaHash);
 

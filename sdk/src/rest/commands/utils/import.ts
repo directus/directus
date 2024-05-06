@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const utilsImport =
-	<Schema extends object>(collection: keyof Schema, data: FormData): RestCommand<void, Schema> =>
+	<Schema>(collection: keyof Schema, data: FormData): RestCommand<void, Schema> =>
 	() => ({
 		path: `/utils/import/${collection as string}`,
 		method: 'POST',

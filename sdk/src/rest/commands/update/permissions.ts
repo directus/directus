@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdatePermissionOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusPermission<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdatePermissionOutput<
  * @throws Will throw if keys is empty
  */
 export const updatePermissions =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		keys: DirectusPermission<Schema>['id'][],
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery,
@@ -43,7 +43,7 @@ export const updatePermissions =
  * @throws Will throw if key is empty
  */
 export const updatePermission =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery,

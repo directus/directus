@@ -3,7 +3,7 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateWebhookOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusWebhook<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -17,7 +17,7 @@ export type CreateWebhookOutput<
  * @returns Returns the webhook objects for the created webhooks.
  */
 export const createWebhooks =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		items: Partial<DirectusWebhook<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>[], Schema> =>
@@ -37,7 +37,7 @@ export const createWebhooks =
  * @returns Returns the webhook object for the created webhook.
  */
 export const createWebhook =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		item: Partial<DirectusWebhook<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>, Schema> =>

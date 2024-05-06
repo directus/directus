@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -500,9 +480,13 @@ auto_fill: Preenchimento automático
 corresponding_field: Campo correspondente
 errors:
   COLLECTION_NOT_FOUND: "A coleção não existe"
+  CONTAINS_NULL_VALUES: Campo contém valores nulos
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Proibido
+  ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
+  INTERNAL_SERVER_ERROR: Erro Inesperado
   INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
+  INVALID_FOREIGN_KEY: Chave estrangeira inválida
   INVALID_OTP: Senha de uso único errada
   INVALID_PAYLOAD: Payload inválido
   INVALID_PROVIDER: O utilizador pertence a um provedor de autenticação diferente
@@ -510,17 +494,13 @@ errors:
   INVALID_USER: Falha ao autenticar utilizador
   ITEM_LIMIT_REACHED: Limite de itens atingido
   ITEM_NOT_FOUND: Item não encontrado
-  ROUTE_NOT_FOUND: Não encontrado
-  RECORD_NOT_UNIQUE: Valor duplicado detectado
-  USER_SUSPENDED: Utilizador suspenso
-  CONTAINS_NULL_VALUES: Campo contém valores nulos
-  INTERNAL_SERVER_ERROR: Erro Inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
-  ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
-  VALUE_TOO_LONG: O valor é muito longo
-  VALUE_OUT_OF_RANGE: Valor fora da gama
-  INVALID_FOREIGN_KEY: Chave estrangeira inválida
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
+  ROUTE_NOT_FOUND: Não encontrado
   UNKNOWN: Erro Inesperado
+  USER_SUSPENDED: Utilizador suspenso
+  VALUE_OUT_OF_RANGE: Valor fora da gama
+  VALUE_TOO_LONG: O valor é muito longo
 security: Segurança
 value_hashed: Valor Guardado em Segurança
 create_bookmark: Criar marcador

@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadFolderOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFolder<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -15,7 +15,7 @@ export type ReadFolderOutput<
  * @returns An array of up to limit folder objects. If no items are available, data will be an empty array.
  */
 export const readFolders =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadFolderOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -32,7 +32,7 @@ export const readFolders =
  * @throws Will throw if key is empty
  */
 export const readFolder =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadFolderOutput<Schema, TQuery>, Schema> =>

@@ -1,5 +1,4 @@
-import api from '@/api';
-import { useLatencyStore } from '@/stores/latency';
+import api, { RequestConfig } from '@/api';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { merge } from 'lodash';
@@ -69,20 +68,13 @@ export const useUserStore = defineStore({
 				return;
 			}
 
-			const latencyStore = useLatencyStore();
-
-			const start = performance.now();
-
-			await api.patch(`/users/me/track/page`, {
-				last_page: to.fullPath,
-			});
-
-			const end = performance.now();
-
-			latencyStore.save({
-				timestamp: new Date(),
-				latency: end - start,
-			});
+			await api.patch(
+				`/users/me/track/page`,
+				{
+					last_page: to.fullPath,
+				},
+				{ measureLatency: true } as RequestConfig,
+			);
 
 			if (this.currentUser && !('share' in this.currentUser)) {
 				this.currentUser.last_page = to.fullPath;
