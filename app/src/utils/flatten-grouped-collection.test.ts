@@ -13,9 +13,9 @@ describe('flattenGroupedCollection', () => {
 		const result = flattenGroupedCollections(collections);
 
 		expect(result).toEqual([
-			{ collection: 'collection_b', meta: { sort: 1, group: null } },
+			{ collection: 'collection_b', meta: { sort: 1 } },
 			{ collection: 'collection_z', meta: { sort: 1 } },
-			{ collection: 'collection_a', meta: { sort: 2 } },
+			{ collection: 'collection_a', meta: { sort: 2, group: null } },
 		]);
 	});
 

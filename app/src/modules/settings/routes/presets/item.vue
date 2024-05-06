@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -325,7 +326,7 @@ function useForm() {
 			meta: {
 				interface: 'select-dropdown',
 				options: {
-					choices: collectionsStore.collections
+					choices: flattenGroupedCollections(collectionsStore.collections)
 						.map((collection) => ({
 							text: collection.collection,
 							value: collection.collection,
