@@ -63,7 +63,7 @@
 		"@types/inquirer": "9.0.7",
 		"@vitest/coverage-v8": "1.5.3",
 		"typescript": "5.4.5",
-		"vitest": "1.5.3"
+		"vitest": "1.6.0"
 	},
 	"engines": {
 		"node": ">=12.20.0"
