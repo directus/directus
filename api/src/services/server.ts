@@ -144,7 +144,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['KEY'] as string,
+			serviceId: env['PUBLIC_URL'] as string,
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),

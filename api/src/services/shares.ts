@@ -12,6 +12,7 @@ import type {
 	ShareData,
 } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -106,7 +107,7 @@ export class SharesService extends ItemsService {
 
 		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
 
-		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
+		const accessToken = jwt.sign(tokenPayload, getSecret(), {
 			expiresIn: TTL,
 			issuer: 'directus',
 		});

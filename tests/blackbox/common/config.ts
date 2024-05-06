@@ -74,7 +74,6 @@ const directusConfig = {
 	...process.env,
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'password',
-	KEY: 'directus-test',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
 	CACHE_SCHEMA: 'true',

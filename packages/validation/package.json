@@ -28,14 +28,14 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@vitest/coverage-v8": "1.5.2",
+		"@vitest/coverage-v8": "1.5.3",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.5.2"
+		"vitest": "1.5.3"
 	},
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"joi": "17.13.0"
+		"joi": "17.13.1"
 	}
 }
