@@ -452,7 +452,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async registerUser(input: RegisterUserInput) {
-		const STALL_TIME = 750;
+		const STALL_TIME = env['REGISTER_STALL_TIME'] as number;
 		const timeStart = performance.now();
 		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
 		const settingsService = new SettingsService(serviceOptions);

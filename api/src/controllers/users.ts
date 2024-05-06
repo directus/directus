@@ -8,6 +8,7 @@ import {
 import type { PrimaryKey, RegisterUserInput, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
+import checkRateLimit from '../middleware/rate-limiter-registration.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -510,6 +511,7 @@ const registerSchema = Joi.object<RegisterUserInput>({
 
 router.post(
 	'/register',
+	checkRateLimit,
 	asyncHandler(async (req, _res, next) => {
 		const { error, value } = registerSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
