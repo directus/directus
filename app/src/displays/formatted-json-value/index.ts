@@ -1,7 +1,7 @@
 import { defineDisplay } from '@directus/extensions';
+import { JsonValue } from '@directus/types';
+import { Scope, render } from 'micromustache';
 import DisplayJsonValue from './formatted-json-value.vue';
-import { render } from 'micromustache';
-import { toArray } from '@directus/utils';
 
 export default defineDisplay({
 	id: 'formatted-json-value',
@@ -10,10 +10,24 @@ export default defineDisplay({
 	types: ['json', 'geometry'],
 	icon: 'settings_ethernet',
 	component: DisplayJsonValue,
-	handler: (value, options) => {
-		return toArray(value)
-			.map((val) => (options.format ? render(val, options.format) : val))
-			.join(', ');
+	handler: (value: JsonValue | null, { format }) => {
+		if (!value) return null;
+
+		const values = Array.isArray(value) ? value : [value];
+
+		try {
+			return values
+				.map((item) => {
+					if (format) {
+						return render(format, item as Scope);
+					} else {
+						return typeof item === 'string' ? item : JSON.stringify(item);
+					}
+				})
+				.join(', ');
+		} catch {
+			return null;
+		}
 	},
 	options: [
 		{

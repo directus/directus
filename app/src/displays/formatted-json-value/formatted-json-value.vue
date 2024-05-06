@@ -1,42 +1,33 @@
 <script setup lang="ts">
-import { render } from 'micromustache';
+import { JsonValue } from '@directus/types';
+import { Scope, render } from 'micromustache';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		value: Record<string, any> | Record<string, any>[] | null;
-		format: string | null;
-	}>(),
-	{
-		value: null,
-		format: null,
-	},
-);
+const props = defineProps<{
+	value: JsonValue | null;
+	format?: string | null;
+}>();
 
 const { t } = useI18n();
 
 const displayValue = computed(() => {
 	if (!props.value) return null;
 
+	const values = Array.isArray(props.value) ? props.value : [props.value];
+
 	try {
-		if (Array.isArray(props.value)) {
-			return props.value.map((item: any) => renderValue(item));
-		} else {
-			return [renderValue(props.value)];
-		}
+		return values.map((item) => {
+			if (props.format) {
+				return render(props.format, item as Scope);
+			} else {
+				return typeof item === 'string' ? item : JSON.stringify(item);
+			}
+		});
 	} catch {
 		return null;
 	}
 });
-
-function renderValue(input: Record<string, any> | Record<string, any>[]) {
-	if (props.format) {
-		return render(props.format, input);
-	} else {
-		return render('{{ value }}', { value: input });
-	}
-}
 </script>
 
 <template>
