@@ -1,6 +1,5 @@
 import { useFieldsStore } from '@/stores/fields';
 import { definePanel } from '@directus/extensions';
-import { cssVar } from '@directus/utils/browser';
 import PanelMeter from './panel-meter.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -288,7 +287,7 @@ export default definePanel({
 								name: '$t:color',
 								type: 'integer',
 								schema: {
-									default_value: cssVar('--primary'),
+									default_value: 'var(--theme--primary)',
 								},
 								meta: {
 									interface: 'select-color',

@@ -32,7 +32,6 @@ export const DIRECTUS_VARIABLES = [
 	'DB_.+',
 
 	// security
-	'KEY',
 	'SECRET',
 
 	'ACCESS_TOKEN_TTL',

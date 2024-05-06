@@ -340,8 +340,7 @@ Redis is required when you run Directus load balanced across multiple containers
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `KEY`                               | Unique identifier for the project.                                                                                                                                                                   | --                        |
-| `SECRET`                            | Secret string for the project.                                                                                                                                                                       | --                        |
+| `SECRET`<sup>[1]</sup>              | Secret string for the project.                                                                                                                                                                       | Random value              |
 | `ACCESS_TOKEN_TTL`                  | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
 | `REFRESH_TOKEN_TTL`                 | The duration that the refresh token is valid. This value should be higher than `ACCESS_TOKEN_TTL` resp. `SESSION_COOKIE_TTL`.                                                                        | `7d`                      |
 | `REFRESH_TOKEN_COOKIE_DOMAIN`       | Which domain to use for the refresh token cookie. Useful for development mode.                                                                                                                       | --                        |
@@ -359,12 +358,15 @@ Redis is required when you run Directus load balanced across multiple containers
 | `IP_TRUST_PROXY`                    | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
 | `IP_CUSTOM_HEADER`                  | What custom request header to use for the IP address                                                                                                                                                 | false                     |
 | `ASSETS_CONTENT_SECURITY_POLICY`    | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
-| `IMPORT_IP_DENY_LIST`<sup>[1]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
+| `IMPORT_IP_DENY_LIST`<sup>[2]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
 | `CONTENT_SECURITY_POLICY_*`         | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
 | `HSTS_ENABLED`                      | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                            | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
 
-<sup>[1]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
+<sup>[1]</sup> When `SECRET` is not set, a random value will be used. This means sessions won't persist across system
+restarts or horizontally scaled deployments. Must be explicitly set to a secure random value in production.
+
+<sup>[2]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
 both if you want to specifically block localhost.
 
 ::: tip Cookie Strictness

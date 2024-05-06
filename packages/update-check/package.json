@@ -38,10 +38,10 @@
 		"@npm/types": "1.0.2",
 		"@types/node": "18.19.31",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "1.5.2",
+		"@vitest/coverage-v8": "1.5.3",
 		"strip-ansi": "7.1.0",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.5.2"
+		"vitest": "1.5.3"
 	}
 }

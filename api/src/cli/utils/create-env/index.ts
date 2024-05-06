@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { Liquid } from 'liquidjs';
-import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -28,7 +27,6 @@ export default async function createEnv(
 
 	const config: Record<string, any> = {
 		security: {
-			KEY: randomUUID(),
 			SECRET: nanoid(32),
 		},
 		database: {

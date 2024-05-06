@@ -57,6 +57,7 @@ import getDatabase from '../../database/index.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getSecret } from '../../utils/get-secret.js';
 import { getService } from '../../utils/get-service.js';
 import isDirectusJWT from '../../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../../utils/jwt.js';
@@ -2311,7 +2312,7 @@ export class GraphQLService {
 						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 						if (isDirectusJWT(token)) {
-							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							const payload = verifyAccessJWT(token, getSecret());
 							currentRefreshToken = payload.session;
 						}
 					}
@@ -2378,7 +2379,7 @@ export class GraphQLService {
 						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 						if (isDirectusJWT(token)) {
-							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							const payload = verifyAccessJWT(token, getSecret());
 							currentRefreshToken = payload.session;
 						}
 					}
