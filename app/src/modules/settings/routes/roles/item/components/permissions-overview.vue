@@ -21,8 +21,8 @@ const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
-const regularCollections = computed(() => collectionsStore.databaseCollections);
-const systemCollections = computed(() => collectionsStore.systemCollections);
+const regularCollections = collectionsStore.databaseCollections;
+const systemCollections = collectionsStore.systemCollections;
 
 const systemVisible = ref(false);
 
