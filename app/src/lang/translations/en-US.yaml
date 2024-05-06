@@ -2099,7 +2099,7 @@ displays:
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:
-    formatted-json-value: Formatted JSON value
+    formatted-json-value: Formatted JSON Value
     description: Display a formatted version of the object
   hash:
     hash: Hash
