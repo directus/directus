@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { LOCAL_TYPES } from '@directus/constants';
 import { orderBy } from 'lodash';
 import { computed } from 'vue';
@@ -22,10 +23,7 @@ const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.o
 
 const availableCollections = computed(() => {
 	return [
-		...orderBy(
-			collectionsStore.databaseCollections.filter((collection) => collection.meta),
-			['meta.sort', 'collection'],
-		),
+		...flattenGroupedCollections(collectionsStore.databaseCollections.filter((collection) => collection.meta)),
 		{
 			divider: true,
 		},

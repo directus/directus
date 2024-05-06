@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -29,10 +30,12 @@ const collections = computed(() => {
 		collections = collections.filter((collection) => collection?.meta?.singleton === false);
 	}
 
-	return [
+	collections = [
 		...collections.filter((collection) => isSystemCollection(collection.collection) === false),
 		...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
 	];
+
+	return flattenGroupedCollections(collections);
 });
 
 const items = computed(() => {

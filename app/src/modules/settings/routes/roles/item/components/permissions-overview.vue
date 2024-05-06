@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { Permission } from '@directus/types';
@@ -22,7 +23,7 @@ const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
-const regularCollections = computed(() => orderBy(collectionsStore.databaseCollections, ['meta.sort', 'collection']));
+const regularCollections = computed(() => flattenGroupedCollections(collectionsStore.databaseCollections));
 
 const systemCollections = computed(() =>
 	orderBy(

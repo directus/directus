@@ -2,6 +2,7 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { orderBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -34,10 +35,7 @@ const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollec
 
 const availableCollections = computed(() => {
 	return [
-		...orderBy(
-			collectionsStore.databaseCollections.filter((collection) => collection.meta),
-			['meta.sort', 'collection'],
-		),
+		...flattenGroupedCollections(collectionsStore.databaseCollections.filter((collection) => collection.meta)),
 		{
 			divider: true,
 		},
