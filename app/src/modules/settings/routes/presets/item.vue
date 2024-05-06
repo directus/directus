@@ -326,7 +326,7 @@ function useForm() {
 			meta: {
 				interface: 'select-dropdown',
 				options: {
-					choices: flattenGroupedCollections(collectionsStore.collections)
+					choices: collectionsStore.sortedCollections
 						.map((collection) => ({
 							text: collection.collection,
 							value: collection.collection,

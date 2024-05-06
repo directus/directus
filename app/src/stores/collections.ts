@@ -2,13 +2,14 @@ import api from '@/api';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { getCollectionType } from '@directus/utils';
-import { isEqual, isNil, omit, orderBy } from 'lodash';
+import { isEqual, isNil, omit } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
@@ -17,30 +18,36 @@ import { isSystemCollection } from '@directus/system-data';
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const collections = ref<Collection[]>([]);
 
-	const visibleCollections = computed(() =>
-		collections.value
-			.filter(({ collection }) => isSystemCollection(collection) === false)
-			.filter((collection) => collection.meta && collection.meta?.hidden !== true),
+	const sortedCollections = computed(() => flattenGroupedCollections(collections.value));
+
+	const systemCollections = computed(() =>
+		sortedCollections.value.filter(({ collection }) => isSystemCollection(collection)),
 	);
 
 	const allCollections = computed(() =>
-		collections.value.filter(({ collection }) => isSystemCollection(collection) === false),
+		sortedCollections.value.filter(({ collection }) => isSystemCollection(collection) === false),
 	);
 
-	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
+	const configuredCollections = computed(() => allCollections.value.filter((collection) => collection.meta));
+
+	const visibleCollections = computed(() =>
+		configuredCollections.value.filter((collection) => collection.meta?.hidden !== true),
+	);
+
+	const databaseCollections = computed(() => sortedCollections.value.filter((collection) => collection.schema));
 
 	const crudSafeSystemCollections = computed(() =>
-		orderBy(
-			collections.value.filter((collection) => isSystemCollection(collection.collection)),
-			'collection',
-		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
+		systemCollections.value.filter((collection) => !COLLECTIONS_DENY_LIST.includes(collection.collection)),
 	);
 
 	return {
 		collections,
-		visibleCollections,
+		sortedCollections,
 		allCollections,
+		visibleCollections,
+		configuredCollections,
 		databaseCollections,
+		systemCollections,
 		crudSafeSystemCollections,
 		hydrate,
 		dehydrate,

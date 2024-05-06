@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +23,7 @@ const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collections = computed(() => {
-	let collections = collectionsStore.collections.filter((collection) => collection.type === 'table');
+	let collections = collectionsStore.sortedCollections.filter((collection) => collection.type === 'table');
 
 	if (!props.includeSingleton) {
 		collections = collections.filter((collection) => collection?.meta?.singleton === false);
@@ -34,7 +33,7 @@ const collections = computed(() => {
 		collections = collections.filter((collection) => isSystemCollection(collection.collection) === false);
 	}
 
-	return flattenGroupedCollections(collections);
+	return collections;
 });
 
 const items = computed(() => {

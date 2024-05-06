@@ -3,7 +3,7 @@ import { Collection } from '@/types/collections';
 import { describe, expect, it } from 'vitest';
 
 describe('flattenGroupedCollection', () => {
-	it('should return a list by meta.sort and collection name if not groups are present', () => {
+	it('should return a list by meta.sort and collection name if no groups are present', () => {
 		const collections = [
 			{ collection: 'collection_a', meta: { sort: 2, group: null } },
 			{ collection: 'collection_z', meta: { sort: 1 } },

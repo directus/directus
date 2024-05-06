@@ -13,7 +13,6 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
-import { isSystemCollection } from '@directus/system-data';
 
 const { t } = useI18n();
 
@@ -23,16 +22,7 @@ const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
 
-const collections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) => isSystemCollection(collection.collection) === false && collection.meta,
-			),
-			['meta.sort', 'collection'],
-		),
-	);
-});
+const collections = computed(() => translate(collectionsStore.configuredCollections));
 
 const rootCollections = computed(() => {
 	return collections.value.filter((collection) => !collection.meta?.group);
@@ -58,7 +48,9 @@ const visibilityTree = computed(() => {
 	const propagateBackwards: CollectionTree[] = [];
 
 	function makeTree(parent: string | null = null): CollectionTree[] {
-		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
+		const children = collectionsStore.sortedCollections.filter(
+			(collection) => (collection.meta?.group ?? null) === parent,
+		);
 
 		const normalizedSearch = search.value?.toLowerCase();
 
@@ -94,28 +86,13 @@ const visibilityTree = computed(() => {
 	return tree;
 });
 
-const tableCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) =>
-					isSystemCollection(collection.collection) === false && !!collection.meta === false && collection.schema,
-			),
-			['meta.sort', 'collection'],
-		),
-	);
-});
+const tableCollections = computed(() =>
+	translate(collectionsStore.databaseCollections.filter((collection) => !collection.meta)),
+);
 
-const systemCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections
-				.filter((collection) => isSystemCollection(collection.collection) === true)
-				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection',
-		),
-	);
-});
+const systemCollections = computed(() =>
+	translate(collectionsStore.systemCollections.map((collection) => ({ ...collection, icon: 'settings' }))),
+);
 
 async function onSort(updates: Collection[], removeGroup = false) {
 	const updatesWithSortValue = updates.map((collection, index) =>

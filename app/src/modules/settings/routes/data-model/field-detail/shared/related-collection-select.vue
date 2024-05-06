@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
-import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -19,11 +17,8 @@ const collectionExists = computed(() => {
 	return !!collectionsStore.getCollection(props.modelValue);
 });
 
-const availableCollections = computed(() => {
-	return flattenGroupedCollections(collectionsStore.databaseCollections.filter((collection) => collection.meta));
-});
-
-const systemCollections = collectionsStore.crudSafeSystemCollections;
+const availableCollections = computed(() => collectionsStore.configuredCollections);
+const systemCollections = computed(() => collectionsStore.crudSafeSystemCollections);
 </script>
 
 <template>

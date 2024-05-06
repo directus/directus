@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { Permission } from '@directus/types';
-import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { appRecommendedPermissions, disabledActions } from '../../app-permissions';
@@ -23,14 +21,8 @@ const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
-const regularCollections = computed(() => flattenGroupedCollections(collectionsStore.databaseCollections));
-
-const systemCollections = computed(() =>
-	orderBy(
-		collectionsStore.collections.filter((collection) => isSystemCollection(collection.collection) === true),
-		'name',
-	),
-);
+const regularCollections = computed(() => collectionsStore.databaseCollections);
+const systemCollections = computed(() => collectionsStore.systemCollections);
 
 const systemVisible = ref(false);
 
