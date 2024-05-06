@@ -89,7 +89,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-import { removeInvalidNames } from './utils/remove-invalid-names.js';
+import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
 
 const env = useEnv();
 
@@ -190,23 +190,25 @@ export class GraphQLService {
 
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
+		const sanitizedSchema = sanitizeGraphqlSchema(this.schema);
+
 		const schema = {
-			read: removeInvalidNames(
+			read:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['read'])),
-			create: removeInvalidNames(
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['read']),
+			create:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['create'])),
-			update: removeInvalidNames(
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['create']),
+			update:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['update'])),
-			delete: removeInvalidNames(
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['update']),
+			delete:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete'])),
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['delete']),
 		};
 
 		const subscriptionEventType = schemaComposer.createEnumTC({
