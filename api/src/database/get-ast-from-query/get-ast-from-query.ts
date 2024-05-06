@@ -81,14 +81,17 @@ export async function getAstFromQuery(
 	}
 
 	ast.children = await parseFields(
-		accessService,
-		permissionsService,
-		schema,
-		collection,
-		fields,
-		query,
-		accountability,
-		deep,
+		{
+			parentCollection: collection,
+			fields,
+			query,
+			deep,
+		},
+		{ schema, accountability },
+		{
+			accessService,
+			permissionsService,
+		},
 	);
 
 	return ast;

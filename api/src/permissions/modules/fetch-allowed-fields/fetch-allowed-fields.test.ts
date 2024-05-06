@@ -35,7 +35,11 @@ test('Returns unique array of all fields that are associated with the permission
 	vi.mocked(fetchPolicies).mockResolvedValue(policies);
 	vi.mocked(permissionsService.readByQuery).mockResolvedValue(permissions);
 
-	const fields = await fetchAllowedFields(accessService, permissionsService, acc, 'collection-a', 'read');
+	const fields = await fetchAllowedFields(
+		{ collection: 'collection-a', action: 'read' },
+		{ accountability: acc },
+		{ accessService, permissionsService },
+	);
 
 	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
 		fields: ['fields'],

@@ -10,26 +10,35 @@ import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
 
+export interface ParseFieldsServices {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
+
+export interface ParseFieldsContext {
+	schema: SchemaOverview;
+	accountability: Accountability | null;
+}
+
+export interface ParseFieldsOptions {
+	parentCollection: string;
+	fields: string[] | null;
+	query: Query;
+	deep?: Record<string, any>;
+}
+
 export async function parseFields(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	parentCollection: string,
-	fields: string[] | null,
-	query: Query,
-	accountability: Accountability | null,
-	deep?: Record<string, any>,
+	options: ParseFieldsOptions,
+	context: ParseFieldsContext,
+	services: ParseFieldsServices,
 ) {
+	let { fields } = options;
 	if (!fields) return [];
 
 	fields = await convertWildcards(
-		accessService,
-		permissionsService,
-		schema,
-		parentCollection,
-		fields,
-		query,
-		accountability,
+		{ fields, parentCollection: options.parentCollection, query: options.query },
+		context,
+		services,
 	);
 
 	if (!fields || !Array.isArray(fields)) return [];
@@ -47,10 +56,10 @@ export async function parseFields(
 	for (const fieldKey of fields) {
 		let name = fieldKey;
 
-		if (query.alias) {
+		if (options.query.alias) {
 			// check for field alias (is one of the key)
-			if (name in query.alias) {
-				name = query.alias[fieldKey]!;
+			if (name in options.query.alias) {
+				name = options.query.alias[fieldKey]!;
 			}
 		}
 
@@ -58,8 +67,8 @@ export async function parseFields(
 			name.includes('.') ||
 			// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 			// anything
-			!!schema.relations.find(
-				(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === name,
+			!!context.schema.relations.find(
+				(relation) => relation.related_collection === options.parentCollection && relation.meta?.one_field === name,
 			);
 
 		if (isRelational) {
@@ -108,11 +117,12 @@ export async function parseFields(
 		} else {
 			if (fieldKey.includes('(') && fieldKey.includes(')')) {
 				const columnName = fieldKey.match(REGEX_BETWEEN_PARENS)![1]!;
-				const foundField = schema.collections[parentCollection]!.fields[columnName];
+				const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
 
 				if (foundField && foundField.type === 'alias') {
-					const foundRelation = schema.relations.find(
-						(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName,
+					const foundRelation = context.schema.relations.find(
+						(relation) =>
+							relation.related_collection === options.parentCollection && relation.meta?.one_field === columnName,
 					);
 
 					if (foundRelation) {
@@ -137,18 +147,18 @@ export async function parseFields(
 	for (const [fieldKey, nestedFields] of Object.entries(relationalStructure)) {
 		let fieldName = fieldKey;
 
-		if (query.alias && fieldKey in query.alias) {
-			fieldName = query.alias[fieldKey]!;
+		if (options.query.alias && fieldKey in options.query.alias) {
+			fieldName = options.query.alias[fieldKey]!;
 		}
 
-		const relatedCollection = getRelatedCollection(schema, parentCollection, fieldName);
-		const relation = getRelation(schema, parentCollection, fieldName);
+		const relatedCollection = getRelatedCollection(context.schema, options.parentCollection, fieldName);
+		const relation = getRelation(context.schema, options.parentCollection, fieldName);
 
 		if (!relation) continue;
 
 		const relationType = getRelationType({
 			relation,
-			collection: parentCollection,
+			collection: options.parentCollection,
 			field: fieldName,
 		});
 
@@ -165,7 +175,7 @@ export async function parseFields(
 				children: {},
 				query: {},
 				relatedKey: {},
-				parentKey: schema.collections[parentCollection]!.primary,
+				parentKey: context.schema.collections[options.parentCollection]!.primary,
 				fieldKey: fieldKey,
 				relation: relation,
 				cases: {},
@@ -174,45 +184,55 @@ export async function parseFields(
 
 			for (const relatedCollection of allowedCollections) {
 				child.children[relatedCollection] = await parseFields(
-					accessService,
-					permissionsService,
-					schema,
-					relatedCollection,
-					Array.isArray(nestedFields)
-						? nestedFields
-						: (
-								nestedFields as {
-									[collectionScope: string]: string[];
-								}
-						  )[relatedCollection] || [],
-					query,
-					deep?.[`${fieldKey}:${relatedCollection}`],
+					{
+						parentCollection: relatedCollection,
+						fields: Array.isArray(nestedFields)
+							? nestedFields
+							: (
+									nestedFields as {
+										[collectionScope: string]: string[];
+									}
+							  )[relatedCollection] || [],
+						query: options.query,
+						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
+					},
+					context,
+					services,
 				);
 
-				child.query[relatedCollection] = getDeepQuery(deep?.[`${fieldKey}:${relatedCollection}`] || {});
+				child.query[relatedCollection] = getDeepQuery(options.deep?.[`${fieldKey}:${relatedCollection}`] || {});
 
-				child.relatedKey[relatedCollection] = schema.collections[relatedCollection]!.primary;
+				child.relatedKey[relatedCollection] = context.schema.collections[relatedCollection]!.primary;
 			}
 		} else if (relatedCollection) {
 			// update query alias for children parseFields
-			const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.['alias'];
-			if (!isEmpty(deepAlias)) query.alias = deepAlias;
+			const deepAlias = getDeepQuery(options.deep?.[fieldKey] || {})?.['alias'];
+			if (!isEmpty(deepAlias)) options.query.alias = deepAlias;
 
 			child = {
 				type: relationType,
 				name: relatedCollection,
 				fieldKey: fieldKey,
-				parentKey: schema.collections[parentCollection]!.primary,
-				relatedKey: schema.collections[relatedCollection]!.primary,
+				parentKey: context.schema.collections[options.parentCollection]!.primary,
+				relatedKey: context.schema.collections[relatedCollection]!.primary,
 				relation: relation,
-				query: getDeepQuery(deep?.[fieldKey] || {}),
-				children: await parseFields(accessService, permissionsService, schema, relatedCollection, nestedFields as string[], query, deep?.[fieldKey] || {}),
+				query: getDeepQuery(options.deep?.[fieldKey] || {}),
+				children: await parseFields(
+					{
+						parentCollection: relatedCollection,
+						fields: nestedFields as string[],
+						query: options.query,
+						deep: options.deep?.[fieldKey] || {},
+					},
+					context,
+					services,
+				),
 				cases: [],
 				whenCase: [],
 			};
 
 			if (relationType === 'o2m' && !child!.query.sort) {
-				child!.query.sort = [relation.meta?.sort_field || schema.collections[relation.collection]!.primary];
+				child!.query.sort = [relation.meta?.sort_field || context.schema.collections[relation.collection]!.primary];
 			}
 		}
 

@@ -5,28 +5,43 @@ import type { AccessService } from '../../../services/access.js';
 import type { PermissionsService } from '../../../services/index.js';
 import { getRelation } from '../utils/get-relation.js';
 
-export async function convertWildcards(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	parentCollection: string,
-	fields: string[],
-	query: Query,
-	accountability: Accountability | null,
-) {
-	fields = cloneDeep(fields);
+export interface ConvertWildcardsServices {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
 
-	const fieldsInCollection = Object.entries(schema.collections[parentCollection]!.fields).map(([name]) => name);
+export interface ConvertWildCardsContext {
+	schema: SchemaOverview;
+	accountability: Accountability | null;
+}
+
+export interface ConvertWildcardsOptions {
+	parentCollection: string;
+	fields: string[];
+	query: Query;
+}
+
+export async function convertWildcards(
+	options: ConvertWildcardsOptions,
+	context: ConvertWildCardsContext,
+	services: ConvertWildcardsServices,
+) {
+	const fields = cloneDeep(options.fields);
+
+	const fieldsInCollection = Object.entries(context.schema.collections[options.parentCollection]!.fields).map(
+		([name]) => name,
+	);
 
 	let allowedFields: string[] | null = fieldsInCollection;
 
-	if (accountability && accountability.admin !== false) {
+	if (context.accountability && context.accountability.admin !== false) {
 		allowedFields = await fetchAllowedFields(
-			accessService,
-			permissionsService,
-			accountability,
-			parentCollection,
-			'read',
+			{
+				collection: options.parentCollection,
+				action: 'read',
+			},
+			{ accountability: context.accountability },
+			services,
 		);
 	}
 
@@ -41,7 +56,7 @@ export async function convertWildcards(
 		if (fieldKey.includes('*') === false) continue;
 
 		if (fieldKey === '*') {
-			const aliases = Object.keys(query.alias ?? {});
+			const aliases = Object.keys(options.query.alias ?? {});
 
 			// Set to all fields in collection
 			if (allowedFields.includes('*')) {
@@ -49,7 +64,7 @@ export async function convertWildcards(
 			} else {
 				// Set to all allowed fields
 				const allowedAliases = aliases.filter((fieldKey) => {
-					const name = query.alias![fieldKey]!;
+					const name = options.query.alias![fieldKey]!;
 					return allowedFields!.includes(name);
 				});
 
@@ -62,21 +77,22 @@ export async function convertWildcards(
 			const parts = fieldKey.split('.');
 
 			const relationalFields = allowedFields.includes('*')
-				? schema.relations
+				? context.schema.relations
 						.filter(
 							(relation) =>
-								relation.collection === parentCollection || relation.related_collection === parentCollection,
+								relation.collection === options.parentCollection ||
+								relation.related_collection === options.parentCollection,
 						)
 						.map((relation) => {
-							const isMany = relation.collection === parentCollection;
+							const isMany = relation.collection === options.parentCollection;
 							return isMany ? relation.field : relation.meta?.one_field;
 						})
-				: allowedFields.filter((fieldKey) => !!getRelation(schema, parentCollection, fieldKey));
+				: allowedFields.filter((fieldKey) => !!getRelation(context.schema, options.parentCollection, fieldKey));
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
-			const aliasFields = Object.keys(query.alias ?? {}).map((fieldKey) => {
-				const name = query.alias![fieldKey];
+			const aliasFields = Object.keys(options.query.alias ?? {}).map((fieldKey) => {
+				const name = options.query.alias![fieldKey];
 
 				if (relationalFields.includes(name)) {
 					return `${fieldKey}.${parts.slice(1).join('.')}`;

@@ -4,6 +4,20 @@ import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 
+export interface fetchAllowedFieldsServices {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
+
+export interface FetchAllowedFieldsContext {
+	accountability: Accountability;
+}
+
+export interface FetchAllowedFieldsOptions {
+	collection: string;
+	action: PermissionsAction;
+}
+
 /**
  * Look up all fields that are allowed to be used for the given collection and action for the given
  * accountability object
@@ -12,20 +26,22 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
  * permissions that exist for the collection+action+policy combination
  */
 export async function fetchAllowedFields(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	accountability: Accountability,
-	collection: string,
-	action: PermissionsAction,
+	options: FetchAllowedFieldsOptions,
+	context: FetchAllowedFieldsContext,
+	services: fetchAllowedFieldsServices,
 ): Promise<string[]> {
 	// TODO add cache
 
-	const policies = await fetchPolicies(accessService, accountability);
+	const policies = await fetchPolicies(services.accessService, context.accountability);
 
-	const permissions = (await permissionsService.readByQuery({
+	const permissions = (await services.permissionsService.readByQuery({
 		fields: ['fields'],
 		filter: {
-			_and: [{ policy: { _in: policies } }, { collection: { _eq: collection } }, { action: { _eq: action } }],
+			_and: [
+				{ policy: { _in: policies } },
+				{ collection: { _eq: options.collection } },
+				{ action: { _eq: options.action } },
+			],
 		},
 		limit: -1,
 	})) as { fields: string[] | null }[];
