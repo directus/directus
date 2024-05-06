@@ -12,7 +12,7 @@ import { groupBy, isNil, orderBy } from 'lodash';
  * collection_b                collection_b
  *   collection_b_1            collection_b_1
  */
-export const flattenGroupedCollections = (collections: Collection[]) => {
+export function flattenGroupedCollections(collections: Collection[]): Collection[] {
 	const topLevelCollections = collections.filter((collection) => isNil(collection.meta?.group));
 
 	const groupedCollections = groupBy(
@@ -35,4 +35,4 @@ export const flattenGroupedCollections = (collections: Collection[]) => {
 	};
 
 	return flatten(topLevelCollections);
-};
+}
