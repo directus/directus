@@ -76,12 +76,19 @@ const computedFormat = computed(() => {
 });
 
 const computedStyle = computed(() => {
+	/** Maintain min width if icon together with border and/or background is rendered */
+	const requiresMinWidth = !!computedFormat.value.icon && (props.border || !!computedFormat.value.background);
+
 	return {
 		color: computedFormat.value.color,
 		borderStyle: 'solid',
 		borderWidth: props.border ? '2px' : 0,
 		borderColor: computedFormat.value.color,
 		backgroundColor: computedFormat.value.background ?? 'transparent',
+		...(requiresMinWidth && {
+			// Icon + Padding + Border
+			minWidth: `${18 + 2 * 10 + (props.border ? 2 : 0)}px`,
+		}),
 	};
 });
 
@@ -179,9 +186,9 @@ function matchNumber(left: number, right: number, operator: string) {
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: inline;
+	display: inline-flex;
+	align-items: center;
 	overflow: hidden;
-	text-overflow: ellipsis;
 
 	&.has-background,
 	&.has-border {
@@ -217,9 +224,9 @@ function matchNumber(left: number, right: number, operator: string) {
 		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
-	.v-icon {
-		flex-shrink: 0;
-		vertical-align: -3px;
+	.value {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 </style>
