@@ -34,7 +34,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		configuredCollections.value.filter((collection) => collection.meta?.hidden !== true),
 	);
 
-	const databaseCollections = computed(() => sortedCollections.value.filter((collection) => collection.schema));
+	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
 
 	const crudSafeSystemCollections = computed(() =>
 		systemCollections.value.filter((collection) => !COLLECTIONS_DENY_LIST.includes(collection.collection)),
