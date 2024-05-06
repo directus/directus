@@ -19,6 +19,7 @@ import type { AuthenticationMode } from '../types/auth.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import { getSecret } from '../utils/get-secret.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
 
@@ -90,7 +91,7 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 		const token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 		if (isDirectusJWT(token)) {
-			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+			const payload = verifyAccessJWT(token, getSecret());
 			return payload.session;
 		}
 	}
