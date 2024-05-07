@@ -65,9 +65,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	let result;
 
-	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
-	} else if (req.body.keys) {
+	if (req.body.keys) {
 		result = await service.readMany(req.body.keys, req.sanitizedQuery);
 	} else {
 		result = await service.readByQuery(req.sanitizedQuery);
