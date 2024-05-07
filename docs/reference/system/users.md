@@ -1128,7 +1128,7 @@ Password for the new user.
 First name for the new user.
 
 `last_name`\
-last name for the new user.
+Last name for the new user.
 
 ### Response
 
