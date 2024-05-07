@@ -1300,6 +1300,7 @@ fields:
     status: Status
     status_draft: Draft
     status_invited: Invited
+    status_unverified: Unverified
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
@@ -1364,6 +1365,16 @@ fields:
     custom_aspect_ratios: Custom Aspect Ratios
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
+    public_registration: User Registration
+    public_registration_note: Allows users to register via the [registration route](/admin/register).
+    public_registration_role: User Role
+    public_registration_role_note:
+      This role is assigned to users who register using this method. Does not affect already registered users.
+    public_registration_email_filter: Email Address Filter
+    public_registration_email_filter_note: Only email addresses matching this filter can register.
+    public_registration_verify_email: Verify Email
+    public_registration_verify_email_note:
+      Sends an email to the registering user asking them to click on a verification link before they can sign in.
   directus_shares:
     name: Name
     role: Role
@@ -1631,6 +1642,14 @@ select_field_type: Select a field type
 select_interface: Select an interface
 select_display: Select a display
 settings: Settings
+register: Register
+registration_successful_headline: Success!
+registration_successful_note: You may now proceed to the sign in page.
+registration_successful_check_email_note: |
+  Please note that before you can sign in, you'll need to verify your email address by clicking on the verification link sent to you.
+dont_have_an_account: Don't have an account?
+already_have_an_account: Already have an account?
+sign_up_now: Sign up now
 sign_in: Sign In
 sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?

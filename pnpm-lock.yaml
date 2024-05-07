@@ -526,6 +526,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../packages/errors
       '@directus/extensions':
         specifier: workspace:*
         version: link:../packages/extensions

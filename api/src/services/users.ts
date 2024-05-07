@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Item, PrimaryKey, Query } from '@directus/types';
-import { getSimpleHash, toArray } from '@directus/utils';
+import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
+import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
@@ -450,6 +450,113 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' });
+	}
+
+	async registerUser(input: RegisterUserInput) {
+		const STALL_TIME = env['REGISTER_STALL_TIME'] as number;
+		const timeStart = performance.now();
+		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
+		const settingsService = new SettingsService(serviceOptions);
+
+		const settings = await settingsService.readSingleton({
+			fields: [
+				'public_registration',
+				'public_registration_verify_email',
+				'public_registration_role',
+				'public_registration_email_filter',
+			],
+		});
+
+		if (settings?.['public_registration'] == false) {
+			throw new ForbiddenError();
+		}
+
+		const publicRegistrationRole = settings?.['public_registration_role'] ?? null;
+		const hasEmailVerification = settings?.['public_registration_verify_email'];
+		const emailFilter = settings?.['public_registration_email_filter'];
+		const first_name = input.first_name ?? null;
+		const last_name = input.last_name ?? null;
+
+		const partialUser: Partial<User> = {
+			// Required fields
+			email: input.email,
+			password: input.password,
+			role: publicRegistrationRole,
+			status: hasEmailVerification ? 'unverified' : 'active',
+			// Optional fields
+			first_name,
+			last_name,
+		};
+
+		if (emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
+			await stall(STALL_TIME, timeStart);
+			throw new ForbiddenError();
+		}
+
+		const user = await this.getUserByEmail(input.email);
+
+		if (isEmpty(user)) {
+			await this.createOne(partialUser);
+		}
+		// We want to be able to re-send the verification email
+		else if (user.status !== ('unverified' satisfies User['status'])) {
+			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
+			await stall(STALL_TIME, timeStart);
+			return;
+		}
+
+		if (hasEmailVerification) {
+			const mailService = new MailService(serviceOptions);
+			const payload = { email: input.email, scope: 'pending-registration' };
+
+			const token = jwt.sign(payload, env['SECRET'] as string, {
+				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as string,
+				issuer: 'directus',
+			});
+
+			const verificationURL = new Url(env['PUBLIC_URL'] as string)
+				.addPath('users', 'register', 'verify-email')
+				.setQuery('token', token);
+
+			mailService
+				.send({
+					to: input.email,
+					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
+					template: {
+						name: 'user-registration',
+						data: {
+							url: verificationURL.toString(),
+							email: input.email,
+							first_name,
+							last_name,
+						},
+					},
+				})
+				.catch((error) => {
+					logger.error(error, 'Could not send email verification mail');
+				});
+		}
+
+		await stall(STALL_TIME, timeStart);
+	}
+
+	async verifyRegistration(token: string): Promise<string> {
+		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+			email: string;
+			scope: string;
+		};
+
+		if (scope !== 'pending-registration') throw new ForbiddenError();
+
+		const user = await this.getUserByEmail(email);
+
+		if (user?.status !== ('unverified' satisfies User['status'])) {
+			throw new InvalidPayloadError({ reason: 'Invalid verification code' });
+		}
+
+		await this.updateOne(user.id, { status: 'active' });
+
+		return user.id;
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
