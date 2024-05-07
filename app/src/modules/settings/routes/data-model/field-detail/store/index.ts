@@ -165,7 +165,7 @@ export const useFieldDetailStore = defineStore({
 					alterations[localType].applyChanges(updates, state, { hasChanged, getCurrent });
 				}
 
-				const { field: fieldUpdates, ...restUpdates } = updates;
+				const { field: fieldUpdates, items: itemUpdates, ...restUpdates } = updates;
 
 				mergeWith(state, restUpdates, (_, srcValue, key, object) => {
 					if (Array.isArray(srcValue)) return srcValue;
@@ -188,6 +188,10 @@ export const useFieldDetailStore = defineStore({
 						Object.assign((state.field.meta ??= {}), metaUpdates);
 						Object.assign((state.fieldUpdates.meta ??= {}), metaUpdates);
 					}
+				}
+
+				if (itemUpdates) {
+					state.items = itemUpdates as (typeof this.$state)['items'];
 				}
 			});
 		},
