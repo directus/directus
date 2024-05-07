@@ -19,7 +19,7 @@ export type UpdateCommentOutput<
  */
 export const updateComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		keys: DirectusComment<Schema>['id'][],
+   keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
 		item: Partial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
