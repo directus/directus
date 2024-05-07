@@ -72,7 +72,7 @@ export const registerUser =
  *
  * @returns Nothing
  */
-export const verifyRegisteredUser =
+export const registerUserVerify =
 	<Schema>(token: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/register/verify-email`,
