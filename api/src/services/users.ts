@@ -482,14 +482,14 @@ export class UsersService extends ItemsService {
 			email: input.email,
 			password: input.password,
 			role: publicRegistrationRole,
-			status: hasEmailValidation ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
+			status: hasEmailVerification ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
 
 			// Optional fields
 			first_name,
 			last_name,
 		};
 
-		if (hasEmailValidation && emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
+		if (hasEmailVerification && emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}
@@ -506,7 +506,7 @@ export class UsersService extends ItemsService {
 			return;
 		}
 
-		if (hasEmailValidation) {
+		if (hasEmailVerification) {
 			const mailService = new MailService(serviceOptions);
 			const payload = { email: input.email, scope: 'pending-registration' };
 
