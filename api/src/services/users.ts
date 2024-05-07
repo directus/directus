@@ -482,8 +482,7 @@ export class UsersService extends ItemsService {
 			email: input.email,
 			password: input.password,
 			role: publicRegistrationRole,
-			status: hasEmailVerification ? 'draft' : 'active', // TODO: Do we want to have a dedicated "unverified" status?
-
+			status: hasEmailVerification ? 'unverified' : 'active',
 			// Optional fields
 			first_name,
 			last_name,
@@ -500,7 +499,7 @@ export class UsersService extends ItemsService {
 			await this.createOne(partialUser);
 		}
 		// We want to be able to re-send the verification email
-		else if (user.status !== 'draft') {
+		else if (user.status !== ('unverified' satisfies User['status'])) {
 			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
 			await stall(STALL_TIME, timeStart);
 			return;
@@ -551,8 +550,7 @@ export class UsersService extends ItemsService {
 
 		const user = await this.getUserByEmail(email);
 
-		// TODO: might want to have their own status?
-		if (user?.status !== 'draft') {
+		if (user?.status !== ('unverified' satisfies User['status'])) {
 			throw new InvalidPayloadError({ reason: 'Invalid verification code' });
 		}
 
