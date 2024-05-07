@@ -488,7 +488,7 @@ export class UsersService extends ItemsService {
 			last_name,
 		};
 
-		if (hasEmailVerification && emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
+		if (emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}
