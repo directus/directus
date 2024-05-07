@@ -1096,9 +1096,11 @@ Register a new user.
 
 ```graphql
 type Mutation {
-	users_register(email: String!, password: String!): Boolean
+	users_register(email: String!, password: String!): True
 }
 ```
+
+Note: This mutation always returns true.
 
 </template>
 <template #sdk>
@@ -1108,7 +1110,7 @@ import { createDirectus, rest, registerUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(registerUser(user_email, user_password));
+await client.request(registerUser(user_email, user_password));
 ```
 
 </template>
@@ -1157,6 +1159,8 @@ mutation {
 }
 ```
 
+Note: This mutation always returns true.
+
 </template>
 <template #sdk>
 
@@ -1165,7 +1169,7 @@ import { createDirectus, rest, registerUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(registerUser('another@example.com', 'd1r3ctu5'));
+await client.request(registerUser('another@example.com', 'd1r3ctu5'));
 ```
 
 </template>
@@ -1192,9 +1196,11 @@ This link includes a token, which is then used to activate the registered user.
 
 ```graphql
 type Mutation {
-	users_register_verify(token: String!)
+	users_register_verify(token: String!): True
 }
 ```
+
+Note: This mutation always returns true.
 
 </template>
 <template #sdk>
@@ -1204,7 +1210,7 @@ import { createDirectus, rest, verifyUserEmail } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(registerUserVerify(emailed_token));
+await client.request(registerUserVerify(emailed_token));
 ```
 
 </template>
@@ -1235,6 +1241,8 @@ mutation {
 }
 ```
 
+Note: This mutation always returns true.
+
 </template>
 <template #sdk>
 
@@ -1243,7 +1251,7 @@ import { createDirectus, rest, registerUserVerify } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(registerUserVerify('eyJh...KmUk'));
+await client.request(registerUserVerify('eyJh...KmUk'));
 ```
 
 </template>
