@@ -35,30 +35,32 @@ export const getExtensionsSettings = async ({
 	const moduleSettings = existingSettings.filter(({ source }) => source === 'module');
 
 	const updateBundleEntriesSettings = (
-		extensionSettings: ExtensionSettings,
-		extension: BundleExtension,
-		settings: ExtensionSettings[],
+		bundle: BundleExtension,
+		bundleSettings: ExtensionSettings,
+		allSettings: ExtensionSettings[],
 	) => {
-		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === extensionSettings.id);
+		const bundleEntriesSettings = allSettings.filter(({ bundle }) => bundle === bundleSettings.id);
 
 		// Remove settings of removed bundle entries from the DB
 		for (const entry of bundleEntriesSettings) {
-			const entryInBundle = extension.entries.some(({ name }) => name === entry.folder);
+			const entryInBundle = bundle.entries.some(({ name }) => name === entry.folder);
+
 			if (entryInBundle) continue;
 
 			removedSettingIds.push(entry.id);
 		}
 
 		// Add new bundle entries to the settings
-		for (const entry of extension.entries) {
+		for (const entry of bundle.entries) {
 			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
+
 			if (settingsExist) continue;
 
 			newSettings.push({
 				id: randomUUID(),
 				enabled: true,
-				source: extensionSettings.source,
-				bundle: extensionSettings.id,
+				source: bundleSettings.source,
+				bundle: bundleSettings.id,
 				folder: entry.name,
 			});
 		}
@@ -99,8 +101,11 @@ export const getExtensionsSettings = async ({
 	for (const [folder, extension] of local.entries()) {
 		const existingSettings = localSettings.find((settings) => settings.folder === folder);
 
-		if (existingSettings && extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, localSettings);
+		if (existingSettings) {
+			if (extension.type === 'bundle') {
+				updateBundleEntriesSettings(extension, existingSettings, localSettings);
+			}
+
 			continue;
 		}
 
@@ -129,7 +134,7 @@ export const getExtensionsSettings = async ({
 		if (!existingSettings) {
 			generateSettingsEntry(folder, extension, 'module');
 		} else if (extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, moduleSettings);
+			updateBundleEntriesSettings(extension, existingSettings, moduleSettings);
 		}
 	}
 
@@ -139,7 +144,7 @@ export const getExtensionsSettings = async ({
 		if (!existingSettings) {
 			generateSettingsEntry(folder, extension, 'registry');
 		} else if (extension.type === 'bundle') {
-			updateBundleEntriesSettings(existingSettings, extension, registrySettings);
+			updateBundleEntriesSettings(extension, existingSettings, registrySettings);
 		}
 	}
 
