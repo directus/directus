@@ -1626,6 +1626,7 @@ authenticated: Authenticated
 options: Options
 otp: One-Time Password
 password: Password
+confirm_password: Confirm Password
 permissions: Permissions
 relationship: Relationship
 reset: Reset
