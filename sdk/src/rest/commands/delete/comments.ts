@@ -1,6 +1,7 @@
 import type { DirectusComment } from '../../../schema/comment.js';
-import { throwIfEmpty } from '../../utils/index.js';
+import type { Query } from '../../../types/query.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple existing comments.
