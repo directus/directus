@@ -2087,17 +2087,6 @@ export class GraphQLService {
 							}),
 					  }
 					: GraphQLBoolean,
-				rateLimitRegistration: env['RATE_LIMITER_REGISTRATION_ENABLED']
-					? {
-							type: new GraphQLObjectType({
-								name: 'server_info_rate_limit_registration',
-								fields: {
-									points: { type: GraphQLInt },
-									duration: { type: GraphQLInt },
-								},
-							}),
-					  }
-					: GraphQLBoolean,
 				websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 					? {
 							type: new GraphQLObjectType({
