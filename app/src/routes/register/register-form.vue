@@ -79,8 +79,20 @@ async function onSubmit() {
 			:placeholder="t('email')"
 			:disabled="isLoading"
 		/>
-		<v-input v-model="password" type="password" :placeholder="t('password')" :disabled="isLoading" />
-		<v-input v-model="passwordVerification" type="password" :placeholder="t('password')" :disabled="isLoading" />
+		<v-input
+			v-model="password"
+			type="password"
+			autocomplete="new-password"
+			:placeholder="t('password')"
+			:disabled="isLoading"
+		/>
+		<v-input
+			v-model="passwordVerification"
+			type="password"
+			autocomplete="new-password"
+			:placeholder="t('password')"
+			:disabled="isLoading"
+		/>
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
