@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Über
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -7,10 +28,12 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+marketplace: Marktplatz
 extensions: Erweiterungen
 modules: Module
 module_bar: Modulleiste
 logs: Logs
+unknown: Unbekannt
 reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
@@ -28,6 +51,8 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+popular: Beliebt
+recent: Aktuell
 export_items: Elemente exportieren
 and: Und
 or: Oder
@@ -54,10 +79,22 @@ extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
 extension_bundles: Pakete
+extension_missing: Fehlend
 extension_reload_required: Neuladen der Seite erforderlich
 extension_reload_required_copy: Um die Änderungen nach Aktivierung oder Deaktivierung von App-Erweiterungen sehen zu können, ist ein Neuladen der Seite erforderlich.
 extension_reload_now: Jetzt neu laden
+published_relative: Veröffentlicht {relativeTime}
+compatible_with_your_project: Mit Ihrem Projekt kompatibel
+compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, die mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
+last_updated_relative: Letzte Aktualisierung {relativeTime}
+n_files: '{n} Dateien'
+verified: Verifiziert
 homepage: Hello world
+repository: Repository
+reload_required: Erneutes Laden erforderlich
+report_an_issue: Problem melden
+website: Webseite
+github: GitHub
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -1104,6 +1141,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+source_registry: Marktplatz
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
