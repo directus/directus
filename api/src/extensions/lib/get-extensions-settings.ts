@@ -58,7 +58,7 @@ export const getExtensionsSettings = async ({
 
 			newSettings.push({
 				id: randomUUID(),
-				enabled: true,
+				enabled: bundleSettings.enabled,
 				source: bundleSettings.source,
 				bundle: bundleSettings.id,
 				folder: entry.name,
