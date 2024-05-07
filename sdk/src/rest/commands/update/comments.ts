@@ -19,17 +19,27 @@ export type UpdateCommentOutput<
  */
 export const updateComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-   keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
+		keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
 		item: Partial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(keys, 'Keys cannot be empty');
+		let payload: Record<string, any> = {};
+
+		if (Array.isArray(keysOrQuery)) {
+			throwIfEmpty(keysOrQuery, 'keysOrQuery cannot be empty');
+			payload = { keys: keysOrQuery };
+		} else {
+			throwIfEmpty(Object.keys(keysOrQuery), 'keysOrQuery cannot be empty');
+			payload = { query: keysOrQuery };
+		}
+
+		payload['data'] = item;
 
 		return {
 			path: `/comments`,
 			params: query ?? {},
-			body: JSON.stringify({ keys, data: item }),
+			body: JSON.stringify(payload),
 			method: 'PATCH',
 		};
 	};
