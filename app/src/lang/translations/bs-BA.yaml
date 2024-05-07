@@ -408,7 +408,6 @@ replace_from_library: Zamijenite fajl iz biblioteke
 replace_from_url: Zamijenite fajl s URL-a
 no_file_selected: Niti jedan fajl nije odabran
 download_file: Preuzmi fajl
-open_file_in_tab: Otvori fajl u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.

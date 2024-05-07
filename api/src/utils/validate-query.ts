@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
-import type { Query } from '@directus/types';
+import type { Filter, Query } from '@directus/types';
 import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
@@ -52,9 +52,7 @@ export function validateQuery(query: Query): Query {
 	return query;
 }
 
-function validateFilter(filter: Query['filter']) {
-	if (!filter) throw new InvalidQueryError({ reason: 'Invalid filter object' });
-
+function validateFilter(filter: Filter) {
 	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);

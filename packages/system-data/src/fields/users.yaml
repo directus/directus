@@ -163,6 +163,8 @@ fields:
           value: draft
         - text: $t:fields.directus_users.status_invited
           value: invited
+        - text: $t:fields.directus_users.status_unverified
+          value: unverified
         - text: $t:fields.directus_users.status_active
           value: active
         - text: $t:fields.directus_users.status_suspended
