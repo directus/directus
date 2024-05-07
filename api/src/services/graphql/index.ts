@@ -2053,6 +2053,8 @@ export class GraphQLService {
 							public_background: { type: GraphQLString },
 							public_note: { type: GraphQLString },
 							custom_css: { type: GraphQLString },
+							public_registration: { type: GraphQLBoolean },
+							public_registration_verify_email: { type: GraphQLBoolean },
 						},
 					}),
 				},
@@ -2076,6 +2078,17 @@ export class GraphQLService {
 					? {
 							type: new GraphQLObjectType({
 								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				rateLimitRegistration: env['RATE_LIMITER_REGISTRATION_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_registration',
 								fields: {
 									points: { type: GraphQLInt },
 									duration: { type: GraphQLInt },
