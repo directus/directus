@@ -2635,6 +2635,40 @@ export class GraphQLService {
 					return true;
 				},
 			},
+			users_register: {
+				type: GraphQLBoolean,
+				args: {
+					email: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
+					first_name: GraphQLString,
+					last_name: GraphQLString,
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+
+					// TODO: rate limiting
+
+					await service.registerUser({
+						email: args.email,
+						password: args.password,
+						first_name: args.first_name,
+						last_name: args.last_name,
+					});
+
+					return true;
+				},
+			},
+			users_register_verify: {
+				type: GraphQLBoolean,
+				args: {
+					token: new GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+					await service.verifyRegistration(args.token);
+					return true;
+				},
+			},
 		});
 
 		if ('directus_collections' in schema.read.collections) {
