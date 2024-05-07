@@ -9,13 +9,23 @@ import type { RestCommand } from '../../types.js';
  * @throws Will throw if keys is empty
  */
 export const deleteComments =
-	<Schema>(keys: DirectusComment<Schema>['id'][]): RestCommand<void, Schema> =>
+	<Schema>(
+		keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
+	): RestCommand<void, Schema> =>
 	() => {
-		throwIfEmpty(keys, 'Keys cannot be empty');
+		let payload: Record<string, any> = {};
+
+		if (Array.isArray(keysOrQuery)) {
+			throwIfEmpty(keysOrQuery, 'keysOrQuery cannot be empty');
+			payload = { keys: keysOrQuery };
+		} else {
+			throwIfEmpty(Object.keys(keysOrQuery), 'keysOrQuery cannot be empty');
+			payload = { query: keysOrQuery };
+		}
 
 		return {
 			path: `/comments`,
-			body: JSON.stringify(keys),
+			body: JSON.stringify(payload),
 			method: 'DELETE',
 		};
 	};
