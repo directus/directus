@@ -1071,6 +1071,106 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
+## Register a new User
+
+Register a new user.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": user_email,
+	"password": user_password
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	users_register(email: String!, password: String!): Boolean
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(registerUser(user_email, user_password));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`email` **Required**\
+Email for the new user.
+
+`password` **Required**\
+Password for the new user.
+
+`first_name`\
+First name for the new user.
+
+`last_name`\
+last name for the new user.
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": "another@example.com",
+	"password": "d1r3ctus"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register(email: "another@example.com", password: "d1r3ctu5")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(registerUser('another@example.com', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
 ## Invite a new User
 
 Invite a new user by email.
