@@ -553,7 +553,7 @@ export class UsersService extends ItemsService {
 
 		// TODO: might want to have their own status?
 		if (user?.status !== 'draft') {
-			throw new InvalidPayloadError({ reason: `Invalid verification code` });
+			throw new InvalidPayloadError({ reason: 'Invalid verification code' });
 		}
 
 		await this.updateOne(user.id, { status: 'active' });
