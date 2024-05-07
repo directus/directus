@@ -50,11 +50,9 @@ export class UtilsService {
 			);
 
 			const allowedFields = await fetchAllowedFields(
-				this.accessService,
-				this.permissionsService,
-				this.accountability,
-				collection,
-				'update',
+				{ collection, action: 'update' },
+				{ accountability: this.accountability },
+				{ accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {

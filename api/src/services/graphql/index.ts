@@ -213,41 +213,57 @@ export class GraphQLService {
 				read: reduceSchema(
 					this.schema,
 					await fetchAllowedFieldMap(
-						this.accessService,
-						this.permissionsService,
-						this.schema,
-						this.accountability,
-						'read',
+						{
+							accountability: this.accountability,
+							action: 'read',
+						},
+						{ schema: this.schema },
+						{
+							accessService: this.accessService,
+							permissionsService: this.permissionsService,
+						},
 					),
 				),
 				create: reduceSchema(
 					this.schema,
 					await fetchAllowedFieldMap(
-						this.accessService,
-						this.permissionsService,
-						this.schema,
-						this.accountability,
-						'create',
+						{
+							accountability: this.accountability,
+							action: 'create',
+						},
+						{ schema: this.schema },
+						{
+							accessService: this.accessService,
+							permissionsService: this.permissionsService,
+						},
 					),
 				),
 				update: reduceSchema(
 					this.schema,
 					await fetchAllowedFieldMap(
-						this.accessService,
-						this.permissionsService,
-						this.schema,
-						this.accountability,
-						'update',
+						{
+							accountability: this.accountability,
+							action: 'update',
+						},
+						{ schema: this.schema },
+						{
+							accessService: this.accessService,
+							permissionsService: this.permissionsService,
+						},
 					),
 				),
 				delete: reduceSchema(
 					this.schema,
 					await fetchAllowedFieldMap(
-						this.accessService,
-						this.permissionsService,
-						this.schema,
-						this.accountability,
-						'delete',
+						{
+							accountability: this.accountability,
+							action: 'delete',
+						},
+						{ schema: this.schema },
+						{
+							accessService: this.accessService,
+							permissionsService: this.permissionsService,
+						},
 					),
 				),
 			};

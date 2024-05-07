@@ -73,11 +73,12 @@ class OASSpecsService implements SpecificationSubService {
 
 		if (this.accountability) {
 			const allowedFields = await fetchAllowedFieldMap(
-				this.accessService,
-				this.permissionsService,
-				schema,
-				this.accountability,
-				'read',
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{ schema },
+				{ accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 
 			schema = reduceSchema(schema, allowedFields);

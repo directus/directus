@@ -104,11 +104,9 @@ export class RelationsService {
 			);
 
 			const allowedFields = await fetchAllowedFields(
-				this.accessService,
-				this.permissionsService,
-				this.accountability,
-				collection,
-				'read',
+				{ collection, action: 'read' },
+				{ accountability: this.accountability },
+				{ accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 
 			if (allowedFields.includes(field) === false) {
@@ -533,12 +531,14 @@ export class RelationsService {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
 		const allowedFields = await fetchAllowedFieldMap(
-			this.accessService,
-			this.permissionsService,
-			this.schema,
-			this.accountability,
-			'read',
+			{
+				accountability: this.accountability,
+				action: 'read',
+			},
+			{ schema: this.schema },
+			{ accessService: this.accessService, permissionsService: this.permissionsService },
 		);
+
 		const allowedCollections = Object.keys(allowedFields);
 
 		relations = toArray(relations);

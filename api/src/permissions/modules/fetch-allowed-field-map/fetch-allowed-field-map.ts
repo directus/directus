@@ -3,34 +3,47 @@ import { uniq } from 'lodash-es';
 import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import { withCache } from '../../utils/with-cache.js';
 
 export type FieldMap = Record<string, string[]>;
 
-export async function fetchAllowedFieldMap(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	accountability: Accountability,
-	action: PermissionsAction,
-) {
-	// TODO add cache
+export interface FetchAllowedFieldMapOptions {
+	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
+	action: PermissionsAction;
+}
 
+export interface FetchAllowedFieldMapContext {
+	schema: SchemaOverview;
+}
+
+export interface FetchAllowedFieldMapServices {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
+
+export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowedFieldMap);
+
+export async function _fetchAllowedFieldMap(
+	options: FetchAllowedFieldMapOptions,
+	context: FetchAllowedFieldMapContext,
+	services: FetchAllowedFieldMapServices,
+) {
 	const fieldMap: FieldMap = {};
 
-	if (accountability.admin) {
-		for (const [collection, { fields }] of Object.entries(schema.collections)) {
+	if (options.accountability.admin) {
+		for (const [collection, { fields }] of Object.entries(context.schema.collections)) {
 			fieldMap[collection] = Object.keys(fields);
 		}
 
 		return fieldMap;
 	}
 
-	const policies = await fetchPolicies(accountability, accessService);
+	const policies = await fetchPolicies(options.accountability, services.accessService);
 
-	const permissions = (await permissionsService.readByQuery({
+	const permissions = (await services.permissionsService.readByQuery({
 		fields: ['collection', 'fields'],
 		filter: {
-			_and: [{ policy: { _in: policies } }, { action: { _eq: action } }],
+			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],
 		},
 		limit: -1,
 	})) as { collection: string; fields: string[] }[];
