@@ -1,4 +1,4 @@
-import type { Extension, ExtensionSettings } from '@directus/extensions';
+import type { BundleExtension, Extension, ExtensionSettings } from '@directus/extensions';
 import { randomUUID } from 'node:crypto';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
@@ -36,11 +36,9 @@ export const getExtensionsSettings = async ({
 
 	const updateBundleEntriesSettings = (
 		extensionSettings: ExtensionSettings,
-		extension: Extension,
+		extension: BundleExtension,
 		settings: ExtensionSettings[],
 	) => {
-		if (extension.type !== 'bundle') return;
-
 		const bundleEntriesSettings = settings.filter(({ bundle }) => bundle === extensionSettings.id);
 
 		// Remove settings of removed bundle entries from the DB
@@ -101,7 +99,7 @@ export const getExtensionsSettings = async ({
 	for (const [folder, extension] of local.entries()) {
 		const existingSettings = localSettings.find((settings) => settings.folder === folder);
 
-		if (existingSettings) {
+		if (existingSettings && extension.type === 'bundle') {
 			updateBundleEntriesSettings(existingSettings, extension, localSettings);
 			continue;
 		}
