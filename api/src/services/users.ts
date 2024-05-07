@@ -10,6 +10,7 @@ import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
@@ -159,7 +160,7 @@ export class UsersService extends ItemsService {
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
-		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), { expiresIn: '7d', issuer: 'directus' });
 		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite');
 		inviteURL.setQuery('token', token);
 
@@ -429,7 +430,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+		const { email, scope } = verifyJWT(token, getSecret()) as {
 			email: string;
 			scope: string;
 		};
@@ -473,7 +474,7 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload = { email: user.email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
-		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), { expiresIn: '1d', issuer: 'directus' });
 
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
@@ -501,7 +502,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope, hash } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, getSecret(), { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 			hash: string;
