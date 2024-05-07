@@ -90,7 +90,7 @@ async function onSubmit() {
 			v-model="passwordVerification"
 			type="password"
 			autocomplete="new-password"
-			:placeholder="t('password')"
+			:placeholder="t('confirm_password')"
 			:disabled="isLoading"
 		/>
 
