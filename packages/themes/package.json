@@ -43,7 +43,7 @@
 		"typescript": "5.4.5",
 		"vite": "5.2.11",
 		"vite-plugin-dts": "3.9.0",
-		"vue": "3.4.26"
+		"vue": "3.4.27"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "1",
