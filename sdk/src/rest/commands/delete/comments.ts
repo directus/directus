@@ -4,7 +4,7 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing comments.
- * @param keys
+ * @param keysOrQuery The primary keys or a query
  * @returns
  * @throws Will throw if keys is empty
  */

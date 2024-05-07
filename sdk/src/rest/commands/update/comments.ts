@@ -11,7 +11,7 @@ export type UpdateCommentOutput<
 
 /**
  * Update multiple existing comments.
- * @param keys
+ * @param keysOrQuery The primary keys or a query
  * @param item
  * @param query
  * @returns Returns the comment objects for the updated comments.
