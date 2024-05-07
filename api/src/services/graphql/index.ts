@@ -54,10 +54,12 @@ import {
 	SESSION_COOKIE_OPTIONS,
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
+import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { getService } from '../../utils/get-service.js';
 import isDirectusJWT from '../../utils/is-directus-jwt.js';
@@ -2095,6 +2097,8 @@ export class GraphQLService {
 							public_background: { type: GraphQLString },
 							public_note: { type: GraphQLString },
 							custom_css: { type: GraphQLString },
+							public_registration: { type: GraphQLBoolean },
+							public_registration_verify_email: { type: GraphQLBoolean },
 						},
 					}),
 				},
@@ -2661,6 +2665,44 @@ export class GraphQLService {
 					});
 
 					await service.acceptInvite(args['token'], args['password']);
+					return true;
+				},
+			},
+			users_register: {
+				type: GraphQLBoolean,
+				args: {
+					email: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
+					first_name: GraphQLString,
+					last_name: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+
+					const ip = req ? getIPFromReq(req) : null;
+
+					if (ip) {
+						await rateLimiter.consume(ip);
+					}
+
+					await service.registerUser({
+						email: args.email,
+						password: args.password,
+						first_name: args.first_name,
+						last_name: args.last_name,
+					});
+
+					return true;
+				},
+			},
+			users_register_verify: {
+				type: GraphQLBoolean,
+				args: {
+					token: new GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+					await service.verifyRegistration(args.token);
 					return true;
 				},
 			},

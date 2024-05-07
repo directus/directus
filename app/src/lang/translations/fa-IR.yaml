@@ -436,7 +436,6 @@ replace_from_library: جایگزینی فایل از مجموعه
 replace_from_url: جایگزینی فایل از URL
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
-open_file_in_tab: فایل را در تب جدید باز کنید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
 exporting_all_items_in_collection: برون‌بری {total} مورد از {collection}.

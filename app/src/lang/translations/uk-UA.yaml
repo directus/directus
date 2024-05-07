@@ -557,7 +557,6 @@ replace_from_url: Замінити файл з URL
 no_image_selected: Зображення не вибрано
 no_file_selected: Файл не обрано
 download_file: Завантажити файл
-open_file_in_tab: Відкрити файл у новій вкладці
 start_export: Розпочати експорт
 not_available_for_local_downloads: Недоступний для локальних завантажень
 exporting_all_items_in_collection: Експорт усіх {total} елементів в межах {collection}.

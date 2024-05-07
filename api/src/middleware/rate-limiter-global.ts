@@ -17,7 +17,7 @@ let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemory;
 
 if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
-	validateEnv(['RATE_LIMITER_GLOBAL_STORE', 'RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
+	validateEnv(['RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
 	validateConfiguration();
 
 	rateLimiterGlobal = createRateLimiter('RATE_LIMITER_GLOBAL');

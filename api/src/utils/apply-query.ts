@@ -480,7 +480,11 @@ export function applyFilter(
 
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
-			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
+			const operation = getOperation(key, value);
+
+			if (!operation) continue;
+
+			const { operator: filterOperator, value: filterValue } = operation;
 
 			if (
 				filterPath.length > 1 ||
@@ -922,9 +926,9 @@ export function applyAggregate(
 
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
-	const childKey = Object.keys(value)[0]!;
+	const childKey = Object.keys(value)[0];
 
-	if (typeof childKey === 'string' && childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey)) {
+	if (!childKey || (childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey))) {
 		return path;
 	}
 
@@ -935,14 +939,20 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } | null {
 	if (key.startsWith('_') && !['_and', '_or', '_none', '_some'].includes(key)) {
-		return { operator: key as string, value };
-	} else if (isPlainObject(value) === false) {
+		return { operator: key, value };
+	} else if (!isPlainObject(value)) {
 		return { operator: '_eq', value };
 	}
 
-	return getOperation(Object.keys(value)[0]!, Object.values(value)[0]);
+	const childKey = Object.keys(value)[0];
+
+	if (childKey) {
+		return getOperation(childKey, Object.values(value)[0]);
+	}
+
+	return null;
 }
 
 function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {

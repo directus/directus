@@ -430,7 +430,6 @@ replace_from_library: 라이브러리에서 파일 바꾸기
 replace_from_url: URL에서 파일 바꾸기
 no_file_selected: 파일이 선택되지 않았습니다
 download_file: 파일 다운로드
-open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
