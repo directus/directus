@@ -9,5 +9,4 @@ export type ContentVersion = {
 	date_updated: string | null;
 	user_created: string | null;
 	user_updated: string | null;
-	delta: Record<string, any> | null;
 };
