@@ -472,7 +472,7 @@ export class UsersService extends ItemsService {
 		}
 
 		const publicRegistrationRole = settings?.['public_registration_role'] ?? null;
-		const hasEmailValidation = settings?.['public_registration_verify_email'];
+		const hasEmailVerification = settings?.['public_registration_verify_email'];
 		const emailFilter = settings?.['public_registration_email_filter'];
 		const first_name = input.first_name ?? null;
 		const last_name = input.last_name ?? null;
