@@ -14,9 +14,6 @@ export interface FetchAllowedFieldMapOptions {
 
 export interface FetchAllowedFieldMapContext {
 	schema: SchemaOverview;
-}
-
-export interface FetchAllowedFieldMapServices {
 	accessService: AccessService;
 	permissionsService: PermissionsService;
 }
@@ -26,7 +23,6 @@ export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowed
 export async function _fetchAllowedFieldMap(
 	options: FetchAllowedFieldMapOptions,
 	context: FetchAllowedFieldMapContext,
-	services: FetchAllowedFieldMapServices,
 ) {
 	const fieldMap: FieldMap = {};
 
@@ -38,9 +34,9 @@ export async function _fetchAllowedFieldMap(
 		return fieldMap;
 	}
 
-	const policies = await fetchPolicies(options.accountability, services.accessService);
+	const policies = await fetchPolicies(options.accountability, context.accessService);
 
-	const permissions = (await services.permissionsService.readByQuery({
+	const permissions = (await context.permissionsService.readByQuery({
 		fields: ['collection', 'fields'],
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],

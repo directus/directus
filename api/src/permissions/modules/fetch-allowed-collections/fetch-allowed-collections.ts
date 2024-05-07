@@ -3,26 +3,35 @@ import { uniq } from 'lodash-es';
 import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import { withCache } from '../../utils/with-cache.js';
 
-export async function fetchAllowedCollections(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	accountability: Accountability,
-	action: PermissionsAction,
+export interface FetchAllowedCollectionsOptions {
+	action: PermissionsAction;
+	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
+}
+
+export interface FetchAllowedCollectionsContext {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+	schema: SchemaOverview;
+}
+
+export const fetchAllowedCollections = withCache('allowed-collections', _fetchAllowedCollections);
+
+export async function _fetchAllowedCollections(
+	options: FetchAllowedCollectionsOptions,
+	context: FetchAllowedCollectionsContext,
 ): Promise<string[]> {
-	// TODO add cache
-
-	if (accountability.admin) {
-		return Object.keys(schema.collections);
+	if (options.accountability.admin) {
+		return Object.keys(context.schema.collections);
 	}
 
-	const policies = await fetchPolicies(accountability, accessService);
+	const policies = await fetchPolicies(options.accountability, context.accessService);
 
-	const permissions = (await permissionsService.readByQuery({
+	const permissions = (await context.permissionsService.readByQuery({
 		fields: ['collection'],
 		filter: {
-			_and: [{ policy: { _in: policies } }, { action: { _eq: action } }],
+			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],
 		},
 		limit: -1,
 	})) as { collection: string }[];

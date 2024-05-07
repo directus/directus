@@ -5,7 +5,7 @@ export function withCache<F extends (...args: any[]) => any>(namespace: string, 
 	const cache = useCache();
 
 	const fn = async (...args: any[]) => {
-		const key = namespace + '-' + getSimpleHash(JSON.stringify(args[0])); // todo make deterministic
+		const key = namespace + '-' + getSimpleHash(JSON.stringify(args[0]));
 		const cached = await cache.get(key);
 
 		if (cached) {

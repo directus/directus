@@ -10,11 +10,11 @@ export interface FetchPermissionsOptions {
 	collections?: string[];
 }
 
-export interface FetchPermissionsServices {
+export interface FetchPermissionsContext {
 	permissionsService: PermissionsService;
 }
 
-export async function _fetchPermissions(options: FetchPermissionsOptions, services: FetchPermissionsServices) {
+export async function _fetchPermissions(options: FetchPermissionsOptions, context: FetchPermissionsContext) {
 	const filter: Filter = {
 		_and: [{ policy: { _in: options.policies } }, { action: { _eq: options.action } }],
 	};
@@ -23,7 +23,7 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, servic
 		filter._and.push({ collection: { _in: options.collections } });
 	}
 
-	const permissions = (await services.permissionsService.readByQuery({
+	const permissions = (await context.permissionsService.readByQuery({
 		filter,
 		limit: -1,
 	})) as Permission[];
