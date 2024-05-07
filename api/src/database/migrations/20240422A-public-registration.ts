@@ -1,31 +1,22 @@
 import type { Knex } from 'knex';
 
-// To avoid typos
-const TABLE_ROLES = 'directus_roles';
-const COLUMN_ROLES_ID = `${TABLE_ROLES}.id`;
-const TABLE_SETTINGS = 'directus_settings';
-const NEW_COLUMN_IS_REGISTRATION_ENABLED = 'public_registration';
-const NEW_COLUMN_ROLE = 'public_registration_role';
-const NEW_COLUMN_IS_EMAIL_VALIDATION_ENABLED = 'public_registration_verify_email';
-const NEW_COLUMN_EMAIL_FILTER = 'public_registration_email_filter';
-
 export async function up(knex: Knex): Promise<void> {
-	await knex.schema.alterTable(TABLE_SETTINGS, (table) => {
-		table.boolean(NEW_COLUMN_IS_REGISTRATION_ENABLED).notNullable().defaultTo(false);
-		table.boolean(NEW_COLUMN_IS_EMAIL_VALIDATION_ENABLED).notNullable().defaultTo(true);
-		table.uuid(NEW_COLUMN_ROLE).nullable();
-		table.foreign(NEW_COLUMN_ROLE).references(COLUMN_ROLES_ID).onDelete('SET NULL');
-		table.json(NEW_COLUMN_EMAIL_FILTER).nullable();
+	await knex.schema.alterTable('directus_settings', (table) => {
+		table.boolean('public_registration').notNullable().defaultTo(false);
+		table.boolean('public_registration_verify_email').notNullable().defaultTo(true);
+		table.uuid('public_registration_role').nullable();
+		table.foreign('public_registration_role').references('directus_roles.id').onDelete('SET NULL');
+		table.json('public_registration_email_filter').nullable();
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.alterTable(TABLE_SETTINGS, (table) => {
+	await knex.schema.alterTable('directus_settings', (table) => {
 		table.dropColumns(
-			NEW_COLUMN_IS_REGISTRATION_ENABLED,
-			NEW_COLUMN_IS_EMAIL_VALIDATION_ENABLED,
-			NEW_COLUMN_ROLE,
-			NEW_COLUMN_EMAIL_FILTER,
+			'public_registration',
+			'public_registration_verify_email',
+			'public_registration_role',
+			'public_registration_email_filter',
 		);
 	});
 }
