@@ -1,4 +1,9 @@
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import {
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
+	DEFAULT_NUMERIC_PRECISION,
+	DEFAULT_NUMERIC_SCALE,
+} from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -21,6 +26,7 @@ import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
@@ -282,7 +288,7 @@ export class FieldsService {
 				addFieldFlag(field, flagToAdd);
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
@@ -436,7 +442,7 @@ export class FieldsService {
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
-						await this.knex.transaction(async (trx) => {
+						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
 								this.addColumnToTable(table, field, existingColumn);
@@ -577,7 +583,7 @@ export class FieldsService {
 				);
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const relations = this.schema.relations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
@@ -737,7 +743,12 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
+
+			column = table[type](
+				field.field,
+				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
 		} else if (field.type === 'hash') {

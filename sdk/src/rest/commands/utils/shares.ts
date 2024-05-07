@@ -1,30 +1,25 @@
+import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
- * Shares work by publicly giving you an access/refresh token combination (as you would get with the regular /auth/login endpoints). These tokens are limited to a permissions set that only allows access to the item that was shared, and any relationally linked items that that associated role has access to. This means that all regular endpoints can be used with the credentials set returned by this endpoint.
+ * Authenticate as a share user.
  *
- * @param share Shares work by publicly giving you an access/refresh token combination (as you would get with the regular /auth/login endpoints). These tokens are limited to a permissions set that only allows access to the item that was shared, and any relationally linked items that that associated role has access to. This means that all regular endpoints can be used with the credentials set returned by this endpoint.
+ * @param share The ID of the share.
  * @param password Password for the share, if one is configured.
+ * @param mode Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`.
  *
- * @returns Authentication Credentials
+ * @returns Authentication data.
  */
 export const authenticateShare =
-	<Schema extends object>(
+	<Schema>(
 		share: string,
-		password: string,
-	): RestCommand<
-		{
-			access_token: string;
-			refresh_token: string;
-			expires: number;
-		},
-		Schema
-	> =>
-	() => ({
-		path: `/shares/auth`,
-		method: 'POST',
-		body: JSON.stringify({ share, password }),
-	});
+		password?: string,
+		mode: AuthenticationMode = 'cookie',
+	): RestCommand<AuthenticationData, Schema> =>
+	() => {
+		const data = { share, password, mode };
+		return { path: '/shares/auth', method: 'POST', body: JSON.stringify(data) };
+	};
 
 /**
  * Sends an email to the provided email addresses with a link to the share.
@@ -35,7 +30,7 @@ export const authenticateShare =
  * @returns Nothing
  */
 export const inviteShare =
-	<Schema extends object>(share: string, emails: string[]): RestCommand<void, Schema> =>
+	<Schema>(share: string, emails: string[]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/shares/invite`,
 		method: 'POST',
@@ -50,7 +45,7 @@ export const inviteShare =
  * @returns The share objects for the given UUID, if it's still valid.
  */
 export const readShareInfo =
-	<Schema extends object>(
+	<Schema>(
 		id: string,
 	): RestCommand<
 		{

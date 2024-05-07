@@ -1,8 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    labels:
-      - Dependencies
+    labels: []
     directory: '/'
     schedule:
       interval: daily

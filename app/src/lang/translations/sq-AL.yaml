@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Rreth
 identifier: Identifikues
 avatar: Avatar
 application: Aplikacion
@@ -27,10 +28,12 @@ method: Metodë
 published: Publikuar
 draft: Draft
 archived: Arkivuar
+marketplace: Pazari
 extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
+unknown: I panjohur
 reset_width: Rikthe Gjerësinë
 tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
@@ -48,6 +51,8 @@ duplicate_field: Dupliko Fushën
 half_width: Gjerësi e Gjysmës
 full_width: Gjerësi e Plotë
 group: Grup
+popular: Popullor
+recent: I fundit
 export_items: Eksporto Artikujt
 and: Dhe
 or: Ose
@@ -57,11 +62,46 @@ modifier: Modifikues
 extension_interface: Ndërfaqe
 extension_display: Shfaq
 extension_layout: Struktura
+extension_module: Modul
 extension_panel: Paneli
+extension_theme: Temë
 extension_hook: Hook
+extension_endpoint: Pikë fundore
 extension_operation: Operacion
+extension_bundle: Paketë
+extension_interfaces: Ndërfaqe
+extension_displays: Shfaqjet
+extension_layouts: Struktura
 extension_modules: Module
+extension_panels: Panele
+extension_themes: Tema
+extension_hooks: Kroçe
+extension_endpoints: Pikat fundore
+extension_operations: Operacione
+extension_bundles: Paketa
+extension_missing: Mungon
+extension_reload_required: Kërkohet ringarkimi i faqes
+extension_reload_required_copy: Është e nevojshme të ringarkohet faqja për të parë ndryshimet pas aktivizimit ose çaktivizimit të zgjerimeve të aplikacionit.
+extension_reload_now: Ringarko tani
+published_relative: Publikuar {relativeTime}
+compatible_with_your_project: Përputhshëm me projektin tuaj
+compatible_with_your_project_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila përputhet me versionin e projektit tuaj ({currentVersion})
+last_updated_relative: Përditësuar së fundmi {relativeTime}
+n_files: '{n} Skedarë'
+verified: Verifikuar
+homepage: Faqja kryesore
+repository: Depo
+reload_required: Kërkohet ringarkim
+report_an_issue: Raporto një Problem
+website: Faqe interneti
+github: GitHub
+beta: Beta
+n_downloads: '{n} Shkarkime'
+downloads: Shkarkime
+compatibility_not_guaranteed: Përputhshmëria nuk është e garantuar
+compatibility_not_guaranteed_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila nuk përputhet me versionin e projektit tuaj ({currentVersion})
 enable: Parashikoni përkthimet
+disable: Çaktivizo
 custom: Personalizuar
 hook: Hook
 fill_width: Plotëso Gjerësinë
@@ -109,7 +149,31 @@ rename_folder: Riemërto Dosjen
 delete_folder: Fshi Dosjen
 prefix: Prefiks
 suffix: Sufiks
+keep: Ruaj
+version: Version
+version_key: Çelësi i Versionit
+version_name: Emri i Versionit
+main_version: Kryesore
+switch_version: Ndërro Versionin
+switch_version_copy: A jeni i sigurt që doni të ndërroni në versionin "{version}"? Ndryshimet e paruajtura do të humbasin.
+create_version: Krijo Version
+rename_version: Riemërto Versionin
+compare_version: Krahaso Versionin
+save_version: Ruaj Versionin
+promote_version: Promovo Versionin
+promote_version_disabled: Pa Ndryshime
+promote_version_drawer_title: Promovo {version} në Kryesore
+promote_version_changes: Ndryshimet
 promote_version_preview: Parashiko
+outdated_notice: >-
+  Artikulli kryesor është përditësuar që nga krijimi i këtij versioni. Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
+promote_notice: >-
+  Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
+delete_version: Fshi Versionin
+delete_version_copy: >-
+  A jeni i sigurt që doni të fshini versionin "{version}"? Kjo veprim nuk mund të zhbëhet.
+delete_on_promote_copy: >-
+  Dëshironi të fshini apo të ruani versionin "{version}" pas promovimit?
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -124,6 +188,8 @@ logoutReason:
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+no_description: Pa përshkrim...
+reached_maximum_number_of_extensions: Keni arritur numrin maksimal të zgjerimeve për këtë projekt ({n}). Kontaktoni administratorin e sistemit tuaj për më shumë informacion.
 not_allowed: Nuk lejohet
 archive: Arkivo
 archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
@@ -263,6 +329,20 @@ time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
 hash: Hash
+geometry:
+  All: Gjeometri (Të gjitha)
+  Point: Pikë
+  LineString: VargVije
+  Polygon: Poligon
+  MultiPoint: ShumëPikë
+  MultiLineString: ShumëVargVije
+  MultiPolygon: ShumëPoligon
+theme_auto: Automatik (Bazuar në Sistem)
+theme_light: Modaliteti i Ndriçimit
+theme_dark: Modaliteti i Errësirës
+theme_directus_default: Parazgjedhja e Directus
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Përshtatja e Ngjyrave të Directus
 not_available_for_type: Nuk është i Disponueshëm për këtë Lloj
 create_translations: Krijo përkthime
 auto_refresh: Rifreskim Automatik
@@ -274,6 +354,7 @@ auto_generate: Gjenero Automatikisht
 this_will_auto_setup_fields_relations: Kjo do të konfigurojë automatikisht të gjitha fushat dhe marrëdhëniet e nevojshme.
 click_here: Kliko këtu
 to_manually_setup_translations: për të konfiguruar manualisht përkthimet.
+manage: Menaxho
 click_to_manage_translated_fields: >-
   Nuk ka fusha të përkthyera akoma. Kliko këtu për t'i krijuar ato. | Ka një fushë të përkthyer. Kliko këtu për ta menaxhuar atë. | Ka {count} fusha të përkthyera. Kliko këtu për t'i menaxhuar ato.
 fields_group: Grup Fushash
@@ -358,6 +439,7 @@ revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
 revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
 revision_delta_deleted: U fshi
+revision_delta_version_saved: 'Ruajtja e Versionit (Përditësuar 1 Fushë) | Ruajtja e Versionit (Përditësuar {count} Fusha)'
 revision_delta_reverted: U rikthye
 revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
 revision_delta_other: Rishikim
@@ -442,7 +524,11 @@ months:
   november: Nëntor
   december: Dhjetor
 drag_mode: Mënyra e Tërheqjes
+move_tool: Mjeti i Lëvizjes
+crop_tool: Mjeti i Prerjes
+focal_point_tool: Mjeti i Pikës Fokale
 cancel_crop: Anulo Kopshtin
+cancel_selection: Anulo Zgjedhjen
 original: Origjinal
 url: URL
 import_label: Importo
@@ -495,6 +581,7 @@ generated_uuid: UUID i Gjeneruar
 manual_string: String i Vendosur Manualisht
 save_and_create_new: Ruaj dhe Krijo të Ri
 save_and_stay: Ruaj dhe Qëndro
+save_and_quit: Ruaj dhe Dil
 save_as_copy: Ruaj si Kopje
 add_existing: Shto Ekzistuese
 creating_items: Krijim i Artikujve
@@ -509,6 +596,7 @@ collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
 search_items: Kërko artikuj...
+search_extensions: Kërko Zgjerime...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -527,6 +615,8 @@ no_files_copy: Këtu nuk ka skedarë.
 user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
 no_users_copy: Ende nuk ka përdorues në këtë rol.
 webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks janë të vjetruara dhe përdorimi i mëtejmë nuk rekomandohet. Ju lutemi përdorni **Flows** me [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) në vend të kësaj.
 no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
 no_notifications: Asnjë Njoftim
 no_notifications_copy: Ju jeni përditësuar plotësisht!
@@ -590,6 +680,10 @@ select_an_item: Zgjidh një artikull...
 edit: Modifiko
 edit_item: Redakto artikullin
 enabled: Aktivizuar
+partially_enabled: Pjesërisht i Aktivizuar
+enable_all: Aktivizo Të Gjitha
+disable_all: Çaktivizo Të Gjitha
+enabled_dev_tooltip: Zgjerimet e aplikacionit janë gjithmonë të aktivizuara në modalitetin zhvillues
 disable_tfa: Çaktivizo 2FA
 admin_disable_tfa_text: Jeni i sigurt që doni të çaktivizoni 2FA për këtë përdorues?
 tfa_setup: Konfiguro 2FA
@@ -601,38 +695,41 @@ auto_fill: Plotesim Automatik
 corresponding_field: Fusha Korrespondente
 errors:
   COLLECTION_NOT_FOUND: "Koleksioni nuk ekziston"
+  CONTAINS_NULL_VALUES: Fusha përmban vlera null
+  CONTENT_TOO_LARGE: Artikulli / skedari i paraqitur është shumë i madh
   FIELD_NOT_FOUND: Fusha nuk u gjet
   FORBIDDEN: I ndaluar
+  GRAPHQL_VALIDATION: Validimi i GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
+  INTERNAL_SERVER_ERROR: Gabim i papritur
+  INVALID_CONFIG: Konfigurim i pavlefshëm
   INVALID_CREDENTIALS: Emri i përdoruesit ose fjalëkalimi i gabuar
+  INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
+  INVALID_IP: Adresa IP nuk lejohet
   INVALID_OTP: Fjalëkalimi i gabuar njëherësh
   INVALID_PAYLOAD: Payload i pavlefshëm
   INVALID_PROVIDER: Përdoruesi i përket një ofruesi tjetër autentikimi
   INVALID_QUERY: Pyetje e pavlefshme
-  INVALID_CONFIG: Konfigurim i pavlefshëm
   INVALID_TOKEN: Token i pavlefshëm
-  INVALID_IP: Adresa IP nuk lejohet
   INVALID_USER: Autentifikimi i përdoruesit dështoi
   ITEM_LIMIT_REACHED: Limiti i artikujve arriti
   ITEM_NOT_FOUND: Artikulli nuk u gjet
-  ROUTE_NOT_FOUND: Nuk u gjet
-  RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
-  USER_SUSPENDED: Përdoruesi është pezulluar
-  CONTAINS_NULL_VALUES: Fusha përmban vlera null
-  INTERNAL_SERVER_ERROR: Gabim i papritur
-  NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
-  ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
-  VALUE_TOO_LONG: Vlera është shumë e gjatë
-  VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
-  INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
-  UNKNOWN: Gabim i papritur
-  SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
-  UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
-  UNEXPECTED_RESPONSE: Përgjigje e papritur
-  TOKEN_EXPIRED: Token ka skaduar
-  RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
+  LIMIT_EXCEEDED: 'Limiti i tejkaluar'
   METHOD_NOT_ALLOWED: Metodë e palëjuar
+  NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
+  RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
+  RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
   REQUESTS_EXCEEDED: Limiti i kërkesave është arritur
-  CONTENT_TOO_LARGE: Artikulli / skedari i paraqitur është shumë i madh
+  ROUTE_NOT_FOUND: Nuk u gjet
+  SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
+  TOKEN_EXPIRED: Token ka skaduar
+  UNEXPECTED_RESPONSE: Përgjigje e papritur
+  UNKNOWN: Gabim i papritur
+  UNPROCESSABLE_CONTENT: Përmbajtje e Papërpunueshme
+  UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
+  USER_SUSPENDED: Përdoruesi është pezulluar
+  VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
+  VALUE_TOO_LONG: Vlera është shumë e gjatë
 security: Siguria
 value_hashed: Vlera është Hashuar Sigurisht
 bookmark_name: Emri i Faqerojtësit...
@@ -741,6 +838,7 @@ operators:
   regex: Përputhet me RegExp
 custom_validation_message: Mesazh i Personalizuar i Validimit
 loading: Po Ngarkohet...
+extension_readme_missing: Kjo zgjerim nuk ka një skedar README.
 drop_to_upload: Lësho për të Ngarkuar
 item: Artikull
 items: Artikuj
@@ -758,6 +856,7 @@ layout_options: Opsionet e Faqosjes
 rows: Rreshta
 columns: Kolona
 collection_setup: Setup i Koleksionit
+optional_system_fields: Fushat Opsionale
 value_unique: Vlera duhet të jetë unike
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
@@ -962,6 +1061,12 @@ choices: Zgjedhje
 choices_option_configured_incorrectly: Opsionet e zgjedhjeve janë konfiguruar gabim
 deselect: Anulo Zgjedhjen
 deselect_all: Anulo të Gjitha
+theme: Temë
+select_a_theme: Zgjidh një Temë
+default_sync_with_project: Parazgjedhje (Sinkronizim me Projektin)
+appearance_auto: Automatik (Sinkronizim me Sistemin)
+appearance_light: Ndriçim
+appearance_dark: Errësirë
 other: Të tjera...
 adding_user: Po shtohet Përdoruesi
 unknown_user: Përdorues i Panjohur
@@ -973,7 +1078,9 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
+settings_permissions: Kontrolli i Qasjes
 settings_project: Parametra
+settings_appearance: Pamja
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
 settings_presets: Faqerojtësit
@@ -992,6 +1099,7 @@ editing_preset: Modifikim i Cilësimeve të Paracaktuara
 layout_preview: Parashikim i Strukturës
 layout_setup: Konfigurim i Strukturës
 data: Të Dhënat
+theme-overrides: Zëvendësimet e Temës
 unsaved_changes: Ndryshime të Pa Ruajtura
 unsaved_changes_copy: Je i sigurt që dëshiron të lësh këtë faqe?
 discard_changes: Anulo Ndryshimet
@@ -1013,6 +1121,8 @@ page_help_files_collection: >-
   **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
 page_help_files_item: >-
   **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
+page_help_settings_project: "**Cilësimet** — Opsionet e konfigurimit global të projektit tuaj."
+page_help_settings_appearance: "**Pamja** — Opsionet e pamjes dhe temave të projektit tuaj."
 page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
 page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
@@ -1035,6 +1145,9 @@ page_help_users_item: >-
   **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
 page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
 page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
+page_help_marketplace_account: '**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar.'
+page_help_marketplace_registry: '**Regjistri** — Zgjerime të disponueshme në Tregun e Directus.'
+page_help_marketplace_extension: '**Zgjerim** — Zgjerim në Tregun e Directus.'
 activity_feed: Feed Aktiviteti
 add_new: Shto të Ri
 create_new: Krijo të Ri
@@ -1045,6 +1158,17 @@ batch_delete_confirm: >-
   Nuk janë zgjedhur artikuj | A je i sigurtë që dëshiron të fshish këtë artikull? Ky veprim nuk mund të zhbëhet. | A je i sigurtë që dëshiron të fshish këto {count} artikuj? Ky veprim nuk mund të zhbëhet.
 cancel: Anulo
 no_upscale: Mos zgjero imazhet
+no_extensions: Pa Zgjerime
+no_extensions_copy: Asnjë zgjerim nuk është instaluar ende.
+install_extension: Instalo Zgjerimin
+uninstall_locked: Nuk mund të çinstalohen zgjerimet që nuk janë instaluar përmes Pazarit
+uninstall: Çinstalo
+installed: I Instaluar
+reinstall: Ri-instalo
+open_in_marketplace: Hap në Pazar
+source_registry: Pazari
+source_local: Lokal
+source_module: Node Module
 collection: Koleksion
 collections: Koleksione
 content: Përmbajtje
@@ -1074,6 +1198,8 @@ directus_collection:
   directus_users: Përdoruesit e sistemit për platformën
   directus_webhooks: Konfigurimi për kërkesat e bazuar në evente të HTTP
   directus_translations: Përkthimet e personalizuara
+  directus_versions: Versionet e Përmbajtjes për artikujt
+  directus_extensions: Konfigurimi i zgjerimeve
 fields:
   directus_activity:
     item: Çelësi Kryesor i Artikullit
@@ -1100,6 +1226,7 @@ fields:
     unarchive_value: Vlera e De-arkivimit
     sort_field: Fusha e Renditjes
     accountability: Gjurmimi i Aktivitetit & Rishikimit
+    versioning: Versionimi
     archive_field: Fusha e Arkivimit
     item_duplication_fields: Fushat e Duplikimit të Artikullit
   directus_files:
@@ -1153,12 +1280,18 @@ fields:
     last_page: Faqja e Fundit
     last_access: Qasja e Fundit
     email_notifications: Njoftime Email
+    appearance: Pamja
+    theme_light: Tema e Ndritshme
+    theme_dark: Tema e Errët
+    theme_light_overrides: Personalizimi i Temës së Ndritshme
+    theme_dark_overrides: Personalizimi i Temës së Errët
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Raportimi
     mapping: Hartëzim
     basemaps: Harta Bazë
     basemaps_raster: Raster
@@ -1176,9 +1309,14 @@ fields:
     project_color: Ngjyra e Projektit
     project_logo: Logoja e Projektit
     default_language: Gjuha e Parazgjedhur
+    branding: Brendimi
     public_foreground: Sfondi i Jashtëm
     public_background: Sfondi Publik
     public_note: Shënim Publik
+    theming: Tema Parazgjedhje
+    default_appearance: Pamja Parazgjedhje
+    default_theme_light: Tema e Ndritshme Parazgjedhje
+    default_theme_dark: Tema e Errët Parazgjedhje
     auth_password_policy: Politika e Fjalëkalimit të Auth
     auth_login_attempts: Përpjekjet e Hyrjes Auth
     files_and_thumbnails: Skedarët & Ruajtja
@@ -1193,6 +1331,8 @@ fields:
     transformations_presets: Kufizo transformimet në paracaktimet më poshtë
     image_editor: Redaktori i Imazheve
     custom_aspect_ratios: Raporte Personalizuar të Aspekteve
+    theme_light_overrides: Personalizimi i Temës së Ndritshme
+    theme_dark_overrides: Personalizimi i Temës së Errët
   directus_shares:
     name: Emri
     role: Roli
@@ -1235,6 +1375,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
     project_color_note: Login & Mjedis i Logos
+    project_logo_note: SVG/PNG i Bardhë 40×40
+    project_favicon_note: ICO 32x32
     public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
     security_divider_title: Siguria
     auth_password_policy:
@@ -1289,16 +1431,20 @@ field_options:
     accountability_divider: Përgjeg
     duplication_divider: Përsëritje
     preview_divider: Parashikim
+    content_versioning_divider: Versionimi i Përmbajtjes
+    enable_versioning: Aktivizo Versionimin
   directus_files:
     title: Një titull unik...
     description: Një përshkrim opsional...
     location: Një vendndodhje opsionale...
     storage_divider: Emërtimi i Skedarit
+    focal_point_divider: Pika Fokale
     filename_disk: Emri në ruajtjen disk...
     filename_download: Emri gjatë shkarkimit...
   directus_roles:
     name: Emri unik për këtë rol...
     description: Përshkrimi i këtij roli...
+    ip_access: Shto adresat e lejuara të IP-së, gamat e IP-së dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
     fields:
       icon_name: Ikonë
       name_name: Emri
@@ -1309,6 +1455,9 @@ field_options:
     collections_addLabel: Shto Koleksion...
   directus_users:
     preferences_divider: Preferencat e Përdoruesit
+    dropdown_auto: Automatik (Bazuar në Sistem)
+    dropdown_light: Modaliteti i Ndriçimit
+    dropdown_dark: Modaliteti i Errësirës
     admin_divider: Opsionet e Adminit
     status_dropdown_draft: Draft
     status_dropdown_invited: I Ftuar
@@ -1744,6 +1893,7 @@ interfaces:
     no_collection: Asnjë Koleksion
     toggle_split_view: Ndërro Pamjen e Ndara
     enable: Aktivizo
+    default_split_view_state: Gjendja e Parazgjedhur e Pamjes së Ndara
     user_language: Përdor Gjuhën Aktuale të Përdoruesit
     default_language: Gjuha e Parazgjedhur
     language_field: Fushe Indikatore e Gjuhës
@@ -1764,7 +1914,9 @@ interfaces:
     description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
     toolbar: Shirit Mjetesh
     custom_formats: Formate të Personalizuara
+    custom_formats_note: Lista e Formateve të Përmbajtjes TinyMCE. Shih dokumentacionin e TinyMCE për [Formatimin e Përmbajtjes](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) për më shumë informacion.
     options_override: Opsionet e Parakaluar
+    options_override_note: Çelësat e Formatimit të Përdoruesit TinyMCE dhe vlerat e tyre. Shih dokumentacionin e TinyMCE për [Formatimin e Përdoruesit](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) për më shumë informacion.
     folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
     imageToken: Token i Qasshëm
     imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve
@@ -1905,6 +2057,7 @@ displays:
     description: Shfaq një version të formatuar të objektit
   hash:
     hash: Hash
+    description: Shfaq një version të redaktuar të vlerës
   icon:
     icon: Ikonë
     description: Shfaq një ikonë
@@ -2039,6 +2192,9 @@ panels:
     name: Metrikë
     description: Shfaq një vlerë të vetme në bazë të një kërkimi
     field: Fushë
+  metric_list:
+    name: Lista e Metrikave
+    description: Lista dhe vizualizo metrikat agregate nga një koleksion
   time_series:
     name: Seri Kohore
     description: Vizualizo një grafik vijash në bazë të vlerave në kohë
@@ -2218,14 +2374,44 @@ operations:
     batch: Grup
     batch_size: Madhësia e Grupit
     cache: Cache
+unit: Njësi
 standard: Standarde
+scientific: Shkencore
+engineering: Inxhinierike
 compact: E kompakt
+currency: Monedhë
+notation: Notacion
 style: Stil
 fonts:
   thin: I hollë
+  extra_light: Ekstra i Ndritshëm
+  light: Ndritshëm
   normal: Normal
   medium: Mesatar
+  semi_bold: Gjysmë i Trashë
   bold: Trashë
+  extra_bold: Ekstra i Trashë
   black: Zi
   italic: Italik
+  oblique: Oblik
+  small: Vogël
+  large: Madh
   auto: Automatik
+text_wrap: Mbështjellja e Tekstit
+center: Qendër
+justify: Justifiko
+text_align: Rreshtimi i Tekstit
+font_weight: Pesha e Shkronjës
+font_style: Stili i Shkronjës
+font_size: Madhësia e Shkronjës
+minimum_fraction_digits: Decimalet Minimale
+maximum_fraction_digits: Decimalet Maksimale
+show_percentage: Shfaq Përqindjen
+aggregation: Agregimi
+series_grouping: Grupimi i Serive
+date_precision: Saktësia e Datës
+export_dashboard: Eksporto Panelin
+duplicate_dashboard: Dupliko Panelin
+search_dashboard: Kërko në Panel...
+search_flow: Kërko në Rrjedhë...
+percent: Përqind

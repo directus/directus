@@ -175,7 +175,9 @@ router.post(
 			schema: req.schema,
 		});
 
-		await service.clearCache();
+		const clearSystemCache = 'system' in req.query && (req.query['system'] === '' || Boolean(req.query['system']));
+
+		await service.clearCache({ system: clearSystemCache });
 
 		res.status(200).end();
 	}),

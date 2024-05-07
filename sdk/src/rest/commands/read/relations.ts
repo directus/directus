@@ -3,10 +3,11 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadRelationOutput<
-	Schema extends object,
-	Item extends object = DirectusRelation<Schema>,
-> = ApplyQueryFields<Schema, Item, '*'>;
+export type ReadRelationOutput<Schema, Item extends object = DirectusRelation<Schema>> = ApplyQueryFields<
+	Schema,
+	Item,
+	'*'
+>;
 
 /**
  * List all Relations that exist in Directus.
@@ -14,7 +15,7 @@ export type ReadRelationOutput<
  * @returns An array of up to limit Relation objects. If no items are available, data will be an empty array.
  */
 export const readRelations =
-	<Schema extends object>(): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
+	<Schema>(): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
 	() => ({
 		path: `/relations`,
 		method: 'GET',
@@ -27,9 +28,7 @@ export const readRelations =
  * @throws Will throw if collection is empty
  */
 export const readRelationByCollection =
-	<Schema extends object>(
-		collection: DirectusRelation<Schema>['collection'],
-	): RestCommand<ReadRelationOutput<Schema>, Schema> =>
+	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations/${collection}`,
 		method: 'GET',
@@ -44,7 +43,7 @@ export const readRelationByCollection =
  * @throws Will throw if field is empty
  */
 export const readRelation =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field'],
 	): RestCommand<ReadRelationOutput<Schema, TQuery>, Schema> =>
