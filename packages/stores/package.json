@@ -33,7 +33,7 @@
 		"pinia": "2.1.7",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vue": "3.4.26"
+		"vue": "3.4.27"
 	},
 	"peerDependencies": {
 		"pinia": "2",
