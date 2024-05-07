@@ -30,7 +30,7 @@ export async function getAccountabilityForRole(
 			app: true,
 		};
 	} else {
-		const roles = await fetchRolesTree(context.database, role);
+		const roles = await fetchRolesTree(role, context.database);
 		const globalAccess = await fetchGlobalAccess(context.database, roles);
 
 		generatedAccountability = {

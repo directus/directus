@@ -1,17 +1,10 @@
 import type { Knex } from 'knex';
-import { useCache } from '../cache.js';
+import { withCache } from '../utils/with-cache.js';
 
-export async function fetchRolesTree(knex: Knex, start: string | null): Promise<string[]> {
+export const fetchRolesTree = withCache('roles-tree', _fetchRolesTree);
+
+export async function _fetchRolesTree(start: string | null, knex: Knex): Promise<string[]> {
 	if (!start) return [];
-
-	const cacheKey = getRolesCacheKey(start);
-
-	const cache = useCache();
-	const cachedRoles = await cache.get<string[]>(cacheKey);
-
-	if (cachedRoles) {
-		return cachedRoles;
-	}
 
 	let parent: string | null = start;
 	const roles: string[] = [];
@@ -32,11 +25,5 @@ export async function fetchRolesTree(knex: Knex, start: string | null): Promise<
 
 	roles.reverse();
 
-	cache.set(cacheKey, roles);
-
 	return roles;
-}
-
-export function getRolesCacheKey(role: string) {
-	return `roles-tree-${role}`;
 }

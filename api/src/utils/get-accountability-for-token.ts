@@ -38,7 +38,7 @@ export async function getAccountabilityForToken(
 			if (payload.id) accountability.user = payload.id;
 
 			accountability.role = payload.role;
-			accountability.roles = await fetchRolesTree(database, payload.role);
+			accountability.roles = await fetchRolesTree(payload.role, database);
 
 			const { admin, app } = await fetchGlobalAccess(database, accountability.roles, accountability.user ?? undefined);
 
@@ -60,7 +60,7 @@ export async function getAccountabilityForToken(
 
 			accountability.user = user.id;
 			accountability.role = user.role;
-			accountability.roles = await fetchRolesTree(database, user.role);
+			accountability.roles = await fetchRolesTree(user.role, database);
 
 			const { admin, app } = await fetchGlobalAccess(database, accountability.roles, accountability.user ?? undefined);
 

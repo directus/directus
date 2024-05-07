@@ -194,7 +194,7 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(this.knex, user.role);
+		const roles = await fetchRolesTree(user.role, this.knex);
 		const globalAccess = await fetchGlobalAccess(this.knex, roles, user.id);
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -335,7 +335,7 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(this.knex, record.user_role);
+		const roles = await fetchRolesTree(record.user_role, this.knex);
 		const globalAccess = await fetchGlobalAccess(this.knex, roles, record.user_id);
 
 		if (record.user_id) {

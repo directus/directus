@@ -40,7 +40,7 @@ export const fetchUserCount = async (knex: Knex): Promise<UserCount> => {
 	await processChunk(activeUsers, 50, async (users) => {
 		const rolesForUsers = await Promise.all(
 			users.map(async ({ role }) => {
-				return await fetchRolesTree(knex, role);
+				return await fetchRolesTree(role, knex);
 			}),
 		);
 
