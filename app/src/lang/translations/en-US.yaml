@@ -1300,6 +1300,7 @@ fields:
     status: Status
     status_draft: Draft
     status_invited: Invited
+    status_unverified: Unverified
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
