@@ -123,10 +123,6 @@ export class VersionsService extends ItemsService {
 
 		if (!versions?.[0]) return null;
 
-		if (versions[0]['delta']) {
-			return [versions[0]['delta']];
-		}
-
 		const saves = await this.getVersionSavesById(versions[0]['id']);
 
 		return saves;
@@ -171,11 +167,10 @@ export class VersionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		// Only allow updates on "key", "name" and "delta" fields
+		// Only allow updates on "key" and "name" fields
 		const versionUpdateSchema = Joi.object({
 			key: Joi.string(),
 			name: Joi.string().allow(null).optional(),
-			delta: Joi.object().optional(),
 		});
 
 		const { error } = versionUpdateSchema.validate(data);
@@ -258,18 +253,6 @@ export class VersionsService extends ItemsService {
 			delta: revisionDelta,
 		});
 
-		let existingDelta = version['delta'];
-
-		if (!existingDelta) {
-			const saves = await this.getVersionSavesById(key);
-
-			existingDelta = assign({}, ...saves);
-		}
-
-		const finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
-
-		await this.updateOne(key, { delta: finalVersionDelta });
-
 		const { cache } = getCache();
 
 		if (shouldClearCache(cache, undefined, collection)) {
@@ -280,7 +263,7 @@ export class VersionsService extends ItemsService {
 	}
 
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
-		const { id, collection, item, delta } = (await this.readOne(version)) as ContentVersion;
+		const { id, collection, item } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
 		await this.authorizationService.checkAccess('update', collection, item);
@@ -293,15 +276,9 @@ export class VersionsService extends ItemsService {
 			});
 		}
 
-		let versionResult;
+		const saves = await this.getVersionSavesById(id);
 
-		if (delta) {
-			versionResult = delta;
-		} else {
-			const saves = await this.getVersionSavesById(id);
-
-			versionResult = assign({}, ...saves);
-		}
+		const versionResult = assign({}, ...saves);
 
 		const payloadToUpdate = fields ? pick(versionResult, fields) : versionResult;
 
