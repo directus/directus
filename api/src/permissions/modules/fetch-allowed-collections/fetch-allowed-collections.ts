@@ -17,7 +17,7 @@ export async function fetchAllowedCollections(
 		return Object.keys(schema.collections);
 	}
 
-	const policies = await fetchPolicies(accessService, accountability);
+	const policies = await fetchPolicies(accountability, accessService);
 
 	const permissions = (await permissionsService.readByQuery({
 		fields: ['collection'],

@@ -79,10 +79,15 @@ class OASSpecsService implements SpecificationSubService {
 				this.accountability,
 				'read',
 			);
+
 			schema = reduceSchema(schema, allowedFields);
 
-			const policies = await fetchPolicies(this.accessService, this.accountability);
-			permissions = await fetchPermissions(this.permissionsService, 'read', policies, undefined);
+			const policies = await fetchPolicies(this.accountability, this.accessService);
+
+			permissions = await fetchPermissions(
+				{ action: 'read', policies },
+				{ permissionsService: this.permissionsService },
+			);
 		}
 
 		const tags = await this.generateTags(schema);

@@ -25,13 +25,13 @@ export async function processAst(
 		return ast;
 	}
 
-	const policies = await fetchPolicies(accessService, accountability);
+	const policies = await fetchPolicies(accountability, accessService);
 
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(ast, schema);
 	const collections = collectionsInFieldMap(fieldMap);
-	const permissions = await fetchPermissions(permissionsService, action, policies, collections);
+	const permissions = await fetchPermissions({ action, policies, collections }, { permissionsService });
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
 		validatePath(path, permissions, collection, fields);

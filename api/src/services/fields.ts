@@ -172,12 +172,20 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const policies = await fetchPolicies(this.accessService, this.accountability);
+			const policies = await fetchPolicies(this.accountability, this.accessService);
+
 			const permissions = await fetchPermissions(
-				this.permissionsService,
-				'read',
-				policies,
-				collection ? [collection] : undefined,
+				collection
+					? {
+							action: 'read',
+							policies,
+							collections: [collection],
+					  }
+					: {
+							action: 'read',
+							policies,
+					  },
+				{ permissionsService: this.permissionsService },
 			);
 
 			const allowedFieldsInCollection: Record<string, string[]> = {};
@@ -224,8 +232,12 @@ export class FieldsService {
 				collection,
 			);
 
-			const policies = await fetchPolicies(this.accessService, this.accountability);
-			const permissions = await fetchPermissions(this.permissionsService, 'read', policies, [collection]);
+			const policies = await fetchPolicies(this.accountability, this.accessService);
+
+			const permissions = await fetchPermissions(
+				{ action: 'read', policies, collections: [collection] },
+				{ permissionsService: this.permissionsService },
+			);
 
 			let hasAccess = false;
 

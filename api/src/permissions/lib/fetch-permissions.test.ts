@@ -1,12 +1,12 @@
 import type { Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import type { PermissionsService } from '../../services/permissions/index.js';
-import { fetchPermissions } from './fetch-permissions.js';
+import { fetchPermissions as _fetchPermissions } from './fetch-permissions.js';
 
-let service: PermissionsService;
+let permissionsService: PermissionsService;
 
 beforeEach(() => {
-	service = {
+	permissionsService = {
 		readByQuery: vi.fn(),
 	} as unknown as PermissionsService;
 });
@@ -16,13 +16,13 @@ test('Returns permissions read through service', async () => {
 	const policies = [] as string[];
 	const collections = [] as string[];
 
-	vi.mocked(service.readByQuery).mockResolvedValue(permissions);
+	vi.mocked(permissionsService.readByQuery).mockResolvedValue(permissions);
 
-	const res = await fetchPermissions(service, 'read', policies, collections);
+	const res = await _fetchPermissions({ action: 'read', policies, collections }, { permissionsService });
 
 	expect(res).toBe(permissions);
 
-	expect(service.readByQuery).toHaveBeenCalledWith({
+	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }, { collection: { _in: collections } }],
 		},
@@ -33,15 +33,14 @@ test('Returns permissions read through service', async () => {
 test('Fetches for all collections when collections filter is undefined', async () => {
 	const permissions: Permission[] = [];
 	const policies = [] as string[];
-	const collections = undefined;
 
-	vi.mocked(service.readByQuery).mockResolvedValue(permissions);
+	vi.mocked(permissionsService.readByQuery).mockResolvedValue(permissions);
 
-	const res = await fetchPermissions(service, 'read', policies, collections);
+	const res = await _fetchPermissions({ action: 'read', policies }, { permissionsService });
 
 	expect(res).toBe(permissions);
 
-	expect(service.readByQuery).toHaveBeenCalledWith({
+	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }],
 		},

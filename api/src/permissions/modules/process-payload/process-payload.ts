@@ -25,8 +25,8 @@ export async function processPayload(
 		return;
 	}
 
-	const policies = await fetchPolicies(accessService, accountability);
-	const permissions = await fetchPermissions(permissionsService, action, policies, [collection]);
+	const policies = await fetchPolicies(accountability, accessService);
+	const permissions = await fetchPermissions({ action, policies, collections: [collection] }, { permissionsService });
 
 	if (permissions.length === 0) {
 		throw new ForbiddenError({

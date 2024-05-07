@@ -25,7 +25,7 @@ export async function fetchAllowedFieldMap(
 		return fieldMap;
 	}
 
-	const policies = await fetchPolicies(accessService, accountability);
+	const policies = await fetchPolicies(accountability, accessService);
 
 	const permissions = (await permissionsService.readByQuery({
 		fields: ['collection', 'fields'],

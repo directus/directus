@@ -2,7 +2,7 @@ import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import type { AccessService } from '../../services/access.js';
 import type { AccessRow } from '../modules/process-ast/types.js';
-import { fetchPolicies } from './fetch-policies.js';
+import { fetchPolicies as _fetchPolicies } from './fetch-policies.js';
 
 let service: AccessService;
 let rows: AccessRow[];
@@ -18,7 +18,7 @@ beforeEach(() => {
 test('Fetches policies for public role when no roles and user are given', async () => {
 	const acc = { roles: [], user: null } as unknown as Accountability;
 
-	const policies = await fetchPolicies(service, acc);
+	const policies = await _fetchPolicies(acc, service);
 
 	expect(service.readByQuery).toHaveBeenCalledWith({
 		filter: {
@@ -39,7 +39,7 @@ test('Fetches policies for public role when no roles and user are given', async 
 test('Fetched policies for user roles', async () => {
 	const acc = { roles: ['role-a', 'role-b'], user: null } as unknown as Accountability;
 
-	const policies = await fetchPolicies(service, acc);
+	const policies = await _fetchPolicies(acc, service);
 
 	expect(service.readByQuery).toHaveBeenCalledWith({
 		filter: {
@@ -57,7 +57,7 @@ test('Fetched policies for user roles', async () => {
 test('Fetches policies for user roles and user if user is passed', async () => {
 	const acc = { roles: ['role-a', 'role-b'], user: 'user-a' } as unknown as Accountability;
 
-	const policies = await fetchPolicies(service, acc);
+	const policies = await _fetchPolicies(acc, service);
 
 	expect(service.readByQuery).toHaveBeenCalledWith({
 		filter: {
@@ -99,7 +99,7 @@ test('Filters policies based on ip access on access row', async () => {
 		},
 	);
 
-	const policies = await fetchPolicies(service, acc);
+	const policies = await _fetchPolicies(acc, service);
 
 	expect(policies).toEqual(['policy-a']);
 });

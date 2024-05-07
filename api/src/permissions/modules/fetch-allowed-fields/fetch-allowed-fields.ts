@@ -32,7 +32,7 @@ export async function fetchAllowedFields(
 ): Promise<string[]> {
 	// TODO add cache
 
-	const policies = await fetchPolicies(services.accessService, context.accountability);
+	const policies = await fetchPolicies(context.accountability, services.accessService);
 
 	const permissions = (await services.permissionsService.readByQuery({
 		fields: ['fields'],
