@@ -20,12 +20,6 @@ export type ServerInfoOutput = {
 				duration: number;
 		  }
 		| false;
-	rateLimitRegistration?:
-		| {
-				points: number;
-				duration: number;
-		  }
-		| false;
 	queryLimit?: {
 		default: number;
 		max: number;

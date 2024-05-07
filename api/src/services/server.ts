@@ -80,15 +80,6 @@ export class ServerService {
 				info['rateLimitGlobal'] = false;
 			}
 
-			if (env['RATE_LIMITER_REGISTRATION_ENABLED']) {
-				info['rateLimitRegistration'] = {
-					points: env['RATE_LIMITER_REGISTRATION_POINTS'],
-					duration: env['RATE_LIMITER_REGISTRATION_DURATION'],
-				};
-			} else {
-				info['rateLimitRegistration'] = false;
-			}
-
 			info['extensions'] = {
 				limit: env['EXTENSIONS_LIMIT'] ?? null,
 			};

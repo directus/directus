@@ -47,12 +47,6 @@ export type Info = {
 				points: number;
 				duration: number;
 		  };
-	rateLimitRegistration?:
-		| false
-		| {
-				points: number;
-				duration: number;
-		  };
 	queryLimit?: {
 		default: number;
 		max: number;
