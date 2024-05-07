@@ -33,8 +33,21 @@ export type Info = {
 		public_note: string | null;
 		custom_css: string | null;
 		public_registration: boolean | null;
+		public_registration_verify_email: boolean | null;
 	};
 	rateLimit?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
+	rateLimitGlobal?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
+	rateLimitRegistration?:
 		| false
 		| {
 				points: number;

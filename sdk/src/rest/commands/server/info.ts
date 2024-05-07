@@ -6,6 +6,7 @@ export type ServerInfoOutput = {
 		project_name: string;
 		default_language: string;
 		public_registration: boolean;
+		public_registration_verify_email: boolean;
 	};
 	rateLimit?:
 		| {
@@ -14,6 +15,12 @@ export type ServerInfoOutput = {
 		  }
 		| false;
 	rateLimitGlobal?:
+		| {
+				points: number;
+				duration: number;
+		  }
+		| false;
+	rateLimitRegistration?:
 		| {
 				points: number;
 				duration: number;

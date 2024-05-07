@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useServerStore } from '@/stores/server';
 import { useAppStore } from '@directus/stores';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
@@ -16,8 +17,10 @@ withDefaults(
 
 const { t, te } = useI18n();
 const appStore = useAppStore();
+const serverStore = useServerStore();
 const authenticated = computed(() => appStore.authenticated);
 const wasSuccessful = ref(false);
+const requiresEmailVerification = computed(() => serverStore.info.project?.public_registration_verify_email);
 
 useHead({
 	title: t('register'),
@@ -31,7 +34,11 @@ useHead({
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
-			<div v-md="t('registration_successful_note')"></div>
+			<div
+				v-md="
+					requiresEmailVerification ? t('registration_successful_check_email_note') : t('registration_successful_note')
+				"
+			></div>
 			<v-button large to="/login">{{ t('sign_in') }}</v-button>
 		</div>
 

@@ -1643,8 +1643,9 @@ select_display: Select a display
 settings: Settings
 register: Register
 registration_successful_headline: Success!
-registration_successful_note: |
-  Please note that before you can sign in, you may need to verify your email address by clicking on the verification link sent to you.
+registration_successful_note: You may now proceed to the sign in page.
+registration_successful_check_email_note: |
+  Please note that before you can sign in, you'll need to verify your email address by clicking on the verification link sent to you.
 dont_have_an_account: Don't have an account?
 already_have_an_account: Already have an account?
 sign_up_now: Sign up now

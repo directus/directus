@@ -55,6 +55,7 @@ export class ServerService {
 				'public_note',
 				'custom_css',
 				'public_registration',
+				'public_registration_verify_email',
 			],
 		});
 
@@ -77,6 +78,15 @@ export class ServerService {
 				};
 			} else {
 				info['rateLimitGlobal'] = false;
+			}
+
+			if (env['RATE_LIMITER_REGISTRATION_ENABLED']) {
+				info['rateLimitRegistration'] = {
+					points: env['RATE_LIMITER_REGISTRATION_POINTS'],
+					duration: env['RATE_LIMITER_REGISTRATION_DURATION'],
+				};
+			} else {
+				info['rateLimitRegistration'] = false;
 			}
 
 			info['extensions'] = {
