@@ -928,11 +928,11 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
 	const childKey = Object.keys(value)[0];
 
-	if (typeof childKey === 'string' && childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey)) {
+	if (!childKey || (childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey))) {
 		return path;
 	}
 
-	if (childKey && isPlainObject(value)) {
+	if (isPlainObject(value)) {
 		path.push(...getFilterPath(childKey, Object.values(value)[0]));
 	}
 
