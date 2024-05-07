@@ -54,9 +54,11 @@ import {
 	SESSION_COOKIE_OPTIONS,
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
+import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { getService } from '../../utils/get-service.js';
 import isDirectusJWT from '../../utils/is-directus-jwt.js';
@@ -2643,10 +2645,14 @@ export class GraphQLService {
 					first_name: GraphQLString,
 					last_name: GraphQLString,
 				},
-				resolve: async (_, args) => {
+				resolve: async (_, args, { req }) => {
 					const service = new UsersService({ accountability: null, schema: this.schema });
 
-					// TODO: rate limiting
+					const ip = req ? getIPFromReq(req) : null;
+
+					if (ip) {
+						await rateLimiter.consume(ip);
+					}
 
 					await service.registerUser({
 						email: args.email,
