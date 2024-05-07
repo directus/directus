@@ -509,7 +509,11 @@ export class UsersService extends ItemsService {
 		if (hasEmailValidation) {
 			const mailService = new MailService(serviceOptions);
 			const payload = { email: input.email, scope: 'pending-registration' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+
+			const token = jwt.sign(payload, env['SECRET'] as string, {
+				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as string,
+				issuer: 'directus',
+			});
 
 			const verificationURL = new Url(env['PUBLIC_URL'] as string)
 				.addPath('users', 'register', 'verify-email')
