@@ -666,7 +666,7 @@ export function applyFilter(
 				const type = getOutputTypeForFunction(functionName);
 
 				if (['integer', 'float', 'decimal'].includes(type)) {
-					compareValue = Number(compareValue);
+					compareValue = Array.isArray(compareValue) ? compareValue.map(Number) : Number(compareValue);
 				}
 			}
 
@@ -789,19 +789,19 @@ export function applyFilter(
 			}
 
 			if (operator === '_between') {
-				if (compareValue.length !== 2) return;
-
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
+
+				if (value.length !== 2) return;
 
 				dbQuery[logical].whereBetween(selectionRaw, value);
 			}
 
 			if (operator === '_nbetween') {
-				if (compareValue.length !== 2) return;
-
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
+
+				if (value.length !== 2) return;
 
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
