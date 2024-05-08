@@ -2,7 +2,7 @@ import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PermissionsAction, SchemaOverview } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import { difference, uniq } from 'lodash-es';
+import { assign, difference, uniq } from 'lodash-es';
 import type { AccessService } from '../../../services/access.js';
 import type { PermissionsService } from '../../../services/index.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
@@ -22,7 +22,7 @@ export async function processPayload(
 	payload: Item,
 ) {
 	if (accountability.admin) {
-		return;
+		return payload;
 	}
 
 	const policies = await fetchPolicies(accountability, accessService);
@@ -80,7 +80,7 @@ export async function processPayload(
 		if (validationErrors.length > 0) throw validationErrors;
 	}
 
-	// TODO Merge and inject presets.. maybe? Usage is super low, discuss whether to ignore it here
-	// and move them to "dynamic default values"
-	// If we're gonna modify payload, don't forget to cloneDeep. Don't want to mutate the original
+	const presets = permissions.map((permission) => permission.presets ?? {});
+
+	return assign({}, ...presets, payload);
 }

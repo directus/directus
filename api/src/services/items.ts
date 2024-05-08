@@ -157,7 +157,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? processPayload(
+				? await processPayload(
 						accessService,
 						permissionsService,
 						this.schema,
@@ -676,7 +676,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const payloadWithPresets = this.accountability
-			? processPayload(
+			? await processPayload(
 					accessService,
 					permissionsService,
 					this.schema,

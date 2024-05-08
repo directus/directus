@@ -29,7 +29,7 @@ test('Returns early when admin', async () => {
 
 	await expect(
 		processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {}),
-	).resolves.toBeUndefined();
+	).resolves.toEqual({});
 });
 
 test('Throws forbidden error when permissions length is 0', async () => {
@@ -104,4 +104,34 @@ test('Validates against permission validation rules', async () => {
 		expect(errors.length).toBe(1);
 		expect(errors[0]).toBeInstanceOf(FailedValidationError);
 	}
+});
+
+test('Merges and applies defaults from presets', async () => {
+	const schema = { collections: { 'collection-a': { fields: {} } } } as unknown as SchemaOverview;
+
+	const acc = { admin: false } as unknown as Accountability;
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a'], validation: null, presets: { 'field-b': 1 } } as unknown as Permission,
+		{ fields: ['field-a', 'field-b'], validation: null, presets: { 'field-c': 2 } } as unknown as Permission,
+		{ fields: ['*'], presets: { 'field-b': 3 } } as unknown as Permission,
+	]);
+
+	const payloadWithPresets = await processPayload(
+		accessService,
+		permissionsService,
+		schema,
+		acc,
+		'read',
+		'collection-a',
+		{
+			'field-a': 2,
+		},
+	);
+
+	expect(payloadWithPresets).toEqual({
+		'field-a': 2,
+		'field-b': 3,
+		'field-c': 2,
+	});
 });
