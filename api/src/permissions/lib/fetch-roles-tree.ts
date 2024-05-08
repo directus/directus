@@ -16,10 +16,15 @@ export async function _fetchRolesTree(start: string | null, knex: Knex): Promise
 			.where({ id: start })
 			.first();
 
-		// TODO infinite loop through recursive parent prevention
-		// might be as easy as checking here if roles already contains role we're about to add
-
 		roles.push(role.id);
+
+		// Prevent infinite recursion loops
+		if (role.parent && roles.includes(role.parent) === true) {
+			roles.reverse();
+			const rolesStr = roles.map((role) => `"${role}"`).join('->');
+			throw new Error(`Recursion encountered: role "${role.id}" already exists in tree path ${rolesStr}`);
+		}
+
 		parent = role.parent;
 	}
 

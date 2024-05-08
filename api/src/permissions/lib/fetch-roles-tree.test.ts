@@ -30,3 +30,13 @@ test('Returns array of all parents in top-down order', async () => {
 
 	expect(roles).toEqual(['third', 'second', 'start']);
 });
+
+test('Throws error if infinite recursion occurs', async () => {
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'first', parent: 'second' });
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'second', parent: 'third' });
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'third', parent: 'first' });
+
+	await expect(_fetchRolesTree('first', knex)).rejects.toMatchInlineSnapshot(
+		`[Error: Recursion encountered: role "third" already exists in tree path "third"->"second"->"first"]`,
+	);
+});
