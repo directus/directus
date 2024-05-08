@@ -8,36 +8,45 @@ import type { PermissionsService } from '../../../services/index.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 
+export interface ProcessPayloadOptions {
+	accountability: Accountability;
+	action: PermissionsAction;
+	collection: string;
+	payload: Item;
+}
+
+export interface ProcessPayloadContext {
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+	schema: SchemaOverview;
+}
+
 /**
  * @note this only validates the top-level fields. The expectation is that this function is called
  * for each level of nested insert separately
  */
-export async function processPayload(
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	accountability: Accountability,
-	action: PermissionsAction,
-	collection: string,
-	payload: Item,
-) {
-	if (accountability.admin) {
-		return payload;
+export async function processPayload(options: ProcessPayloadOptions, context: ProcessPayloadContext) {
+	if (options.accountability.admin) {
+		return options.payload;
 	}
 
-	const policies = await fetchPolicies(accountability, accessService);
-	const permissions = await fetchPermissions({ action, policies, collections: [collection] }, { permissionsService });
+	const policies = await fetchPolicies(options.accountability, context.accessService);
+
+	const permissions = await fetchPermissions(
+		{ action: options.action, policies, collections: [options.collection] },
+		{ permissionsService: context.permissionsService },
+	);
 
 	if (permissions.length === 0) {
 		throw new ForbiddenError({
-			reason: `You don't have permission to "${action}" from collection "${collection}" or it does not exist.`,
+			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
 		});
 	}
 
 	const fieldsAllowed = uniq(permissions.map(({ fields }) => fields ?? []).flat());
 
 	if (fieldsAllowed.includes('*') === false) {
-		const fieldsUsed = Object.keys(payload);
+		const fieldsUsed = Object.keys(options.payload);
 		const notAllowed = difference(fieldsUsed, fieldsAllowed);
 
 		if (notAllowed.length > 0) {
@@ -46,13 +55,13 @@ export async function processPayload(
 			throw new ForbiddenError({
 				reason:
 					notAllowed.length === 1
-						? `You don't have permission to access field ${fieldStr} in collection "${collection}" or it does not exist.`
-						: `You don't have permission to access fields ${fieldStr} in collection "${collection}" or they do not exist.`,
+						? `You don't have permission to access field ${fieldStr} in collection "${options.collection}" or it does not exist.`
+						: `You don't have permission to access fields ${fieldStr} in collection "${options.collection}" or they do not exist.`,
 			});
 		}
 	}
 
-	const fieldValidationRules = Object.values(schema.collections[collection]?.fields ?? {}).map(
+	const fieldValidationRules = Object.values(context.schema.collections[options.collection]?.fields ?? {}).map(
 		(field) => field.validation ?? {},
 	);
 
@@ -68,7 +77,7 @@ export async function processPayload(
 		const validationErrors: InstanceType<typeof FailedValidationError>[] = [];
 
 		validationErrors.push(
-			...validatePayload({ _and: validationRules }, payload)
+			...validatePayload({ _and: validationRules }, options.payload)
 				.map((error) => {
 					return error.details.map(
 						(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)),
@@ -82,5 +91,5 @@ export async function processPayload(
 
 	const presets = permissions.map((permission) => permission.presets ?? {});
 
-	return assign({}, ...presets, payload);
+	return assign({}, ...presets, options.payload);
 }

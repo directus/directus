@@ -55,14 +55,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		},
 	);
 
-	await processAst(
-		context.accessService,
-		context.permissionsService,
-		ast,
-		options.action,
-		options.accountability,
-		context.schema,
-	);
+	await processAst({ ast, ...options }, context);
 
 	const items = await runAst(ast, context.schema, { knex: context.knex });
 

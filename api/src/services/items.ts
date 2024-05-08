@@ -158,13 +158,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			const payloadWithPresets = this.accountability
 				? await processPayload(
-						accessService,
-						permissionsService,
-						this.schema,
-						this.accountability,
-						'create',
-						this.collection,
-						payloadAfterHooks,
+						{
+							accountability: this.accountability,
+							action: 'create',
+							collection: this.collection,
+							payload: payloadAfterHooks,
+						},
+						{
+							accessService,
+							permissionsService,
+							schema: this.schema,
+						},
 				  )
 				: payloadAfterHooks;
 
@@ -454,7 +458,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			},
 		);
 
-		ast = await processAst(accessService, permissionsService, ast, 'read', this.accountability, this.schema);
+		ast = await processAst(
+			{ ast, action: 'read', accountability: this.accountability },
+			{ accessService, permissionsService, schema: this.schema },
+		);
 
 		const records = await runAst(ast, this.schema, {
 			knex: this.knex,
@@ -677,13 +684,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const payloadWithPresets = this.accountability
 			? await processPayload(
-					accessService,
-					permissionsService,
-					this.schema,
-					this.accountability,
-					'update',
-					this.collection,
-					payloadAfterHooks,
+					{
+						accountability: this.accountability,
+						action: 'update',
+						collection: this.collection,
+						payload: payloadAfterHooks,
+					},
+					{
+						accessService,
+						permissionsService,
+						schema: this.schema,
+					},
 			  )
 			: payloadAfterHooks;
 

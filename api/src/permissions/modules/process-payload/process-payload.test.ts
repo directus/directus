@@ -28,7 +28,19 @@ test('Returns early when admin', async () => {
 	const acc = { admin: true } as unknown as Accountability;
 
 	await expect(
-		processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {}),
+		processPayload(
+			{
+				collection: 'collection-a',
+				action: 'read',
+				accountability: acc,
+				payload: {},
+			},
+			{
+				accessService,
+				permissionsService,
+				schema,
+			},
+		),
 	).resolves.toEqual({});
 });
 
@@ -39,7 +51,14 @@ test('Throws forbidden error when permissions length is 0', async () => {
 	vi.mocked(fetchPermissions).mockResolvedValue([]);
 
 	await expect(
-		processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {}),
+		processPayload(
+			{ accountability: acc, action: 'read', collection: 'collection-a', payload: {} },
+			{
+				accessService,
+				permissionsService,
+				schema,
+			},
+		),
 	).rejects.toBeInstanceOf(ForbiddenError);
 });
 
@@ -50,9 +69,21 @@ test('Throws forbidden error if used fields contain field that has no permission
 	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['field-a'] } as Permission]);
 
 	await expect(
-		processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {
-			'field-b': 'x',
-		}),
+		processPayload(
+			{
+				accountability: acc,
+				action: 'read',
+				collection: 'collection-a',
+				payload: {
+					'field-b': 'x',
+				},
+			},
+			{
+				accessService,
+				permissionsService,
+				schema,
+			},
+		),
 	).rejects.toBeInstanceOf(ForbiddenError);
 });
 
@@ -78,9 +109,17 @@ test('Validates against field validation rules', async () => {
 	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['field-a'] } as Permission]);
 
 	try {
-		await processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {
-			'field-a': 2,
-		});
+		await processPayload(
+			{
+				accountability: acc,
+				action: 'read',
+				collection: 'collection-a',
+				payload: {
+					'field-a': 2,
+				},
+			},
+			{ accessService, permissionsService, schema },
+		);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
 		expect(errors[0]).toBeInstanceOf(FailedValidationError);
@@ -97,9 +136,17 @@ test('Validates against permission validation rules', async () => {
 	]);
 
 	try {
-		await processPayload(accessService, permissionsService, schema, acc, 'read', 'collection-a', {
-			'field-a': 2,
-		});
+		await processPayload(
+			{
+				accountability: acc,
+				action: 'read',
+				collection: 'collection-a',
+				payload: {
+					'field-a': 2,
+				},
+			},
+			{ accessService, permissionsService, schema },
+		);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
 		expect(errors[0]).toBeInstanceOf(FailedValidationError);
@@ -118,14 +165,18 @@ test('Merges and applies defaults from presets', async () => {
 	]);
 
 	const payloadWithPresets = await processPayload(
-		accessService,
-		permissionsService,
-		schema,
-		acc,
-		'read',
-		'collection-a',
 		{
-			'field-a': 2,
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			payload: {
+				'field-a': 2,
+			},
+		},
+		{
+			accessService,
+			permissionsService,
+			schema,
 		},
 	);
 
