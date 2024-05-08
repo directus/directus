@@ -12,7 +12,7 @@ systems.
 ::: tip Session Based Authentication
 
 In [Directus version 10.10.0](/releases/breaking-changes.html#session-cookie-based-authentication) the `cookie` mode has
-been replaced by the new `session` mode. The API still supports `cookie` mode logins for compatibility however the Data
+been replaced by the new `session` mode. The API still supports `cookie` mode logins for compatibility, however the Data
 Studio no longer supports `cookie` mode for logging in.
 
 :::
