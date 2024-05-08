@@ -35,7 +35,11 @@ export function useFieldTree(
 	const treeList = ref<FieldNode[]>([]);
 	const visitedPaths = ref<Set<string>>(new Set());
 
-	watch(() => collection.value, refresh, { immediate: true });
+	watch(
+		[() => collection.value, () => collection.value && fieldsStore.getFieldsForCollectionSorted(collection.value)],
+		refresh,
+		{ immediate: true },
+	);
 
 	return { treeList, loadFieldRelations, refresh };
 
