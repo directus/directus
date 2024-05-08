@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",
 		"@pnpm/find-workspace-packages": "6.0.9",
-		"@pnpm/workspace.pkgs-graph": "3.0.0",
+		"@pnpm/workspace.pkgs-graph": "3.0.2",
 		"semver": "7.6.0"
 	},
 	"devDependencies": {
