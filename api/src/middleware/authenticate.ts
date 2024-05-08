@@ -3,6 +3,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
@@ -11,14 +12,7 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
  * Verify the passed JWT and assign the user ID and role to `req`
  */
 export const handler = async (req: Request, _res: Response, next: NextFunction) => {
-	const defaultAccountability: Accountability = {
-		user: null,
-		role: null,
-		roles: [],
-		admin: false,
-		app: false,
-		ip: getIPFromReq(req),
-	};
+	const defaultAccountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 	const userAgent = req.get('user-agent')?.substring(0, 1024);
 	if (userAgent) defaultAccountability.userAgent = userAgent;

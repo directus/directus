@@ -1,12 +1,13 @@
-import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
@@ -54,12 +55,12 @@ export class ActivityService extends ItemsService {
 				const roles = await fetchRolesTree(user['role'], this.knex);
 				const globalAccess = await fetchGlobalAccess(this.knex, roles, user['id']);
 
-				const accountability: Accountability = {
+				const accountability: Accountability = createDefaultAccountability({
 					user: userID,
 					role: user['role']?.id ?? null,
 					roles,
 					...globalAccess,
-				};
+				});
 
 				const usersService = new UsersService({ schema: this.schema, accountability });
 

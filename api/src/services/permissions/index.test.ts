@@ -1,3 +1,5 @@
+// TODO all the things
+
 import { randomIdentifier, randomInteger, randomUUID } from '@directus/random';
 import type {
 	Accountability,
@@ -16,6 +18,7 @@ import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { PermissionsService } from './index.js';
 import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
 
@@ -82,12 +85,11 @@ describe('Services / PermissionsService', () => {
 				},
 			];
 
-			const accountability: Accountability = {
+			const accountability: Accountability = createDefaultAccountability({
 				user: randomUUID(),
 				role,
 				app: true,
-				permissions,
-			};
+			});
 
 			const schema: DeepPartial<SchemaOverview> = {
 				collections: {

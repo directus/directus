@@ -56,6 +56,7 @@ import {
 import getDatabase from '../../database/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -2280,7 +2281,7 @@ export class GraphQLService {
 					otp: GraphQLString,
 				},
 				resolve: async (_, args, { req, res }) => {
-					const accountability: Accountability = { role: null, user: null, roles: [], admin: false, app: false };
+					const accountability: Accountability = createDefaultAccountability();
 
 					if (req?.ip) accountability.ip = req.ip;
 
@@ -2332,7 +2333,7 @@ export class GraphQLService {
 					mode: AuthMode,
 				},
 				resolve: async (_, args, { req, res }) => {
-					const accountability: Accountability = { role: null, user: null, roles: [], admin: false, app: false };
+					const accountability: Accountability = createDefaultAccountability();
 
 					if (req?.ip) accountability.ip = req.ip;
 
@@ -2399,7 +2400,7 @@ export class GraphQLService {
 					mode: AuthMode,
 				},
 				resolve: async (_, args, { req, res }) => {
-					const accountability: Accountability = { role: null, user: null, roles: [], admin: false, app: false };
+					const accountability: Accountability = createDefaultAccountability();
 
 					if (req?.ip) accountability.ip = req.ip;
 
@@ -2456,7 +2457,7 @@ export class GraphQLService {
 					reset_url: GraphQLString,
 				},
 				resolve: async (_, args, { req }) => {
-					const accountability: Accountability = { role: null, user: null, roles: [], admin: false, app: false };
+					const accountability: Accountability = createDefaultAccountability();
 
 					if (req?.ip) accountability.ip = req.ip;
 
@@ -2485,7 +2486,7 @@ export class GraphQLService {
 					password: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args, { req }) => {
-					const accountability: Accountability = { role: null, user: null, roles: [], admin: false, app: false };
+					const accountability: Accountability = createDefaultAccountability();
 
 					if (req?.ip) accountability.ip = req.ip;
 

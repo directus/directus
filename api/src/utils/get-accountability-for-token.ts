@@ -3,23 +3,18 @@ import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { getSecret } from './get-secret.js';
 import isDirectusJWT from './is-directus-jwt.js';
-import { verifySessionJWT } from './verify-session-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
 	accountability?: Accountability,
 ): Promise<Accountability> {
 	if (!accountability) {
-		accountability = {
-			user: null,
-			role: null,
-			roles: [],
-			admin: false,
-			app: false,
-		};
+		accountability = createDefaultAccountability();
 	}
 
 	// Try finding the user with the provided token
