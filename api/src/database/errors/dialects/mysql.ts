@@ -49,7 +49,8 @@ function uniqueViolation(error: MySQLError) {
 	 * MySQL's error doesn't return the field name in the error. In case the field is created through
 	 * Directus (/ Knex), the key name will be `<collection>_<field>_unique` in which case we can pull
 	 * the field name from the key name.
-	 * If the field is the primary key it instead will be `<collection>_PRIMARY` for MySQL 8+ and `PRIMARY` for MySQL 5.7.
+	 * If the field is the primary key it instead will be `<collection>_PRIMARY` for MySQL 8+
+	 * and `PRIMARY` for MySQL 5.7 and MariaDB.
 	 */
 
 	let collection: string | null;
@@ -63,7 +64,7 @@ function uniqueViolation(error: MySQLError) {
 		// In case of other field matches[1] is `'<collection>.<collection>_<field>_unique'`
 		[collection, indexName] = matches[1]!.slice(1, -1).split('.') as [string, string];
 	} else {
-		// MySQL 5.7 style error message
+		// MySQL 5.7 and MariaDB style error message
 
 		// In case of primary key matches[1] is `'PRIMARY'`
 		// In case of other field matches[1] is `'<collection>_<field>_unique'`
