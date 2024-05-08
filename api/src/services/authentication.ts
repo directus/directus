@@ -11,6 +11,7 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
+import { nanoid } from 'nanoid';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
@@ -56,8 +57,6 @@ export class AuthenticationService {
 			session: boolean;
 		}>,
 	): Promise<LoginResult> {
-		const { nanoid } = await import('nanoid');
-
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
@@ -274,7 +273,6 @@ export class AuthenticationService {
 	}
 
 	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
-		const { nanoid } = await import('nanoid');
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
@@ -357,7 +355,7 @@ export class AuthenticationService {
 			});
 		}
 
-		const newRefreshToken = nanoid(64);
+		const newRefreshToken = options?.session ? refreshToken : nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		const tokenPayload: DirectusTokenPayload = {
