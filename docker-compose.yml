@@ -1,10 +1,19 @@
-# This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+# This compose file is meant to spin up a copy of all supported database vendors + Redis + S3 (Minio) and help with receiving emails.
 # For production use see the docker compose file example in the docs:
 #     https://docs.directus.io/self-hosted/docker-guide.html#example-docker-compose
+#
+# For receiving emails you'll need to add the following to your env:
+#
+# EMAIL_FROM=directus@directus.io
+# EMAIL_TRANSPORT=smtp
+# EMAIL_SMTP_HOST=0.0.0.0
+# EMAIL_SMTP_PORT=1025
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
 # Ports:
+#   Maildev SMTP:    1025
+#   Maildev Web-UI:  1080
 #   Postgres:        5100
 #   MySQL (8):       5101
 #   MariaDB:         5102
@@ -66,6 +75,11 @@
 version: '3.8'
 
 services:
+  maildev:
+    image: 'maildev/maildev'
+    ports:
+      - 1025:1025
+      - 1080:1080
   postgres:
     image: postgis/postgis:13-3.4-alpine
     environment:
