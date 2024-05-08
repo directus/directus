@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { parseFilter, parseJSON } from '@directus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from './sanitize-query.js';
 
@@ -7,10 +8,11 @@ import { sanitizeQuery } from './sanitize-query.js';
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('@directus/utils', async () => {
-	const actual = (await vi.importActual('@directus/utils')) as any;
+	const actual = await vi.importActual<typeof import('@directus/utils')>('@directus/utils');
 
 	return {
 		...actual,
+		parseJSON: vi.fn().mockImplementation(actual.parseJSON),
 		parseFilter: vi.fn().mockImplementation((value) => value),
 	};
 });
@@ -200,12 +202,22 @@ describe('sort', () => {
 });
 
 describe('filter', () => {
-	test('should accept valid value', () => {
+	test('should accept valid filter', () => {
 		const filter = { field_a: { _eq: 'test' } };
 
 		const sanitizedQuery = sanitizeQuery({ filter });
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
+	});
+
+	test('should throw error on invalid filter', () => {
+		const filter = { field_a: null };
+
+		vi.mocked(parseFilter).mockImplementationOnce(() => {
+			throw new Error();
+		});
+
+		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid filter object.');
 	});
 
 	test('should parse as json when it is a string', () => {
@@ -214,6 +226,16 @@ describe('filter', () => {
 		const sanitizedQuery = sanitizeQuery({ filter });
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
+	});
+
+	test('should throw error on invalid json', () => {
+		const filter = '{ "field_a": }';
+
+		vi.mocked(parseJSON).mockImplementationOnce(() => {
+			throw new Error();
+		});
+
+		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid JSON for filter object.');
 	});
 });
 

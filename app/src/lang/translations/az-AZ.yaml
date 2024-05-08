@@ -82,6 +82,7 @@ extension_bundles: Paketlər
 extension_missing: Tapılmadı
 extension_reload_required: Səhifənin yenilənməsi tələb olunur
 extension_reload_required_copy: Əlavənin statusu dəyişdikdən sonra dəyişiklərin əks olunması üçün səhifənin yenilənməsi tələb olunur.
+extension_reload_now: İndi yenilə
 published_relative: '{relativeTime} dərc olundu'
 compatible_with_your_project: Proyektinizə uyğundur
 compatible_with_your_project_copy: Müəllif bu əlavənin uyğunluq versiyasını {hostVersion} təyin etmişdir. Hansı ki sizin proyekt versiyanıza ({currentVersion}) uyğundur
@@ -112,6 +113,7 @@ branch: Branch
 leaf: Yarpaq
 indeterminate: Qeyri-müəyyən
 edit_collection: Kolleksiyaya düzəliş et
+exclusive: Ciddi
 children: Uşaqlar
 db_only_click_to_configure: 'Yalnız verilənlər bazasında: Düzəliş etmək üçün klik edin'
 show_active_items: Aktiv obyektləri göstər
@@ -119,6 +121,90 @@ show_archived_items: Arxivlənmiş obyektləri göstər
 show_all_items: Bütün obyektləri göstər
 edited: Dəyərə düzəliş edildi
 required: Tələb olunur
+required_for_app_access: Tətbiq girişi üçün məcbur
+requires_value: Dəyər daxil olunmalıdır
+create_preset: Şablon yarat
+create_panel: Panel yarat
+create_role: Rol yarat
+create_user: İstifadəçi yarat
+message: Mesaj
+delete_panel: Panel sil
+create_webhook: Webhook yarat
+create_custom_translation: Tərcümə yarat
+edit_custom_translation: Tərcüməni tənzimlə
+no_custom_translations: Tərcümə olmasın
+no_custom_translations_copy: Tərcümə hələ yoxdur.
+invite_users: İstifadəçi dəvət et
+invite: Dəvət et
+email_already_invited: '{email} artıq dəvət olunub'
+subject: Mövzü
+inbox: Gələn qutusu
+emails: Emaillər
+connection_excellent: Əlaqə əladır
+connection_good: Əlaqə yaxşıdır
+connection_fair: Əlaqə ortadır
+connection_poor: Əlaqə zəifdir
+primary: Əsas
+rename_folder: Qovluğu yenidən adlandır
+delete_folder: Qovluğu sil
+prefix: Prefiks
+suffix: Son şəkilçi
+keep: Saxla
+version: Versiya
+version_key: Versiya açarı
+version_name: Versiya adı
+main_version: Əsas
+switch_version: Versiyanı dəyiş
+switch_version_copy: Versiyanı {version} nömrəli versiyaya dəyişmək istədiyinizdən əminmisiniz? Yadda saxlanılmamış dəyişikliklər itəcək.
+create_version: Versiya yarat
+rename_version: Versiyanın adını dəyiş
+compare_version: Versiyaları müqayisə et
+save_version: Versiyanı yadda saxla
+promote_version: Versiyanı promote et
+promote_version_disabled: Dəyişiklik yoxdur
+promote_version_drawer_title: '{version} versiyasını Əsas et'
+promote_version_changes: Dəyişikliklər
+promote_version_preview: Ön baxış
+outdated_notice: >-
+  Bu versiya yaradılandan bəri əsas element yeniləndi. Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
+promote_notice: >-
+  Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
+delete_version: Versiyanı sil
+delete_version_copy: >-
+  "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
+delete_bookmark_copy: >-
+  "{bookmark}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
+delete_personal_bookmark: Şəxsi əlfəcini sil
+validationError:
+  nistarts_with: Dəyər {substring} ilə başlaya bilməz
+  ends_with: Dəyər {substring} ilə bitməlidir
+  iends_with: Dəyər {substring} ilə bitməlidir
+  nends_with: Dəyər {substring} ilə bitə bilməz
+  niends_with: Dəyər {substring} ilə bitə bilməz
+all_access: Bütün Giriş
+no_access: Giriş yoxdur
+use_custom: Özəl halı istifadə et
+nullable: Null edilə bilən
+allow_null_value: NULL dəyərinə icazə verin
+allow_multiple: Çoxluğa icazə verin
+allow_multiple_to_be_open: Çoxluğun açılmasına icazə verin
+enter_value_to_replace_nulls: Lütfən, bu sahədə hazırda NULL-ləri əvəz etmək üçün yeni dəyər daxil edin.
+field_standard: Standart
+field_presentation: Təqdimat və Ləqəblər
+field_file: Tək Fayl
+field_files: Çoxlu Fayllar
+field_m2o: Many to One Əlaqə
+field_m2a: Many to All Əlaqə
+field_o2m: One to Many Əlaqə
+field_m2m: Many to Many Əlaqə
+field_translations: Tərcümələr
+field_group: Xana qrupu
+item_permissions: Element İcazələri
+field_permissions: Xanal İcazələri
+field_validation: Xana doğrulaması
+field_presets: Xana ayarları
+permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
+fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
 source_registry: Marketplace
 fields:
   directus_settings:
@@ -127,3 +213,19 @@ fields:
     translation: Sütun adlarının tərcüməsi
   directus_roles:
     name: Rol adı
+interfaces:
+  presentation-links:
+    primary: Əsas
+displays:
+  datetime:
+    suffix: Son şəkilçi
+  formatted-value:
+    prefix: Prefiks
+    suffix: Son şəkilçi
+operations:
+  log:
+    message: Mesaj
+  notification:
+    message: Mesaj
+    subject: Mövzü
+standard: Standart
