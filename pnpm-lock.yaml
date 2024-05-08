@@ -1493,8 +1493,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 3.0.0
-        version: 3.0.0(@pnpm/logger@5.0.0)
+        specifier: 3.0.2
+        version: 3.0.2(@pnpm/logger@5.0.0)
       semver:
         specifier: 7.6.0
         version: 7.6.0
@@ -4039,8 +4039,8 @@ packages:
     resolution: {integrity: sha512-oQYP08exi6mOPdAZZWcNIGS+KKPsnNwUBzSuAEGWuCcqwMAt3k/WVCqVIXzBxhO5sP2b43og69VHmPj6IroKqw==}
     engines: {node: '>=14.6'}
 
-  '@pnpm/npm-resolver@19.0.0':
-    resolution: {integrity: sha512-CGQcEmcpfCJURBOWeMS2mPhnH14JeYzE1+5BAyQ5/OfiZCvbkobukQdsp9MlNw6Juf/iBldIK9/EqQY+yDzMNw==}
+  '@pnpm/npm-resolver@19.0.2':
+    resolution: {integrity: sha512-p5a0RFyGuBOg/LsE72tfIq9cMQEWC+BEe1+AIrzxgRdHgphiqo/TAyfFIRtzoj7npMwUcSOWZJMxYXHuGcPG+g==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
@@ -4100,8 +4100,12 @@ packages:
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  '@pnpm/workspace.pkgs-graph@3.0.0':
-    resolution: {integrity: sha512-e8BdyO88kLmDNepjxcw3LvKsU9oXq5fEBOx6oU3ULHSTikZaa84982sIvxcJnHawXY5Ei0/YB81WwgHGmhoV/g==}
+  '@pnpm/workspace.pkgs-graph@3.0.2':
+    resolution: {integrity: sha512-FEsSOa1ME7/uznKsYXmQ4qNSvPHftJkMrqkLX2b92FSxT2Q+T9MnG9/ykO6pFNlPzSAHzUa2AD+8gnWRQGeYWg==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/workspace.spec-parser@1.0.0':
+    resolution: {integrity: sha512-0FxRN/7uFCcnN+xrLWI/8+Qjp5TEQZbZmFMXIWo5NlTVvXRAJU2EKdMp6pULtSp/D90ZeDCjQqQw1c+kzMLQJw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/write-project-manifest@5.0.1':
@@ -8288,10 +8292,6 @@ packages:
   lowercase-keys@2.0.0:
     resolution: {integrity: sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==}
     engines: {node: '>=8'}
-
-  lru-cache@10.2.0:
-    resolution: {integrity: sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==}
-    engines: {node: 14 || >=16.14}
 
   lru-cache@10.2.2:
     resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
@@ -14428,7 +14428,7 @@ snapshots:
       semver: 7.6.0
       validate-npm-package-name: 4.0.0
 
-  '@pnpm/npm-resolver@19.0.0(@pnpm/logger@5.0.0)':
+  '@pnpm/npm-resolver@19.0.2(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/core-loggers': 10.0.0(@pnpm/logger@5.0.0)
       '@pnpm/error': 6.0.0
@@ -14438,10 +14438,11 @@ snapshots:
       '@pnpm/resolve-workspace-range': 6.0.0
       '@pnpm/resolver-base': 12.0.0
       '@pnpm/types': 10.0.0
+      '@pnpm/workspace.spec-parser': 1.0.0
       '@zkochan/retry': 0.2.0
       encode-registry: 3.0.1
       load-json-file: 6.2.0
-      lru-cache: 10.2.0
+      lru-cache: 10.2.2
       normalize-path: 3.0.0
       p-limit: 3.1.0
       p-memoize: 4.0.1
@@ -14531,16 +14532,18 @@ snapshots:
 
   '@pnpm/util.lex-comparator@1.0.0': {}
 
-  '@pnpm/workspace.pkgs-graph@3.0.0(@pnpm/logger@5.0.0)':
+  '@pnpm/workspace.pkgs-graph@3.0.2(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 19.0.0(@pnpm/logger@5.0.0)
+      '@pnpm/npm-resolver': 19.0.2(@pnpm/logger@5.0.0)
       '@pnpm/resolve-workspace-range': 6.0.0
       '@pnpm/types': 10.0.0
       ramda: '@pnpm/ramda@0.28.1'
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
+
+  '@pnpm/workspace.spec-parser@1.0.0': {}
 
   '@pnpm/write-project-manifest@5.0.1':
     dependencies:
@@ -19314,8 +19317,6 @@ snapshots:
 
   lowercase-keys@2.0.0: {}
 
-  lru-cache@10.2.0: {}
-
   lru-cache@10.2.2: {}
 
   lru-cache@4.1.5:
@@ -20548,12 +20549,12 @@ snapshots:
 
   path-scurry@1.10.1:
     dependencies:
-      lru-cache: 10.2.0
+      lru-cache: 10.2.2
       minipass: 7.0.4
 
   path-scurry@1.10.2:
     dependencies:
-      lru-cache: 10.2.0
+      lru-cache: 10.2.2
       minipass: 7.0.4
 
   path-temp@2.1.0:
