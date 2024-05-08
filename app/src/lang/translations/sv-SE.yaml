@@ -463,7 +463,6 @@ replace_from_library: Ersätt fil från biblioteket
 replace_from_url: Ersätt fil från URL
 no_file_selected: Ingen fil vald
 download_file: Ladda ner fil
-open_file_in_tab: Öppna fil i ny flik
 start_export: Påbörja exportering
 not_available_for_local_downloads: Inte tillgänglig för lokala nedladdningar
 exporting_all_items_in_collection: Exporterar alla {total} objekt inom {collection}.

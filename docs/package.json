@@ -37,6 +37,6 @@
 		"typescript": "5.4.5",
 		"vitepress": "1.0.0-rc.4",
 		"vitepress-plugin-tabs": "0.3.0",
-		"vue": "3.4.26"
+		"vue": "3.4.27"
 	}
 }

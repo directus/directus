@@ -19,6 +19,7 @@ import emitter from '../emitter.js';
 import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
 import { SettingsService } from './settings.js';
@@ -226,7 +227,7 @@ export class AuthenticationService {
 
 		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
 
-		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+		const accessToken = jwt.sign(customClaims, getSecret(), {
 			expiresIn: TTL,
 			issuer: 'directus',
 		});
@@ -403,7 +404,7 @@ export class AuthenticationService {
 
 		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
 
-		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+		const accessToken = jwt.sign(customClaims, getSecret(), {
 			expiresIn: TTL,
 			issuer: 'directus',
 		});

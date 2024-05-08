@@ -467,7 +467,6 @@ replace_from_library: ライブラリからファイルを置き換え
 replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
-open_file_in_tab: 新規タブで開く
 start_export: エクスポートを開始
 not_available_for_local_downloads: ローカルダウンロードはできません
 exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'

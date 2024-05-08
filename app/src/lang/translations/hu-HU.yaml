@@ -423,7 +423,6 @@ replace_from_library: Fájl cseréje Könyvtárból
 replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
-open_file_in_tab: Megnyitás új fülön
 start_export: Indítsa el az exportálást
 not_available_for_local_downloads: Nem érhető el helyi letöltésekhez
 exporting_all_items_in_collection: A(z) {collection} összes {total} elemének exportálása.
