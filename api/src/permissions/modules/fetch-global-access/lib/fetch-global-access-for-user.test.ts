@@ -24,7 +24,7 @@ test('Returns result of fetchGlobalAccessForQuery with roles query + cache key',
 
 	const res = await fetchGlobalAccessForUser(knex, 'user-a');
 
-	expect(knex.where).toHaveBeenCalledWith('user', 'eq', 'user-a');
+	expect(knex.where).toHaveBeenCalledWith('user', '=', 'user-a');
 	expect(fetchGlobalAccessForQuery).toHaveBeenCalledWith(mockKnex, 'global-access-user-user-a');
 	expect(res).toBe(mockResult);
 });
