@@ -32,14 +32,8 @@ export async function validateAccess(
 	// exists within permissions
 	if (primaryKeys) {
 		access = await validateItemAccess(
-			knex,
-			accessService,
-			permissionsService,
-			schema,
-			accountability,
-			action,
-			collection,
-			primaryKeys,
+			{ accountability, action, collection, primaryKeys },
+			{ knex, accessService, permissionsService, schema },
 		);
 	} else {
 		access = await validateCollectionAccess(accessService, permissionsService, accountability, action, collection);

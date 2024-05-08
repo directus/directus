@@ -36,7 +36,10 @@ test('Throws error when primary key does not exist in given collection', async (
 	const acc = {} as unknown as Accountability;
 
 	await expect(
-		validateItemAccess(knex, accessService, permissionsService, schema, acc, 'read', 'collection-a', [1]),
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
+			{ knex, accessService, permissionsService, schema },
+		),
 	).rejects.toBeInstanceOf(Error);
 });
 
@@ -49,22 +52,31 @@ test('Queries the database', async () => {
 	vi.mocked(runAst).mockResolvedValue([]);
 
 	await expect(
-		validateItemAccess(knex, accessService, permissionsService, schema, acc, 'read', 'collection-a', [1]),
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
+			{ knex, accessService, permissionsService, schema },
+		),
 	).resolves.toBe(false);
 
 	expect(getAstFromQuery).toHaveBeenCalledWith(
-		'collection-a',
 		{
-			fields: [],
-			limit: 1,
-			filter: {
-				'field-a': {
-					_in: [1],
+			collection: 'collection-a',
+			query: {
+				fields: [],
+				limit: 1,
+				filter: {
+					'field-a': {
+						_in: [1],
+					},
 				},
 			},
+			accountability: acc,
 		},
-		schema,
-		acc,
+		{
+			schema,
+			accessService,
+			permissionsService,
+		},
 	);
 
 	expect(processAst).toHaveBeenCalledWith(accessService, permissionsService, ast, 'read', acc, schema);
@@ -77,7 +89,10 @@ test('Returns false if no items are returned', async () => {
 	vi.mocked(runAst).mockResolvedValue([]);
 
 	await expect(
-		validateItemAccess(knex, accessService, permissionsService, schema, acc, 'read', 'collection-a', [1]),
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
+			{ knex, accessService, permissionsService, schema },
+		),
 	).resolves.toBe(false);
 });
 
@@ -88,6 +103,9 @@ test('Returns true the number of returned items matches the number of requested 
 	vi.mocked(runAst).mockResolvedValue([{}, {}]);
 
 	await expect(
-		validateItemAccess(knex, accessService, permissionsService, schema, acc, 'read', 'collection-a', [1, 2]),
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2] },
+			{ knex, accessService, permissionsService, schema },
+		),
 	).resolves.toBe(true);
 });

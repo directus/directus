@@ -6,20 +6,25 @@ import type { AccessService } from '../../../../services/access.js';
 import type { PermissionsService } from '../../../../services/index.js';
 import { processAst } from '../../process-ast/process.js';
 
-export async function validateItemAccess(
-	knex: Knex,
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	accountability: Accountability,
-	action: PermissionsAction,
-	collection: string,
-	primaryKeys: PrimaryKey[],
-) {
-	const primaryKeyField = schema.collections[collection]?.primary;
+export interface ValidateItemAccessOptions {
+	accountability: Accountability;
+	action: PermissionsAction;
+	collection: string;
+	primaryKeys: PrimaryKey[];
+}
+
+export interface ValidateItemAccessContext {
+	knex: Knex;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+	schema: SchemaOverview;
+}
+
+export async function validateItemAccess(options: ValidateItemAccessOptions, context: ValidateItemAccessContext) {
+	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
-		throw new Error(`Cannot find primary key for collection "${collection}"`);
+		throw new Error(`Cannot find primary key for collection "${options.collection}"`);
 	}
 
 	// When we're looking up access to specific items, we have to read them from the database to
@@ -29,19 +34,39 @@ export async function validateItemAccess(
 		// We don't actually need any of the field data, just want to know if we can read the item as
 		// whole or not
 		fields: [],
-		limit: primaryKeys.length,
+		limit: options.primaryKeys.length,
 		filter: {
 			[primaryKeyField]: {
-				_in: primaryKeys,
+				_in: options.primaryKeys,
 			},
 		},
 	};
 
-	const ast = await getAstFromQuery(accessService, permissionsService, collection, query, schema, accountability);
-	await processAst(accessService, permissionsService, ast, action, accountability, schema);
-	const items = await runAst(ast, schema, { knex });
+	const ast = await getAstFromQuery(
+		{
+			accountability: options.accountability,
+			query,
+			collection: options.collection,
+		},
+		{
+			accessService: context.accessService,
+			permissionsService: context.permissionsService,
+			schema: context.schema,
+		},
+	);
 
-	if (items && items.length === primaryKeys.length) {
+	await processAst(
+		context.accessService,
+		context.permissionsService,
+		ast,
+		options.action,
+		options.accountability,
+		context.schema,
+	);
+
+	const items = await runAst(ast, context.schema, { knex: context.knex });
+
+	if (items && items.length === options.primaryKeys.length) {
 		return true;
 	}
 
