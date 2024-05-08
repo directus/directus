@@ -10,35 +10,32 @@ import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
 
-export interface ParseFieldsServices {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-}
-
-export interface ParseFieldsContext {
-	schema: SchemaOverview;
-	accountability: Accountability | null;
-}
-
 export interface ParseFieldsOptions {
+	accountability: Accountability | null;
 	parentCollection: string;
 	fields: string[] | null;
 	query: Query;
 	deep?: Record<string, any>;
 }
 
-export async function parseFields(
-	options: ParseFieldsOptions,
-	context: ParseFieldsContext,
-	services: ParseFieldsServices,
-) {
+export interface ParseFieldsContext {
+	schema: SchemaOverview;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
+
+export async function parseFields(options: ParseFieldsOptions, context: ParseFieldsContext) {
 	let { fields } = options;
 	if (!fields) return [];
 
 	fields = await convertWildcards(
-		{ fields, parentCollection: options.parentCollection, query: options.query },
+		{
+			fields,
+			parentCollection: options.parentCollection,
+			query: options.query,
+			accountability: options.accountability,
+		},
 		context,
-		services,
 	);
 
 	if (!fields || !Array.isArray(fields)) return [];
@@ -195,9 +192,9 @@ export async function parseFields(
 							  )[relatedCollection] || [],
 						query: options.query,
 						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
+						accountability: options.accountability,
 					},
 					context,
-					services,
 				);
 
 				child.query[relatedCollection] = getDeepQuery(options.deep?.[`${fieldKey}:${relatedCollection}`] || {});
@@ -223,9 +220,9 @@ export async function parseFields(
 						fields: nestedFields as string[],
 						query: options.query,
 						deep: options.deep?.[fieldKey] || {},
+						accountability: options.accountability,
 					},
 					context,
-					services,
 				),
 				cases: [],
 				whenCase: [],

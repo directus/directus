@@ -5,27 +5,20 @@ import type { AccessService } from '../../../services/access.js';
 import type { PermissionsService } from '../../../services/index.js';
 import { getRelation } from '../utils/get-relation.js';
 
-export interface ConvertWildcardsServices {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-}
-
-export interface ConvertWildCardsContext {
-	schema: SchemaOverview;
-	accountability: Accountability | null;
-}
-
 export interface ConvertWildcardsOptions {
 	parentCollection: string;
 	fields: string[];
 	query: Query;
+	accountability: Accountability | null;
 }
 
-export async function convertWildcards(
-	options: ConvertWildcardsOptions,
-	context: ConvertWildCardsContext,
-	services: ConvertWildcardsServices,
-) {
+export interface ConvertWildCardsContext {
+	schema: SchemaOverview;
+	accessService: AccessService;
+	permissionsService: PermissionsService;
+}
+
+export async function convertWildcards(options: ConvertWildcardsOptions, context: ConvertWildCardsContext) {
 	const fields = cloneDeep(options.fields);
 
 	const fieldsInCollection = Object.entries(context.schema.collections[options.parentCollection]!.fields).map(
@@ -34,14 +27,14 @@ export async function convertWildcards(
 
 	let allowedFields: string[] | null = fieldsInCollection;
 
-	if (context.accountability && context.accountability.admin !== false) {
+	if (options.accountability && options.accountability.admin !== false) {
 		allowedFields = await fetchAllowedFields(
 			{
 				collection: options.parentCollection,
 				action: 'read',
+				accountability: options.accountability,
 			},
-			{ accountability: context.accountability },
-			services,
+			{ accessService: context.accessService, permissionsService: context.permissionsService },
 		);
 	}
 

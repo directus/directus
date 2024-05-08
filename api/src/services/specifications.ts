@@ -77,8 +77,7 @@ class OASSpecsService implements SpecificationSubService {
 					accountability: this.accountability,
 					action: 'read',
 				},
-				{ schema },
-				{ accessService: this.accessService, permissionsService: this.permissionsService },
+				{ schema, accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 
 			schema = reduceSchema(schema, allowedFields);

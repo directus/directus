@@ -50,8 +50,7 @@ export class UtilsService {
 			);
 
 			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'update' },
-				{ accountability: this.accountability },
+				{ collection, action: 'update', accountability: this.accountability },
 				{ accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 

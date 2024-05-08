@@ -302,11 +302,15 @@ export class CollectionsService {
 			);
 
 			let collectionsYouHavePermissionToRead = await fetchAllowedCollections(
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{
+					accessService: this.accessService,
+					permissionsService: this.permissionsService,
+					schema: this.schema,
+				},
 			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {

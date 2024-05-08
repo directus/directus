@@ -104,8 +104,7 @@ export class RelationsService {
 			);
 
 			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'read' },
-				{ accountability: this.accountability },
+				{ collection, action: 'read', accountability: this.accountability },
 				{ accessService: this.accessService, permissionsService: this.permissionsService },
 			);
 
@@ -535,8 +534,7 @@ export class RelationsService {
 				accountability: this.accountability,
 				action: 'read',
 			},
-			{ schema: this.schema },
-			{ accessService: this.accessService, permissionsService: this.permissionsService },
+			{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
 		);
 
 		const allowedCollections = Object.keys(allowedFields);

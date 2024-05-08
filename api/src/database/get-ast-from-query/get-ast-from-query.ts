@@ -91,12 +91,9 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 			fields,
 			query: options.query,
 			deep,
+			accountability: options.accountability,
 		},
-		{ schema: context.schema, accountability: options.accountability },
-		{
-			accessService: context.accessService,
-			permissionsService: context.permissionsService,
-		},
+		{ schema: context.schema, accessService: context.accessService, permissionsService: context.permissionsService },
 	);
 
 	return ast;

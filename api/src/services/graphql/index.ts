@@ -217,11 +217,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'read',
 						},
-						{ schema: this.schema },
-						{
-							accessService: this.accessService,
-							permissionsService: this.permissionsService,
-						},
+						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
 					),
 				),
 				create: reduceSchema(
@@ -231,11 +227,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'create',
 						},
-						{ schema: this.schema },
-						{
-							accessService: this.accessService,
-							permissionsService: this.permissionsService,
-						},
+						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
 					),
 				),
 				update: reduceSchema(
@@ -245,11 +237,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'update',
 						},
-						{ schema: this.schema },
-						{
-							accessService: this.accessService,
-							permissionsService: this.permissionsService,
-						},
+						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
 					),
 				),
 				delete: reduceSchema(
@@ -259,11 +247,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'delete',
 						},
-						{ schema: this.schema },
-						{
-							accessService: this.accessService,
-							permissionsService: this.permissionsService,
-						},
+						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
 					),
 				),
 			};
