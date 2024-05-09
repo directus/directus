@@ -33,7 +33,9 @@ const detailsOpen = ref(false)
 			<!-- <Badge small :text="`Click to ${detailsOpen ? 'close' : 'open'}`" /> -->
 			<Icon name="material-symbols:keyboard-arrow-down-rounded" :class="{ toggle: true, open: detailsOpen }" />
 		</summary>
-		<ContentSlot :use="$slots.default" />
+		<div class="content">
+			<ContentSlot :use="$slots.default" />
+		</div>
 	</details>
 
 	<!-- STATIC -->
@@ -43,7 +45,6 @@ const detailsOpen = ref(false)
 			<p v-if="title" class="title"><b>{{ title }}</b></p>
 			<ContentSlot :use="$slots.default" />
 		</div>
-		<!-- TODO: FIX ARROW ON LINK -->
 		<Icon v-if="componentType == 'a' || componentType().name == 'NuxtLink'" class="arrow" name="material-symbols:arrow-forward-ios-rounded" :color="section.color"  />
 	</component>
 </template>
@@ -87,11 +88,15 @@ a.callout {
 
 details.callout {
 	summary {
+		line-height: 1;
 		cursor: pointer;
 		font-weight: bold;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		svg.icon {
+			margin-bottom: 0;
+		}
 		&::marker {
 			content: '';
 		}
@@ -108,6 +113,7 @@ details.callout {
 
 .content {
 	width: 100%;
+	line-height: 1.9;
 	:deep(p) {
 		margin-bottom: 0.5rem;
 	}

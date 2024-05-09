@@ -16,7 +16,7 @@
 			<a href="https://directus.chat">
 				<Icon name="ri:discord-fill" />
 			</a>
-			<Button type="a" label="Register" href="https://directus.cloud/register" target="_blank" color="outline-only" size="small" class="register" />
+			<Button type="a" label="Register" href="https://directus.cloud/register" target="_blank" color="white" size="small" class="register" />
 			<Button type="a" label="Sign In" href="https://directus.cloud" target="_blank" color="primary" size="small" />
 		</div>
 	</header>
@@ -36,6 +36,7 @@ header {
 	justify-content: center;
 	align-items: center;
 	.search-box {
+		background: white;
 		border: 1px solid var(--border-2);
 		border-radius: var(--border-radius);
 		width: 250px;
