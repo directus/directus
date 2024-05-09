@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "11.0.7",
+	"version": "11.0.8",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,7 +36,7 @@
 		"@directus/system-data": "workspace:*",
 		"date-fns": "3.6.0",
 		"fs-extra": "11.2.0",
-		"joi": "17.13.0",
+		"joi": "17.13.1",
 		"js-yaml": "4.1.0",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3"
@@ -49,12 +49,12 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/node": "18.19.31",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "1.5.2",
+		"@vitest/coverage-v8": "1.5.3",
 		"tmp": "0.2.3",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.5.2",
-		"vue": "3.4.26"
+		"vitest": "1.5.3",
+		"vue": "3.4.27"
 	},
 	"peerDependencies": {
 		"vue": "^3.4"

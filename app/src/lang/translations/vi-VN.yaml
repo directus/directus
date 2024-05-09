@@ -395,7 +395,6 @@ replace_from_library: Hoán đổi với Tập Tin từ Thư Viện
 replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
 no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
-open_file_in_tab: Mở file trong tab mới
 start_export: Xuất dữ liệu
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
 exporting_limited_items_in_collection: '{count} trên {total} dòng dữ liệu trong {collection} sẽ được xuất.'

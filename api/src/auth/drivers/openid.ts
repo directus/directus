@@ -28,6 +28,7 @@ import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
@@ -336,7 +337,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, env['SECRET'] as string, {
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -368,7 +369,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env['SECRET'] as string, {
+				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], getSecret(), {
 					issuer: 'directus',
 				}) as {
 					verifier: string;

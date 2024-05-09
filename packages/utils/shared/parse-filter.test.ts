@@ -12,6 +12,22 @@ describe('#parseFilter', () => {
 		vi.useRealTimers();
 	});
 
+	it('should accept empty filter object', () => {
+		const filter = {};
+
+		const parsedFilter = parseFilter(filter, null);
+
+		expect(parsedFilter).toEqual({});
+	});
+
+	it('should accept empty object for key', () => {
+		const filter = { field_a: {} };
+
+		const parsedFilter = parseFilter(filter, null);
+
+		expect(parsedFilter).toEqual({ field_a: {} });
+	});
+
 	it('returns the filter when passed accountability with only a role', () => {
 		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockAccountability = { role: 'admin' };

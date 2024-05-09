@@ -18,7 +18,7 @@ export const useRateLimiterGlobal = () => {
 
 	if (!env['RATE_LIMITER_GLOBAL_ENABLED']) return;
 
-	validateEnv(['RATE_LIMITER_GLOBAL_STORE', 'RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
+	validateEnv(['RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
 	validateConfiguration();
 
 	_cache.rateLimiterGlobal = createRateLimiter('RATE_LIMITER_GLOBAL');

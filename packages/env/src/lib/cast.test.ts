@@ -87,7 +87,7 @@ describe('Casting', () => {
 		expect(cast('value')).toBe(123);
 	});
 
-	test('Uses toBoolean for number types', () => {
+	test('Uses toBoolean for boolean types', () => {
 		vi.mocked(getCastFlag).mockReturnValue('boolean');
 
 		vi.mocked(toBoolean).mockReturnValue(false);

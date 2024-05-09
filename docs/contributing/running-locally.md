@@ -54,12 +54,12 @@ Create an `.env` file under the `api` folder using vars from the online
 
 ::: tip Config Values
 
-The `KEY`& `SECRET` config options from [Security](https://docs.directus.io/self-hosted/config-options.html#security)
-are mandatory.
+The `SECRET` config option from [Security](https://docs.directus.io/self-hosted/config-options.html#security) is
+mandatory in production.
 
 Also the [Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) must be specified.
 You might want to use the [docker-compose.yml](https://github.com/directus/directus/blob/main/docker-compose.yml) file
-to spin up a test database.
+to spin up a test database or a local mail server.
 
 :::
 

@@ -71,7 +71,6 @@ vi.mock('./utils/validate-env.js');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
-		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
 		SECRET: 'abcdef',
 		SERVE_APP: 'true',
 		PUBLIC_URL: 'http://localhost:8055/directus',

@@ -428,7 +428,6 @@ replace_from_library: Erstat fil fra enhed
 replace_from_url: Erstat fil fra URL
 no_file_selected: Ingen fil Valgt
 download_file: Download fil
-open_file_in_tab: Åbn fil i nyt faneblad
 start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
