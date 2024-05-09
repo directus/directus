@@ -1,6 +1,7 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
+import type { AliasMap } from '../../../utils/get-column-path.js';
 import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
@@ -51,7 +52,7 @@ export abstract class FnHelper extends DatabaseHelper {
 
 		if (options?.query?.filter) {
 			// set the newly aliased collection in the alias map as the default parent collection, indicated by '', for any nested filters
-			const aliasMap = {
+			const aliasMap: AliasMap = {
 				'': {
 					alias,
 					collection: relation.collection,

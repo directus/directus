@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed count function for related, filtered fields
+Fixed count function on relational, filtered fields
