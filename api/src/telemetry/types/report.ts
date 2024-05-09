@@ -80,7 +80,7 @@ export interface TelemetryReport {
 	fields_total: number;
 
 	/**
-	 * Size of the database
+	 * Size of the database in bytes
 	 */
 	database_size: number;
 }

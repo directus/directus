@@ -140,6 +140,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return uuid; // no-op by default
 	}
 
+	/**
+	 * @returns Size of the database in bytes
+	 */
 	async getDatabaseSize(): Promise<number> {
 		return 0;
 	}
