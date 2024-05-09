@@ -28,6 +28,7 @@ method: طريقة
 published: تم نشره
 draft: مسوّدة
 archived: مؤرشف
+marketplace: المتجر
 extensions: الإضافات
 modules: الوحدات
 module_bar: شريط الوحدة
@@ -83,6 +84,12 @@ extension_reload_required: مطلوب إعادة تحميل الصفحة
 extension_reload_required_copy: مطلوب إعادة تحميل الصفحة لرؤية التغييرات بعد تفعيل أو تعطيل إضافات التطبيق.
 extension_reload_now: إعادة التحميل الآن
 published_relative: نشر {relativeTime}
+compatible_with_your_project: متوافق مع مشروعك
+compatible_with_your_project_copy: أشار المؤلف إلى أن توافق هذا الlgpr هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
+last_updated_relative: آخر تحديث {relativeTime}
+n_files: '{n} ملفات'
+verified: محقق
+homepage: الصفحة الرئيسية
 enable: تفعيل
 disable: تعطيل
 custom: تخصيص
@@ -1094,6 +1101,7 @@ cancel: إلغاء
 no_upscale: عدم تكبير أبعاد الصور
 no_extensions: لا توجد إضافات
 no_extensions_copy: لم يتم تثبيت أي إضافات حتى الآن.
+source_registry: المتجر
 collection: المجموعة
 collections: مجموعات
 content: المحتوى
