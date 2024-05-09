@@ -80,12 +80,6 @@ const stripe = new Stripe(env.STRIPE_TOKEN);
 `env` looks inside the Directus environment variables for `STRIPE_TOKEN`. In order to start using this hook, this
 variable must be added to your `.env` file. This can be found in the developers area on your Stripe dashboard.
 
-Instantiate the `MailService`:
-
-```js
-const mailService = new MailService({ schema });
-```
-
 Create a new customer with the customer's name and email as the input values.
 
 ```js
@@ -123,6 +117,7 @@ stripe.customers
 	.create({})
 	.then((customer) => {})
 	.catch((error) => {
+		const mailService = new MailService({ schema });
 		mailService.send({ // [!code ++]
 			to: 'sharedmailbox@directus.io', // [!code ++]
 			from: 'noreply@directus.io', // [!code ++]
@@ -177,7 +172,6 @@ export default ({ action }, { env, services }) => {
 	action('items.create', async ({ key, collection, payload }, { schema }) => {
 		if (collection !== 'customers') return;
 		const stripe = new Stripe(env.STRIPE_TOKEN);
-		const mailService = new MailService({ schema });
 
 		stripe.customers
 			.create({
@@ -189,6 +183,7 @@ export default ({ action }, { env, services }) => {
 				customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
 			})
 			.catch((error) => {
+				const mailService = new MailService({ schema });
 				mailService.send({
 					to: 'sharedmailbox@directus.io',
 					from: 'noreply@directus.io',
