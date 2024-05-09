@@ -102,6 +102,7 @@ export class MailService {
 		const localizedTemplatePath = language
 			? path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + `.${language}.liquid`)
 			: null;
+
 		const customTemplatePath = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + '.liquid');
 		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
 
