@@ -146,7 +146,9 @@ export class UsersService extends ItemsService {
 	 */
 	private async getUserByEmail(
 		email: string,
-	): Promise<{ id: string; role: string; status: string; password: string; email: string, language: string|null } | undefined> {
+	): Promise<
+		{ id: string; role: string; status: string; password: string; email: string; language: string | null } | undefined
+	> {
 		return await this.knex
 			.select('id', 'role', 'status', 'password', 'email', 'language')
 			.from('directus_users')

@@ -27,7 +27,7 @@ export type EmailOptions = SendMailOptions & {
 	template?: {
 		name: string;
 		data: Record<string, any>;
-		language?: string | null | undefined
+		language?: string | null | undefined;
 	};
 };
 
@@ -84,7 +84,7 @@ export class MailService {
 		return info;
 	}
 
-	private async getFirstExistingPath(paths: (string|null)[]): Promise<string | null> {
+	private async getFirstExistingPath(paths: (string | null)[]): Promise<string | null> {
 		for (const path of paths) {
 			if (!path) {
 				continue;
@@ -99,11 +99,17 @@ export class MailService {
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>, language?: string) {
-		const localizedTemplatePath = language ? path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + `.${language}.liquid`) : null;
+		const localizedTemplatePath = language
+			? path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + `.${language}.liquid`)
+			: null;
 		const customTemplatePath = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + '.liquid');
 		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
 
-		const templatePath = await this.getFirstExistingPath([localizedTemplatePath, customTemplatePath, systemTemplatePath]);
+		const templatePath = await this.getFirstExistingPath([
+			localizedTemplatePath,
+			customTemplatePath,
+			systemTemplatePath,
+		]);
 
 		if (!templatePath) {
 			throw new InvalidPayloadError({ reason: `Template "${template}" doesn't exist` });
