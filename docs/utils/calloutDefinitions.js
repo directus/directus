@@ -1,3 +1,5 @@
+// Definitions for colors and icons for the <Callout /> component
+
 export default [
 	{
 		type: 'info',

@@ -3,15 +3,16 @@ import routingExceptions from '@/utils/routingExceptions'
 import formatTitle from '@directus/format-title'
 
 const route = useRoute()
-const pathParts = route.params?.slug.slice(0, -1) || []
+const needsRedirect = routingExceptions.find(r => r.file == route.path)
+if(needsRedirect) await navigateTo(needsRedirect.path)
 
+const pathParts = route.params?.slug.slice(0, -1) || []
 const section = formatTitle(pathParts.join(' / '))
 
 const customContentDoc = routingExceptions.find(r => r.path == route.path)
 const contentDocPath = customContentDoc ? customContentDoc.file : route.path
 
 const { data } = await useAsyncData('page', () => queryContent(contentDocPath).findOne())
-
 const toc = data?.value?.body?.toc
 
 definePageMeta({

@@ -1,4 +1,8 @@
 <script setup>
+import sidebarHighlightOverrides from '@/utils/sidebarHighlightOverrides'
+
+const route = useRoute()
+
 defineProps({
 	list: {
 		type: Object,
@@ -10,13 +14,13 @@ defineProps({
 	}
 })
 
-// TODO: HIGHLIGHT WHEN CURRENT ROUTE IS EXCLUDED FROM sidebarExclude.js
+const highlightOverride = sidebarHighlightOverrides.find(h => h.path == route.path)
 </script>
 
 <template>
 	<ol :class="{ highlight: highlightActive }">
 		<li v-for="link of list" :key="link._path">
-			<NuxtLink :to="link._path">{{ link.title }}</NuxtLink>
+			<NuxtLink :to="link._path" :class="{ highlight: highlightOverride?.highlight == link._path }">{{ link.title }}</NuxtLink>
 			<NavSectionList v-if="link.children?.length > 1" :list="link.children.slice(1)" />
 		</li>
 	</ol>
@@ -37,7 +41,7 @@ a {
 	margin-top: 0.5rem;
 }
 ol.highlight {
-	a.router-link-active {
+	a.router-link-active, a.highlight {
 		/* TODO: USE SECTION COLORS */
 		color: var(--primary);
 		font-weight: 500;

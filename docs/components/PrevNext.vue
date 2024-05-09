@@ -10,11 +10,14 @@ const props = defineProps({
 
 const { data: surround } = await useAsyncData('prevNext', () => queryContent().only(['_path', 'title']).findSurround(props.path))
 
-const [prev, next] = surround.value.map(link => {
+const [prevLink, nextLink] = surround.value.map(link => {
 	if(!link) return null
 	const exception = routingExceptions.find(r => r.file == link._path)
 	return exception ? { ...link, _path: exception.path } : link
 })
+
+const prev = prevLink._path.includes('_partials') ? null : prevLink
+const next = nextLink._path.includes('_partials') ? null : nextLink
 </script>
 
 <template>
@@ -24,9 +27,6 @@ const [prev, next] = surround.value.map(link => {
 			<p>{{ prev.title }}</p>
 		</NuxtLink>
 		<div v-else></div>
-		<!-- <NuxtLink v-if="next" :to="next._path">
-			<Badge :text="`Next: ${next.title}`" />
-		</NuxtLink> -->
 		<NuxtLink v-if="next" :to="next._path">
 			<span class="section-title">Next Page</span>
 			<p>{{ next.title }}</p>
