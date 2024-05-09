@@ -77,14 +77,14 @@ Instantiate Stripe with the secret token:
 const stripe = new Stripe(env.STRIPE_TOKEN);
 ```
 
-Instantiate mailService with schema
+`env` looks inside the Directus environment variables for `STRIPE_TOKEN`. In order to start using this hook, this
+variable must be added to your `.env` file. This can be found in the developers area on your Stripe dashboard.
+
+Instantiate the `MailService`:
 
 ```js
 const mailService = new MailService({ schema });
 ```
-
-`env` looks inside the Directus environment variables for `STRIPE_TOKEN`. In order to start using this hook, this
-variable must be added to your `.env` file. This can be found in the developers area on your Stripe dashboard.
 
 Create a new customer with the customer's name and email as the input values.
 
@@ -107,7 +107,7 @@ Use the `ItemsService` to update the customer record. Initialize the service and
 stripe.customers
 	.create({})
 	.then((customer) => {
-		const customers = new ItemsService(collection, { schema: schema }); // [!code ++]
+		const customers = new ItemsService(collection, { schema }); // [!code ++]
 		customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false }); // [!code ++]
 	})
 	.catch((error) => {});
@@ -185,7 +185,7 @@ export default ({ action }, { env, services }) => {
 				email: payload.email_address,
 			})
 			.then((customer) => {
-				const customers = new ItemsService(collection, { schema: schema });
+				const customers = new ItemsService(collection, { schema });
 				customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
 			})
 			.catch((error) => {
