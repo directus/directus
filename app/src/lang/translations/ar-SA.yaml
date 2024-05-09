@@ -85,11 +85,20 @@ extension_reload_required_copy: مطلوب إعادة تحميل الصفحة ل
 extension_reload_now: إعادة التحميل الآن
 published_relative: نشر {relativeTime}
 compatible_with_your_project: متوافق مع مشروعك
-compatible_with_your_project_copy: أشار المؤلف إلى أن توافق هذا الlgpr هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
+compatible_with_your_project_copy: أشار المؤلف إلى أن توافق هذا الملحق هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
 last_updated_relative: آخر تحديث {relativeTime}
 n_files: '{n} ملفات'
 verified: محقق
 homepage: الصفحة الرئيسية
+repository: المصادر
+reload_required: إعادة التحميل مطلوبة
+report_an_issue: إبلاغ عن مشكلة
+website: الموقع
+beta: الإصدار التجريبي
+n_downloads: '{n} تحميلات'
+downloads: التنزيلات
+compatibility_not_guaranteed: التوافق غير مسموح
+compatibility_not_guaranteed_copy: أشار المؤلف إلى أن توافق هذا الملحق هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
 enable: تفعيل
 disable: تعطيل
 custom: تخصيص
@@ -178,6 +187,8 @@ logoutReason:
 public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
 admin_description: الدور الأساسي للمدير مع وصول غير مقيّد للتطبيق والـ API.
+no_description: لا يوجد وصف...
+reached_maximum_number_of_extensions: لقد وصلت إلى الحد الأقصى لعدد الملحقات لهذا المشروع ({n}). اتصل بمدير النظام للحصول على مزيد من المعلومات.
 not_allowed: غير مسموح
 archive: أرشفة
 archive_confirm: هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟
@@ -325,6 +336,9 @@ geometry:
 theme_auto: تلقائي (مبني على النظام)
 theme_light: الوضع الفاتح
 theme_dark: الوضع المُعتِم
+theme_directus_default: إفتراضي
+theme_directus_minimal: بساطة
+theme_directus_colormatch: تطابق الألوان
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -336,12 +350,14 @@ auto_generate: إنشاء تلقائي
 this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
 click_here: اضغط هنا
 to_manually_setup_translations: لإعداد الترجمات يدوياً.
+manage: إدارة
 click_to_manage_translated_fields: >-
   لا يوجد حقول لترجمتها بعد. أضغط هنا لإنشائها | لا يوجد حقول مترجمة. أضغط هنا لإدارتها. | هناك {count} حقول مترجمة. أضغط هنا لإدارتها.
 fields_group: مجموعة الحقول
 no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
 search_collection: مجموعة البحث...
+search_role: ابحث في الرتب...
 search_field: حقل البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
@@ -364,6 +380,7 @@ m2a_relationship: علاقة كثيرون لأية علاقة
 invalid_item: عنصر غير صالح
 require_confirmation: يتطلب تأكيدا
 dialog: مربع حوار
+modal: الطريقة
 confirmation_dialog: نوافذ التأكيد
 confirmation_description: وصف التأكيد
 confirmation_input_fields: تأكيد حقول الإدخال
@@ -419,12 +436,14 @@ revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
+revision_delta_version_saved: 'تم حفظ الإصدار (تم تحديث حقل واحد) | تم حفظ الإصدار (تم تحديث {count} حقول)'
 revision_delta_reverted: تمت الإستعادة
 revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
 presentation_text_values_cannot_be_reimported: 'يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم.'
 download_page_as_csv: 'تحميل الصفحة كـ CSV'
+download_page_as_csv_unsupported: هذا التخطيط لا يدعم تنزيل الصفحة الحالية.
 private_user: خصخصة المستخدم
 creation_preview: معاينة الإنشاء
 revision_preview: معاينة التعديلات
@@ -503,7 +522,11 @@ months:
   november: نوفمبر
   december: ديسمبر
 drag_mode: وضع السحب
+move_tool: أداة التحريك
+crop_tool: أداة القص
+focal_point_tool: أداة مركز التنسيق
 cancel_crop: إلغاء القص
+cancel_selection: إلغاء التحديد
 original: أصلي
 url: الرابط
 import_label: إستيراد
@@ -532,10 +555,15 @@ replace_from_url: استبدال الملف من رابط
 no_image_selected: لم يتم اختيار أي صورة
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
+open_file_in_tab: فتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
+exporting_limited_items_in_collection: 'سيتم تصدير {count} من أصل {total} عناصر داخل {collection}.'
 exporting_no_items_to_export: لا توجد عناصر للتصدير. تعديل تكوين التصدير و/أو إضافة عناصر إلى المجموعة.
+exporting_download_hint: بمجرد إنشاء ملف {format} ، سيتم تنزيله إلى جهازك.
+exporting_library_hint: بمجرد إنشاء ملف {format} ، سيتم حفظه في مكتبة الملفات.
+exporting_library_hint_forced: يجب معالجة هذا التصدير في دفعات. بمجرد الانتهاء من ذلك، سيتم حفظ ملف {format} في مكتبة الملفات.
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -566,6 +594,7 @@ collapse: طي
 select_item: تحديد عنصر
 no_items: لا يوجد عناصر
 search_items: البحث عن عناصر...
+search_extensions: إضافات البحث...
 disabled: مُعطل
 information: معلومات
 report_bug: تبليغ عن خطأ
@@ -584,6 +613,10 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+webhooks_deprecation_notice: |
+  تم إهمال خُطافات الويب (Webhooks) ولا يُنصح باستخدامها مرة أخرى.
+
+  رجاءًا استخدم **Flows** مع عملية [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) بدلاً من ذلك.
 no_webhooks_copy: لم يتم تكوين أي خطاف ويب بعد. إبدأ بإنشاء واحد أدناه.
 no_notifications: لا توجد إشعارات
 no_notifications_copy: لقد وصلت إلى المدخل الأخير!
@@ -596,6 +629,7 @@ create_collection: إنشاء مجموعة
 no_collections_copy_admin: ليس لديك أي مجموعات حتى الآن. انقر على الزر أدناه للبدء.
 no_collections_copy: ليس لديك أي مجموعات حتى الآن. الرجاء الاتصال بمدير النظام الخاص بك.
 relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
+no_singleton_relations: العلاقات مع القراشيع غير مدعومة
 display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
@@ -665,6 +699,7 @@ errors:
   CONTENT_TOO_LARGE: العنصر/الملف المقدم كبير جداً
   FIELD_NOT_FOUND: الحقل غير موجود
   FORBIDDEN: محظور
+  GRAPHQL_VALIDATION: التحقق من صلاحية GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   INVALID_CONFIG: تكوين غير صالح
@@ -679,6 +714,7 @@ errors:
   INVALID_USER: أخفقت مصادقة المستخدم
   ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
+  LIMIT_EXCEEDED: 'تم تجاوز الحد الأقصى'
   METHOD_NOT_ALLOWED: الطريقة غير مسموح بها
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
   RANGE_NOT_SATISFIABLE: النطاق غير صالح
@@ -783,8 +819,12 @@ operators:
   icontains: تحتوي على (غير حساسة)
   starts_with: إبدا بـ
   nstarts_with: لا يبدأ ب
+  istarts_with: يبدأ مع (غير حساس)
+  nistarts_with: لا يبدأ مع (غير حساس)
   ends_with: ينتهي ب
   nends_with: لا ينتهي ب
+  iends_with: ينتهي مع (غير حساس)
+  niends_with: لا تنتهي مع (غير حساس)
   between: بين
   nbetween: بين
   empty: فارغ
@@ -798,6 +838,7 @@ operators:
   regex: مطابقة RegExp
 custom_validation_message: رسالة التحقق المخصصة
 loading: جار التحميل...
+extension_readme_missing: هذا الملحق لا يحتوي على ملف README.
 drop_to_upload: إسقاط إلى التحميل
 item: عنصر
 items: العناصر
@@ -870,6 +911,7 @@ run_flow_confirm: هل أنت متأكد من أنك تريد تنفيذ هذا 
 run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
 run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
+run_flow_on_selected: حدد عنصر واحد أو أكثر أولاً | تشغيل العملية على عنصر واحد محدد | تشغيل العملية على {n} عناصر محددة
 run_flow: تشغيل التدفق
 run_flow_success: تدفق "{flow}" تم بنجاح
 field_name_placeholder: أدخل اسم الحقل...
