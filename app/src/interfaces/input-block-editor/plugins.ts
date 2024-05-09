@@ -1,12 +1,21 @@
 import BaseAttachesTool from '@editorjs/attaches';
 import BaseImageTool from '@editorjs/image';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useBus } from './bus';
 
 /**
  * This file is a modified version of the attaches and image tool from editorjs to work with the Directus file manager.
  *
  * We include an uploader to directly use Directus file manager, along with a modified version of the attaches and image tools.
  */
+
+type Tune = {
+	name?: string;
+	title: string;
+	icon: string;
+	onActivate?: () => void;
+	toggle: boolean;
+};
 
 class Uploader {
 	getCurrentFile: any;
@@ -157,5 +166,51 @@ export class ImageTool extends BaseImageTool {
 			const imageUrl = `${file.url}${separator}key=system-large-contain`;
 			this.ui.fillImage(imageUrl);
 		}
+	}
+
+	renderSettings() {
+		const tunes: Tune[] = [
+			{
+				icon: 'open_in_new',
+				title: 'Open Image',
+				toggle: false,
+				onActivate: () => {
+					const bus = useBus();
+					bus.emit({ type: 'open-url', payload: this.data.file.fileURL });
+				},
+			},
+			...ImageTool.tunes,
+		];
+
+		const wrapperElement = document.createElement('div');
+		wrapperElement.classList.add('ce-popover__items');
+
+		for (const tune of tunes) {
+			const tuneElement = document.createElement('div');
+			tuneElement.classList.add('ce-popover-item');
+
+			const iconElement = document.createElement('div');
+			iconElement.classList.add('ce-popover-item__icon');
+			const iElement = document.createElement('i');
+			iElement.innerHTML = tune.icon;
+			iconElement.appendChild(iElement);
+			tuneElement.appendChild(iconElement);
+
+			const titleElement = document.createElement('div');
+			titleElement.classList.add('ce-popover-item__title');
+			titleElement.innerHTML = tune.title;
+			tuneElement.appendChild(titleElement);
+
+			if (tune.onActivate) tuneElement.addEventListener('click', tune.onActivate);
+			else if (tune.toggle)
+				tuneElement.addEventListener('click', () => {
+					this.tuneToggled(tune.name);
+					tuneElement.classList.toggle('ce-popover-item--active');
+				});
+
+			wrapperElement.appendChild(tuneElement);
+		}
+
+		return wrapperElement;
 	}
 }

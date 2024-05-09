@@ -446,6 +446,7 @@ revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 presentation_text_values_cannot_be_reimported: 'Usa il testo di presentazione, i valori non possono essere reimportati.'
 download_page_as_csv: 'Scarica la pagina in formato CSV'
+download_page_as_csv_unsupported: Questo layout non supporta il download della pagina corrente.
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
@@ -1630,6 +1631,7 @@ delete_item: Elimina l'elemento
 interfaces:
   list-m2a:
     prefix_note: Usa il nome della raccolta dell'elemento correlato come predefinito.
+    sorting_disabled: L'ordinamento è disabilitato perché sono presenti più elementi di quelli che possono stare in una pagina.
   filter:
     name: Filtro
     description: Configura un oggetto filtro.

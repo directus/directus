@@ -1,37 +1,39 @@
 import type { MappedFieldNames } from './functions.js';
 import type { FieldOutputMap } from './output.js';
 import type { RelationalFields } from './schema.js';
-import type { IfNever, IsDateTime, IsNumber, IsString, MergeOptional, UnpackList } from './utils.js';
+import type { IfNever, IsDateTime, IsNumber, IsString, Merge, UnpackList } from './utils.js';
 
 /**
  * Filters
  */
-export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<NestedQueryFilter<Schema, Item>>;
+export type QueryFilter<Schema, Item> = WrapLogicalFilters<NestedQueryFilter<Schema, Item>>;
 
 /**
  * Query filters without logical filters
  */
-export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-	? MergeOptional<
-			{
-				[Field in keyof FlatItem]?: NestedRelationalFilter<Schema, FlatItem, Field>;
-			},
-			MappedFieldNames<Schema, Item> extends infer Funcs
-				? {
-						[Func in keyof Funcs]?: Funcs[Func] extends infer Field
-							? Field extends keyof FlatItem
-								? NestedRelationalFilter<Schema, FlatItem, Field>
-								: never
-							: never;
-				  }
-				: never
+export type NestedQueryFilter<Schema, Item> = UnpackList<Item> extends infer FlatItem
+	? Partial<
+			Merge<
+				{
+					[Field in keyof FlatItem]?: NestedRelationalFilter<Schema, FlatItem, Field>;
+				},
+				MappedFieldNames<Schema, Item> extends infer Funcs
+					? {
+							[Func in keyof Funcs]?: Funcs[Func] extends infer Field
+								? Field extends keyof FlatItem
+									? NestedRelationalFilter<Schema, FlatItem, Field>
+									: never
+								: never;
+					  }
+					: never
+			>
 	  >
 	: never;
 
 /**
  * Allow for relational filters
  */
-export type NestedRelationalFilter<Schema extends object, Item, Field extends keyof Item> =
+export type NestedRelationalFilter<Schema, Item, Field extends keyof Item> =
 	| (Field extends RelationalFields<Schema, Item>
 			? WrapRelationalFilters<NestedQueryFilter<Schema, Item[Field]>>
 			: never)
@@ -58,6 +60,7 @@ export type FilterOperators<
 	_nbetween: IsDateTime<FieldType, [T, T], IsNumber<T, [T, T], never>>;
 	_contains: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_ncontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
+	_icontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_starts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_istarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
 	_nstarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
@@ -99,9 +102,8 @@ export type WrapRelationalFilters<Filters> =
  */
 export type LogicalFilterOperators = '_or' | '_and';
 
-export type WrapLogicalFilters<Filters extends object> = MergeOptional<
-	{
-		[Operator in LogicalFilterOperators]?: WrapLogicalFilters<Filters>[];
-	},
-	Filters
->;
+export type WrapLogicalFilters<Filters extends object> =
+	| {
+			[Operator in LogicalFilterOperators]?: WrapLogicalFilters<Filters>[];
+	  }
+	| Filters;

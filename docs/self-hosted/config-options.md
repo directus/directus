@@ -340,9 +340,9 @@ Redis is required when you run Directus load balanced across multiple containers
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `KEY`                               | Unique identifier for the project.                                                                                                                                                                   | --                        |
-| `SECRET`                            | Secret string for the project.                                                                                                                                                                       | --                        |
+| `SECRET`<sup>[1]</sup>              | Secret string for the project.                                                                                                                                                                       | Random value              |
 | `ACCESS_TOKEN_TTL`                  | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
+| `EMAIL_VERIFICATION_TOKEN_TTL`      | The duration that the email verification token is valid.                                                                                                                                             | `7d`                      |
 | `REFRESH_TOKEN_TTL`                 | The duration that the refresh token is valid. This value should be higher than `ACCESS_TOKEN_TTL` resp. `SESSION_COOKIE_TTL`.                                                                        | `7d`                      |
 | `REFRESH_TOKEN_COOKIE_DOMAIN`       | Which domain to use for the refresh token cookie. Useful for development mode.                                                                                                                       | --                        |
 | `REFRESH_TOKEN_COOKIE_SECURE`       | Whether or not to set the `secure` attribute for the refresh token cookie.                                                                                                                           | `false`                   |
@@ -354,17 +354,21 @@ Redis is required when you run Directus load balanced across multiple containers
 | `SESSION_COOKIE_SAME_SITE`          | Value for `sameSite` in the session cookie.                                                                                                                                                          | `lax`                     |
 | `SESSION_COOKIE_NAME`               | Name of the session cookie.                                                                                                                                                                          | `directus_session_token`  |
 | `LOGIN_STALL_TIME`                  | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
+| `REGISTER_STALL_TIME`               | The duration in milliseconds that a registration request will be stalled for, and it should be greater than the time taken for a registration request with an already registered email               | `750`                     |
 | `PASSWORD_RESET_URL_ALLOW_LIST`     | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
 | `USER_INVITE_URL_ALLOW_LIST`        | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
 | `IP_TRUST_PROXY`                    | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
 | `IP_CUSTOM_HEADER`                  | What custom request header to use for the IP address                                                                                                                                                 | false                     |
 | `ASSETS_CONTENT_SECURITY_POLICY`    | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
-| `IMPORT_IP_DENY_LIST`<sup>[1]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
+| `IMPORT_IP_DENY_LIST`<sup>[2]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
 | `CONTENT_SECURITY_POLICY_*`         | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
 | `HSTS_ENABLED`                      | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                            | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
 
-<sup>[1]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
+<sup>[1]</sup> When `SECRET` is not set, a random value will be used. This means sessions won't persist across system
+restarts or horizontally scaled deployments. Must be explicitly set to a secure random value in production.
+
+<sup>[2]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
 both if you want to specifically block localhost.
 
 ::: tip Cookie Strictness
@@ -425,20 +429,22 @@ For more details about each configuration variable, please see the
 You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
 will set a default maximum of 50 requests per second, tracked in memory.
 
-| Variable                                    | Description                                                       | Default Value |
-| ------------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.         | `false`       |
-| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                          | `50`          |
-| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
-| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                              | `150`         |
-| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.         | `false`       |
-| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                    | `1000`        |
-| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                              | `150`         |
-| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
+| Variable                                    | Description                                                             | Default Value |
+| ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.               | `false`       |
+| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                                | `50`          |
+| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.             | `1`           |
+| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`.       | `memory`      |
+| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                                    | `150`         |
+| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.               | `false`       |
+| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                          | `1000`        |
+| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.             | `1`           |
+| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                    | `150`         |
+| `RATE_LIMITER_REGISTRATION_ENABLED`         | Whether or not to enable rate limiting per IP on the user registration. | `true`        |
+| `RATE_LIMITER_REGISTRATION_POINTS`          | The amount of allowed hits per duration.                                | `5`           |
+| `RATE_LIMITER_REGISTRATION_DURATION`        | The time window in seconds in which the points are counted.             | `60`          |
 
-Based on the `RATE_LIMITER_STORE`/`RATE_LIMITER_GLOBAL_STORE` used, you must also provide the following configurations:
+Based on the `RATE_LIMITER_STORE` used, you must also provide the following configurations:
 
 ### Example: Basic
 
@@ -492,22 +498,23 @@ than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                                     | Description                                                                                                             | Default Value                        |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
-| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
-| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                 | `false`                              |
-| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
-| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
-| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
-| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
-| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `system-cache`                       |
-| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
-| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
-| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
-| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
-| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                    | `150`                                |
+| Variable                                     | Description                                                                                                               | Default Value                        |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                   | `false`                              |
+| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                     | `5m`                                 |
+| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                   | `false`                              |
+| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                        | `directus_activity,directus_presets` |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                            | --                                   |
+| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
+| `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
+| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                    | `true`                               |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
+| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
+| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
+| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit   | false                                |
+| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                   | false                                |
+| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                      | `150`                                |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus

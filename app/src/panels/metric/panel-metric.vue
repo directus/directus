@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +23,7 @@ interface Props {
 	suffix?: string | null;
 	minimumFractionDigits?: number;
 	maximumFractionDigits?: number;
-	conditionalFormatting?: Record<string, any>[];
+	conditionalFormatting?: Record<string, any>[] | null;
 	textAlign?: CSSProperties['text-align'];
 	fontSize?: string;
 	fontWeight?: number | undefined;
@@ -166,7 +165,7 @@ const color = computed(() => {
 		}
 	}
 
-	return matchingFormat ? matchingFormat.color || cssVar('--primary') : null;
+	return matchingFormat?.color || 'var(--theme--primary)';
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof metric.value === 'string') {
