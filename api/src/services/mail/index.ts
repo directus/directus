@@ -98,7 +98,7 @@ export class MailService {
 		return null;
 	}
 
-	private async renderTemplate(template: string, variables: Record<string, any>, language?: string) {
+	private async renderTemplate(template: string, variables: Record<string, any>, language?: string | undefined | null) {
 		const localizedTemplatePath = language
 			? path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + `.${language}.liquid`)
 			: null;
