@@ -49,4 +49,5 @@ export type RegisterUserInput = {
 	password: NonNullable<User['password']>;
 	first_name?: User['first_name'];
 	last_name?: User['last_name'];
+	language?: User['language'];
 };

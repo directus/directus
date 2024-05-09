@@ -146,9 +146,9 @@ export class UsersService extends ItemsService {
 	 */
 	private async getUserByEmail(
 		email: string,
-	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
+	): Promise<{ id: string; role: string; status: string; password: string; email: string, language: string|null } | undefined> {
 		return await this.knex
-			.select('id', 'role', 'status', 'password', 'email')
+			.select('id', 'role', 'status', 'password', 'email', 'language')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
 			.first();
@@ -416,6 +416,7 @@ export class UsersService extends ItemsService {
 						subject: subjectLine,
 						template: {
 							name: 'user-invitation',
+							language: user?.language,
 							data: {
 								url: this.inviteUrl(user?.email ?? email, url),
 								email: user?.email ?? email,
@@ -524,6 +525,7 @@ export class UsersService extends ItemsService {
 					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
 					template: {
 						name: 'user-registration',
+						language: input.language,
 						data: {
 							url: verificationURL.toString(),
 							email: input.email,
@@ -595,6 +597,7 @@ export class UsersService extends ItemsService {
 				subject: subjectLine,
 				template: {
 					name: 'password-reset',
+					language: user.language,
 					data: {
 						url: acceptURL,
 						email: user.email,
