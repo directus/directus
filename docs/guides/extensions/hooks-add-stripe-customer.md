@@ -117,7 +117,7 @@ stripe.customers
 	.create({})
 	.then((customer) => {})
 	.catch((error) => {
-		mailService.send({ // [!code ++]
+		MailService.send({ // [!code ++]
 			to: 'sharedmailbox@directus.io', // [!code ++]
 			from: 'noreply@directus.io', // [!code ++]
 			subject: `An error has occurred with Stripe API`, // [!code ++]
@@ -182,7 +182,7 @@ export default ({ action }, { env, services }) => {
 				customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
 			})
 			.catch((error) => {
-				mailService.send({
+				MailService.send({
 					to: 'sharedmailbox@directus.io',
 					from: 'noreply@directus.io',
 					subject: `An error has occurred with Stripe API`,
