@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "0.3.6",
+	"version": "0.3.7",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.32.27",
+		"@sinclair/typebox": "0.32.29",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21"

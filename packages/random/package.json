@@ -1,6 +1,6 @@
 {
 	"name": "@directus/random",
-	"version": "0.2.7",
+	"version": "0.2.8",
 	"description": "Set of random-utilities for use in tests",
 	"homepage": "https://directus.io",
 	"repository": {
