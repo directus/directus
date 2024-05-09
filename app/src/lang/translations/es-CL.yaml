@@ -436,7 +436,6 @@ replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
 download_file: Descargar Archivo
-open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Iniciar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.

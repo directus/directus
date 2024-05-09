@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -53,7 +53,7 @@
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3",
-		"vue": "3.4.26",
+		"vue": "3.4.27",
 		"vue-router": "4.3.2"
 	},
 	"peerDependencies": {
