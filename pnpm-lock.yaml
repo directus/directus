@@ -987,8 +987,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0)
       vite-plugin-dts:
-        specifier: 3.9.0
-        version: 3.9.0(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0))
       vitest:
         specifier: 1.5.3
         version: 1.5.3(@types/node@18.19.31)(happy-dom@14.10.1)(jsdom@24.0.0)(sass@1.76.0)(terser@5.31.0)
@@ -1858,8 +1858,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0)
       vite-plugin-dts:
-        specifier: 3.9.0
-        version: 3.9.0(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0))
+        specifier: 3.9.1
+        version: 3.9.1(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -11316,8 +11316,8 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite-plugin-dts@3.9.0:
-    resolution: {integrity: sha512-pwFIEYQ3LZvMafkEGvNnileb6af5JuyZsBfYQrTDYxdeGEy0OS4B4hCsLPo5YGnhK5k9EzyO6BXVO6y+Lt5T2A==}
+  vite-plugin-dts@3.9.1:
+    resolution: {integrity: sha512-rVp2KM9Ue22NGWB8dNtWEr+KekN3rIgz1tWD050QnRGlriUCmaDwa7qA5zDEjbXg5lAXhYMSBJtx3q3hQIJZSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -23092,7 +23092,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.0(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0)):
+  vite-plugin-dts@3.9.1(@types/node@18.19.31)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.31)(sass@1.76.0)(terser@5.31.0)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@18.19.31)
       '@rollup/pluginutils': 5.1.0(rollup@4.17.2)
