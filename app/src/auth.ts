@@ -1,5 +1,5 @@
 import { resumeQueue } from '@/api';
-import { DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { DEFAULT_AUTH_PROVIDER, SDK_AUTH_REFRESH_BEFORE_EXPIRES } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
@@ -93,6 +93,9 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;
+
+	// Skip access token refreshing if it is still fresh
+	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) return;
 
 	try {
 		const response = await sdk.refresh();
