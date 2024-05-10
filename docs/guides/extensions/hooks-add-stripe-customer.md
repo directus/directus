@@ -101,7 +101,7 @@ Use the `ItemsService` to update the customer record. Initialize the service and
 stripe.customers
 	.create({})
 	.then((customer) => {
-		const customers = new ItemsService(collection, { schema: schema }); // [!code ++]
+		const customers = new ItemsService(collection, { schema }); // [!code ++]
 		customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false }); // [!code ++]
 	})
 	.catch((error) => {});
@@ -117,6 +117,7 @@ stripe.customers
 	.create({})
 	.then((customer) => {})
 	.catch((error) => {
+		const mailService = new MailService({ schema });
 		mailService.send({ // [!code ++]
 			to: 'sharedmailbox@directus.io', // [!code ++]
 			from: 'noreply@directus.io', // [!code ++]
@@ -178,10 +179,11 @@ export default ({ action }, { env, services }) => {
 				email: payload.email_address,
 			})
 			.then((customer) => {
-				const customers = new ItemsService(collection, { schema: schema });
+				const customers = new ItemsService(collection, { schema });
 				customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
 			})
 			.catch((error) => {
+				const mailService = new MailService({ schema });
 				mailService.send({
 					to: 'sharedmailbox@directus.io',
 					from: 'noreply@directus.io',
