@@ -17,11 +17,11 @@ export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
 					await new Promise<void>((lockResolve) => {
 						if (granted) {
 							releaseMutex = lockResolve;
-							resolve();
 						} else {
 							lockResolve();
-							resolve();
 						}
+
+						resolve();
 					});
 				});
 			});
