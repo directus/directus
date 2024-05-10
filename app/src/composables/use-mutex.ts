@@ -11,8 +11,6 @@ export function useMutex(key: MutexKey, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
 	const useWebLock = !!navigator.locks;
 
-	let retries = 0;
-
 	async function acquireMutex(callback: (lock?: Lock | null) => Promise<any>): Promise<any> {
 		if (useWebLock) {
 			return navigator.locks.request(internalKey, callback);
@@ -23,6 +21,8 @@ export function useMutex(key: MutexKey, expiresMs: number) {
 	}
 
 	async function localStorageLock(callback: (lock?: Lock | null) => Promise<any>) {
+		let retries = 0;
+
 		do {
 			const mutex = localStorage.getItem(internalKey);
 
