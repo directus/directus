@@ -7,7 +7,7 @@ type MutexKey = (typeof MutexKey)[number];
 export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
 	async function isMutexAvailable() {
 		// Random wait to prevent concurrent refreshes across browser windows/tabs
-		await sleep(Math.random() * 500);
+		await sleep(Math.random() * 1000);
 
 		const mutex = localStorage.getItem(key);
 
