@@ -13,7 +13,7 @@ vi.mock('../database/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({ 'SESSION_COOKIE_NAME': 'directus_session' }) }));
+vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({ SESSION_COOKIE_NAME: 'directus_session' }) }));
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
@@ -29,6 +29,7 @@ afterEach(() => {
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn(),
 	} as unknown as Request;
 
@@ -48,6 +49,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -108,6 +110,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -208,6 +211,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
