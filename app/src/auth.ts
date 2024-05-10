@@ -6,7 +6,7 @@ import { sdk } from '@/sdk';
 import { AuthenticationData, LoginOptions, RestCommand, authenticateShare, getAuthEndpoint } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
-import { useLocalStorageMutex } from './composables/use-mutex';
+import { useLocalStorageMutex } from './composables/use-local-storage-mutex';
 import { Events, emitter } from './events';
 import { useServerStore } from './stores/server';
 
