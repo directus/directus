@@ -1,51 +1,48 @@
-import { sleep } from '@directus/sdk';
+import { sleep } from "@directus/sdk";
 
 const MutexKey = ['auth_refresh'] as const;
 
 type MutexKey = (typeof MutexKey)[number];
 
+const timeout = 50;
+const maxRetries = 10;
+
 export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
-	const useWebLock = window.isSecureContext;
+	const useWebLock = !!navigator.locks;
 
-	async function acquireMutex() {
-		let releaseMutex: (() => void) | undefined;
+	let retries = 0;
 
+	async function acquireMutex(callback: (lock?: Lock | null) => Promise<any>): Promise<any> {
 		if (useWebLock) {
-			await new Promise<void>((resolve) => {
-				const acquireWebLock = () => {
-					navigator.locks.request(internalKey, { ifAvailable: true }, async function (granted) {
-						await new Promise<void>((lockResolve) => {
-							if (granted) {
-								releaseMutex = lockResolve;
-								resolve();
-							} else {
-								setTimeout(acquireWebLock, 500);
-							}
-						});
-					});
-				};
+			return navigator.locks.request(internalKey, callback);
+		}
 
-				acquireWebLock();
-			});
-		} else {
-			// Random wait to prevent concurrent refreshes across browser windows/tabs
-			await sleep(Math.random() * 1000);
+		// fall back to localstorage when navigator.locks is not available
+		return localStorageLock(callback);
+	}
 
+	async function localStorageLock(callback: (lock?: Lock | null) => Promise<any>) {
+		do {
 			const mutex = localStorage.getItem(internalKey);
 
 			if (!mutex || Number(mutex) > Date.now() + expiresMs) {
+				// set lock
 				localStorage.setItem(internalKey, String(Date.now() + expiresMs));
 
-				releaseMutex = releaseLocalStorageMutex;
+				// do logic
+				await callback(null);
+
+				// release lock
+				localStorage.removeItem(internalKey);
+
+				break;
 			}
-		}
 
-		return releaseMutex;
-	}
-
-	function releaseLocalStorageMutex() {
-		localStorage.removeItem(internalKey);
+			await sleep(timeout);
+			retries += 1;
+		} while (retries < maxRetries);
+		// throw error when hitting max retries?
 	}
 
 	return {

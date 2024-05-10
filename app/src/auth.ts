@@ -96,22 +96,18 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;
 
-	let releaseMutex;
-
 	try {
-		releaseMutex = await acquireMutex();
+		await acquireMutex(async () => {
+			const response = await sdk.refresh();
 
-		if (!releaseMutex) return;
-
-		const response = await sdk.refresh();
-
-		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
-		appStore.authenticated = true;
-		firstRefresh = false;
+			appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
+			appStore.authenticated = true;
+			firstRefresh = false;
+		});
 	} catch {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
-		releaseMutex?.();
+		// releaseMutex?.();
 		resumeQueue();
 	}
 }
