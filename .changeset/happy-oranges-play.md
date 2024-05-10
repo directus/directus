@@ -1,4 +1,5 @@
 ---
+"@directus/api": patch
 "@directus/app": patch
 "@directus/components": patch
 "@directus/release-notes-generator": patch
