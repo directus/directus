@@ -91,7 +91,7 @@ emitter.on(Events.tabActive, () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
-	const { isMutexAvailable, acquireMutex, releaseMutex } = useLocalStorageMutex('auth_refresh');
+	const { isMutexAvailable, acquireMutex, releaseMutex } = useLocalStorageMutex('auth_refresh', 5000);
 
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;
