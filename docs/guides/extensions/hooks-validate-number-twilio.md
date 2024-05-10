@@ -79,7 +79,7 @@ const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
 
-client.lookups.v2
+await client.lookups.v2
 	.phoneNumbers(input.phone_number)
 	.fetch()
 	.then((phoneNumber) => {});
