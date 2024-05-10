@@ -202,7 +202,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
-		"@types/node": "18.19.31",
+		"@types/node": "18.19.33",
 		"@types/node-schedule": "2.1.7",
 		"@types/nodemailer": "6.4.15",
 		"@types/object-hash": "3.0.6",
