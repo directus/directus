@@ -7,7 +7,7 @@ type MutexKey = (typeof MutexKey)[number];
 const timeout = 50;
 const maxRetries = 10;
 
-export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
+export function useMutex(key: MutexKey, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
 	const useWebLock = !!navigator.locks;
 

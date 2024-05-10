@@ -6,7 +6,7 @@ import { sdk } from '@/sdk';
 import { AuthenticationData, LoginOptions, RestCommand, authenticateShare, getAuthEndpoint } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
-import { useLocalStorageMutex } from './composables/use-local-storage-mutex';
+import { useMutex } from './composables/use-mutex';
 import { Events, emitter } from './events';
 import { useServerStore } from './stores/server';
 
@@ -91,7 +91,7 @@ emitter.on(Events.tabActive, () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
-	const { acquireMutex } = useLocalStorageMutex('auth_refresh', 5000);
+	const { acquireMutex } = useMutex('auth_refresh', 5000);
 
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;

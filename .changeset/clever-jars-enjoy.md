@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Added localstorage mutex for app token refresh
+Added mutex for app token refresh
