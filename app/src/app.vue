@@ -73,11 +73,7 @@ const customCSS = computed(() => {
 	return serverStore.info?.project?.custom_css || '';
 });
 
-const error: Record<string, any> | null = computed(() => appStore.error);
-
-const errorCode = computed(
-	() => error.value?.response?.data?.errors?.[0]?.extensions?.code || error.value?.extensions?.code,
-);
+const error = computed(() => appStore.error);
 
 const reload = () => {
 	window.location.reload();
