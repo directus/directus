@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { logout } from '@/auth';
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import { ErrorCode } from '@directus/errors';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
@@ -110,10 +108,7 @@ useSystem();
 			<template #append>
 				<v-error :error="error" />
 				<br />
-				<v-button v-if="errorCode === ErrorCode.InvalidToken" kind="danger" @click="logout()">
-					{{ t('sign_out') }}
-				</v-button>
-				<v-button v-else kind="danger" @click="reload()">{{ t('reload') }}</v-button>
+				<v-button kind="danger" @click="reload()">{{ t('reload') }}</v-button>
 			</template>
 		</v-info>
 
