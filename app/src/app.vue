@@ -104,7 +104,7 @@ useSystem();
 			<template #append>
 				<v-error :error="error" />
 				<br />
-				<v-button kind="danger" @click="reload()">{{ t('reload') }}</v-button>
+				<v-button kind="danger" @click="reload">{{ t('reload') }}</v-button>
 			</template>
 		</v-info>
 
