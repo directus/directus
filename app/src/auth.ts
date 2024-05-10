@@ -91,15 +91,17 @@ emitter.on(Events.tabActive, () => {
 
 export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<void> {
 	const appStore = useAppStore();
-	const { isMutexAvailable, acquireMutex, releaseMutex } = useLocalStorageMutex('auth_refresh', 5000);
+	const { acquireMutex } = useLocalStorageMutex('auth_refresh', 5000);
 
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;
 
-	if (!(await isMutexAvailable())) return;
+	let releaseMutex;
 
 	try {
-		acquireMutex();
+		releaseMutex = await acquireMutex();
+
+		if (!releaseMutex) return;
 
 		const response = await sdk.refresh();
 
@@ -109,7 +111,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	} catch {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
-		releaseMutex();
+		releaseMutex?.();
 		resumeQueue();
 	}
 }

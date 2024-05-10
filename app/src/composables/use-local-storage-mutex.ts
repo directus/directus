@@ -6,33 +6,46 @@ type MutexKey = (typeof MutexKey)[number];
 
 export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
+	const useWebLock = window.isSecureContext;
 
-	async function isMutexAvailable() {
-		// Random wait to prevent concurrent refreshes across browser windows/tabs
-		await sleep(Math.random() * 1000);
+	async function acquireMutex() {
+		let releaseMutex: (() => void) | undefined;
 
-		const mutex = localStorage.getItem(internalKey);
+		if (useWebLock) {
+			await new Promise<void>((resolve) => {
+				navigator.locks.request(internalKey, { ifAvailable: true }, async function (granted) {
+					await new Promise<void>((lockResolve) => {
+						if (granted) {
+							releaseMutex = lockResolve;
+							resolve();
+						} else {
+							lockResolve();
+							resolve();
+						}
+					});
+				});
+			});
+		} else {
+			// Random wait to prevent concurrent refreshes across browser windows/tabs
+			await sleep(Math.random() * 1000);
 
-		if (!mutex) {
-			return true;
-		} else if (Number(mutex) > Date.now() + expiresMs) {
-			return true;
+			const mutex = localStorage.getItem(internalKey);
+
+			if (!mutex || Number(mutex) > Date.now() + expiresMs) {
+				localStorage.setItem(internalKey, String(Date.now() + expiresMs));
+
+				releaseMutex = releaseLocalStorageMutex;
+			}
 		}
 
-		return false;
+		return releaseMutex;
 	}
 
-	function acquireMutex() {
-		localStorage.setItem(internalKey, String(Date.now() + expiresMs));
-	}
-
-	function releaseMutex() {
+	function releaseLocalStorageMutex() {
 		localStorage.removeItem(internalKey);
 	}
 
 	return {
-		isMutexAvailable,
 		acquireMutex,
-		releaseMutex,
 	};
 }
