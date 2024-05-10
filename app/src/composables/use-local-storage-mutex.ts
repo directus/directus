@@ -13,17 +13,20 @@ export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
 
 		if (useWebLock) {
 			await new Promise<void>((resolve) => {
-				navigator.locks.request(internalKey, { ifAvailable: true }, async function (granted) {
-					await new Promise<void>((lockResolve) => {
-						if (granted) {
-							releaseMutex = lockResolve;
-						} else {
-							lockResolve();
-						}
-
-						resolve();
+				const acquireWebLock = () => {
+					navigator.locks.request(internalKey, { ifAvailable: true }, async function (granted) {
+						await new Promise<void>((lockResolve) => {
+							if (granted) {
+								releaseMutex = lockResolve;
+								resolve();
+							} else {
+								setTimeout(acquireWebLock, 500);
+							}
+						});
 					});
-				});
+				};
+
+				acquireWebLock();
 			});
 		} else {
 			// Random wait to prevent concurrent refreshes across browser windows/tabs
