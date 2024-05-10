@@ -1,4 +1,4 @@
-import { sleep } from "@directus/sdk";
+import { sleep } from '@directus/sdk';
 
 const MutexKey = ['auth_refresh'] as const;
 
