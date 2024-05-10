@@ -94,7 +94,7 @@ n_files: '{n} Files'
 verified: Verified
 homepage: Homepage
 repository: Repository
-reload: Reload
+reload_page: Reload Page
 reload_required: Reload Required
 report_an_issue: Report an Issue
 website: Website
