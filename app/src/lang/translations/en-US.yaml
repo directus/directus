@@ -1283,6 +1283,8 @@ fields:
     height: Height
     charset: Charset
     duration: Duration
+    focal_point_x: X-Coordinate
+    focal_point_y: Y-Coordinate
   directus_users:
     first_name: First Name
     last_name: Last Name
