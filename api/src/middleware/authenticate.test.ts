@@ -13,7 +13,7 @@ vi.mock('../database/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({ 'SESSION_COOKIE_NAME': 'directus_session' }) }));
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
@@ -184,6 +184,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':

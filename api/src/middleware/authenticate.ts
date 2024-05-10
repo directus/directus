@@ -59,6 +59,8 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 				res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
 			}
 		}
+
+		throw err;
 	}
 
 	return next();
