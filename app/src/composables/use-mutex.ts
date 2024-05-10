@@ -4,7 +4,7 @@ const MutexKey = ['auth_refresh'] as const;
 
 type MutexKey = (typeof MutexKey)[number];
 
-export function useLocalStorageMutex(key: MutexKey, expiresMs: number) {
+export function useMutex(key: MutexKey, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
 	const useWebLock = window.isSecureContext;
 
