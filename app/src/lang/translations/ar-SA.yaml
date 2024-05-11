@@ -1288,6 +1288,11 @@ fields:
     transformations_all: السماح بجميع التحولات
     transformations_none: تعطيل التحولات
     image_editor: محرر الصور
+    public_registration_role: دور المستخدم
+    public_registration_role_note: يتم تعيين هذا الدور للمستخدمين الذين يقومون بالتسجيل باستخدام هذه الطريقة. لا يؤثر على المستخدمين المسجلين مسبقا.
+    public_registration_email_filter: تصفية عنوان البريد الإلكتروني
+    public_registration_verify_email: تحقق من البريد الإلكتروني
+    public_registration_verify_email_note: يرسل رسالة بريد إلكتروني إلى المستخدم المسجل يطلب منه النقر على رابط التحقق قبل أن يتمكن من تسجيل الدخول.
   directus_shares:
     name: الاسم
     role: الدور
@@ -1310,6 +1315,7 @@ fields:
     description: التفاصيل
     app_access: صلاحيات تطبيق
     admin_access: صلاحيات مسؤول
+    ip_access: عنوان IP
     enforce_tfa: يتطلب التحقق بخطوتين 2FA
     users: المستخدمون في الدور
   directus_webhooks:
@@ -1532,6 +1538,13 @@ select_existing: حدد خيار متوفر
 select_field_type: حدد نوع الحقل
 select_interface: اختر واجهة
 settings: إعدادات
+registration_successful_headline: تم بنجاح!
+registration_successful_note: يمكنك الآن الانتقال إلى صفحة تسجيل الدخول.
+registration_successful_check_email_note: |
+  يرجى ملاحظة أنه قبل أن تتمكن من تسجيل الدخول، ستحتاج إلى التحقق من عنوان البريد الإلكتروني الخاص بك بالنقر على رابط التحقق المرسل إليك.
+dont_have_an_account: ليس لديك حساب؟
+already_have_an_account: لديك حساب مسبقا؟
+sign_up_now: أنشئ حساب جديد الآن
 sign_in: تسجيل الدخول
 sign_out: تسجيل الخروج
 sign_out_confirm: هل أنت متأكد من رغبتك في تسجيل الخروج?
@@ -1542,6 +1555,7 @@ export_started: بدأ التصدير
 export_started_copy: لقد بدأ التصدير الخاص بك. سيتم إعلامك عندما يكون جاهز للتحميل.
 sort_asc: ترتيب تصاعدي
 sort_desc: ترتيب تنازلي
+disable_sort: تعطيل الترتيب
 template: قالب
 require_value_to_be_set: تتطلب القيمة ليتم تعيينها عند الإنشاء
 translation: الترجمة
@@ -1561,6 +1575,9 @@ undo_removed_item: التراجع عن إزالة العنصر
 remove_item: إزالة العنصر
 delete_item: حذف العنصر
 interfaces:
+  list-m2a:
+    prefix_note: يستخدم اسم مجموعة العناصر ذات الصلة بشكل افتراضي.
+    sorting_disabled: تم تعطيل الفرز لأن هناك عناصر أكثر مما يمكن أن يتناسب مع صفحة واحدة.
   filter:
     name: فلترة
     description: إعداد كائن التصفية.
@@ -1586,8 +1603,12 @@ interfaces:
     all_closed: تم إغلاق الكل
     first_opened: تم فتح الأول
     all_opened: تم فتح الكل
+    accordion_mode: قائمة منسدلة
+    max_one_section_open: قسم واحد مفتوح كحد أقصى
   presentation-links:
+    presentation-links: روابط على شكل زر
     links: روابط
+    style: النمط
     primary: الأساسي
     link: روابط
     button: أزرار
@@ -1595,15 +1616,21 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: مربعات الاختيار
     description: اختر بين خيارات متعددة عبر مربعات الاختيار
+    allow_other: السماح لآخرين
     show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
   select-multiple-checkbox-tree:
+    name: خانات الاختيار (شجرة)
+    description: اختر من عدة اختيارات عبر قائمة متشعبة
+    value_combining: دمج القيم
+    value_combining_note: يتحكم في القيمة التي يتم تخزينها عند إجراء الاختيارات المتداخلة.
     show_all: عرض الكل
     show_selected: إظهار المحدد
   input-code:
     code: نص برمجي
     description: كتابة أو مشاركة الكود البرمجي
     line_number: رقم السطر
+    line_wrapping: الامتداد إلى سطر جديد
     placeholder: أدخل الكود هنا...
   system-collection:
     collection: المجموعة
@@ -1637,6 +1664,7 @@ interfaces:
   select-dropdown:
     description: حدد قيمة من القائمة المنسدلة
     choices_placeholder: أضف خيار جديد
+    allow_other: السماح لآخرين
     allow_other_label: السماح بقيم أخرى
     allow_none_label: لا يسمح بتحديد
     choices_name_placeholder: أدخل اسم...
@@ -1730,15 +1758,22 @@ interfaces:
     description: حدد اختيار واحد من خيارات متعددة
   list:
     edit_fields: تعديل الحقول
+    add_label: 'علامة "إنشاء عنصر جديد"'
     sort: رتب
+    sort_placeholder: يدوي
+    field_note_placeholder: أدخل ملاحظة للحقل...
+    incompatible_data: البيانات الحالية غير متوافقة مع واجهة التكرار وسيتم تجاوزها عند إضافة عناصر إلى جهاز التكرار
     interface_group: خيارات الواجهة
     display_group: خيارات العرض
   slider:
     slider: شريط
+    description: حدد رقما باستخدام شريط التمرير
     always_show_value: إظهار القيمة دائمًا
   tags:
     tags: الوسوم
     description: حدد أو أضف وسوم
+    whitespace: المسافة الخالية
+    hyphen: استبدال بـ (-)
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
@@ -1994,6 +2029,7 @@ operations:
     data: البيانات
 standard: قياسي
 compact: مضغوط
+style: النمط
 fonts:
   normal: عادي
   bold: عريض
