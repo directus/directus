@@ -1774,31 +1774,54 @@ interfaces:
     description: حدد أو أضف وسوم
     whitespace: المسافة الخالية
     hyphen: استبدال بـ (-)
+    underscore: استبدل بـ (_)
+    remove: إزالة المسافة
+    capitalization: الكتابة بحرف كبير
+    uppercase: تحويل إلى أحرف كبيرة
+    lowercase: تحويل إلى احرف صغيرة
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
+    add_tags: إضافة علامة واضغط على ادخال...
   input:
+    input: إدخال
     description: أدخل قيمة يدوياً
+    trim: اقتطاع
+    trim_label: حذف الفراغ من البداية والنهاية للنص
     mask: مقنع
     mask_label: إخفاء القيمة الحقيقية
+    clear: مسح القيمة
+    clear_label: حفظ كنص فارغ
     minimum_value: أدنى قيمة
     maximum_value: أقصى قيمة
+    step_interval: فاصل الخطوات
+    slug: إزالة المسافات والرموز من النص
     slug_label: اجعل رابط القيمة المدخلة آمن
   input-multiline:
+    textarea: حقل نصي واسع
     description: أدخل النص المتعدد الأسطر
   input-translated-string:
     input-translated-string: نصوص التّرجَمَة
+    description: حدد أو أضف ترجمة مخصصة
     search_placeholder: بحث...
+    new_custom_translation: إنشاء ترجمة مخصصة
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
     color_on: تشغيل اللون
     color_off: إيقاف اللون
+    label_placeholder: أدخل تسمية...
     label_default: تمكين
   translations:
     display_template: عرض القالب
     no_collection: لا توجد مجموعة
+    toggle_split_view: تبديل طريقة عرض التقسيم
     enable: تفعيل
+    default_split_view_state: حالة عرض التقسيم الافتراضي
+    user_language: استخدام لغة المستخدم الحالية
+    default_language: اللغة الافتراضية
+    language_field: حقل مؤشر اللغة
+    language_direction_field: حقل اتجاه اللغة
   user:
     user: مستخدم
     description: حدد مستخدم directus موجود
@@ -1845,6 +1868,7 @@ interfaces:
 displays:
   translations:
     translations: الترجمة
+    language_field: حقل مؤشر اللغة
   boolean:
     boolean: نعم/لا
     description: عرض حالة التشغيل وإيقاف التشغيل
