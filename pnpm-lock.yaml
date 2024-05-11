@@ -363,11 +363,11 @@ importers:
         specifier: 8.17.0
         version: 8.17.0
       zod:
-        specifier: 3.23.6
-        version: 3.23.6
+        specifier: 3.23.8
+        version: 3.23.8
       zod-validation-error:
         specifier: 3.2.0
-        version: 3.2.0(zod@3.23.6)
+        version: 3.2.0(zod@3.23.8)
     optionalDependencies:
       '@keyv/redis':
         specifier: 2.8.4
@@ -1194,8 +1194,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       zod:
-        specifier: 3.23.6
-        version: 3.23.6
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1261,8 +1261,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       zod:
-        specifier: 3.23.6
-        version: 3.23.6
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -11800,8 +11800,8 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.23.6:
-    resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -23591,10 +23591,10 @@ snapshots:
 
   zhead@2.2.4: {}
 
-  zod-validation-error@3.2.0(zod@3.23.6):
+  zod-validation-error@3.2.0(zod@3.23.8):
     dependencies:
-      zod: 3.23.6
+      zod: 3.23.8
 
-  zod@3.23.6: {}
+  zod@3.23.8: {}
 
   zwitch@2.0.4: {}

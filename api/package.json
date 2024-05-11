@@ -173,7 +173,7 @@
 		"tsx": "4.9.3",
 		"wellknown": "0.5.0",
 		"ws": "8.17.0",
-		"zod": "3.23.6",
+		"zod": "3.23.8",
 		"zod-validation-error": "3.2.0"
 	},
 	"devDependencies": {
