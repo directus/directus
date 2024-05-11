@@ -1,6 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
+		"sourceMap": true,
 		"outDir": "dist"
 	},
 	"include": ["src"]
