@@ -75,6 +75,7 @@ services:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
+			- ./templates:/directus/templates
 ```
 
 ## Example Docker Compose
