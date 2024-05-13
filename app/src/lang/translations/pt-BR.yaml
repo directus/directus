@@ -91,6 +91,7 @@ n_files: '{n} Arquivos'
 verified: Verificado
 homepage: Página inicial
 repository: Repositório
+reload_page: Atualizar Página
 reload_required: Atualização de página necessária
 report_an_issue: Reportar um problema
 website: Site
@@ -747,6 +748,7 @@ cannot_edit_global_bookmarks: Não é possível editar favoritos globais
 bookmarks: Favoritos
 presets: Predefinições
 unexpected_error: Erro inesperado
+unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
