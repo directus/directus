@@ -747,7 +747,6 @@ cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
-unexpected_error_copy: Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
