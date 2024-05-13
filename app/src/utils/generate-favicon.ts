@@ -18,7 +18,7 @@ const svg = (color: string, addDirectusLogo: boolean) => `
 </svg>`;
 
 export const generateFavicon = (color: string, addDirectusLogo = true) => {
-	color = color || cssVar('--primary');
+	color = color || cssVar('--theme--primary');
 
 	const icon = svg(color, addDirectusLogo);
 	const wrapper = document.createElement('div');
@@ -27,9 +27,7 @@ export const generateFavicon = (color: string, addDirectusLogo = true) => {
 	if (wrapper.firstChild) {
 		const iconSerialized = new XMLSerializer().serializeToString(wrapper.firstChild);
 
-		const string = 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
-
-		return string;
+		return 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
 	}
 
 	throw Error(`Couldn't generate favicon`);

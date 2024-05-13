@@ -435,7 +435,6 @@ replace_from_library: Nahradit soubor z knihovny
 replace_from_url: Nahradit soubor z URL
 no_file_selected: Nebyl vybrán žádný soubor
 download_file: Stáhnout soubor
-open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
 exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.

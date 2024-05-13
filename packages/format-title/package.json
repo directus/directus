@@ -1,6 +1,6 @@
 {
 	"name": "@directus/format-title",
-	"version": "10.1.1",
+	"version": "10.1.2",
 	"description": "Custom formatter that converts any string into Title Case",
 	"keywords": [
 		"title-case",
@@ -40,7 +40,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
-		"vitest": "1.5.2"
+		"vitest": "1.5.3"
 	},
 	"engines": {
 		"node": ">=18"

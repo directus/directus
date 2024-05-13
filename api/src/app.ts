@@ -65,7 +65,6 @@ import schema from './middleware/schema.js';
 import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
-import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 
 const require = createRequire(import.meta.url);
@@ -75,16 +74,7 @@ export default async function createApp(): Promise<express.Application> {
 	const logger = useLogger();
 	const helmet = await import('helmet');
 
-	validateEnv(['KEY', 'SECRET']);
-
-	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
-		logger.warn('PUBLIC_URL should be a full URL');
-	}
-
-	await validateStorage();
-
 	await validateDatabaseConnection();
-	await validateDatabaseExtensions();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);
@@ -94,6 +84,19 @@ export default async function createApp(): Promise<express.Application> {
 	if ((await validateMigrations()) === false) {
 		logger.warn(`Database migrations have not all been run`);
 	}
+
+	if (!env['SECRET']) {
+		logger.warn(
+			`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
+		);
+	}
+
+	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
+		logger.warn('"PUBLIC_URL" should be a full URL');
+	}
+
+	await validateDatabaseExtensions();
+	await validateStorage();
 
 	await registerAuthProviders();
 
