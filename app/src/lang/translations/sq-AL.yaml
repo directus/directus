@@ -745,7 +745,6 @@ cannot_edit_global_bookmarks: Nuk mund të Modifikoni Faqerojtësit Globalë
 bookmarks: Faqerojtësit
 presets: Paracaktuar
 unexpected_error: Gabim i papritur
-unexpected_error_copy: Ka ndodhur një gabim i papritur. Ju lutem provoni përsëri më vonë.
 copy_details: Kopjo Detajet
 no_app_access: S'ka Akses në Aplikacion
 no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
