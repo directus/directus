@@ -116,6 +116,10 @@ export const DEFAULTS = {
 
 	EXPORT_BATCH_SIZE: 5000,
 
+	USERS_ACTIVE_LIMIT_ADMIN_ACCESS: Infinity,
+	USERS_ACTIVE_LIMIT_APP_ACCESS: Infinity,
+	USERS_ACTIVE_LIMIT_API_ACCESS: Infinity,
+
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	GRAPHQL_INTROSPECTION: true,
