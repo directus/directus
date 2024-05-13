@@ -107,7 +107,6 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	} catch {
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
-		// releaseMutex?.();
 		resumeQueue();
 	}
 }
