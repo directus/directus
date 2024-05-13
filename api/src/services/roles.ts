@@ -1,6 +1,10 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
+import { getRoleCountsByUsers } from '../telemetry/utils/check-increased-user-limits.js';
+import { checkIncreasedUserLimits } from '../telemetry/utils/get-role-counts-by-users.js';
+import { type UserCount } from '../telemetry/utils/get-user-count.js';
+import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
@@ -181,13 +185,49 @@ export class RolesService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
 
+		const increasedCounts: UserCount = {
+			admin: 0,
+			app: 0,
+			api: 0,
+		};
+
+		if ('users' in data) {
+			if ('admin_access' in data && data['admin_access'] === true) {
+				increasedCounts.admin += data['users'].length;
+			} else if ('app_access' in data && data['app_access'] === true) {
+				increasedCounts.app += data['users'].length;
+			} else {
+				increasedCounts.api += data['users'].length;
+			}
+		}
+
+		await checkIncreasedUserLimits(this.knex, increasedCounts);
+
 		return super.createOne(data, opts);
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const increasedCounts: UserCount = {
+			admin: 0,
+			app: 0,
+			api: 0,
+		};
+
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
+
+			if ('users' in partialItem) {
+				if ('admin_access' in partialItem && partialItem['admin_access'] === true) {
+					increasedCounts.admin += partialItem['users'].length;
+				} else if ('app_access' in partialItem && partialItem['app_access'] === true) {
+					increasedCounts.app += partialItem['users'].length;
+				} else {
+					increasedCounts.api += partialItem['users'].length;
+				}
+			}
 		}
+
+		await checkIncreasedUserLimits(this.knex, increasedCounts);
 
 		return super.createMany(data, opts);
 	}
@@ -196,9 +236,85 @@ export class RolesService extends ItemsService {
 		this.assertValidIpAccess(data);
 
 		try {
+			const increasedCounts: UserCount = {
+				admin: 0,
+				app: 0,
+				api: 0,
+			};
+
+			let increasedUsers = 0;
+
+			const existingRole:
+				| { count: number | string; admin_access: number | boolean; app_access: number | boolean }
+				| undefined = (
+				await this.knex
+					.count('directus_users.id', { as: 'count' })
+					.select('directus_roles.admin_access', 'directus_roles.app_access')
+					.from('directus_users')
+					.where('directus_roles.id', '=', key)
+					.andWhere('directus_users.status', '=', 'active')
+					.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+					.limit(1)
+			)[0];
+
+			if (!existingRole) throw new InvalidPayloadError({ reason: 'Invalid role' });
+
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
+
+				const users: Alterations<User, 'id'> | (string | Partial<User>)[] = data['users'];
+
+				if (Array.isArray(users)) {
+					increasedUsers = users.length - Number(existingRole.count);
+				} else {
+					increasedUsers += users.create.length;
+					increasedUsers -= users.delete.length;
+
+					const existingCounts = await getRoleCountsByUsers(
+						this.knex,
+						users.update.map((user) => user.id),
+					);
+
+					if (existingRole.admin_access) {
+						increasedUsers += existingCounts.app + existingCounts.api;
+					} else if (existingRole.app_access) {
+						increasedUsers += existingCounts.admin + existingCounts.api;
+					} else {
+						increasedUsers += existingCounts.admin + existingCounts.app;
+					}
+				}
 			}
+
+			if ('admin_access' in data || 'app_access' in data) {
+				const adminAccess = data['admin_access'] === true;
+				const appAccess = data['app_access'] === true;
+
+				const existingRoleUsersCount = Number(existingRole.count);
+
+				if (adminAccess) {
+					if (!existingRole.admin_access) {
+						increasedCounts.admin += existingRoleUsersCount;
+					}
+				} else if (appAccess) {
+					if (existingRole.admin_access || (!existingRole.admin_access && !existingRole.app_access)) {
+						increasedCounts.app += existingRoleUsersCount;
+					}
+				} else {
+					if (!existingRole.admin_access && !existingRole.app_access) {
+						increasedCounts.api += existingRoleUsersCount;
+					}
+				}
+			} else {
+				if (existingRole.admin_access) {
+					increasedCounts.admin += increasedUsers;
+				} else if (existingRole.app_access) {
+					increasedCounts.app = increasedUsers;
+				} else {
+					increasedCounts.api = increasedUsers;
+				}
+			}
+
+			await checkIncreasedUserLimits(this.knex, increasedCounts);
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
 		}
@@ -232,6 +348,29 @@ export class RolesService extends ItemsService {
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
+			}
+
+			const adminAccess = 'admin_access' in data && data['admin_access'] === true;
+			const appAccess = 'app_access' in data && data['app_access'] === true;
+
+			if (adminAccess || appAccess) {
+				const existingCounts: UserCount = await getUserCountsByRoles(this.knex, keys);
+
+				const increasedCounts: UserCount = {
+					admin: 0,
+					app: 0,
+					api: 0,
+				};
+
+				if (adminAccess) {
+					increasedCounts.admin = existingCounts.admin - (existingCounts.app + existingCounts.api);
+				} else if (appAccess) {
+					increasedCounts.app = existingCounts.app - (existingCounts.admin + existingCounts.api);
+				} else {
+					increasedCounts.api = existingCounts.api - (existingCounts.admin + existingCounts.app);
+				}
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
 			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
