@@ -1,6 +1,6 @@
 ---
 description: Learn how to use a hook to validate phone numbers before allowing them in the database.
-contributors: Tim Butterfield, Kevin Lewis, Oleksii Bondarenko
+contributors: Tim Butterfield, Kevin Lewis
 ---
 
 # Use Hooks to Validate Phone Numbers With Twilio
