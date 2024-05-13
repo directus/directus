@@ -13,19 +13,19 @@ vi.mock('../database/index');
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
 vi.mock('@directus/env', () => ({
-	 useEnv: vi.fn().mockReturnValue({
-	SECRET: 'test',
-	EXTENSIONS_PATH: './extensions',
-	SESSION_COOKIE_NAME: 'directus_session',
-	// needed for constants.ts top level mocking
-	REFRESH_TOKEN_COOKIE_DOMAIN: '',
-	REFRESH_TOKEN_TTL: 0,
-	REFRESH_TOKEN_COOKIE_SECURE: false,
-	SESSION_COOKIE_DOMAIN: '',
-	SESSION_COOKIE_TTL: 0,
-	SESSION_COOKIE_SECURE: false,
-})
- }));
+	useEnv: vi.fn().mockReturnValue({
+		SECRET: 'test',
+		EXTENSIONS_PATH: './extensions',
+		SESSION_COOKIE_NAME: 'directus_session',
+		// needed for constants.ts top level mocking
+		REFRESH_TOKEN_COOKIE_DOMAIN: '',
+		REFRESH_TOKEN_TTL: 0,
+		REFRESH_TOKEN_COOKIE_SECURE: false,
+		SESSION_COOKIE_DOMAIN: '',
+		SESSION_COOKIE_TTL: 0,
+		SESSION_COOKIE_SECURE: false,
+	}),
+}));
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -276,7 +276,6 @@ test('Sets accountability to user information when static token is used', async 
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
 });
-
 
 test('Invalid session token clears the cookie', async () => {
 	const req = {
