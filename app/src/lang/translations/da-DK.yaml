@@ -591,7 +591,6 @@ cannot_edit_global_bookmarks: Kan ikke redigere globale bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet fejl
-unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér detaljer
 no_app_access: Ingen app adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
