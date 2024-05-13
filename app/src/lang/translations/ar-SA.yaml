@@ -743,7 +743,6 @@ cannot_edit_global_bookmarks: لا يمكن تعديل العلامات المر
 bookmarks: محفوظات
 presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
-unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
 no_app_access: لا توجد صلاحيه للوصول
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
