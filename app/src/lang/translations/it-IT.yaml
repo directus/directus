@@ -746,7 +746,6 @@ cannot_edit_global_bookmarks: Impossibile modificare i segnalibri globali
 bookmarks: Segnalibri
 presets: Preset
 unexpected_error: Errore Imprevisto
-unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
 copy_details: Copia Dettagli
 no_app_access: Nessun Accesso all'App
 no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amministratore.
