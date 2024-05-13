@@ -70,7 +70,7 @@ extension_endpoint: Endpoint
 extension_operation: Operação
 extension_bundle: Pacote
 extension_interfaces: Interfaces
-extension_displays: Telas
+extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Módulos
 extension_panels: Painéis
@@ -79,7 +79,7 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operações
 extension_bundles: Pacotes
-extension_missing: Faltando
+extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
@@ -155,13 +155,13 @@ version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
 main_version: Main
-switch_version: Trocar versão
-switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? As alterações não salvas serão perdidas.
-create_version: Criar versão
-rename_version: Renomear versão
-compare_version: Comparar versão
-save_version: Salvar versão
-promote_version: Promover versão
+switch_version: Trocar Versão
+switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? Alterações não salvas serão perdidas.
+create_version: Criar Versão
+rename_version: Renomear Versão
+compare_version: Comparar Versão
+save_version: Salvar Versão
+promote_version: Promover Versão
 promote_version_disabled: Sem alterações
 promote_version_drawer_title: Promover {version} para a Main
 promote_version_changes: Mudanças
@@ -1258,7 +1258,7 @@ fields:
     height: Altura
     charset: Codificação de caracteres
     duration: Duração
-    focal_point_x: Coordenada X
+    focal_point_x: Coordenada (X)
     focal_point_y: Coordenada Y
   directus_users:
     first_name: Primeiro Nome
