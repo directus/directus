@@ -1045,10 +1045,13 @@ Directus collects little and anonymized data about your environment.
 
 Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
 
-| Variable                | Description                                                                               | Default Value |
-| ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
-| `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
-| `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |
+| Variable                          | Description                                                                               | Default Value |
+| --------------------------------- | ----------------------------------------------------------------------------------------- | ------------- |
+| `RELATIONAL_BATCH_SIZE`           | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
+| `EXPORT_BATCH_SIZE`               | How many rows are read into memory at a time when constructing exports                    | 5000          |
+| `USERS_ACTIVE_LIMIT_ADMIN_ACCESS` | How many active users with admin privilege are allowed                                    | `Infinity`    |
+| `USERS_ACTIVE_LIMIT_APP_ACCESS`   | How many active users with app access are allowed                                         | `Infinity`    |
+| `USERS_ACTIVE_LIMIT_API_ACCESS`   | How many active API access users are allowed                                              | `Infinity`    |
 
 ## WebSockets
 
