@@ -4,7 +4,7 @@ const MutexKey = ['auth_refresh'] as const;
 
 type MutexKey = (typeof MutexKey)[number];
 
-const timeout = 50;
+const timeout = 500;
 const maxRetries = 10;
 
 export function useMutex(key: MutexKey, expiresMs: number) {
@@ -26,6 +26,9 @@ export function useMutex(key: MutexKey, expiresMs: number) {
 
 		try {
 			do {
+				// Attempt to prevent concurrent mutex acquiring across browser windows/tabs
+				await sleep(Math.random() * timeout);
+
 				const mutex = localStorage.getItem(internalKey);
 
 				if (!mutex || Number(mutex) > Date.now() + expiresMs) {
@@ -39,7 +42,6 @@ export function useMutex(key: MutexKey, expiresMs: number) {
 					break;
 				}
 
-				await sleep(timeout);
 				retries += 1;
 			} while (retries < maxRetries);
 			// throw error when hitting max retries?
