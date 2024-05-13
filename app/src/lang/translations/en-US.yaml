@@ -94,6 +94,7 @@ n_files: '{n} Files'
 verified: Verified
 homepage: Homepage
 repository: Repository
+reload_page: Reload Page
 reload_required: Reload Required
 report_an_issue: Report an Issue
 website: Website
@@ -762,7 +763,7 @@ cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
+unexpected_error_copy: An unexpected error has occurred. Please try again.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
