@@ -11,6 +11,8 @@ test.each([
 	[123, false],
 	[{}, false],
 	[['{}'], false],
+	[true, true],
+	[false, false],
 ])('toBoolean(%s) -> %s', (value, expected) => {
 	expect(toBoolean(value)).toBe(expected);
 });

@@ -525,7 +525,6 @@ replace_from_url: استبدال الملف من رابط
 no_image_selected: لم يتم اختيار أي صورة
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
-open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.

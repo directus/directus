@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Pong
  */
 export const serverPing =
-	<Schema extends object>(): RestCommand<string, Schema> =>
+	<Schema>(): RestCommand<string, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/server/ping',

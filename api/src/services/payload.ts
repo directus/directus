@@ -1,5 +1,13 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Accountability, Alterations, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	Alterations,
+	Item,
+	PrimaryKey,
+	FieldOverview,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
@@ -141,22 +149,37 @@ export class PayloadService {
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
+	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>): Promise<Partial<Item>[]>;
+	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>): Promise<Partial<Item>>;
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
+		aliasMap: Record<string, string> = {},
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
 		const fieldsInPayload = Object.keys(processedPayload[0]!);
+		const fieldEntries = Object.entries(this.schema.collections[this.collection]!.fields);
+		const aliasEntries = Object.entries(aliasMap);
 
-		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields).filter(
-			([_name, field]) => field.special && field.special.length > 0,
-		);
+		let specialFields: [string, FieldOverview][] = [];
+
+		for (const [name, field] of fieldEntries) {
+			if (field.special && field.special.length > 0) {
+				specialFields.push([name, field]);
+
+				for (const [aliasName, fieldName] of aliasEntries) {
+					if (fieldName === name) {
+						specialFields.push([aliasName, { ...field, field: aliasName }]);
+					}
+				}
+			}
+		}
 
 		if (action === 'read') {
-			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {
+			specialFields = specialFields.filter(([name]) => {
 				return fieldsInPayload.includes(name);
 			});
 		}
@@ -164,7 +187,7 @@ export class PayloadService {
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
-					specialFieldsInCollection.map(async ([name, field]) => {
+					specialFields.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
 						if (newValue !== undefined) record[name] = newValue;
 					}),

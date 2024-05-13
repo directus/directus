@@ -3,7 +3,7 @@ import { throwIfEmpty, throwIfCoreCollection } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadItemOutput<
-	Schema extends object,
+	Schema,
 	Collection extends RegularCollections<Schema>,
 	TQuery extends Query<Schema, CollectionType<Schema, Collection>>,
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
@@ -20,7 +20,7 @@ export type ReadItemOutput<
  */
 export const readItems =
 	<
-		Schema extends object,
+		Schema,
 		Collection extends RegularCollections<Schema>,
 		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>,
 	>(
@@ -52,7 +52,7 @@ export const readItems =
  */
 export const readItem =
 	<
-		Schema extends object,
+		Schema,
 		Collection extends RegularCollections<Schema>,
 		const TQuery extends QueryItem<Schema, CollectionType<Schema, Collection>>,
 	>(

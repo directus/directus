@@ -48,8 +48,7 @@ services:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
     environment:
-      KEY: "replace-with-random-value"
-      SECRET: "replace-with-random-value"
+      SECRET: "replace-with-secure-random-value"
       ADMIN_EMAIL: "admin@example.com"
       ADMIN_PASSWORD: "d1r3ctu5"
       DB_CLIENT: "sqlite3"
@@ -65,8 +64,7 @@ Save the file. Let's step through it:
 - The`volumes` section maps internal `database`, `uploads` and `extensions` data to our local file system alongside the
   `docker-compose.yml` - meaning data is stored and persisted outside of Docker containers.
 - The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set.
-  - `KEY` and `SECRET` are required and should be long random values. `KEY` is used for telemetry and health tracking,
-    and `SECRET` is used to sign access tokens.
+  - `SECRET` is required and should be a secure random value, it's used to sign tokens.
   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
   - `DB_CLIENT` and `DB_FILENAME` are defining the connection to your database.
   - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).

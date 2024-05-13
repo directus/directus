@@ -1,6 +1,6 @@
 import { createError, ErrorCode } from '../index.js';
 
-interface UnprocessableContentErrorExtensions {
+export interface UnprocessableContentErrorExtensions {
 	reason: string;
 }
 

@@ -33,7 +33,7 @@ extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
-unknown: I panjohur
+unknown: Panjohur
 reset_width: Rikthe Gjerësinë
 tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
@@ -66,7 +66,7 @@ extension_module: Modul
 extension_panel: Paneli
 extension_theme: Temë
 extension_hook: Hook
-extension_endpoint: Pikë fundore
+extension_endpoint: Endpoint
 extension_operation: Operacion
 extension_bundle: Paketë
 extension_interfaces: Ndërfaqe
@@ -361,6 +361,7 @@ fields_group: Grup Fushash
 no_collections_found: Nuk u gjetën koleksione.
 new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
 search_collection: Kërko Koleksion...
+search_role: Kërko Rolin...
 search_field: Kërko Fushë...
 new_field: 'Fushë e Re'
 new_collection: 'Koleksion i Ri'
@@ -446,6 +447,7 @@ revision_delta_other: Rishikim
 revision_delta_by: '{date} nga {user}'
 presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
 download_page_as_csv: 'Shkarko Faqen si CSV'''
+download_page_as_csv_unsupported: Ky format nuk mbështet shkarkimin e faqes aktuale.
 private_user: Përdorues Privat
 creation_preview: Parapamje e Krijimit
 revision_preview: Parapamje e Rishikimit
@@ -557,7 +559,7 @@ replace_from_url: Zëvendëso Skedarin nga URL
 no_image_selected: Asnjë imazh nuk është zgjedhur
 no_file_selected: Asnjë Skedar i Zgjedhur
 download_file: Shkarko Skedarin
-open_file_in_tab: Hap skedarin në skedë të re
+open_file_in_tab: Hap Skedarin në Skedë të Re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
@@ -1628,6 +1630,7 @@ delete_item: Fshi Artikullin
 interfaces:
   list-m2a:
     prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
+    sorting_disabled: Renditja është çaktivizuar sepse ka më shumë artikuj se sa mund të përshtaten në një faqe.
   filter:
     name: Filtri
     description: Konfiguro një objekt filtrues.
@@ -2166,6 +2169,7 @@ layouts:
     not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
 horizontal: Horizontal
 vertical: Vertikal
+axis: Boshti
 x_axis: Aks X
 y_axis: Aks Y
 y_axis_function: Funskion i Aksit Y
