@@ -68,7 +68,7 @@ underneath the collection restriction.
 
 ```js
 if (input.phone_number === undefined) {
-	throw new InvalidPayloadError({ reason: `No Phone Number has been provided`});
+	throw new InvalidPayloadError({ reason: 'No Phone Number has been provided' });
 }
 ```
 
@@ -79,7 +79,7 @@ const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
 
-await client.lookups.v2
+client.lookups.v2
 	.phoneNumbers(input.phone_number)
 	.fetch()
 	.then((phoneNumber) => {});
@@ -96,12 +96,12 @@ provides a very helpful boolean response called `valid`.
 Use this to throw an error if `false`, or return the input to the stream and end the hook if `true`:
 
 ```js
-await client.lookups.v2
+client.lookups.v2
 	.phoneNumbers(input.phone_number)
 	.fetch()
 	.then((phoneNumber) => {
 		if (!phoneNumber.valid) { // [!code ++]
-			throw new InvalidPayloadError({ reason: `Phone Number is not valid`}); // [!code ++]
+			throw new InvalidPayloadError({ reason: 'Phone Number is not valid' }); // [!code ++]
 		} // [!code ++]
 // [!code ++]
 		return input; // [!code ++]
@@ -153,19 +153,19 @@ export default ({ filter }, { env }) => {
 		if (collection !== 'customers') return input;
 
 		if (input.phone_number === undefined) {
-			throw new InvalidPayloadError({ reason: `No Phone Number has been provided`});
+			throw new InvalidPayloadError({ reason: 'No Phone Number has been provided' });
 		}
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
 		const client = new twilio(accountSid, authToken);
 
-		await client.lookups.v2
+		client.lookups.v2
 			.phoneNumbers(input.phone_number)
 			.fetch()
 			.then((phoneNumber) => {
 				if (!phoneNumber.valid) {
-					throw new InvalidPayloadError({ reason: `Phone Number is not valid`});
+					throw new InvalidPayloadError({ reason: 'Phone Number is not valid' });
 				}
 
 				return input;
