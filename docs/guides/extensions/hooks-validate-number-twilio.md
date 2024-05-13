@@ -68,7 +68,7 @@ underneath the collection restriction.
 
 ```js
 if (input.phone_number === undefined) {
-	throw new InvalidPayloadError('No Phone Number has been provided');
+	throw new InvalidPayloadError({ reason: 'No Phone Number has been provided' });
 }
 ```
 
@@ -101,7 +101,7 @@ client.lookups.v2
 	.fetch()
 	.then((phoneNumber) => {
 		if (!phoneNumber.valid) { // [!code ++]
-			throw new InvalidPayloadError('Phone Number is not valid'); // [!code ++]
+			throw new InvalidPayloadError({ reason: 'Phone Number is not valid' }); // [!code ++]
 		} // [!code ++]
 // [!code ++]
 		return input; // [!code ++]
@@ -153,7 +153,7 @@ export default ({ filter }, { env }) => {
 		if (collection !== 'customers') return input;
 
 		if (input.phone_number === undefined) {
-			throw new InvalidPayloadError('No Phone Number has been provided');
+			throw new InvalidPayloadError({ reason: 'No Phone Number has been provided' });
 		}
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
@@ -165,7 +165,7 @@ export default ({ filter }, { env }) => {
 			.fetch()
 			.then((phoneNumber) => {
 				if (!phoneNumber.valid) {
-					throw new InvalidPayloadError('Phone Number is not valid');
+					throw new InvalidPayloadError({ reason: 'Phone Number is not valid' });
 				}
 
 				return input;
