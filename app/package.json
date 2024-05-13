@@ -102,7 +102,7 @@
 		"@vue/test-utils": "2.4.5",
 		"@vueuse/core": "10.9.0",
 		"@vueuse/router": "10.9.0",
-		"apexcharts": "3.49.0",
+		"apexcharts": "3.49.1",
 		"axios": "1.6.8",
 		"base-64": "1.0.0",
 		"caret-pos": "2.0.0",
