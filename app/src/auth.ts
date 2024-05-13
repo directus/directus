@@ -3,7 +3,14 @@ import { DEFAULT_AUTH_PROVIDER, SDK_AUTH_REFRESH_BEFORE_EXPIRES } from '@/consta
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
-import { AuthenticationData, LoginOptions, RestCommand, authenticateShare, getAuthEndpoint } from '@directus/sdk';
+import {
+	AuthenticationData,
+	LoginOptions,
+	RestCommand,
+	authenticateShare,
+	getAuthEndpoint,
+	readMe,
+} from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { Events, emitter } from './events';
@@ -94,10 +101,13 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	// Allow refresh during initial page load, skip if not logged in
 	if (!firstRefresh && !appStore.authenticated) return;
 
-	// Skip access token refreshing if it is still fresh
-	if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) return;
-
 	try {
+		// Skip access token refreshing if it is still fresh but validate the session
+		if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) {
+			await sdk.request(readMe({ fields: ['id'] }));
+			return;
+		}
+
 		const response = await sdk.refresh();
 
 		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
