@@ -102,9 +102,9 @@ useSystem();
 			{{ t('unexpected_error_copy') }}
 
 			<template #append>
-				<v-error :error="error" />
-				<br />
-				<v-button kind="normal" @click="reload">{{ t('reload_page') }}</v-button>
+				<v-error class="error" :error="error" />
+
+				<v-button small @click="reload">{{ t('reload_page') }}</v-button>
 			</template>
 		</v-info>
 
@@ -142,5 +142,9 @@ useSystem();
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.error {
+	margin-bottom: 24px;
 }
 </style>
