@@ -315,7 +315,7 @@ test('Invalid session token responds with error and clears the cookie', async ()
 	expect(next).toHaveBeenCalledTimes(0);
 });
 
-test('Invalid query token does not clear the session cookie', async () => {
+test('Invalid query token responds with error but does not clear the session cookie', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {
