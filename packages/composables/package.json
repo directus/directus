@@ -39,7 +39,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@vitest/coverage-v8": "1.5.3",
+		"@vitest/coverage-v8": "1.6.0",
 		"@vue/test-utils": "2.4.5",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",

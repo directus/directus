@@ -32,7 +32,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.17.17",
 		"@vitejs/plugin-vue": "5.0.4",
-		"@vitest/coverage-v8": "1.5.3",
+		"@vitest/coverage-v8": "1.6.0",
 		"histoire": "0.17.17",
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.2",
