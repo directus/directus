@@ -21,7 +21,7 @@ export function useMutex(key: string, expiresMs: number) {
 			return navigator.locks.request(internalKey, callback);
 		}
 
-		// fall back to localstorage when navigator.locks is not available
+		// Fall back to localstorage when navigator.locks is not available
 		return localStorageLock(callback);
 	}
 
@@ -31,7 +31,7 @@ export function useMutex(key: string, expiresMs: number) {
 
 		try {
 			do {
-				// attempt to prevent concurrent mutex acquiring across browser windows/tabs
+				// Attempt to prevent concurrent mutex acquiring across browser windows/tabs
 				await sleep(Math.random() * TIMEOUT);
 
 				const mutex = localStorage.getItem(internalKey);
@@ -53,7 +53,7 @@ export function useMutex(key: string, expiresMs: number) {
 			}
 		} finally {
 			if (hasAcquiredMutex) {
-				// release lock
+				// Release lock
 				localStorage.removeItem(internalKey);
 			}
 		}
