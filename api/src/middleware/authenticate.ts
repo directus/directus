@@ -53,7 +53,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 	try {
 		req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
 	} catch (err) {
-		if (isDirectusError(err, ErrorCode.InvalidCredentials)) {
+		if (isDirectusError(err, ErrorCode.InvalidCredentials) || isDirectusError(err, ErrorCode.InvalidToken)) {
 			if (req.cookies[env['SESSION_COOKIE_NAME'] as string] === req.token) {
 				// clear the session token if ended up in an invalid state
 				res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
