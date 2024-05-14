@@ -27,7 +27,7 @@ export function useMutex(key: string, expiresMs: number) {
 
 				const mutex = localStorage.getItem(internalKey);
 
-				if (!mutex || Number(mutex) > Date.now() + expiresMs) {
+				if (!mutex || Number(mutex) < Date.now()) {
 					localStorage.setItem(internalKey, String(Date.now() + expiresMs));
 					hasAcquiredMutex = true;
 
