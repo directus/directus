@@ -1,7 +1,7 @@
 import { sleep } from '@/utils/sleep';
 
-const timeout = 500;
-const maxRetries = 10;
+const TIMEOUT = 500;
+const MAX_RETRIES = 10;
 
 export function useMutex(key: string, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
@@ -23,7 +23,7 @@ export function useMutex(key: string, expiresMs: number) {
 		try {
 			do {
 				// attempt to prevent concurrent mutex acquiring across browser windows/tabs
-				await sleep(Math.random() * timeout);
+				await sleep(Math.random() * TIMEOUT);
 
 				const mutex = localStorage.getItem(internalKey);
 
@@ -39,7 +39,7 @@ export function useMutex(key: string, expiresMs: number) {
 				}
 
 				retries += 1;
-			} while (retries < maxRetries);
+			} while (retries < MAX_RETRIES);
 			// throw error when hitting max retries?
 		} finally {
 			if (hasAcquiredMutex) {
