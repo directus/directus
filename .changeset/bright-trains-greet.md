@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Reduced access token refreshing if it is still fresh
+Reduced the number of session token refreshes if the token is still fresh
