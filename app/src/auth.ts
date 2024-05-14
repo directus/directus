@@ -1,9 +1,16 @@
 import { resumeQueue } from '@/api';
-import { DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { DEFAULT_AUTH_PROVIDER, SDK_AUTH_REFRESH_BEFORE_EXPIRES } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
-import { AuthenticationData, LoginOptions, RestCommand, authenticateShare, getAuthEndpoint } from '@directus/sdk';
+import {
+	AuthenticationData,
+	LoginOptions,
+	RestCommand,
+	authenticateShare,
+	getAuthEndpoint,
+	readMe,
+} from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { useMutex } from './composables/use-mutex';
@@ -97,6 +104,12 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	if (!firstRefresh && !appStore.authenticated) return;
 
 	try {
+		// Skip access token refreshing if it is still fresh but validate the session
+		if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) {
+			await sdk.request(readMe({ fields: ['id'] }));
+			return;
+		}
+
 		await acquireMutex(async () => {
 			const response = await sdk.refresh();
 

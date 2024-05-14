@@ -32,7 +32,7 @@
 		"ky": "1.2.4",
 		"lodash-es": "4.17.21",
 		"validate-npm-package-name": "5.0.0",
-		"zod": "3.23.6"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",

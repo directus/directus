@@ -38,7 +38,7 @@
 		"@types/express": "4.17.21",
 		"fs-extra": "11.2.0",
 		"lodash-es": "4.17.21",
-		"zod": "3.23.6"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
