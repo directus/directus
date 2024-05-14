@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Added mutex for app token refresh
+Added mechanism to prevent multiple concurrent refresh token requests in the Data Studio
