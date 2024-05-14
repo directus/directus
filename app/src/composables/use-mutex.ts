@@ -26,7 +26,7 @@ export function useMutex(key: MutexKey, expiresMs: number) {
 
 		try {
 			do {
-				// Attempt to prevent concurrent mutex acquiring across browser windows/tabs
+				// attempt to prevent concurrent mutex acquiring across browser windows/tabs
 				await sleep(Math.random() * timeout);
 
 				const mutex = localStorage.getItem(internalKey);
