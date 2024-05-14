@@ -1,7 +1,7 @@
 import { sleep } from '@/utils/sleep';
 
 const TIMEOUT = 500;
-const MAX_RETRIES = 10;
+const MAX_RETRIES = 60;
 
 export function useMutex(key: string, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
@@ -9,12 +9,7 @@ export function useMutex(key: string, expiresMs: number) {
 
 	async function acquireMutex(callback: (lock?: Lock | null) => Promise<any>): Promise<any> {
 		if (useWebLock) {
-			const controller = new AbortController();
-
-			// abort if a lock is not acquired or is not released within the expiry time
-			setTimeout(() => controller.abort(), expiresMs);
-
-			return navigator.locks.request(internalKey, { signal: controller.signal }, callback);
+			return navigator.locks.request(internalKey, callback);
 		}
 
 		// fall back to localstorage when navigator.locks is not available
