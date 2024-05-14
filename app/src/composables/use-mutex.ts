@@ -1,13 +1,9 @@
 import { sleep } from '@directus/sdk';
 
-const MutexKey = ['auth_refresh'] as const;
-
-type MutexKey = (typeof MutexKey)[number];
-
 const timeout = 500;
 const maxRetries = 10;
 
-export function useMutex(key: MutexKey, expiresMs: number) {
+export function useMutex(key: string, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
 	const useWebLock = !!navigator.locks;
 
