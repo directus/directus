@@ -9,7 +9,12 @@ export function useMutex(key: string, expiresMs: number) {
 
 	async function acquireMutex(callback: (lock?: Lock | null) => Promise<any>): Promise<any> {
 		if (useWebLock) {
-			return navigator.locks.request(internalKey, callback);
+			const controller = new AbortController();
+
+			// abort if a lock is not acquired or is not released within the expiry time
+			setTimeout(() => controller.abort(), expiresMs);
+
+			return navigator.locks.request(internalKey, { signal: controller.signal }, callback);
 		}
 
 		// fall back to localstorage when navigator.locks is not available
@@ -28,11 +33,9 @@ export function useMutex(key: string, expiresMs: number) {
 				const mutex = localStorage.getItem(internalKey);
 
 				if (!mutex || Number(mutex) > Date.now() + expiresMs) {
-					// set lock
 					localStorage.setItem(internalKey, String(Date.now() + expiresMs));
 					hasAcquiredMutex = true;
 
-					// do logic
 					await callback(null);
 
 					break;
@@ -40,7 +43,10 @@ export function useMutex(key: string, expiresMs: number) {
 
 				retries += 1;
 			} while (retries < MAX_RETRIES);
-			// throw error when hitting max retries?
+
+			if (!hasAcquiredMutex) {
+				throw new Error('Failed to acquire mutex');
+			}
 		} finally {
 			if (hasAcquiredMutex) {
 				// release lock
