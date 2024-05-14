@@ -1,4 +1,4 @@
-import { sleep } from '@directus/sdk';
+import { sleep } from '@/utils/sleep';
 
 const timeout = 500;
 const maxRetries = 10;
