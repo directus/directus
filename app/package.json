@@ -99,7 +99,7 @@
 		"@unhead/addons": "1.9.9",
 		"@unhead/vue": "1.9.9",
 		"@vitejs/plugin-vue": "5.0.4",
-		"@vue/test-utils": "2.4.5",
+		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "10.9.0",
 		"@vueuse/router": "10.9.0",
 		"apexcharts": "3.49.1",
