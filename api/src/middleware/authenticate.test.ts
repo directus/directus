@@ -277,7 +277,7 @@ test('Sets accountability to user information when static token is used', async 
 	expect(next).toHaveBeenCalledTimes(1);
 });
 
-test('Invalid session token clears the cookie', async () => {
+test('Invalid session token responds with error and clears the cookie', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {
