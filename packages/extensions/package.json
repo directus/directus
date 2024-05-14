@@ -38,13 +38,13 @@
 		"@types/express": "4.17.21",
 		"fs-extra": "11.2.0",
 		"lodash-es": "4.17.21",
-		"zod": "3.23.6"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.31",
+		"@types/node": "18.19.33",
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "1.5.3",
 		"knex": "3.1.0",
