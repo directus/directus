@@ -3,10 +3,19 @@ import { sleep } from '@/utils/sleep';
 const TIMEOUT = 500;
 const MAX_RETRIES = 60;
 
+/**
+ * @param key A string to identify the mutex
+ * @param expiresMs An expiry to invalidate the localstorage fallback mutex
+ */
 export function useMutex(key: string, expiresMs: number) {
 	const internalKey = `directus-mutex-${key}`;
 	const useWebLock = !!navigator.locks;
 
+	/**
+	 * Acquire a mutex to run the callback function
+	 *
+	 * @param callback A function to run when the mutex is acquired
+	 */
 	async function acquireMutex(callback: (lock?: Lock | null) => Promise<any>): Promise<any> {
 		if (useWebLock) {
 			return navigator.locks.request(internalKey, callback);
