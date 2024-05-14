@@ -91,10 +91,15 @@ n_files: '{n} Dateien'
 verified: Verifiziert
 homepage: Hello world
 repository: Repository
+reload_page: Seite neu laden
 reload_required: Erneutes Laden erforderlich
 report_an_issue: Problem melden
 website: Webseite
 github: GitHub
+beta: Beta
+n_downloads: '{n} downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilität nicht garantiert
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
