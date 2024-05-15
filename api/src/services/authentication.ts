@@ -409,16 +409,29 @@ export class AuthenticationService {
 			issuer: 'directus',
 		});
 
+		// keep the old session active for a second
 		await this.knex('directus_sessions')
-			.update({
-				token: newRefreshToken,
-				expires: refreshTokenExpiration,
-			})
+			.update({ expires: new Date(Date.now() + 1000) })
 			.where({ token: refreshToken });
+
+		// create the new session
+		await this.knex('directus_sessions').insert({
+			token: newRefreshToken,
+			user: record.user_id,
+			expires: refreshTokenExpiration,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+			origin: this.accountability?.origin,
+		});
 
 		if (record.user_id) {
 			await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
 		}
+
+		// clear expired sessions for the current user
+		await this.knex('directus_sessions').delete()
+			.where('user', '=', record.user_id)
+			.andWhere('expires', '<', new Date());
 
 		return {
 			accessToken,
