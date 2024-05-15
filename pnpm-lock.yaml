@@ -1258,8 +1258,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       validate-npm-package-name:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 5.0.1
+        version: 5.0.1
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -8117,6 +8117,7 @@ packages:
   ldapjs@2.3.3:
     resolution: {integrity: sha512-75QiiLJV/PQqtpH+HGls44dXweviFwQ6SiIK27EqzKQ5jU/7UFrl2E5nLdQ3IYRBzJ/AVFJI66u0MZ0uofKYwg==}
     engines: {node: '>=10.13.0'}
+    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
 
   leven@2.1.0:
     resolution: {integrity: sha512-nvVPLpIHUxCUoRLrFqTgSxXJ614d8AgQoWl7zPe/2VadE8+1dpU3LBhowRuBAcuwruWtOdD8oYC9jDNJjXDPyA==}
@@ -11242,8 +11243,8 @@ packages:
     resolution: {integrity: sha512-mzR0L8ZDktZjpX4OB46KT+56MAhl4EIazWP/+G/HPGuvfdaqg4YsCdtOm6U9+LOFyYDoh4dpnpxZRB9MQQns5Q==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
 
-  validate-npm-package-name@5.0.0:
-    resolution: {integrity: sha512-YuKoXDAhBYxY7SfOKxHBDoSyENFeW5VvIIQp2TGQuit8gpK6MnWaQelBKxso72DoxTZfZdcP3W90LqpSkgPzLQ==}
+  validate-npm-package-name@5.0.1:
+    resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
   validator@13.11.0:
@@ -22960,9 +22961,7 @@ snapshots:
     dependencies:
       builtins: 5.1.0
 
-  validate-npm-package-name@5.0.0:
-    dependencies:
-      builtins: 5.1.0
+  validate-npm-package-name@5.0.1: {}
 
   validator@13.11.0: {}
 
