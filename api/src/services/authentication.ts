@@ -414,7 +414,7 @@ export class AuthenticationService {
 		if (options?.session) {
 			if (!record.session_next) {
 				// keep the old session active for a second
-				const SAFETY_TIMEOUT = 1000;
+				const SAFETY_TIMEOUT = getMilliseconds(env['SESSION_SAFETY_TIMEOUT'], 5000);
 
 				// instead of updating the current session record with a new ID,
 				// create a new copy with the new ID
