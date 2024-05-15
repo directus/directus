@@ -359,8 +359,7 @@ export class AuthenticationService {
 		}
 
 		const newRefreshToken = record.session_next ?? nanoid(64);
-		const sessionDuration = env[options?.session ? 'SESSION_COOKIE_TTL' : 'REFRESH_TOKEN_TTL'];
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(sessionDuration, 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
