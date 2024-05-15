@@ -285,7 +285,7 @@ export class AuthenticationService {
 		const record = await this.knex
 			.select({
 				session_expires: 's.expires',
-				session_next: 's.next_token',
+				session_next_token: 's.next_token',
 				user_id: 'u.id',
 				user_first_name: 'u.first_name',
 				user_last_name: 'u.last_name',
@@ -358,7 +358,7 @@ export class AuthenticationService {
 			});
 		}
 
-		const newRefreshToken = record.session_next ?? nanoid(64);
+		const newRefreshToken = record.session_next_token ?? nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -446,7 +446,7 @@ export class AuthenticationService {
 		newSessionId: string,
 		sessionExpiration: Date,
 	) {
-		if (sessionRecord['session_next']) {
+		if (sessionRecord['session_next_token']) {
 			// the current session ID was already refreshed and has a reference
 			// to the new session, update the new session timeout for the new refresh
 			await this.knex('directus_sessions')
