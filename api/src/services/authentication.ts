@@ -416,7 +416,8 @@ export class AuthenticationService {
 				// keep the old session active for a second
 				const SAFETY_TIMEOUT = 1000;
 
-				// deal with a sliding window
+				// instead of updating the current session record with a new ID,
+				// create a new copy with the new ID
 				await this.knex('directus_sessions').insert({
 					token: newRefreshToken,
 					user: record.user_id,
@@ -426,6 +427,8 @@ export class AuthenticationService {
 					origin: this.accountability?.origin,
 				});
 
+				// update the existing session record to have a short safety timeout
+				// before expiring, and add the reference to the new session ID
 				await this.knex('directus_sessions')
 					.update({
 						next_token: newRefreshToken,
@@ -433,7 +436,8 @@ export class AuthenticationService {
 					})
 					.where({ token: refreshToken });
 			} else {
-				// update the next session expiry date
+				// the current session ID was already refreshed and has a reference
+				// to the new session, update the new session timeout for the new refresh
 				await this.knex('directus_sessions')
 					.update({
 						expires: refreshTokenExpiration,
