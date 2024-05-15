@@ -413,7 +413,7 @@ export class AuthenticationService {
 		if (options?.session) {
 			await this.updateStatefulSession(record, refreshToken, newRefreshToken, refreshTokenExpiration);
 		} else {
-			// original stateless token behavior
+			// Original stateless token behavior
 			await this.knex('directus_sessions')
 				.update({
 					token: newRefreshToken,
@@ -426,7 +426,7 @@ export class AuthenticationService {
 			await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
 		}
 
-		// clear expired sessions for the current user
+		// Clear expired sessions for the current user
 		await this.knex('directus_sessions')
 			.delete()
 			.where('user', '=', record.user_id)
@@ -447,7 +447,7 @@ export class AuthenticationService {
 		sessionExpiration: Date,
 	) {
 		if (sessionRecord['session_next_token']) {
-			// the current session ID was already refreshed and has a reference
+			// The current session ID was already refreshed and has a reference
 			// to the new session, update the new session timeout for the new refresh
 			await this.knex('directus_sessions')
 				.update({
@@ -458,10 +458,10 @@ export class AuthenticationService {
 			return;
 		}
 
-		// keep the old session active for a short period of time
+		// Keep the old session active for a short period of time
 		const GRACE_PERIOD = getMilliseconds(env['SESSION_REFRESH_GRACE_PERIOD'], 10_000);
 
-		// instead of updating the current session record with a new ID,
+		// Instead of updating the current session record with a new ID,
 		// create a new copy with the new ID
 		await this.knex('directus_sessions').insert({
 			token: newSessionId,
@@ -472,7 +472,7 @@ export class AuthenticationService {
 			origin: this.accountability?.origin,
 		});
 
-		// update the existing session record to have a short safety timeout
+		// Update the existing session record to have a short safety timeout
 		// before expiring, and add the reference to the new session ID
 		await this.knex('directus_sessions')
 			.update({
