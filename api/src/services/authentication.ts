@@ -459,7 +459,7 @@ export class AuthenticationService {
 		}
 
 		// keep the old session active for a short period of time
-		const SAFETY_TIMEOUT = getMilliseconds(env['SESSION_SAFETY_TIMEOUT'], 5000);
+		const GRACE_PERIOD = getMilliseconds(env['SESSION_REFRESH_GRACE_PERIOD'], 10_000);
 
 		// instead of updating the current session record with a new ID,
 		// create a new copy with the new ID
@@ -477,7 +477,7 @@ export class AuthenticationService {
 		await this.knex('directus_sessions')
 			.update({
 				next_token: newSessionId,
-				expires: new Date(Date.now() + SAFETY_TIMEOUT),
+				expires: new Date(Date.now() + GRACE_PERIOD),
 			})
 			.where({ token: oldSessionId });
 	}
