@@ -285,6 +285,7 @@ export class AuthenticationService {
 		const record = await this.knex
 			.select({
 				session_expires: 's.expires',
+				session_next: 's.next_token',
 				user_id: 'u.id',
 				user_first_name: 'u.first_name',
 				user_last_name: 'u.last_name',
@@ -357,8 +358,9 @@ export class AuthenticationService {
 			});
 		}
 
-		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+		const newRefreshToken = record.session_next ?? nanoid(64);
+		const sessionDuration = env[options?.session ? 'SESSION_COOKIE_TTL' : 'REFRESH_TOKEN_TTL'];
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(sessionDuration, 0));
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
@@ -409,27 +411,52 @@ export class AuthenticationService {
 			issuer: 'directus',
 		});
 
-		// keep the old session active for a second
-		await this.knex('directus_sessions')
-			.update({ expires: new Date(Date.now() + 1000) })
-			.where({ token: refreshToken });
+		if (options?.session) {
+			if (!record.session_next) {
+				// keep the old session active for a second
+				const SAFETY_TIMEOUT = 1000;
 
-		// create the new session
-		await this.knex('directus_sessions').insert({
-			token: newRefreshToken,
-			user: record.user_id,
-			expires: refreshTokenExpiration,
-			ip: this.accountability?.ip,
-			user_agent: this.accountability?.userAgent,
-			origin: this.accountability?.origin,
-		});
+				// deal with a sliding window
+				await this.knex('directus_sessions').insert({
+					token: newRefreshToken,
+					user: record.user_id,
+					expires: refreshTokenExpiration,
+					ip: this.accountability?.ip,
+					user_agent: this.accountability?.userAgent,
+					origin: this.accountability?.origin,
+				});
+
+				await this.knex('directus_sessions')
+					.update({
+						next_token: newRefreshToken,
+						expires: new Date(Date.now() + SAFETY_TIMEOUT),
+					})
+					.where({ token: refreshToken });
+			} else {
+				// update the next session expiry date
+				await this.knex('directus_sessions')
+					.update({
+						expires: refreshTokenExpiration,
+					})
+					.where({ token: newRefreshToken });
+			}
+		} else {
+			// original stateless token behavior
+			await this.knex('directus_sessions')
+				.update({
+					token: newRefreshToken,
+					expires: refreshTokenExpiration,
+				})
+				.where({ token: refreshToken });
+		}
 
 		if (record.user_id) {
 			await this.knex('directus_users').update({ last_access: new Date() }).where({ id: record.user_id });
 		}
 
 		// clear expired sessions for the current user
-		await this.knex('directus_sessions').delete()
+		await this.knex('directus_sessions')
+			.delete()
 			.where('user', '=', record.user_id)
 			.andWhere('expires', '<', new Date());
 
