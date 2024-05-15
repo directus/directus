@@ -412,38 +412,7 @@ export class AuthenticationService {
 		});
 
 		if (options?.session) {
-			if (!record.session_next) {
-				// keep the old session active for a second
-				const SAFETY_TIMEOUT = getMilliseconds(env['SESSION_SAFETY_TIMEOUT'], 5000);
-
-				// instead of updating the current session record with a new ID,
-				// create a new copy with the new ID
-				await this.knex('directus_sessions').insert({
-					token: newRefreshToken,
-					user: record.user_id,
-					expires: refreshTokenExpiration,
-					ip: this.accountability?.ip,
-					user_agent: this.accountability?.userAgent,
-					origin: this.accountability?.origin,
-				});
-
-				// update the existing session record to have a short safety timeout
-				// before expiring, and add the reference to the new session ID
-				await this.knex('directus_sessions')
-					.update({
-						next_token: newRefreshToken,
-						expires: new Date(Date.now() + SAFETY_TIMEOUT),
-					})
-					.where({ token: refreshToken });
-			} else {
-				// the current session ID was already refreshed and has a reference
-				// to the new session, update the new session timeout for the new refresh
-				await this.knex('directus_sessions')
-					.update({
-						expires: refreshTokenExpiration,
-					})
-					.where({ token: newRefreshToken });
-			}
+			await this.updateStatefulSession(record, refreshToken, newRefreshToken, refreshTokenExpiration);
 		} else {
 			// original stateless token behavior
 			await this.knex('directus_sessions')
@@ -470,6 +439,48 @@ export class AuthenticationService {
 			expires: getMilliseconds(TTL),
 			id: record.user_id,
 		};
+	}
+
+	private async updateStatefulSession(
+		sessionRecord: Record<string, any>,
+		oldSessionId: string,
+		newSessionId: string,
+		sessionExpiration: Date,
+	) {
+		if (sessionRecord['session_next']) {
+			// the current session ID was already refreshed and has a reference
+			// to the new session, update the new session timeout for the new refresh
+			await this.knex('directus_sessions')
+				.update({
+					expires: sessionExpiration,
+				})
+				.where({ token: newSessionId });
+
+			return;
+		}
+
+		// keep the old session active for a short period of time
+		const SAFETY_TIMEOUT = getMilliseconds(env['SESSION_SAFETY_TIMEOUT'], 5000);
+
+		// instead of updating the current session record with a new ID,
+		// create a new copy with the new ID
+		await this.knex('directus_sessions').insert({
+			token: newSessionId,
+			user: sessionRecord['user_id'],
+			expires: sessionExpiration,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+			origin: this.accountability?.origin,
+		});
+
+		// update the existing session record to have a short safety timeout
+		// before expiring, and add the reference to the new session ID
+		await this.knex('directus_sessions')
+			.update({
+				next_token: newSessionId,
+				expires: new Date(Date.now() + SAFETY_TIMEOUT),
+			})
+			.where({ token: oldSessionId });
 	}
 
 	async logout(refreshToken: string): Promise<void> {
