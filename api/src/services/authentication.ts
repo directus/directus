@@ -442,8 +442,8 @@ export class AuthenticationService {
 
 	private async updateStatefulSession(
 		sessionRecord: Record<string, any>,
-		oldSessionId: string,
-		newSessionId: string,
+		oldSessionToken: string,
+		newSessionToken: string,
 		sessionExpiration: Date,
 	) {
 		if (sessionRecord['session_next_token']) {
@@ -453,7 +453,7 @@ export class AuthenticationService {
 				.update({
 					expires: sessionExpiration,
 				})
-				.where({ token: newSessionId });
+				.where({ token: newSessionToken });
 
 			return;
 		}
@@ -464,7 +464,7 @@ export class AuthenticationService {
 		// Instead of updating the current session record with a new ID,
 		// create a new copy with the new ID
 		await this.knex('directus_sessions').insert({
-			token: newSessionId,
+			token: newSessionToken,
 			user: sessionRecord['user_id'],
 			expires: sessionExpiration,
 			ip: this.accountability?.ip,
@@ -476,10 +476,10 @@ export class AuthenticationService {
 		// before expiring, and add the reference to the new session ID
 		await this.knex('directus_sessions')
 			.update({
-				next_token: newSessionId,
+				next_token: newSessionToken,
 				expires: new Date(Date.now() + GRACE_PERIOD),
 			})
-			.where({ token: oldSessionId });
+			.where({ token: oldSessionToken });
 	}
 
 	async logout(refreshToken: string): Promise<void> {
