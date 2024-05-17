@@ -28,9 +28,11 @@ method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
+extensions: Phần mở rộng
 modules: Mô đun
 module_bar: Thanh công cụ
 logs: Nhật ký
+unknown: Không xác định
 reset_width: Đặt lại Chiều rộng
 tile_size: Kích thước tệp
 edit_field: Sửa trường
