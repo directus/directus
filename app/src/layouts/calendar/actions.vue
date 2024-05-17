@@ -1,19 +1,14 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
+defineOptions({ inheritAttrs: false });
+
 defineProps<{
-	itemCount?: number;
 	showingCount?: string;
 }>();
 </script>
 
 <template>
 	<transition name="fade">
-		<span v-if="itemCount" class="item-count">
+		<span v-if="showingCount" class="item-count">
 			{{ showingCount }}
 		</span>
 	</transition>

@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { getItemRoute } from '@/utils/get-route';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -13,9 +7,13 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
 
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
+		totalCount: number | null;
+		limit: number;
 		groupCollection?: string | null;
 		fieldsInCollection?: Field[];
 		primaryKeyField?: Record<string, any> | null;
@@ -52,10 +50,12 @@ const props = withDefaults(
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
+
+const atLimit = computed(() => (props.totalCount ?? 0) > props.limit);
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
@@ -92,120 +92,152 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 </script>
 
 <template>
-	<div v-if="!error" class="kanban">
-		<draggable
-			:model-value="groupedItems"
-			group="groups"
-			item-key="id"
-			draggable=".draggable"
-			:animation="150"
-			class="draggable"
-			:class="{ sortable: groupsSortField !== null }"
-			@change="changeGroupSort"
-		>
-			<template #item="{ element: group }">
-				<div class="group" :class="{ draggable: group.id !== null }">
-					<div class="header">
-						<div class="title">
-							<div class="title-content">
-								{{ group.id === null ? t('layouts.kanban.no_group') : group.title }}
-							</div>
-							<span class="badge">{{ group.items.length }}</span>
-						</div>
-						<div v-if="group.id !== null" class="actions">
-							<!-- <router-link :to="`${collection}/+`"><v-icon name="add" /></router-link> -->
-							<v-menu show-arrow placement="bottom-end">
-								<template #activator="{ toggle }">
-									<v-icon name="more_horiz" clickable @click="toggle" />
-								</template>
+	<div class="kanban-layout">
+		<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 
-								<v-list>
-									<v-list-item clickable @click="openEditGroup(group)">
-										<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-										<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
-									</v-list-item>
-									<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
-										<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-										<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
-									</v-list-item>
-								</v-list>
-							</v-menu>
-						</div>
-					</div>
-					<draggable
-						:model-value="group.items"
-						group="items"
-						draggable=".item"
-						:animation="150"
-						:sort="sortField !== null"
-						class="items"
-						item-key="id"
-						@change="change(group, $event)"
-					>
-						<template #item="{ element }">
-							<router-link :to="getItemRoute(collection, element.id)" class="item">
-								<div v-if="element.title" class="title">{{ element.title }}</div>
-								<img v-if="element.image" class="image" :src="element.image" />
-								<render-display
-									v-if="element.text && textFieldConfiguration"
-									:collection="collection"
-									:value="element.text"
-									:type="textFieldConfiguration.type"
-									:field="layoutOptions.textField"
-									:display="textFieldConfiguration.meta?.display"
-									:options="textFieldConfiguration.meta?.options"
-									:interface="textFieldConfiguration.meta?.interface"
-								/>
-								<display-labels
-									v-if="element.tags"
-									:value="element.tags"
-									:type="Array.isArray(element.tags) ? 'csv' : 'json'"
-								/>
-								<div class="bottom">
-									<display-datetime v-if="element.date" format="short" :value="element.date" :type="element.dateType" />
-									<div class="avatars">
-										<span v-if="element.users.length > 3" class="avatar-overflow">+{{ element.users.length - 3 }}</span>
-										<v-avatar
-											v-for="user in element.users.slice(0, 3)"
-											:key="user.id"
-											v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
-											class="avatar"
-										>
-											<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
-											<v-icon v-else name="person" />
-										</v-avatar>
+		<template v-else>
+			<v-notice v-if="atLimit" type="warning" class="limit">
+				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.totalCount ?? 0) }) }}
+			</v-notice>
+
+			<div class="kanban">
+				<draggable
+					:model-value="groupedItems"
+					group="groups"
+					item-key="id"
+					draggable=".draggable"
+					:animation="150"
+					class="draggable"
+					:class="{ sortable: groupsSortField !== null }"
+					@change="changeGroupSort"
+				>
+					<template #item="{ element: group }">
+						<div class="group" :class="{ draggable: group.id !== null }">
+							<div class="header">
+								<div class="title">
+									<div class="title-content">
+										{{ group.id === null ? t('layouts.kanban.no_group') : group.title }}
 									</div>
+									<span class="badge">{{ group.items.length }}</span>
 								</div>
-							</router-link>
-						</template>
-					</draggable>
-				</div>
-			</template>
-		</draggable>
+								<div v-if="group.id !== null" class="actions">
+									<v-menu show-arrow placement="bottom-end">
+										<template #activator="{ toggle }">
+											<v-icon name="more_horiz" clickable @click="toggle" />
+										</template>
 
-		<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
-			<v-card>
-				<v-card-title>
-					{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
-				</v-card-title>
-				<v-card-text>
-					<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
-					<v-button @click="saveChanges">{{ editDialogOpen === '+' ? t('create') : t('save') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+										<v-list>
+											<v-list-item clickable @click="openEditGroup(group)">
+												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
+												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
+											</v-list-item>
+											<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
+												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
+												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
+											</v-list-item>
+										</v-list>
+									</v-menu>
+								</div>
+							</div>
+							<draggable
+								:model-value="group.items"
+								group="items"
+								draggable=".item"
+								:animation="150"
+								:sort="sortField !== null"
+								class="items"
+								item-key="id"
+								@change="change(group, $event)"
+							>
+								<template #item="{ element }">
+									<router-link :to="getItemRoute(collection, element.id)" class="item">
+										<div v-if="element.title" class="title">{{ element.title }}</div>
+										<img v-if="element.image" class="image" :src="element.image" />
+										<render-display
+											v-if="element.text && textFieldConfiguration"
+											:collection="collection"
+											:value="element.text"
+											:type="textFieldConfiguration.type"
+											:field="layoutOptions?.textField"
+											:display="textFieldConfiguration.meta?.display"
+											:options="textFieldConfiguration.meta?.options"
+											:interface="textFieldConfiguration.meta?.interface"
+										/>
+										<display-labels
+											v-if="element.tags"
+											:value="element.tags"
+											:type="Array.isArray(element.tags) ? 'csv' : 'json'"
+										/>
+										<div class="bottom">
+											<display-datetime
+												v-if="element.date"
+												format="short"
+												:value="element.date"
+												:type="element.dateType"
+											/>
+											<div class="avatars">
+												<span v-if="element.users.length > 3" class="avatar-overflow">
+													+{{ element.users.length - 3 }}
+												</span>
+												<v-avatar
+													v-for="user in element.users.slice(0, 3)"
+													:key="user.id"
+													v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
+													class="avatar"
+												>
+													<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
+													<v-icon v-else name="person" />
+												</v-avatar>
+											</div>
+										</div>
+									</router-link>
+								</template>
+							</draggable>
+						</div>
+					</template>
+				</draggable>
+
+				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
+					<v-card>
+						<v-card-title>
+							{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
+						</v-card-title>
+						<v-card-text>
+							<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
+							<v-button @click="saveChanges">{{ editDialogOpen === '+' ? t('create') : t('save') }}</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</div>
+		</template>
 	</div>
-	<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />
 </template>
 
 <style lang="scss" scoped>
+.kanban-layout {
+	--limit-notice-height: 0px;
+	--limit-notice-margin-bottom: 24px;
+	--header-bar-margin: 24px;
+
+	height: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
+	padding: var(--content-padding);
+	padding-top: 0;
+
+	&:has(> .limit) {
+		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));
+	}
+
+	.limit {
+		margin-bottom: var(--limit-notice-margin-bottom);
+	}
+}
+
 .kanban {
 	display: flex;
-	height: calc(100% - 65px - 2 * 24px);
-	padding: 0 32px 24px 32px;
+	height: 100%;
 	overflow-x: auto;
 	overflow-y: hidden;
 	--user-spacing: 16px;

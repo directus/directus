@@ -3,7 +3,7 @@ import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
-import { computed, ref, unref, watch } from 'vue';
+import { computed, ref, toRef, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
 import { useApi } from './use-system.js';
 
@@ -32,6 +32,8 @@ export type ComputedQuery = {
 	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
 	filter: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
+	/** System filter applied to total item count. */
+	filterSystem?: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
 	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
 	deep?: Ref<Query['deep']> | ComputedRef<Query['deep']> | WritableComputedRef<Query['deep']>;
 };
@@ -40,9 +42,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { fields, limit, sort, search, filter, page, alias: queryAlias, deep: queryDeep } = query;
-	const alias = queryAlias ?? ref();
-	const deep = queryDeep ?? ref();
+	const { fields, limit, sort, search, filter, page, filterSystem, alias, deep } = query;
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -73,7 +73,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const fetchItems = throttle(getItems, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page, alias, deep],
+		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
@@ -102,6 +102,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			}
 
 			fetchItems();
+		},
+		{ deep: true, immediate: true },
+	);
+
+	watch(
+		[collection, toRef(filterSystem)],
+		async (after, before) => {
+			if (isEqual(after, before)) return;
+
+			getTotalCount();
 		},
 		{ deep: true, immediate: true },
 	);
@@ -136,10 +146,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		loadingTimeout = setTimeout(() => {
 			loading.value = true;
 		}, 150);
-
-		if (unref(totalCount) === null) {
-			getTotalCount();
-		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
 
@@ -249,6 +255,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					aggregate,
+					filter: unref(filterSystem),
 				},
 				signal: existingRequests.total.signal,
 			});

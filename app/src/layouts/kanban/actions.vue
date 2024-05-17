@@ -1,34 +1,39 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+defineOptions({ inheritAttrs: false });
 
-interface Props {
-	limitWarning?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	limitWarning: false,
-});
-
-const { t } = useI18n();
+defineProps<{
+	showingCount?: string;
+}>();
 </script>
 
 <template>
-	<v-button v-if="limitWarning" rounded icon>
-		<v-icon v-tooltip.bottom.start="t('layouts.kanban.not_all_loaded')" name="warning" />
-	</v-button>
+	<transition name="fade">
+		<span v-if="showingCount" class="item-count">
+			{{ showingCount }}
+		</span>
+	</transition>
 </template>
 
 <style lang="scss" scoped>
-.v-button :deep(.button) {
-	background-color: var(--warning-10);
-	border: none;
-	color: var(--theme--warning);
-	margin-right: 8px;
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--theme--foreground-subdued);
+	white-space: nowrap;
+
+	@media (min-width: 600px) {
+		display: inline;
+	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

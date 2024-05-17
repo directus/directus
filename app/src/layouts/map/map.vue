@@ -1,15 +1,11 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
+
+defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
 	defineProps<{
@@ -24,6 +20,7 @@ const props = withDefaults(
 		updateItemPopup: () => void;
 		geojsonLoading: boolean;
 		loading: boolean;
+		totalCount: number | null;
 		totalPages: number;
 		page: number;
 		toPage: (newPage: number) => void;
@@ -35,7 +32,6 @@ const props = withDefaults(
 		featureId?: string;
 		geojsonBounds?: any;
 		cameraOptions?: any;
-		itemCount?: number;
 		autoLocationFilter?: boolean;
 		template?: string;
 		itemPopup?: { item?: any; position?: { x: number; y: number } };
@@ -105,7 +101,7 @@ limitWritable.value = selectedSize;
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 		</transition>
 
-		<template v-if="loading || itemCount! > 0">
+		<template v-if="loading || (totalCount ?? 0) > 0">
 			<div class="footer">
 				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
