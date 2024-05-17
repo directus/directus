@@ -462,10 +462,13 @@ export class AuthenticationService {
 		// Update the existing session record to have a short safety timeout
 		// before expiring, and add the reference to the new session token
 		const updatedSession = await this.knex('directus_sessions')
-			.update({
-				next_token: newSessionToken,
-				expires: new Date(Date.now() + GRACE_PERIOD),
-			}, ['next_token'])
+			.update(
+				{
+					next_token: newSessionToken,
+					expires: new Date(Date.now() + GRACE_PERIOD),
+				},
+				['next_token'],
+			)
 			.where({ token: oldSessionToken, next_token: null });
 
 		if (updatedSession.length === 0) {
