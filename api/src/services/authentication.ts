@@ -488,7 +488,7 @@ export class AuthenticationService {
 		}
 
 		// Instead of updating the current session record with a new token,
-		// create a new copy with the new token.
+		// create a new copy with the new token
 		await this.knex('directus_sessions').insert({
 			token: newSessionToken,
 			user: sessionRecord['user_id'],
