@@ -30,7 +30,7 @@ function isGetItemsRequest(config: AxiosRequestConfig) {
 
 function isTotalCountRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
-	return isEqual(Object.keys(config.params), ['aggregate']);
+	return isEqual(Object.keys(config.params), ['aggregate', 'filter']);
 }
 
 function isFilterCountRequest(config: AxiosRequestConfig) {
@@ -149,6 +149,31 @@ test('should re-fetch filter count when changing filters query', async () => {
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
 });
 
+test('should re-fetch total count when changing system filter', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
+	const filterSystem = ref<Filter | null>(null);
+
+	useItems(ref('test_collection'), {
+		fields: ref(['*']),
+		limit: ref(1),
+		sort: ref(null),
+		search: ref(null),
+		filter: ref(null),
+		filterSystem,
+		page: ref(1),
+	});
+
+	// update filter query
+	filterSystem.value = { id: { _eq: 1 } };
+
+	// Wait until computed values are updated
+	await flushPromises();
+
+	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
+	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(2);
+});
+
 test('should re-fetch filter count when changing search query', async () => {
 	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
 
@@ -199,6 +224,8 @@ test('should reset when collection changes', async () => {
 	await flushPromises();
 
 	expect(unref(items)).toEqual([]);
+	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(2);
+	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
 });
 
 test('should append $thumbnail to fetched items when collection is directus_files', async () => {
