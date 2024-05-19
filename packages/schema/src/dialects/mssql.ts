@@ -321,20 +321,18 @@ export default class MSSQL implements SchemaInspector {
             [ic].[column_id],
             [ix].[is_unique],
             [ix].[is_primary_key],
-            MAX([ic].[index_column_id]) OVER(partition by [ic].[index_id], [ic].[object_id]) AS index_column_count,
-            ROW_NUMBER() OVER (
+            COALESCE(MAX([ic].[index_column_id]) OVER(partition by [ic].[index_id], [ic].[object_id]), 1) AS index_column_count,
+            COALESCE(ROW_NUMBER() OVER (
               PARTITION BY [ic].[object_id], [ic].[column_id]
               ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
-            ) AS index_priority
+            ), 1) AS index_priority
           FROM
             [sys].[index_columns] [ic]
           JOIN [sys].[indexes] AS [ix] ON [ix].[object_id] = [ic].[object_id]
             AND [ix].[index_id] = [ic].[index_id]
         ) AS [i]
         ON [i].[object_id] = [c].[object_id]
-        AND [i].[column_id] = [c].[column_id]
-        AND ISNULL([i].[index_column_count], 1) = 1
-        AND ISNULL([i].[index_priority], 1) = 1`,
+        AND [i].[column_id] = [c].[column_id]`,
 			)
 			.where({ 's.name': this.schema });
 
