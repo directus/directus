@@ -20,7 +20,7 @@ import { userName } from '../utils/user-name.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -40,14 +40,16 @@ export class SharesService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'share',
-				data['collection'],
-				[data['item']],
+				{
+					accountability: this.accountability,
+					action: 'share',
+					collection: data['collection'],
+					primaryKeys: [data['item']],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 

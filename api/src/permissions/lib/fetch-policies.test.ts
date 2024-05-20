@@ -1,26 +1,28 @@
 import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { AccessService } from '../../services/access.js';
+import { AccessService } from '../../services/access.js';
 import type { AccessRow } from '../modules/process-ast/types.js';
+import type { Context } from '../types.js';
 import { fetchPolicies as _fetchPolicies } from './fetch-policies.js';
 
-let service: AccessService;
+vi.mock('../../services/access.js', () => ({
+	AccessService: vi.fn(),
+}));
+
 let rows: AccessRow[];
 
 beforeEach(() => {
 	rows = [];
 
-	service = {
-		readByQuery: vi.fn().mockResolvedValue(rows),
-	} as unknown as AccessService;
+	AccessService.prototype.readByQuery = vi.fn().mockResolvedValue(rows);
 });
 
 test('Fetches policies for public role when no roles and user are given', async () => {
 	const acc = { roles: [], user: null } as unknown as Accountability;
 
-	const policies = await _fetchPolicies(acc, service);
+	const policies = await _fetchPolicies(acc, {} as Context);
 
-	expect(service.readByQuery).toHaveBeenCalledWith({
+	expect(AccessService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			role: {
 				_null: true,
@@ -39,9 +41,9 @@ test('Fetches policies for public role when no roles and user are given', async 
 test('Fetched policies for user roles', async () => {
 	const acc = { roles: ['role-a', 'role-b'], user: null } as unknown as Accountability;
 
-	const policies = await _fetchPolicies(acc, service);
+	const policies = await _fetchPolicies(acc, {} as Context);
 
-	expect(service.readByQuery).toHaveBeenCalledWith({
+	expect(AccessService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			role: {
 				_in: ['role-a', 'role-b'],
@@ -57,9 +59,9 @@ test('Fetched policies for user roles', async () => {
 test('Fetches policies for user roles and user if user is passed', async () => {
 	const acc = { roles: ['role-a', 'role-b'], user: 'user-a' } as unknown as Accountability;
 
-	const policies = await _fetchPolicies(acc, service);
+	const policies = await _fetchPolicies(acc, {} as Context);
 
-	expect(service.readByQuery).toHaveBeenCalledWith({
+	expect(AccessService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_or: [
 				{
@@ -99,7 +101,7 @@ test('Filters policies based on ip access on access row', async () => {
 		},
 	);
 
-	const policies = await _fetchPolicies(acc, service);
+	const policies = await _fetchPolicies(acc, {} as Context);
 
 	expect(policies).toEqual(['policy-a']);
 });

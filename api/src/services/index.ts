@@ -18,7 +18,7 @@ export * from './notifications.js';
 export * from './operations.js';
 export * from './panels.js';
 export * from './payload.js';
-export * from './permissions/index.js';
+export * from './permissions.js';
 export * from './policies.js';
 export * from './presets.js';
 export * from './relations.js';
@@ -36,3 +36,4 @@ export * from './utils.js';
 export * from './versions.js';
 export * from './webhooks.js';
 export * from './websocket.js';
+

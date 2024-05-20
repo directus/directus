@@ -1,12 +1,11 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, Item, PermissionsAction, SchemaOverview } from '@directus/types';
+import type { Accountability, Item, PermissionsAction } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import { assign, difference, uniq } from 'lodash-es';
-import type { AccessService } from '../../../services/access.js';
-import type { PermissionsService } from '../../../services/index.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import type { Context } from '../../types.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;
@@ -15,26 +14,20 @@ export interface ProcessPayloadOptions {
 	payload: Item;
 }
 
-export interface ProcessPayloadContext {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-	schema: SchemaOverview;
-}
-
 /**
  * @note this only validates the top-level fields. The expectation is that this function is called
  * for each level of nested insert separately
  */
-export async function processPayload(options: ProcessPayloadOptions, context: ProcessPayloadContext) {
+export async function processPayload(options: ProcessPayloadOptions, context: Context) {
 	if (options.accountability.admin) {
 		return options.payload;
 	}
 
-	const policies = await fetchPolicies(options.accountability, context.accessService);
+	const policies = await fetchPolicies(options.accountability, context);
 
 	const permissions = await fetchPermissions(
 		{ action: options.action, policies, collections: [options.collection] },
-		{ permissionsService: context.permissionsService },
+		context,
 	);
 
 	if (permissions.length === 0) {

@@ -5,7 +5,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
 import { AccessService } from './access.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 export class MetaService {
 	knex: Knex;
@@ -46,13 +46,15 @@ export class MetaService {
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 
 			// const policies = await fetchPolicies(this.accessService, this.accountability);
@@ -75,13 +77,15 @@ export class MetaService {
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 
 			// TODO rely on applyCases

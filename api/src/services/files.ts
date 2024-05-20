@@ -27,7 +27,7 @@ import type { AbstractServiceOptions, MutationOptions } from '../types/index.js'
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -367,13 +367,15 @@ export class FilesService extends ItemsService {
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'create',
-				'directus_files',
+				{
+					accountability: this.accountability,
+					action: 'create',
+					collection: 'directus_files',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
 			);
 		}
 

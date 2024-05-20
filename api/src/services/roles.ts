@@ -4,7 +4,7 @@ import { getMatch } from 'ip-matching';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
 

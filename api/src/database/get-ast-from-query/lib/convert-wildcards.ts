@@ -1,8 +1,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import type { AccessService } from '../../../services/access.js';
-import type { PermissionsService } from '../../../services/index.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export interface ConvertWildcardsOptions {
@@ -14,8 +13,7 @@ export interface ConvertWildcardsOptions {
 
 export interface ConvertWildCardsContext {
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
+	knex: Knex;
 }
 
 export async function convertWildcards(options: ConvertWildcardsOptions, context: ConvertWildCardsContext) {
@@ -34,7 +32,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 				action: 'read',
 				accountability: options.accountability,
 			},
-			{ accessService: context.accessService, permissionsService: context.permissionsService },
+			context,
 		);
 	}
 

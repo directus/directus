@@ -1,8 +1,7 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
-import type { AccessService } from '../../../services/access.js';
-import type { PermissionsService } from '../../../services/index.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
 import { convertWildcards } from '../lib/convert-wildcards.js';
@@ -20,8 +19,7 @@ export interface ParseFieldsOptions {
 
 export interface ParseFieldsContext {
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
+	knex: Knex;
 }
 
 export async function parseFields(options: ParseFieldsOptions, context: ParseFieldsContext) {

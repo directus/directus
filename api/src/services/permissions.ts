@@ -1,13 +1,14 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
-import { clearSystemCache, getCache } from '../../cache.js';
-import { validateAccess } from '../../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, MutationOptions } from '../../types/index.js';
-import { AccessService } from '../access.js';
-import type { QueryOptions } from '../items.js';
-import { ItemsService } from '../items.js';
-import { withAppMinimalPermissions } from './lib/with-app-minimal-permissions.js';
+import { clearSystemCache, getCache } from '../cache.js';
+import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { AccessService } from './access.js';
+import type { QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
+import { withAppMinimalPermissions } from './permissions/lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
@@ -144,16 +145,20 @@ export class PermissionsService extends ItemsService {
 					return Promise.resolve();
 				}
 
-				return validateAccess(
-					this.knex,
-					this.accessService,
-					this,
-					this.schema,
-					this.accountability,
-					checkAction,
+				const opts: ValidateAccessOptions = {
+					accountability: this.accountability,
+					action: checkAction,
 					collection,
-					primaryKey ? [primaryKey] : undefined,
-				)
+				};
+
+				if (primaryKey) {
+					opts.primaryKeys = [primaryKey];
+				}
+
+				return validateAccess(opts, {
+					schema: this.schema,
+					knex: this.knex,
+				})
 					.then(() => (itemPermissions[action].access = true))
 					.catch(() => {});
 			}),

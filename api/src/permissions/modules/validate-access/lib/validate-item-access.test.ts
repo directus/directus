@@ -6,6 +6,7 @@ import { runAst } from '../../../../database/run/run.js';
 import type { AccessService } from '../../../../services/access.js';
 import type { PermissionsService } from '../../../../services/index.js';
 import type { AST } from '../../../../types/ast.js';
+import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process.js';
 import { validateItemAccess } from './validate-item-access.js';
 
@@ -36,10 +37,9 @@ test('Throws error when primary key does not exist in given collection', async (
 	const acc = {} as unknown as Accountability;
 
 	await expect(
-		validateItemAccess(
-			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
-			{ knex, accessService, permissionsService, schema },
-		),
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
+			schema,
+		} as Context),
 	).rejects.toBeInstanceOf(Error);
 });
 
@@ -52,10 +52,9 @@ test('Queries the database', async () => {
 	vi.mocked(runAst).mockResolvedValue([]);
 
 	await expect(
-		validateItemAccess(
-			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
-			{ knex, accessService, permissionsService, schema },
-		),
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
+			schema,
+		} as Context),
 	).resolves.toBe(false);
 
 	expect(getAstFromQuery).toHaveBeenCalledWith(
@@ -72,14 +71,16 @@ test('Queries the database', async () => {
 			},
 			accountability: acc,
 		},
-		{
-			schema,
-			accessService,
-			permissionsService,
-		},
+		{ schema } as Context,
 	);
 
-	expect(processAst).toHaveBeenCalledWith(accessService, permissionsService, ast, 'read', acc, schema);
+	expect(processAst).toHaveBeenCalledWith({
+		accountability: acc,
+		action: 'read',
+		collection: 'collection-a',
+		primaryKeys: [1],
+		ast,
+	}, { schema });
 });
 
 test('Returns false if no items are returned', async () => {
@@ -89,10 +90,9 @@ test('Returns false if no items are returned', async () => {
 	vi.mocked(runAst).mockResolvedValue([]);
 
 	await expect(
-		validateItemAccess(
-			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] },
-			{ knex, accessService, permissionsService, schema },
-		),
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
+			schema,
+		} as Context),
 	).resolves.toBe(false);
 });
 
@@ -103,9 +103,8 @@ test('Returns true the number of returned items matches the number of requested 
 	vi.mocked(runAst).mockResolvedValue([{}, {}]);
 
 	await expect(
-		validateItemAccess(
-			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2] },
-			{ knex, accessService, permissionsService, schema },
-		),
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2] }, {
+			schema,
+		} as Context),
 	).resolves.toBe(true);
 });

@@ -107,7 +107,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const { ActivityService } = await import('./activity.js');
 		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions/index.js');
+		const { PermissionsService } = await import('./permissions.js');
 		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -434,7 +434,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				: query;
 
 		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions/index.js');
+		const { PermissionsService } = await import('./permissions.js');
 
 		const serviceOptions: AbstractServiceOptions = {
 			accountability: this.accountability,
@@ -620,15 +620,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
-		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions/index.js');
 		const { RevisionsService } = await import('./revisions.js');
-
-		const serviceOptions: AbstractServiceOptions = {
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		};
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
@@ -666,19 +658,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
-		const accessService = new AccessService(serviceOptions);
-		const permissionsService = new PermissionsService(serviceOptions);
-
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				accessService,
-				permissionsService,
-				this.schema,
-				this.accountability,
-				'update',
-				this.collection,
-				keys,
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection: this.collection,
+					primaryKeys: keys,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 
@@ -691,8 +682,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						payload: payloadAfterHooks,
 					},
 					{
-						accessService,
-						permissionsService,
+						knex: this.knex,
 						schema: this.schema,
 					},
 			  )
@@ -947,28 +937,22 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
-		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions/index.js');
-
-		const serviceOptions: AbstractServiceOptions = {
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		};
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				new AccessService(serviceOptions),
-				new PermissionsService(serviceOptions),
-				this.schema,
-				this.accountability,
-				'delete',
-				this.collection,
-				keys,
+				{
+					accountability: this.accountability,
+					action: 'delete',
+					collection: this.collection,
+					primaryKeys: keys,
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
 			);
 		}
 

@@ -1,8 +1,9 @@
 import type { Accountability, Filter } from '@directus/types';
-import type { AccessService } from '../../services/access.js';
+import { AccessService } from '../../services/access.js';
 import type { AccessRow } from '../modules/process-ast/types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
+import type { Context } from '../types.js';
 
 export const fetchPolicies = withCache('policies', _fetchPolicies);
 
@@ -11,8 +12,10 @@ export const fetchPolicies = withCache('policies', _fetchPolicies);
  */
 export async function _fetchPolicies(
 	{ roles, user, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
-	accessService: AccessService,
+	ctx: Context,
 ): Promise<string[]> {
+	const accessService = new AccessService(ctx);
+
 	let filter: Filter = {};
 
 	// No roles and no user means unauthenticated request

@@ -1,14 +1,15 @@
 import type { Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { PermissionsService } from '../../services/permissions/index.js';
+import { PermissionsService } from '../../services/permissions.js';
+import type { Context } from '../types.js';
 import { fetchPermissions as _fetchPermissions } from './fetch-permissions.js';
 
-let permissionsService: PermissionsService;
+vi.mock('../../services/permissions.js', () => ({
+	PermissionsService: vi.fn(),
+}));
 
 beforeEach(() => {
-	permissionsService = {
-		readByQuery: vi.fn(),
-	} as unknown as PermissionsService;
+	PermissionsService.prototype.readByQuery = vi.fn();
 });
 
 test('Returns permissions read through service', async () => {
@@ -16,13 +17,13 @@ test('Returns permissions read through service', async () => {
 	const policies = [] as string[];
 	const collections = [] as string[];
 
-	vi.mocked(permissionsService.readByQuery).mockResolvedValue(permissions);
+	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
 
-	const res = await _fetchPermissions({ action: 'read', policies, collections }, { permissionsService });
+	const res = await _fetchPermissions({ action: 'read', policies, collections }, {} as Context);
 
 	expect(res).toBe(permissions);
 
-	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
+	expect(PermissionsService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }, { collection: { _in: collections } }],
 		},
@@ -34,13 +35,13 @@ test('Fetches for all collections when collections filter is undefined', async (
 	const permissions: Permission[] = [];
 	const policies = [] as string[];
 
-	vi.mocked(permissionsService.readByQuery).mockResolvedValue(permissions);
+	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
 
-	const res = await _fetchPermissions({ action: 'read', policies }, { permissionsService });
+	const res = await _fetchPermissions({ action: 'read', policies }, {} as Context);
 
 	expect(res).toBe(permissions);
 
-	expect(permissionsService.readByQuery).toHaveBeenCalledWith({
+	expect(PermissionsService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: 'read' } }],
 		},

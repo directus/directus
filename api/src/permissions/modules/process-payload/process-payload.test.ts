@@ -1,27 +1,21 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Permission, SchemaOverview } from '@directus/types';
 import { FailedValidationError } from '@directus/validation';
-import { beforeEach, expect, test, vi } from 'vitest';
-import type { AccessService } from '../../../services/access.js';
-import type { PermissionsService } from '../../../services/index.js';
+import { expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
+import type { Context } from '../../types.js';
 import { processPayload } from './process-payload.js';
 
 vi.mock('../../lib/fetch-permissions.js');
 vi.mock('../../lib/fetch-policies.js');
 
-let accessService: AccessService;
-let permissionsService: PermissionsService;
+vi.mock('../../../services/permissions.js', () => ({
+	PermissionsService: vi.fn(),
+}));
 
-beforeEach(() => {
-	accessService = {
-		readByQuery: vi.fn().mockResolvedValue([]),
-	} as unknown as AccessService;
-
-	permissionsService = {
-		readByQuery: vi.fn().mockResolvedValue([]),
-	} as unknown as PermissionsService;
-});
+vi.mock('../../../services/access.js', () => ({
+	AccessService: vi.fn(),
+}));
 
 test('Returns early when admin', async () => {
 	const schema = {} as unknown as SchemaOverview;
@@ -35,11 +29,7 @@ test('Returns early when admin', async () => {
 				accountability: acc,
 				payload: {},
 			},
-			{
-				accessService,
-				permissionsService,
-				schema,
-			},
+			{ schema } as Context,
 		),
 	).resolves.toEqual({});
 });
@@ -51,14 +41,9 @@ test('Throws forbidden error when permissions length is 0', async () => {
 	vi.mocked(fetchPermissions).mockResolvedValue([]);
 
 	await expect(
-		processPayload(
-			{ accountability: acc, action: 'read', collection: 'collection-a', payload: {} },
-			{
-				accessService,
-				permissionsService,
-				schema,
-			},
-		),
+		processPayload({ accountability: acc, action: 'read', collection: 'collection-a', payload: {} }, {
+			schema,
+		} as Context),
 	).rejects.toBeInstanceOf(ForbiddenError);
 });
 
@@ -78,11 +63,7 @@ test('Throws forbidden error if used fields contain field that has no permission
 					'field-b': 'x',
 				},
 			},
-			{
-				accessService,
-				permissionsService,
-				schema,
-			},
+			{ schema } as Context,
 		),
 	).rejects.toBeInstanceOf(ForbiddenError);
 });
@@ -118,7 +99,7 @@ test('Validates against field validation rules', async () => {
 					'field-a': 2,
 				},
 			},
-			{ accessService, permissionsService, schema },
+			{ schema } as Context,
 		);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
@@ -145,7 +126,7 @@ test('Validates against permission validation rules', async () => {
 					'field-a': 2,
 				},
 			},
-			{ accessService, permissionsService, schema },
+			{ schema } as Context,
 		);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
@@ -173,11 +154,7 @@ test('Merges and applies defaults from presets', async () => {
 				'field-a': 2,
 			},
 		},
-		{
-			accessService,
-			permissionsService,
-			schema,
-		},
+		{ schema } as Context,
 	);
 
 	expect(payloadWithPresets).toEqual({

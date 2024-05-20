@@ -15,7 +15,7 @@ import { userName } from '../utils/user-name.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -67,14 +67,16 @@ export class ActivityService extends ItemsService {
 				try {
 					if (this.accountability) {
 						await validateAccess(
-							this.knex,
-							this.accessService,
-							this.permissionsService,
-							this.schema,
-							this.accountability,
-							'read',
-							data['collection'],
-							data['item'],
+							{
+								accountability: this.accountability,
+								action: 'read',
+								collection: data['collection'],
+								primaryKeys: [data['item']],
+							},
+							{
+								knex: this.knex,
+								schema: this.schema,
+							},
 						);
 					}
 

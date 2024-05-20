@@ -23,7 +23,7 @@ import { transaction } from '../utils/transaction.js';
 import { AccessService } from './access.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 export type RawCollection = {
 	collection: string;
@@ -382,13 +382,15 @@ export class CollectionsService {
 			await Promise.all(
 				collectionKeys.map((collection) =>
 					validateAccess(
-						this.knex,
-						this.accessService,
-						this.permissionsService,
-						this.schema,
-						this.accountability!,
-						'read',
-						collection,
+						{
+							accountability: this.accountability!,
+							action: 'read',
+							collection,
+						},
+						{
+							schema: this.schema,
+							knex: this.knex,
+						},
 					),
 				),
 			);

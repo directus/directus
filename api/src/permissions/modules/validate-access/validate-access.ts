@@ -1,27 +1,23 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, PermissionsAction, PrimaryKey, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import type { AccessService } from '../../../services/access.js';
-import type { PermissionsService } from '../../../services/index.js';
+import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import type { Context } from '../../types.js';
 import { validateCollectionAccess } from './lib/validate-collection-access.js';
 import { validateItemAccess } from './lib/validate-item-access.js';
+
+export interface ValidateAccessOptions {
+	accountability: Accountability;
+	action: PermissionsAction;
+	collection: string;
+	primaryKeys?: PrimaryKey[];
+}
 
 /**
  * Validate if the current user has access to perform action against the given collection and
  * optional primary keys. This is done by reading the item from the database using the access
  * control rules and checking if we got the expected result back
  */
-export async function validateAccess(
-	knex: Knex,
-	accessService: AccessService,
-	permissionsService: PermissionsService,
-	schema: SchemaOverview,
-	accountability: Accountability,
-	action: PermissionsAction,
-	collection: string,
-	primaryKeys?: PrimaryKey[],
-) {
-	if (accountability.admin === true) {
+export async function validateAccess(options: ValidateAccessOptions, context: Context) {
+	if (options.accountability.admin === true) {
 		return;
 	}
 
@@ -30,18 +26,15 @@ export async function validateAccess(
 	// If primary keys are passed, we have to confirm the access by actually trying to read the items
 	// from the database. If no keys are passed, we can simply check if the collection+action combo
 	// exists within permissions
-	if (primaryKeys) {
-		access = await validateItemAccess(
-			{ accountability, action, collection, primaryKeys },
-			{ knex, accessService, permissionsService, schema },
-		);
+	if (options.primaryKeys) {
+		access = await validateItemAccess(options as Required<ValidateAccessOptions>, context);
 	} else {
-		access = await validateCollectionAccess(accessService, permissionsService, accountability, action, collection);
+		access = await validateCollectionAccess(options, context);
 	}
 
 	if (!access) {
 		throw new ForbiddenError({
-			reason: `You don't have permission to "${action}" from collection "${collection}" or it does not exist.`,
+			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
 		});
 	}
 }

@@ -33,7 +33,7 @@ import { AccessService } from './access.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -61,22 +61,27 @@ export class ImportService {
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'create',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'create',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
+
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'update',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 

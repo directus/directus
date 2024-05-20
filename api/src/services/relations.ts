@@ -20,7 +20,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { AccessService } from './access.js';
 import { ItemsService, type QueryOptions } from './items.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -56,13 +56,15 @@ export class RelationsService {
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				'directus_relations',
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_relations',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
 			);
 		}
 
@@ -94,18 +96,20 @@ export class RelationsService {
 	async readOne(collection: string, field: string): Promise<Relation> {
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				'directus_relations',
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_relations',
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 
 			const allowedFields = await fetchAllowedFields(
 				{ collection, action: 'read', accountability: this.accountability },
-				{ accessService: this.accessService, permissionsService: this.permissionsService },
+				{ schema: this.schema, knex: this.knex },
 			);
 
 			if (allowedFields.includes(field) === false) {

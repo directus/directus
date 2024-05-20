@@ -1,8 +1,8 @@
-import type { Accountability, PermissionsAction, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import type { Context } from '../../types.js';
 import { withCache } from '../../utils/with-cache.js';
 
 export type FieldMap = Record<string, string[]>;
@@ -12,18 +12,9 @@ export interface FetchAllowedFieldMapOptions {
 	action: PermissionsAction;
 }
 
-export interface FetchAllowedFieldMapContext {
-	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-}
-
 export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowedFieldMap);
 
-export async function _fetchAllowedFieldMap(
-	options: FetchAllowedFieldMapOptions,
-	context: FetchAllowedFieldMapContext,
-) {
+export async function _fetchAllowedFieldMap(options: FetchAllowedFieldMapOptions, context: Context) {
 	const fieldMap: FieldMap = {};
 
 	if (options.accountability.admin) {
@@ -34,9 +25,11 @@ export async function _fetchAllowedFieldMap(
 		return fieldMap;
 	}
 
-	const policies = await fetchPolicies(options.accountability, context.accessService);
+	const permissionsService = new PermissionsService(context);
 
-	const permissions = (await context.permissionsService.readByQuery({
+	const policies = await fetchPolicies(options.accountability, context);
+
+	const permissions = (await permissionsService.readByQuery({
 		fields: ['collection', 'fields'],
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],

@@ -1,8 +1,8 @@
-import type { Accountability, PermissionsAction, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { AccessService } from '../../../services/access.js';
-import { PermissionsService } from '../../../services/index.js';
+import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import type { Context } from '../../types.js';
 import { withCache } from '../../utils/with-cache.js';
 
 export interface FetchAllowedCollectionsOptions {
@@ -10,25 +10,21 @@ export interface FetchAllowedCollectionsOptions {
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
 }
 
-export interface FetchAllowedCollectionsContext {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-	schema: SchemaOverview;
-}
-
 export const fetchAllowedCollections = withCache('allowed-collections', _fetchAllowedCollections);
 
 export async function _fetchAllowedCollections(
 	options: FetchAllowedCollectionsOptions,
-	context: FetchAllowedCollectionsContext,
+	context: Context,
 ): Promise<string[]> {
 	if (options.accountability.admin) {
 		return Object.keys(context.schema.collections);
 	}
 
-	const policies = await fetchPolicies(options.accountability, context.accessService);
+	const permissionsService = new PermissionsService(context);
 
-	const permissions = (await context.permissionsService.readByQuery({
+	const policies = await fetchPolicies(options.accountability, context);
+
+	const permissions = (await permissionsService.readByQuery({
 		fields: ['collection'],
 		filter: {
 			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],

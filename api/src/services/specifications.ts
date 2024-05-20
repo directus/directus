@@ -24,7 +24,7 @@ import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { AccessService } from './access.js';
 import { GraphQLService } from './graphql/index.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 const env = useEnv();
 

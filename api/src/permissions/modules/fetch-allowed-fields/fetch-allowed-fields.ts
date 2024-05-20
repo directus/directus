@@ -1,14 +1,9 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { AccessService } from '../../../services/access.js';
-import { PermissionsService } from '../../../services/index.js';
+import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
+import type { Context } from '../../types.js';
 import { withCache } from '../../utils/with-cache.js';
-
-export interface FetchAllowedFieldsContext {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-}
 
 export interface FetchAllowedFieldsOptions {
 	collection: string;
@@ -25,13 +20,12 @@ export const fetchAllowedFields = withCache('allowed-fields', _fetchAllowedField
  * Done by looking up all available policies for the current accountability object, and reading all
  * permissions that exist for the collection+action+policy combination
  */
-export async function _fetchAllowedFields(
-	options: FetchAllowedFieldsOptions,
-	context: FetchAllowedFieldsContext,
-): Promise<string[]> {
-	const policies = await fetchPolicies(options.accountability, context.accessService);
+export async function _fetchAllowedFields(options: FetchAllowedFieldsOptions, context: Context): Promise<string[]> {
+	const permissionsService = new PermissionsService(context);
 
-	const permissions = (await context.permissionsService.readByQuery({
+	const policies = await fetchPolicies(options.accountability, context);
+
+	const permissions = (await permissionsService.readByQuery({
 		fields: ['fields'],
 		filter: {
 			_and: [

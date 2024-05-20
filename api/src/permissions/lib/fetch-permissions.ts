@@ -1,5 +1,6 @@
 import type { Filter, Permission, PermissionsAction } from '@directus/types';
-import type { PermissionsService } from '../../services/permissions/index.js';
+import { PermissionsService } from '../../services/permissions.js';
+import type { Context } from '../types.js';
 import { withCache } from '../utils/with-cache.js';
 
 export const fetchPermissions = withCache('permissions', _fetchPermissions);
@@ -10,11 +11,9 @@ export interface FetchPermissionsOptions {
 	collections?: string[];
 }
 
-export interface FetchPermissionsContext {
-	permissionsService: PermissionsService;
-}
+export async function _fetchPermissions(options: FetchPermissionsOptions, context: Context) {
+	const permissionsService = new PermissionsService(context);
 
-export async function _fetchPermissions(options: FetchPermissionsOptions, context: FetchPermissionsContext) {
 	const filter: Filter = {
 		_and: [{ policy: { _in: options.policies } }, { action: { _eq: options.action } }],
 	};
@@ -23,7 +22,7 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, contex
 		filter._and.push({ collection: { _in: options.collections } });
 	}
 
-	const permissions = (await context.permissionsService.readByQuery({
+	const permissions = (await permissionsService.readByQuery({
 		filter,
 		limit: -1,
 	})) as Permission[];

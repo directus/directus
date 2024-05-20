@@ -10,7 +10,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { AbstractServiceOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { AccessService } from './access.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -40,18 +40,20 @@ export class UtilsService {
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'update',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 
 			const allowedFields = await fetchAllowedFields(
 				{ collection, action: 'update', accountability: this.accountability },
-				{ accessService: this.accessService, permissionsService: this.permissionsService },
+				{ schema: this.schema, knex: this.knex },
 			);
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {

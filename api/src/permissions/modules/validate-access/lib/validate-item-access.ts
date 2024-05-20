@@ -1,9 +1,7 @@
-import type { Accountability, PermissionsAction, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
+import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@directus/types';
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
 import { runAst } from '../../../../database/run/run.js';
-import type { AccessService } from '../../../../services/access.js';
-import type { PermissionsService } from '../../../../services/index.js';
+import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process.js';
 
 export interface ValidateItemAccessOptions {
@@ -13,14 +11,7 @@ export interface ValidateItemAccessOptions {
 	primaryKeys: PrimaryKey[];
 }
 
-export interface ValidateItemAccessContext {
-	knex: Knex;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-	schema: SchemaOverview;
-}
-
-export async function validateItemAccess(options: ValidateItemAccessOptions, context: ValidateItemAccessContext) {
+export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
@@ -48,11 +39,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 			query,
 			collection: options.collection,
 		},
-		{
-			accessService: context.accessService,
-			permissionsService: context.permissionsService,
-			schema: context.schema,
-		},
+		context,
 	);
 
 	await processAst({ ast, ...options }, context);

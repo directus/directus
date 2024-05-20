@@ -33,7 +33,7 @@ import { transaction } from '../utils/transaction.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -73,13 +73,15 @@ export class FieldsService {
 
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				'directus_fields',
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_fields',
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 
@@ -223,20 +225,22 @@ export class FieldsService {
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				collection,
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 
 			const policies = await fetchPolicies(this.accountability, this.accessService);
 
 			const permissions = await fetchPermissions(
 				{ action: 'read', policies, collections: [collection] },
-				{ permissionsService: this.permissionsService },
+				{ knex: this.knex, schema: this.schema },
 			);
 
 			let hasAccess = false;

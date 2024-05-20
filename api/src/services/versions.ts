@@ -14,7 +14,7 @@ import { AccessService } from './access.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import { PermissionsService } from './permissions/index.js';
+import { PermissionsService } from './permissions.js';
 import { RevisionsService } from './revisions.js';
 
 export class VersionsService extends ItemsService {
@@ -70,14 +70,16 @@ export class VersionsService extends ItemsService {
 		// will throw an error if the accountability does not have permission to read the item
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				data['collection'],
-				[data['item']],
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: data['collection'],
+					primaryKeys: [data['item']],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 	}
@@ -86,14 +88,16 @@ export class VersionsService extends ItemsService {
 		// will throw an error if the accountability does not have permission to read the item
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'read',
-				collection,
-				[item],
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+					primaryKeys: [item],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 
@@ -290,14 +294,16 @@ export class VersionsService extends ItemsService {
 		// will throw an error if the accountability does not have permission to update the item
 		if (this.accountability) {
 			await validateAccess(
-				this.knex,
-				this.accessService,
-				this.permissionsService,
-				this.schema,
-				this.accountability,
-				'update',
-				collection,
-				[item],
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+					primaryKeys: [item],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
 			);
 		}
 

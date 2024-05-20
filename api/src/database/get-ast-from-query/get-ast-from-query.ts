@@ -3,9 +3,8 @@
  */
 
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
-import { AccessService } from '../../services/access.js';
-import { PermissionsService } from '../../services/index.js';
 import type { AST } from '../../types/index.js';
 import { parseFields } from './lib/parse-fields.js';
 
@@ -16,8 +15,7 @@ export interface GetAstFromQueryOptions {
 }
 
 export interface GetAstFromQueryContext {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
+	knex: Knex;
 	schema: SchemaOverview;
 }
 
@@ -93,7 +91,7 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 			deep,
 			accountability: options.accountability,
 		},
-		{ schema: context.schema, accessService: context.accessService, permissionsService: context.permissionsService },
+		context,
 	);
 
 	return ast;
