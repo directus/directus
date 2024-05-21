@@ -31,6 +31,17 @@ test('Returns array of all parents in top-down order', async () => {
 	expect(roles).toEqual(['third', 'second', 'start']);
 });
 
+test('Exits if parent row is undefined', async () => {
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'start', parent: 'second' });
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'second', parent: 'third' });
+	vi.mocked(knex.first).mockResolvedValueOnce(undefined);
+	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'unrelated', parent: null });
+
+	const roles = await _fetchRolesTree('start', knex);
+
+	expect(roles).toEqual(['second', 'start']);
+})
+
 test('Throws error if infinite recursion occurs', async () => {
 	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'first', parent: 'second' });
 	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'second', parent: 'third' });

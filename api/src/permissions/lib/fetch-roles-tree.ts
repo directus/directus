@@ -10,11 +10,15 @@ export async function _fetchRolesTree(start: string | null, knex: Knex): Promise
 	const roles: string[] = [];
 
 	while (parent) {
-		const role: { id: string; parent: string | null } = await knex
+		const role: { id: string; parent: string | null } | undefined = await knex
 			.select('id', 'parent')
 			.from('directus_roles')
 			.where({ id: start })
 			.first();
+
+		if (!role) {
+			break;
+		}
 
 		roles.push(role.id);
 
