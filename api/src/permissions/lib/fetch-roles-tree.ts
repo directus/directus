@@ -13,7 +13,7 @@ export async function _fetchRolesTree(start: string | null, knex: Knex): Promise
 		const role: { id: string; parent: string | null } | undefined = await knex
 			.select('id', 'parent')
 			.from('directus_roles')
-			.where({ id: start })
+			.where({ id: parent })
 			.first();
 
 		if (!role) {

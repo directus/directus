@@ -309,7 +309,7 @@ export class CollectionsService {
 				{
 					knex: this.knex,
 					schema: this.schema,
-				}
+				},
 			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {
