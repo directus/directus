@@ -136,6 +136,8 @@ export function getDatabase(): Knex {
 	}
 
 	if (client === 'mysql') {
+		Object.assign(knexConfig, { client: 'mysql2' });
+
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
 			logger.trace('Retrieving database version');
 			const run = promisify(conn.query.bind(conn));
@@ -230,7 +232,7 @@ export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
-		case 'Client_MySQL':
+		case 'Client_MySQL2':
 			return 'mysql';
 		case 'Client_PG':
 			return 'postgres';
