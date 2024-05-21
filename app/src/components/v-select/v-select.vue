@@ -104,6 +104,10 @@ watch(
 	}, 250),
 );
 
+const empty = computed(() => !props.placeholder && internalItemsCount.value === 0 && modelValue.value === null);
+const internalDisabled = computed(() => props.disabled || empty.value);
+const internalPlaceholder = computed(() => props.placeholder || (empty.value ? t('no_options_available') : null));
+
 function useItems() {
 	const internalSearch = ref<string | null>(null);
 
@@ -241,7 +245,7 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="disabled"
+		:disabled="internalDisabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -252,21 +256,33 @@ function useDisplayValue() {
 			<div
 				v-if="inline"
 				class="inline-display"
-				:class="{ placeholder: !displayValue.text, label, active, disabled }"
+				:class="{ placeholder: !displayValue.text, label, active, disabled: internalDisabled, empty }"
 				@click="toggle"
 			>
-				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
-				<v-icon name="expand_more" :class="{ active }" />
+				<span v-if="$slots.prepend || displayValue.icon || displayValue.color" class="prepend">
+					<slot v-if="$slots.prepend" class="prepend" name="prepend" />
+					<v-icon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+					<display-color v-else-if="displayValue.color" :value="displayValue.color" />
+				</span>
+
+				<span class="value">
+					<slot name="preview">
+						{{ displayValue.text || internalPlaceholder }}
+					</slot>
+				</span>
+
+				<v-icon name="expand_more" :class="['expand', { active }]" />
 			</div>
 			<slot v-else name="preview">
 				<v-input
 					:full-width="fullWidth"
 					readonly
 					:model-value="displayValue.text"
-					clickable
-					:placeholder="placeholder"
-					:disabled="disabled"
+					:clickable="!internalDisabled"
+					:placeholder="internalPlaceholder"
+					:disabled="internalDisabled"
 					:active="active"
+					:class="{ active, empty }"
 					@click="toggle"
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
@@ -275,7 +291,7 @@ function useDisplayValue() {
 						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>
-						<v-icon name="expand_more" :class="{ active }" />
+						<v-icon name="expand_more" class="expand" :class="{ active }" />
 						<slot name="append" />
 					</template>
 				</v-input>
@@ -283,7 +299,7 @@ function useDisplayValue() {
 		</template>
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
-			<template v-if="showDeselect">
+			<template v-if="showDeselect && (internalItemsCount > 0 || modelValue !== null)">
 				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
@@ -292,11 +308,17 @@ function useDisplayValue() {
 						{{ multiple ? t('deselect_all') : t('deselect') }}
 					</v-list-item-content>
 					<v-list-item-icon v-if="multiple === false">
-						<v-icon name="close" />
+						<v-icon small name="close" />
 					</v-list-item-icon>
 				</v-list-item>
 				<v-divider />
 			</template>
+
+			<v-list-item v-if="internalItemsCount === 0" disabled>
+				<v-list-item-content>
+					{{ t('no_options_available') }}
+				</v-list-item-content>
+			</v-list-item>
 
 			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>
@@ -395,65 +417,94 @@ function useDisplayValue() {
 
 .list {
 	--v-list-min-width: 180px;
+
+	.other-input {
+		margin: 0;
+		padding: 0;
+		line-height: 1.2;
+		background-color: transparent;
+		border: none;
+		border-radius: 0;
+	}
 }
 
 .v-input {
 	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
-	cursor: pointer;
-}
+	&.empty,
+	&.empty:deep(input) {
+		cursor: not-allowed;
+	}
 
-.v-input .v-icon {
-	transition: transform var(--medium) var(--transition-out);
-}
+	.expand {
+		transition:
+			color var(--fast) var(--transition),
+			transform var(--medium) var(--transition-out);
 
-.v-input .v-icon.active {
-	transform: scaleY(-1);
-	transition-timing-function: var(--transition-in);
-}
+		&.active {
+			transform: scaleY(-1);
+			transition-timing-function: var(--transition-in);
+		}
+	}
 
-.v-input :deep(input) {
-	cursor: pointer;
-}
-
-.other-input {
-	margin: 0;
-	padding: 0;
-	line-height: 1.2;
-	background-color: transparent;
-	border: none;
-	border-radius: 0;
+	&:hover:not(.disabled) .expand,
+	&.active .expand {
+		--v-icon-color: var(--theme--foreground);
+	}
 }
 
 .inline-display {
+	display: inline-flex;
+	align-items: center;
 	width: max-content;
-	padding-right: 18px;
+	transition: color var(--fast) var(--transition);
+
+	.prepend {
+		display: inline-flex;
+		align-items: center;
+		margin-inline-end: 4px;
+	}
 
 	&:not(.disabled) {
 		cursor: pointer;
 	}
-}
 
-.inline-display.label {
-	padding: 4px 8px;
-	padding-right: 26px;
-	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-radius: var(--theme--border-radius);
-	transition: color var(--fast) var(--transition);
-
-	&:hover,
-	&.active {
-		color: var(--foreground);
+	&.empty {
+		cursor: not-allowed;
 	}
-}
 
-.inline-display .v-icon {
-	position: absolute;
-}
+	&.label {
+		padding: 4px 8px;
+		color: var(--theme--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-radius: var(--theme--border-radius);
+	}
 
-.inline-display.placeholder {
-	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
+	&.placeholder {
+		color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
+
+		.value {
+			/* Keep color of placeholder value on hover, so that it can be distinguished from a real value */
+			color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
+		}
+	}
+
+	.expand {
+		/* Remove spacing on the right side of the icon */
+		margin-right: -4px;
+
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	&:hover:not(.disabled),
+	&.active {
+		color: var(--theme--foreground);
+
+		.expand {
+			color: var(--theme--foreground);
+		}
+	}
 }
 
 .color-dot {

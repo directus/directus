@@ -400,7 +400,7 @@ function stepDown() {
 
 	input {
 		flex-grow: 1;
-		width: 20px; /* allows flex to grow/shrink to allow for slots */
+		width: 24px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-right: 0px;
@@ -409,6 +409,7 @@ function stepDown() {
 		background-color: transparent;
 		border: none;
 		appearance: none;
+		text-overflow: ellipsis;
 
 		&::placeholder {
 			color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
@@ -425,7 +426,6 @@ function stepDown() {
 		}
 
 		/* Firefox */
-
 		&[type='number'] {
 			appearance: textfield;
 		}
