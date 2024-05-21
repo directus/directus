@@ -1,5 +1,5 @@
-import type { SchemaOverview } from "@directus/types";
-import { useLogger } from "../../../logger.js";
+import type { SchemaOverview } from '@directus/types';
+import { useLogger } from '../../../logger.js';
 
 /**
  * Regex was taken from the spec
@@ -7,7 +7,7 @@ import { useLogger } from "../../../logger.js";
  */
 const GRAPHQL_NAME_REGEX = /^[_A-Za-z][_0-9A-Za-z]*/;
 
-// Not a complete list
+// Not an exhaustive list (doesnt include generated names)
 const GRAPHQL_RESERVED_NAMES = [
 	'Subscription',
 	'Query',
@@ -17,6 +17,12 @@ const GRAPHQL_RESERVED_NAMES = [
 	'String',
 	'Boolean',
 	'DateTime',
+	'ID',
+	'uid',
+	'Point',
+	'PointList',
+	'Polygon',
+	'MultiPolygon',
 ];
 
 /**
@@ -28,18 +34,23 @@ const GRAPHQL_RESERVED_NAMES = [
 export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 	const logger = useLogger();
 
-	const collections = Object.entries(schema.collections)
-		.filter(([collectionName, _data]) => {
-			const valid = !collectionName.startsWith('__')
-				&& collectionName.match(GRAPHQL_NAME_REGEX)
-				&& !GRAPHQL_RESERVED_NAMES.includes(collectionName);
+	const collections = Object.entries(schema.collections).filter(([collectionName, _data]) => {
+		if (collectionName.startsWith('__') || !collectionName.match(GRAPHQL_NAME_REGEX)) {
+			logger.warn(
+				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*/`,
+			);
 
-			if (!valid) {
-				logger.warn(`Ignored collection "${collectionName}" because it is not a valid name for GraphQL /^[_A-Za-z][_0-9A-Za-z]*/`)
-			}
+			return false;
+		}
 
-			return valid;
-		})
+		if (GRAPHQL_RESERVED_NAMES.includes(collectionName)) {
+			logger.warn(`GraphQL skipping collection "${collectionName}" because it is a reserved keyword`);
+
+			return false;
+		}
+
+		return true;
+	});
 
 	schema.collections = Object.fromEntries(collections);
 
