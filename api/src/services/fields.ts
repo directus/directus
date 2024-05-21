@@ -187,7 +187,7 @@ export class FieldsService {
 							action: 'read',
 							policies,
 					  },
-				{ permissionsService: this.permissionsService },
+				{ knex: this.knex, schema: this.schema },
 			);
 
 			const allowedFieldsInCollection: Record<string, string[]> = {};

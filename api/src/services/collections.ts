@@ -307,10 +307,9 @@ export class CollectionsService {
 					action: 'read',
 				},
 				{
-					accessService: this.accessService,
-					permissionsService: this.permissionsService,
+					knex: this.knex,
 					schema: this.schema,
-				},
+				}
 			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {

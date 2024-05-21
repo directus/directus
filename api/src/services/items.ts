@@ -106,8 +106,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const { ActivityService } = await import('./activity.js');
-		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions.js');
 		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -133,8 +131,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// We're creating new services instances so they can use the transaction as their Knex interface
 			const payloadService = new PayloadService(this.collection, serviceOptions);
-			const accessService = new AccessService(serviceOptions);
-			const permissionsService = new PermissionsService(serviceOptions);
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
@@ -165,8 +161,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							payload: payloadAfterHooks,
 						},
 						{
-							accessService,
-							permissionsService,
+							knex: this.knex,
 							schema: this.schema,
 						},
 				  )
@@ -433,18 +428,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				  )
 				: query;
 
-		const { AccessService } = await import('./access.js');
-		const { PermissionsService } = await import('./permissions.js');
-
-		const serviceOptions: AbstractServiceOptions = {
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		};
-
-		const accessService = new AccessService(serviceOptions);
-		const permissionsService = new PermissionsService(serviceOptions);
-
 		let ast = await getAstFromQuery(
 			{
 				collection: this.collection,
@@ -452,15 +435,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 			},
 			{
-				accessService,
-				permissionsService,
 				schema: this.schema,
+				knex: this.knex,
 			},
 		);
 
 		ast = await processAst(
 			{ ast, action: 'read', accountability: this.accountability },
-			{ accessService, permissionsService, schema: this.schema },
+			{ knex: this.knex, schema: this.schema },
 		);
 
 		const records = await runAst(ast, this.schema, {

@@ -218,7 +218,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'read',
 						},
-						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
+						{ schema: this.schema, knex: this.knex },
 					),
 				),
 				create: reduceSchema(
@@ -228,7 +228,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'create',
 						},
-						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
+						{ schema: this.schema, knex: this.knex },
 					),
 				),
 				update: reduceSchema(
@@ -238,7 +238,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'update',
 						},
-						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
+						{ schema: this.schema, knex: this.knex },
 					),
 				),
 				delete: reduceSchema(
@@ -248,7 +248,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							action: 'delete',
 						},
-						{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
+						{ schema: this.schema, knex: this.knex },
 					),
 				),
 			};

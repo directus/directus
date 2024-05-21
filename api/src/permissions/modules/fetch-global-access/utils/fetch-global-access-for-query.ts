@@ -22,6 +22,10 @@ export async function fetchGlobalAccessForQuery(
 		.from('directus_access')
 		.leftJoin('directus_policies', 'directus_policies.id', 'directus_access.policy');
 
+	/**
+	 * TODO filter down by IP address
+	 */
+
 	for (const { admin_access, app_access } of access) {
 		if (app === false && (app_access === true || app_access === 1)) {
 			app = true;

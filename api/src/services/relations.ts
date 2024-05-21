@@ -538,7 +538,7 @@ export class RelationsService {
 				accountability: this.accountability,
 				action: 'read',
 			},
-			{ schema: this.schema, accessService: this.accessService, permissionsService: this.permissionsService },
+			{ schema: this.schema, knex: this.knex },
 		);
 
 		const allowedCollections = Object.keys(allowedFields);

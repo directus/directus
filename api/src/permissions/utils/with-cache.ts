@@ -1,6 +1,9 @@
 import { getSimpleHash } from '@directus/utils';
 import { useCache } from '../cache.js';
 
+/**
+ * @NOTE only uses the first parameter for memoization
+ */
 export function withCache<F extends (...args: any[]) => any>(namespace: string, handler: F) {
 	const cache = useCache();
 
