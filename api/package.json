@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "19.0.2",
+	"version": "19.1.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -169,11 +169,11 @@
 		"sharp": "0.33.3",
 		"snappy": "7.2.2",
 		"stream-json": "1.8.0",
-		"tar": "7.0.1",
-		"tsx": "4.9.0",
+		"tar": "7.1.0",
+		"tsx": "4.9.3",
 		"wellknown": "0.5.0",
 		"ws": "8.17.0",
-		"zod": "3.23.6",
+		"zod": "3.23.8",
 		"zod-validation-error": "3.2.0"
 	},
 	"devDependencies": {
@@ -202,7 +202,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
-		"@types/node": "18.19.31",
+		"@types/node": "18.19.33",
 		"@types/node-schedule": "2.1.7",
 		"@types/nodemailer": "6.4.15",
 		"@types/object-hash": "3.0.6",

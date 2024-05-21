@@ -61,9 +61,10 @@ be removed [unless you persist them](https://docs.docker.com/storage) when creat
 Directus image by default will use the following locations for data persistence (note that these can be changed through
 environment variables):
 
-- `/directus/uploads` for uploads
 - `/directus/database` (only when using SQLite and not configured to a different folder)
+- `/directus/uploads` for uploads
 - `/directus/extensions` for loading extensions
+- `/directus/templates` for overriding and extending email templates
 
 The `services.directus.volumes` section in your docker-compose.yml is optional. To persist data to your local machine,
 include a list of persisted directories:
@@ -75,6 +76,7 @@ services:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
+      - ./templates:/directus/templates
 ```
 
 ## Example Docker Compose
@@ -111,8 +113,7 @@ services:
       - cache
       - database
     environment:
-      KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
-      SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
+      SECRET: "replace-with-secure-random-value"
 
       DB_CLIENT: "pg"
       DB_HOST: "database"
