@@ -54,5 +54,30 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 
 	schema.collections = Object.fromEntries(collections);
 
+	schema.relations = schema.relations.filter((relation) => {
+		if (relation.related_collection) {
+			if (!schema.collections[relation.collection] || !schema.collections[relation.related_collection]) {
+				logger.warn(
+					`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
+				);
+
+				return false;
+			}
+		} else if (relation.meta?.one_allowed_collections) {
+			if (
+				!schema.collections[relation.collection] ||
+				relation.meta.one_allowed_collections.some((allowed_collection) => !schema.collections[allowed_collection])
+			) {
+				logger.warn(
+					`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
+				);
+
+				return false;
+			}
+		}
+
+		return true;
+	});
+
 	return schema;
 }
