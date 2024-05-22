@@ -9,15 +9,15 @@ import type { GlobalAccess } from './types.js';
  * Will fetch roles and user info separately so they can be cached and reused individually
  */
 export async function fetchGlobalAccess(knex: Knex, roles: string[], user?: string): Promise<GlobalAccess> {
-	let { app, admin } = await fetchGlobalAccessForRoles(knex, roles);
+	const access = await fetchGlobalAccessForRoles(knex, roles);
 
 	if (user !== undefined) {
 		const userAccess = await fetchGlobalAccessForUser(knex, user);
 
 		// If app/admin is already true, keep it true
-		app = app || userAccess.app;
-		admin = admin || userAccess.admin;
+		access.app ||= userAccess.app;
+		access.admin ||= userAccess.admin;
 	}
 
-	return { app, admin };
+	return access;
 }
