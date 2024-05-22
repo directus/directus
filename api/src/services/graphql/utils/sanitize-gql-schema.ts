@@ -37,7 +37,7 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 	const collections = Object.entries(schema.collections).filter(([collectionName, _data]) => {
 		if (collectionName.startsWith('__') || !collectionName.match(GRAPHQL_NAME_REGEX)) {
 			logger.warn(
-				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*/`,
+				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*$/`,
 			);
 
 			return false;
