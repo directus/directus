@@ -2,18 +2,16 @@ import type { CollectionsOverview, SchemaOverview } from '@directus/types';
 import { describe, expect, test } from 'vitest';
 import { sanitizeGraphqlSchema } from './sanitize-gql-schema.js';
 
-const mockCollection = (name: string, fields: string[] = []) => ({
-	collection: name,
-	primary: 'id',
-	singleton: false,
-	sortField: null,
-	note: null,
-	accountability: null,
-	fields: Object.fromEntries([
-		['id', null],
-		...fields.map(f => ([f, null])),
-	]),
-}) as CollectionsOverview[string];
+const mockCollection = (name: string, fields: string[] = []) =>
+	({
+		collection: name,
+		primary: 'id',
+		singleton: false,
+		sortField: null,
+		note: null,
+		accountability: null,
+		fields: Object.fromEntries([['id', null], ...fields.map((f) => [f, null])]),
+	}) as CollectionsOverview[string];
 
 describe('Sanitize graphql schema', () => {
 	test('Filters out invalid names', () => {
@@ -23,7 +21,7 @@ describe('Sanitize graphql schema', () => {
 				'123table': mockCollection('123table'),
 				__underscore: mockCollection('__underscore'),
 				'a-dash': mockCollection('a-dash'),
-				'Schrödinger': mockCollection('Schrödinger'),
+				Schrödinger: mockCollection('Schrödinger'),
 				'': mockCollection(''),
 			},
 			relations: [],
@@ -134,4 +132,3 @@ describe('Sanitize graphql schema', () => {
 		expect(result.relations.length).toBe(0);
 	});
 });
-

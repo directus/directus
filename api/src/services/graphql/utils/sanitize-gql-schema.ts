@@ -62,7 +62,7 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 		);
 
 		return false;
-	}
+	};
 
 	schema.relations = schema.relations.filter((relation) => {
 		if (relation.collection && !collectionExists(relation.collection)) {
@@ -86,7 +86,10 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 				return skipRelation(relation);
 			}
 
-			if (relation.meta.one_allowed_collections && relation.meta.one_allowed_collections.some((allowed_collection) => !collectionExists(allowed_collection))) {
+			if (
+				relation.meta.one_allowed_collections &&
+				relation.meta.one_allowed_collections.some((allowed_collection) => !collectionExists(allowed_collection))
+			) {
 				return skipRelation(relation);
 			}
 		}
