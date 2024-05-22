@@ -533,7 +533,6 @@ edit_global_bookmark: Editar marcador global
 cannot_edit_global_bookmarks: Sem permissão para editar marcadores globais
 bookmarks: Favoritos
 unexpected_error: Erro Inesperado
-unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
 password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
 all_users: Todos os utilizadores

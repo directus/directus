@@ -617,7 +617,6 @@ edit_global_bookmark: Redigera globalt bokmärke
 bookmarks: Bokmärken
 presets: Förval
 unexpected_error: Oväntat fel
-unexpected_error_copy: Ett oväntat fel har inträffat. Försök igen senare.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
