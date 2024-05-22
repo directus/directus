@@ -1,11 +1,11 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Relation, SchemaOverview } from '@directus/types';
 import { useLogger } from '../../../logger.js';
 
 /**
  * Regex was taken from the spec
  * https://spec.graphql.org/June2018/#sec-Names
  */
-const GRAPHQL_NAME_REGEX = /^[_A-Za-z][_0-9A-Za-z]*/;
+const GRAPHQL_NAME_REGEX = /^[_A-Za-z][_0-9A-Za-z]*$/;
 
 // Not an exhaustive list (doesnt include generated names)
 const GRAPHQL_RESERVED_NAMES = [
@@ -54,25 +54,40 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 
 	schema.collections = Object.fromEntries(collections);
 
+	const collectionExists = (collection: string) => Boolean(schema.collections[collection]);
+
+	const skipRelation = (relation: Relation) => {
+		logger.warn(
+			`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
+		);
+
+		return false;
+	}
+
 	schema.relations = schema.relations.filter((relation) => {
-		if (relation.related_collection) {
-			if (!schema.collections[relation.collection] || !schema.collections[relation.related_collection]) {
-				logger.warn(
-					`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
-				);
+		if (relation.collection && !collectionExists(relation.collection)) {
+			return skipRelation(relation);
+		}
 
-				return false;
+		if (relation.related_collection && !collectionExists(relation.related_collection)) {
+			return skipRelation(relation);
+		}
+
+		if (relation.meta) {
+			if (relation.meta.many_collection && !collectionExists(relation.meta.many_collection)) {
+				return skipRelation(relation);
 			}
-		} else if (relation.meta?.one_allowed_collections) {
-			if (
-				!schema.collections[relation.collection] ||
-				relation.meta.one_allowed_collections.some((allowed_collection) => !schema.collections[allowed_collection])
-			) {
-				logger.warn(
-					`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
-				);
 
-				return false;
+			if (relation.meta.one_collection && !collectionExists(relation.meta.one_collection)) {
+				return skipRelation(relation);
+			}
+
+			if (relation.meta.many_collection && !collectionExists(relation.meta.many_collection)) {
+				return skipRelation(relation);
+			}
+
+			if (relation.meta.one_allowed_collections && relation.meta.one_allowed_collections.some((allowed_collection) => !collectionExists(allowed_collection))) {
+				return skipRelation(relation);
 			}
 		}
 
