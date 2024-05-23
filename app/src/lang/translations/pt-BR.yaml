@@ -70,7 +70,7 @@ extension_endpoint: Endpoint
 extension_operation: Operação
 extension_bundle: Pacote
 extension_interfaces: Interfaces
-extension_displays: Telas
+extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Módulos
 extension_panels: Painéis
@@ -79,7 +79,7 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operações
 extension_bundles: Pacotes
-extension_missing: Faltando
+extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
@@ -91,6 +91,7 @@ n_files: '{n} Arquivos'
 verified: Verificado
 homepage: Página inicial
 repository: Repositório
+reload_page: Atualizar Página
 reload_required: Atualização de página necessária
 report_an_issue: Reportar um problema
 website: Site
@@ -131,8 +132,8 @@ message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_custom_translation: Criar tradução personalizada
-edit_custom_translation: Criar tradução personalizada
-no_custom_translations: Traduções personalizadas
+edit_custom_translation: Editar tradução personalizada
+no_custom_translations: Nenhuma tradução personalizada
 no_custom_translations_copy: Ainda não há traduções personalizadas.
 invite_users: Convidar Usuários
 invite: Convidar
@@ -154,13 +155,13 @@ version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
 main_version: Main
-switch_version: Trocar versão
-switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? As alterações não salvas serão perdidas.
-create_version: Criar versão
-rename_version: Renomear versão
-compare_version: Comparar versão
-save_version: Salvar versão
-promote_version: Promover versão
+switch_version: Trocar Versão
+switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? Alterações não salvas serão perdidas.
+create_version: Criar Versão
+rename_version: Renomear Versão
+compare_version: Comparar Versão
+save_version: Salvar Versão
+promote_version: Promover Versão
 promote_version_disabled: Sem alterações
 promote_version_drawer_title: Promover {version} para a Main
 promote_version_changes: Mudanças
@@ -747,7 +748,7 @@ cannot_edit_global_bookmarks: Não é possível editar favoritos globais
 bookmarks: Favoritos
 presets: Predefinições
 unexpected_error: Erro inesperado
-unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
+unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
@@ -1257,6 +1258,8 @@ fields:
     height: Altura
     charset: Codificação de caracteres
     duration: Duração
+    focal_point_x: Coordenada (X)
+    focal_point_y: Coordenada Y
   directus_users:
     first_name: Primeiro Nome
     last_name: Sobrenome
@@ -1274,6 +1277,7 @@ fields:
     status: Status
     status_draft: Rascunho
     status_invited: Convidado
+    status_unverified: Não verificado
     status_active: Ativo
     status_suspended: Suspenso
     status_archived: Arquivado
@@ -1337,6 +1341,14 @@ fields:
     custom_aspect_ratios: Proporção de tela personalizada
     theme_light_overrides: Personalização de tema claro
     theme_dark_overrides: Personalização de tema escuro
+    public_registration: Cadastro de usuário
+    public_registration_note: Permite que usuários se registrem através da [página de registro](/admin/register).
+    public_registration_role: Função de Usuário
+    public_registration_role_note: Esta função é atribuída aos usuários que se registram usando este método. Não afeta usuários já registrados.
+    public_registration_email_filter: Filtro de endereço de e-mail
+    public_registration_email_filter_note: Apenas endereços de e-mail que passarem por esse filtro podem se registrar.
+    public_registration_verify_email: Verificar E-mail
+    public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
   directus_shares:
     name: Nome
     role: Função
@@ -1584,6 +1596,7 @@ authenticated: Autenticado
 options: Opções
 otp: Senha de uso único
 password: Senha
+confirm_password: Confirmar Senha
 permissions: Permissões
 relationship: Relacionamento
 reset: Redefinir
@@ -1600,6 +1613,14 @@ select_field_type: Selecionar tipo de campo
 select_interface: Selecione uma interface
 select_display: Selecionar uma exibição
 settings: Configurações
+register: Cadastrar
+registration_successful_headline: Sucesso!
+registration_successful_note: Agora você pode prosseguir para a página de login.
+registration_successful_check_email_note: |
+  Por favor, lembre-se que antes de fazer o login, você precisará verificar seu endereço de e-mail clicando no link de verificação enviado para você.
+dont_have_an_account: Não possui uma conta?
+already_have_an_account: Já tem uma conta?
+sign_up_now: Cadastre-se agora
 sign_in: Entrar
 sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
@@ -2171,6 +2192,7 @@ layouts:
     not_all_loaded: Só foi possível carregar os primeiros 1000 itens.
 horizontal: Horizontal
 vertical: Vertical
+axis: Eixo
 x_axis: Eixo X
 y_axis: Eixo Y
 y_axis_function: Função do Eixo Y

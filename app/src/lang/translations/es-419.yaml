@@ -688,7 +688,6 @@ cannot_edit_global_bookmarks: No se puede editar marcadores globales
 bookmarks: Marcadores
 presets: Ajustes predeterminados
 unexpected_error: Error inesperado
-unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamente mas tarde.
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
