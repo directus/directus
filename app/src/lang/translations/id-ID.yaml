@@ -600,7 +600,6 @@ cannot_edit_global_bookmarks: Tidak dapat mengubah Markah Peran secara Global
 bookmarks: Markah
 presets: Preset
 unexpected_error: Kesalahan Tidak Terduga
-unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi nanti.
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
