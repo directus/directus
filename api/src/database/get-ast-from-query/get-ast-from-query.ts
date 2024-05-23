@@ -66,6 +66,13 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 
 		// If a custom manual sort field is configured, use that
 		if (context.schema.collections[options.collection]?.sortField) {
+
+			/**
+			 * TODO The globally configured sort field may or may not be allowed for the current user.
+			 * This should be checked against allowed fields / admin and default to the first allowed field
+			 * otherwise
+			 */
+
 			sortField = context.schema.collections[options.collection]!.sortField as string;
 		}
 
