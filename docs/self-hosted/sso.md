@@ -9,6 +9,14 @@ Single Sign-On is a mechanism which allows to use external providers to login in
 your Google or Facebook account to authenticate into systems without the need to create a new registration on those
 systems.
 
+::: tip Session Based Authentication
+
+In [Directus version 10.10.0](/releases/breaking-changes.html#session-cookie-based-authentication) the `cookie` mode has
+been replaced by the new `session` mode. The API still supports `cookie` mode logins for compatibility, however the Data
+Studio no longer supports `cookie` mode for logging in.
+
+:::
+
 ## Supported SSO mechanisms
 
 Directus supports four standard types of SSO mechanisms:
@@ -93,7 +101,7 @@ required to work across domains:
    SESSION_COOKIE_SAME_SITE="None"
    ```
 
-   **Authentication Mode: cookie**
+   **Authentication Mode: cookie (legacy)**
 
    ```sh
    AUTH_<PROVIDER>_MODE="cookie"
@@ -138,7 +146,7 @@ required to work across domains:
      await client.refresh();
      ```
 
-   - via SDK in `cookie` authentication mode
+   - via SDK in legacy `cookie` authentication mode
 
      ```js
      import { createDirectus, authentication } from '@directus/sdk';

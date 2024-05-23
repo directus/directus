@@ -557,7 +557,6 @@ replace_from_url: 从 URL 中替换文件
 no_image_selected: 未选择图像
 no_file_selected: 未选择文件
 download_file: 下载文件
-open_file_in_tab: 在新标签页中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
 exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
@@ -745,7 +744,6 @@ cannot_edit_global_bookmarks: 无法编辑全局书签
 bookmarks: 书签
 presets: 预设
 unexpected_error: 未知错误
-unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。

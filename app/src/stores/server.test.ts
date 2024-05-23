@@ -324,9 +324,9 @@ describe('hydrate action', async () => {
 		await serverStore.hydrate();
 
 		expect(replaceQueueSpy).toHaveBeenCalledWith({
-			intervalCap: mockRateLimit.points - 10,
-			interval: mockRateLimit.duration * 1000,
-			carryoverConcurrencyCount: true,
+			intervalCap: 1,
+			// Interval for 1 point (duration * 1000(ms) / points)
+			interval: 500,
 		});
 	});
 });

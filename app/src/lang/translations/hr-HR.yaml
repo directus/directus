@@ -557,7 +557,6 @@ replace_from_url: Zamijenite datoteku s URL-a
 no_image_selected: Nije Odabrana Slika
 no_file_selected: Niti jedna datoteka nije odabrana
 download_file: Preuzmi datoteku
-open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
@@ -741,7 +740,6 @@ cannot_edit_global_bookmarks: Nije moguće uređivati globalne oznake
 bookmarks: Oznake
 presets: Unaprijed postavljene postavke
 unexpected_error: Neočekivana greška
-unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte ponovo kasnije.
 copy_details: Kopiraj pojedinosti
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.

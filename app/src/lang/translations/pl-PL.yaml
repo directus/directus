@@ -361,6 +361,7 @@ fields_group: Grupa pól
 no_collections_found: Nie znaleziono żadnych kolekcji.
 new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
 search_collection: Przeszukaj kolekcje...
+search_role: Szukaj roli...
 search_field: Pole wyszukiwania...
 new_field: 'Nowe pole'
 new_collection: 'Nowa kolekcja'
@@ -446,6 +447,7 @@ revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
 presentation_text_values_cannot_be_reimported: 'Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane.'
 download_page_as_csv: 'Pobierz stronę jako CSV'
+download_page_as_csv_unsupported: Ten układ nie obsługuje pobierania bieżącej strony.
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
 revision_preview: Podgląd wersji
@@ -745,7 +747,6 @@ cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
-unexpected_error_copy: Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
@@ -1272,6 +1273,7 @@ fields:
     status: Status
     status_draft: Szkic
     status_invited: Zaproszono
+    status_unverified: Niezweryfikowane
     status_active: Aktywne
     status_suspended: Zawieszony
     status_archived: Zarchiwizowane
@@ -1335,6 +1337,14 @@ fields:
     custom_aspect_ratios: Niestandardowe proporcje
     theme_light_overrides: Dostosowanie jasnego motywu
     theme_dark_overrides: Dostosowanie ciemnego motywu
+    public_registration: Rejestracja użytkownika
+    public_registration_note: Pozwala użytkownikom na rejestrację przez [ścieżkę rejestracji](/admin/register).
+    public_registration_role: Rola użytkownika
+    public_registration_role_note: Ta rola jest przypisana do użytkowników, którzy rejestrują się za pomocą tej metody. Nie ma wpływu na już zarejestrowanych użytkowników.
+    public_registration_email_filter: Filtr adresu e-mail
+    public_registration_email_filter_note: Tylko adresy e-mail pasujące do tego filtra mogą się zarejestrować.
+    public_registration_verify_email: Potwierdź e-mail
+    public_registration_verify_email_note: Wysyła e-mail do użytkownika rejestrującego z prośbą o kliknięcie na link weryfikacyjny zanim będzie mógł się zalogować.
   directus_shares:
     name: Nazwa
     role: Rola
@@ -1582,6 +1592,7 @@ authenticated: Uwierzytelniony
 options: Opcje
 otp: Jednorazowe hasło
 password: Hasło
+confirm_password: Potwierdź hasło
 permissions: Uprawnienia
 relationship: Powiązanie
 reset: Resetuj
@@ -1598,6 +1609,13 @@ select_field_type: Wybierz typ pola
 select_interface: Wybierz interfejs
 select_display: Wybierz wyświetlanie
 settings: Ustawienia
+registration_successful_headline: Sukces!
+registration_successful_note: Teraz możesz przejść do strony logowania.
+registration_successful_check_email_note: |
+  Pamiętaj, że zanim będziesz mógł się zalogować, musisz zweryfikować swój adres e-mail, klikając na link weryfikacyjny wysłany do Ciebie.
+dont_have_an_account: Nie masz jeszcze konta?
+already_have_an_account: Posiadasz już konto?
+sign_up_now: Zarejestruj się teraz
 sign_in: Zaloguj się
 sign_out: Wyloguj się
 sign_out_confirm: Na pewno chcesz się wylogować?
@@ -1630,6 +1648,7 @@ delete_item: Usuń element
 interfaces:
   list-m2a:
     prefix_note: Domyślnie używa nazwy kolekcji powiązanych elementów.
+    sorting_disabled: Sortowanie jest wyłączone, ponieważ jest więcej elementów niż może się zmieścić na jednej stronie.
   filter:
     name: Filtr
     description: Skonfiguruj filtr obiektu.
@@ -2168,6 +2187,7 @@ layouts:
     not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 horizontal: Poziomy
 vertical: Pionowo
+axis: Oś
 x_axis: Oś X
 y_axis: Oś Y
 y_axis_function: Funkcja osi Y

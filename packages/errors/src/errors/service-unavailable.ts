@@ -1,6 +1,6 @@
 import { createError, ErrorCode } from '../index.js';
 
-interface ServiceUnavailableErrorExtensions {
+export interface ServiceUnavailableErrorExtensions {
 	service: string;
 	reason: string;
 }

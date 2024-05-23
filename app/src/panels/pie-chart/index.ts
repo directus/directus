@@ -184,7 +184,7 @@ export default definePanel({
 				name: '$t:color',
 				type: 'string',
 				schema: {
-					default_value: cssVar('--primary'),
+					default_value: cssVar('--theme--primary'),
 				},
 				meta: {
 					interface: 'select-color',
@@ -309,7 +309,7 @@ export default definePanel({
 								name: '$t:color',
 								type: 'integer',
 								schema: {
-									default_value: cssVar('--primary'),
+									default_value: cssVar('--theme--primary'),
 								},
 								meta: {
 									interface: 'select-color',

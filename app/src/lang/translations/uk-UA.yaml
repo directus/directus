@@ -557,7 +557,6 @@ replace_from_url: Замінити файл з URL
 no_image_selected: Зображення не вибрано
 no_file_selected: Файл не обрано
 download_file: Завантажити файл
-open_file_in_tab: Відкрити файл у новій вкладці
 start_export: Розпочати експорт
 not_available_for_local_downloads: Недоступний для локальних завантажень
 exporting_all_items_in_collection: Експорт усіх {total} елементів в межах {collection}.
@@ -745,7 +744,6 @@ cannot_edit_global_bookmarks: Неможливо редагувати глоба
 bookmarks: Закладки
 presets: Шаблони
 unexpected_error: Неочікувана помилка
-unexpected_error_copy: Сталася неочікувана помилка. Будь ласка, повторіть спробу пізніше.
 copy_details: Копіювати деталі
 no_app_access: Немає доступу до додатку
 no_app_access_copy: В цього користувача нема дозволу на використовування додатку адміністратора.

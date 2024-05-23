@@ -477,7 +477,6 @@ replace_from_url: Vervang bestand via een URL import
 no_image_selected: Geen afbeelding geselecteerd
 no_file_selected: Geen bestand geselecteerd
 download_file: Download bestand
-open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
@@ -650,7 +649,6 @@ cannot_edit_global_bookmarks: Kan niet globale bladwijzers bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
 unexpected_error: Onverwachte fout
-unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opnieuw.
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
