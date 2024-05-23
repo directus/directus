@@ -207,8 +207,8 @@ importers:
         specifier: 16.8.1
         version: 16.8.1
       graphql-compose:
-        specifier: 9.0.10
-        version: 9.0.10(graphql@16.8.1)
+        specifier: 9.0.11
+        version: 9.0.11(graphql@16.8.1)
       graphql-ws:
         specifier: 5.16.0
         version: 5.16.0(graphql@16.8.1)
@@ -7325,8 +7325,8 @@ packages:
   graphlib@2.1.8:
     resolution: {integrity: sha512-jcLLfkpoVGmH7/InMC/1hIvOPSUh38oJtGhvrOFGzioE1DZ+0YW16RgmOJhHiuWTvGiJQ9Z1Ik43JvkRPRvE+A==}
 
-  graphql-compose@9.0.10:
-    resolution: {integrity: sha512-UsVoxfi2+c8WbHl2pEB+teoRRZoY4mbWBoijeLDGpAZBSPChnqtSRjp+T9UcouLCwGr5ooNyOQLoI3OVzU1bPQ==}
+  graphql-compose@9.0.11:
+    resolution: {integrity: sha512-p3+8p2lo7wel24IQwGIhwVGOnCJ3hfBno+x8CE7G4ZLaC4u5G2g6h1Mm8O5iJPTD0C+Q/WxxDqSL2qs8VOf5mg==}
     peerDependencies:
       graphql: ^14.2.0 || ^15.0.0 || ^16.0.0
 
@@ -18265,7 +18265,7 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  graphql-compose@9.0.10(graphql@16.8.1):
+  graphql-compose@9.0.11(graphql@16.8.1):
     dependencies:
       graphql: 16.8.1
       graphql-type-json: 0.3.2(graphql@16.8.1)
