@@ -13,7 +13,9 @@ import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';
 import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { defaultAdminRole, defaultAdminUser, defaultAdminPolicy } from '../../utils/defaults.js';
+import { PoliciesService } from '../../../services/policies.js';
+import { AccessService } from '../../../services/access.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	const logger = useLogger();
@@ -82,8 +84,14 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 	const { nanoid } = await import('nanoid');
 
 	logger.info('Setting up first admin role...');
+	const accessService = new AccessService({ schema });
+	const policiesService = new PoliciesService({ schema });
 	const rolesService = new RolesService({ schema });
+
 	const role = await rolesService.createOne(defaultAdminRole);
+	const policy = await policiesService.createOne(defaultAdminPolicy);
+
+	await accessService.createOne({ policy, role });
 
 	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
