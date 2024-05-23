@@ -1,4 +1,4 @@
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Filter, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
@@ -7,6 +7,7 @@ export async function parseCurrentLevel(
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	query: Query,
+	cases: Filter[],
 ) {
 	const primaryKeyField = schema.collections[collection]!.primary;
 	const columnsInCollection = Object.keys(schema.collections[collection]!.fields);

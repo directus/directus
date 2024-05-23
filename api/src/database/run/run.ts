@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Item, Query, SchemaOverview } from '@directus/types';
+import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep, merge } from 'lodash-es';
 import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../types/ast.js';
@@ -27,18 +27,24 @@ export async function runAst(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(collection, ast.children[collection]!, ast.query[collection]!);
+			results[collection] = await run(
+				collection,
+				ast.children[collection]!,
+				ast.query[collection]!,
+				ast.cases[collection]!,
+			);
 		}
 
 		return results;
 	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query);
+		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases);
 	}
 
 	async function run(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 		query: Query,
+		cases: Filter[],
 	) {
 		const env = useEnv();
 
@@ -48,10 +54,11 @@ export async function runAst(
 			collection,
 			children,
 			query,
+			cases,
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, cases);
 
 		const rawItems: Item | Item[] = await dbQuery;
 

@@ -10,6 +10,7 @@ import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
+import type { Filter } from '@directus/types';
 
 export async function getDBQuery(
 	schema: SchemaOverview,
@@ -17,9 +18,11 @@ export async function getDBQuery(
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query,
+	cases: Filter[],
 ): Promise<Knex.QueryBuilder> {
+	const aliasMap: AliasMap = Object.create(null);
 	const env = useEnv();
-	const preProcess = getColumnPreprocessor(knex, schema, table);
+	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
 
@@ -27,12 +30,12 @@ export async function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.select(fieldNodes.map(preProcess)).from(table);
-		return await applyQuery(knex, table, flatQuery, queryCopy, schema).query;
+		const flatQuery = knex.from(table);
+		const query = await applyQuery(knex, table, flatQuery, queryCopy, schema, cases).query;
+		return query.select(fieldNodes.map(preProcess));
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
-	const aliasMap: AliasMap = Object.create(null);
 	let dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
@@ -47,7 +50,7 @@ export async function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
+	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, cases, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,
