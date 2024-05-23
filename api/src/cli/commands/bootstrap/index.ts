@@ -9,13 +9,13 @@ import getDatabase, {
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
 import { useLogger } from '../../../logger.js';
+import { AccessService } from '../../../services/access.js';
+import { PoliciesService } from '../../../services/policies.js';
 import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';
 import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { defaultAdminRole, defaultAdminUser, defaultAdminPolicy } from '../../utils/defaults.js';
-import { PoliciesService } from '../../../services/policies.js';
-import { AccessService } from '../../../services/access.js';
+import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	const logger = useLogger();
@@ -110,5 +110,5 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 	}
 
-	await usersService.createOne({ email: adminEmail, password: adminPassword, role, ...defaultAdminUser });
+	await usersService.createOne({ ...defaultAdminUser, email: adminEmail, password: adminPassword, role });
 }

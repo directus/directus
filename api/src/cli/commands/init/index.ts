@@ -101,10 +101,7 @@ export default async function init(): Promise<void> {
 	const userID = randomUUID();
 	const roleID = randomUUID();
 
-	await db('directus_roles').insert({
-		id: roleID,
-		...defaultAdminRole,
-	});
+	await db('directus_roles').insert({ ...defaultAdminRole, id: roleID });
 
 	await db('directus_users').insert({
 		id: userID,
