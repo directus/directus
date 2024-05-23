@@ -15,15 +15,15 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		await this.knex.raw('PRAGMA foreign_keys = ON');
 	}
 
-	override async getDatabaseSize(): Promise<number> {
+	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw(
 				'SELECT page_count * page_size as "size" FROM pragma_page_count(), pragma_page_size();',
 			);
 
-			return result[0]?.['size'] ? Number(result[0]?.['size']) : 0;
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
-			return 0;
+			return null;
 		}
 	}
 }

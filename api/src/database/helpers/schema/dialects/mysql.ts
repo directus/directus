@@ -32,7 +32,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return super.applyMultiRelationalSort(knex, dbQuery, table, primaryKey, orderByString, orderByFields);
 	}
 
-	override async getDatabaseSize(): Promise<number> {
+	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = (await this.knex
 				.sum('size AS size')
@@ -44,9 +44,9 @@ export class SchemaHelperMySQL extends SchemaHelper {
 						.as('size'),
 				)) as Record<string, any>[];
 
-			return result[0]?.['size'] ? Number(result[0]?.['size']) : 0;
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
-			return 0;
+			return null;
 		}
 	}
 }

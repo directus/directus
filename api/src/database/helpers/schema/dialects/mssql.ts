@@ -21,13 +21,13 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return uuid.toUpperCase();
 	}
 
-	override async getDatabaseSize(): Promise<number> {
+	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');
 
-			return result[0]?.['size'] ? Number(result[0]?.['size']) : 0;
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
-			return 0;
+			return null;
 		}
 	}
 }

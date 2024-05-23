@@ -27,15 +27,15 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		}
 	}
 
-	override async getDatabaseSize(): Promise<number> {
+	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex
 				.select(this.knex.raw('round(SUM(range_size_mb) * 1024 * 1024, 0) AS size'))
 				.from(this.knex.raw('[SHOW RANGES FROM database ??]', [env['DB_DATABASE']]));
 
-			return result[0]?.['size'] ? Number(result[0]?.['size']) : 0;
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
-			return 0;
+			return null;
 		}
 	}
 }

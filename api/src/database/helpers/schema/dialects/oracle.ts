@@ -41,13 +41,13 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return field.type;
 	}
 
-	override async getDatabaseSize(): Promise<number> {
+	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('select SUM(bytes) from dba_segments');
 
-			return result[0]?.['SUM(BYTES)'] ? Number(result[0]?.['SUM(BYTES)']) : 0;
+			return result[0]?.['SUM(BYTES)'] ? Number(result[0]?.['SUM(BYTES)']) : null;
 		} catch {
-			return 0;
+			return null;
 		}
 	}
 }

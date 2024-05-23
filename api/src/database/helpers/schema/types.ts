@@ -143,7 +143,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	/**
 	 * @returns Size of the database in bytes
 	 */
-	async getDatabaseSize(): Promise<number> {
-		return 0;
+	async getDatabaseSize(): Promise<number | null> {
+		return null;
 	}
 }
