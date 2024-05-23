@@ -121,7 +121,7 @@
 		"fs-extra": "11.2.0",
 		"glob-to-regexp": "0.4.1",
 		"graphql": "16.8.1",
-		"graphql-compose": "9.0.10",
+		"graphql-compose": "9.0.11",
 		"graphql-ws": "5.16.0",
 		"helmet": "7.1.0",
 		"icc": "3.0.0",
