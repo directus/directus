@@ -25,7 +25,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 
 	let allowedFields: string[] | null = fieldsInCollection;
 
-	if (options.accountability && options.accountability.admin !== false) {
+	if (options.accountability && options.accountability.admin === false) {
 		allowedFields = await fetchAllowedFields(
 			{
 				collection: options.parentCollection,
