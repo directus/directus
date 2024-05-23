@@ -138,6 +138,8 @@ beforeEach(() => {
 		if (input === sample.path.src) return sample.path.srcFolder;
 		if (input === sample.path.dest) return sample.path.destFolder;
 		if (input === sample.path.input) return sample.path.inputFolder;
+		if (input === sample.path.srcFull) return sample.path.srcFolder;
+		if (input === sample.path.destFull) return sample.path.destFolder;
 		if (input === sample.path.inputFull) return sample.path.inputFolder;
 
 		return '';
@@ -770,26 +772,26 @@ describe('#move', () => {
 	});
 
 	test('Gets public id for dest', async () => {
-		await driver.move(sample.path.dest, sample.path.dest);
+		await driver.move(sample.path.src, sample.path.dest);
 		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.destFull);
 	});
 
 	test('Gets folder path for src', async () => {
-		await driver.move(sample.path.src, sample.path.src);
+		await driver.move(sample.path.src, sample.path.dest);
 		expect(driver['getFolderPath']).toHaveBeenCalledWith(sample.path.srcFull);
 	});
 
 	test('Gets folder path for dest', async () => {
-		await driver.move(sample.path.dest, sample.path.dest);
+		await driver.move(sample.path.src, sample.path.dest);
 		expect(driver['getFolderPath']).toHaveBeenCalledWith(sample.path.destFull);
 	});
 
 	test('Creates signature for body parameters', async () => {
-		await driver.move(sample.path.input, sample.path.input);
+		await driver.move(sample.path.src, sample.path.dest);
 
 		expect(driver['getFullSignature']).toHaveBeenCalledWith({
-			from_public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
-			to_public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
+			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
+			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 		});
@@ -799,8 +801,8 @@ describe('#move', () => {
 		await driver.move(sample.path.src, sample.path.dest);
 
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
-			from_public_id: sample.publicId.src,
-			to_public_id: sample.publicId.dest,
+			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
+			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 			signature: sample.fullSignature,
