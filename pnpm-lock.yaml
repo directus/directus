@@ -1897,8 +1897,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       axios-cache-interceptor:
-        specifier: 1.5.2
-        version: 1.5.2(axios@1.6.8)
+        specifier: 1.5.3
+        version: 1.5.3(axios@1.6.8)
       boxen:
         specifier: 7.1.1
         version: 7.1.1
@@ -5521,8 +5521,8 @@ packages:
   aws4@1.12.0:
     resolution: {integrity: sha512-NmWvPnx0F1SfrQbYwOi7OeaNGokp9XhzNioJ/CSBs8Qa4vxug81mhJEAVZwxXuBmYB5KDRfMq/F3RR0BIU7sWg==}
 
-  axios-cache-interceptor@1.5.2:
-    resolution: {integrity: sha512-zrJZ9DZo5hKfrU+SEN/qhXxGD7GWRzwoqJ7sSvxikizUvDhWy/U9BoAbWLZZdyjbHHsfmS1OlQZCDW6o69r4DA==}
+  axios-cache-interceptor@1.5.3:
+    resolution: {integrity: sha512-kPgGId9XW7tR+VF7hgSkqF4f6FrV4ecCyKxjkD9v1hNJ4sXSAskocr7SMKaVHVvrbzVeruwB6yL6Y9/lY1ApKg==}
     engines: {node: '>=12'}
     peerDependencies:
       axios: ^1
@@ -5686,8 +5686,8 @@ packages:
     resolution: {integrity: sha512-VVdYzXEn+cnbXpFgWs5hTT7OScegHVmLhJIR8Ufqk3iFD6A6j5iSX1KuBTfNEv4tdJWE2PzA6IVFtcLC7fN9wQ==}
     engines: {node: '>= 10'}
 
-  cache-parser@1.2.4:
-    resolution: {integrity: sha512-O0KwuHuJnbHUrghHi2kGp0SxnWSIBXTYt7M8WVhW0kbPRUNUKoE/Of6e1rRD6AAxmfxFunKnt90yEK09D+sc5g==}
+  cache-parser@1.2.5:
+    resolution: {integrity: sha512-Md/4VhAHByQ9frQ15WD6LrMNiVw9AEl/J7vWIXw+sxT6fSOpbtt6LHTp76vy8+bOESPBO94117Hm2bIjlI7XjA==}
 
   cacheable-lookup@5.0.4:
     resolution: {integrity: sha512-2/kNscPhpcxrOigMZzbiWF7dz8ilhb/nIHU3EyZiXWXpeq/au8qJ8VhdftMkty3n7Gj6HIGalQG8oiBNB3AJgA==}
@@ -16234,10 +16234,10 @@ snapshots:
   aws4@1.12.0:
     optional: true
 
-  axios-cache-interceptor@1.5.2(axios@1.6.8):
+  axios-cache-interceptor@1.5.3(axios@1.6.8):
     dependencies:
       axios: 1.6.8
-      cache-parser: 1.2.4
+      cache-parser: 1.2.5
       fast-defer: 1.1.8
       object-code: 1.3.3
 
@@ -16457,7 +16457,7 @@ snapshots:
       - bluebird
     optional: true
 
-  cache-parser@1.2.4: {}
+  cache-parser@1.2.5: {}
 
   cacheable-lookup@5.0.4: {}
 

@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"axios": "1.6.8",
-		"axios-cache-interceptor": "1.5.2",
+		"axios-cache-interceptor": "1.5.3",
 		"boxen": "7.1.1",
 		"chalk": "5.3.0",
 		"find-cache-dir": "5.0.0",
