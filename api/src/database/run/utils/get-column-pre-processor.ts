@@ -49,18 +49,19 @@ export function getColumnPreprocessor(
 				fieldCases.push(cases[index]!);
 			}
 
-			/**
-			 * TODO wrap `column` in `case when (filter) then `column` else null end`
-			 */
-
-			const caseQuery = knex.queryBuilder();
-			applyFilter(knex, schema, caseQuery, { _or: fieldCases }, table, aliasMap, cases);
-
          // This is a hack just to try things out
 
+         // Start with a totally empty query
+			const caseQuery = knex.queryBuilder();
+
+         // Insert the WHERE clauses
+			applyFilter(knex, schema, caseQuery, { _or: fieldCases }, table, aliasMap, cases);
+
+         // Extract just the filter part from the where clause
          const caseSql = caseQuery.toQuery().split('where')[1]!;
 
          // Definitely not production ready TODO
+         // Use where clause filter in case/when
          column = knex.raw(`(case when ${caseSql} then ${column.toQuery()} else null end) as ${alias}`);
 
 			/**
