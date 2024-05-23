@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import '../types/express.d.ts';
 import { handler } from './authenticate.js';
 
@@ -76,15 +77,13 @@ test('Uses default public accountability when no token is given', async () => {
 
 	await handler(req, res, next);
 
-	expect(req.accountability).toEqual({
-		user: null,
-		role: null,
-		admin: false,
-		app: false,
-		ip: '127.0.0.1',
-		userAgent: 'fake-user-agent',
-		origin: 'fake-origin',
-	});
+	expect(req.accountability).toEqual(
+		createDefaultAccountability({
+			ip: '127.0.0.1',
+			userAgent: 'fake-user-agent',
+			origin: 'fake-origin',
+		}),
+	);
 
 	expect(next).toHaveBeenCalledTimes(1);
 });
