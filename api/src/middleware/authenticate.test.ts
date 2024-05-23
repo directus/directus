@@ -8,6 +8,17 @@ import emitter from '../emitter.js';
 import '../types/express.d.ts';
 import { handler } from './authenticate.js';
 
+const reqGetImplementation = (string: any) => {
+	switch (string) {
+		case 'user-agent':
+			return 'fake-user-agent';
+		case 'origin':
+			return 'fake-origin';
+		default:
+			return null;
+	}
+};
+
 vi.mock('../database/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
@@ -35,7 +46,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn(),
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -55,16 +66,7 @@ test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -116,16 +118,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token,
 	} as unknown as Request;
 
@@ -193,16 +186,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -217,16 +201,7 @@ test('Sets accountability to user information when static token is used', async 
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -283,16 +258,7 @@ test('Invalid session token responds with error and clears the cookie', async ()
 		cookies: {
 			directus_session: 'session-token',
 		},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'session-token',
 	} as unknown as Request;
 
@@ -321,16 +287,7 @@ test('Invalid query token responds with error but does not clear the session coo
 		cookies: {
 			directus_session: 'session-token',
 		},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
