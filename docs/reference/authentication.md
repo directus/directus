@@ -59,7 +59,9 @@ Register a new user. Must first be enabled in project settings.
 
 ::: tip Register vs Create User
 
-You can also use the [create user](/reference/system/users.html#create-a-user) endpoint, but this will require the correct permissions on the `directus_users` collection. The register endpoint is publicly available if enabled in your project.
+You can also use the [create user](/reference/system/users.html#create-a-user) endpoint, but this will require the
+correct permissions on the `directus_users` collection. The register endpoint is publicly available if enabled in your
+project.
 
 :::
 
@@ -162,7 +164,8 @@ const result = await client.request(registerUser('user@example.com', 'd1r3ctu5))
 
 ## Verify a Registration
 
-If enabled in project settings, registering a user sends an email with a link to the admin app (or a custom URL) which in turn uses this endpoint to allow the user to finish their registration.
+If enabled in project settings, registering a user sends an email with a link to the admin app (or a custom URL) which
+in turn uses this endpoint to allow the user to finish their registration.
 
 ### Request
 
