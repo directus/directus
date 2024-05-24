@@ -35,11 +35,11 @@ export const updateCollection =
 	};
 
 /**
- * Update the metadata for an existing collection.
+ * Update multiple collections as batch.
  * @param collections
  * @param query
  * @returns The collection object for the updated collection in this request.
- * @throws Will throw if collection is empty
+ * @throws Will throw if no items are provided
  */
 export const updateCollectionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(

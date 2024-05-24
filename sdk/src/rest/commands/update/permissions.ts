@@ -35,11 +35,11 @@ export const updatePermissions =
 	};
 
 /**
- * Update multiple existing permissions rules as batch.
+ * Update multiple permissions rules as batch.
  * @param items
  * @param query
  * @returns Returns the permission object for the updated permissions.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updatePermissionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(

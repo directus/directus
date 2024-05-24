@@ -35,11 +35,11 @@ export const updateFolders =
 	};
 
 /**
- * Update multiple existing folders as batch.
+ * Update multiple folders as batch.
  * @param items
  * @param query
  * @returns Returns the folder objects of the folders that were updated.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateFoldersBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(

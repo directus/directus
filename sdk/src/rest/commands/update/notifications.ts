@@ -35,11 +35,11 @@ export const updateNotifications =
 	};
 
 /**
- * Update multiple existing notifications as batch.
+ * Update multiple notifications as batch.
  * @param items
  * @param query
  * @returns Returns the notification objects for the updated notifications.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateNotificationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(

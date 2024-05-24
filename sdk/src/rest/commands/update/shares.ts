@@ -35,11 +35,11 @@ export const updateShares =
 	};
 
 /**
- * Update multiple existing shares as batch.
+ * Update multiple shares as batch.
  * @param items
  * @param query
  * @returns Returns the share objects for the updated shares.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateSharesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(

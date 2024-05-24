@@ -39,7 +39,7 @@ export const updateFiles =
  * @param items
  * @param query
  * @returns Returns the file objects for the updated files.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateFilesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(

@@ -37,13 +37,13 @@ export const updateUsers =
 	};
 
 /**
- * Update multiple existing users as batch.
+ * Update multiple users as batch.
  *
  * @param items The user data to update
  * @param query Optional return data query
  *
  * @returns Returns the user objects for the updated users.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateUsersBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(

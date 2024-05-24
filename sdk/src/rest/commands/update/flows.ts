@@ -35,11 +35,11 @@ export const updateFlows =
 	};
 
 /**
- * Update multiple existing flows as batch.
+ * Update multiple flows as batch.
  * @param items
  * @param query
  * @returns Returns the flow objects for the updated flows.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateFlowsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(

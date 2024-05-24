@@ -35,11 +35,11 @@ export const updatePresets =
 	};
 
 /**
- * Update multiple existing presets as batch.
+ * Update multiple presets as batch.
  * @param items
  * @param query
  * @returns Returns the preset objects for the updated presets.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updatePresetsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(

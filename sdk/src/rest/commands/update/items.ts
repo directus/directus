@@ -52,7 +52,7 @@ export const updateItems =
 	};
 
 /**
- * Update multiple items as a batch.
+ * Update multiple items as batch.
  *
  * @param collection The collection of the items
  * @param items The items to update

@@ -35,11 +35,11 @@ export const updateTranslations =
 	};
 
 /**
- * Update multiple existing translations as batch.
+ * Update multiple translations as batch.
  * @param items
  * @param query
  * @returns Returns the translation objects for the updated translations.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateTranslationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(

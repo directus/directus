@@ -35,11 +35,11 @@ export const updatePanels =
 	};
 
 /**
- * Update multiple existing panels.
+ * Update multiple panels as batch.
  * @param items
  * @param query
  * @returns Returns the panel objects for the updated panels.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updatePanelsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(

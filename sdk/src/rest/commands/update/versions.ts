@@ -36,11 +36,11 @@ export const updateContentVersions =
 
 
 /**
- * Update multiple existing Content Versions.
+ * Update multiple Content Versions as batch.
  * @param items
  * @param query
  * @returns Returns the Content Version objects for the updated Content Versions.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateContentVersionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(

@@ -35,11 +35,11 @@ export const updateDashboards =
 	};
 
 /**
- * Update multiple existing dashboards as batch.
+ * Update multiple dashboards as batch.
  * @param items
  * @param query
  * @returns Returns the dashboard objects for the updated dashboards.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateDashboardsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(

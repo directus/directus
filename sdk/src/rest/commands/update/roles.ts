@@ -35,11 +35,11 @@ export const updateRoles =
 	};
 
 /**
- * Update multiple existing roles as batch.
+ * Update multiple roles as batch.
  * @param items
  * @param query
  * @returns Returns the role objects for the updated roles.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateRolesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(

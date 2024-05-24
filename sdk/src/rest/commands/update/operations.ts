@@ -35,11 +35,11 @@ export const updateOperations =
 	};
 
 /**
- * Update multiple existing operations as batch.
+ * Update multiple operations as batch.
  * @param items
  * @param query
  * @returns Returns the operation objects for the updated operations.
- * @throws Will throw if keys is empty
+ * @throws Will throw if no items are provided
  */
 export const updateOperationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
