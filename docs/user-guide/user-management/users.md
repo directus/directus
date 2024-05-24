@@ -22,7 +22,7 @@ following sections will focus on.
 
 ![Public registration settings showing a user registration checkbox, a verify email checkbox, the selection of a user role, and an email filter.](https://marketing.directus.app/assets/0d221e5b-a5f1-45f9-ba5a-71610b24724d.png)
 
-To allow public registration directly from the login page of the Data studio, follow these spte.s
+To allow public registration directly from the login page of the Data studio, follow these steps.
 
 1. Navigate to **Settings > Settings**.
 2. Enable User Registration.
