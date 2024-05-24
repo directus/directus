@@ -18,6 +18,17 @@ Within the Data Studio, the [User Directory](/user-guide/user-management/user-di
 users. However, certain controls are included in **Settings > Access Control > [Role]** as well, which is what the
 following sections will focus on.
 
+## Enable Public Registration
+
+![Public registration settings showing a user registration checkbox, a verify email checkbox, the selection of a user role, and an email filter.](https://marketing.directus.app/assets/0d221e5b-a5f1-45f9-ba5a-71610b24724d.png)
+
+To allow public registration directly from the login page of the Data studio, follow these spte.s
+
+1. Navigate to **Settings > Settings**.
+2. Enable User Registration.
+3. Select a role for new users who register through this interface. Note: the admin role is not shown.
+4. Optionally, enable email verification or create an email address filter.
+
 ## Invite a User
 
 ![How to invite a User](https://marketing.directus.app/assets/512793d0-be69-4ee6-9bc2-963e34f656a7.gif)
