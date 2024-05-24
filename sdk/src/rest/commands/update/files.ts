@@ -57,7 +57,6 @@ export const updateFilesBatch =
 		};
 	};
 
-
 /**
  * Update an existing file, and/or replace it's file contents.
  * @param key

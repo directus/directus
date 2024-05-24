@@ -34,7 +34,6 @@ export const updateContentVersions =
 		};
 	};
 
-
 /**
  * Update multiple Content Versions as batch.
  * @param items
