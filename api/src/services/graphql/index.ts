@@ -47,6 +47,7 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
+import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import {
 	DEFAULT_AUTH_PROVIDER,
 	GENERATE_SPECIAL,
@@ -253,6 +254,37 @@ export class GraphQLService {
 				),
 			};
 		}
+
+		const inconsistentFields = {
+			read: await fetchInconsistentFieldMap(
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{ schema: this.schema, knex: this.knex },
+			),
+			create: await fetchInconsistentFieldMap(
+				{
+					accountability: this.accountability,
+					action: 'create',
+				},
+				{ schema: this.schema, knex: this.knex },
+			),
+			update: await fetchInconsistentFieldMap(
+				{
+					accountability: this.accountability,
+					action: 'update',
+				},
+				{ schema: this.schema, knex: this.knex },
+			),
+			delete: await fetchInconsistentFieldMap(
+				{
+					accountability: this.accountability,
+					action: 'delete',
+				},
+				{ schema: this.schema, knex: this.knex },
+			),
+		};
 
 		const subscriptionEventType = schemaComposer.createEnumTC({
 			name: 'EventEnum',
@@ -503,6 +535,8 @@ export class GraphQLService {
 								field.special,
 							);
 
+							const fieldIsInconsistent = inconsistentFields[action][collection.collection]?.includes(field.field);
+
 							// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
 							// can't non-null in update, as that would require every not-nullable field to be
 							// submitted on updates
@@ -510,12 +544,13 @@ export class GraphQLService {
 								field.nullable === false &&
 								!field.defaultValue &&
 								!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
+								fieldIsInconsistent === false &&
 								action !== 'update'
 							) {
 								type = new GraphQLNonNull(type);
 							}
 
-							if (collection.primary === field.field) {
+							if (collection.primary === field.field && fieldIsInconsistent === false) {
 								// permissions IDs need to be nullable https://github.com/directus/directus/issues/20509
 								if (collection.collection === 'directus_permissions') {
 									type = GraphQLID;

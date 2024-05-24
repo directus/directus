@@ -8,7 +8,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 export type FieldMap = Record<string, string[]>;
 
 export interface FetchInconsistentFieldMapOptions {
-	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
+	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'> | null;
 	action: PermissionsAction;
 }
 
@@ -17,10 +17,13 @@ export interface FetchInconsistentFieldMapOptions {
  */
 export const fetchInconsistentFieldMap = withCache('inconsistent-field-map', _fetchInconsistentFieldMap);
 
-export async function _fetchInconsistentFieldMap({ accountability, action }: FetchInconsistentFieldMapOptions, { knex, schema }: Context) {
+export async function _fetchInconsistentFieldMap(
+	{ accountability, action }: FetchInconsistentFieldMapOptions,
+	{ knex, schema }: Context,
+) {
 	const fieldMap: FieldMap = {};
 
-	if (accountability.admin) {
+	if (!accountability || accountability.admin) {
 		for (const collection of Object.keys(schema.collections)) {
 			fieldMap[collection] = [];
 		}
@@ -34,7 +37,9 @@ export async function _fetchInconsistentFieldMap({ accountability, action }: Fet
 	const collections = uniq(permissions.map(({ collection }) => collection));
 
 	for (const collection of collections) {
-		const fields: string[][] = permissions.filter((permission) => permission.collection === collection).map((permission) => permission.fields ?? []);
+		const fields: string[][] = permissions
+			.filter((permission) => permission.collection === collection)
+			.map((permission) => permission.fields ?? []);
 
 		const availableEverywhere = intersection(...fields);
 		const availableSomewhere = difference(uniq(fields.flat()), availableEverywhere);
