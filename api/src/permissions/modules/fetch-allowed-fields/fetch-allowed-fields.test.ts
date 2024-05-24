@@ -4,8 +4,10 @@ import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { fetchAllowedFields } from './fetch-allowed-fields.js';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
 
 vi.mock('../../lib/fetch-policies.js');
+vi.mock('../../lib/fetch-permissions.js');
 
 vi.mock('../../../services/permissions.js', () => ({
 	PermissionsService: vi.fn(),
@@ -17,7 +19,7 @@ vi.mock('../../../services/access.js', () => ({
 
 beforeEach(() => {
 	vi.clearAllMocks();
-	PermissionsService.prototype.readByQuery = vi.fn();
+	vi.mocked(fetchPermissions).mockResolvedValue([]);
 });
 
 test('Returns unique array of all fields that are associated with the permissions for the passed accountability object', async () => {
@@ -31,20 +33,12 @@ test('Returns unique array of all fields that are associated with the permission
 	] as Permission[];
 
 	vi.mocked(fetchPolicies).mockResolvedValue(policies);
-	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
+	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
 
 	const fields = await fetchAllowedFields(
 		{ collection: 'collection-a', action: 'read', accountability: acc },
 		{} as Context,
 	);
-
-	expect(PermissionsService.prototype.readByQuery).toHaveBeenCalledWith({
-		fields: ['fields'],
-		filter: {
-			_and: [{ policy: { _in: policies } }, { collection: { _eq: 'collection-a' } }, { action: { _eq: 'read' } }],
-		},
-		limit: -1,
-	});
 
 	expect(fields).toEqual(['field-a', 'field-b', 'field-c']);
 });
