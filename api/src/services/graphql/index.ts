@@ -2631,6 +2631,7 @@ export class GraphQLService {
 				args: {
 					email: new GraphQLNonNull(GraphQLString),
 					password: new GraphQLNonNull(GraphQLString),
+					verification_url: GraphQLString,
 					first_name: GraphQLString,
 					last_name: GraphQLString,
 				},
@@ -2646,6 +2647,7 @@ export class GraphQLService {
 					await service.registerUser({
 						email: args.email,
 						password: args.password,
+						verification_url: args.verification_url,
 						first_name: args.first_name,
 						last_name: args.last_name,
 					});
