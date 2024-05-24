@@ -623,8 +623,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7
       '@fullcalendar/daygrid':
-        specifier: 6.1.7
-        version: 6.1.7(@fullcalendar/core@6.1.7)
+        specifier: 6.1.13
+        version: 6.1.13(@fullcalendar/core@6.1.7)
       '@fullcalendar/interaction':
         specifier: 6.1.7
         version: 6.1.7(@fullcalendar/core@6.1.7)
@@ -3345,10 +3345,10 @@ packages:
   '@fullcalendar/core@6.1.7':
     resolution: {integrity: sha512-Hc63ARSyABlNo10B3NkA0z8ndaDmq5MKpcBB2iQsGQyn8N8cyn/x6V284Je1EwDoKsBlbrZAj+j+efBO+QQf5g==}
 
-  '@fullcalendar/daygrid@6.1.7':
-    resolution: {integrity: sha512-IB+QdRcs+TeTlsK8qJFtYZ/2GugmXEFC0C00/n1aLT7GLgFn3ueV1GN0EKvXv9HJ5ai8My65mYbSyQizY/Ishw==}
+  '@fullcalendar/daygrid@6.1.13':
+    resolution: {integrity: sha512-0I0hL1kgGjkZuc7Qt8mu4jjrqIL5PZzd58bEpTxoXRKI5UBZ9KbshGVMryQSXYANlrRtkPnXVt90VIDrxZbDrA==}
     peerDependencies:
-      '@fullcalendar/core': ~6.1.7
+      '@fullcalendar/core': ~6.1.13
 
   '@fullcalendar/interaction@6.1.7':
     resolution: {integrity: sha512-C2KHSinc9cFUTcGYxRSIj7cBYNSroce+1d2Wa+HKVHguVv4kQuEvm/oPxJpTLXqFjNLfxyxVac7Zd4U0znjFtg==}
@@ -7584,6 +7584,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
@@ -13596,7 +13597,7 @@ snapshots:
     dependencies:
       preact: 10.12.1
 
-  '@fullcalendar/daygrid@6.1.7(@fullcalendar/core@6.1.7)':
+  '@fullcalendar/daygrid@6.1.13(@fullcalendar/core@6.1.7)':
     dependencies:
       '@fullcalendar/core': 6.1.7
 
@@ -13611,7 +13612,7 @@ snapshots:
   '@fullcalendar/timegrid@6.1.7(@fullcalendar/core@6.1.7)':
     dependencies:
       '@fullcalendar/core': 6.1.7
-      '@fullcalendar/daygrid': 6.1.7(@fullcalendar/core@6.1.7)
+      '@fullcalendar/daygrid': 6.1.13(@fullcalendar/core@6.1.7)
 
   '@gar/promisify@1.1.3':
     optional: true
