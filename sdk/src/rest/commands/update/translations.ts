@@ -35,6 +35,29 @@ export const updateTranslations =
 	};
 
 /**
+ * Update multiple existing translations as batch.
+ * @param items
+ * @param query
+ * @returns Returns the translation objects for the updated translations.
+ * @throws Will throw if keys is empty
+ */
+export const updateTranslationsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+		items: Partial<DirectusTranslation<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/translations`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing translation.
  * @param key
  * @param item

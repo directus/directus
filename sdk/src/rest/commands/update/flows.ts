@@ -35,6 +35,29 @@ export const updateFlows =
 	};
 
 /**
+ * Update multiple existing flows as batch.
+ * @param items
+ * @param query
+ * @returns Returns the flow objects for the updated flows.
+ * @throws Will throw if keys is empty
+ */
+export const updateFlowsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
+		items: Partial<DirectusFlow<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateFlowOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/flows`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing flow.
  * @param key
  * @param item

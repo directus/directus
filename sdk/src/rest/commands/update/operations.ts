@@ -35,6 +35,29 @@ export const updateOperations =
 	};
 
 /**
+ * Update multiple existing operations as batch.
+ * @param items
+ * @param query
+ * @returns Returns the operation objects for the updated operations.
+ * @throws Will throw if keys is empty
+ */
+export const updateOperationsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
+		items: Partial<DirectusOperation<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateOperationOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/operations`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing operation.
  * @param key
  * @param item

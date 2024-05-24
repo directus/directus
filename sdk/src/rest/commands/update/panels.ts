@@ -35,6 +35,29 @@ export const updatePanels =
 	};
 
 /**
+ * Update multiple existing panels.
+ * @param items
+ * @param query
+ * @returns Returns the panel objects for the updated panels.
+ * @throws Will throw if keys is empty
+ */
+export const updatePanelsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+		items: Partial<DirectusPanel<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/panels`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing panel.
  * @param key
  * @param item

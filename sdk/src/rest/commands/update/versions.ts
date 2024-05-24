@@ -34,6 +34,30 @@ export const updateContentVersions =
 		};
 	};
 
+
+/**
+ * Update multiple existing Content Versions.
+ * @param items
+ * @param query
+ * @returns Returns the Content Version objects for the updated Content Versions.
+ * @throws Will throw if keys is empty
+ */
+export const updateContentVersionsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
+		items: Partial<DirectusVersion<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/versions`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
 /**
  * Update an existing Content Version.
  * @param key

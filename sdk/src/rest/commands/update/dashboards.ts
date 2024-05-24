@@ -35,6 +35,29 @@ export const updateDashboards =
 	};
 
 /**
+ * Update multiple existing dashboards as batch.
+ * @param items
+ * @param query
+ * @returns Returns the dashboard objects for the updated dashboards.
+ * @throws Will throw if keys is empty
+ */
+export const updateDashboardsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+		items: Partial<DirectusDashboard<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateDashboardOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/dashboards`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing dashboard.
  * @param key
  * @param item

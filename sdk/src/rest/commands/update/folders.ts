@@ -35,6 +35,29 @@ export const updateFolders =
 	};
 
 /**
+ * Update multiple existing folders as batch.
+ * @param items
+ * @param query
+ * @returns Returns the folder objects of the folders that were updated.
+ * @throws Will throw if keys is empty
+ */
+export const updateFoldersBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+		items: Partial<DirectusFolder<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/folders`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing folder.
  * @param key
  * @param item

@@ -35,6 +35,29 @@ export const updateRoles =
 	};
 
 /**
+ * Update multiple existing roles as batch.
+ * @param items
+ * @param query
+ * @returns Returns the role objects for the updated roles.
+ * @throws Will throw if keys is empty
+ */
+export const updateRolesBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
+		items: Partial<DirectusRole<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateRoleOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/roles`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing role.
  * @param key
  * @param item

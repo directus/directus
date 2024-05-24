@@ -35,6 +35,29 @@ export const updateShares =
 	};
 
 /**
+ * Update multiple existing shares as batch.
+ * @param items
+ * @param query
+ * @returns Returns the share objects for the updated shares.
+ * @throws Will throw if keys is empty
+ */
+export const updateSharesBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
+		items: Partial<DirectusShare<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
+	() => {
+		throwIfEmpty(items, 'Items cannot be empty');
+
+		return {
+			path: `/shares`,
+			params: query ?? {},
+			body: JSON.stringify(items),
+			method: 'PATCH',
+		};
+	};
+
+/**
  * Update an existing share.
  * @param key
  * @param item

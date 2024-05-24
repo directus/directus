@@ -33,3 +33,26 @@ export const updateCollection =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update the metadata for an existing collection.
+ * @param collections
+ * @param query
+ * @returns The collection object for the updated collection in this request.
+ * @throws Will throw if collection is empty
+ */
+export const updateCollectionsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
+		collections: NestedPartial<DirectusCollection<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
+	() => {
+		throwIfEmpty(collections, 'Collections cannot be empty');
+
+		return {
+			path: `/collections`,
+			params: query ?? {},
+			body: JSON.stringify(collections),
+			method: 'PATCH',
+		};
+	};
