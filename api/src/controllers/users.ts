@@ -505,6 +505,7 @@ router.post(
 const registerSchema = Joi.object<RegisterUserInput>({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
+	verification_url: Joi.string().uri(),
 	first_name: Joi.string(),
 	last_name: Joi.string(),
 });

@@ -453,6 +453,15 @@ export class UsersService extends ItemsService {
 	}
 
 	async registerUser(input: RegisterUserInput) {
+		if (
+			input.verification_url &&
+			isUrlAllowed(input.verification_url, env['USER_REGISTER_URL_ALLOW_LIST'] as string) === false
+		) {
+			throw new InvalidPayloadError({
+				reason: `Url "${input.verification_url}" can't be used to verify registered users`,
+			});
+		}
+
 		const STALL_TIME = env['REGISTER_STALL_TIME'] as number;
 		const timeStart = performance.now();
 		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
@@ -514,9 +523,13 @@ export class UsersService extends ItemsService {
 				issuer: 'directus',
 			});
 
-			const verificationURL = new Url(env['PUBLIC_URL'] as string)
-				.addPath('users', 'register', 'verify-email')
-				.setQuery('token', token);
+			const verificationURL = (
+				input.verification_url
+					? new Url(input.verification_url)
+					: new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email')
+			)
+				.setQuery('token', token)
+				.toString();
 
 			mailService
 				.send({
@@ -525,7 +538,7 @@ export class UsersService extends ItemsService {
 					template: {
 						name: 'user-registration',
 						data: {
-							url: verificationURL.toString(),
+							url: verificationURL,
 							email: input.email,
 							first_name,
 							last_name,
