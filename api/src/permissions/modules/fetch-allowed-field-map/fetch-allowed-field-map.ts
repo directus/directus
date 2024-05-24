@@ -1,9 +1,9 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { PermissionsService } from '../../../services/index.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { withCache } from '../../utils/with-cache.js';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
 
 export type FieldMap = Record<string, string[]>;
 
@@ -14,35 +14,28 @@ export interface FetchAllowedFieldMapOptions {
 
 export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowedFieldMap);
 
-export async function _fetchAllowedFieldMap(options: FetchAllowedFieldMapOptions, context: Context) {
+export async function _fetchAllowedFieldMap({ accountability, action }: FetchAllowedFieldMapOptions, { knex, schema }: Context) {
 	const fieldMap: FieldMap = {};
 
-	if (options.accountability.admin) {
-		for (const [collection, { fields }] of Object.entries(context.schema.collections)) {
+	if (accountability.admin) {
+		for (const [collection, { fields }] of Object.entries(schema.collections)) {
 			fieldMap[collection] = Object.keys(fields);
 		}
 
 		return fieldMap;
 	}
 
-	const permissionsService = new PermissionsService(context);
-
-	const policies = await fetchPolicies(options.accountability, context);
-
-	const permissions = (await permissionsService.readByQuery({
-		fields: ['collection', 'fields'],
-		filter: {
-			_and: [{ policy: { _in: policies } }, { action: { _eq: options.action } }],
-		},
-		limit: -1,
-	})) as { collection: string; fields: string[] }[];
+	const policies = await fetchPolicies(accountability, { knex, schema });
+	const permissions = await fetchPermissions({ action, policies }, { knex, schema })
 
 	for (const { collection, fields } of permissions) {
 		if (!fieldMap[collection]) {
 			fieldMap[collection] = [];
 		}
 
-		fieldMap[collection]!.push(...fields);
+		if (fields) {
+			fieldMap[collection]!.push(...fields);
+		}
 	}
 
 	for (const [collection, fields] of Object.entries(fieldMap)) {
