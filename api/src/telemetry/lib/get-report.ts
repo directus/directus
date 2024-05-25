@@ -58,7 +58,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		fields_max: fieldsCounts.max,
 		fields_total: fieldsCounts.total,
 
-		extensions: extensionsCounts.total - extensionsCounts.bundles,
+		extensions: extensionsCounts.activeTotal - extensionsCounts.activeBundles,
 
 		database_size: databaseSize ?? 0,
 	};
