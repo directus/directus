@@ -1,19 +1,16 @@
 import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
+import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import type { TelemetryReport } from '../types/report.js';
+import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
-import { getHelpers } from '../../database/helpers/index.js';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },
-	{
-		collection: 'directus_extensions',
-		where: ['enabled', '=', true],
-	},
 	{ collection: 'directus_files' },
 	{
 		collection: 'directus_flows',
@@ -31,11 +28,12 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const env = useEnv();
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, databaseSize] = await Promise.all([
+	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize] = await Promise.all([
 		getItemCount(db, basicCountTasks),
 		getUserCount(db),
 		getUserItemCount(db),
 		getFieldCount(db),
+		getExtensionCount(db),
 		helpers.schema.getDatabaseSize(),
 	]);
 
@@ -45,7 +43,6 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		database: getDatabaseClient(),
 
 		dashboards: basicCounts.directus_dashboards,
-		extensions: basicCounts.directus_extensions,
 		files: basicCounts.directus_files,
 		flows: basicCounts.directus_flows,
 		roles: basicCounts.directus_roles,
@@ -60,6 +57,8 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 		fields_max: fieldsCounts.max,
 		fields_total: fieldsCounts.total,
+
+		extensions: extensionsCounts.total - extensionsCounts.bundles,
 
 		database_size: databaseSize ?? 0,
 	};
