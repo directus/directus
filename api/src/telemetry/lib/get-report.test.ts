@@ -51,7 +51,7 @@ beforeEach(() => {
 
 	mockFieldCounts = { max: 28, total: 88 };
 
-	mockExtensionCounts = { total: 55, bundles: 11 };
+	mockExtensionCounts = { activeTotal: 55, activeBundles: 11 };
 
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
@@ -138,5 +138,5 @@ test('Runs and returns extension counts', async () => {
 
 	expect(getExtensionCount).toHaveBeenCalledWith(mockDb);
 
-	expect(report.extensions).toBe(mockExtensionCounts.total - mockExtensionCounts.bundles);
+	expect(report.extensions).toBe(mockExtensionCounts.activeTotal - mockExtensionCounts.activeBundles);
 });
