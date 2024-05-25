@@ -70,6 +70,12 @@ extension_endpoint: Endpoint
 extension_operation: Thao tác
 extension_modules: Mô đun
 extension_hooks: Móc
+extension_missing: Thiếu
+extension_reload_required: Cần phải tải lại trang
+extension_reload_required_copy: Cần phải tải lại trang để nhìn thấy những thay đổi sau khi kích hoạt hoặc tắt các mở rộng của ứng dụng.
+extension_reload_now: Hiện tại đang tải lại
+enable: Bật lên
+disable: Tắt
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -78,6 +84,7 @@ enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+leaf: Nút lá
 indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
@@ -112,6 +119,7 @@ rename_folder: Đổi Tên Thư Mục
 delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
+version: Phiên bản
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
