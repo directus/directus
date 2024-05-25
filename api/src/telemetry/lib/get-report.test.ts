@@ -3,6 +3,7 @@ import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
+import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount, type UserCount } from '../utils/get-user-count.js';
@@ -28,12 +29,14 @@ vi.mock('../utils/get-storage.js');
 vi.mock('../utils/get-user-item-count.js');
 vi.mock('../utils/get-user-count.js');
 vi.mock('../utils/get-field-count.js');
+vi.mock('../utils/get-extension-count.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
 let mockUserCounts: UserCount;
 let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
+let mockExtensionCounts: ExtensionCount;
 
 beforeEach(() => {
 	mockEnv = {
@@ -48,6 +51,8 @@ beforeEach(() => {
 
 	mockFieldCounts = { max: 28, total: 88 };
 
+	mockExtensionCounts = { total: 55, bundles: 11 };
+
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
@@ -55,6 +60,7 @@ beforeEach(() => {
 	vi.mocked(getUserCount).mockResolvedValue(mockUserCounts);
 	vi.mocked(getUserItemCount).mockResolvedValue(mockUserItemCounts);
 	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
+	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
 });
 
 afterEach(() => {
@@ -74,7 +80,6 @@ test('Returns environment information', async () => {
 test('Runs and returns basic counts', async () => {
 	const mockItemCount = {
 		directus_dashboards: 15,
-		directus_extensions: 30,
 		directus_files: 45,
 		directus_flows: 60,
 		directus_roles: 75,
@@ -87,7 +92,6 @@ test('Runs and returns basic counts', async () => {
 
 	expect(getItemCount).toHaveBeenCalledWith(mockDb, [
 		{ collection: 'directus_dashboards' },
-		{ collection: 'directus_extensions', where: ['enabled', '=', true] },
 		{ collection: 'directus_files' },
 		{ collection: 'directus_flows', where: ['status', '=', 'active'] },
 		{ collection: 'directus_roles' },
@@ -95,7 +99,6 @@ test('Runs and returns basic counts', async () => {
 	]);
 
 	expect(report.dashboards).toBe(mockItemCount.directus_dashboards);
-	expect(report.extensions).toBe(mockItemCount.directus_extensions);
 	expect(report.files).toBe(mockItemCount.directus_files);
 	expect(report.flows).toBe(mockItemCount.directus_flows);
 	expect(report.roles).toBe(mockItemCount.directus_roles);
@@ -126,6 +129,14 @@ test('Runs and returns field counts', async () => {
 
 	expect(getFieldCount).toHaveBeenCalledWith(mockDb);
 
-	expect(report.collections).toBe(mockUserItemCounts.collections);
-	expect(report.items).toBe(mockUserItemCounts.items);
+	expect(report.fields_max).toBe(mockFieldCounts.max);
+	expect(report.fields_total).toBe(mockFieldCounts.total);
+});
+
+test('Runs and returns extension counts', async () => {
+	const report = await getReport();
+
+	expect(getExtensionCount).toHaveBeenCalledWith(mockDb);
+
+	expect(report.extensions).toBe(mockExtensionCounts.total - mockExtensionCounts.bundles);
 });
