@@ -28,6 +28,7 @@ method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
+marketplace: Cửa hàng
 extensions: Phần mở rộng
 modules: Mô đun
 module_bar: Thanh công cụ
@@ -38,6 +39,7 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 location: Vị trí
+collection_names_are_case_sensitive: Tên của các Tập dữ liệu là phân biệt hoa thường
 condition_rules: Điều kiện
 input: Nhập
 maps: Bản đồ
@@ -49,6 +51,8 @@ duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+popular: Phổ biến
+recent: Gần đây
 export_items: Xuất các mục
 and: Và
 or: Hoặc
@@ -62,6 +66,8 @@ extension_module: Các Mô-Đun
 extension_panel: Bảng
 extension_theme: Theme
 extension_hook: Móc
+extension_endpoint: Endpoint
+extension_operation: Thao tác
 extension_modules: Mô đun
 extension_hooks: Móc
 custom: Tuỳ chỉnh
@@ -809,6 +815,7 @@ no_layout_collection_selected_yet: Không có bố cục/danh mục nào đượ
 batch_delete_confirm: >-
   Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
+source_registry: Cửa hàng
 collection: Danh mục
 collections: Danh mục
 content: Nội dung
