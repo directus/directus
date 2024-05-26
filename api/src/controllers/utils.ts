@@ -19,7 +19,7 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const length = req.query && req.query.length ? Number(req.query.length) : 32;
+		const length = req.query && req.query['length'] ? Number(req.query['length']) : 32;
 
 		if (length > 500) {
 			throw new InvalidQueryError({ reason: `"length" can't be more than 500 characters` });
