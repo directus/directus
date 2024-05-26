@@ -1,4 +1,4 @@
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -14,24 +14,19 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
+// For the `length` query parameter
+const randomStringSchema = Joi.number().min(0).max(500).default(32);
+
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const length = req.query && req.query['length'] ? Number(req.query['length']) : 32;
+		const { error, value } = randomStringSchema.validate(req.query['length']);
 
-		if (length > 500) {
-			throw new InvalidQueryError({ reason: `"length" can't be more than 500 characters` });
-		}
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		if (isNaN(length)) {
-			throw new InvalidQueryError({ reason: `"length" is not a valid number` });
-		}
-
-		const string = nanoid(length);
-
-		return res.json({ data: string });
+		return res.json({ data: nanoid(value) });
 	}),
 );
 
