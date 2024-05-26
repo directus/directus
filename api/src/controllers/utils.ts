@@ -19,11 +19,17 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		if (req.query && req.query['length'] && Number(req.query['length']) > 500) {
+		const length = (req.query && req.query.length) ? Number(req.query.length) : 32;
+
+		if (length > 500) {
 			throw new InvalidQueryError({ reason: `"length" can't be more than 500 characters` });
 		}
 
-		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
+		if (isNaN(length)) {
+			throw new InvalidQueryError({ reason: `"length" is not a valid number` });
+		}
+
+		const string = nanoid(length);
 
 		return res.json({ data: string });
 	}),
