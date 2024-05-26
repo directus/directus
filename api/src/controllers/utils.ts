@@ -15,8 +15,8 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 const router = Router();
 
 const randomStringSchema = Joi.object<{ length: number }>({
-	length: Joi.number().min(0).max(500).default(32),
-}).required();
+	length: Joi.number().integer().min(0).max(500).default(32),
+});
 
 router.get(
 	'/random/string',
