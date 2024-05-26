@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed an issue where invalid length param for `/random/string` endpoint could soft crash Directus.
+Fixed an issue where calling `/random/string` with an invalid length param could prevent creation of valid sessions until next restart
