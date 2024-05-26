@@ -1,4 +1,4 @@
-import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
+import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -23,9 +23,9 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const { error, value } = randomStringSchema.validate(req.query);
+		const { error, value } = randomStringSchema.validate(req.query, { allowUnknown: true });
 
-		if (error) throw new InvalidPayloadError({ reason: error.message });
+		if (error) throw new InvalidQueryError({ reason: error.message });
 
 		return res.json({ data: nanoid(value.length) });
 	}),
