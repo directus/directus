@@ -14,19 +14,20 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
-// For the `length` query parameter
-const randomStringSchema = Joi.number().min(0).max(500).default(32);
+const randomStringSchema = Joi.object<{ length: number }>({
+	length: Joi.number().min(0).max(500).default(32),
+}).required();
 
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		const { error, value } = randomStringSchema.validate(req.query['length']);
+		const { error, value } = randomStringSchema.validate(req.query);
 
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		return res.json({ data: nanoid(value) });
+		return res.json({ data: nanoid(value.length) });
 	}),
 );
 
