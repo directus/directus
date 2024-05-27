@@ -642,7 +642,6 @@ cannot_edit_global_bookmarks: Genel Yer İmleri Düzenlenemiyor
 bookmarks: Yer İmleri
 presets: Ön Ayarlar
 unexpected_error: Beklenmeyen Hata
-unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.

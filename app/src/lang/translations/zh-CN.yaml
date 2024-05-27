@@ -744,7 +744,6 @@ cannot_edit_global_bookmarks: 无法编辑全局书签
 bookmarks: 书签
 presets: 预设
 unexpected_error: 未知错误
-unexpected_error_copy: 发生意外错误，请稍后重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。

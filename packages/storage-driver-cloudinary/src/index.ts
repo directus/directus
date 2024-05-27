@@ -192,13 +192,18 @@ export class DriverCloudinary implements Driver {
 	async move(src: string, dest: string) {
 		const fullSrc = this.fullPath(src);
 		const fullDest = this.fullPath(dest);
+		const srcPublicId = this.getPublicId(fullSrc);
+		const destPublicId = this.getPublicId(fullDest);
+		const srcFolderPath = this.getFolderPath(fullSrc);
+		const destFolderPath = this.getFolderPath(fullDest);
+
 		const resourceType = this.getResourceType(fullSrc);
 
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/rename`;
 
 		const parameters = {
-			from_public_id: this.getPublicId(fullSrc),
-			to_public_id: this.getPublicId(fullDest),
+			from_public_id: join(srcFolderPath, srcPublicId),
+			to_public_id: join(destFolderPath, destPublicId),
 			api_key: this.apiKey,
 			timestamp: this.getTimestamp(),
 		};
