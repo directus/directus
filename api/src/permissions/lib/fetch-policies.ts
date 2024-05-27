@@ -16,7 +16,7 @@ export async function _fetchPolicies(
 ): Promise<string[]> {
 	const accessService = new AccessService(ctx);
 
-	let filter: Filter = {};
+	let filter: Filter;
 
 	// No roles and no user means unauthenticated request
 	if (roles.length === 0 && !user) {
@@ -36,18 +36,4 @@ export async function _fetchPolicies(
 	const ids = filteredAccessRows.map(({ policy }) => policy.id);
 
 	return ids;
-}
-
-export function getCacheKey(roles: string[], user: string | null, ip: string | null | undefined) {
-	let key = `fp-${roles.join('_')}`;
-
-	if (user) {
-		key += '-' + user;
-	}
-
-	if (ip) {
-		key += '-' + ip;
-	}
-
-	return key;
 }
