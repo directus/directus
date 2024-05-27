@@ -15,11 +15,13 @@ export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
 		await db.count('*', { as: 'count' }).from('directus_extensions').where('enabled', '=', true)
 	);
 
-	const bundleResult = <{ count: number | string }[]>await db
-		.count('*', { as: 'count' })
-		.from('directus_extensions')
-		.whereIn('id', db.distinct('bundle').from('directus_extensions').where('enabled', '=', true))
-		.andWhere('enabled', '=', true);
+	const bundleResult = <{ count: number | string }[]>(
+		await db
+			.count('*', { as: 'count' })
+			.from('directus_extensions')
+			.whereIn('id', db.distinct('bundle').from('directus_extensions'))
+			.andWhere('enabled', '=', true)
+	);
 
 	if (result[0]?.count) {
 		counts.activeTotal = Number(result[0].count);
