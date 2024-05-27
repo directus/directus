@@ -17,17 +17,17 @@ export interface TelemetryReport {
 	/**
 	 * Number of users in the system that have admin access to the system
 	 */
-	admin_users: number;
+	users_admin: number;
 
 	/**
 	 * Number of users that can access the app, but don't have admin access
 	 */
-	app_users: number;
+	users_app: number;
 
 	/**
 	 * Number of users that can only access the API
 	 */
-	api_users: number;
+	users_api: number;
 
 	/**
 	 * Number of unique roles in the system

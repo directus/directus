@@ -48,9 +48,9 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		roles: basicCounts.directus_roles,
 		shares: basicCounts.directus_shares,
 
-		admin_users: userCounts.admin,
-		app_users: userCounts.app,
-		api_users: userCounts.api,
+		users_admin: userCounts.admin,
+		users_app: userCounts.app,
+		users_api: userCounts.api,
 
 		collections: userItemCount.collections,
 		items: userItemCount.items,
