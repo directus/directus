@@ -66,6 +66,22 @@ describe('Integration Tests', () => {
 		tracker.on
 			.select(/"directus_roles"."id" from "directus_roles" order by "directus_roles"."id" asc limit .*/)
 			.response([]);
+
+		tracker.on
+			.select(
+				new RegExp(
+					/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+				),
+			)
+			.response([{ count: 0, admin_access: true, app_access: true }]);
+
+		tracker.on
+			.select(
+				new RegExp(
+					/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(group by "directus_roles"\."admin_access", "directus_roles"\."app_access")/,
+				),
+			)
+			.response([{ count: 0, admin_access: true, app_access: true }]);
 	});
 
 	afterEach(() => {

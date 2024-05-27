@@ -76,6 +76,15 @@ describe('Integration Tests', () => {
 
 		// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_versions').response({});
+
+		// mock user counts in updateOne/updateMany/updateByQuery methods
+		tracker.on
+			.select(
+				new RegExp(
+					/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(group by "directus_roles"\."admin_access", "directus_roles"\."app_access")/,
+				),
+			)
+			.response([{ count: 0, admin_access: true, app_access: true }]);
 	});
 
 	afterEach(() => {
@@ -204,7 +213,9 @@ describe('Integration Tests', () => {
 		describe('updateOne', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateOne)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				await service.updateOne(1, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
@@ -212,7 +223,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateOne)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				await service.updateOne(1, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -310,7 +323,9 @@ describe('Integration Tests', () => {
 		describe('updateMany', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				await service.updateMany([1], { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
@@ -318,7 +333,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				await service.updateMany([1], { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -437,7 +454,9 @@ describe('Integration Tests', () => {
 		describe('updateByQuery', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
@@ -447,7 +466,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
@@ -649,6 +670,11 @@ describe('Integration Tests', () => {
 
 		describe('invite', () => {
 			it('should invite new users', async () => {
+				// mock newRole query in updateMany
+				tracker.on
+					.select(/select "id", "admin_access", "app_access" from "directus_roles"/)
+					.response({ id: 'invite-role', admin_access: false, app_access: true });
+
 				const service = new UsersService({
 					knex: db,
 					schema: testSchema,
@@ -717,7 +743,9 @@ describe('Integration Tests', () => {
 					accountability: { role: 'test', admin: true },
 				});
 
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				// mock an invited user with different role
 				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
