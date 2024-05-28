@@ -26,7 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@azure/storage-blob": "12.17.0",
+		"@azure/storage-blob": "12.18.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},

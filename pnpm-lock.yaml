@@ -1577,8 +1577,8 @@ importers:
   packages/storage-driver-azure:
     dependencies:
       '@azure/storage-blob':
-        specifier: 12.17.0
-        version: 12.17.0(encoding@0.1.13)
+        specifier: 12.18.0
+        version: 12.18.0(encoding@0.1.13)
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -2525,8 +2525,8 @@ packages:
     resolution: {integrity: sha512-RWAWCYYrSldIYC47oWtofIun41e6SB9TBYgGYsezq6ednagwo9ZRFyRsvl1NabmdTkdDDXRAABIdveeN2Gtd8w==}
     engines: {node: 16|| 18 || 20}
 
-  '@azure/storage-blob@12.17.0':
-    resolution: {integrity: sha512-sM4vpsCpcCApagRW5UIjQNlNylo02my2opgp0Emi8x888hZUvJ3dN69Oq20cEGXkMUWnoCrBaB0zyS3yeB87sQ==}
+  '@azure/storage-blob@12.18.0':
+    resolution: {integrity: sha512-BzBZJobMoDyjJsPRMLNHvqHycTGrT8R/dtcTx9qUFcqwSRfGVK9A/cZ7Nx38UQydT9usZGbaDCN75QRNjezSAA==}
     engines: {node: '>=14.0.0'}
 
   '@babel/code-frame@7.23.5':
@@ -12898,7 +12898,7 @@ snapshots:
       uuid: 8.3.2
     optional: true
 
-  '@azure/storage-blob@12.17.0(encoding@0.1.13)':
+  '@azure/storage-blob@12.18.0(encoding@0.1.13)':
     dependencies:
       '@azure/abort-controller': 1.1.0
       '@azure/core-http': 3.0.4(encoding@0.1.13)
