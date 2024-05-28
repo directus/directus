@@ -10,7 +10,7 @@ export interface ExtensionCount {
 
 export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
 	const queryEnabled = await db
-		.count<{ count: string | number }>('*', { as: 'count' })
+		.count<{ count?: string | number }>('*', { as: 'count' })
 		.from('directus_extensions')
 		.where('enabled', '=', true)
 		.first();
@@ -18,7 +18,7 @@ export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
 	const countEnabledTotal = queryEnabled?.count ? Number(queryEnabled.count) : 0;
 
 	const queryBundles = await db
-		.count<{ count: string | number }>('*', { as: 'count' })
+		.count<{ count?: string | number }>('*', { as: 'count' })
 		.from('directus_extensions')
 		.whereIn('id', db.distinct('bundle').from('directus_extensions'))
 		.andWhere('enabled', '=', true)

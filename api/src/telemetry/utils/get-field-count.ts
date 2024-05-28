@@ -6,25 +6,16 @@ export interface FieldCount {
 }
 
 export const getFieldCount = async (db: Knex): Promise<FieldCount> => {
-	const counts: FieldCount = {
-		max: 0,
-		total: 0,
-	};
-
-	const result = <{ max: number | string; total: number | string }[]>(
+	const query = <{ max?: number | string; total?: number | string } | undefined>(
 		await db
 			.max({ max: 'field_count' })
 			.sum({ total: 'field_count' })
 			.from(db.select('collection').count('* as field_count').from('directus_fields').groupBy('collection').as('inner'))
+			.first()
 	);
 
-	if (result[0]?.max) {
-		counts.max = Number(result[0].max);
-	}
-
-	if (result[0]?.total) {
-		counts.total = Number(result[0].total);
-	}
-
-	return counts;
+	return {
+		max: query?.max ? Number(query.max) : 0,
+		total: query?.total ? Number(query.total) : 0,
+	};
 };
