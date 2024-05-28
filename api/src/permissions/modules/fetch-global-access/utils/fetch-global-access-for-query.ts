@@ -22,7 +22,7 @@ export async function fetchGlobalAccessForQuery(
 	}
 
 	const accessRows = await query
-		.select<{ admin_access: AccessLookup['admin_access']; app_access: AccessLookup['app_access'] }[]>(
+		.select<Pick<AccessLookup, 'admin_access' | 'app_access'>[]>(
 			'directus_policies.admin_access',
 			'directus_policies.app_access',
 		)
