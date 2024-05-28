@@ -110,9 +110,9 @@ test('Runs and returns user counts', async () => {
 
 	expect(getUserCount).toHaveBeenCalledWith(mockDb);
 
-	expect(report.users_admin).toBe(mockUserCounts.admin);
-	expect(report.users_app).toBe(mockUserCounts.app);
-	expect(report.users_api).toBe(mockUserCounts.api);
+	expect(report.admin_users).toBe(mockUserCounts.admin);
+	expect(report.app_users).toBe(mockUserCounts.app);
+	expect(report.api_users).toBe(mockUserCounts.api);
 });
 
 test('Runs and returns user item counts', async () => {
