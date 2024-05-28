@@ -155,16 +155,16 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
-	 * Create url for inviting users
+	 * Create URL for inviting users
 	 */
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
 		const token = jwt.sign(payload, getSecret(), { expiresIn: '7d', issuer: 'directus' });
-		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite');
-		inviteURL.setQuery('token', token);
 
-		return inviteURL.toString();
+		return (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite'))
+			.setQuery('token', token)
+			.toString();
 	}
 
 	/**
@@ -380,7 +380,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST'] as string) === false) {
-				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
+				throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
 			opts.preMutationError = err;
@@ -458,7 +458,7 @@ export class UsersService extends ItemsService {
 			isUrlAllowed(input.verification_url, env['USER_REGISTER_URL_ALLOW_LIST'] as string) === false
 		) {
 			throw new InvalidPayloadError({
-				reason: `Url "${input.verification_url}" can't be used to verify registered users`,
+				reason: `URL "${input.verification_url}" can't be used to verify registered users`,
 			});
 		}
 
@@ -523,7 +523,7 @@ export class UsersService extends ItemsService {
 				issuer: 'directus',
 			});
 
-			const verificationURL = (
+			const verificationUrl = (
 				input.verification_url
 					? new Url(input.verification_url)
 					: new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email')
@@ -538,7 +538,7 @@ export class UsersService extends ItemsService {
 					template: {
 						name: 'user-registration',
 						data: {
-							url: verificationURL,
+							url: verificationUrl,
 							email: input.email,
 							first_name,
 							last_name,
@@ -584,7 +584,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
-			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
+			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({
@@ -596,9 +596,9 @@ export class UsersService extends ItemsService {
 		const payload = { email: user.email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, getSecret(), { expiresIn: '1d', issuer: 'directus' });
 
-		const acceptURL = url
-			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password').setQuery('token', token).toString();
+		const acceptUrl = (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password'))
+			.setQuery('token', token)
+			.toString();
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
@@ -609,7 +609,7 @@ export class UsersService extends ItemsService {
 				template: {
 					name: 'password-reset',
 					data: {
-						url: acceptURL,
+						url: acceptUrl,
 						email: user.email,
 					},
 				},
