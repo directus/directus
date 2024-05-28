@@ -47,7 +47,6 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toI
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
-import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import {
 	DEFAULT_AUTH_PROVIDER,
 	GENERATE_SPECIAL,
@@ -57,6 +56,7 @@ import {
 import getDatabase from '../../database/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -97,6 +97,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
 
 const env = useEnv();
 
@@ -203,17 +204,19 @@ export class GraphQLService {
 
 		let schema: { read: SchemaOverview; create: SchemaOverview; update: SchemaOverview; delete: SchemaOverview };
 
+		const sanitizedSchema = sanitizeGraphqlSchema(this.schema);
+
 		if (!this.accountability || this.accountability.admin) {
 			schema = {
-				read: this.schema,
-				create: this.schema,
-				update: this.schema,
-				delete: this.schema,
+				read: sanitizedSchema,
+				create: sanitizedSchema,
+				update: sanitizedSchema,
+				delete: sanitizedSchema,
 			};
 		} else {
 			schema = {
 				read: reduceSchema(
-					this.schema,
+					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
 							accountability: this.accountability,
@@ -223,7 +226,7 @@ export class GraphQLService {
 					),
 				),
 				create: reduceSchema(
-					this.schema,
+					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
 							accountability: this.accountability,
@@ -233,7 +236,7 @@ export class GraphQLService {
 					),
 				),
 				update: reduceSchema(
-					this.schema,
+					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
 							accountability: this.accountability,
@@ -243,7 +246,7 @@ export class GraphQLService {
 					),
 				),
 				delete: reduceSchema(
-					this.schema,
+					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
 							accountability: this.accountability,
@@ -2614,11 +2617,11 @@ export class GraphQLService {
 				resolve: async (_, args) => {
 					const { nanoid } = await import('nanoid');
 
-					if (args['length'] && Number(args['length']) > 500) {
-						throw new InvalidPayloadError({ reason: `"length" can't be more than 500 characters` });
+					if (args['length'] !== undefined && (args['length'] < 1 || args['length'] > 500)) {
+						throw new InvalidPayloadError({ reason: `"length" must be between 1 and 500` });
 					}
 
-					return nanoid(args['length'] ? Number(args['length']) : 32);
+					return nanoid(args['length'] ? args['length'] : 32);
 				},
 			},
 			utils_hash_generate: {
@@ -2709,6 +2712,7 @@ export class GraphQLService {
 				args: {
 					email: new GraphQLNonNull(GraphQLString),
 					password: new GraphQLNonNull(GraphQLString),
+					verification_url: GraphQLString,
 					first_name: GraphQLString,
 					last_name: GraphQLString,
 				},
@@ -2724,6 +2728,7 @@ export class GraphQLService {
 					await service.registerUser({
 						email: args.email,
 						password: args.password,
+						verification_url: args.verification_url,
 						first_name: args.first_name,
 						last_name: args.last_name,
 					});

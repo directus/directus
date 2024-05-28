@@ -138,6 +138,9 @@ beforeEach(() => {
 		if (input === sample.path.src) return sample.path.srcFolder;
 		if (input === sample.path.dest) return sample.path.destFolder;
 		if (input === sample.path.input) return sample.path.inputFolder;
+		if (input === sample.path.srcFull) return sample.path.srcFolder;
+		if (input === sample.path.destFull) return sample.path.destFolder;
+		if (input === sample.path.inputFull) return sample.path.inputFolder;
 
 		return '';
 	});
@@ -657,7 +660,7 @@ describe('#stat', () => {
 
 		expect(driver['getFullSignature']).toHaveBeenCalledWith({
 			type: 'upload',
-			public_id: sample.publicId.input,
+			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 		});
@@ -668,7 +671,7 @@ describe('#stat', () => {
 
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
 			type: 'upload',
-			public_id: sample.publicId.input,
+			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 			signature: sample.fullSignature,
@@ -741,6 +744,8 @@ describe('#move', () => {
 	};
 
 	beforeEach(() => {
+		vi.mocked(join).mockImplementation(joinActual);
+
 		mockResponseBody = {};
 
 		mockResponse = {
@@ -761,17 +766,32 @@ describe('#move', () => {
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.dest);
 	});
 
-	test('Gets resource type for src', async () => {
+	test('Gets public id for src', async () => {
 		await driver.move(sample.path.src, sample.path.dest);
-		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.srcFull);
+		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.srcFull);
+	});
+
+	test('Gets public id for dest', async () => {
+		await driver.move(sample.path.src, sample.path.dest);
+		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.destFull);
+	});
+
+	test('Gets folder path for src', async () => {
+		await driver.move(sample.path.src, sample.path.dest);
+		expect(driver['getFolderPath']).toHaveBeenCalledWith(sample.path.srcFull);
+	});
+
+	test('Gets folder path for dest', async () => {
+		await driver.move(sample.path.src, sample.path.dest);
+		expect(driver['getFolderPath']).toHaveBeenCalledWith(sample.path.destFull);
 	});
 
 	test('Creates signature for body parameters', async () => {
 		await driver.move(sample.path.src, sample.path.dest);
 
 		expect(driver['getFullSignature']).toHaveBeenCalledWith({
-			from_public_id: sample.publicId.src,
-			to_public_id: sample.publicId.dest,
+			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
+			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 		});
@@ -781,8 +801,8 @@ describe('#move', () => {
 		await driver.move(sample.path.src, sample.path.dest);
 
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
-			from_public_id: sample.publicId.src,
-			to_public_id: sample.publicId.dest,
+			from_public_id: joinActual(sample.path.srcFolder, sample.publicId.src),
+			to_public_id: joinActual(sample.path.destFolder, sample.publicId.dest),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 			signature: sample.fullSignature,
@@ -896,6 +916,8 @@ describe('#write', () => {
 			type: 'upload',
 			access_mode: sample.config.accessMode,
 			public_id: sample.publicId.input,
+			asset_folder: sample.path.inputFolder,
+			use_asset_folder_as_public_id_prefix: 'true',
 		});
 	});
 
@@ -916,6 +938,8 @@ describe('#write', () => {
 				public_id: sample.publicId.input,
 				signature: sample.fullSignature,
 				type: 'upload',
+				asset_folder: sample.path.inputFolder,
+				use_asset_folder_as_public_id_prefix: 'true',
 			},
 		});
 	});
@@ -943,6 +967,8 @@ describe('#write', () => {
 				public_id: sample.publicId.input,
 				signature: sample.fullSignature,
 				type: 'upload',
+				asset_folder: sample.path.inputFolder,
+				use_asset_folder_as_public_id_prefix: 'true',
 			},
 		});
 	});
@@ -970,6 +996,8 @@ describe('#write', () => {
 				public_id: sample.publicId.input,
 				signature: sample.fullSignature,
 				type: 'upload',
+				asset_folder: sample.path.inputFolder,
+				use_asset_folder_as_public_id_prefix: 'true',
 			},
 		});
 	});
@@ -1150,7 +1178,7 @@ describe('#delete', () => {
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,
-			public_id: sample.publicId.input,
+			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
 		});
 	});
 
@@ -1159,7 +1187,7 @@ describe('#delete', () => {
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,
-			public_id: sample.publicId.input,
+			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
 			signature: sample.fullSignature,
 		});
 
