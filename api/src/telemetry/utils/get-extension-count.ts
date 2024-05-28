@@ -2,13 +2,11 @@ import { type Knex } from 'knex';
 
 export interface ExtensionCount {
 	activeTotal: number;
-	activeBundles: number;
 }
 
 export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
 	const counts: ExtensionCount = {
 		activeTotal: 0,
-		activeBundles: 0,
 	};
 
 	const result = <{ count: number | string }[]>(
@@ -28,7 +26,7 @@ export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
 	}
 
 	if (bundleResult[0]?.count) {
-		counts.activeBundles = Number(bundleResult[0].count);
+		counts.activeTotal -= Number(bundleResult[0].count);
 	}
 
 	return counts;
