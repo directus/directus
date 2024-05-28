@@ -256,7 +256,10 @@ export class ExtensionsService {
 			return;
 		}
 
-		const parentId = extension.bundle ?? extensionId;
+		const parentId = extension.bundle ?? extension.meta.bundle;
+
+		if (!parentId) return;
+
 		const parent = await this.readOne(parentId);
 
 		if (parent.schema?.type !== 'bundle') {
