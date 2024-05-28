@@ -1,6 +1,5 @@
 import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { fetchAllowedFields } from './fetch-allowed-fields.js';
