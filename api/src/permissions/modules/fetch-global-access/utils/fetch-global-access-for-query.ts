@@ -36,8 +36,8 @@ export async function fetchGlobalAccessForQuery(
 
 	// Additively merge access permissions
 	for (const { admin_access, app_access } of accessRows) {
-		globalAccess.app ||= toBoolean(app_access);
 		globalAccess.admin ||= toBoolean(admin_access);
+		globalAccess.app ||= globalAccess.admin || toBoolean(app_access);
 		if (globalAccess.admin) break;
 	}
 
