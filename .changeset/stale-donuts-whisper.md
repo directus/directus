@@ -1,8 +1,8 @@
 ---
 '@directus/types': patch
 '@directus/env': patch
-'@directus/api': patch
+'@directus/api': minor
 '@directus/sdk': patch
 ---
 
-Add ability to customize the URL for email verification for registering users
+Added ability to customize the URL for email verification when registering users
