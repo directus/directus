@@ -56,13 +56,15 @@ test('Returns field map from permissions for given accountability', async () => 
 
 	const action = 'read';
 
-	vi.mocked(fetchPolicies).mockResolvedValue(['policy-a', 'policy-b']);
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
 
 	vi.mocked(fetchPermissions).mockResolvedValue([
 		{ collection: 'collection-a', fields: ['field-a'] },
 		{ collection: 'collection-a', fields: ['field-b'] },
 		{ collection: 'collection-b', fields: ['field-a', 'field-b', 'field-c'] },
 		{ collection: 'collection-b', fields: ['field-b'] },
+		{ collection: 'collection-c', fields: [] },
+		{ collection: 'collection-c', fields: ['field-a'] },
 	] as Permission[]);
 
 	const map = await fetchInconsistentFieldMap({ accountability, action }, {} as Context);
@@ -70,5 +72,6 @@ test('Returns field map from permissions for given accountability', async () => 
 	expect(map).toEqual({
 		'collection-a': ['field-a', 'field-b'],
 		'collection-b': ['field-a', 'field-c'],
+		'collection-c': ['field-a'],
 	});
 });
