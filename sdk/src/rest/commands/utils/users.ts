@@ -53,7 +53,7 @@ export const registerUser =
 	<Schema>(
 		email: string,
 		password: string,
-		options: { first_name?: string; last_name?: string } = {},
+		options: { verification_url?: string; first_name?: string; last_name?: string } = {},
 	): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/register`,
