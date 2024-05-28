@@ -29,12 +29,13 @@ const GRAPHQL_RESERVED_NAMES = [
  * Filters out invalid collections to prevent graphql from errorring on schema generation
  *
  * @param schema
- * @returns
+ * @returns sanitized schema
  */
 export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 	const logger = useLogger();
 
 	const collections = Object.entries(schema.collections).filter(([collectionName, _data]) => {
+		// double underscore __ is reserved for GraphQL introspection
 		if (collectionName.startsWith('__') || !collectionName.match(GRAPHQL_NAME_REGEX)) {
 			logger.warn(
 				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*$/`,
