@@ -2,7 +2,7 @@ import type { Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
-import { fetchPermissions as _fetchPermissions } from './fetch-permissions.js';
+import { _fetchPermissions as fetchPermissions } from './fetch-permissions.js';
 
 vi.mock('../../services/permissions.js', () => ({
 	PermissionsService: vi.fn(),
@@ -19,7 +19,7 @@ test('Returns permissions read through service', async () => {
 
 	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
 
-	const res = await _fetchPermissions({ action: 'read', policies, collections }, {} as Context);
+	const res = await fetchPermissions({ action: 'read', policies, collections }, {} as Context);
 
 	expect(res).toBe(permissions);
 
@@ -37,7 +37,7 @@ test('Fetches for all collections when collections filter is undefined', async (
 
 	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
 
-	const res = await _fetchPermissions({ action: 'read', policies }, {} as Context);
+	const res = await fetchPermissions({ action: 'read', policies }, {} as Context);
 
 	expect(res).toBe(permissions);
 
