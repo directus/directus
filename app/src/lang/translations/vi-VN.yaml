@@ -28,6 +28,7 @@ method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
+marketplace: Cửa hàng
 extensions: Phần mở rộng
 modules: Mô đun
 module_bar: Thanh công cụ
@@ -38,6 +39,7 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 location: Vị trí
+collection_names_are_case_sensitive: Tên của các Tập dữ liệu là phân biệt hoa thường
 condition_rules: Điều kiện
 input: Nhập
 maps: Bản đồ
@@ -49,6 +51,8 @@ duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+popular: Phổ biến
+recent: Gần đây
 export_items: Xuất các mục
 and: Và
 or: Hoặc
@@ -62,8 +66,16 @@ extension_module: Các Mô-Đun
 extension_panel: Bảng
 extension_theme: Theme
 extension_hook: Móc
+extension_endpoint: Endpoint
+extension_operation: Thao tác
 extension_modules: Mô đun
 extension_hooks: Móc
+extension_missing: Thiếu
+extension_reload_required: Cần phải tải lại trang
+extension_reload_required_copy: Cần phải tải lại trang để nhìn thấy những thay đổi sau khi kích hoạt hoặc tắt các mở rộng của ứng dụng.
+extension_reload_now: Hiện tại đang tải lại
+enable: Bật lên
+disable: Tắt
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -72,6 +84,7 @@ enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+leaf: Nút lá
 indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
@@ -106,6 +119,7 @@ rename_folder: Đổi Tên Thư Mục
 delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
+version: Phiên bản
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -809,6 +823,7 @@ no_layout_collection_selected_yet: Không có bố cục/danh mục nào đượ
 batch_delete_confirm: >-
   Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
+source_registry: Cửa hàng
 collection: Danh mục
 collections: Danh mục
 content: Nội dung
