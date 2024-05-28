@@ -1,5 +1,5 @@
 ---
-"@directus/sdk": patch
+"@directus/sdk": minor
 ---
 
-Implemented missing batch functions in the SDK
+Implemented batch update functions in the SDK
