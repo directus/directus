@@ -7,7 +7,10 @@ import { useLogger } from '../../../logger.js';
  */
 const GRAPHQL_NAME_REGEX = /^[_A-Za-z][_0-9A-Za-z]*$/;
 
-// Not an exhaustive list (doesnt include generated names)
+/**
+ * Manually curated list of GraphQL reserved names to cover the most likely naming footguns.
+ * This list is not exhaustive and does not cover generated type names.
+ */
 const GRAPHQL_RESERVED_NAMES = [
 	'Subscription',
 	'Query',
@@ -23,6 +26,10 @@ const GRAPHQL_RESERVED_NAMES = [
 	'PointList',
 	'Polygon',
 	'MultiPolygon',
+	'JSON',
+	'Hash',
+	'Date',
+	'Void',
 ];
 
 /**
@@ -38,7 +45,7 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 		// double underscore __ is reserved for GraphQL introspection
 		if (collectionName.startsWith('__') || !collectionName.match(GRAPHQL_NAME_REGEX)) {
 			logger.warn(
-				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*$/`,
+				`GraphQL skipping collection "${collectionName}" because it is not a valid name matching /^[_A-Za-z][_0-9A-Za-z]*$/ or starts with __`,
 			);
 
 			return false;
@@ -58,8 +65,10 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 	const collectionExists = (collection: string) => Boolean(schema.collections[collection]);
 
 	const skipRelation = (relation: Relation) => {
+		const relationName = relation.schema?.constraint_name ?? `${relation.collection}.${relation.field}`;
+
 		logger.warn(
-			`GraphQL skipping relation "${relation.schema?.constraint_name}" because it links to a non-existent collection.`,
+			`GraphQL skipping relation "${relationName}" because it links to a non-existent or invalid collection.`,
 		);
 
 		return false;
@@ -80,10 +89,6 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 			}
 
 			if (relation.meta.one_collection && !collectionExists(relation.meta.one_collection)) {
-				return skipRelation(relation);
-			}
-
-			if (relation.meta.many_collection && !collectionExists(relation.meta.many_collection)) {
 				return skipRelation(relation);
 			}
 
