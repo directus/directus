@@ -374,10 +374,10 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 
-			const adminAccess = 'admin_access' in data && data['admin_access'] === true;
-			const appAccess = 'app_access' in data && data['app_access'] === true;
+			if ('admin_access' in data || 'admin_access' in data) {
+				const adminAccess = data['admin_access'] === true;
+				const appAccess = data['app_access'] === true;
 
-			if (adminAccess || appAccess) {
 				const existingCounts: UserCount = await getUserCountsByRoles(this.knex, keys);
 
 				const increasedCounts: UserCount = {
@@ -387,11 +387,11 @@ export class RolesService extends ItemsService {
 				};
 
 				if (adminAccess) {
-					increasedCounts.admin = existingCounts.admin - (existingCounts.app + existingCounts.api);
+					increasedCounts.admin = existingCounts.app + existingCounts.api;
 				} else if (appAccess) {
-					increasedCounts.app = existingCounts.app - (existingCounts.admin + existingCounts.api);
+					increasedCounts.app = existingCounts.admin + existingCounts.api;
 				} else {
-					increasedCounts.api = existingCounts.api - (existingCounts.admin + existingCounts.app);
+					increasedCounts.api = existingCounts.admin + existingCounts.app;
 				}
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);
