@@ -1,8 +1,8 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
-import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { type UserCount } from '../telemetry/utils/get-user-count.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -283,33 +283,59 @@ export class RolesService extends ItemsService {
 				}
 			}
 
-			if ('admin_access' in data || 'app_access' in data) {
-				const adminAccess = data['admin_access'] === true;
-				const appAccess = data['app_access'] === true;
+			let isAccessChanged = false;
+			let accessType: 'admin' | 'app' | 'api' = 'api';
 
+			if ('app_access' in data) {
+				if (data['app_access'] === true) {
+					accessType = 'app';
+
+					if (!existingRole.app_access) isAccessChanged = true;
+				} else if (existingRole.app_access) {
+					isAccessChanged = true;
+				}
+			} else if (existingRole.app_access) {
+				accessType = 'app';
+			}
+
+			if ('admin_access' in data) {
+				if (data['admin_access'] === true) {
+					accessType = 'admin';
+
+					if (!existingRole.admin_access) isAccessChanged = true;
+				} else if (existingRole.admin_access) {
+					isAccessChanged = true;
+				}
+			} else if (existingRole.admin_access) {
+				accessType = 'admin';
+			}
+
+			if (isAccessChanged) {
 				const existingRoleUsersCount = Number(existingRole.count);
 
-				if (adminAccess) {
-					if (!existingRole.admin_access) {
+				switch (accessType) {
+					case 'admin':
 						increasedCounts.admin += existingRoleUsersCount;
-					}
-				} else if (appAccess) {
-					if (existingRole.admin_access || (!existingRole.admin_access && !existingRole.app_access)) {
+						break;
+					case 'app':
 						increasedCounts.app += existingRoleUsersCount;
-					}
-				} else {
-					if (existingRole.admin_access || existingRole.app_access) {
+						break;
+					case 'api':
 						increasedCounts.api += existingRoleUsersCount;
-					}
+						break;
 				}
 			}
 
-			if (existingRole.admin_access) {
-				increasedCounts.admin += increasedUsers;
-			} else if (existingRole.app_access) {
-				increasedCounts.app += increasedUsers;
-			} else {
-				increasedCounts.api += increasedUsers;
+			switch (accessType) {
+				case 'admin':
+					increasedCounts.admin += increasedUsers;
+					break;
+				case 'app':
+					increasedCounts.app += increasedUsers;
+					break;
+				case 'api':
+					increasedCounts.api += increasedUsers;
+					break;
 			}
 
 			await checkIncreasedUserLimits(this.knex, increasedCounts);
