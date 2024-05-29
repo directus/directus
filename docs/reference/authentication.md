@@ -112,14 +112,14 @@ Email address of the user.
 `password` **Required**\
 Password of the user.
 
-`options.first_name`\
+`first_name`\
 First name of the user.
 
-`options.last_name`\
+`last_name`\
 Last name of the user.
 
-`options.verification_url`\
-Provide a custom verification url which the link in the email will lead to. The reset token will be passed as a parameter.\
+`verification_url`\
+Provide a custom verification URL which the link in the email will lead to. The verification token will be passed as a parameter.\
 **Note**: You need to configure the
 [`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
@@ -156,7 +156,7 @@ import { createDirectus, rest, registerUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(registerUser('user@example.com', 'd1r3ctu5));
+const result = await client.request(registerUser('user@example.com', 'd1r3ctu5'));
 ```
 
 </template>
@@ -164,8 +164,8 @@ const result = await client.request(registerUser('user@example.com', 'd1r3ctu5))
 
 ## Verify a Registration
 
-If enabled in project settings, registering a user sends an email with a link to the admin app (or a custom URL) which
-in turn uses this endpoint to allow the user to finish their registration.
+If enabled in project settings, registering a user sends a verification email with a link to this endpoint (or a custom
+URL) to allow the user to finish their registration.
 
 ### Request
 
@@ -208,7 +208,7 @@ const result = await client.request(registerUserVerify(token));
 #### Request Body
 
 `token` **Required**\
-Verification token, as provided in the email sent by the registration endpoint.
+Verification token, as provided in the verification email sent by the registration endpoint.
 
 ### Example
 
