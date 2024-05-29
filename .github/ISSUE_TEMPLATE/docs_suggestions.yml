@@ -14,7 +14,7 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: Maintainence Strategy
+      label: Maintenance Strategy
       description: Docs need to be kept up to date. How often would this the resulting change require maintenance?
     validations:
       required: true

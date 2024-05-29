@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create an issue! If you're asking for _new_ docs, or have a suggestion on how to enhance existing docs, please open [a docs suggestion](https://github.com/directus/directus/discussions/new?category=docs-suggestions) instead!
+        Hi, thank you for taking the time to create an issue! If you're asking for _new_ docs, or have a suggestion on how to enhance existing docs, please open [a docs suggestion](https://github.com/directus/directus/discussions/new?category=docs_suggestions) instead!
   - type: input
     attributes:
       label: Page
