@@ -13,7 +13,11 @@ import {
 	type MockInstance,
 	type MockedFunction,
 } from 'vitest';
+import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { ItemsService, MailService, UsersService } from './index.js';
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { randomUUID } from 'crypto';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -26,6 +30,19 @@ vi.mock('./mail', () => {
 
 	return { MailService };
 });
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EMAIL_TEMPLATES_PATH: './templates',
+		USERS_ACTIVE_LIMIT_ADMIN_ACCESS: 3,
+		USERS_ACTIVE_LIMIT_APP_ACCESS: 3,
+		USERS_ACTIVE_LIMIT_API_ACCESS: 3,
+	}),
+}));
+
+vi.mock('../telemetry/utils/check-increased-user-limits.js');
+vi.mock('../telemetry/utils/get-role-counts-by-roles.js');
+vi.mock('../telemetry/utils/get-role-counts-by-users.js');
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -80,11 +97,12 @@ describe('Integration Tests', () => {
 		// mock user counts in updateOne/updateMany/updateByQuery methods
 		tracker.on
 			.select(
-				new RegExp(
-					/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(group by "directus_roles"\."admin_access", "directus_roles"\."app_access")/,
-				),
+				/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(group by "directus_roles"\."admin_access", "directus_roles"\."app_access")/,
 			)
 			.response([{ count: 0, admin_access: true, app_access: true }]);
+
+		vi.mocked(getRoleCountsByRoles).mockResolvedValueOnce({ admin: 0, app: 0, api: 0 });
+		vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, api: 0, app: 0 });
 	});
 
 	afterEach(() => {
@@ -207,6 +225,37 @@ describe('Integration Tests', () => {
 			it('should checkPasswordPolicy once', async () => {
 				await service.createMany([{ password: 'testpassword' }]);
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+			});
+
+			it('should process user limits for new roles', async () => {
+				await service.createMany([{ role: { admin_access: true } }, { role: { app_access: true } }, { role: {} }]);
+				expect(getRoleCountsByRoles).toBeCalledWith(db, []);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 1, api: 1 });
+			});
+
+			it('should process user limits for existing roles', async () => {
+				vi.mocked(getRoleCountsByRoles).mockReset();
+				vi.mocked(getRoleCountsByRoles).mockResolvedValue({ admin: 1, app: 2, api: 3 });
+				await service.createMany([{ role: randomUUID() }, { role: randomUUID() }, { role: randomUUID() }]);
+				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 2, api: 3 });
+			});
+
+			it('should process user limits for new and existing roles', async () => {
+				vi.mocked(getRoleCountsByRoles).mockReset();
+				vi.mocked(getRoleCountsByRoles).mockResolvedValue({ admin: 1, app: 2, api: 3 });
+
+				await service.createMany([
+					{ role: randomUUID() },
+					{ role: randomUUID() },
+					{ role: randomUUID() },
+					{ role: { admin_access: true } },
+					{ role: { app_access: true } },
+					{ role: {} },
+				]);
+
+				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 2, app: 3, api: 4 });
 			});
 		});
 
@@ -449,6 +498,57 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				},
 			);
+
+			it('should process user limits for new admin role', async () => {
+				await service.updateMany([1, 2, 3], { role: { admin_access: true } });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+			});
+
+			it('should process user limits for existing admin role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+			});
+
+			it('should process user limits for new app role', async () => {
+				await service.updateMany([1, 2, 3], { role: { app_access: true } });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+			});
+
+			it('should process user limits for existing app role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false, app_access: true });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+			});
+
+			it('should process user limits for new api role', async () => {
+				await service.updateMany([1, 2, 3], { role: {} });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+			});
+
+			it('should process user limits for existing api role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false, app_access: false });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+			});
 		});
 
 		describe('updateByQuery', () => {
