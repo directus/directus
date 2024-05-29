@@ -1,6 +1,5 @@
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { find } from 'lodash-es';
 import { type UserCount } from './get-user-count.js';
 
 /**
@@ -17,13 +16,9 @@ export async function getRoleCountsByRoles(db: Knex, roles: string[]): Promise<U
 		await db.select('id', 'admin_access', 'app_access').from('directus_roles').whereIn('id', roles)
 	);
 
-	for (const role of roles) {
-		const foundRole = find(result, { id: role });
-
-		if (!foundRole) continue;
-
-		const adminAccess = toBoolean(foundRole.admin_access);
-		const appAccess = toBoolean(foundRole.app_access);
+	for (const role of result) {
+		const adminAccess = toBoolean(role.admin_access);
+		const appAccess = toBoolean(role.app_access);
 
 		if (adminAccess) {
 			counts.admin++;
