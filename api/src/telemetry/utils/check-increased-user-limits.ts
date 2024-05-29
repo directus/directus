@@ -24,7 +24,7 @@ export async function checkIncreasedUserLimits(db: Knex, increasedUserCounts: Us
 		increasedUserCounts.app > 0 &&
 		increasedUserCounts.app + userCounts.app > Number(env['USERS_ACTIVE_LIMIT_APP_ACCESS'])
 	) {
-		throw new LimitExceededError({ message: 'Active App Access users limit exceeded.' });
+		throw new LimitExceededError({ message: 'Active App users limit exceeded.' });
 	}
 
 	if (
