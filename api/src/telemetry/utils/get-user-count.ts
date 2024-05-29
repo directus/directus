@@ -1,14 +1,14 @@
 import { toBoolean } from '@directus/utils';
 import { type Knex } from 'knex';
 
-export interface UserCount {
+export interface AccessTypeCount {
 	admin: number;
 	app: number;
 	api: number;
 }
 
-export const getUserCount = async (db: Knex): Promise<UserCount> => {
-	const counts: UserCount = {
+export const getUserCount = async (db: Knex): Promise<AccessTypeCount> => {
+	const counts: AccessTypeCount = {
 		admin: 0,
 		app: 0,
 		api: 0,

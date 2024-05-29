@@ -3,7 +3,7 @@ import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types
 import { getMatch } from 'ip-matching';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
-import { type UserCount } from '../telemetry/utils/get-user-count.js';
+import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
@@ -185,7 +185,7 @@ export class RolesService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
 
-		const increasedCounts: UserCount = {
+		const increasedCounts: AccessTypeCount = {
 			admin: 0,
 			app: 0,
 			api: 0,
@@ -207,7 +207,7 @@ export class RolesService extends ItemsService {
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const increasedCounts: UserCount = {
+		const increasedCounts: AccessTypeCount = {
 			admin: 0,
 			app: 0,
 			api: 0,
@@ -236,7 +236,7 @@ export class RolesService extends ItemsService {
 		this.assertValidIpAccess(data);
 
 		try {
-			const increasedCounts: UserCount = {
+			const increasedCounts: AccessTypeCount = {
 				admin: 0,
 				app: 0,
 				api: 0,
@@ -378,9 +378,9 @@ export class RolesService extends ItemsService {
 				const adminAccess = data['admin_access'] === true;
 				const appAccess = data['app_access'] === true;
 
-				const existingCounts: UserCount = await getUserCountsByRoles(this.knex, keys);
+				const existingCounts: AccessTypeCount = await getUserCountsByRoles(this.knex, keys);
 
-				const increasedCounts: UserCount = {
+				const increasedCounts: AccessTypeCount = {
 					admin: 0,
 					app: 0,
 					api: 0,

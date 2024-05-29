@@ -12,7 +12,7 @@ import { useLogger } from '../logger.js';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
-import { type UserCount } from '../telemetry/utils/get-user-count.js';
+import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
@@ -218,7 +218,7 @@ export class UsersService extends ItemsService {
 			}
 
 			if (roles.length) {
-				const increasedCounts: UserCount = {
+				const increasedCounts: AccessTypeCount = {
 					admin: 0,
 					app: 0,
 					api: 0,
@@ -323,9 +323,9 @@ export class UsersService extends ItemsService {
 				}
 
 				if (newRole) {
-					const existingCounts: UserCount = await getRoleCountsByUsers(this.knex, keys);
+					const existingCounts: AccessTypeCount = await getRoleCountsByUsers(this.knex, keys);
 
-					const increasedCounts: UserCount = {
+					const increasedCounts: AccessTypeCount = {
 						admin: 0,
 						app: 0,
 						api: 0,
