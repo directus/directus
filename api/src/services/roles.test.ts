@@ -69,9 +69,7 @@ describe('Integration Tests', () => {
 
 		tracker.on
 			.select(
-				new RegExp(
-					/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
-				),
+				/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
 			)
 			.response([{ count: 0, admin_access: true, app_access: true }]);
 
