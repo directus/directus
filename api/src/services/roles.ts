@@ -246,16 +246,14 @@ export class RolesService extends ItemsService {
 
 			const existingRole:
 				| { count: number | string; admin_access: number | boolean; app_access: number | boolean }
-				| undefined = (
-				await this.knex
-					.count('directus_users.id', { as: 'count' })
-					.select('directus_roles.admin_access', 'directus_roles.app_access')
-					.from('directus_users')
-					.where('directus_roles.id', '=', key)
-					.andWhere('directus_users.status', '=', 'active')
-					.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
-					.limit(1)
-			)[0];
+				| undefined = await this.knex
+				.count('directus_users.id', { as: 'count' })
+				.select('directus_roles.admin_access', 'directus_roles.app_access')
+				.from('directus_users')
+				.where('directus_roles.id', '=', key)
+				.andWhere('directus_users.status', '=', 'active')
+				.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+				.first();
 
 			if (!existingRole) throw new InvalidPayloadError({ reason: 'Invalid role' });
 
@@ -293,20 +291,20 @@ export class RolesService extends ItemsService {
 
 				if (adminAccess) {
 					if (!existingRole.admin_access) {
-						increasedCounts.admin += existingRoleUsersCount;
+						increasedCounts.admin = existingRoleUsersCount;
 					}
 				} else if (appAccess) {
 					if (existingRole.admin_access || (!existingRole.admin_access && !existingRole.app_access)) {
-						increasedCounts.app += existingRoleUsersCount;
+						increasedCounts.app = existingRoleUsersCount;
 					}
 				} else {
 					if (!existingRole.admin_access && !existingRole.app_access) {
-						increasedCounts.api += existingRoleUsersCount;
+						increasedCounts.api = existingRoleUsersCount;
 					}
 				}
 			} else {
 				if (existingRole.admin_access) {
-					increasedCounts.admin += increasedUsers;
+					increasedCounts.admin = increasedUsers;
 				} else if (existingRole.app_access) {
 					increasedCounts.app = increasedUsers;
 				} else {
