@@ -1,36 +1,42 @@
-import { useEnv } from '@directus/env';
-import { LimitExceededError } from '@directus/errors';
+import type { PrimaryKey } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { getUserCount, type UserCount } from './get-user-count.js';
-
-const env = useEnv();
+import type { UserCount } from './get-user-count.js';
 
 /**
- * Ensure that user limits are not reached
+ * Get the role type counts by user IDs
  */
-export async function checkIncreasedUserLimits(db: Knex, increasedUserCounts: UserCount): Promise<void> {
-	if (!increasedUserCounts.admin && !increasedUserCounts.app && !increasedUserCounts.api) return;
+export async function getRoleCountsByUsers(db: Knex, userIds: PrimaryKey[]): Promise<UserCount> {
+	const counts: UserCount = {
+		admin: 0,
+		app: 0,
+		api: 0,
+	};
 
-	const userCounts = await getUserCount(db);
+	const result = <{ count: number | string; admin_access: number | boolean; app_access: number | boolean }[]>(
+		await db
+			.count('directus_users.id', { as: 'count' })
+			.select('directus_roles.admin_access', 'directus_roles.app_access')
+			.from('directus_users')
+			.whereIn('directus_users.id', userIds)
+			.andWhere('directus_users.status', '=', 'active')
+			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
+	);
 
-	if (
-		increasedUserCounts.admin > 0 &&
-		increasedUserCounts.admin + userCounts.admin > Number(env['USERS_ACTIVE_LIMIT_ADMIN_ACCESS'])
-	) {
-		throw new LimitExceededError({ message: 'Active Admin users limit exceeded.' });
+	for (const record of result) {
+		const adminAccess = toBoolean(record.admin_access);
+		const appAccess = toBoolean(record.app_access);
+		const count = Number(record.count);
+
+		if (adminAccess) {
+			counts.admin += count;
+		} else if (appAccess) {
+			counts.app += count;
+		} else {
+			counts.api += count;
+		}
 	}
 
-	if (
-		increasedUserCounts.app > 0 &&
-		increasedUserCounts.app + userCounts.app > Number(env['USERS_ACTIVE_LIMIT_APP_ACCESS'])
-	) {
-		throw new LimitExceededError({ message: 'Active App Access users limit exceeded.' });
-	}
-
-	if (
-		increasedUserCounts.api > 0 &&
-		increasedUserCounts.api + userCounts.api > Number(env['USERS_ACTIVE_LIMIT_API_ACCESS'])
-	) {
-		throw new LimitExceededError({ message: 'Active API users limit exceeded.' });
-	}
+	return counts;
 }

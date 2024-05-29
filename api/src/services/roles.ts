@@ -1,8 +1,8 @@
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
-import { getRoleCountsByUsers } from '../telemetry/utils/check-increased-user-limits.js';
-import { checkIncreasedUserLimits } from '../telemetry/utils/get-role-counts-by-users.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { type UserCount } from '../telemetry/utils/get-user-count.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
