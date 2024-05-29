@@ -47,9 +47,9 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 			errors.push({
 				message: error.message,
 				extensions: {
+					...(error.extensions ?? {}),
 					// Expose error code under error's extensions data
 					code: error.code,
-					...(error.extensions ?? {}),
 				},
 			});
 
