@@ -119,9 +119,10 @@ First name of the user.
 Last name of the user.
 
 `verification_url`\
-Provide a custom verification URL which the link in the email will lead to. The verification token will be passed as a parameter.\
-**Note**: You need to configure the
-[`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
+Provide a custom verification URL for the verification email. The verification token will be appended to this URL as a query
+parameter.\
+**Note**: Only URLs that are configured via the
+[`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) will be accepted.
 
 ### Example
 
