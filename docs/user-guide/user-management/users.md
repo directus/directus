@@ -26,7 +26,7 @@ To allow public registration directly from the login page of the Data Studio, fo
 
 1. Navigate to **Settings > Settings**.
 2. Enable User Registration.
-3. Select a role for new users who register through this interface. Note: the admin role is not shown.
+3. Select a role for new users who register through this interface. Note: only non-admin roles can be selected.
 4. Optionally, enable email verification and create an email address filter.
 
 ## Invite a User
