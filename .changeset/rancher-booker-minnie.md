@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Fixed sdk endpoint for user registration verify email method
+Fixed SDK endpoint path for user registration verify email method
