@@ -142,6 +142,13 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Clear users sessions when its status is no longer "active"
+	 */
+	private async clearUserSessions(userKeys: PrimaryKey[]): Promise<void> {
+		await this.knex.from('directus_sessions').whereIn('user', userKeys).delete();
+	}
+
+	/**
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
@@ -286,6 +293,7 @@ export class UsersService extends ItemsService {
 
 			if (data['status'] !== undefined && data['status'] !== 'active') {
 				await this.checkRemainingActiveAdmin(keys);
+				await this.clearUserSessions(keys);
 			}
 
 			if (data['email']) {
@@ -353,6 +361,8 @@ export class UsersService extends ItemsService {
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
+		await this.clearUserSessions(keys);
+
 		return keys;
 	}
 
