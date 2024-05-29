@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { DirectusUser } from '../../../schema/user.js';
@@ -46,7 +46,7 @@ export const updateUsers =
  */
 export const updateUsersBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		items: Partial<DirectusUser<Schema>>[],
+		items: NestedPartial<DirectusUser<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({

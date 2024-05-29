@@ -1,5 +1,5 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -42,7 +42,7 @@ export const updatePermissions =
  */
 export const updatePermissionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		items: Partial<DirectusPermission<Schema>>[],
+		items: NestedPartial<DirectusPermission<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({

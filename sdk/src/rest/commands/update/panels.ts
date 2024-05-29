@@ -1,5 +1,5 @@
 import type { DirectusPanel } from '../../../schema/panel.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -42,7 +42,7 @@ export const updatePanels =
  */
 export const updatePanelsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
-		items: Partial<DirectusPanel<Schema>>[],
+		items: NestedPartial<DirectusPanel<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({

@@ -1,5 +1,5 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -42,7 +42,7 @@ export const updatePresets =
  */
 export const updatePresetsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		items: Partial<DirectusPreset<Schema>>[],
+		items: NestedPartial<DirectusPreset<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({

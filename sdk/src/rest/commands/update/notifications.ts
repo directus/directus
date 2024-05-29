@@ -1,5 +1,5 @@
 import type { DirectusNotification } from '../../../schema/notification.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -42,7 +42,7 @@ export const updateNotifications =
  */
 export const updateNotificationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
-		items: Partial<DirectusNotification<Schema>>[],
+		items: NestedPartial<DirectusNotification<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>[], Schema> =>
 	() => ({

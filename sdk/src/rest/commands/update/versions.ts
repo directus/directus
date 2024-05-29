@@ -1,5 +1,5 @@
 import type { DirectusVersion } from '../../../schema/version.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -42,7 +42,7 @@ export const updateContentVersions =
  */
 export const updateContentVersionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		items: Partial<DirectusVersion<Schema>>[],
+		items: NestedPartial<DirectusVersion<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
