@@ -291,25 +291,25 @@ export class RolesService extends ItemsService {
 
 				if (adminAccess) {
 					if (!existingRole.admin_access) {
-						increasedCounts.admin = existingRoleUsersCount;
+						increasedCounts.admin += existingRoleUsersCount;
 					}
 				} else if (appAccess) {
 					if (existingRole.admin_access || (!existingRole.admin_access && !existingRole.app_access)) {
-						increasedCounts.app = existingRoleUsersCount;
+						increasedCounts.app += existingRoleUsersCount;
 					}
 				} else {
-					if (!existingRole.admin_access && !existingRole.app_access) {
-						increasedCounts.api = existingRoleUsersCount;
+					if (existingRole.admin_access || existingRole.app_access) {
+						increasedCounts.api += existingRoleUsersCount;
 					}
 				}
+			}
+
+			if (existingRole.admin_access) {
+				increasedCounts.admin += increasedUsers;
+			} else if (existingRole.app_access) {
+				increasedCounts.app += increasedUsers;
 			} else {
-				if (existingRole.admin_access) {
-					increasedCounts.admin = increasedUsers;
-				} else if (existingRole.app_access) {
-					increasedCounts.app = increasedUsers;
-				} else {
-					increasedCounts.api = increasedUsers;
-				}
+				increasedCounts.api += increasedUsers;
 			}
 
 			await checkIncreasedUserLimits(this.knex, increasedCounts);
