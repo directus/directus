@@ -39,23 +39,18 @@ export const updatePermissions =
  * @param items
  * @param query
  * @returns Returns the permission object for the updated permissions.
- * @throws Will throw if no items are provided
  */
 export const updatePermissionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		items: Partial<DirectusPermission<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
-	() => {
-		throwIfEmpty(items, 'Items cannot be empty');
-
-		return {
-			path: `/permissions`,
-			params: query ?? {},
-			body: JSON.stringify(items),
-			method: 'PATCH',
-		};
-	};
+	() => ({
+		path: `/permissions`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing permissions rule.

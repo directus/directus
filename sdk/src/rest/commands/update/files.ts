@@ -39,23 +39,18 @@ export const updateFiles =
  * @param items
  * @param query
  * @returns Returns the file objects for the updated files.
- * @throws Will throw if no items are provided
  */
 export const updateFilesBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		items: Partial<DirectusFile<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
-	() => {
-		throwIfEmpty(items, 'Items cannot be empty');
-
-		return {
-			path: `/files`,
-			params: query ?? {},
-			body: JSON.stringify(items),
-			method: 'PATCH',
-		};
-	};
+	() => ({
+		path: `/files`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing file, and/or replace it's file contents.

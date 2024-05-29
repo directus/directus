@@ -59,7 +59,6 @@ export const updateItems =
  * @param query Optional return data query
  *
  * @returns Returns the item objects for the updated items.
- * @throws Will throw if no items are provided
  * @throws Will throw if collection is empty
  * @throws Will throw if collection is a core collection
  */
@@ -72,7 +71,6 @@ export const updateItemsBatch =
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use updateItems for core collections');
-		throwIfEmpty(items, 'No items were provided');
 
 		return {
 			path: `/items/${collection as string}`,

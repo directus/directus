@@ -39,23 +39,18 @@ export const updateNotifications =
  * @param items
  * @param query
  * @returns Returns the notification objects for the updated notifications.
- * @throws Will throw if no items are provided
  */
 export const updateNotificationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		items: Partial<DirectusNotification<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>[], Schema> =>
-	() => {
-		throwIfEmpty(items, 'Items cannot be empty');
-
-		return {
-			path: `/notifications`,
-			params: query ?? {},
-			body: JSON.stringify(items),
-			method: 'PATCH',
-		};
-	};
+	() => ({
+		path: `/notifications`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing notification.

@@ -39,20 +39,15 @@ export const updateCollection =
  * @param items
  * @param query
  * @returns Returns the collection objects for the updated collections.
- * @throws Will throw if no items are provided
  */
 export const updateCollectionsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
 		items: NestedPartial<DirectusCollection<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
-	() => {
-		throwIfEmpty(items, 'Items cannot be empty');
-
-		return {
-			path: `/collections`,
-			params: query ?? {},
-			body: JSON.stringify(items),
-			method: 'PATCH',
-		};
-	};
+	() => ({
+		path: `/collections`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});

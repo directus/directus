@@ -43,23 +43,18 @@ export const updateUsers =
  * @param query Optional return data query
  *
  * @returns Returns the user objects for the updated users.
- * @throws Will throw if no items are provided
  */
 export const updateUsersBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		items: Partial<DirectusUser<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
-	() => {
-		throwIfEmpty(items, 'Items cannot be empty');
-
-		return {
-			path: `/users`,
-			params: query ?? {},
-			body: JSON.stringify(items),
-			method: 'PATCH',
-		};
-	};
+	() => ({
+		path: `/users`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing user.
