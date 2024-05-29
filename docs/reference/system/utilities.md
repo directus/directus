@@ -8,7 +8,7 @@ pageClass: page-reference
 
 > Utilities are the various helper endpoints located within the API.
 
-## Generate a random string
+## Generate a Random String
 
 Generate a random string of a given length.
 
