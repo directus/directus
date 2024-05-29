@@ -55,7 +55,14 @@ The query parameter option is not recommended in production setups as the parame
 
 ## Register
 
-Register a new user. Must first be enabled in project settings.
+Register a new user.
+
+::: warning Disabled by Default
+
+The user registration feature is disabled by default. To make use of it, it must first be enabled via
+[Project Settings](/user-guide/user-management/users.html#enable-public-registration).
+
+:::
 
 ::: tip Register vs Create User
 
