@@ -60,7 +60,7 @@ Register a new user.
 ::: warning Disabled by Default
 
 The user registration feature is disabled by default. To make use of it, it must first be enabled via
-[Project Settings](/user-guide/user-management/users.html#enable-public-registration).
+[Project Settings](/user-guide/user-management/users.html#enable-user-registration).
 
 :::
 
