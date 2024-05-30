@@ -24,11 +24,12 @@ export function validatePath(path: string, permissions: Permission[], collection
 
 		for (const field of fields) {
 			allowedFields.add(field);
-		}
-	}
 
-	if (allowedFields.has('*')) {
-		return;
+			if (field === '*') {
+				// Exit early if all fields are allowed
+				return;
+			}
+		}
 	}
 
 	const requestedFields = Array.from(fields);
