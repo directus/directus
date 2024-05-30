@@ -1,4 +1,4 @@
-import type { Query } from '@directus/types';
+import type { Filter, Query } from '@directus/types';
 import { expect, test } from 'vitest';
 import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
@@ -23,6 +23,32 @@ test('Flattens single level', () => {
 	flattenFilter(paths, filter);
 
 	expect(paths).toEqual(new Set([['author']]));
+});
+
+test('Flattens _eq shortcut', () => {
+	const paths: Set<FieldKey[]> = new Set();
+
+	const filter: Query['filter'] = {
+		author: 'Rijk',
+	} as Filter;
+
+	flattenFilter(paths, filter);
+
+	expect(paths).toEqual(new Set([['author']]));
+});
+
+test('Flattens single level and handles underscore in field names', () => {
+	const paths: Set<FieldKey[]> = new Set();
+
+	const filter: Query['filter'] = {
+		_author: {
+			_eq: 1,
+		},
+	};
+
+	flattenFilter(paths, filter);
+
+	expect(paths).toEqual(new Set([['_author']]));
 });
 
 test('Flattens nested fields', () => {
