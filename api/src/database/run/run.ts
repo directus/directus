@@ -54,7 +54,6 @@ export async function runAst(
 			collection,
 			children,
 			query,
-			cases,
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
