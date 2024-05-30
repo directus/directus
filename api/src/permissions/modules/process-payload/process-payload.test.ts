@@ -101,6 +101,9 @@ test('Validates against field validation rules', async () => {
 			},
 			{ schema } as Context,
 		);
+
+		// fail test if no error is thrown
+		expect(true).toBe(false);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
 		expect(errors[0]).toBeInstanceOf(FailedValidationError);
@@ -128,9 +131,55 @@ test('Validates against permission validation rules', async () => {
 			},
 			{ schema } as Context,
 		);
+
+		expect(true).toBe(false);
 	} catch (errors: any) {
 		expect(errors.length).toBe(1);
 		expect(errors[0]).toBeInstanceOf(FailedValidationError);
+	}
+});
+
+test('Validates against permission and field validation rules', async () => {
+	const schema = {
+		collections: {
+			'collection-a': {
+				fields: {
+					'field-a': {
+						validation: {
+							'field-a': {
+								_eq: 1,
+							},
+						},
+					},
+				},
+			},
+		},
+	} as unknown as SchemaOverview;
+
+	const acc = { admin: false } as unknown as Accountability;
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a'], validation: { 'field-a': { _eq: 2 } } } as unknown as Permission,
+	]);
+
+	try {
+		await processPayload(
+			{
+				accountability: acc,
+				action: 'read',
+				collection: 'collection-a',
+				payload: {
+					'field-a': 3,
+				},
+			},
+			{ schema } as Context,
+		);
+
+		expect(true).toBe(false);
+	} catch (errors: any) {
+		expect(errors.length).toBe(2);
+		expect(errors[0]).toBeInstanceOf(FailedValidationError);
+		expect(errors[1]).toBeInstanceOf(FailedValidationError);
 	}
 });
 
