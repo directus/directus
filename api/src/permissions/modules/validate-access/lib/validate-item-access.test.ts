@@ -1,10 +1,7 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
 import { runAst } from '../../../../database/run/run.js';
-import type { AccessService } from '../../../../services/access.js';
-import type { PermissionsService } from '../../../../services/index.js';
 import type { AST } from '../../../../types/ast.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process.js';
@@ -14,22 +11,8 @@ vi.mock('../../../../database/get-ast-from-query/get-ast-from-query.js');
 vi.mock('../../../../database/run/run.js');
 vi.mock('../../process-ast/process.js');
 
-let knex: Knex;
-let accessService: AccessService;
-let permissionsService: PermissionsService;
-
 beforeEach(() => {
 	vi.clearAllMocks();
-
-	knex = {} as unknown as Knex;
-
-	accessService = {
-		readByQuery: vi.fn().mockResolvedValue([]),
-	} as unknown as AccessService;
-
-	permissionsService = {
-		readByQuery: vi.fn().mockResolvedValue([]),
-	} as unknown as PermissionsService;
 });
 
 test('Throws error when primary key does not exist in given collection', async () => {
@@ -74,13 +57,16 @@ test('Queries the database', async () => {
 		{ schema } as Context,
 	);
 
-	expect(processAst).toHaveBeenCalledWith({
-		accountability: acc,
-		action: 'read',
-		collection: 'collection-a',
-		primaryKeys: [1],
-		ast,
-	}, { schema });
+	expect(processAst).toHaveBeenCalledWith(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			ast,
+		},
+		{ schema },
+	);
 });
 
 test('Returns false if no items are returned', async () => {
