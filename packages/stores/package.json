@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@vueuse/shared": "10.9.0",
+		"@vueuse/shared": "10.10.0",
 		"pinia": "2.1.7",
 		"tsup": "8.0.2",
 		"typescript": "5.4.5",
