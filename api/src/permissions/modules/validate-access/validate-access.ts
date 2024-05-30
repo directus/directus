@@ -21,7 +21,7 @@ export async function validateAccess(options: ValidateAccessOptions, context: Co
 		return;
 	}
 
-	let access = false;
+	let access;
 
 	// If primary keys are passed, we have to confirm the access by actually trying to read the items
 	// from the database. If no keys are passed, we can simply check if the collection+action combo
