@@ -1,5 +1,4 @@
 import type { Filter, Permission, PermissionsAction } from '@directus/types';
-import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
 import { withCache } from '../utils/with-cache.js';
 
@@ -12,6 +11,7 @@ export interface FetchPermissionsOptions {
 }
 
 export async function _fetchPermissions(options: FetchPermissionsOptions, context: Context) {
+	const { PermissionsService } = await import('../../services/permissions.js');
 	const permissionsService = new PermissionsService(context);
 
 	const filter: Filter = {

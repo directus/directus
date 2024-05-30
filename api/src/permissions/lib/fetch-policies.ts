@@ -1,5 +1,4 @@
 import type { Accountability, Filter } from '@directus/types';
-import { AccessService } from '../../services/access.js';
 import type { AccessRow } from '../modules/process-ast/types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
@@ -14,6 +13,7 @@ export async function _fetchPolicies(
 	{ roles, user, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
 	ctx: Context,
 ): Promise<string[]> {
+	const { AccessService } = await import('../../services/access.js');
 	const accessService = new AccessService(ctx);
 
 	let filter: Filter;
