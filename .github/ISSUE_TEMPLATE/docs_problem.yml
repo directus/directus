@@ -1,6 +1,6 @@
 name: Report a docs inaccuracy
 description: When something is wrong or incorrect in the docs
-labels: [":file_folder: Documentation"]
+labels: [':file_folder: Documentation']
 body:
   - type: markdown
     attributes:
