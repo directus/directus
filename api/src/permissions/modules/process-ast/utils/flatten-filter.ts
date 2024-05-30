@@ -1,7 +1,7 @@
 import type { Query } from '@directus/types';
 import type { FieldKey } from '../types.js';
 
-export function flattenFilter(paths: Set<FieldKey[]>, filter: Query['filter']) {
+export function flattenFilter(paths: FieldKey[][], filter: Query['filter']) {
 	if (!filter) return;
 
 	const stack: { current: Record<string, unknown> | string; path: string[] }[] = [{ current: filter, path: [] }];
@@ -21,7 +21,7 @@ export function flattenFilter(paths: Set<FieldKey[]>, filter: Query['filter']) {
 				});
 			}
 		} else {
-			paths.add(
+			paths.push(
 				// Ignore all operators and logical grouping in the field paths
 				path.filter((part) => part.startsWith('_') === false),
 			);

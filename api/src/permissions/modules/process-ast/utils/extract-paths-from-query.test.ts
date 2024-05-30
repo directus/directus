@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { extractPathsFromQuery } from './extract-paths-from-query.js';
 
 test('Returns empty set when query does not contain filter sort or aggregate', () => {
-	expect(extractPathsFromQuery({})).toEqual(new Set());
+	expect(extractPathsFromQuery({})).toEqual([]);
 });
 
 test('Returns flattened filter paths if filter exists', () => {
@@ -17,7 +17,7 @@ test('Returns flattened filter paths if filter exists', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query)).toEqual(new Set([['author', 'name']]));
+	expect(extractPathsFromQuery(query)).toEqual([['author', 'name']]);
 });
 
 test('Returns sort values split on `.`', () => {
@@ -25,7 +25,7 @@ test('Returns sort values split on `.`', () => {
 		sort: ['title', 'author.age'],
 	};
 
-	expect(extractPathsFromQuery(query)).toEqual(new Set([['title'], ['author', 'age']]));
+	expect(extractPathsFromQuery(query)).toEqual([['title'], ['author', 'age']]);
 });
 
 test('Drops - from sort values', () => {
@@ -33,7 +33,7 @@ test('Drops - from sort values', () => {
 		sort: ['-title'],
 	};
 
-	expect(extractPathsFromQuery(query)).toEqual(new Set([['title']]));
+	expect(extractPathsFromQuery(query)).toEqual([['title']]);
 });
 
 test('Returns fields used in aggregation', () => {
@@ -44,7 +44,7 @@ test('Returns fields used in aggregation', () => {
 		},
 	};
 
-	expect(extractPathsFromQuery(query)).toEqual(new Set([['price'], ['id'], ['author', 'age']]));
+	expect(extractPathsFromQuery(query)).toEqual([['price'], ['id'], ['author', 'age']]);
 });
 
 test('Returns fields used in grouping', () => {
@@ -52,5 +52,16 @@ test('Returns fields used in grouping', () => {
 		group: ['category', 'author.email'],
 	};
 
-	expect(extractPathsFromQuery(query)).toEqual(new Set([['category'], ['author', 'email']]));
+	expect(extractPathsFromQuery(query)).toEqual([['category'], ['author', 'email']]);
+});
+
+test('Returns only unique field paths', () => {
+	const query: Query = {
+		aggregate: {
+			countDistinct: ['category', 'author.email'],
+		},
+		group: ['category', 'author.email'],
+	};
+
+	expect(extractPathsFromQuery(query)).toEqual([['category'], ['author', 'email']]);
 });

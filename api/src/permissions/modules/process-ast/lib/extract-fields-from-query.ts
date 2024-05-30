@@ -25,7 +25,7 @@ export function extractFieldsFromQuery(
 
 		/**
 		 * Current collection the path part we're operating on lives in. Once we hit a relational
-		 * field, this will be updated to the related collection so we can follow the relational path
+		 * field, this will be updated to the related collection, so we can follow the relational path
 		 * left to right.
 		 */
 		let collectionContext = collection;
