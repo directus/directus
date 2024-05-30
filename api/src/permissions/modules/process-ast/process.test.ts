@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
@@ -43,18 +43,15 @@ test('Returns AST unmodified and unverified is current user is admin', async () 
 	expect(output).toBe(ast);
 });
 
-test('Validates all paths in AST', async () => {
+test('Validates all paths in AST and throws if no permissions match', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
 	const accountability = { user: null, roles: [] } as unknown as Accountability;
-	const schema = {} as SchemaOverview;
 
 	vi.mocked(fetchPolicies).mockResolvedValue(['test-policy-1']);
 
-	try {
-		await processAst({ action: 'read', ast, accountability }, {} as Context);
-	} catch (err) {
-		expect(err).toBeInstanceOf(ForbiddenError);
-	}
+	await expect(
+		async () => await processAst({ action: 'read', ast, accountability }, {} as Context),
+	).rejects.toThrowError(ForbiddenError);
 
 	expect(fetchPermissions).toHaveBeenCalledWith(
 		{

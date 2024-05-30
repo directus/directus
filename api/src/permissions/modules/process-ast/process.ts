@@ -23,13 +23,12 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		return options.ast;
 	}
 
-	const policies = await fetchPolicies(options.accountability, context);
-
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
 	const collections = collectionsInFieldMap(fieldMap);
 
+	const policies = await fetchPolicies(options.accountability, context);
 	const permissions = await fetchPermissions({ action: options.action, policies, collections }, context);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
