@@ -22,23 +22,29 @@ function processChildren(
 	const permissionsForCollection = permissions.filter((permission) => permission.collection === collection);
 
 	const rules = dedupeAccess(permissionsForCollection);
-	const cases: (Filter | null)[] = [];
+	const cases: Filter[] = [];
 	const caseMap: Record<FieldKey, number[]> = {};
 
 	const requestedKeys = children.map(({ fieldKey }) => fieldKey);
 
-	for (const [index, { rule, fields }] of rules.entries()) {
+	let index = 0;
+
+	for (const { rule, fields } of rules) {
 		// If none of the fields in the current permissions rule overlap with the actually requested
 		// fields in the AST, we can ignore this case altogether
 		if (fields.has('*') === false && Array.from(fields).every((field) => requestedKeys.includes(field) === false)) {
 			continue;
 		}
 
+		if (rule === null) continue;
+
 		cases.push(rule);
 
 		for (const field of fields) {
 			caseMap[field] = [...(caseMap[field] ?? []), index];
 		}
+
+		index++;
 	}
 
 	// Field that are allowed no matter what conditions exist for the item. These come from
