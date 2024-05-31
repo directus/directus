@@ -1,5 +1,5 @@
 import getDatabase from '../database/index.js';
-import { InvalidTokenError } from '@directus/errors';
+import { InvalidCredentialsError } from '@directus/errors';
 import type { DirectusTokenPayload } from '../types/index.js';
 
 /**
@@ -21,6 +21,6 @@ export async function verifySessionJWT(payload: DirectusTokenPayload) {
 		.first();
 
 	if (!session) {
-		throw new InvalidTokenError();
+		throw new InvalidCredentialsError();
 	}
 }
