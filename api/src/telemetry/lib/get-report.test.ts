@@ -18,6 +18,7 @@ vi.mock('../utils/get-item-count.js');
 vi.mock('../utils/get-storage.js');
 vi.mock('../utils/get-user-item-count.js');
 vi.mock('../utils/get-user-count.js');
+vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;

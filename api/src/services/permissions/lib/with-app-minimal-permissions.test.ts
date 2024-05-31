@@ -1,7 +1,6 @@
 import type { Accountability, Permission, Query } from '@directus/types';
 import { expect, it, vi } from 'vitest';
 import { filterItems } from '../../../utils/filter-items.js';
-import { mergePermissions } from '../../../utils/merge-permissions.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 const mocks = vi.hoisted(() => {
@@ -12,7 +11,6 @@ const mocks = vi.hoisted(() => {
 
 vi.mock('@directus/system-data', () => ({ appAccessMinimalPermissions: mocks.appAccessMinimalPermissions }));
 vi.mock('../../../utils/filter-items.js');
-vi.mock('../../../utils/merge-permissions.js');
 
 it('should not modify permissions if role has no app access', () => {
 	const accountability = { app: false } as Accountability;
@@ -28,15 +26,12 @@ it('should merge with filtered app minimal permissions if role has app access', 
 	const accountability = { app: true } as Accountability;
 	const permissions: Permission[] = [];
 	const filter: Query['filter'] = null;
-	const filteredPermissions: Permission[] = [];
-	const mergedPermissions: Permission[] = [];
+	const filteredPermissions: Permission[] = [{} as Permission];
 
 	vi.mocked(filterItems).mockImplementation(() => filteredPermissions);
-	vi.mocked(mergePermissions).mockImplementation(() => mergedPermissions);
 
 	const result = withAppMinimalPermissions(accountability, permissions, filter);
 
 	expect(filterItems).toHaveBeenCalledWith(mocks.appAccessMinimalPermissions, filter);
-	expect(mergePermissions).toHaveBeenCalledWith('or', permissions, filteredPermissions);
-	expect(result).toBe(mergedPermissions);
+	expect(result).toEqual(filteredPermissions);
 });

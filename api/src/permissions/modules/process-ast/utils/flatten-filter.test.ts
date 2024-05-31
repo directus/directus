@@ -4,7 +4,7 @@ import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
 
 test('Returns early when no filter is passed', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	flattenFilter(paths, undefined);
 
@@ -12,7 +12,7 @@ test('Returns early when no filter is passed', () => {
 });
 
 test('Flattens single level', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		author: {
@@ -22,11 +22,11 @@ test('Flattens single level', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['author']]));
+	expect(paths).toEqual([['author']]);
 });
 
 test('Flattens _eq shortcut', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		author: 'Rijk',
@@ -34,11 +34,11 @@ test('Flattens _eq shortcut', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['author']]));
+	expect(paths).toEqual([['author']]);
 });
 
 test('Flattens single level and handles underscore in field names', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		_author: {
@@ -48,11 +48,11 @@ test('Flattens single level and handles underscore in field names', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['_author']]));
+	expect(paths).toEqual([['_author']]);
 });
 
 test('Flattens nested fields', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		author: {
@@ -64,11 +64,11 @@ test('Flattens nested fields', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['author', 'name']]));
+	expect(paths).toEqual([['author', 'name']]);
 });
 
 test('Flattens logical groups', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		_and: [
@@ -91,16 +91,14 @@ test('Flattens logical groups', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(
-		new Set([
-			['author', 'name'],
-			['author', 'age'],
-		]),
-	);
+	expect(paths).toEqual([
+		['author', 'age'],
+		['author', 'name'],
+	]);
 });
 
 test('Flattens nested logical groups', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		_and: [
@@ -136,11 +134,11 @@ test('Flattens nested logical groups', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['author', 'name'], ['timestamp'], ['author', 'age']]));
+	expect(paths).toEqual([['author', 'age'], ['timestamp'], ['author', 'name']]);
 });
 
 test('Leaves function usage', () => {
-	const paths: Set<FieldKey[]> = new Set();
+	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
 		'year(timestamp)': {
@@ -150,5 +148,5 @@ test('Leaves function usage', () => {
 
 	flattenFilter(paths, filter);
 
-	expect(paths).toEqual(new Set([['year(timestamp)']]));
+	expect(paths).toEqual([['year(timestamp)']]);
 });
