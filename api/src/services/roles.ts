@@ -271,29 +271,16 @@ export class RolesService extends ItemsService {
 		}
 
 		await transaction(this.knex, async (trx) => {
-			const itemsService = new ItemsService('directus_roles', {
+			const options: AbstractServiceOptions = {
 				knex: trx,
 				accountability: this.accountability,
 				schema: this.schema,
-			});
+			};
 
-			const permissionsService = new PermissionsService({
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
-			const presetsService = new PresetsService({
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
-
-			const usersService = new UsersService({
-				knex: trx,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
+			const itemsService = new ItemsService('directus_roles', options);
+			const permissionsService = new PermissionsService(options);
+			const presetsService = new PresetsService(options);
+			const usersService = new UsersService(options);
 
 			// Delete permissions/presets for this role, suspend all remaining users in role
 

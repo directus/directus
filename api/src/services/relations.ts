@@ -19,11 +19,9 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService, type QueryOptions } from './items.js';
-import { PermissionsService } from './permissions.js';
 
 export class RelationsService {
 	knex: Knex;
-	permissionsService: PermissionsService;
 	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
@@ -33,7 +31,6 @@ export class RelationsService {
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
-		this.permissionsService = new PermissionsService(options);
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
