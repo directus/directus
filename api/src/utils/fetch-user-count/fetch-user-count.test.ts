@@ -256,7 +256,7 @@ test('More complicated example of the above', async () => {
 		},
 	]);
 
-	vi.mocked(fetchRolesTree).mockImplementation(async (_, start) => {
+	vi.mocked(fetchRolesTree).mockImplementation(async (start, _) => {
 		switch (start) {
 			case 'role-a':
 				return ['role-a'];
@@ -276,7 +276,6 @@ test('More complicated example of the above', async () => {
 	});
 
 	const counts = await fetchUserCount(knex);
-
 
 	/**
 	 * Role A has 3 definitions. One of them contains admin, so users in A are counted as admin
