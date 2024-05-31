@@ -351,6 +351,12 @@ export class UsersService extends ItemsService {
 				await this.checkRemainingActiveAdmin(keys);
 			}
 
+			if (data['status'] !== undefined && data['status'] === 'active') {
+				const increasedCounts: AccessTypeCount = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
+			}
+
 			if (data['email']) {
 				if (keys.length > 1) {
 					throw new RecordNotUniqueError({

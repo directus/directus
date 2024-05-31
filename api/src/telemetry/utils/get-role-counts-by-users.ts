@@ -3,10 +3,14 @@ import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import type { AccessTypeCount } from './get-user-count.js';
 
+type CountOptions = {
+	inactiveUsers?: boolean;
+}
+
 /**
  * Get the role type counts by user IDs
  */
-export async function getRoleCountsByUsers(db: Knex, userIds: PrimaryKey[]): Promise<AccessTypeCount> {
+export async function getRoleCountsByUsers(db: Knex, userIds: PrimaryKey[], options: CountOptions = {}): Promise<AccessTypeCount> {
 	const counts: AccessTypeCount = {
 		admin: 0,
 		app: 0,
@@ -19,7 +23,7 @@ export async function getRoleCountsByUsers(db: Knex, userIds: PrimaryKey[]): Pro
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.whereIn('directus_users.id', userIds)
-			.andWhere('directus_users.status', '=', 'active')
+			.andWhere('directus_users.status', options.inactiveUsers ? '!=' : '=', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
