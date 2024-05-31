@@ -2,7 +2,7 @@ import { ErrorCode, InternalServerError, isDirectusError } from '@directus/error
 import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
-import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
@@ -101,10 +101,12 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	return res.json({ errors: updatedErrors });
 });
 
-function asyncErrorHandler(fn: ErrorRequestHandler) {
-	return (err: any, req: Request, res: Response, next: NextFunction) =>
-		Promise.resolve(fn(err, req, res, next)).catch((error) => {
-			// To be on the safe side and ensure the response call is reached in any case
+function asyncErrorHandler(
+	fn: (...args: Parameters<ErrorRequestHandler>) => Promise<any>,
+): (...args: Parameters<ErrorRequestHandler>) => Promise<ReturnType<ErrorRequestHandler>> {
+	return (err, req, res, next) =>
+		fn(err, req, res, next).catch((error) => {
+			// To be on the safe side and ensure this doesn't lead to an unhandled (potentially crashing) error
 			try {
 				const logger = useLogger();
 				logger.error(error, 'Unexpected error in error handler');
