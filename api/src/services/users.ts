@@ -323,7 +323,7 @@ export class UsersService extends ItemsService {
 				}
 
 				if (newRole) {
-					const existingCounts: AccessTypeCount = await getRoleCountsByUsers(this.knex, keys);
+					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
 
 					const increasedCounts: AccessTypeCount = {
 						admin: 0,
@@ -351,8 +351,8 @@ export class UsersService extends ItemsService {
 				await this.checkRemainingActiveAdmin(keys);
 			}
 
-			if (data['status'] !== undefined && data['status'] === 'active') {
-				const increasedCounts: AccessTypeCount = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
+			if (data['status'] === 'active') {
+				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);
 			}
