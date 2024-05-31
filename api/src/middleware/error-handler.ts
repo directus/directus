@@ -112,6 +112,9 @@ function asyncErrorHandler(fn: ErrorRequestHandler) {
 				// Ignore
 			}
 
+			// Delegate to default error handler to close the connection
+			if (res.headersSent) return next(err);
+
 			res.status(FALLBACK_ERROR.status);
 			return res.json({ errors: [{ message: FALLBACK_ERROR.message, extensions: { code: FALLBACK_ERROR.code } }] });
 		});
