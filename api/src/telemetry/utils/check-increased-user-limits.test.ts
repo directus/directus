@@ -8,9 +8,9 @@ vi.mock('./get-user-count.js');
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EMAIL_TEMPLATES_PATH: './templates',
-		USERS_ACTIVE_LIMIT_ADMIN_ACCESS: 3,
-		USERS_ACTIVE_LIMIT_APP_ACCESS: 3,
-		USERS_ACTIVE_LIMIT_API_ACCESS: 3,
+		USERS_ADMIN_ACCESS_LIMIT: 3,
+		USERS_APP_ACCESS_LIMIT: 3,
+		USERS_API_ACCESS_LIMIT: 3,
 	}),
 }));
 

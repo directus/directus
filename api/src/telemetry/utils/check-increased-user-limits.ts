@@ -15,21 +15,21 @@ export async function checkIncreasedUserLimits(db: Knex, increasedUserCounts: Ac
 
 	if (
 		increasedUserCounts.admin > 0 &&
-		increasedUserCounts.admin + userCounts.admin > Number(env['USERS_ACTIVE_LIMIT_ADMIN_ACCESS'])
+		increasedUserCounts.admin + userCounts.admin > Number(env['USERS_ADMIN_ACCESS_LIMIT'])
 	) {
 		throw new LimitExceededError({ message: 'Active Admin users limit exceeded.' });
 	}
 
 	if (
 		increasedUserCounts.app > 0 &&
-		increasedUserCounts.app + userCounts.app > Number(env['USERS_ACTIVE_LIMIT_APP_ACCESS'])
+		increasedUserCounts.app + userCounts.app > Number(env['USERS_APP_ACCESS_LIMIT'])
 	) {
 		throw new LimitExceededError({ message: 'Active App users limit exceeded.' });
 	}
 
 	if (
 		increasedUserCounts.api > 0 &&
-		increasedUserCounts.api + userCounts.api > Number(env['USERS_ACTIVE_LIMIT_API_ACCESS'])
+		increasedUserCounts.api + userCounts.api > Number(env['USERS_API_ACCESS_LIMIT'])
 	) {
 		throw new LimitExceededError({ message: 'Active API users limit exceeded.' });
 	}
