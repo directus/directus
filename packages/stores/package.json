@@ -25,7 +25,7 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"@vueuse/core": "10.9.0"
+		"@vueuse/core": "10.10.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
