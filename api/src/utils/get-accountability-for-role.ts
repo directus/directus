@@ -12,7 +12,7 @@ export async function getAccountabilityForRole(
 		database: Knex;
 	},
 ): Promise<Accountability> {
-	let generatedAccountability: Accountability | null = context.accountability;
+	let generatedAccountability: Accountability | null;
 
 	if (role === null) {
 		generatedAccountability = createDefaultAccountability();

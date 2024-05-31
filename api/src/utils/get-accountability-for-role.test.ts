@@ -1,5 +1,4 @@
 import { expect, describe, test, vi, beforeEach } from 'vitest';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { getAccountabilityForRole } from './get-accountability-for-role.js';
@@ -48,8 +47,9 @@ describe('getAccountabilityForRole', async () => {
 		});
 	});
 
-	test('get role from database', async () => {
-		vi.mocked(fetchRolesTree).mockResolvedValue([]);
+	test('get role and role tree from database', async () => {
+		const roles = ['123-456', '234-567'];
+		vi.mocked(fetchRolesTree).mockResolvedValue(roles);
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: true });
 
 		const result = await getAccountabilityForRole('123-456', {
@@ -61,16 +61,16 @@ describe('getAccountabilityForRole', async () => {
 		expect(result).toStrictEqual({
 			admin: false,
 			app: true,
-			roles: [],
+			roles: roles,
 			role: '123-456',
 			user: null,
 		});
 
 		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', {});
-		expect(fetchGlobalAccess).toHaveBeenCalledWith({}, []);
+		expect(fetchGlobalAccess).toHaveBeenCalledWith({}, roles);
 	});
 
-	test('database invalid role returns default accountability', async () => {
+	test('invalid role returns default accountability', async () => {
 		vi.mocked(fetchRolesTree).mockResolvedValue([]);
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: false });
 
