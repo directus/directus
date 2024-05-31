@@ -25,9 +25,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
-import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -35,14 +33,8 @@ const logger = useLogger();
 type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
 export class FilesService extends ItemsService {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
-
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	/**

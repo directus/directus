@@ -29,11 +29,9 @@ import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { AccessService } from './access.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
-import { PermissionsService } from './permissions.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
@@ -45,15 +43,11 @@ export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {

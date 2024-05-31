@@ -20,10 +20,8 @@ import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOpt
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
-import { AccessService } from './access.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
 
 export type RawCollection = {
 	collection: string;
@@ -40,8 +38,6 @@ export class CollectionsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -49,9 +45,6 @@ export class CollectionsService {
 		this.accountability = options.accountability || null;
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
-
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 
 		const { cache, systemCache } = getCache();
 		this.cache = cache;

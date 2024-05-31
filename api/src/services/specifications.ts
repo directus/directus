@@ -22,9 +22,7 @@ import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
-import { AccessService } from './access.js';
 import { GraphQLService } from './graphql/index.js';
-import { PermissionsService } from './permissions.js';
 
 const env = useEnv();
 
@@ -54,15 +52,10 @@ class OASSpecsService implements SpecificationSubService {
 	accountability: Accountability | null;
 	knex: Knex;
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
-
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 
 		this.schema = options.schema;
 	}
@@ -82,7 +75,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			schema = reduceSchema(schema, allowedFields);
 
-			const policies = await fetchPolicies(this.accountability, this.accessService);
+			const policies = await fetchPolicies(this.accountability, { schema, knex: this.knex });
 
 			permissions = await fetchPermissions({ action: 'read', policies }, { schema, knex: this.knex });
 		}

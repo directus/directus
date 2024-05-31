@@ -30,10 +30,8 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
-import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import { PermissionsService } from './permissions.js';
 import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
@@ -48,8 +46,6 @@ export class FieldsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -58,8 +54,6 @@ export class FieldsService {
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 		this.schema = options.schema;
 
 		const { cache, systemCache } = getCache();
@@ -174,7 +168,7 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const policies = await fetchPolicies(this.accountability, this.accessService);
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
 
 			const permissions = await fetchPermissions(
 				collection
@@ -236,7 +230,7 @@ export class FieldsService {
 				},
 			);
 
-			const policies = await fetchPolicies(this.accountability, this.accessService);
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
 
 			const permissions = await fetchPermissions(
 				{ action: 'read', policies, collections: [collection] },

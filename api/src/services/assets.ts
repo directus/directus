@@ -24,9 +24,7 @@ import type { AbstractServiceOptions, Transformation, TransformationSet } from '
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
-import { AccessService } from './access.js';
 import { FilesService } from './files.js';
-import { PermissionsService } from './permissions.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -36,16 +34,12 @@ export class AssetsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	filesService: FilesService;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.filesService = new FilesService({ ...options, accountability: null });
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	async getAsset(

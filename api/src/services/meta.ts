@@ -4,22 +4,16 @@ import getDatabase from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
-import { AccessService } from './access.js';
-import { PermissionsService } from './permissions.js';
 
 export class MetaService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	async getMetaForQuery(collection: string, query: any): Promise<Record<string, any> | undefined> {
@@ -72,7 +66,7 @@ export class MetaService {
 	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection);
 
-		let filter = query.filter || {};
+		const filter = query.filter || {};
 		let hasJoins = false;
 
 		if (this.accountability) {
@@ -99,7 +93,7 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}));
+			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, []));
 		}
 
 		if (query.search) {

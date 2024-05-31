@@ -70,14 +70,12 @@ import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-vers
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { AccessService } from '../access.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
 import { ExtensionsService } from '../extensions.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
-import { PermissionsService } from '../permissions.js';
 import { RelationsService } from '../relations.js';
 import { RevisionsService } from '../revisions.js';
 import { ServerService } from '../server.js';
@@ -126,16 +124,12 @@ export class GraphQLService {
 	knex: Knex;
 	schema: SchemaOverview;
 	scope: 'items' | 'system';
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions & { scope: 'items' | 'system' }) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || getDatabase();
 		this.schema = options.schema;
 		this.scope = options.scope;
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	/**

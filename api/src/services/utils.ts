@@ -9,22 +9,16 @@ import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { AccessService } from './access.js';
-import { PermissionsService } from './permissions.js';
 
 export class UtilsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	accessService: AccessService;
-	permissionsService: PermissionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {

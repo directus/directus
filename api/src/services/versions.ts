@@ -10,22 +10,14 @@ import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { AccessService } from './access.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
-import { PermissionsService } from './permissions.js';
 import { RevisionsService } from './revisions.js';
 
 export class VersionsService extends ItemsService {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
-
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	private async validateCreateData(data: Partial<Item>): Promise<void> {

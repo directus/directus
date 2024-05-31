@@ -5,14 +5,12 @@ import { clearSystemCache, getCache } from '../cache.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { AccessService } from './access.js';
 import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
 import { withAppMinimalPermissions } from './permissions/lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;
-	accessService: AccessService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
@@ -20,7 +18,6 @@ export class PermissionsService extends ItemsService {
 		const { systemCache } = getCache();
 
 		this.systemCache = systemCache;
-		this.accessService = new AccessService(options);
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {

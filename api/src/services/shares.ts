@@ -17,24 +17,16 @@ import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
-import { PermissionsService } from './permissions.js';
 import { UsersService } from './users.js';
 
 const env = useEnv();
 const logger = useLogger();
 
 export class SharesService extends ItemsService {
-	accessService: AccessService;
-	permissionsService: PermissionsService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_shares', options);
-
-		this.accessService = new AccessService(options);
-		this.permissionsService = new PermissionsService(options);
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {

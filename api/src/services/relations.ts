@@ -18,7 +18,6 @@ import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from 
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
-import { AccessService } from './access.js';
 import { ItemsService, type QueryOptions } from './items.js';
 import { PermissionsService } from './permissions.js';
 
@@ -31,12 +30,10 @@ export class RelationsService {
 	relationsItemService: ItemsService<RelationMeta>;
 	systemCache: Keyv<any>;
 	helpers: Helpers;
-	accessService: AccessService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.permissionsService = new PermissionsService(options);
-		this.accessService = new AccessService(options);
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
