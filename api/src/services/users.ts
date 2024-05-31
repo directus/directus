@@ -9,6 +9,7 @@ import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
@@ -582,7 +583,7 @@ export class UsersService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: {
-				...(this.accountability ?? { role: null, roles: [], user: null, admin: false, app: false }),
+				...(this.accountability ?? createDefaultAccountability()),
 				admin: true, // We need to skip permissions checks for the update call below
 			},
 		});
