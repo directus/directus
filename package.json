@@ -10,7 +10,7 @@
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
 	"devDependencies": {
-		"@changesets/cli": "2.27.3",
+		"@changesets/cli": "2.27.5",
 		"@directus/release-notes-generator": "workspace:*",
 		"@typescript-eslint/eslint-plugin": "7.8.0",
 		"@typescript-eslint/parser": "7.8.0",
