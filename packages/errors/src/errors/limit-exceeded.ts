@@ -1,11 +1,12 @@
 import { createError, ErrorCode } from '../index.js';
 
 export interface LimitExceededErrorExtensions {
-	message: string;
+	category: string;
 }
 
-export const messageConstructor = (extensions?: LimitExceededErrorExtensions) =>
-	`${extensions?.message ? extensions.message : 'Limit exceeded.'}`;
+export const messageConstructor = ({ category }: LimitExceededErrorExtensions) => {
+	return `${category} limit exceeded.`;
+};
 
 export const LimitExceededError = createError<LimitExceededErrorExtensions>(
 	ErrorCode.LimitExceeded,
