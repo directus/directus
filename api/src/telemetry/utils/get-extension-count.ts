@@ -1,4 +1,6 @@
 import { type Knex } from 'knex';
+import { ExtensionsService } from '../../services/extensions.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 export interface ExtensionCount {
 	/**
@@ -9,24 +11,22 @@ export interface ExtensionCount {
 }
 
 export const getExtensionCount = async (db: Knex): Promise<ExtensionCount> => {
-	const queryEnabled = await db
-		.count<{ count?: string | number }>('*', { as: 'count' })
-		.from('directus_extensions')
-		.where('enabled', '=', true)
-		.first();
+	const extensionsService = new ExtensionsService({
+		knex: db,
+		schema: await getSchema({ database: db }),
+	});
 
-	const countEnabledTotal = queryEnabled?.count ? Number(queryEnabled.count) : 0;
+	const extensions = await extensionsService.readAll();
 
-	const queryBundles = await db
-		.count<{ count?: string | number }>('*', { as: 'count' })
-		.from('directus_extensions')
-		.whereIn('id', db.distinct('bundle').from('directus_extensions'))
-		.andWhere('enabled', '=', true)
-		.first();
+	let totalEnabled = 0;
 
-	const countEnabledBundles = queryBundles?.count ? Number(queryBundles.count) : 0;
+	for (const extension of extensions) {
+		if (extension.meta.enabled && extension.schema && extension.schema.type !== 'bundle') {
+			totalEnabled++;
+		}
+	}
 
 	return {
-		totalEnabled: countEnabledTotal - countEnabledBundles,
+		totalEnabled,
 	};
 };
