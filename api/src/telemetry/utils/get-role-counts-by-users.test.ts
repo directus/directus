@@ -51,7 +51,7 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-test('Fetches counts from the database', async () => {
+test('Fetches active ccounts from the database', async () => {
 	const userIds = [randomUUID(), randomUUID(), randomUUID()];
 	await getRoleCountsByUsers(mockDb, userIds);
 
@@ -60,6 +60,19 @@ test('Fetches counts from the database', async () => {
 	expect(mockDb.from).toHaveBeenCalledWith('directus_users');
 	expect(mockDb.whereIn).toHaveBeenCalledWith('directus_users.id', userIds);
 	expect(mockDb.andWhere).toHaveBeenCalledWith('directus_users.status', '=', 'active');
+	expect(mockDb.leftJoin).toHaveBeenCalledWith('directus_roles', 'directus_users.role', '=', 'directus_roles.id');
+	expect(mockDb.groupBy).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
+});
+
+test('Fetches inactive counts from the database', async () => {
+	const userIds = [randomUUID(), randomUUID(), randomUUID()];
+	await getRoleCountsByUsers(mockDb, userIds, { inactiveUsers: true });
+
+	expect(mockDb.count).toHaveBeenCalledWith('directus_users.id', { as: 'count' });
+	expect(mockDb.select).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
+	expect(mockDb.from).toHaveBeenCalledWith('directus_users');
+	expect(mockDb.whereIn).toHaveBeenCalledWith('directus_users.id', userIds);
+	expect(mockDb.andWhere).toHaveBeenCalledWith('directus_users.status', '!=', 'active');
 	expect(mockDb.leftJoin).toHaveBeenCalledWith('directus_roles', 'directus_users.role', '=', 'directus_roles.id');
 	expect(mockDb.groupBy).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 });
