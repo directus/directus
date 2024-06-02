@@ -1091,6 +1091,7 @@ settings_flows: التدفقات
 settings_presets: محفوظات
 settings_translations: الترجمة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
+configure_field_key_to_continue: قم بتكوين مفتاح الحقل للمتابعة
 scope: مجال
 actions: الإجراءات
 select: حدد...
@@ -1125,6 +1126,7 @@ page_help_files_collection: >-
   **مكتبة الملفات** - قائمة جميع أصول الملفات التي تم تحميلها إلى هذا المشروع. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_files_item: >-
   **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
+page_help_settings_project: "**الإعدادات** — خيارات التكوين العالمي لمشروعك."
 page_help_settings_appearance: "**المظهر** — مظهر مشروعك وخيارات السمات."
 page_help_settings_extensions: '**الإضافات** - الإضافات المثبتة في مشروعك.'
 page_help_settings_datamodel_collections: >-
@@ -1141,11 +1143,15 @@ page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
 page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
 page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
+page_help_settings_translations_collection: '**تصفح الترجمات المخصصة** - يدرج جميع الترجمات المخصصة داخل المشروع.'
+page_help_settings_translations_item: '**تفاصيل الترجمات المخصصة** - نموذج لعرض وإدارة هذا العنصر.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
 page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
 page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
+page_help_marketplace_account: '**الحساب** - ناشر أو مشرف امتداد منشور.'
+page_help_marketplace_registry: '**السجل** - الإضافات المتاحة في سوق Directus.'
 activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد
