@@ -750,7 +750,7 @@ import { ref, watch } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
 import { useRouter } from 'vue-router';
 import PageNavigation from './components/navigation.vue';
-import useDirectusToken from './use-directus-token.js'
+import useDirectusToken from './use-directus-token.js';
 
 export default {
 	components: {
