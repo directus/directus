@@ -11,6 +11,8 @@ import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions/index.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { omit } from 'lodash-es';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -346,24 +348,47 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const keys = data.map((item) => item[primaryKeyField]);
+		const updatedKeys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
 		try {
 			if (setsToNoAdmin) {
-				await this.checkForOtherAdminRoles(keys);
+				await this.checkForOtherAdminRoles(updatedKeys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return super.updateBatch(data, opts);
+		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
+		const keys: PrimaryKey[] = [];
+
+		try {
+			await transaction(this.knex, async (trx) => {
+				const service = new RolesService({
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+				});
+
+				for (const item of data) {
+					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+				}
+			});
+		} finally {
+			if (shouldClearCache(this.cache, opts, this.collection)) {
+				await this.cache.clear();
+			}
+		}
+
+		return keys;
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
