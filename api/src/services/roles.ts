@@ -269,7 +269,11 @@ export class RolesService extends ItemsService {
 			const existingIds: PrimaryKey[] = [];
 
 			const existingRole:
-				| { count: number | string; admin_access: number | boolean; app_access: number | boolean }
+				| {
+						count: number | string;
+						admin_access: number | boolean | null;
+						app_access: number | boolean | null;
+				  }
 				| undefined = await this.knex
 				.count('directus_users.id', { as: 'count' })
 				.select('directus_roles.admin_access', 'directus_roles.app_access')
@@ -277,9 +281,10 @@ export class RolesService extends ItemsService {
 				.where('directus_roles.id', '=', key)
 				.andWhere('directus_users.status', '=', 'active')
 				.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+				.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 				.first();
 
-			if (!existingRole) throw new InvalidPayloadError({ reason: 'Invalid role' });
+			if (!existingRole) throw new ForbiddenError();
 
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
