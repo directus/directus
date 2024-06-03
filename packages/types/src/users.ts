@@ -4,6 +4,7 @@ export type Role = {
 	description: string;
 	icon: string;
 	users: string[];
+	parent: string | null;
 };
 
 export type Avatar = {
