@@ -6,12 +6,18 @@ fields:
 
   - field: role
     width: half
+    special:
+      - m2o
 
   - field: user
     width: half
+    special:
+      - m2o
 
   - field: policy
     width: half
+    special:
+      - m2o
 
   - field: sort
     width: half
