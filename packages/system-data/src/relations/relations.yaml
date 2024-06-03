@@ -41,12 +41,6 @@ data:
     many_field: version
     one_collection: directus_versions
 
-  ### Roles
-  - many_collection: directus_roles
-    many_field: parent
-    one_collection: directus_roles
-    one_field: children
-
   ### Presets
   - many_collection: directus_presets
     many_field: user
@@ -148,11 +142,6 @@ data:
     many_field: user_created
     one_collection: directus_users
 
-  ### Permissions
-  - many_collection: directus_permissions
-    many_field: role
-    one_collection: directus_roles
-
   ### Sessions
   - many_collection: directus_sessions
     many_field: user
@@ -201,3 +190,28 @@ data:
   - many_collection: directus_versions
     many_field: user_updated
     one_collection: directus_users
+
+  ### Permissions
+  - many_collection: directus_permissions
+    many_field: policy
+    one_collection: directus_policies
+    one_field: permissions
+
+  ### Access
+  - many_collection: directus_access
+    many_field: policy
+    one_collection: directus_policies
+
+  - many_collection: directus_access
+    many_field: role
+    one_collection: directus_roles
+
+  - many_collection: directus_access
+    many_field: user
+    one_collection: directus_users
+
+  ### Roles
+  - many_collection: directus_roles
+    many_field: parent
+    one_collection: directus_roles
+    one_field: children
