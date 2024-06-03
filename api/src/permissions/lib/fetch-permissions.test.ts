@@ -31,6 +31,25 @@ test('Returns permissions read through service', async () => {
 	});
 });
 
+test('Returns all action permissions if action is undefined', async () => {
+	const permissions: Permission[] = [];
+	const policies = [] as string[];
+	const collections = [] as string[];
+
+	vi.mocked(PermissionsService.prototype.readByQuery).mockResolvedValue(permissions);
+
+	const res = await fetchPermissions({ policies, collections }, {} as Context);
+
+	expect(res).toBe(permissions);
+
+	expect(PermissionsService.prototype.readByQuery).toHaveBeenCalledWith({
+		filter: {
+			_and: [{ policy: { _in: policies } }, { collection: { _in: collections } }],
+		},
+		limit: -1,
+	});
+});
+
 test('Fetches for all collections when collections filter is undefined', async () => {
 	const permissions: Permission[] = [];
 	const policies = [] as string[];

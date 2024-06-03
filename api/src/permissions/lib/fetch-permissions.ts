@@ -5,7 +5,7 @@ import { withCache } from '../utils/with-cache.js';
 export const fetchPermissions = withCache('permissions', _fetchPermissions);
 
 export interface FetchPermissionsOptions {
-	action: PermissionsAction;
+	action?: PermissionsAction;
 	policies: string[];
 	collections?: string[];
 }
@@ -15,8 +15,12 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, contex
 	const permissionsService = new PermissionsService(context);
 
 	const filter: Filter = {
-		_and: [{ policy: { _in: options.policies } }, { action: { _eq: options.action } }],
+		_and: [{ policy: { _in: options.policies } }],
 	};
+
+	if (options.action) {
+		filter._and.push({ action: { _eq: options.action } });
+	}
 
 	if (options.collections) {
 		filter._and.push({ collection: { _in: options.collections } });
