@@ -30,9 +30,8 @@ export async function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table);
-		const query = await applyQuery(knex, table, flatQuery, queryCopy, schema, cases).query;
-		return query.select(fieldNodes.map(preProcess));
+		const flatQuery = knex.from(table).select(fieldNodes.map(preProcess));
+		return applyQuery(knex, table, flatQuery, queryCopy, schema, cases).query;
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
