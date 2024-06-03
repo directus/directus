@@ -32,7 +32,7 @@ export class UtilsService {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
 					accountability: this.accountability,

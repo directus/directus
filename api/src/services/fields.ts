@@ -217,7 +217,7 @@ export class FieldsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
 					accountability: this.accountability,

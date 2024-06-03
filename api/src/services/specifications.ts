@@ -64,7 +64,7 @@ class OASSpecsService implements SpecificationSubService {
 		let schema = this.schema;
 		let permissions: Permission[] = [];
 
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const allowedFields = await fetchAllowedFieldMap(
 				{
 					accountability: this.accountability,

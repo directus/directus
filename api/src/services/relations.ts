@@ -88,7 +88,7 @@ export class RelationsService {
 	}
 
 	async readOne(collection: string, field: string): Promise<Relation> {
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{
 					accountability: this.accountability,
