@@ -184,6 +184,16 @@ export class RolesService extends ItemsService {
 		}
 	}
 
+	private getRoleAccessType(data: Partial<Item>) {
+		if ('admin_access' in data && data['admin_access'] === true) {
+			return 'admin';
+		} else if ('app_access' in data && (data['app_access'] === true || 'app_access' in data === false)) {
+			return 'app';
+		} else {
+			return 'api';
+		}
+	}
+
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
 
@@ -193,17 +203,22 @@ export class RolesService extends ItemsService {
 			api: 0,
 		};
 
+		const existingIds: PrimaryKey[] = [];
+
 		if ('users' in data) {
-			if ('admin_access' in data && data['admin_access'] === true) {
-				increasedCounts.admin += data['users'].length;
-			} else if ('app_access' in data && data['app_access'] === true) {
-				increasedCounts.app += data['users'].length;
-			} else {
-				increasedCounts.api += data['users'].length;
+			const type = this.getRoleAccessType(data);
+			increasedCounts[type] += data['users'].length;
+
+			for (const user of data['users']) {
+				if (typeof user === 'string') {
+					existingIds.push(user);
+				} else if (typeof user === 'object' && 'id' in user) {
+					existingIds.push(user['id']);
+				}
 			}
 		}
 
-		await checkIncreasedUserLimits(this.knex, increasedCounts);
+		await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 
 		return super.createOne(data, opts);
 	}
@@ -215,21 +230,26 @@ export class RolesService extends ItemsService {
 			api: 0,
 		};
 
+		const existingIds: PrimaryKey[] = [];
+
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
 
 			if ('users' in partialItem) {
-				if ('admin_access' in partialItem && partialItem['admin_access'] === true) {
-					increasedCounts.admin += partialItem['users'].length;
-				} else if ('app_access' in partialItem && partialItem['app_access'] === true) {
-					increasedCounts.app += partialItem['users'].length;
-				} else {
-					increasedCounts.api += partialItem['users'].length;
+				const type = this.getRoleAccessType(partialItem);
+				increasedCounts[type] += partialItem['users'].length;
+
+				for (const user of partialItem['users']) {
+					if (typeof user === 'string') {
+						existingIds.push(user);
+					} else if (typeof user === 'object' && 'id' in user) {
+						existingIds.push(user['id']);
+					}
 				}
 			}
 		}
 
-		await checkIncreasedUserLimits(this.knex, increasedCounts);
+		await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 
 		return super.createMany(data, opts);
 	}
@@ -245,6 +265,8 @@ export class RolesService extends ItemsService {
 			};
 
 			let increasedUsers = 0;
+
+			const existingIds: PrimaryKey[] = [];
 
 			const existingRole:
 				| { count: number | string; admin_access: number | boolean; app_access: number | boolean }
@@ -266,6 +288,14 @@ export class RolesService extends ItemsService {
 
 				if (Array.isArray(users)) {
 					increasedUsers = users.length - Number(existingRole.count);
+
+					for (const user of users) {
+						if (typeof user === 'string') {
+							existingIds.push(user);
+						} else if (typeof user === 'object' && 'id' in user) {
+							existingIds.push(user['id']);
+						}
+					}
 				} else {
 					increasedUsers += users.create.length;
 					increasedUsers -= users.delete.length;
@@ -313,34 +343,12 @@ export class RolesService extends ItemsService {
 			}
 
 			if (isAccessChanged) {
-				const existingRoleUsersCount = Number(existingRole.count);
-
-				switch (accessType) {
-					case 'admin':
-						increasedCounts.admin += existingRoleUsersCount;
-						break;
-					case 'app':
-						increasedCounts.app += existingRoleUsersCount;
-						break;
-					case 'api':
-						increasedCounts.api += existingRoleUsersCount;
-						break;
-				}
+				increasedCounts[accessType] += Number(existingRole.count);
 			}
 
-			switch (accessType) {
-				case 'admin':
-					increasedCounts.admin += increasedUsers;
-					break;
-				case 'app':
-					increasedCounts.app += increasedUsers;
-					break;
-				case 'api':
-					increasedCounts.api += increasedUsers;
-					break;
-			}
+			increasedCounts[accessType] += increasedUsers;
 
-			await checkIncreasedUserLimits(this.knex, increasedCounts);
+			await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
 		}
@@ -392,9 +400,6 @@ export class RolesService extends ItemsService {
 			}
 
 			if ('admin_access' in data || 'app_access' in data) {
-				const adminAccess = data['admin_access'] === true;
-				const appAccess = data['app_access'] === true;
-
 				const existingCounts: AccessTypeCount = await getUserCountsByRoles(this.knex, keys);
 
 				const increasedCounts: AccessTypeCount = {
@@ -403,12 +408,11 @@ export class RolesService extends ItemsService {
 					api: 0,
 				};
 
-				if (adminAccess) {
-					increasedCounts.admin = existingCounts.app + existingCounts.api;
-				} else if (appAccess) {
-					increasedCounts.app = existingCounts.admin + existingCounts.api;
-				} else {
-					increasedCounts.api = existingCounts.admin + existingCounts.app;
+				const type = this.getRoleAccessType(data);
+
+				for (const [existingType, existingCount] of Object.entries(existingCounts)) {
+					if (existingType === type) continue;
+					increasedCounts[type] += existingCount;
 				}
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);

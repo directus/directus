@@ -885,19 +885,19 @@ describe('Integration Tests', () => {
 			it('calculates the number of increased admin users', async () => {
 				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
 				await service.createOne({ admin_access: false, app_access: true, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
 				await service.createOne({ admin_access: false, app_access: false, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
 			});
 		});
 
@@ -909,7 +909,7 @@ describe('Integration Tests', () => {
 					{ admin_access: true, app_access: true, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 6, app: 0, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 6, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
@@ -919,7 +919,7 @@ describe('Integration Tests', () => {
 					{ admin_access: false, app_access: true, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 6, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 6, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
@@ -929,7 +929,7 @@ describe('Integration Tests', () => {
 					{ admin_access: false, app_access: false, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 }, []);
 			});
 		});
 
@@ -952,7 +952,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased admin users with access change', async () => {
@@ -973,7 +973,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 5, app: 0, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 5, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
@@ -993,7 +993,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users with access change', async () => {
@@ -1014,7 +1014,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 5, api: 0 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 5, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
@@ -1035,7 +1035,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
 			});
 
 			it('calculates the number of increased api users with access change', async () => {
@@ -1056,7 +1056,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 });
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 }, []);
 			});
 		});
 
