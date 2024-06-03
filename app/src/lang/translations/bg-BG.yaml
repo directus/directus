@@ -557,7 +557,6 @@ replace_from_url: Замяна на файла от URL
 no_image_selected: Няма избрано изображение
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файла
-open_file_in_tab: Отваряне в нов таб
 start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
@@ -745,7 +744,6 @@ cannot_edit_global_bookmarks: Глобалната отметката, не мо
 bookmarks: Отметки
 presets: Заготовки
 unexpected_error: Неочаквана грешка
-unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от потребителя.

@@ -414,7 +414,6 @@ replace_from_library: 從庫中替換檔案
 replace_from_url: 從 URL 中替換檔案
 no_file_selected: 沒有選擇檔案
 download_file: 下載檔案
-open_file_in_tab: 在新分頁中開啟
 start_export: 開始匯出
 not_available_for_local_downloads: 無法下載至本地
 exporting_all_items_in_collection: 將 {collection} 中的所有 {total} 個項目匯出。
@@ -576,7 +575,6 @@ cannot_edit_global_bookmarks: 無法編輯全站書籤
 bookmarks: 書籤
 presets: 預設值
 unexpected_error: 未預期的錯誤
-unexpected_error_copy: 發生意外的錯誤，請稍後再試。
 copy_details: 複製詳細資訊
 no_app_access: 無使用權限
 no_app_access_copy: 這個使用者無法使用管理介面。

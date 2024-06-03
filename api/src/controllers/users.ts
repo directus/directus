@@ -5,9 +5,10 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, Role } from '@directus/types';
+import type { PrimaryKey, RegisterUserInput, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
+import checkRateLimit from '../middleware/rate-limiter-registration.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -497,6 +498,48 @@ router.post(
 
 		await service.disableTFA(req.params['pk']);
 		return next();
+	}),
+	respond,
+);
+
+const registerSchema = Joi.object<RegisterUserInput>({
+	email: Joi.string().email().required(),
+	password: Joi.string().required(),
+	verification_url: Joi.string().uri(),
+	first_name: Joi.string(),
+	last_name: Joi.string(),
+});
+
+router.post(
+	'/register',
+	checkRateLimit,
+	asyncHandler(async (req, _res, next) => {
+		const { error, value } = registerSchema.validate(req.body);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		const usersService = new UsersService({ accountability: null, schema: req.schema });
+		await usersService.registerUser(value);
+
+		return next();
+	}),
+	respond,
+);
+
+const verifyRegistrationSchema = Joi.string();
+
+router.get(
+	'/register/verify-email',
+	asyncHandler(async (req, res, _next) => {
+		const { error, value } = verifyRegistrationSchema.validate(req.query['token']);
+
+		if (error) {
+			return res.redirect('/admin/login');
+		}
+
+		const service = new UsersService({ accountability: null, schema: req.schema });
+		const id = await service.verifyRegistration(value);
+
+		return res.redirect(`/admin/users/${id}`);
 	}),
 	respond,
 );

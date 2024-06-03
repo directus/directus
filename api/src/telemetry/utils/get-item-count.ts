@@ -6,15 +6,26 @@ export interface CollectionCount {
 	count: number;
 }
 
+export interface CollectionCountTask {
+	collection: string;
+	where?: readonly [string, string, string | boolean | number];
+}
+
 /**
- * Get the item count of the given collection in the given database
+ * Get the item count of the given task in the given database
  * @param db Knex instance to count against
- * @param collection Table to count rows in
+ * @param task Task to count rows for
  * @returns Collection name and count
  */
-export const countCollection = async (db: Knex, collection: string): Promise<CollectionCount> => {
-	const count = await db.count('*', { as: 'count' }).from(collection).first();
-	return { collection, count: Number(count?.['count'] ?? 0) };
+export const countCollection = async (db: Knex, task: CollectionCountTask): Promise<CollectionCount> => {
+	const query = db.count('*', { as: 'count' }).from(task.collection);
+
+	if (task.where) {
+		query.where(...task.where);
+	}
+
+	const count = await query.first();
+	return { collection: task.collection, count: Number(count?.['count'] ?? 0) };
 };
 
 /**
@@ -30,18 +41,18 @@ export const mergeResults = (acc: Record<string, number>, value: CollectionCount
 };
 
 /**
- * Get an object of item counts for the given collections
+ * Get an object of item counts for the given tasks
  * @param db Database instance to get counts in
- * @param collections Array of table names to get count from
+ * @param tasks Array of tasks to get count for
  */
-export const getItemCount = async <T extends readonly string[]>(db: Knex, collections: T) => {
+export const getItemCount = async <T extends readonly CollectionCountTask[]>(db: Knex, tasks: T) => {
 	// Counts can be a little heavy if the table is very large, so we'll only ever execute 3 of these
 	// queries simultaneously to not overload the database
 	const limit = pLimit(3);
 
-	const calls = collections.map((collection) => limit(countCollection, db, collection));
+	const calls = tasks.map((task) => limit(countCollection, db, task));
 
 	const results = await Promise.all(calls);
 
-	return <Record<T[number], number>>results.reduce(mergeResults, {});
+	return <Record<T[number]['collection'], number>>results.reduce(mergeResults, {});
 };

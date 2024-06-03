@@ -436,7 +436,6 @@ replace_from_library: Menggantikan Berkas dari Pustaka
 replace_from_url: Menggantikan Berkas dari URL
 no_file_selected: Tidak Ada Berkas Yang Dipilih
 download_file: Unduh Berkas
-open_file_in_tab: Buka file di tab baru
 start_export: Mulai Ekspor
 not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
 exporting_all_items_in_collection: Ekspor semua {total} item dalam {collection}.
@@ -601,7 +600,6 @@ cannot_edit_global_bookmarks: Tidak dapat mengubah Markah Peran secara Global
 bookmarks: Markah
 presets: Preset
 unexpected_error: Kesalahan Tidak Terduga
-unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi nanti.
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.

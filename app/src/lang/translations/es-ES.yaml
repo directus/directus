@@ -436,7 +436,6 @@ replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
 download_file: Descargar Archivo
-open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Iniciar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
@@ -600,7 +599,6 @@ cannot_edit_global_bookmarks: No se puede editar marcadores globales
 bookmarks: Marcadores
 presets: Predefinidos
 unexpected_error: Error Inesperado
-unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.

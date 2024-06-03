@@ -106,7 +106,7 @@ function handleClick() {
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type" />
+				<v-icon-file v-if="type || imgError" :ext="type ?? ''" />
 				<template v-else>
 					<v-image
 						v-if="showThumbnail"

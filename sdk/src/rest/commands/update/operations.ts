@@ -1,5 +1,5 @@
 import type { DirectusOperation } from '../../../schema/operation.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updateOperations =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple operations as batch.
+ * @param items
+ * @param query
+ * @returns Returns the operation objects for the updated operations.
+ */
+export const updateOperationsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
+		items: NestedPartial<DirectusOperation<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateOperationOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/operations`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing operation.

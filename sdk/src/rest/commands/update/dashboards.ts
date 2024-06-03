@@ -1,5 +1,5 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updateDashboards =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple dashboards as batch.
+ * @param items
+ * @param query
+ * @returns Returns the dashboard objects for the updated dashboards.
+ */
+export const updateDashboardsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+		items: NestedPartial<DirectusDashboard<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateDashboardOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/dashboards`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing dashboard.

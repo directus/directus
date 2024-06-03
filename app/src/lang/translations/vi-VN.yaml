@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Về chúng tôi
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
@@ -7,14 +28,18 @@ method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
+marketplace: Cửa hàng
+extensions: Phần mở rộng
 modules: Mô đun
 module_bar: Thanh công cụ
 logs: Nhật ký
+unknown: Không xác định
 reset_width: Đặt lại Chiều rộng
 tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 location: Vị trí
+collection_names_are_case_sensitive: Tên của các Tập dữ liệu là phân biệt hoa thường
 condition_rules: Điều kiện
 input: Nhập
 maps: Bản đồ
@@ -26,6 +51,8 @@ duplicate_field: Nhân bản Trường
 half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
 group: Chọn nhóm
+popular: Phổ biến
+recent: Gần đây
 export_items: Xuất các mục
 and: Và
 or: Hoặc
@@ -39,8 +66,16 @@ extension_module: Các Mô-Đun
 extension_panel: Bảng
 extension_theme: Theme
 extension_hook: Móc
+extension_endpoint: Endpoint
+extension_operation: Thao tác
 extension_modules: Mô đun
 extension_hooks: Móc
+extension_missing: Thiếu
+extension_reload_required: Cần phải tải lại trang
+extension_reload_required_copy: Cần phải tải lại trang để nhìn thấy những thay đổi sau khi kích hoạt hoặc tắt các mở rộng của ứng dụng.
+extension_reload_now: Hiện tại đang tải lại
+enable: Bật lên
+disable: Tắt
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -49,6 +84,7 @@ enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+leaf: Nút lá
 indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
@@ -83,6 +119,7 @@ rename_folder: Đổi Tên Thư Mục
 delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
+version: Phiên bản
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -395,7 +432,6 @@ replace_from_library: Hoán đổi với Tập Tin từ Thư Viện
 replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
 no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
-open_file_in_tab: Mở file trong tab mới
 start_export: Xuất dữ liệu
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
 exporting_limited_items_in_collection: '{count} trên {total} dòng dữ liệu trong {collection} sẽ được xuất.'
@@ -546,7 +582,6 @@ edit_bookmark: Chỉnh sửa Dấu trang
 bookmarks: Đánh dấu
 presets: Mẫu thiết lập
 unexpected_error: Lỗi Bất Thường
-unexpected_error_copy: Đã có lỗi không xác định xảy ra. Vui lòng thử lại sau.
 copy_details: Sao chép Chi tiết
 no_app_access: Không Có Quyền Truy Cập Chương Trình
 no_app_access_copy: Người dùng này không có quyền truy cập chương trình quản trị.
@@ -788,6 +823,7 @@ no_layout_collection_selected_yet: Không có bố cục/danh mục nào đượ
 batch_delete_confirm: >-
   Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
+source_registry: Cửa hàng
 collection: Danh mục
 collections: Danh mục
 content: Nội dung

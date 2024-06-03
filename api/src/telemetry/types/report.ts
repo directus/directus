@@ -68,4 +68,19 @@ export interface TelemetryReport {
 	 * Number of shares in the system
 	 */
 	shares: number;
+
+	/**
+	 * Maximum number of fields in a collection
+	 */
+	fields_max: number;
+
+	/**
+	 * Number of fields in the system
+	 */
+	fields_total: number;
+
+	/**
+	 * Size of the database in bytes
+	 */
+	database_size: number;
 }

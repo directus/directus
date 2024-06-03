@@ -463,7 +463,6 @@ replace_from_library: Ersätt fil från biblioteket
 replace_from_url: Ersätt fil från URL
 no_file_selected: Ingen fil vald
 download_file: Ladda ner fil
-open_file_in_tab: Öppna fil i ny flik
 start_export: Påbörja exportering
 not_available_for_local_downloads: Inte tillgänglig för lokala nedladdningar
 exporting_all_items_in_collection: Exporterar alla {total} objekt inom {collection}.
@@ -618,7 +617,6 @@ edit_global_bookmark: Redigera globalt bokmärke
 bookmarks: Bokmärken
 presets: Förval
 unexpected_error: Oväntat fel
-unexpected_error_copy: Ett oväntat fel har inträffat. Försök igen senare.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.

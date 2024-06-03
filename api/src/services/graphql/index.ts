@@ -54,9 +54,12 @@ import {
 	SESSION_COOKIE_OPTIONS,
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
+import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSecret } from '../../utils/get-secret.js';
 import { getService } from '../../utils/get-service.js';
 import isDirectusJWT from '../../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../../utils/jwt.js';
@@ -89,6 +92,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
+import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
 
 const env = useEnv();
 
@@ -189,23 +193,25 @@ export class GraphQLService {
 
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
+		const sanitizedSchema = sanitizeGraphqlSchema(this.schema);
+
 		const schema = {
 			read:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['read']),
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['read']),
 			create:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['create']),
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['create']),
 			update:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['update']),
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['update']),
 			delete:
 				this.accountability?.admin === true
-					? this.schema
-					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete']),
+					? sanitizedSchema
+					: reduceSchema(sanitizedSchema, this.accountability?.permissions || null, ['delete']),
 		};
 
 		const subscriptionEventType = schemaComposer.createEnumTC({
@@ -2052,6 +2058,8 @@ export class GraphQLService {
 							public_background: { type: GraphQLString },
 							public_note: { type: GraphQLString },
 							custom_css: { type: GraphQLString },
+							public_registration: { type: GraphQLBoolean },
+							public_registration_verify_email: { type: GraphQLBoolean },
 						},
 					}),
 				},
@@ -2311,7 +2319,7 @@ export class GraphQLService {
 						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 						if (isDirectusJWT(token)) {
-							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							const payload = verifyAccessJWT(token, getSecret());
 							currentRefreshToken = payload.session;
 						}
 					}
@@ -2378,7 +2386,7 @@ export class GraphQLService {
 						const token = req?.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 						if (isDirectusJWT(token)) {
-							const payload = verifyAccessJWT(token, env['SECRET'] as string);
+							const payload = verifyAccessJWT(token, getSecret());
 							currentRefreshToken = payload.session;
 						}
 					}
@@ -2531,11 +2539,11 @@ export class GraphQLService {
 				resolve: async (_, args) => {
 					const { nanoid } = await import('nanoid');
 
-					if (args['length'] && Number(args['length']) > 500) {
-						throw new InvalidPayloadError({ reason: `"length" can't be more than 500 characters` });
+					if (args['length'] !== undefined && (args['length'] < 1 || args['length'] > 500)) {
+						throw new InvalidPayloadError({ reason: `"length" must be between 1 and 500` });
 					}
 
-					return nanoid(args['length'] ? Number(args['length']) : 32);
+					return nanoid(args['length'] ? args['length'] : 32);
 				},
 			},
 			utils_hash_generate: {
@@ -2618,6 +2626,46 @@ export class GraphQLService {
 					});
 
 					await service.acceptInvite(args['token'], args['password']);
+					return true;
+				},
+			},
+			users_register: {
+				type: GraphQLBoolean,
+				args: {
+					email: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
+					verification_url: GraphQLString,
+					first_name: GraphQLString,
+					last_name: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+
+					const ip = req ? getIPFromReq(req) : null;
+
+					if (ip) {
+						await rateLimiter.consume(ip);
+					}
+
+					await service.registerUser({
+						email: args.email,
+						password: args.password,
+						verification_url: args.verification_url,
+						first_name: args.first_name,
+						last_name: args.last_name,
+					});
+
+					return true;
+				},
+			},
+			users_register_verify: {
+				type: GraphQLBoolean,
+				args: {
+					token: new GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({ accountability: null, schema: this.schema });
+					await service.verifyRegistration(args.token);
 					return true;
 				},
 			},

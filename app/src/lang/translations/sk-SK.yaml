@@ -555,7 +555,6 @@ replace_from_url: Nahradiť súbor z URL
 no_image_selected: Nie je vybratý žiadny obrázok
 no_file_selected: Nevybrali ste žiadny súbor
 download_file: Stiahnuť súbor
-open_file_in_tab: Otvoriť súbor v novej záložke
 start_export: Spustiť export
 not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
 exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
@@ -739,7 +738,6 @@ cannot_edit_global_bookmarks: Nadá sa upraviť globálna záložka
 bookmarks: Záložky
 presets: Presety
 unexpected_error: Neočakávaná chyba
-unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova neskôr.
 copy_details: Kopírovať podrobnosti
 no_app_access: Žiadny prístup applikácie
 no_app_access_copy: Tento používateľ nemôže používať admin.

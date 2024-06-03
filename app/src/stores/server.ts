@@ -32,8 +32,16 @@ export type Info = {
 		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
+		public_registration: boolean | null;
+		public_registration_verify_email: boolean | null;
 	};
 	rateLimit?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
+	rateLimitGlobal?:
 		| false
 		| {
 				points: number;
@@ -114,7 +122,10 @@ export const useServerStore = defineStore('serverStore', () => {
 				await replaceQueue();
 			} else {
 				const { duration, points } = serverInfoResponse.data.data.rateLimit;
-				await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });
+				const intervalCap = 1;
+				/** Interval for 1 point */
+				const interval = Math.ceil((duration * 1000) / points);
+				await replaceQueue({ intervalCap, interval });
 			}
 		}
 	};

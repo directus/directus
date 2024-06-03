@@ -91,6 +91,7 @@ n_files: '{n} Файли'
 verified: Підтверджено
 homepage: Головна сторінка
 repository: Сховище
+reload_page: Перезавантажити Сторінку
 reload_required: Необхідно перезавантажити
 report_an_issue: Повідомити про проблему
 website: Веб-сайт
@@ -361,6 +362,7 @@ fields_group: Група полів
 no_collections_found: Колекцій не знайдено.
 new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
 search_collection: Пошук колекцій...
+search_role: Пошуковий запит...
 search_field: Пошуковий запит...
 new_field: 'Нове поле'
 new_collection: 'Нова колекція'
@@ -446,6 +448,7 @@ revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
 presentation_text_values_cannot_be_reimported: 'Використовує текст презентації, значення не можуть бути повторно імпортовані.'
 download_page_as_csv: 'Завантажити сторінку у CSV'
+download_page_as_csv_unsupported: Цей макет не підтримує завантаження поточної сторінки.
 private_user: Приватний користувач
 creation_preview: Попередній перегляд створення
 revision_preview: Перегляд редакції
@@ -745,7 +748,7 @@ cannot_edit_global_bookmarks: Неможливо редагувати глоба
 bookmarks: Закладки
 presets: Шаблони
 unexpected_error: Неочікувана помилка
-unexpected_error_copy: Сталася неочікувана помилка. Будь ласка, повторіть спробу пізніше.
+unexpected_error_copy: Сталася неочікувана помилка. Будь ласка, спробуйте ще.
 copy_details: Копіювати деталі
 no_app_access: Немає доступу до додатку
 no_app_access_copy: В цього користувача нема дозволу на використовування додатку адміністратора.
@@ -1255,6 +1258,8 @@ fields:
     height: Висота
     charset: Таблиця симовлів
     duration: Тривалість
+    focal_point_x: X-координати
+    focal_point_y: Y-координати
   directus_users:
     first_name: Ім'я
     last_name: Прізвище
@@ -1272,6 +1277,7 @@ fields:
     status: Статус
     status_draft: Чернетка
     status_invited: Запрошені
+    status_unverified: Непідтверджений
     status_active: Активний
     status_suspended: Призупинені
     status_archived: Архівовані
@@ -1335,6 +1341,14 @@ fields:
     custom_aspect_ratios: Настроювані пропорції
     theme_light_overrides: Налаштування світлої теми
     theme_dark_overrides: Налаштування темної теми
+    public_registration: Реєстрація користувача
+    public_registration_note: Дозволяє користувачам реєструватися через [реєстраційний маршрут](/admin/register).
+    public_registration_role: Роль користувача
+    public_registration_role_note: Ця роль призначається користувачам, які реєструються за допомогою цього методу. Не впливає на вже зареєстрованих користувачів.
+    public_registration_email_filter: Фільтр поштових адрес
+    public_registration_email_filter_note: Тільки email адреси, що відповідають цьому фільтру, можуть реєструватися.
+    public_registration_verify_email: Підтвердіть адресу
+    public_registration_verify_email_note: Відправляє email до реєстраційного користувача із проханням натиснути на посилання для підтвердження, перш ніж він зможе увійти.
   directus_shares:
     name: Назва
     role: Роль
@@ -1582,6 +1596,7 @@ authenticated: Підтверджено
 options: Параметри
 otp: Одноразовий пароль
 password: Пароль
+confirm_password: Підтвердьте пароль
 permissions: Права
 relationship: Відносини
 reset: Скинути
@@ -1598,6 +1613,14 @@ select_field_type: Обрати тип поля
 select_interface: Виберіть інтерфейс
 select_display: Виберіть дисплей
 settings: Налаштування
+register: Регістр
+registration_successful_headline: Успішно!
+registration_successful_note: Тепер ви можете перейти до сторінки входу.
+registration_successful_check_email_note: |
+  Зверніть увагу, що перед тим як ви зможете увійти, вам потрібно підтвердити свою адресу електронної пошти, натиснувши на посилання для підтвердження, яке буде надіслано вам.
+dont_have_an_account: Не маєте облікового запису?
+already_have_an_account: Вже маєте обліковий запис?
+sign_up_now: Зареєструватися зараз
 sign_in: Вхід
 sign_out: Вихід
 sign_out_confirm: Ви справді бажаєте вийти?
@@ -1630,6 +1653,7 @@ delete_item: Видалити елемент
 interfaces:
   list-m2a:
     prefix_note: За замовчуванням використовується назва колекції відповідного елемента.
+    sorting_disabled: Сортування відключено, тому що є більше елементів, ніж може вміститися на одній сторінці.
   filter:
     name: Фільтр
     description: Налаштувати фільтр об'єкта.
@@ -2168,6 +2192,7 @@ layouts:
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
 vertical: Вертикальний
+axis: Вісь
 x_axis: Вісь X
 y_axis: Вісь Y
 y_axis_function: Функція осі Y
@@ -2319,6 +2344,7 @@ operations:
     token: Ключ
     token_placeholder: eyJhbGciOi......
     options: Параметри
+    options_placeholder: 'Зверніться до https://www.npmjs.com/package/jsonwebtoken#use to available options'
     sign: Маркер підпису
     verify: Перевірка токену
     decode: Розшифровування токену
@@ -2341,6 +2367,7 @@ operations:
     recipient: Користувач
     recipient_placeholder: Введіть UUID...
     recipient_note: Додайте UUID користувача і натисніть Enter...
+    item_note: Ключ елемента або відносний URL
     message: Повідомлення
     subject: Тема
   request:
@@ -2373,16 +2400,45 @@ operations:
     parallel: Паралельно
     batch: Пакетно
     batch_size: Розмір пакету
+    cache: Кеш
+unit: Одиниця
 standard: Стандартний
+scientific: Науковий
+engineering: Інженіринг
 compact: Компактна
+currency: Валюта
+notation: Записка
 style: Стиль
 fonts:
   thin: Тонкий
+  extra_light: Надлегкий
+  light: Легкий
   normal: Нормальний
   medium: Середній
+  semi_bold: Напівжирний
   bold: Напівжирний
+  extra_bold: Товстий
   black: Чорний
   italic: Курсив
+  oblique: Косий
+  small: Малий
+  large: Великий
   auto: Автоматично
+text_wrap: Перенесення тексту
+center: Центр
+justify: За шириною
+text_align: Вирівнювання
+font_weight: Жирність Шрифту
+font_style: Стиль шрифту
+font_size: Розмір шрифту
+minimum_fraction_digits: Мінімальна десяткова система
+maximum_fraction_digits: Мінімальна десяткова система
+show_percentage: Показати відсотки
+aggregation: Агрегація
+series_grouping: Серія
+date_precision: Лазерна точність
+export_dashboard: Підтримка моніторингу
+duplicate_dashboard: Панель дублювання
+search_dashboard: Пошук резервних копій...
 search_flow: Пошуковий потік...
 percent: Відсоток

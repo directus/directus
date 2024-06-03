@@ -62,6 +62,9 @@ export default defineLayout<LayoutOptions>({
 				return null;
 			}
 
+			// Subscribe to 'view' updates to get latest start/end dates
+			void viewInfo.value;
+
 			const start = formatISO(calendar.value.view.activeStart);
 			const end = formatISO(calendar.value.view.activeEnd);
 			const startsHere = { [startDateField.value]: { _between: [start, end] } };
@@ -254,8 +257,19 @@ export default defineLayout<LayoutOptions>({
 			showingCount,
 			createCalendar,
 			destroyCalendar,
+			resetPresetAndRefresh,
+			refresh,
 			download,
 		};
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
+
+		function refresh() {
+			getItems();
+		}
 
 		function download() {
 			if (!collection.value) return;
