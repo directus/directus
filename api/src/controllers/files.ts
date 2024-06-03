@@ -9,7 +9,7 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
-import path from 'path';
+import path, { join } from 'path';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -17,6 +17,8 @@ import { FilesService } from '../services/files.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { Server } from '@tus/server';
+import { FileStore } from '@tus/file-store';
 
 const router = express.Router();
 const env = useEnv();
@@ -182,6 +184,25 @@ router.post(
 	}),
 	respond,
 );
+
+const tusServer = new Server({
+	path: '/files/upload',
+	datastore: new FileStore({directory: join(
+		env['EXTENSIONS_PATH'] as string,
+		'.temp',
+	)}),
+	onUploadCreate: async (req, res, upload) => {
+		console.log('create', /*req, res,*/ upload);
+		return res;
+	},
+	onUploadFinish: async (req, res, upload) => {
+		console.log('finished', /*req, res,*/ upload);
+		return res;
+	},
+});
+
+router.use('/upload', tusServer.handle.bind(tusServer));
+router.use('/upload/*', tusServer.handle.bind(tusServer));
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
