@@ -41,6 +41,12 @@ data:
     many_field: version
     one_collection: directus_versions
 
+  ### Roles
+  - many_collection: directus_roles
+    many_field: parent
+    one_collection: directus_roles
+    one_field: children
+
   ### Presets
   - many_collection: directus_presets
     many_field: user
@@ -55,7 +61,7 @@ data:
     many_field: parent
     one_collection: directus_folders
 
-  ### Files
+  ### Files
   - many_collection: directus_files
     many_field: folder
     one_collection: directus_folders
