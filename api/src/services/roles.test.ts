@@ -1,4 +1,5 @@
 import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import { randomUUID } from '@directus/random';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -15,7 +16,6 @@ import {
 	type MockedFunction,
 } from 'vitest';
 
-import { randomUUID } from 'crypto';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
