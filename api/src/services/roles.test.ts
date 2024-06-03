@@ -706,11 +706,11 @@ describe('Integration Tests', () => {
 			// "as any" are needed since these are private methods
 			checkForOtherAdminRolesSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
-				.mockResolvedValueOnce(true);
+				.mockResolvedValue(true);
 
 			checkForOtherAdminUsersSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
-				.mockResolvedValueOnce(true);
+				.mockResolvedValue(true);
 		});
 
 		afterEach(() => {

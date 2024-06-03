@@ -354,18 +354,10 @@ export class RolesService extends ItemsService {
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const updatedKeys = data.map((item) => item[primaryKeyField]);
-		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
-		try {
-			if (setsToNoAdmin) {
-				await this.checkForOtherAdminRoles(updatedKeys);
-			}
-		} catch (err: any) {
-			opts.preMutationError = err;
+		if (!opts.mutationTracker) {
+			opts.mutationTracker = this.createMutationTracker();
 		}
-
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		const keys: PrimaryKey[] = [];
 
