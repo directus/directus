@@ -374,7 +374,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 
-			if ('admin_access' in data || 'admin_access' in data) {
+			if ('admin_access' in data || 'app_access' in data) {
 				const adminAccess = data['admin_access'] === true;
 				const appAccess = data['app_access'] === true;
 
