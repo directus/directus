@@ -352,7 +352,7 @@ export class AuthenticationService {
 				provider: record.user_provider,
 				external_identifier: record.user_external_identifier,
 				auth_data: record.user_auth_data,
-				role: record.role_id,
+				role: record.user_role,
 				app_access: globalAccess.app,
 				admin_access: globalAccess.admin,
 			});
@@ -364,7 +364,7 @@ export class AuthenticationService {
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: record.user_id,
-			role: record.role_id,
+			role: record.user_role,
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
