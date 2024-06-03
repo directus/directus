@@ -903,8 +903,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/tsconfig
       '@pnpm/find-workspace-dir':
-        specifier: 7.0.0
-        version: 7.0.0
+        specifier: 7.0.1
+        version: 7.0.1
       '@pnpm/find-workspace-packages':
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
@@ -3974,6 +3974,10 @@ packages:
     resolution: {integrity: sha512-SKtHdV09k9+6jkohv9YuYmKMKNpxknoGjo0c6eN8x2Z3MHW2cuSt1OD/L16eCqdKQL+FUbvULxig0b9X9VK2/g==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/error@6.0.1':
+    resolution: {integrity: sha512-7yjO0RgmWYb4OKgcWC33yD4Z2CxE7Tm7vXX1SmS7GDifDT/bgZZhHeS2xq/+W6y9yhwIrRSA+7AlQL1NM2wIvw==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/fetcher-base@14.0.1':
     resolution: {integrity: sha512-DXPZ33CrmDQXnYzwvqyP7I0BF0MQELo4ah2JGpXhLhgOdzU+vj7zdKFo2x82L8anrK861IRi01V8o14oATq1vA==}
     engines: {node: '>=16.14'}
@@ -3982,8 +3986,8 @@ packages:
     resolution: {integrity: sha512-fnsaegb+0q7Ku6AyCmoVtBeCuO8ytB7YMEaGHC+0MGoRsxxa6EVLgi2H4abKr8LLslf5tHJBnOH24DjST3UNfQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/find-workspace-dir@7.0.0':
-    resolution: {integrity: sha512-9lv3Cm8FsWJ1qo5jhwwNam4LSy7jojQIJ8nmsoMH2uIa5MKwyhoDafm5DviF81fUfoNUDQ4FuB/zF5/BgiblMg==}
+  '@pnpm/find-workspace-dir@7.0.1':
+    resolution: {integrity: sha512-o1LAFM/5MChI6qBolMBOznzatch01UK3wIgoAE/b779qs1FakksB278nMRTwRY58PZSBT+RxZ2RCMjlxPLeVWw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/find-workspace-packages@6.0.9':
@@ -14242,6 +14246,10 @@ snapshots:
     dependencies:
       '@pnpm/constants': 8.0.0
 
+  '@pnpm/error@6.0.1':
+    dependencies:
+      '@pnpm/constants': 8.0.0
+
   '@pnpm/fetcher-base@14.0.1':
     dependencies:
       '@pnpm/resolver-base': 10.0.1
@@ -14255,9 +14263,9 @@ snapshots:
     transitivePeerDependencies:
       - domexception
 
-  '@pnpm/find-workspace-dir@7.0.0':
+  '@pnpm/find-workspace-dir@7.0.1':
     dependencies:
-      '@pnpm/error': 6.0.0
+      '@pnpm/error': 6.0.1
       find-up: 5.0.0
 
   '@pnpm/find-workspace-packages@6.0.9(@pnpm/logger@5.0.0)':
