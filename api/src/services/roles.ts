@@ -285,11 +285,11 @@ export class RolesService extends ItemsService {
 				.first();
 
 			if (!existingRole) {
-				const role = await this.knex
+				const role = (await this.knex
 					.select('directus_roles.admin_access', 'directus_roles.app_access')
 					.from('directus_roles')
 					.where('directus_roles.id', '=', key)
-					.first() ?? { admin_access: null, app_access: null };
+					.first()) ?? { admin_access: null, app_access: null };
 
 				existingRole = { count: 0, ...role } as RoleCount;
 			}
