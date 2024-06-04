@@ -315,8 +315,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       pino:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.1.0
+        version: 9.1.0
       pino-http:
         specifier: 9.0.0
         version: 9.0.0
@@ -1219,8 +1219,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       pino:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.1.0
+        version: 9.1.0
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -9368,12 +9368,15 @@ packages:
   pino-std-serializers@6.2.2:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
 
+  pino-std-serializers@7.0.0:
+    resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
+
   pino@8.20.0:
     resolution: {integrity: sha512-uhIfMj5TVp+WynVASaVEJFTncTUe4dHBq6CWplu/vBgvGHhvBvQfxz+vcOrnnBQdORH3izaGEurLfNlq3YxdFQ==}
     hasBin: true
 
-  pino@9.0.0:
-    resolution: {integrity: sha512-uI1ThkzTShNSwvsUM6b4ND8ANzWURk9zTELMztFkmnCQeR/4wkomJ+echHee5GMWGovoSfjwdeu80DsFIt7mbA==}
+  pino@9.1.0:
+    resolution: {integrity: sha512-qUcgfrlyOtjwhNLdbhoL7NR4NkHjzykAPw0V2QLFbvu/zss29h4NkRnibyFzBrNCbzCOY3WZ9hhKSwfOkNggYA==}
     hasBin: true
 
   pirates@4.0.6:
@@ -10366,6 +10369,9 @@ packages:
   sonic-boom@3.7.0:
     resolution: {integrity: sha512-IudtNvSqA/ObjN97tfgNmOKyDOs4dNcg4cUUsHDebqsgb8wGBBwb31LIgShNO8fye0dFI52X1+tFoKKI6Rq1Gg==}
 
+  sonic-boom@4.0.1:
+    resolution: {integrity: sha512-hTSD/6JMLyT4r9zeof6UtuBDpjJ9sO08/nmS5djaA9eozT9oOlNdpXSnzcgj4FTqpk3nkLrs61l4gip9r1HCrQ==}
+
   sort-keys@4.2.0:
     resolution: {integrity: sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg==}
     engines: {node: '>=8'}
@@ -10793,11 +10799,11 @@ packages:
     resolution: {integrity: sha512-OEI0IWCe+Dw46019YLl6V10Us5bi574EvlJEOcAkB29IzQ/mYD1A6RyNHLjZPiHCmuodxvgF6U+vZO1L15lxVA==}
     engines: {node: '>=0.2.6'}
 
-  thread-stream@2.4.1:
-    resolution: {integrity: sha512-d/Ex2iWd1whipbT681JmTINKw0ZwOUBZm7+Gjs64DHuX34mmw8vJL2bFAaNacaW72zYiTJxSHi5abUuOi5nsfg==}
-
   thread-stream@2.7.0:
     resolution: {integrity: sha512-qQiRWsU/wvNolI6tbbCKd9iKaTnCXsTwVxhhKM6nctPdujTyztjlbUkUTUymidWcMnZ5pWR0ej4a0tjsW021vw==}
+
+  thread-stream@3.0.2:
+    resolution: {integrity: sha512-cBL4xF2A3lSINV4rD5tyqnKH4z/TgWPvT+NaVhJDSwK962oo/Ye7cHSMbDzwcu7tAE1SfU6Q4XtV6Hucmi6Hlw==}
 
   through2@2.0.5:
     resolution: {integrity: sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==}
@@ -20620,21 +20626,9 @@ snapshots:
 
   pino-std-serializers@6.2.2: {}
 
-  pino@8.20.0:
-    dependencies:
-      atomic-sleep: 1.0.0
-      fast-redact: 3.3.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 1.1.0
-      pino-std-serializers: 6.2.2
-      process-warning: 3.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.4.3
-      sonic-boom: 3.7.0
-      thread-stream: 2.4.1
+  pino-std-serializers@7.0.0: {}
 
-  pino@9.0.0:
+  pino@8.20.0:
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.3.0
@@ -20647,6 +20641,20 @@ snapshots:
       safe-stable-stringify: 2.4.3
       sonic-boom: 3.7.0
       thread-stream: 2.7.0
+
+  pino@9.1.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+      fast-redact: 3.3.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 1.2.0
+      pino-std-serializers: 7.0.0
+      process-warning: 3.0.0
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.4.3
+      sonic-boom: 4.0.1
+      thread-stream: 3.0.2
 
   pirates@4.0.6: {}
 
@@ -21869,6 +21877,10 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
+  sonic-boom@4.0.1:
+    dependencies:
+      atomic-sleep: 1.0.0
+
   sort-keys@4.2.0:
     dependencies:
       is-plain-obj: 2.1.0
@@ -22421,11 +22433,11 @@ snapshots:
 
   thirty-two@1.0.2: {}
 
-  thread-stream@2.4.1:
+  thread-stream@2.7.0:
     dependencies:
       real-require: 0.2.0
 
-  thread-stream@2.7.0:
+  thread-stream@3.0.2:
     dependencies:
       real-require: 0.2.0
 
