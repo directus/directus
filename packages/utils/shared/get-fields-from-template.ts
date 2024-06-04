@@ -1,5 +1,7 @@
 import { isNil } from 'lodash-es';
 
+const FAKE_FIELDS = ['$version'];
+
 export function getFieldsFromTemplate(template?: string | null): string[] {
 	if (isNil(template)) return [];
 
@@ -10,7 +12,9 @@ export function getFieldsFromTemplate(template?: string | null): string[] {
 		return [];
 	}
 
-	return fields.map((field) => {
-		return field.replace(/{{/g, '').replace(/}}/g, '').trim();
-	});
+	return fields
+		.map((field) => {
+			return field.replace(/{{/g, '').replace(/}}/g, '').trim();
+		})
+		.filter((field) => !FAKE_FIELDS.includes(field));
 }
