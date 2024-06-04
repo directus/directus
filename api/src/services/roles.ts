@@ -285,13 +285,17 @@ export class RolesService extends ItemsService {
 				.first();
 
 			if (!existingRole) {
-				const role = (await this.knex
-					.select('admin_access', 'app_access')
-					.from('directus_roles')
-					.where('id', '=', key)
-					.first()) ?? { admin_access: null, app_access: null };
+				try {
+					const role = (await this.knex
+						.select('admin_access', 'app_access')
+						.from('directus_roles')
+						.where('id', '=', key)
+						.first()) ?? { admin_access: null, app_access: null };
 
-				existingRole = { count: 0, ...role } as RoleCount;
+					existingRole = { count: 0, ...role } as RoleCount;
+				} catch {
+					existingRole = { count: 0, admin_access: null, app_access: null } as RoleCount;
+				}
 			}
 
 			if ('users' in data) {
@@ -328,14 +332,18 @@ export class RolesService extends ItemsService {
 						userIds.push(user.id);
 					}
 
-					const existingCounts = await getRoleCountsByUsers(this.knex, userIds);
+					try {
+						const existingCounts = await getRoleCountsByUsers(this.knex, userIds);
 
-					if (existingRole.admin_access) {
-						increasedUsers += existingCounts.app + existingCounts.api;
-					} else if (existingRole.app_access) {
-						increasedUsers += existingCounts.admin + existingCounts.api;
-					} else {
-						increasedUsers += existingCounts.admin + existingCounts.app;
+						if (existingRole.admin_access) {
+							increasedUsers += existingCounts.app + existingCounts.api;
+						} else if (existingRole.app_access) {
+							increasedUsers += existingCounts.admin + existingCounts.api;
+						} else {
+							increasedUsers += existingCounts.admin + existingCounts.app;
+						}
+					} catch {
+						// ignore failed user call
 					}
 				}
 			}
