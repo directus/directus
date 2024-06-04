@@ -9,6 +9,10 @@ describe('boolean', () => {
 	test('Returns boolean if value is literal "false"', () => {
 		expect(guessType('true')).toBe('boolean');
 	});
+
+	test('Returns boolean if value is of type boolean', () => {
+		expect(guessType(true)).toBe('boolean');
+	});
 });
 
 describe('number', () => {
@@ -27,11 +31,23 @@ describe('number', () => {
 	test('Returns json for numbers bigger than the max safe integer', () => {
 		expect(guessType('9007199254740992')).toBe('json');
 	});
+
+	test('Returns json for numbers smaller than the min safe integer', () => {
+		expect(guessType('-9007199254740992')).toBe('json');
+	});
+
+	test('Returns number for values of type number', () => {
+		expect(guessType(12345)).toBe('number');
+	});
 });
 
 describe('array', () => {
 	test('Returns array for strings containing a comma', () => {
 		expect(guessType('a,b,c')).toBe('array');
+	});
+
+	test('Returns array for values that are actual arrays', () => {
+		expect(guessType(['a', 'b', 'c'])).toBe('array');
 	});
 });
 

@@ -18,7 +18,7 @@ import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
 import type { ConsoleInterface, WebSocketInterface } from '../index.js';
 
-type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
+type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
 const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
@@ -38,7 +38,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
  * @returns A Directus realtime client.
  */
 export function realtime(config: WebSocketConfig = {}) {
-	return <Schema extends object>(client: DirectusClient<Schema>) => {
+	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
 
@@ -58,17 +58,19 @@ export function realtime(config: WebSocketConfig = {}) {
 		const debug = (level: keyof ConsoleInterface, ...data: any[]) =>
 			config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
 
-		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
+		const withStrictAuth = async (url: URL | string, currentClient: AuthWSClient<Schema>) => {
+			const newUrl = new client.globals.URL(url);
+
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
 				const token = await currentClient.getToken();
-				if (token) url.searchParams.set('access_token', token);
+				if (token) newUrl.searchParams.set('access_token', token);
 			}
 
-			return url;
+			return newUrl.toString();
 		};
 
 		const getSocketUrl = async (currentClient: AuthWSClient<Schema>) => {
-			if ('url' in config) return await withStrictAuth(new client.globals.URL(config.url), currentClient);
+			if ('url' in config) return await withStrictAuth(config.url, currentClient);
 
 			// if the main URL is a websocket URL use it directly!
 			if (['ws:', 'wss:'].includes(client.url.protocol)) {

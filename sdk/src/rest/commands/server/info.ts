@@ -5,6 +5,8 @@ export type ServerInfoOutput = {
 	project: {
 		project_name: string;
 		default_language: string;
+		public_registration: boolean;
+		public_registration_verify_email: boolean;
 	};
 	rateLimit?:
 		| {
@@ -46,7 +48,7 @@ export type ServerInfoOutput = {
  * @returns Information about the current installation.
  */
 export const serverInfo =
-	<Schema extends object>(): RestCommand<ServerInfoOutput, Schema> =>
+	<Schema>(): RestCommand<ServerInfoOutput, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/server/info',

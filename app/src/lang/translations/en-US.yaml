@@ -94,6 +94,7 @@ n_files: '{n} Files'
 verified: Verified
 homepage: Homepage
 repository: Repository
+reload_page: Reload Page
 reload_required: Reload Required
 report_an_issue: Report an Issue
 website: Website
@@ -375,6 +376,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_role: Search Role...
 search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
@@ -460,6 +462,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
+download_page_as_csv_unsupported: This layout does not support downloading the current page.
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -571,7 +574,7 @@ replace_from_url: Replace File from URL
 no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
-open_file_in_tab: Open file in new tab
+open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
@@ -760,7 +763,7 @@ cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
+unexpected_error_copy: An unexpected error has occurred. Please try again.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
@@ -1281,6 +1284,8 @@ fields:
     height: Height
     charset: Charset
     duration: Duration
+    focal_point_x: X-Coordinate
+    focal_point_y: Y-Coordinate
   directus_users:
     first_name: First Name
     last_name: Last Name
@@ -1298,6 +1303,7 @@ fields:
     status: Status
     status_draft: Draft
     status_invited: Invited
+    status_unverified: Unverified
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
@@ -1362,6 +1368,16 @@ fields:
     custom_aspect_ratios: Custom Aspect Ratios
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
+    public_registration: User Registration
+    public_registration_note: Allows users to register via the [registration route](/admin/register).
+    public_registration_role: User Role
+    public_registration_role_note:
+      This role is assigned to users who register using this method. Does not affect already registered users.
+    public_registration_email_filter: Email Address Filter
+    public_registration_email_filter_note: Only email addresses matching this filter can register.
+    public_registration_verify_email: Verify Email
+    public_registration_verify_email_note:
+      Sends an email to the registering user asking them to click on a verification link before they can sign in.
   directus_shares:
     name: Name
     role: Role
@@ -1613,6 +1629,7 @@ authenticated: Authenticated
 options: Options
 otp: One-Time Password
 password: Password
+confirm_password: Confirm Password
 permissions: Permissions
 relationship: Relationship
 reset: Reset
@@ -1629,6 +1646,14 @@ select_field_type: Select a field type
 select_interface: Select an interface
 select_display: Select a display
 settings: Settings
+register: Register
+registration_successful_headline: Success!
+registration_successful_note: You may now proceed to the sign in page.
+registration_successful_check_email_note: |
+  Please note that before you can sign in, you'll need to verify your email address by clicking on the verification link sent to you.
+dont_have_an_account: Don't have an account?
+already_have_an_account: Already have an account?
+sign_up_now: Sign up now
 sign_in: Sign In
 sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
@@ -1661,6 +1686,7 @@ delete_item: Delete Item
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.
+    sorting_disabled: Sorting is disabled because there are more items than can fit on one page.
   filter:
     name: Filter
     description: Configure a filter object.
@@ -2210,6 +2236,7 @@ layouts:
 
 horizontal: Horizontal
 vertical: Vertical
+axis: Axis
 x_axis: X-Axis
 y_axis: Y-Axis
 y_axis_function: Y-Axis Function

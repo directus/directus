@@ -33,7 +33,7 @@ extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
-unknown: I panjohur
+unknown: Panjohur
 reset_width: Rikthe Gjerësinë
 tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
@@ -66,7 +66,7 @@ extension_module: Modul
 extension_panel: Paneli
 extension_theme: Temë
 extension_hook: Hook
-extension_endpoint: Pikë fundore
+extension_endpoint: Endpoint
 extension_operation: Operacion
 extension_bundle: Paketë
 extension_interfaces: Ndërfaqe
@@ -91,6 +91,7 @@ n_files: '{n} Skedarë'
 verified: Verifikuar
 homepage: Faqja kryesore
 repository: Depo
+reload_page: Rifresko Faqen
 reload_required: Kërkohet ringarkim
 report_an_issue: Raporto një Problem
 website: Faqe interneti
@@ -361,6 +362,7 @@ fields_group: Grup Fushash
 no_collections_found: Nuk u gjetën koleksione.
 new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
 search_collection: Kërko Koleksion...
+search_role: Kërko Rolin...
 search_field: Kërko Fushë...
 new_field: 'Fushë e Re'
 new_collection: 'Koleksion i Ri'
@@ -446,6 +448,7 @@ revision_delta_other: Rishikim
 revision_delta_by: '{date} nga {user}'
 presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
 download_page_as_csv: 'Shkarko Faqen si CSV'''
+download_page_as_csv_unsupported: Ky format nuk mbështet shkarkimin e faqes aktuale.
 private_user: Përdorues Privat
 creation_preview: Parapamje e Krijimit
 revision_preview: Parapamje e Rishikimit
@@ -557,7 +560,7 @@ replace_from_url: Zëvendëso Skedarin nga URL
 no_image_selected: Asnjë imazh nuk është zgjedhur
 no_file_selected: Asnjë Skedar i Zgjedhur
 download_file: Shkarko Skedarin
-open_file_in_tab: Hap skedarin në skedë të re
+open_file_in_tab: Hap Skedarin në Skedë të Re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
@@ -743,7 +746,7 @@ cannot_edit_global_bookmarks: Nuk mund të Modifikoni Faqerojtësit Globalë
 bookmarks: Faqerojtësit
 presets: Paracaktuar
 unexpected_error: Gabim i papritur
-unexpected_error_copy: Ka ndodhur një gabim i papritur. Ju lutem provoni përsëri më vonë.
+unexpected_error_copy: Ndodhi një gabim i papritur. Ju lutem provoni përsëri.
 copy_details: Kopjo Detajet
 no_app_access: S'ka Akses në Aplikacion
 no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
@@ -1253,6 +1256,8 @@ fields:
     height: Lartësi
     charset: Set Karakteresh
     duration: Kohëzgjatje
+    focal_point_x: Koordinata-X
+    focal_point_y: Koordinata-Y
   directus_users:
     first_name: Emri
     last_name: Mbiemri
@@ -1270,6 +1275,7 @@ fields:
     status: Statusi
     status_draft: Draft
     status_invited: I ftuar
+    status_unverified: E pa verifikuar
     status_active: Aktiv
     status_suspended: I pezulluar
     status_archived: I arkivuar
@@ -1333,6 +1339,14 @@ fields:
     custom_aspect_ratios: Raporte Personalizuar të Aspekteve
     theme_light_overrides: Personalizimi i Temës së Ndritshme
     theme_dark_overrides: Personalizimi i Temës së Errët
+    public_registration: Regjistrimi i Përdoruesit
+    public_registration_note: Lejon përdoruesit të regjistrohen përmes [rrugës së regjistrimit](/admin/register).
+    public_registration_role: Roli i Përdoruesit
+    public_registration_role_note: Ky rol caktohet për përdoruesit që regjistrohen duke përdorur këtë metodë. Nuk ndikon në përdoruesit tashmë të regjistruar.
+    public_registration_email_filter: Filtri i Adresës së Email-it
+    public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
+    public_registration_verify_email: Verifiko Email-in
+    public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
   directus_shares:
     name: Emri
     role: Roli
@@ -1580,6 +1594,7 @@ authenticated: I autentifikuar
 options: Opsione
 otp: Fjalëkalim i Njëherëshëm
 password: Fjalëkalimi
+confirm_password: Konfirmo Fjalëkalimin
 permissions: Leje
 relationship: Marrëdhënie
 reset: Reset
@@ -1596,6 +1611,14 @@ select_field_type: Zgjidh llojin e fushës
 select_interface: Zgjidh ndërfaqen
 select_display: Zgjidh një shfaqje
 settings: Parametra
+register: Regjistrohu
+registration_successful_headline: Sukses!
+registration_successful_note: Tani mund të vazhdoni në faqen e identifikimit.
+registration_successful_check_email_note: |
+  Ju lutem vini re se përpara se të mund të identifikoheni, do të duhet të verifikoni adresën tuaj të email-it duke klikuar në lidhjen e verifikimit që ju është dërguar.
+dont_have_an_account: Nuk keni një llogari?
+already_have_an_account: Keni tashmë një llogari?
+sign_up_now: Regjistrohuni tani
 sign_in: Hyni
 sign_out: Dil
 sign_out_confirm: A jeni i sigurt se dëshironi të dilni?
@@ -1628,6 +1651,7 @@ delete_item: Fshi Artikullin
 interfaces:
   list-m2a:
     prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
+    sorting_disabled: Renditja është çaktivizuar sepse ka më shumë artikuj se sa mund të përshtaten në një faqe.
   filter:
     name: Filtri
     description: Konfiguro një objekt filtrues.
@@ -2166,6 +2190,7 @@ layouts:
     not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
 horizontal: Horizontal
 vertical: Vertikal
+axis: Boshti
 x_axis: Aks X
 y_axis: Aks Y
 y_axis_function: Funskion i Aksit Y

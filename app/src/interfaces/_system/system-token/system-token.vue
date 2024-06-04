@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClipboard } from '@/composables/use-clipboard';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
@@ -17,6 +18,7 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const { t } = useI18n();
+const { isCopySupported, copyToClipboard } = useClipboard();
 
 const placeholder = computed(() => {
 	if (props.disabled && !props.value) return null;
@@ -62,6 +64,14 @@ function emitValue(newValue: string | null) {
 	emit('input', newValue);
 	localValue.value = newValue;
 }
+
+function select(event: FocusEvent) {
+	if (localValue.value) (event.target as HTMLInputElement | null)?.select();
+}
+
+function deselect() {
+	window.getSelection()?.removeAllRanges();
+}
 </script>
 
 <template>
@@ -74,8 +84,18 @@ function emitValue(newValue: string | null) {
 			readonly
 			:class="{ saved: value && !localValue }"
 			@update:model-value="emitValue"
+			@focus="select"
+			@blur="deselect"
 		>
 			<template #append>
+				<v-icon
+					v-if="localValue && isCopySupported"
+					v-tooltip="t('copy')"
+					name="content_copy"
+					clickable
+					class="clipboard-icon"
+					@click="copyToClipboard(value)"
+				/>
 				<v-icon
 					v-if="!disabled"
 					v-tooltip="value ? t('interfaces.system-token.regenerate') : t('interfaces.system-token.generate')"
@@ -113,6 +133,10 @@ function emitValue(newValue: string | null) {
 
 .v-notice {
 	margin-top: 12px;
+}
+
+.clipboard-icon {
+	margin-right: 4px;
 }
 
 .regenerate-icon {

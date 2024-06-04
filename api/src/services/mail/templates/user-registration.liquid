@@ -1,0 +1,37 @@
+{% layout 'base' %} {% block content %}
+
+<h1>Verify your email address</h1>
+
+<p style='padding-bottom: 30px'>
+  Thanks for registering at <i>{{ projectName }}</i>.
+  To complete your registration you need to verify your email address by opening the following verification-link.
+  Please feel free to ignore this email if you have not personally initiated the registration.
+</p>
+
+<a
+  class='button'
+  rel='noopener'
+  target='_blank'
+  href='{{url}}'
+  style='
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+    padding: 11px 24px;
+    border-radius: 8px;
+    background: #171717;
+    border: 1px solid #ffffff;
+  '
+>
+  <!--[if mso]>
+    <i style="letter-spacing: 25px; mso-font-width: -100%; mso-text-raise: 30pt"
+      >&nbsp;</i
+    >
+  <![endif]-->
+  <span style='mso-text-raise: 15pt'>Verify email</span>
+  <!--[if mso]> <i style="letter-spacing: 25px; mso-font-width: -100%">&nbsp;</i> <![endif]-->
+</a>
+
+{% endblock %}

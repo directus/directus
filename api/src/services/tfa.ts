@@ -1,8 +1,9 @@
+import { InvalidPayloadError } from '@directus/errors';
+import type { PrimaryKey } from '@directus/types';
 import type { Knex } from 'knex';
 import { authenticator } from 'otplib';
 import getDatabase from '../database/index.js';
-import { InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class TFAService {

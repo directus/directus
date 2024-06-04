@@ -1,10 +1,10 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdatePresetOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusPreset<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdatePresetOutput<
  * @throws Will throw if keys is empty
  */
 export const updatePresets =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		keys: DirectusPreset<Schema>['id'][],
 		item: Partial<DirectusPreset<Schema>>,
 		query?: TQuery,
@@ -35,6 +35,24 @@ export const updatePresets =
 	};
 
 /**
+ * Update multiple presets as batch.
+ * @param items
+ * @param query
+ * @returns Returns the preset objects for the updated presets.
+ */
+export const updatePresetsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
+		items: NestedPartial<DirectusPreset<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/presets`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing preset.
  * @param key
  * @param item
@@ -43,7 +61,7 @@ export const updatePresets =
  * @throws Will throw if key is empty
  */
 export const updatePreset =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		key: DirectusPreset<Schema>['id'],
 		item: Partial<DirectusPreset<Schema>>,
 		query?: TQuery,

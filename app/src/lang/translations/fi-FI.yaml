@@ -421,7 +421,6 @@ replace_from_library: Korvaa tiedosto kirjastosta
 replace_from_url: Korvaa tiedosto osoitteesta
 no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
-open_file_in_tab: Avaa tiedosto uudessa välilehdessä
 start_export: Aloita vienti
 not_available_for_local_downloads: Ei saatavilla paikallisille latauksille
 exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
@@ -582,7 +581,6 @@ cannot_edit_global_bookmarks: Yleisten kirjanmerkkien muokkaus epäonnistui
 bookmarks: Kirjainmerkit
 presets: Esiasetukset
 unexpected_error: Odottamaton virhe
-unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.

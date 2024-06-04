@@ -17,6 +17,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		loading?: boolean;
 		folder?: string;
 		collection: string;
 		field: string;
@@ -54,7 +55,7 @@ const {
 	refresh,
 } = useRelationSingle<
 	Pick<File, 'id' | 'title' | 'width' | 'height' | 'filesize' | 'type' | 'filename_download' | 'modified_on'>
->(value, query, relationInfo);
+>(value, query, relationInfo, { enabled: computed(() => !props.loading) });
 
 const { t, n, te } = useI18n();
 
@@ -145,6 +146,14 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 				<span class="message">
 					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+				</span>
+			</div>
+
+			<div v-else-if="!image.height && !image.width" class="image-error">
+				<v-icon large name="error" />
+
+				<span class="message">
+					{{ t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
