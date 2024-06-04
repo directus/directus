@@ -1,20 +1,19 @@
-import type { RequestHandler, Request, Response } from 'express';
-import '../types/express.d.ts';
+import type { Request, RequestHandler, Response } from 'express';
+import { expect, test, vi } from 'vitest';
 import asyncHandler from './async-handler.js';
-import { expect, vi, test } from 'vitest';
 
-let mockRequest: Partial<Request & { token?: string }>;
-let mockResponse: Partial<Response>;
+let mockRequest: Request;
+let mockResponse: Response;
 const nextFunction = vi.fn();
 
 test('Wraps async middleware in Promise resolve that will catch rejects and pass them to the nextFn', async () => {
-	const err = new Error('testing');
+	const error = new Error('testing');
 
 	const middleware: RequestHandler = async (_req, _res, _next) => {
-		throw err;
+		throw error;
 	};
 
-	await asyncHandler(middleware)(mockRequest as Request, mockResponse as Response, nextFunction);
+	await asyncHandler(middleware)(mockRequest, mockResponse, nextFunction);
 
-	expect(nextFunction).toHaveBeenCalledWith(err);
+	expect(nextFunction).toHaveBeenCalledWith(error);
 });
