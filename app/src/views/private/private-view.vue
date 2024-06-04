@@ -217,7 +217,7 @@ const appStore = useAppStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
-	return userStore.currentUser?.role?.app_access || false;
+	return userStore.currentUser?.app_access || false;
 });
 
 const notificationsPreviewActive = ref(false);

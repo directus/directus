@@ -17,7 +17,7 @@ const settingLink = computed(() => {
 	return props.role.id !== 'public' && props.lastAdmin
 		? {
 				name: 'settings-roles-item',
-				params: { primaryKey: props.role.id, lastAdminRoleId: props.role.id },
+				params: { primaryKey: props.role.id, deleteAllowed: false },
 		  }
 		: `/settings/roles/${props.role.id}`;
 });

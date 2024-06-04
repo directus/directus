@@ -115,6 +115,7 @@ field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
 add_field: Add Field
 role_name: Role Name
+policy_name: Policy Name
 branch: Branch
 leaf: Leaf
 indeterminate: Indeterminate
@@ -132,6 +133,7 @@ requires_value: Requires value
 create_preset: Create Preset
 create_panel: Create Panel
 create_role: Create Role
+create_policy: Create Policy
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
@@ -196,6 +198,7 @@ logoutReason:
 public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
+admin_policy_description: Initial administrative policy with unrestricted App/API access.
 no_description: No description...
 reached_maximum_number_of_extensions:
   You've reached the maximum number of extensions for this project ({n}). Contact your system administrator for more
@@ -268,9 +271,13 @@ field_permissions: Field Permissions
 field_validation: Field Validation
 field_presets: Field Presets
 permissions_for_role: 'Items the {role} Role can {action}.'
+permissions_for_policy: 'Items the {policy} Policy can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
+fields_for_policy: 'Fields the {policy} Policy can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
+validation_for_policy: 'Field {action} rules the {policy} Policy must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
+presets_for_policy: 'Field value defaults for the {policy} Policy.'
 presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
@@ -377,6 +384,7 @@ no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
 search_role: Search Role...
+search_policy: Search Policy...
 search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
@@ -1102,6 +1110,7 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
+settings_roles: User Roles
 settings_permissions: Access Control
 settings_project: Settings
 settings_appearance: Appearance
@@ -1156,6 +1165,8 @@ page_help_settings_datamodel_collections: >-
   as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
+page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
+page_help_settings_policies_item: "**Policy Detail** — Manage a policy's permissions and other settings."
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
@@ -1401,6 +1412,8 @@ fields:
     icon: Role Icon
     description: Description
     users: Users in Role
+    parent: Parent Role
+    children: Child Roles
   directus_policies:
     name: Policy Name
     description: Description
@@ -1491,16 +1504,22 @@ field_options:
     focal_point_divider: Focal Point
     filename_disk: Name on disk storage...
     filename_download: Name when downloading...
+  directus_policies:
+    name: A unique name for this policy...
+    description: A description of this policy...
+    ip_access: Add allowed IP addresses, IP ranges and CIDR blocks. Leave empty to allow all...
+    enforce_tfa: Enforce Two-Factor Authentication
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, IP ranges and CIDR blocks. Leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
       name_placeholder: Enter a title...
       link_name: Link
       link_placeholder: Relative or absolute URL...
+    parent_note: Optional parent role that this role inherits permissions from
+    children_note: Nested child roles that inherit this roles permissions
     collections_name: Collections
     collections_addLabel: Add Collection...
   directus_users:
@@ -1588,6 +1607,9 @@ continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
+editing_policy: '{policy} Policy'
+no_permissions: No Permissions
+permission_add_collection: Add Collection
 creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete

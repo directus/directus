@@ -7,11 +7,21 @@
 - collection: directus_fields
   action: read
 
-- collection: directus_permissions
+- collection: directus_access
   action: read
   permissions:
-    role:
-      _eq: $CURRENT_ROLE
+    _or:
+      - user:
+          _eq: $CURRENT_USER
+      - role:
+          _in: $CURRENT_ROLES
+
+- collection: directus_permissions
+  action: read
+# TODO
+#  permissions:
+#    role:
+#      _eq: $CURRENT_ROLE
 
 - collection: directus_relations
   action: read

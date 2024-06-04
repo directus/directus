@@ -2,12 +2,25 @@ table: directus_policies
 
 fields:
   - field: id
+    hidden: true
     special:
       - uuid
 
   - field: name
+    width: half
 
   - field: description
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_policies.description
+    width: full
+
+
+  - field: permissions
+    interface: system-permissions
+    special:
+      - o2m
+    # TODO this will have a new system-interface for managing the permissions in a coming PR
 
   - field: app_access
     interface: boolean
@@ -24,18 +37,14 @@ fields:
   - field: ip_access
     interface: tags
     options:
-      placeholder: $t:fields.directus_policies.ip_access
+      placeholder: $t:field_options.directus_policies.ip_access
     special:
       - cast-csv
     width: full
 
   - field: enforce_tfa
+    note: $t:field_options.directus_policies.enforce_tfa
     interface: boolean
     special:
       - cast-boolean
     width: half
-
-  - field: permissions
-    special:
-      - o2m
-    # TODO this will have a new system-interface for managing the permissions in a coming PR

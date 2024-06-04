@@ -81,7 +81,27 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'tabular',
 		layout_query: {
 			tabular: {
+				sort: ['name'],
 				fields: ['icon', 'name', 'description'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					icon: 36,
+					name: 248,
+					description: 500,
+				},
+			},
+		},
+	},
+	directus_policies: {
+		collection: 'directus_policies',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				sort: ['name'],
+				fields: ['icon', 'name', 'app_access', 'admin_access', 'description'],
 			},
 		},
 		layout_options: {

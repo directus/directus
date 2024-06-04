@@ -26,8 +26,15 @@ fields:
 
   - field: parent
     interface: select-dropdown-m2o
+    note: $t:field_options.directus_roles.parent_note
     options:
       template: '{{ name }}'
+      filter:
+        _and:
+          - id:
+              _neq: '{{ id }}'
+          - id:
+              _nin: '{{ children }}'
     special:
       - m2o
     width: half
@@ -36,13 +43,54 @@ fields:
       template: '{{ name }}'
 
   - field: children
-    interface: list-o2m
+    hidden: true
+    interface: list-o2m-tree-view
+    note: $t:field_options.directus_roles.children_note
     special:
       - o2m
     options:
+      displayTemplate: '{{ name }}'
+      enableCreate: false
       fields:
         - name
+      filter:
+        _and:
+          - id:
+              _neq: '{{ id }}'
+          - id:
+              _nin: '{{ children }}'
+    display: related-values
+    display_options:
+      template: '{{ name }}'
     width: full
+
+  - field: policies
+    interface: list-m2m
+    options:
+      template: '{{ name }}'
+      fields:
+        - name
+    special:
+      - m2m
+    width: full
+
+  - field: users_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: users_divider
+    interface: presentation-divider
+    options:
+      icon: people_alt
+      title: $t:users
+    special:
+      - alias
+      - no-data
+    width: full
+    group: users_group
 
   - field: users
     interface: list-o2m
@@ -53,3 +101,4 @@ fields:
         - first_name
         - last_name
     width: full
+    group: users_group

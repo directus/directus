@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRelationsStore } from '@/stores/relations';
 import { useSync } from '@directus/composables';
-import { Permission, Role } from '@directus/types';
+import { Permission, Policy } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	permission: Permission;
-	role?: Role;
+	policy?: Policy;
 }>();
 
 const emit = defineEmits(['update:permission']);
@@ -63,9 +63,9 @@ const fieldWarnings = computed(() => {
 	<div>
 		<v-notice>
 			{{
-				t('presets_for_role', {
+				t('presets_for_policy', {
 					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
+					policy: policy ? policy.name : t('public_label'),
 				})
 			}}
 		</v-notice>

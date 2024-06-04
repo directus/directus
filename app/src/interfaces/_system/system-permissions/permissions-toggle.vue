@@ -1,28 +1,25 @@
 <script setup lang="ts">
-import api from '@/api';
 import { Collection, Permission } from '@directus/types';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import useUpdatePermissions from '../composables/use-update-permissions';
 
 const props = defineProps<{
 	collection: Collection;
 	action: 'create' | 'read' | 'update' | 'delete' | 'share';
-	role: string | null;
-	permissions: Permission[];
+	permission?: Permission;
 	loading?: boolean;
 	appMinimal?: Partial<Permission>;
 }>();
 
+const emit = defineEmits<{
+	setFullAccess: [];
+	setNoAccess: [];
+	edit: [];
+}>();
+
 const { t } = useI18n();
 
-const router = useRouter();
-
-const { collection, role, permissions } = toRefs(props);
-const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
-
-const permission = computed(() => getPermission(props.action));
+const { permission } = toRefs(props);
 
 const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 	if (permission.value === undefined) return 'none';
@@ -40,8 +37,6 @@ const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 
 const saving = ref(false);
 
-const refresh = inject<() => Promise<void>>('refresh-permissions');
-
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
 
@@ -54,33 +49,6 @@ const appMinimalLevel = computed(() => {
 
 	return 'partial';
 });
-
-async function openPermissions() {
-	// If this collection isn't "managed" yet, make sure to add it to directus_collections first
-	// before trying to associate any permissions with it
-	if (props.collection.meta === null) {
-		await api.patch(`/collections/${props.collection.collection}`, {
-			meta: {},
-		});
-	}
-
-	if (permission.value) {
-		router.push(`/settings/roles/${props.role || 'public'}/${permission.value.id}`);
-	} else {
-		saving.value = true;
-
-		const permResponse = await api.post('/permissions', {
-			role: props.role,
-			collection: props.collection.collection,
-			action: props.action,
-		});
-
-		await refresh?.();
-
-		saving.value = false;
-		router.push(`/settings/roles/${props.role || 'public'}/${permResponse.data.data.id}`);
-	}
-}
 </script>
 
 <template>
@@ -107,7 +75,7 @@ async function openPermissions() {
 			</template>
 
 			<v-list>
-				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="setFullAccess(action)">
+				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="emit('setFullAccess')">
 					<v-list-item-icon>
 						<v-icon name="check" />
 					</v-list-item-icon>
@@ -120,7 +88,7 @@ async function openPermissions() {
 					v-if="!!appMinimalLevel === false"
 					:disabled="permissionLevel === 'none'"
 					clickable
-					@click="setNoAccess(action)"
+					@click="emit('setNoAccess')"
 				>
 					<v-list-item-icon>
 						<v-icon name="block" />
@@ -132,7 +100,7 @@ async function openPermissions() {
 
 				<v-divider />
 
-				<v-list-item clickable @click="openPermissions">
+				<v-list-item clickable @click="emit('edit')">
 					<v-list-item-icon>
 						<v-icon name="rule" />
 					</v-list-item-icon>

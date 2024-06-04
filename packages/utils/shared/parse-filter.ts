@@ -13,6 +13,7 @@ type ParseFilterContext = {
 	// The user can add any custom fields to user
 	$CURRENT_USER?: User & Record<string, any>;
 	$CURRENT_ROLE?: Role & Record<string, any>;
+	$CURRENT_ROLES?: (Role & Record<string, any>)[];
 };
 
 export function parseFilter(
@@ -149,6 +150,11 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 
 	if (value.startsWith('$CURRENT_ROLE')) {
 		if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
+		return get(context, value, null);
+	}
+
+	if (value.startsWith('$CURRENT_ROLES')) {
+		if (value === '$CURRENT_ROLES') return accountability?.roles ?? null;
 		return get(context, value, null);
 	}
 }

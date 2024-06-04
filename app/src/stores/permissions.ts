@@ -15,9 +15,7 @@ export const usePermissionsStore = defineStore({
 		async hydrate() {
 			const userStore = useUserStore();
 
-			const response = await api.get('/permissions', {
-				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
-			});
+			const response = await api.get('/permissions/me');
 
 			const fields = getNestedDynamicVariableFields(response.data.data);
 
@@ -40,6 +38,8 @@ export const usePermissionsStore = defineStore({
 
 				return rawPermission;
 			});
+
+			console.log(this.permissions);
 
 			function getNestedDynamicVariableFields(rawPermissions: Permission[]) {
 				const fields = new Set<string>();

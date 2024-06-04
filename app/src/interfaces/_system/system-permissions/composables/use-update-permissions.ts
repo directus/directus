@@ -1,7 +1,9 @@
-import api from '@/api';
+import { Collection } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Collection, Permission } from '@directus/types';
-import { inject, ref, type Ref } from 'vue';
+import { useApi } from '@directus/composables';
+import { Permission } from '@directus/types';
+import { isNil } from 'lodash';
+import { inject, ref, Ref } from 'vue';
 
 const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
 type Action = (typeof ACTIONS)[number];
@@ -14,11 +16,12 @@ type UsableUpdatePermissions = {
 	setNoAccessAll: () => Promise<void>;
 };
 
-export default function useUpdatePermissions(
+export function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
-	role: Ref<string | null>,
+	policy: Ref<string | null>,
 ): UsableUpdatePermissions {
+	const api = useApi();
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
 
@@ -33,6 +36,7 @@ export default function useUpdatePermissions(
 
 		saving.value = true;
 
+		// TODO do we still want this behavior?
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
 		// before trying to associate any permissions with it
 		if (collection.value.meta === null) {
@@ -59,7 +63,7 @@ export default function useUpdatePermissions(
 		} else {
 			try {
 				await api.post('/permissions/', {
-					role: role.value,
+					policy: policy.value,
 					collection: collection.value.collection,
 					action: action,
 					fields: '*',
@@ -80,7 +84,7 @@ export default function useUpdatePermissions(
 
 		const permission = getPermission(action);
 
-		if (!permission) return;
+		if (!permission?.id) return;
 
 		saving.value = true;
 
@@ -99,6 +103,7 @@ export default function useUpdatePermissions(
 
 		saving.value = true;
 
+		// TODO do we still want this behavior?
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
 		// before trying to associate any permissions with it
 		if (collection.value.meta === null) {
@@ -124,7 +129,7 @@ export default function useUpdatePermissions(
 				} else {
 					try {
 						await api.post('/permissions/', {
-							role: role.value,
+							policy: policy.value,
 							collection: collection.value.collection,
 							action: action,
 							fields: '*',
@@ -148,7 +153,7 @@ export default function useUpdatePermissions(
 		saving.value = true;
 
 		try {
-			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
+			await api.delete('/permissions', { data: permissions.value.map((p) => p.id).filter((id) => !isNil(id)) });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

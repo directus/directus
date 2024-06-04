@@ -27,8 +27,13 @@ const links = computed<Link[][]>(() => [
 		},
 		{
 			icon: 'admin_panel_settings',
-			name: t('settings_permissions'),
+			name: t('settings_roles'),
 			to: `/settings/roles`,
+		},
+		{
+			icon: 'badge',
+			name: t('settings_permissions'),
+			to: `/settings/policies`,
 		},
 		{
 			icon: 'bolt',

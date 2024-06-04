@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useDialogRoute } from '@/composables/use-dialog-route';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions } from '@directus/system-data';
-import { Permission, Role } from '@directus/types';
-import { computed, ref, watch } from 'vue';
+import { Permission, Policy, PrimaryKey } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
 import Fields from './components/fields.vue';
 import Permissions from './components/permissions.vue';
@@ -16,33 +14,37 @@ import Tabs from './components/tabs.vue';
 import Validation from './components/validation.vue';
 
 const props = defineProps<{
-	permissionKey: string;
-	roleKey?: string;
+	active: boolean;
+	policyKey: PrimaryKey | null;
+	permissionKey: PrimaryKey | null;
+	edits: Record<string, any>;
 }>();
 
-defineEmits(['refresh']);
+const emit = defineEmits<{
+	input: [Permission | null];
+}>();
 
+const { permissionKey, policyKey } = toRefs(props);
 const { t } = useI18n();
 
-const router = useRouter();
+const { internalActive } = useActiveState();
 
-const isOpen = useDialogRoute();
+const permission = ref<Permission | null>(null);
+const policy = ref<Policy | null>(null);
 
-const permission = ref<Permission>();
-const role = ref<Role>();
 const loading = ref(false);
 
 const modalTitle = computed(() => {
 	if (loading.value || !permission.value) return t('loading');
 
-	if (props.roleKey) {
-		return role.value!.name + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
+	if (props.policyKey) {
+		return policy.value!.name + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 	}
 
 	return t('public_label') + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 });
 
-watch(() => props.permissionKey, load, { immediate: true });
+watch([permissionKey, policyKey], load, { immediate: true });
 
 const tabsValue = computed(() => {
 	if (!permission.value) return [];
@@ -104,7 +106,7 @@ watch(
 );
 
 const appMinimal = computed(() => {
-	if (!role.value?.app_access) return null;
+	if (!policy.value?.app_access) return null;
 
 	const currentPermission = permission.value;
 
@@ -117,47 +119,70 @@ const appMinimal = computed(() => {
 	);
 });
 
-async function close() {
-	if (permission.value && isPermissionEmpty(permission.value)) {
-		await api.delete(`/permissions/${permission.value.id}`);
-		router.replace(`/settings/roles/${props.roleKey || 'public'}`);
-	} else {
-		router.push(`/settings/roles/${props.roleKey || 'public'}`);
-	}
+function close() {
+	internalActive.value = false;
+	permission.value = null;
+	policy.value = null;
 }
 
 async function load() {
 	loading.value = true;
 
 	try {
-		if (props.roleKey) {
-			const response = await api.get(`/roles/${props.roleKey}`, {
+		if (props.policyKey !== null && props.policyKey !== '+') {
+			const response = await api.get(`/policies/${props.policyKey}`, {
 				params: {
 					deep: { users: { _limit: 0 } },
 				},
 			});
 
-			role.value = response.data.data;
+			policy.value = response.data.data;
 		}
 
-		const response = await api.get(`/permissions/${props.permissionKey}`);
-		permission.value = response.data.data;
-	} catch (error: any) {
-		if (error?.response?.status === 403) {
-			router.push(`/settings/roles/${props.roleKey || 'public'}`);
-		} else {
-			unexpectedError(error);
+		if (props.permissionKey !== null && props.permissionKey !== '+') {
+			const response = await api.get(`/permissions/${props.permissionKey}`);
+			permission.value = { ...response.data.data, ...props.edits };
+		} else if (props.permissionKey === '+') {
+			permission.value = { ...props.edits } as Permission;
 		}
+	} catch (error: any) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
+}
+
+function useActiveState() {
+	const localActive = ref(false);
+
+	const internalActive = computed({
+		get() {
+			return props.active ?? localActive.value;
+		},
+		set(newActive: boolean) {
+			localActive.value = newActive;
+			emit('update:active', newActive);
+		},
+	});
+
+	return { internalActive };
+}
+
+function save() {
+	if (permission.value && isPermissionEmpty(permission.value)) {
+		emit('input', null);
+	} else {
+		emit('input', permission.value);
+	}
+
+	close();
 }
 </script>
 
 <template>
 	<v-drawer
+		v-model="internalActive"
 		:title="modalTitle"
-		:model-value="isOpen"
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
@@ -167,30 +192,30 @@ async function load() {
 			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
 		</template>
 
-		<div v-if="!loading && permission" class="content">
+		<div v-if="!loading && permission && policy" class="content">
 			<permissions
 				v-if="currentTab === 'permissions'"
 				v-model:permission="permission"
-				:role="role"
+				:policy="policy"
 				:app-minimal="appMinimal?.permissions"
 			/>
 			<fields
 				v-if="currentTab === 'fields'"
 				v-model:permission="permission"
-				:role="role"
+				:policy="policy"
 				:app-minimal="appMinimal?.fields"
 			/>
 			<validation
 				v-if="currentTab === 'validation'"
 				v-model:permission="permission"
-				:role="role"
+				:policy="policy"
 				:app-minimal="appMinimal?.validation"
 			/>
-			<presets v-if="currentTab === 'presets'" v-model:permission="permission" :role="role" />
+			<presets v-if="currentTab === 'presets'" v-model:permission="permission" :policy="policy" />
 		</div>
 
 		<template v-if="!loading && permission" #actions>
-			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
+			<actions :policy-key="policyKey" :permission="permission" @save="save" />
 		</template>
 	</v-drawer>
 </template>

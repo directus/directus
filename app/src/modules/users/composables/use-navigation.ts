@@ -6,8 +6,9 @@ import { ref, Ref } from 'vue';
 let roles: Ref<BasicRole[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export type BasicRole = Pick<Role, 'id' | 'name' | 'icon' | 'admin_access'>;
+export type BasicRole = Pick<Role, 'id' | 'name' | 'icon' | 'parent'>;
 
+// TODO make this work with new r&p
 export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loading: Ref<boolean> } {
 	if (roles === null) {
 		roles = ref<BasicRole[] | null>(null);
@@ -31,7 +32,7 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 			const rolesResponse = await api.get(`/roles`, {
 				params: {
 					sort: 'name',
-					fields: ['id', 'name', 'icon', 'admin_access'],
+					fields: ['id', 'name', 'icon', 'parent'],
 				},
 			});
 

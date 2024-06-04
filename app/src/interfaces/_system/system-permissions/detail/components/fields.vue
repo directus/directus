@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useSync } from '@directus/composables';
-import type { Field, Permission, Role } from '@directus/types';
+import type { Field, Permission, Policy } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;
-	role?: Role;
+	policy?: Policy;
 	appMinimal?: Permission['fields'];
 }>();
 
@@ -80,8 +80,8 @@ const fields = computed({
 	<div>
 		<v-notice>
 			{{
-				t('fields_for_role', {
-					role: role ? role.name : t('public_label'),
+				t('fields_for_policy', {
+					policy: policy ? policy.name : t('public_label'),
 					action: t(permission.action).toLowerCase(),
 				})
 			}}

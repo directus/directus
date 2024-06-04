@@ -196,19 +196,30 @@ data:
     many_field: policy
     one_collection: directus_policies
     one_field: permissions
+    one_deselect_action: delete
 
   ### Access
   - many_collection: directus_access
     many_field: policy
     one_collection: directus_policies
+    junction_field: role
+
+  - many_collection: directus_access
+    many_field: policy
+    one_collection: directus_policies
+    junction_field: user
 
   - many_collection: directus_access
     many_field: role
     one_collection: directus_roles
+    one_field: policies
+    junction_field: policy
 
   - many_collection: directus_access
     many_field: user
     one_collection: directus_users
+    one_field: policies
+    junction_field: policy
 
   ### Roles
   - many_collection: directus_roles

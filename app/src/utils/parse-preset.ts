@@ -8,6 +8,7 @@ export function parsePreset(preset: Record<string, any> | null): Record<string, 
 	if (!currentUser) return preset ?? {};
 	if (!('id' in currentUser)) return preset ?? {};
 
+	// TODO make this work with new user
 	const accountability: Accountability = {
 		role: currentUser.role?.id ?? null,
 		user: currentUser.id,

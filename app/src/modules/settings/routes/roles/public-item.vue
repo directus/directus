@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
-import PermissionsOverview from './item/components/permissions-overview.vue';
 import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
 
 defineProps<{
@@ -24,9 +23,7 @@ const { t } = useI18n();
 			<settings-navigation />
 		</template>
 
-		<div class="roles">
-			<permissions-overview :role="null" :permission="permissionKey" />
-		</div>
+		<div class="roles"></div>
 
 		<template #sidebar>
 			<role-info-sidebar-detail :role="null" />
