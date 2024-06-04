@@ -1,5 +1,5 @@
 import type { DirectusFile } from '../../../schema/file.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updateFiles =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple files as batch.
+ * @param items
+ * @param query
+ * @returns Returns the file objects for the updated files.
+ */
+export const updateFilesBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
+		items: NestedPartial<DirectusFile<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/files`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing file, and/or replace it's file contents.

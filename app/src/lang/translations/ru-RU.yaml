@@ -656,7 +656,6 @@ cannot_edit_global_bookmarks: Невозможно редактировать г
 bookmarks: Закладки
 presets: Шаблоны
 unexpected_error: Неожиданная ошибка
-unexpected_error_copy: Произошла неожиданная ошибка. Пожалуйста, попробуйте позже.
 copy_details: Скопировать подробности
 no_app_access: Нет доступа к приложению
 no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.
