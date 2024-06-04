@@ -297,7 +297,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
-			if (data['role']) {
+			if (data['role'] && data['status'] === 'active') {
 				/*
 				 * data['role'] has the following cases:
 				 * - a string with existing role id
