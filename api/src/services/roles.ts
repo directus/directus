@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
@@ -47,7 +47,8 @@ export class RolesService extends ItemsService {
 	): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
-		if (!role) throw new ForbiddenError();
+		// No-op if role doesn't exist
+		if (!role) return;
 
 		const usersBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id,
