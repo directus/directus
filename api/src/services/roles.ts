@@ -19,6 +19,118 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
+	/**
+	 * Get the increased user counts for an updated role.
+	 */
+	private async getIncreasedUserCounts(key: PrimaryKey, data: Partial<Item>) {
+		const increasedCounts: AccessTypeCount = {
+			admin: 0,
+			app: 0,
+			api: 0,
+		};
+
+		const existingRole:
+			| {
+					count: number | string;
+					admin_access: number | boolean | null;
+					app_access: number | boolean | null;
+			  }
+			| undefined = await this.knex
+			.count('directus_users.id', { as: 'count' })
+			.select('directus_roles.admin_access', 'directus_roles.app_access')
+			.from('directus_users')
+			.where('directus_roles.id', '=', key)
+			.andWhere('directus_users.status', '=', 'active')
+			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
+			.first();
+
+		if (!existingRole) return increasedCounts;
+
+		let increasedUsers = 0;
+
+		if ('users' in data) {
+			const users: Alterations<User, 'id'> | (string | Partial<User>)[] = data['users'];
+
+			if (Array.isArray(users)) {
+				increasedUsers = users.length - Number(existingRole.count);
+			} else {
+				increasedUsers += users.create.length;
+				increasedUsers -= users.delete.length;
+
+				const existingCounts = await getRoleCountsByUsers(
+					this.knex,
+					users.update.map((user) => user.id),
+				);
+
+				if (existingRole.admin_access) {
+					increasedUsers += existingCounts.app + existingCounts.api;
+				} else if (existingRole.app_access) {
+					increasedUsers += existingCounts.admin + existingCounts.api;
+				} else {
+					increasedUsers += existingCounts.admin + existingCounts.app;
+				}
+			}
+		}
+
+		let isAccessChanged = false;
+		let accessType: 'admin' | 'app' | 'api' = 'api';
+
+		if ('app_access' in data) {
+			if (data['app_access'] === true) {
+				accessType = 'app';
+
+				if (!existingRole.app_access) isAccessChanged = true;
+			} else if (existingRole.app_access) {
+				isAccessChanged = true;
+			}
+		} else if (existingRole.app_access) {
+			accessType = 'app';
+		}
+
+		if ('admin_access' in data) {
+			if (data['admin_access'] === true) {
+				accessType = 'admin';
+
+				if (!existingRole.admin_access) isAccessChanged = true;
+			} else if (existingRole.admin_access) {
+				isAccessChanged = true;
+			}
+		} else if (existingRole.admin_access) {
+			accessType = 'admin';
+		}
+
+		if (isAccessChanged) {
+			const existingRoleUsersCount = Number(existingRole.count);
+
+			switch (accessType) {
+				case 'admin':
+					increasedCounts.admin += existingRoleUsersCount;
+					break;
+				case 'app':
+					increasedCounts.app += existingRoleUsersCount;
+					break;
+				case 'api':
+					increasedCounts.api += existingRoleUsersCount;
+					break;
+			}
+		}
+
+		switch (accessType) {
+			case 'admin':
+				increasedCounts.admin += increasedUsers;
+				break;
+			case 'app':
+				increasedCounts.app += increasedUsers;
+				break;
+			case 'api':
+				increasedCounts.api += increasedUsers;
+				break;
+		}
+
+		return increasedCounts;
+	}
+
 	private async checkForOtherAdminRoles(excludeKeys: PrimaryKey[]): Promise<void> {
 		// Make sure there's at least one admin role left after this deletion is done
 		const otherAdminRoles = await this.knex
@@ -238,114 +350,12 @@ export class RolesService extends ItemsService {
 		this.assertValidIpAccess(data);
 
 		try {
-			const increasedCounts: AccessTypeCount = {
-				admin: 0,
-				app: 0,
-				api: 0,
-			};
-
-			let increasedUsers = 0;
-
-			const existingRole:
-				| {
-						count: number | string;
-						admin_access: number | boolean | null;
-						app_access: number | boolean | null;
-				  }
-				| undefined = await this.knex
-				.count('directus_users.id', { as: 'count' })
-				.select('directus_roles.admin_access', 'directus_roles.app_access')
-				.from('directus_users')
-				.where('directus_roles.id', '=', key)
-				.andWhere('directus_users.status', '=', 'active')
-				.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
-				.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
-				.first();
-
-			if (!existingRole) throw new ForbiddenError();
-
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
-
-				const users: Alterations<User, 'id'> | (string | Partial<User>)[] = data['users'];
-
-				if (Array.isArray(users)) {
-					increasedUsers = users.length - Number(existingRole.count);
-				} else {
-					increasedUsers += users.create.length;
-					increasedUsers -= users.delete.length;
-
-					const existingCounts = await getRoleCountsByUsers(
-						this.knex,
-						users.update.map((user) => user.id),
-					);
-
-					if (existingRole.admin_access) {
-						increasedUsers += existingCounts.app + existingCounts.api;
-					} else if (existingRole.app_access) {
-						increasedUsers += existingCounts.admin + existingCounts.api;
-					} else {
-						increasedUsers += existingCounts.admin + existingCounts.app;
-					}
-				}
 			}
 
-			let isAccessChanged = false;
-			let accessType: 'admin' | 'app' | 'api' = 'api';
-
-			if ('app_access' in data) {
-				if (data['app_access'] === true) {
-					accessType = 'app';
-
-					if (!existingRole.app_access) isAccessChanged = true;
-				} else if (existingRole.app_access) {
-					isAccessChanged = true;
-				}
-			} else if (existingRole.app_access) {
-				accessType = 'app';
-			}
-
-			if ('admin_access' in data) {
-				if (data['admin_access'] === true) {
-					accessType = 'admin';
-
-					if (!existingRole.admin_access) isAccessChanged = true;
-				} else if (existingRole.admin_access) {
-					isAccessChanged = true;
-				}
-			} else if (existingRole.admin_access) {
-				accessType = 'admin';
-			}
-
-			if (isAccessChanged) {
-				const existingRoleUsersCount = Number(existingRole.count);
-
-				switch (accessType) {
-					case 'admin':
-						increasedCounts.admin += existingRoleUsersCount;
-						break;
-					case 'app':
-						increasedCounts.app += existingRoleUsersCount;
-						break;
-					case 'api':
-						increasedCounts.api += existingRoleUsersCount;
-						break;
-				}
-			}
-
-			switch (accessType) {
-				case 'admin':
-					increasedCounts.admin += increasedUsers;
-					break;
-				case 'app':
-					increasedCounts.app += increasedUsers;
-					break;
-				case 'api':
-					increasedCounts.api += increasedUsers;
-					break;
-			}
-
-			await checkIncreasedUserLimits(this.knex, increasedCounts);
+			const increasedUserCounts = await this.getIncreasedUserCounts(key, data);
+			await checkIncreasedUserLimits(this.knex, increasedUserCounts);
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
 		}
