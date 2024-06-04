@@ -14,6 +14,12 @@ import { UsersService } from './users.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { omit } from 'lodash-es';
 
+type RoleCount = {
+	count: number | string;
+	admin_access: number | boolean | null;
+	app_access: number | boolean | null;
+};
+
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_roles', options);
@@ -268,11 +274,7 @@ export class RolesService extends ItemsService {
 
 			const existingIds: PrimaryKey[] = [];
 
-			const existingRole: {
-				count: number | string;
-				admin_access: number | boolean | null;
-				app_access: number | boolean | null;
-			} = await this.knex
+			let existingRole: RoleCount | undefined = await this.knex
 				.count('directus_users.id', { as: 'count' })
 				.select('directus_roles.admin_access', 'directus_roles.app_access')
 				.from('directus_users')
@@ -280,7 +282,17 @@ export class RolesService extends ItemsService {
 				.andWhere('directus_users.status', '=', 'active')
 				.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
 				.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
-				.first() ?? { count: 0, app_access: null, admin_access: null };
+				.first();
+
+			if (!existingRole) {
+				const role = await this.knex
+					.select('directus_roles.admin_access', 'directus_roles.app_access')
+					.from('directus_roles')
+					.where('directus_roles.id', '=', key)
+					.first() ?? { admin_access: null, app_access: null };
+
+				existingRole = { count: 0, ...role } as RoleCount;
+			}
 
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
@@ -301,10 +313,22 @@ export class RolesService extends ItemsService {
 					increasedUsers += users.create.length;
 					increasedUsers -= users.delete.length;
 
-					const existingCounts = await getRoleCountsByUsers(
-						this.knex,
-						users.update.map((user) => user.id),
-					);
+					const userIds = [];
+
+					for (const user of users.update) {
+						if ('status' in user) {
+							// account for users being activated and deactivated
+							if (user['status'] === 'active') {
+								increasedUsers++;
+							} else {
+								increasedUsers--;
+							}
+						}
+
+						userIds.push(user.id);
+					}
+
+					const existingCounts = await getRoleCountsByUsers(this.knex, userIds);
 
 					if (existingRole.admin_access) {
 						increasedUsers += existingCounts.app + existingCounts.api;
