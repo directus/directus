@@ -261,13 +261,11 @@ export class RolesService extends ItemsService {
 			api: 0,
 		};
 
-		const existingRole:
-			| {
-					count: number | string;
-					admin_access: number | boolean | null;
-					app_access: number | boolean | null;
-			  }
-			| undefined = await this.knex
+		const existingRole: {
+			count: number | string;
+			admin_access: number | boolean | null;
+			app_access: number | boolean | null;
+		} = await this.knex
 			.count('directus_users.id', { as: 'count' })
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
@@ -275,9 +273,7 @@ export class RolesService extends ItemsService {
 			.andWhere('directus_users.status', '=', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
-			.first();
-
-		if (!existingRole) return;
+			.first() ?? { count: 0, app_access: null, admin_access: null };
 
 		let increasedUsers = 0;
 		const existingIds: PrimaryKey[] = [];
