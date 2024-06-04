@@ -23,6 +23,7 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 			.whereNotIn('directus_users.id', ignoreIds)
 			.andWhere('directus_users.status', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+			.where('directus_users.status', '=', 'active')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
 
@@ -32,11 +33,11 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 		const count = Number(record.count);
 
 		if (adminAccess) {
-			counts.admin = count;
+			counts.admin += count;
 		} else if (appAccess) {
-			counts.app = count;
+			counts.app += count;
 		} else {
-			counts.api = count;
+			counts.api += count;
 		}
 	}
 
