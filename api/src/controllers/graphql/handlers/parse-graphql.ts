@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError, InvalidQueryError, MethodNotAllowedError } from '@directus/errors';
 import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
@@ -41,7 +42,11 @@ export const parseGraphQl: RequestHandler = (req, res, next) => {
 	}
 
 	try {
-		document = parse(new Source(query));
+		const env = useEnv();
+
+		document = parse(new Source(query), {
+			maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']),
+		});
 	} catch (error: any) {
 		throw new GraphQLValidationError({
 			errors: [error],

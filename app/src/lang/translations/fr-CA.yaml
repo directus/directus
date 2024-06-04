@@ -743,7 +743,6 @@ cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
-unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer plus tard.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.

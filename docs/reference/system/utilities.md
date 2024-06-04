@@ -8,6 +8,81 @@ pageClass: page-reference
 
 > Utilities are the various helper endpoints located within the API.
 
+## Generate a Random String
+
+Generate a random string of a given length.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /utils/random/string`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	utils_random_string(length: Int): String
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, randomString } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(randomString(length));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+`length`\
+Length of the string to generate.
+
+### Response
+
+Generated string.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /utils/random/string?length=64`
+
+</template>
+<template #graphql>
+
+```graphql
+mutation {
+	utils_random_string(length: 64)
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, randomString } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(randomString(64));
+```
+
+</template>
+</SnippetToggler>
+
 ## Generate a Hash
 
 Generate a hash for a given string.

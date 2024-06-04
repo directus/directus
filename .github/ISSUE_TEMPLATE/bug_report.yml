@@ -41,3 +41,7 @@ body:
         - Directus Cloud
     validations:
       required: true
+  - type: input
+    attributes:
+      label: Database
+      description: If applicable, the vendor and version of the database being used. For example, PostgreSQL 16.

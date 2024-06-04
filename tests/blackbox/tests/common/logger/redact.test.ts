@@ -147,7 +147,7 @@ describe('Logger Redact Tests', () => {
 							.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD, mode })
 							.expect('Content-Type', /application\/json/);
 
-						const cookie = loginResponse.get('Set-Cookie');
+						const cookie = loginResponse.get('Set-Cookie')!;
 
 						const gqlLoginResponse = await requestGraphQL(getUrl(vendor, env), true, null, {
 							mutation: {
@@ -162,7 +162,7 @@ describe('Logger Redact Tests', () => {
 							},
 						});
 
-						const gqlCookie = gqlLoginResponse.get('Set-Cookie')[0]!;
+						const gqlCookie = gqlLoginResponse.get('Set-Cookie')![0]!;
 
 						// Action
 						const logger = new TestLogger(directusInstances[vendor], '/auth/refresh', true);
