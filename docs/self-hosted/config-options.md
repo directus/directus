@@ -1051,6 +1051,9 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `RELATIONAL_BATCH_SIZE`     | How many rows are read into memory at a time when constructing nested relational datasets                                       | 25000         |
 | `EXPORT_BATCH_SIZE`         | How many rows are read into memory at a time when constructing exports                                                          | 5000          |
+| `USERS_ADMIN_ACCESS_LIMIT`  | How many active users with admin privilege are allowed                                                                          | `Infinity`    |
+| `USERS_APP_ACCESS_LIMIT`    | How many active users with app access are allowed                                                                               | `Infinity`    |
+| `USERS_API_ACCESS_LIMIT`    | How many active API access users are allowed                                                                                    | `Infinity`    |
 | `GRAPHQL_QUERY_TOKEN_LIMIT` | How many GraphQL query tokens will be parsed. [More details here](https://graphql-js.org/api/interface/parseoptions/#maxTokens) | 5000          |
 
 ## WebSockets

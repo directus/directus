@@ -1,14 +1,18 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
-import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
+import { getSimpleHash, toArray, toBoolean, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep, isEmpty } from 'lodash-es';
+import { cloneDeep, isEmpty, mergeWith } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
@@ -201,6 +205,7 @@ export class UsersService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const emails = data['map']((payload) => payload['email']).filter((email) => email);
 		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
+		const roles = data['map']((payload) => payload['role']).filter((role) => role);
 
 		try {
 			if (emails.length) {
@@ -210,6 +215,36 @@ export class UsersService extends ItemsService {
 
 			if (passwords.length) {
 				await this.checkPasswordPolicy(passwords);
+			}
+
+			if (roles.length) {
+				const increasedCounts: AccessTypeCount = {
+					admin: 0,
+					app: 0,
+					api: 0,
+				};
+
+				const existingRoles = [];
+
+				for (const role of roles) {
+					if (typeof role === 'object') {
+						if ('admin_access' in role && role['admin_access'] === true) {
+							increasedCounts.admin++;
+						} else if ('app_access' in role && role['app_access'] === true) {
+							increasedCounts.app++;
+						} else {
+							increasedCounts.api++;
+						}
+					} else {
+						existingRoles.push(role);
+					}
+				}
+
+				const existingRoleCounts = await getRoleCountsByRoles(this.knex, existingRoles);
+
+				mergeWith(increasedCounts, existingRoleCounts, (x, y) => x + y);
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
 			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
@@ -274,7 +309,11 @@ export class UsersService extends ItemsService {
 				let newRole;
 
 				if (typeof role === 'string') {
-					newRole = await this.knex.select('admin_access').from('directus_roles').where('id', role).first();
+					newRole = await this.knex
+						.select('admin_access', 'app_access')
+						.from('directus_roles')
+						.where('id', role)
+						.first();
 				} else {
 					newRole = role;
 				}
@@ -282,10 +321,40 @@ export class UsersService extends ItemsService {
 				if (!newRole?.admin_access) {
 					await this.checkRemainingAdminExistence(keys);
 				}
+
+				if (newRole) {
+					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
+
+					const increasedCounts: AccessTypeCount = {
+						admin: 0,
+						app: 0,
+						api: 0,
+					};
+
+					if (toBoolean(newRole.admin_access)) {
+						increasedCounts.admin = keys.length - existingCounts.admin;
+					} else if (toBoolean(newRole.app_access)) {
+						increasedCounts.app = keys.length - existingCounts.app;
+					} else {
+						increasedCounts.api = keys.length - existingCounts.api;
+					}
+
+					await checkIncreasedUserLimits(this.knex, increasedCounts);
+				}
+			}
+
+			if (data['role'] === null) {
+				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
 			}
 
 			if (data['status'] !== undefined && data['status'] !== 'active') {
 				await this.checkRemainingActiveAdmin(keys);
+			}
+
+			if (data['status'] === 'active') {
+				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
 			}
 
 			if (data['email']) {

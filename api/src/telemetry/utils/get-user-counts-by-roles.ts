@@ -1,14 +1,12 @@
 import type { PrimaryKey } from '@directus/types';
 import { toBoolean } from '@directus/utils';
-import { type Knex } from 'knex';
+import type { Knex } from 'knex';
+import { type AccessTypeCount } from './get-user-count.js';
 
-export interface AccessTypeCount {
-	admin: number;
-	app: number;
-	api: number;
-}
-
-export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Promise<AccessTypeCount> => {
+/**
+ * Get the user type counts by role IDs
+ */
+export async function getUserCountsByRoles(db: Knex, roleIds: PrimaryKey[]): Promise<AccessTypeCount> {
 	const counts: AccessTypeCount = {
 		admin: 0,
 		app: 0,
@@ -20,10 +18,9 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 			.count('directus_users.id', { as: 'count' })
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
-			.whereNotIn('directus_users.id', ignoreIds)
-			.andWhere('directus_users.status', 'active')
+			.whereIn('directus_roles.id', roleIds)
+			.andWhere('directus_users.status', '=', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
-			.where('directus_users.status', '=', 'active')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
 
@@ -42,4 +39,4 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 	}
 
 	return counts;
-};
+}
