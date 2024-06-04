@@ -1,5 +1,5 @@
 ---
-"@directus/utils": patch
+"@directus/app": patch
 ---
 
-Fixed Live Preview when user didn't have all fields permissions and URL was using `$version` fake field
+Fixed Live Preview when the URL contains `version` field while the user doesn't have full field permissions on the collection
