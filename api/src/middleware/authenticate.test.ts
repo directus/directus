@@ -312,9 +312,10 @@ test('Invalid session token responds with error and clears the cookie', async ()
 		first: vi.fn().mockResolvedValue(null),
 	} as unknown as Knex);
 
-	await expect(authenticate(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	await authenticate(req, res, next);
+
 	expect(res.clearCookie).toHaveBeenCalledTimes(1);
-	expect(next).toHaveBeenCalledTimes(0);
+	expect(next).toHaveBeenCalledWith(new InvalidCredentialsError());
 });
 
 test('Invalid query token responds with error but does not clear the session cookie', async () => {
@@ -350,7 +351,8 @@ test('Invalid query token responds with error but does not clear the session coo
 		first: vi.fn().mockResolvedValue(null),
 	} as unknown as Knex);
 
-	await expect(authenticate(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
-	expect(next).toHaveBeenCalledTimes(0);
+	await authenticate(req, res, next);
+
 	expect(res.clearCookie).toHaveBeenCalledTimes(0);
+	expect(next).toHaveBeenCalledWith(new InvalidCredentialsError());
 });
