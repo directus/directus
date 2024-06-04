@@ -54,7 +54,7 @@ import {
 	SESSION_COOKIE_OPTIONS,
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
+import { useRateLimiterRegistration } from '../../rate-limiter/use-rate-limiter-registration.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -2644,7 +2644,8 @@ export class GraphQLService {
 					const ip = req ? getIPFromReq(req) : null;
 
 					if (ip) {
-						await rateLimiter.consume(ip);
+						const rateLimiter = useRateLimiterRegistration();
+						await rateLimiter?.consume(ip);
 					}
 
 					await service.registerUser({

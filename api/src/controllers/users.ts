@@ -1,6 +1,8 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	ForbiddenError,
+	HitRateLimitError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	isDirectusError,
@@ -8,13 +10,15 @@ import {
 import type { PrimaryKey, RegisterUserInput, Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import checkRateLimit from '../middleware/rate-limiter-registration.js';
+import { RateLimiterRes } from '../rate-limiter/index.js';
+import { useRateLimiterRegistration } from '../rate-limiter/use-rate-limiter-registration.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { respond } from './handlers/respond.js';
 import { useCollection } from './handlers/use-collection.js';
@@ -502,6 +506,30 @@ router.post(
 	respond,
 );
 
+const rateLimiter = asyncHandler(async (req, res, next) => {
+	const ip = getIPFromReq(req);
+
+	if (!ip) return next();
+
+	const rateLimiter = useRateLimiterRegistration();
+
+	try {
+		await rateLimiter?.consume(ip, 1);
+	} catch (error) {
+		if (!(error instanceof RateLimiterRes)) throw error;
+
+		const env = useEnv();
+
+		res.set('Retry-After', String(Math.round(error.msBeforeNext / 1000)));
+		throw new HitRateLimitError({
+			limit: +(env['RATE_LIMITER_REGISTRATION_POINTS'] as string),
+			reset: new Date(Date.now() + error.msBeforeNext),
+		});
+	}
+
+	return next();
+});
+
 const registerSchema = Joi.object<RegisterUserInput>({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),
@@ -512,7 +540,7 @@ const registerSchema = Joi.object<RegisterUserInput>({
 
 router.post(
 	'/register',
-	checkRateLimit,
+	rateLimiter,
 	asyncHandler(async (req, _res, next) => {
 		const { error, value } = registerSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
