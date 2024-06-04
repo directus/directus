@@ -2,6 +2,8 @@ import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -90,6 +92,19 @@ export class PermissionsService extends ItemsService {
 		}
 
 		return res;
+	}
+
+	/**
+	 * Get all permissions + minimal app permissions (if applicable) for the user + role in the current accountability.
+	 * The permissions will be filtered by IP access.
+	 */
+	async fetchPermissionsForAccountability() {
+		if (!this.accountability?.user || !this.accountability?.role) throw new ForbiddenError();
+
+		const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
+		const permissions = await fetchPermissions({ policies }, { schema: this.schema, knex: this.knex });
+
+		return withAppMinimalPermissions(this.accountability, permissions, {});
 	}
 
 	async getItemPermissions(collection: string, primaryKey?: string): Promise<ItemPermissions> {

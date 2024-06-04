@@ -1,22 +1,22 @@
-import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
-import { RolesService } from '../services/roles.js';
+import { AccessService } from '../services/access.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
-router.use(useCollection('directus_roles'));
+router.use(useCollection('directus_access'));
 
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new RolesService({
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -53,7 +53,7 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new RolesService({
+	const service = new AccessService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
@@ -63,10 +63,20 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const records = await service.readByQuery(req.sanitizedQuery);
-	const meta = await metaService.getMetaForQuery('directus_roles', req.sanitizedQuery);
+	let result;
 
-	res.locals['payload'] = { data: records || null, meta };
+	// TODO fix this at the service level
+	const temporaryQuery = { ...req.sanitizedQuery, limit: -1 };
+
+	if (req.body.keys) {
+		result = await service.readMany(req.body.keys, temporaryQuery);
+	} else {
+		result = await service.readByQuery(temporaryQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_access', temporaryQuery);
+
+	res.locals['payload'] = { data: result, meta };
 	return next();
 });
 
@@ -74,36 +84,18 @@ router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
-	'/me',
-	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) throw new ForbiddenError();
-
-		const service = new RolesService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const query = { ...req.sanitizedQuery, limit: -1 };
-
-		const roles = await service.readMany(req.accountability.roles, query);
-
-		res.locals['payload'] = { data: roles || null };
-		return next();
-	}),
-	respond,
-);
-
-router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new RolesService({
+		if (req.path.endsWith('me')) return next();
+
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals['payload'] = { data: record || null };
+		res.locals['payload'] = { data: record };
 		return next();
 	}),
 	respond,
@@ -113,7 +105,7 @@ router.patch(
 	'/',
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		const service = new RolesService({
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -148,7 +140,7 @@ router.patch(
 router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new RolesService({
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -175,7 +167,7 @@ router.delete(
 	'/',
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
-		const service = new RolesService({
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -197,7 +189,7 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, _res, next) => {
-		const service = new RolesService({
+		const service = new AccessService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
