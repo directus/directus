@@ -227,7 +227,10 @@ const { templateData: previewData, fetchTemplateValues } = useTemplateData(colle
 
 const previewUrl = computed(() => {
 	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
-	return displayValue.value || null;
+
+	if (!displayValue.value) return null;
+
+	return displayValue.value.trim() || null;
 });
 
 const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);

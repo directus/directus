@@ -45,6 +45,8 @@ export function useTemplateData(
 	});
 
 	const templateData = computed<Item | null>(() => {
+		if (!itemData.value) return null;
+
 		const injectData = options?.injectData?.value;
 
 		if (!injectData || !templateFields.value) return itemData.value;
