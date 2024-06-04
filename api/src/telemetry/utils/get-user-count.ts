@@ -21,6 +21,7 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.whereNotIn('directus_users.id', ignoreIds)
+			.andWhere('directus_users.status', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
