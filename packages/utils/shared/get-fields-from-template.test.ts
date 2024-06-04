@@ -11,4 +11,8 @@ describe('getFieldsFromTemplate', () => {
 	it('returns fields as an array of strings', () => {
 		expect(getFieldsFromTemplate('{{ field }}')).toStrictEqual(['field']);
 	});
+
+	it('omits fake fields', () => {
+		expect(getFieldsFromTemplate('{{ field }}{{ $version }}')).toStrictEqual(['field']);
+	});
 });
