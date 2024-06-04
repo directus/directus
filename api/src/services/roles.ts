@@ -187,7 +187,7 @@ export class RolesService extends ItemsService {
 	private getRoleAccessType(data: Partial<Item>) {
 		if ('admin_access' in data && data['admin_access'] === true) {
 			return 'admin';
-		} else if ('app_access' in data && (data['app_access'] === true || 'app_access' in data === false)) {
+		} else if (('app_access' in data && data['app_access'] === true) || 'app_access' in data === false) {
 			return 'app';
 		} else {
 			return 'api';
