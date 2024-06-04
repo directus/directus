@@ -40,10 +40,18 @@ export async function up(knex: Knex) {
 	await knex
 		.insert({
 			id: PUBLIC_POLICY,
-			name: 'Public',
+			name: '$t:public_label',
+			description: '$t:public_description',
 			app_access: false,
 		})
 		.into('directus_policies');
+
+	// Change the admin policy description to $t:admin_policy_description
+	await knex('directus_policies')
+		.update({
+			description: '$t:admin_policy_description',
+		})
+		.where({ description: '$t:admin_description' });
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Remove access control + add nesting to roles
@@ -61,7 +69,7 @@ export async function up(knex: Knex) {
 	// Link permissions to policies instead of roles
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').references('directus_policies.id');
+		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
 	});
 
 	await knex('directus_permissions').update({
@@ -90,9 +98,9 @@ export async function up(knex: Knex) {
 
 	await knex.schema.createTable('directus_access', (table) => {
 		table.uuid('id').primary();
-		table.uuid('role').references('directus_roles.id').nullable();
-		table.uuid('user').references('directus_users.id').nullable();
-		table.uuid('policy').references('directus_policies.id').notNullable();
+		table.uuid('role').references('directus_roles.id').nullable().onDelete('CASCADE');
+		table.uuid('user').references('directus_users.id').nullable().onDelete('CASCADE');
+		table.uuid('policy').references('directus_policies.id').notNullable().onDelete('CASCADE');
 		table.integer('sort');
 	});
 
@@ -158,7 +166,7 @@ export async function down(knex: Knex) {
 	await knex.schema.dropTable('directus_access');
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Reattach permissions to roles instead of permissions
+	// Reattach permissions to roles instead of policies
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('role').nullable();
