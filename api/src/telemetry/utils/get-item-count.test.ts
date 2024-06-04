@@ -18,9 +18,10 @@ beforeEach(() => {
 		first: vi.fn().mockResolvedValue(mockResult),
 	} as unknown as Knex;
 
-	mockLimitFn = vi
-		.fn()
-		.mockImplementation((_cb, _db, collection) => ({ collection, count: 15 })) as unknown as LimitFunction;
+	mockLimitFn = vi.fn().mockImplementation((_cb, _db, collection) => ({
+		collection: collection.collection,
+		count: 15,
+	})) as unknown as LimitFunction;
 
 	vi.mocked(pLimit).mockReturnValue(mockLimitFn);
 });
@@ -33,7 +34,7 @@ describe('countCollection', () => {
 	test('Gets row count through passed knex instance', async () => {
 		const collection = 'test-collection';
 
-		const res = await countCollection(mockDb, collection);
+		const res = await countCollection(mockDb, { collection });
 
 		expect(mockDb.count).toHaveBeenCalledWith('*', { as: 'count' });
 		expect(mockDb.from).toHaveBeenCalledWith(collection);
@@ -47,7 +48,7 @@ describe('countCollection', () => {
 
 		const collection = 'test-collection';
 
-		const res = await countCollection(mockDb, collection);
+		const res = await countCollection(mockDb, { collection });
 
 		expect(res).toEqual({ collection, count: 0 });
 	});
@@ -57,7 +58,7 @@ describe('countCollection', () => {
 
 		const collection = 'test-collection';
 
-		const res = await countCollection(mockDb, collection);
+		const res = await countCollection(mockDb, { collection });
 
 		expect(res).toEqual({ collection, count: 0 });
 	});
@@ -72,21 +73,25 @@ describe('mergeResults', () => {
 
 describe('getItemCount', () => {
 	test('Limits to 3 simultaneous queries', async () => {
-		await getItemCount(mockDb, ['test-a', 'test-b', 'test-c']);
+		await getItemCount(mockDb, [{ collection: 'test-a' }, { collection: 'test-b' }, { collection: 'test-c' }]);
 		expect(pLimit).toHaveBeenCalledWith(3);
 	});
 
 	test('Calls limit with the count callback for each passed collection', async () => {
-		await getItemCount(mockDb, ['test-a', 'test-b', 'test-c']);
+		await getItemCount(mockDb, [{ collection: 'test-a' }, { collection: 'test-b' }, { collection: 'test-c' }]);
 
 		expect(mockLimitFn).toHaveBeenCalledTimes(3);
-		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, 'test-a');
-		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, 'test-b');
-		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, 'test-c');
+		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, { collection: 'test-a' });
+		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, { collection: 'test-b' });
+		expect(mockLimitFn).toHaveBeenCalledWith(countCollection, mockDb, { collection: 'test-c' });
 	});
 
 	test('Returns reduced result set', async () => {
-		const res = await getItemCount(mockDb, ['test-a', 'test-b', 'test-c']);
+		const res = await getItemCount(mockDb, [
+			{ collection: 'test-a' },
+			{ collection: 'test-b' },
+			{ collection: 'test-c' },
+		]);
 
 		expect(res).toEqual({
 			'test-a': 15,
