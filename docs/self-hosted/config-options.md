@@ -1047,10 +1047,11 @@ Directus collects little and anonymized data about your environment.
 
 Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
 
-| Variable                | Description                                                                               | Default Value |
-| ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
-| `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
-| `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |
+| Variable                    | Description                                                                                                                     | Default Value |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RELATIONAL_BATCH_SIZE`     | How many rows are read into memory at a time when constructing nested relational datasets                                       | 25000         |
+| `EXPORT_BATCH_SIZE`         | How many rows are read into memory at a time when constructing exports                                                          | 5000          |
+| `GRAPHQL_QUERY_TOKEN_LIMIT` | How many GraphQL query tokens will be parsed. [More details here](https://graphql-js.org/api/interface/parseoptions/#maxTokens) | 5000          |
 
 ## WebSockets
 
