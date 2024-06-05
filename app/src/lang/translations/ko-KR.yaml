@@ -594,7 +594,6 @@ cannot_edit_global_bookmarks: 글로벌 북마크를 편집할 수 없음
 bookmarks: 북마크
 presets: 프리셋
 unexpected_error: 예기치 않은 오류
-unexpected_error_copy: 예상치 못한 오류가 발생했습니다. 나중에 다시 시도 해주십시오.
 copy_details: 세부정보 복사
 no_app_access: 앱 액세스 없음
 no_app_access_copy: 이 사용자는 관리 앱을 사용할 수 없습니다.

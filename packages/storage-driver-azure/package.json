@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-azure",
-	"version": "10.0.20",
+	"version": "10.0.22",
 	"description": "Azure file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,7 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@azure/storage-blob": "12.17.0",
+		"@azure/storage-blob": "12.23.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
