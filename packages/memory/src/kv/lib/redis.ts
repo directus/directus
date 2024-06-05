@@ -101,8 +101,12 @@ export class KvRedis implements Kv {
 			match: withNamespace('*', this.namespace),
 		});
 
+		const pipeline = this.redis.pipeline();
+
 		for await (const keys of keysStream) {
-			await this.redis.del(keys);
+			pipeline.unlink(keys);
 		}
+
+		await pipeline.exec();
 	}
 }

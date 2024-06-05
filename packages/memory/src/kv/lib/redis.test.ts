@@ -283,3 +283,29 @@ describe('setMax', () => {
 		expect(res).toBe(false);
 	});
 });
+
+describe('clear', () => {
+	test('Uses stream for iterating over keys, unlinks them in a pipeline', async () => {
+		kv['redis'].scanStream = vi.fn().mockReturnValue({
+			async *[Symbol.asyncIterator]() {
+				yield [mockKey];
+				yield [mockKey];
+			},
+		});
+
+		const unlinkFn = vi.fn();
+		const execFn = vi.fn();
+
+		kv['redis'].pipeline = vi.fn().mockReturnValue({
+			unlink: unlinkFn,
+			exec: execFn,
+		});
+
+		await kv.clear();
+
+		expect(kv['redis'].pipeline).toHaveBeenCalledOnce();
+		expect(withNamespace).toHaveBeenCalledWith('*', mockNamespace);
+		expect(unlinkFn).toHaveBeenCalledTimes(2); // See the mocked key chunks from `scanStream`
+		expect(execFn).toHaveBeenCalledOnce();
+	});
+});
