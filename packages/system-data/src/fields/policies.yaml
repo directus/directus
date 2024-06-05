@@ -66,3 +66,13 @@ fields:
          id:
            _eq: abf8a154-5b1c-4a46-ac9c-7300570f4f17
        hidden: true
+
+  - field: users
+    hidden: true
+    special:
+      - o2m
+
+  - field: roles
+    hidden: true
+    special:
+      - o2m

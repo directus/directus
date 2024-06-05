@@ -202,11 +202,13 @@ data:
   - many_collection: directus_access
     many_field: policy
     one_collection: directus_policies
+    one_field: roles
     junction_field: role
 
   - many_collection: directus_access
     many_field: policy
     one_collection: directus_policies
+    one_field: users
     junction_field: user
 
   - many_collection: directus_access

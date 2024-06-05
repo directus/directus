@@ -16,7 +16,8 @@ const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 type PolicyBaseFields = 'id' | 'name' | 'description';
 
 type PolicyResponse = Pick<Policy, PolicyBaseFields | 'admin_access'> & {
-	users: [{ count: { id: number } }];
+	users: [{ count: { user: number } }];
+	roles: [{ count: { role: number } }];
 };
 
 type PolicyItem = Pick<Policy, PolicyBaseFields> &
@@ -69,6 +70,22 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
+		text: t('users'),
+		value: 'userCount',
+		sortable: false,
+		width: 100,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('roles'),
+		value: 'roleCount',
+		sortable: false,
+		width: 100,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('description'),
 		value: 'description',
 		sortable: false,
@@ -91,15 +108,21 @@ async function fetchPolicies() {
 		const response = await fetchAll<PolicyResponse>(`/policies`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'description', 'admin_access'],
-				// deep: {
-				// 	users: {
-				// 		_aggregate: { count: 'id' },
-				// 		_groupBy: ['role'],
-				// 		_sort: 'role',
-				// 		_limit: -1,
-				// 	},
-				// },
+				fields: ['id', 'name', 'description', 'admin_access', 'users', 'roles'],
+				deep: {
+					users: {
+						_aggregate: { count: 'user' },
+						_groupBy: ['policy'],
+						_sort: 'policy',
+						_limit: -1,
+					},
+					roles: {
+						_aggregate: { count: 'role' },
+						_groupBy: ['policy'],
+						_sort: 'policy',
+						_limit: -1,
+					},
+				},
 				sort: 'name',
 			},
 		});
@@ -112,6 +135,8 @@ async function fetchPolicies() {
 			return {
 				...translate(policy),
 				public: policy.id === PUBLIC_POLICY_ID,
+				userCount: policy.users?.[0].count.user ?? 0,
+				roleCount: policy.roles?.[0].count.role ?? 0,
 				icon,
 			};
 		});
@@ -192,7 +217,11 @@ function navigateToPolicy({ item }: { item: Policy }) {
 					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
 				</template>
 
-				<template #[`item.count`]="{ item }">
+				<template #[`item.userCount`]="{ item }">
+					<value-null v-if="item.public" />
+				</template>
+
+				<template #[`item.roleCount`]="{ item }">
 					<value-null v-if="item.public" />
 				</template>
 
