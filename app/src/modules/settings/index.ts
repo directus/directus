@@ -25,9 +25,7 @@ import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
 import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
-import RolesItem from './routes/roles/item/item.vue';
-import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
-import RolesPublicItem from './routes/roles/public-item.vue';
+import RolesItem from './routes/roles/item.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
@@ -157,11 +155,6 @@ export default defineModule({
 							},
 						},
 					],
-				},
-				{
-					path: 'public',
-					component: RolesPublicItem,
-					props: true,
 				},
 				{
 					name: 'settings-roles-item',

@@ -22,7 +22,8 @@ type PolicyResponse = Pick<Policy, PolicyBaseFields | 'admin_access'> & {
 type PolicyItem = Pick<Policy, PolicyBaseFields> &
 	Partial<Pick<Policy, 'admin_access'>> & {
 		public?: boolean;
-		count?: number;
+		userCount?: number;
+		roleCount?: number;
 		icon?: string;
 	};
 
@@ -33,6 +34,7 @@ const router = useRouter();
 const policies = ref<PolicyItem[]>([]);
 const loading = ref(false);
 
+// Todo make this use a util endpoint for determining if a policy can be deleted
 const lastAdminPolicyId = computed(() => {
 	const adminPolicies = policies.value.filter((role) => role.admin_access === true);
 	return adminPolicies.length === 1 ? (adminPolicies[0] as PolicyItem).id : null;

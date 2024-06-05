@@ -5,7 +5,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { appRecommendedPermissions } from './app-permissions';
 
 const { t } = useI18n();
 
@@ -14,8 +13,6 @@ const router = useRouter();
 const isOpen = useDialogRoute();
 
 const roleName = ref<string | null>(null);
-const appAccess = ref(true);
-const adminAccess = ref(false);
 
 const { saving, save } = useSave();
 

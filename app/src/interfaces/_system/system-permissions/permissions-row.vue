@@ -3,7 +3,7 @@ import { Collection } from '@/types/collections';
 import ValueNull from '@/views/private/components/value-null.vue';
 import { Permission, PermissionsAction } from '@directus/types';
 import { useI18n } from 'vue-i18n';
-import { editablePermissionActions, EditablePermissionsAction } from './app-permissions.js';
+import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
 import PermissionsToggle from './permissions-toggle.vue';
 
 defineProps<{

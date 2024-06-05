@@ -12,7 +12,7 @@ import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
 import { computed, inject, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
-import { appRecommendedPermissions, disabledActions } from './app-permissions';
+import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
@@ -49,6 +49,7 @@ const { relationInfo } = useRelationO2M(collection, field);
 
 const values = inject<Ref<Record<string, any>>>('values');
 const appAccess = computed(() => values?.value.app_access ?? false);
+const adminAccess = computed(() => values?.value.admin_access ?? false);
 
 const systemVisible = ref(false);
 
@@ -59,17 +60,8 @@ const value = computed({
 	},
 });
 
-const {
-	update,
-	remove,
-	create,
-	displayItems,
-	getItemEdits,
-	loading,
-	resetActive,
-	resetSystemPermissions,
-	isLocalItem,
-} = usePermissions(value, relationInfo, primaryKey, appAccess);
+const { update, remove, create, displayItems, getItemEdits, loading, resetActive, resetSystemPermissions } =
+	usePermissions(value, relationInfo, primaryKey, appAccess);
 
 const { allPermissions, regularPermissions, systemPermissions, addEmptyPermission } = useGroupedPermissions();
 
@@ -557,7 +549,10 @@ function useGroupedPermissions() {
 </script>
 
 <template>
-	<div class="permissions-list">
+	<v-notice v-if="adminAccess">
+		{{ t('admins_have_all_permissions') }}
+	</v-notice>
+	<div v-else class="permissions-list">
 		<table v-if="!loading || allPermissions.length > 0" class="table">
 			<permissions-header />
 			<tbody>

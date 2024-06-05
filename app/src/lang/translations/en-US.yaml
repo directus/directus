@@ -1167,7 +1167,7 @@ page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
 page_help_settings_policies_item: "**Policy Detail** — Manage a policy's permissions and other settings."
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
+page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default

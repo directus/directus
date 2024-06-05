@@ -214,12 +214,14 @@ data:
     one_collection: directus_roles
     one_field: policies
     junction_field: policy
+    sort_field: sort
 
   - many_collection: directus_access
     many_field: user
     one_collection: directus_users
     one_field: policies
     junction_field: policy
+    sort_field: sort
 
   ### Roles
   - many_collection: directus_roles

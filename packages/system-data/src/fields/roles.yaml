@@ -67,9 +67,8 @@ fields:
   - field: policies
     interface: list-m2m
     options:
-      template: '{{ name }}'
-      fields:
-        - name
+      layout: list
+    display: related-values
     special:
       - m2m
     width: full

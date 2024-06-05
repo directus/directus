@@ -37,24 +37,6 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useIt
 
 const confirmDelete = ref(false);
 
-const adminEnabled = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.admin_access;
-});
-
-const appAccess = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.app_access;
-});
-
 useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });

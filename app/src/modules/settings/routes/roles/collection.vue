@@ -122,21 +122,12 @@ async function fetchRoles() {
 			},
 		});
 
-		roles.value = [
-			{
-				public: true,
-				name: t('public_label'),
-				icon: 'public',
-				description: t('public_description'),
-				id: 'public',
-			},
-			...response.map((role) => {
-				return {
-					...translate(role),
-					count: role.users[0]?.count.id || 0,
-				};
-			}),
-		];
+		roles.value = response.map((role) => {
+			return {
+				...translate(role),
+				count: role.users[0]?.count.id || 0,
+			};
+		});
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -145,14 +136,10 @@ async function fetchRoles() {
 }
 
 function navigateToRole({ item }: { item: Role }) {
-	if (item.id !== 'public' && lastAdminRoleId.value) {
-		router.push({
-			name: 'settings-roles-item',
-			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
-		});
-	} else {
-		router.push(`/settings/roles/${item.id}`);
-	}
+	router.push({
+		name: 'settings-roles-item',
+		params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+	});
 }
 </script>
 
@@ -201,11 +188,11 @@ function navigateToRole({ item }: { item: Role }) {
 				@click:row="navigateToRole"
 			>
 				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
+					<v-icon class="icon" :name="item.icon" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
+					<v-text-overflow :text="item.name" class="name" :highlight="search" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -264,11 +251,5 @@ function navigateToRole({ item }: { item: Role }) {
 	--v-highlight-color: var(--theme--background-accent);
 
 	color: var(--theme--foreground-subdued);
-}
-
-.public {
-	--v-icon-color: var(--theme--primary);
-
-	color: var(--theme--primary);
 }
 </style>

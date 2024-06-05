@@ -5,7 +5,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { appRecommendedPermissions } from '../roles/app-permissions';
+import { appRecommendedPermissions } from '@/app-permissions.js';
 
 const { t } = useI18n();
 

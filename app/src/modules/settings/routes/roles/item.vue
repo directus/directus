@@ -11,8 +11,8 @@ import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
+import SettingsNavigation from '../../components/navigation.vue';
+import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -45,24 +45,6 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useIt
 );
 
 const confirmDelete = ref(false);
-
-const adminEnabled = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.admin_access;
-});
-
-const appAccess = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.app_access;
-});
 
 useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
@@ -184,10 +166,6 @@ function discardAndLeave() {
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div v-if="!loading" class="roles">
-			<v-notice v-if="adminEnabled">
-				{{ t('admins_have_all_permissions') }}
-			</v-notice>
-
 			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
 		</div>
 
