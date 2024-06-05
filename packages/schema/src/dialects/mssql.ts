@@ -275,11 +275,7 @@ export default class MSSQL implements SchemaInspector {
 	async columnInfo(table?: string, column?: string) {
 		const dbName = this.knex.client.database();
 
-		const schemaIdQuery = this.knex
-			.select('schema_id')
-			.from('sys.schemas')
-			.where({ name: this.schema })
-			.first();
+		const schemaIdQuery = this.knex.select('schema_id').from('sys.schemas').where({ name: this.schema }).first();
 
 		const schemaIdResult = await schemaIdQuery;
 		const schemaId = schemaIdResult.schema_id;
