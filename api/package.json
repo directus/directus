@@ -93,7 +93,7 @@
 		"@rollup/plugin-node-resolve": "15.2.3",
 		"@rollup/plugin-virtual": "3.0.2",
 		"@types/cookie": "0.6.0",
-		"argon2": "0.40.1",
+		"argon2": "0.40.3",
 		"async": "3.2.5",
 		"axios": "1.7.2",
 		"busboy": "1.6.0",
