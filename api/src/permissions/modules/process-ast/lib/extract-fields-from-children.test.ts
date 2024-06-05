@@ -209,7 +209,7 @@ describe('o2m', () => {
 				type: 'o2m',
 				fieldKey: 'test-o2m-a',
 				relation: {
-					related_collection: 'test-related-collection-a',
+					collection: 'test-related-collection-a',
 				},
 				children: [
 					{ type: 'field', fieldKey: 'test-field-key-a' },
@@ -220,7 +220,7 @@ describe('o2m', () => {
 				type: 'o2m',
 				fieldKey: 'test-o2m-b',
 				relation: {
-					related_collection: 'test-related-collection-b',
+					collection: 'test-related-collection-b',
 				},
 				children: [
 					{ type: 'field', fieldKey: 'test-field-key-a' },
@@ -260,7 +260,7 @@ describe('o2m', () => {
 				type: 'o2m',
 				fieldKey: 'test-o2m-a',
 				relation: {
-					related_collection: 'test-related-collection-a',
+					collection: 'test-related-collection-a',
 				},
 				children: [{ type: 'field', fieldKey: 'test-field-key-a' }],
 				query: {
