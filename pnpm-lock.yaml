@@ -848,8 +848,8 @@ importers:
         specifier: 7.6.2
         version: 7.6.2
       tinymce:
-        specifier: 7.1.0
-        version: 7.1.0
+        specifier: 7.1.1
+        version: 7.1.1
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -10846,8 +10846,8 @@ packages:
   tinymce@6.8.3:
     resolution: {integrity: sha512-3fCHKAeqT+xNwBVESf6iDbDV0VNwZNmfrkx9c/6Gz5iB8piMfaO6s7FvoiTrj1hf1gVbfyLTnz1DooI6DhgINQ==}
 
-  tinymce@7.1.0:
-    resolution: {integrity: sha512-KP5X9P7CIvaafu0XLiMidFWhjyYiOWcfY9hj/YbQSu9LcrZv7XXnXgb5Fgw7dA12lg7hqdTiRva+NKxoXaAbIA==}
+  tinymce@7.1.1:
+    resolution: {integrity: sha512-QQJKsEiM+jUfrlxNivuVUiv1jsHv4a27rub4oqajtsYQ4mFukN3hkWQrZnzVNtnPOIUsOGU2Ycem0DnEU/JKcA==}
 
   tinypool@0.8.4:
     resolution: {integrity: sha512-i11VH5gS6IFeLY3gMBQ00/MmLncVP7JLXOw1vlgkytLmJK7QnEr7NXf0LBdxfmNPAeyetukOk0bOYrJrFGjYJQ==}
@@ -22492,7 +22492,7 @@ snapshots:
 
   tinymce@6.8.3: {}
 
-  tinymce@7.1.0: {}
+  tinymce@7.1.1: {}
 
   tinypool@0.8.4: {}
 
