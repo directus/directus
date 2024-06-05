@@ -276,7 +276,7 @@ export class VersionsService extends ItemsService {
 			cache.clear();
 		}
 
-		return data;
+		return finalVersionDelta;
 	}
 
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {

@@ -242,9 +242,7 @@ router.post(
 
 		const mainItem = await service.getMainItem(version['collection'], version['item']);
 
-		await service.save(req.params['pk']!, req.body);
-
-		const updatedVersion = await service.readOne(req.params['pk']!);
+		const updatedVersion = await service.save(req.params['pk']!, req.body);
 
 		const result = assign(mainItem, updatedVersion['delta']);
 
