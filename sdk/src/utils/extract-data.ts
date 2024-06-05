@@ -11,7 +11,7 @@ export async function extractData(response: unknown) {
 
 		if (type?.startsWith('application/json') || type?.startsWith('application/health+json')) {
 			const result = await response.json();
-			if (!response.ok) throw result;
+			if (!response.ok || 'errors' in result) throw result;
 			if ('data' in result) return result.data;
 			return result;
 		}
