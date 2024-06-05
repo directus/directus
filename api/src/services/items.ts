@@ -161,7 +161,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							payload: payloadAfterHooks,
 						},
 						{
-							knex: this.knex,
+							knex: trx,
 							schema: this.schema,
 						},
 				  )
