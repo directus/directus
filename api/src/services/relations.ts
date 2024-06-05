@@ -106,7 +106,7 @@ export class RelationsService {
 				{ schema: this.schema, knex: this.knex },
 			);
 
-			if (allowedFields.includes(field) === false) {
+			if (allowedFields.includes('*') === false && allowedFields.includes(field) === false) {
 				throw new ForbiddenError();
 			}
 		}
