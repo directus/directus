@@ -135,8 +135,8 @@ async function fetchPolicies() {
 			return {
 				...translate(policy),
 				public: policy.id === PUBLIC_POLICY_ID,
-				userCount: policy.users?.[0].count.user ?? 0,
-				roleCount: policy.roles?.[0].count.role ?? 0,
+				userCount: policy.users?.[0]?.count.user ?? 0,
+				roleCount: policy.roles?.[0]?.count.role ?? 0,
 				icon,
 			};
 		});
