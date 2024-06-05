@@ -14,7 +14,7 @@ const router = useRouter();
 const isOpen = useDialogRoute();
 
 const name = ref<string | null>(null);
-const appAccess = ref(true);
+const appAccess = ref(false);
 const adminAccess = ref(false);
 
 const { saving, save } = useSave();
