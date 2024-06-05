@@ -176,10 +176,12 @@ export class FieldsService {
 							action: 'read',
 							policies,
 							collections: [collection],
+							accountability: this.accountability,
 					  }
 					: {
 							action: 'read',
 							policies,
+							accountability: this.accountability,
 					  },
 				{ knex: this.knex, schema: this.schema },
 			);
@@ -233,7 +235,7 @@ export class FieldsService {
 			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
 
 			const permissions = await fetchPermissions(
-				{ action: 'read', policies, collections: [collection] },
+				{ action: 'read', policies, collections: [collection], accountability: this.accountability },
 				{ knex: this.knex, schema: this.schema },
 			);
 

@@ -3,7 +3,7 @@ import type { Accountability, Permission, Query } from '@directus/types';
 import { filterItems } from '../../../utils/filter-items.js';
 
 export function withAppMinimalPermissions(
-	accountability: Accountability | null,
+	accountability: Pick<Accountability, 'app'> | null,
 	permissions: Permission[],
 	filter: Query['filter'],
 ): Permission[] {

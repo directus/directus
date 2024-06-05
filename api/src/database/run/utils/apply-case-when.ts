@@ -29,6 +29,9 @@ export function applyCaseWhen(
 
 	const sqlParts = [];
 
+	// Only empty filters, so no where was generated, skip it
+	if (!compiler.grouped.where) return column;
+
 	for (const statement of compiler.grouped.where) {
 		const val = compiler[statement.type](statement);
 

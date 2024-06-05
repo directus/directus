@@ -29,7 +29,11 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	const collections = collectionsInFieldMap(fieldMap);
 
 	const policies = await fetchPolicies(options.accountability, context);
-	const permissions = await fetchPermissions({ action: options.action, policies, collections }, context);
+
+	const permissions = await fetchPermissions(
+		{ action: options.action, policies, collections, accountability: options.accountability },
+		context,
+	);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
 		validatePath(path, permissions, collection, fields);

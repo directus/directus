@@ -7,7 +7,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 
 export interface FetchAllowedCollectionsOptions {
 	action: PermissionsAction;
-	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
+	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'admin' | 'app'>;
 }
 
 export const fetchAllowedCollections = withCache('allowed-collections', _fetchAllowedCollections);
@@ -21,7 +21,7 @@ export async function _fetchAllowedCollections(
 	}
 
 	const policies = await fetchPolicies(accountability, { knex, schema });
-	const permissions = await fetchPermissions({ action, policies }, { knex, schema });
+	const permissions = await fetchPermissions({ action, policies, accountability }, { knex, schema });
 
 	const collections = permissions.map(({ collection }) => collection);
 

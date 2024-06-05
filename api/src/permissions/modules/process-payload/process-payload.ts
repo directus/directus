@@ -26,7 +26,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 	const policies = await fetchPolicies(options.accountability, context);
 
 	const permissions = await fetchPermissions(
-		{ action: options.action, policies, collections: [options.collection] },
+		{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 		context,
 	);
 

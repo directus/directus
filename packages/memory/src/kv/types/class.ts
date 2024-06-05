@@ -52,6 +52,3 @@ export interface Kv {
 	 */
 	clear(): Promise<void>;
 }
-
-
-// TODO add tests for clear()

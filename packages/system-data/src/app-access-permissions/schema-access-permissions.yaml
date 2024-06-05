@@ -10,18 +10,20 @@
 - collection: directus_access
   action: read
   permissions:
-    _or:
-      - user:
-          _eq: $CURRENT_USER
-      - role:
-          _in: $CURRENT_ROLES
+    policy:
+      _in: $CURRENT_POLICIES
 
 - collection: directus_permissions
   action: read
-# TODO
-#  permissions:
-#    role:
-#      _eq: $CURRENT_ROLE
+  permissions:
+    policy:
+      _in: $CURRENT_POLICIES
+
+- collection: directus_policies
+  action: read
+  permissions:
+    id:
+      _in: $CURRENT_POLICIES
 
 - collection: directus_relations
   action: read
