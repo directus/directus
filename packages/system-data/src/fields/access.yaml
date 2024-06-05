@@ -2,6 +2,8 @@ table: directus_access
 
 fields:
   - field: id
+    special:
+      - uuid
     hidden: true
     width: half
 
