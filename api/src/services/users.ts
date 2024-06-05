@@ -293,7 +293,6 @@ export class UsersService extends ItemsService {
 
 			if (data['status'] !== undefined && data['status'] !== 'active') {
 				await this.checkRemainingActiveAdmin(keys);
-				await this.clearUserSessions(keys);
 			}
 
 			if (data['email']) {
@@ -335,7 +334,13 @@ export class UsersService extends ItemsService {
 			(opts || (opts = {})).preMutationError = err;
 		}
 
-		return await super.updateMany(keys, data, opts);
+		const result = await super.updateMany(keys, data, opts);
+
+		if (data['status'] !== undefined && data['status'] !== 'active') {
+			await this.clearUserSessions(keys);
+		}
+
+		return result;
 	}
 
 	/**
