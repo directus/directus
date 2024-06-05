@@ -123,8 +123,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       argon2:
-        specifier: 0.40.1
-        version: 0.40.1
+        specifier: 0.40.3
+        version: 0.40.3
       async:
         specifier: 3.2.5
         version: 3.2.5
@@ -2090,8 +2090,8 @@ importers:
         specifier: 8.5.10
         version: 8.5.10
       argon2:
-        specifier: 0.40.1
-        version: 0.40.1
+        specifier: 0.40.3
+        version: 0.40.3
       autocannon:
         specifier: 7.15.0
         version: 7.15.0
@@ -5405,8 +5405,8 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     deprecated: This package is no longer supported.
 
-  argon2@0.40.1:
-    resolution: {integrity: sha512-DjtHDwd7pm12qeWyfihHoM8Bn5vGcgH6sKwgPqwNYroRmxlrzadHEvMyuvQxN/V8YSyRRKD5x6ito09q1e9OyA==}
+  argon2@0.40.3:
+    resolution: {integrity: sha512-FrSmz4VeM91jwFvvjsQv9GYp6o/kARWoYKjbjDB2U5io1H3e5X67PYGclFDeQff6UXIhUd4aHR3mxCdBbMMuQw==}
     engines: {node: '>=16.17.0'}
 
   argparse@1.0.10:
@@ -8819,9 +8819,9 @@ packages:
   node-addon-api@7.0.0:
     resolution: {integrity: sha512-vgbBJTS4m5/KkE16t5Ly0WW9hz46swAstv0hYYwMtbG7AznRhNyfLRe8HZAiWIpcHzoO7HxhLuBQj9rJ/Ho0ZA==}
 
-  node-addon-api@7.1.0:
-    resolution: {integrity: sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==}
-    engines: {node: ^16 || ^18 || >= 20}
+  node-addon-api@8.0.0:
+    resolution: {integrity: sha512-ipO7rsHEBqa9STO5C5T10fj732ml+5kLN1cAG8/jdHd56ldQeGj3Q7+scUS+VHK/qy1zLEwC4wMK5+yM0btPvw==}
+    engines: {node: ^18 || ^20 || >= 21}
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
@@ -15990,10 +15990,10 @@ snapshots:
       readable-stream: 3.6.2
     optional: true
 
-  argon2@0.40.1:
+  argon2@0.40.3:
     dependencies:
       '@phc/format': 1.0.0
-      node-addon-api: 7.1.0
+      node-addon-api: 8.0.0
       node-gyp-build: 4.8.0
 
   argparse@1.0.10:
@@ -19940,7 +19940,7 @@ snapshots:
   node-addon-api@7.0.0:
     optional: true
 
-  node-addon-api@7.1.0: {}
+  node-addon-api@8.0.0: {}
 
   node-domexception@1.0.0: {}
 
