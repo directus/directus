@@ -116,7 +116,7 @@ describe('m2o', () => {
 				type: 'm2o',
 				fieldKey: 'test-m2o-a',
 				relation: {
-					collection: 'test-related-collection-a',
+					related_collection: 'test-related-collection-a',
 				},
 				children: [
 					{ type: 'field', fieldKey: 'test-field-key-a' },
@@ -127,7 +127,7 @@ describe('m2o', () => {
 				type: 'm2o',
 				fieldKey: 'test-m2o-b',
 				relation: {
-					collection: 'test-related-collection-b',
+					related_collection: 'test-related-collection-b',
 				},
 				children: [
 					{ type: 'field', fieldKey: 'test-field-key-a' },
@@ -167,7 +167,7 @@ describe('m2o', () => {
 				type: 'm2o',
 				fieldKey: 'test-m2o-a',
 				relation: {
-					collection: 'test-related-collection-a',
+					related_collection: 'test-related-collection-a',
 				},
 				children: [{ type: 'field', fieldKey: 'test-field-key-a' }],
 				query: {
