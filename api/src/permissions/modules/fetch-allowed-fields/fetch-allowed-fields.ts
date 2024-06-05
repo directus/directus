@@ -8,7 +8,7 @@ import { withCache } from '../../utils/with-cache.js';
 export interface FetchAllowedFieldsOptions {
 	collection: string;
 	action: PermissionsAction;
-	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>;
+	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'app'>;
 }
 
 export const fetchAllowedFields = withCache('allowed-fields', _fetchAllowedFields);
@@ -26,7 +26,10 @@ export async function _fetchAllowedFields(
 ): Promise<string[]> {
 	const policies = await fetchPolicies(accountability, { knex, schema });
 
-	const permissions = await fetchPermissions({ action, collections: [collection], policies }, { knex, schema });
+	const permissions = await fetchPermissions(
+		{ action, collections: [collection], policies, accountability },
+		{ knex, schema },
+	);
 
 	const allowedFields = [];
 

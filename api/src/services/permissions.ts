@@ -102,7 +102,11 @@ export class PermissionsService extends ItemsService {
 		if (!this.accountability?.user || !this.accountability?.role) throw new ForbiddenError();
 
 		const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
-		const permissions = await fetchPermissions({ policies }, { schema: this.schema, knex: this.knex });
+
+		const permissions = await fetchPermissions(
+			{ policies, accountability: this.accountability },
+			{ schema: this.schema, knex: this.knex },
+		);
 
 		return withAppMinimalPermissions(this.accountability, permissions, {});
 	}

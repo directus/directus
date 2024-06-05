@@ -1,5 +1,8 @@
-import type { Filter, Permission, PermissionsAction } from '@directus/types';
+import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
+import { withAppMinimalPermissions } from '../../services/permissions/lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
+import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
+import { processPermissions } from '../utils/process-permissions.js';
 import { withCache } from '../utils/with-cache.js';
 
 export const fetchPermissions = withCache('permissions', _fetchPermissions);
@@ -8,6 +11,7 @@ export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
 	policies: string[];
 	collections?: string[];
+	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app'>;
 }
 
 export async function _fetchPermissions(options: FetchPermissionsOptions, context: Context) {
@@ -31,10 +35,35 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, contex
 		limit: -1,
 	})) as Permission[];
 
-	// TODO add in permissions processing to allow for dynamic fields (like $CURRENT_USER)
-	// See https://github.com/directus/directus/blob/main/api/src/utils/get-permissions.ts for current impl
+	if (options.accountability) {
+		// Add app minimal permissions for the request accountability, if applicable.
+		// Normally this is done in the permissions service readByQuery, but it also needs to do it here
+		// since the permissions service is created without accountability.
+		// We call it without the policies filter, since the static minimal app permissions don't have a policy attached.
+		const permissionsWithAppPermissions = withAppMinimalPermissions(options.accountability ?? null, permissions, {
+			_and: filter._and.slice(1),
+		});
 
-	// TODO merge in permissions coming from the share scope
+		const permissionsContext = await fetchDynamicVariableContext(
+			{
+				accountability: options.accountability,
+				policies: options.policies,
+				permissions: permissionsWithAppPermissions,
+			},
+			context,
+		);
+
+		// Replace dynamic variables with their actual values
+		const processedPermissions = processPermissions({
+			permissions: permissionsWithAppPermissions,
+			accountability: options.accountability,
+			permissionsContext,
+		});
+
+		// TODO merge in permissions coming from the share scope
+
+		return processedPermissions;
+	}
 
 	return permissions;
 }

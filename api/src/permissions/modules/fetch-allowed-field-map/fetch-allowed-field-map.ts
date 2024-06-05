@@ -8,13 +8,16 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 export type FieldMap = Record<string, string[]>;
 
 export interface FetchAllowedFieldMapOptions {
-	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'>;
+	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'admin' | 'app'>;
 	action: PermissionsAction;
 }
 
 export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowedFieldMap);
 
-export async function _fetchAllowedFieldMap({ accountability, action }: FetchAllowedFieldMapOptions, { knex, schema }: Context) {
+export async function _fetchAllowedFieldMap(
+	{ accountability, action }: FetchAllowedFieldMapOptions,
+	{ knex, schema }: Context,
+) {
 	const fieldMap: FieldMap = {};
 
 	if (accountability.admin) {
@@ -26,7 +29,7 @@ export async function _fetchAllowedFieldMap({ accountability, action }: FetchAll
 	}
 
 	const policies = await fetchPolicies(accountability, { knex, schema });
-	const permissions = await fetchPermissions({ action, policies }, { knex, schema })
+	const permissions = await fetchPermissions({ action, policies, accountability }, { knex, schema });
 
 	for (const { collection, fields } of permissions) {
 		if (!fieldMap[collection]) {

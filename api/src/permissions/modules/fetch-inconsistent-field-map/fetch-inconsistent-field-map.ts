@@ -8,7 +8,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 export type FieldMap = Record<string, string[]>;
 
 export interface FetchInconsistentFieldMapOptions {
-	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin'> | null;
+	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'admin' | 'app'> | null;
 	action: PermissionsAction;
 }
 
@@ -32,7 +32,7 @@ export async function _fetchInconsistentFieldMap(
 	}
 
 	const policies = await fetchPolicies(accountability, { knex, schema });
-	const permissions = await fetchPermissions({ action, policies }, { knex, schema });
+	const permissions = await fetchPermissions({ action, policies, accountability }, { knex, schema });
 
 	const collections = uniq(permissions.map(({ collection }) => collection));
 

@@ -17,7 +17,7 @@ export async function validateCollectionAccess(options: ValidateCollectionAccess
 	const policies = await fetchPolicies(options.accountability, context);
 
 	const permissions = await fetchPermissions(
-		{ action: options.action, policies, collections: [options.collection] },
+		{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 		context,
 	);
 

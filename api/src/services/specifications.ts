@@ -77,7 +77,10 @@ class OASSpecsService implements SpecificationSubService {
 
 			const policies = await fetchPolicies(this.accountability, { schema, knex: this.knex });
 
-			permissions = await fetchPermissions({ action: 'read', policies }, { schema, knex: this.knex });
+			permissions = await fetchPermissions(
+				{ action: 'read', policies, accountability: this.accountability },
+				{ schema, knex: this.knex },
+			);
 		}
 
 		const tags = await this.generateTags(schema);
