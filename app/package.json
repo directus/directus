@@ -139,7 +139,7 @@
 		"qrcode": "1.5.3",
 		"sass": "1.77.2",
 		"semver": "7.6.2",
-		"tinymce": "7.1.0",
+		"tinymce": "7.1.1",
 		"typescript": "5.4.5",
 		"vite": "5.2.11",
 		"vitest": "1.5.3",
