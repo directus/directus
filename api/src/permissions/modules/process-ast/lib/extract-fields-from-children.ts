@@ -37,8 +37,15 @@ export function extractFieldsFromChildren(
 		} else if (child.type === 'm2o') {
 			info.fields.add(child.fieldKey);
 
-			extractFieldsFromChildren(child.relation.collection, child.children, fieldMap, schema, [...path, child.fieldKey]);
-			extractFieldsFromQuery(child.relation.collection, child.query, fieldMap, schema, [...path, child.fieldKey]);
+			extractFieldsFromChildren(child.relation.related_collection!, child.children, fieldMap, schema, [
+				...path,
+				child.fieldKey,
+			]);
+
+			extractFieldsFromQuery(child.relation.related_collection!, child.query, fieldMap, schema, [
+				...path,
+				child.fieldKey,
+			]);
 		} else if (child.type === 'o2m') {
 			info.fields.add(child.fieldKey);
 
