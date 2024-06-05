@@ -7,6 +7,7 @@ import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+// import * as tus from 'tus-js-client';
 
 interface Props {
 	multiple?: boolean;
