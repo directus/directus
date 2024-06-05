@@ -1577,8 +1577,8 @@ importers:
   packages/storage-driver-azure:
     dependencies:
       '@azure/storage-blob':
-        specifier: 12.18.0
-        version: 12.18.0(encoding@0.1.13)
+        specifier: 12.23.0
+        version: 12.23.0
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -2461,6 +2461,10 @@ packages:
     resolution: {integrity: sha512-TrRLIoSQVzfAJX9H1JeFjzAoDGcoK1IYX1UImfceTZpsyYfWr09Ss1aHW1y5TrrR3iq6RZLBwJ3E24uwPhwahw==}
     engines: {node: '>=12.0.0'}
 
+  '@azure/abort-controller@2.1.2':
+    resolution: {integrity: sha512-nBrLsEWm4J2u5LpAPjxADTlq3trDgVZZXHNKabeXZtpq3d3AbN/KGO82R87rdDz5/lYB024rtEf10/q0urNgsA==}
+    engines: {node: '>=18.0.0'}
+
   '@azure/core-auth@1.5.0':
     resolution: {integrity: sha512-udzoBuYG1VBoHVohDTrvKjyzel34zt77Bhp7dQntVGGD0ehVq48owENbBG8fIgkHRNUBQH5k1r0hpoMu5L8+kw==}
     engines: {node: '>=14.0.0'}
@@ -2473,9 +2477,9 @@ packages:
     resolution: {integrity: sha512-ZN9avruqbQ5TxopzG3ih3KRy52n8OAbitX3fnZT5go4hzu0J+KVPSzkL+Wt3hpJpdG8WIfg1sBD1tWkgUdEpBA==}
     engines: {node: '>=12.0.0'}
 
-  '@azure/core-http@3.0.4':
-    resolution: {integrity: sha512-Fok9VVhMdxAFOtqiiAtg74fL0UJkt0z3D+ouUUxcRLzZNBioPRAMJFVxiWoJljYpXsRi4GDQHzQHDc9AiYaIUQ==}
-    engines: {node: '>=14.0.0'}
+  '@azure/core-http-compat@2.1.2':
+    resolution: {integrity: sha512-5MnV1yqzZwgNLLjlizsU3QqOeQChkIXw781Fwh1xdAqJR5AA32IUaq6xv1BICJvfbHoa+JYcaij2HFkhLbNTJQ==}
+    engines: {node: '>=18.0.0'}
 
   '@azure/core-lro@2.5.4':
     resolution: {integrity: sha512-3GJiMVH7/10bulzOKGrrLeG/uCBH/9VtxqaMcB9lIqAeamI/xYQSHJL/KcsLDuH+yTjYpro/u6D/MuRe4dN70Q==}
@@ -2489,10 +2493,6 @@ packages:
     resolution: {integrity: sha512-a62aP/wppgmnfIkJLfcB4ssPBcH94WzrzPVJ3tlJt050zX4lfmtnvy95D3igDo3f31StO+9BgPrzvkj4aOxnoA==}
     engines: {node: '>=18.0.0'}
 
-  '@azure/core-tracing@1.0.0-preview.13':
-    resolution: {integrity: sha512-KxDlhXyMlh2Jhj2ykX6vNEU0Vou4nHr025KoSEiz7cS3BNiHNaZcdECk/DmLkEB0as5T7b/TpRcehJ5yV6NeXQ==}
-    engines: {node: '>=12.0.0'}
-
   '@azure/core-tracing@1.0.1':
     resolution: {integrity: sha512-I5CGMoLtX+pI17ZdiFJZgxMJApsK6jjfm85hpgp3oazCdq5Wxgh4wMr7ge/TTWW1B5WBuvIOI1fMU/FrOAMKrw==}
     engines: {node: '>=12.0.0'}
@@ -2500,6 +2500,10 @@ packages:
   '@azure/core-util@1.6.1':
     resolution: {integrity: sha512-h5taHeySlsV9qxuK64KZxy4iln1BtMYlNt5jbuEFN3UFSAd1EwKg/Gjl5a6tZ/W8t6li3xPnutOx7zbDyXnPmQ==}
     engines: {node: '>=16.0.0'}
+
+  '@azure/core-xml@1.4.2':
+    resolution: {integrity: sha512-CW3MZhApe/S4iikbYKE7s83fjDBPIr2kpidX+hlGRwh7N4o1nIpQ/PfJTeioqhfqdMvRtheEl+ft64fyTaLNaA==}
+    engines: {node: '>=18.0.0'}
 
   '@azure/identity@3.4.1':
     resolution: {integrity: sha512-oQ/r5MBdfZTMIUcY5Ch8G7Vv9aIXDkEYyU4Dfqjim4MQN+LY2uiQ57P1JDopMLeHCsZxM4yy8lEdne3tM9Xhzg==}
@@ -2525,9 +2529,9 @@ packages:
     resolution: {integrity: sha512-RWAWCYYrSldIYC47oWtofIun41e6SB9TBYgGYsezq6ednagwo9ZRFyRsvl1NabmdTkdDDXRAABIdveeN2Gtd8w==}
     engines: {node: 16|| 18 || 20}
 
-  '@azure/storage-blob@12.18.0':
-    resolution: {integrity: sha512-BzBZJobMoDyjJsPRMLNHvqHycTGrT8R/dtcTx9qUFcqwSRfGVK9A/cZ7Nx38UQydT9usZGbaDCN75QRNjezSAA==}
-    engines: {node: '>=14.0.0'}
+  '@azure/storage-blob@12.23.0':
+    resolution: {integrity: sha512-c1KJ5R5hqR/HtvmFtTn/Y1BNMq45NUBp0LZH7yF8WFMET+wmESgEr0FVTu/Z5NonmfUjbgJZG5Nh8xHc5RdWGQ==}
+    engines: {node: '>=18.0.0'}
 
   '@babel/code-frame@7.23.5':
     resolution: {integrity: sha512-CgH3s1a96LipHCmSUmYFPwY7MNx8C3avkq7i4Wl3cfa662ldtUe4VM1TPXX70pfmrlWTb6jLqTYrZyT2ZTJBgA==}
@@ -3864,10 +3868,6 @@ packages:
   '@one-ini/wasm@0.1.1':
     resolution: {integrity: sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==}
 
-  '@opentelemetry/api@1.7.0':
-    resolution: {integrity: sha512-AdY5wvN0P2vXBi3b29hxZgSFvdhdxPB9+f0B6s//P9Q8nibRWeA3cHm8UmLpio9ABigkVHJ5NMPk+Mz8VCCyrw==}
-    engines: {node: '>=8.0.0'}
-
   '@otplib/core@12.0.1':
     resolution: {integrity: sha512-4sGntwbA/AC+SbPhbsziRiD+jNDdIzsZ3JUyfZwjtKyc/wufl1pnSIaG4Uqx8ymPagujub0o92kgBnB89cuAMA==}
 
@@ -4970,9 +4970,6 @@ packages:
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
-
-  '@types/tunnel@0.0.3':
-    resolution: {integrity: sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==}
 
   '@types/unist@2.0.10':
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
@@ -10195,9 +10192,6 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  sax@1.3.0:
-    resolution: {integrity: sha512-0s+oAmw9zLl1V1cS9BtZN7JAd0cW5e0QH4W3LWEK6a4LaLEA2OTpGYWDY+6XasBLtz6wkm3u1xRw95mRuJ59WA==}
-
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
@@ -11002,10 +10996,6 @@ packages:
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
-  tunnel@0.0.6:
-    resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
-    engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
-
   tweetnacl@0.14.5:
     resolution: {integrity: sha512-KXXFFdAbFXY4geFIwoyNK+f5Z1b7swfXABfL7HXCmoIWMKU3dmS26672A4EeQtDzLKy7SXmfBu51JolvEKwtGA==}
 
@@ -11734,16 +11724,8 @@ packages:
     resolution: {integrity: sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg==}
     engines: {node: '>=18'}
 
-  xml2js@0.5.0:
-    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
-    engines: {node: '>=4.0.0'}
-
   xml@1.0.1:
     resolution: {integrity: sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==}
-
-  xmlbuilder@11.0.1:
-    resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
-    engines: {node: '>=4.0'}
 
   xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}
@@ -12688,6 +12670,10 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
+  '@azure/abort-controller@2.1.2':
+    dependencies:
+      tslib: 2.6.2
+
   '@azure/core-auth@1.5.0':
     dependencies:
       '@azure/abort-controller': 1.1.0
@@ -12705,7 +12691,6 @@ snapshots:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@azure/core-http-compat@1.3.0':
     dependencies:
@@ -12716,24 +12701,13 @@ snapshots:
       - supports-color
     optional: true
 
-  '@azure/core-http@3.0.4(encoding@0.1.13)':
+  '@azure/core-http-compat@2.1.2':
     dependencies:
-      '@azure/abort-controller': 1.1.0
-      '@azure/core-auth': 1.5.0
-      '@azure/core-tracing': 1.0.0-preview.13
-      '@azure/core-util': 1.6.1
-      '@azure/logger': 1.0.4
-      '@types/node-fetch': 2.6.11
-      '@types/tunnel': 0.0.3
-      form-data: 4.0.0
-      node-fetch: 2.7.0(encoding@0.1.13)
-      process: 0.11.10
-      tslib: 2.6.2
-      tunnel: 0.0.6
-      uuid: 8.3.2
-      xml2js: 0.5.0
+      '@azure/abort-controller': 2.1.2
+      '@azure/core-client': 1.7.3
+      '@azure/core-rest-pipeline': 1.13.0
     transitivePeerDependencies:
-      - encoding
+      - supports-color
 
   '@azure/core-lro@2.5.4':
     dependencies:
@@ -12758,21 +12732,19 @@ snapshots:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
-    optional: true
-
-  '@azure/core-tracing@1.0.0-preview.13':
-    dependencies:
-      '@opentelemetry/api': 1.7.0
-      tslib: 2.6.2
 
   '@azure/core-tracing@1.0.1':
     dependencies:
       tslib: 2.6.2
-    optional: true
 
   '@azure/core-util@1.6.1':
     dependencies:
       '@azure/abort-controller': 1.1.0
+      tslib: 2.6.2
+
+  '@azure/core-xml@1.4.2':
+    dependencies:
+      fast-xml-parser: 4.3.6
       tslib: 2.6.2
 
   '@azure/identity@3.4.1':
@@ -12831,18 +12803,23 @@ snapshots:
       uuid: 8.3.2
     optional: true
 
-  '@azure/storage-blob@12.18.0(encoding@0.1.13)':
+  '@azure/storage-blob@12.23.0':
     dependencies:
       '@azure/abort-controller': 1.1.0
-      '@azure/core-http': 3.0.4(encoding@0.1.13)
+      '@azure/core-auth': 1.5.0
+      '@azure/core-client': 1.7.3
+      '@azure/core-http-compat': 2.1.2
       '@azure/core-lro': 2.5.4
       '@azure/core-paging': 1.5.0
-      '@azure/core-tracing': 1.0.0-preview.13
+      '@azure/core-rest-pipeline': 1.13.0
+      '@azure/core-tracing': 1.0.1
+      '@azure/core-util': 1.6.1
+      '@azure/core-xml': 1.4.2
       '@azure/logger': 1.0.4
       events: 3.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
-      - encoding
+      - supports-color
 
   '@babel/code-frame@7.23.5':
     dependencies:
@@ -14117,8 +14094,6 @@ snapshots:
     optional: true
 
   '@one-ini/wasm@0.1.1': {}
-
-  '@opentelemetry/api@1.7.0': {}
 
   '@otplib/core@12.0.1': {}
 
@@ -15471,10 +15446,6 @@ snapshots:
   '@types/tough-cookie@4.0.5': {}
 
   '@types/trusted-types@2.0.7': {}
-
-  '@types/tunnel@0.0.3':
-    dependencies:
-      '@types/node': 18.19.33
 
   '@types/unist@2.0.10': {}
 
@@ -21662,8 +21633,6 @@ snapshots:
       immutable: 4.3.4
       source-map-js: 1.2.0
 
-  sax@1.3.0: {}
-
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
@@ -22660,8 +22629,6 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  tunnel@0.0.6: {}
-
   tweetnacl@0.14.5:
     optional: true
 
@@ -23477,14 +23444,7 @@ snapshots:
   xml-name-validator@5.0.0:
     optional: true
 
-  xml2js@0.5.0:
-    dependencies:
-      sax: 1.3.0
-      xmlbuilder: 11.0.1
-
   xml@1.0.1: {}
-
-  xmlbuilder@11.0.1: {}
 
   xmlbuilder@15.1.1: {}
 
