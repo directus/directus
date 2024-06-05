@@ -39,7 +39,7 @@ export const useUserStore = defineStore({
 			this.loading = true;
 
 			try {
-				const fields = ['*', 'avatar.id', 'role.id'];
+				const fields = ['*', 'role.id'];
 
 				const [{ data: user }, { data: flags }, { data: roles }] = await Promise.all([
 					api.get(`/users/me`, { params: { fields } }),
@@ -47,7 +47,7 @@ export const useUserStore = defineStore({
 					api.get('/roles/me', { params: { fields: ['id'] } }),
 				]);
 
-				this.currentUser = { ...user.data, ...flags.data, roles: roles.data };
+				this.currentUser = { ...user.data, avatar: { id: user.data?.avatar }, ...flags.data, roles: roles.data };
 			} catch (error: any) {
 				this.error = error;
 			} finally {

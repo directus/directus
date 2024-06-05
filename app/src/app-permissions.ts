@@ -1,5 +1,6 @@
 import { Permission } from '@directus/types';
 
+// TODO update to respect policies
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_files',

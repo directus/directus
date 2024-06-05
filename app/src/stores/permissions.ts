@@ -39,8 +39,7 @@ export const usePermissionsStore = defineStore({
 				return rawPermission;
 			});
 
-			console.log(this.permissions);
-
+			// TODO update to use policies
 			function getNestedDynamicVariableFields(rawPermissions: Permission[]) {
 				const fields = new Set<string>();
 
