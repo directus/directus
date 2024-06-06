@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
-import { PUBLIC_POLICY_ID, PUBLIC_ROLE_ID } from '@directus/constants';
+import { PUBLIC_POLICY_ID } from '@directus/constants';
 import { processChunk } from '@directus/utils';
 
 /**
