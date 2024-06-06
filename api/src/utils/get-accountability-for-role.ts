@@ -1,3 +1,4 @@
+import { PUBLIC_ROLE_ID } from '@directus/constants/src/index.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
@@ -15,7 +16,10 @@ export async function getAccountabilityForRole(
 	let generatedAccountability: Accountability | null;
 
 	if (role === null) {
-		generatedAccountability = createDefaultAccountability();
+		generatedAccountability = createDefaultAccountability({
+			role: PUBLIC_ROLE_ID,
+			roles: [PUBLIC_ROLE_ID],
+		});
 	} else if (role === 'system') {
 		generatedAccountability = createDefaultAccountability({
 			admin: true,
