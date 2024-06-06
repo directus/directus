@@ -20,3 +20,8 @@ const config: CacheConfig = localOnly
 	  };
 
 export const useCache = defineCache(config);
+
+export function clearCache() {
+	const cache = useCache();
+	return cache.clear();
+}

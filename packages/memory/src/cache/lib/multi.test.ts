@@ -108,3 +108,12 @@ describe('has', () => {
 		expect(result).toBe(true);
 	});
 });
+
+describe('clear', () => {
+	test('Calls clear for both caches', async () => {
+		const result = await cache.clear();
+		expect(cache['local'].clear).toHaveBeenCalledOnce();
+		expect(cache['redis'].clear).toHaveBeenCalledOnce();
+		expect(result).toBeUndefined();
+	});
+});

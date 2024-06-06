@@ -3,6 +3,7 @@ import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@dire
 import type Keyv from 'keyv';
 import { mapValues, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
+import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
@@ -37,6 +38,8 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
+		await clearPermissionsCache();
+
 		return res;
 	}
 
@@ -47,6 +50,8 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
+
+		await clearPermissionsCache();
 
 		return res;
 	}
@@ -59,6 +64,8 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
+		await clearPermissionsCache();
+
 		return res;
 	}
 
@@ -69,6 +76,8 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
+
+		await clearPermissionsCache();
 
 		return res;
 	}
@@ -81,6 +90,8 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
+		await clearPermissionsCache();
+
 		return res;
 	}
 
@@ -91,6 +102,8 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
+
+		await clearPermissionsCache();
 
 		return res;
 	}
