@@ -31,7 +31,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"esbuild": "0.20.2",
 		"esbuild-yaml": "1.1.1",
-		"tsup": "8.0.2",
+		"tsup": "8.1.0",
 		"typescript": "5.4.5"
 	}
 }
