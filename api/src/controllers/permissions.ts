@@ -94,7 +94,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const result = await service.fetchPermissionsForAccountability();
+		const result = await service.fetchCollectionAccessForAccountability();
 
 		res.locals['payload'] = { data: result };
 		return next();
