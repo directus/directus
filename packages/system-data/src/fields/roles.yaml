@@ -1,12 +1,5 @@
 table: directus_roles
 
-.hide_in_public_role: &hide_in_public_role
-  conditions:
-    - rule:
-        id:
-          _eq: cf19c96e-a307-4842-98e6-0e1415d7ad40
-      hidden: true
-
 fields:
   - field: id
     hidden: true
@@ -48,7 +41,6 @@ fields:
     display: related-values
     display_options:
       template: '{{ name }}'
-    <<: *hide_in_public_role
 
   - field: children
     hidden: true
@@ -87,7 +79,6 @@ fields:
       - alias
       - no-data
       - group
-    <<: *hide_in_public_role
 
   - field: users_divider
     interface: presentation-divider
@@ -99,7 +90,6 @@ fields:
       - no-data
     width: full
     group: users_group
-    <<: *hide_in_public_role
 
   - field: users
     interface: list-o2m
@@ -111,4 +101,3 @@ fields:
         - last_name
     width: full
     group: users_group
-    <<: *hide_in_public_role

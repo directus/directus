@@ -5,7 +5,6 @@ import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { PUBLIC_ROLE_ID } from '@directus/constants';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,14 +13,15 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
 
-type RoleResponse = Pick<Role, RoleBaseFields> & {
+type RoleResponse = Pick<Role, RoleBaseFields | 'admin_access'> & {
 	users: [{ count: { id: number } }];
 };
 
-type RoleItem = Pick<Role, RoleBaseFields> & {
-	public?: boolean;
-	count?: number;
-};
+type RoleItem = Pick<Role, RoleBaseFields> &
+	Partial<Pick<Role, 'admin_access'>> & {
+		public?: boolean;
+		count?: number;
+	};
 
 const { t } = useI18n();
 
@@ -123,10 +123,16 @@ async function fetchRoles() {
 		});
 
 		roles.value = [
+			{
+				id: 'public',
+				name: t('public_label'),
+				description: t('public_description'),
+				icon: 'public',
+				public: true,
+			},
 			...response.map((role) => {
 				return {
 					...translate(role),
-					public: role.id === PUBLIC_ROLE_ID,
 					count: role.users[0]?.count.id || 0,
 				};
 			}),
@@ -139,10 +145,15 @@ async function fetchRoles() {
 }
 
 function navigateToRole({ item }: { item: Role }) {
-	router.push({
-		name: 'settings-roles-item',
-		params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
-	});
+	if (item.id === 'public') {
+		router.push({ name: 'settings-roles-public-item' });
+		return;
+	} else {
+		router.push({
+			name: 'settings-roles-item',
+			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+		});
+	}
 }
 </script>
 

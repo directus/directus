@@ -313,7 +313,7 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
-		if (itemId.value === undefined || itemId.value === '+') {
+		if (!itemId.value || itemId.value === '+') {
 			fetchedItems.value = [];
 			return;
 		}
