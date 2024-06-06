@@ -24,4 +24,8 @@ export class CacheLocal implements Cache {
 	async has(key: string) {
 		return await this.store.has(key);
 	}
+
+	async clear(): Promise<void> {
+		await this.store.clear();
+	}
 }
