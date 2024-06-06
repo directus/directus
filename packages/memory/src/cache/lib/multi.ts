@@ -70,7 +70,7 @@ export class CacheMulti implements Cache {
 
 	async clear(): Promise<void> {
 		await Promise.all([this.local.clear(), this.redis.clear()]);
-		this.clearOthers();
+		await this.clearOthers();
 	}
 
 	private async onMessageClear(payload: CacheMultiMessageClear) {
