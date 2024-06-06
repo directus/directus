@@ -41,10 +41,6 @@ export default defineModule({
 
 		if (admin) return true;
 
-		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_dashboards' && permission.action === 'read',
-		);
-
-		return !!permission;
+		return permissions['directus_dashboards']?.['read']?.access ?? false;
 	},
 });

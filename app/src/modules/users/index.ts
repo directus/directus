@@ -42,10 +42,6 @@ export default defineModule({
 		const admin = user.admin_access;
 		if (admin) return true;
 
-		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_users' && permission.action === 'read',
-		);
-
-		return !!permission;
+		return permissions['directus_users']?.['read']?.access ?? false;
 	},
 });

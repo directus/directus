@@ -47,7 +47,12 @@ export const useUserStore = defineStore({
 					api.get('/roles/me', { params: { fields: ['id'] } }),
 				]);
 
-				this.currentUser = { ...user.data, avatar: { id: user.data?.avatar }, ...flags.data, roles: roles.data };
+				this.currentUser = {
+					...user.data,
+					...(user.data?.avatar != null ? { avatar: { id: user.data?.avatar } } : {}),
+					...flags.data,
+					roles: roles.data,
+				};
 			} catch (error: any) {
 				this.error = error;
 			} finally {
