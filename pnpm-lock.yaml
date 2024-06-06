@@ -501,7 +501,7 @@ importers:
         version: 8.5.10
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -516,7 +516,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   app:
     devDependencies:
@@ -636,7 +636,7 @@ importers:
         version: 6.1.7(@fullcalendar/core@6.1.7)
       '@histoire/plugin-vue':
         specifier: 0.17.17
-        version: 0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@joeattardi/emoji-button':
         specifier: 4.6.4
         version: 4.6.4
@@ -726,7 +726,7 @@ importers:
         version: 1.9.9(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: 5.0.4
-        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@vue/test-utils':
         specifier: 2.4.6
         version: 2.4.6
@@ -792,7 +792,7 @@ importers:
         version: 14.12.0
       histoire:
         specifier: 0.17.17
-        version: 0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+        version: 0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       html-entities:
         specifier: 2.5.2
         version: 2.5.2
@@ -842,8 +842,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
       sass:
-        specifier: 1.77.2
-        version: 1.77.2
+        specifier: 1.77.4
+        version: 1.77.4
       semver:
         specifier: 7.6.2
         version: 7.6.2
@@ -855,10 +855,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+        version: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -949,10 +949,10 @@ importers:
         version: 5.4.5
       vitepress:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.2)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5)
+        version: 1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.4)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5)
       vitepress-plugin-tabs:
         specifier: 0.3.0
-        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.2)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
+        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.4)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -964,16 +964,16 @@ importers:
         version: link:../tsconfig
       '@histoire/plugin-vue':
         specifier: 0.17.17
-        version: 0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: 5.0.4
-        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       histoire:
         specifier: 0.17.17
-        version: 0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+        version: 0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
@@ -985,13 +985,13 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+        version: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+        version: 3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1037,7 +1037,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       '@vue/test-utils':
         specifier: 2.4.6
         version: 2.4.6
@@ -1049,7 +1049,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1128,7 +1128,7 @@ importers:
         version: 18.19.33
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1137,7 +1137,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/errors:
     dependencies:
@@ -1159,7 +1159,7 @@ importers:
         version: 0.7.34
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1168,7 +1168,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/extensions:
     dependencies:
@@ -1214,7 +1214,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
@@ -1232,7 +1232,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1275,7 +1275,7 @@ importers:
         version: 4.0.2
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1284,7 +1284,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1326,7 +1326,7 @@ importers:
         version: 3.0.2(rollup@3.29.4)
       '@vitejs/plugin-vue':
         specifier: 4.6.2
-        version: 4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       chalk:
         specifier: 5.3.0
         version: 5.3.0
@@ -1359,7 +1359,7 @@ importers:
         version: 4.0.0(rollup@3.29.4)
       vite:
         specifier: 4.5.2
-        version: 4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+        version: 4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1375,13 +1375,13 @@ importers:
         version: 9.0.7
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/format-title:
     devDependencies:
@@ -1396,7 +1396,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/memory:
     dependencies:
@@ -1424,7 +1424,7 @@ importers:
         version: 18.19.33
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1433,7 +1433,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/pressure:
     dependencies:
@@ -1452,7 +1452,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1461,7 +1461,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/random:
     devDependencies:
@@ -1473,7 +1473,7 @@ importers:
         version: 18.19.33
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1482,7 +1482,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/release-notes-generator:
     dependencies:
@@ -1513,13 +1513,13 @@ importers:
         version: 7.5.8
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/schema:
     dependencies:
@@ -1563,7 +1563,7 @@ importers:
         version: 18.19.33
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1572,7 +1572,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1594,7 +1594,7 @@ importers:
         version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1603,7 +1603,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1628,7 +1628,7 @@ importers:
         version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1637,7 +1637,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1659,7 +1659,7 @@ importers:
         version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1668,7 +1668,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1687,7 +1687,7 @@ importers:
         version: 18.19.33
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1696,7 +1696,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1724,7 +1724,7 @@ importers:
         version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1733,7 +1733,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1758,7 +1758,7 @@ importers:
         version: 7.2.0
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -1767,7 +1767,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/stores:
     dependencies:
@@ -1844,7 +1844,7 @@ importers:
         version: 1.9.9(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: 5.0.4
-        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
@@ -1856,10 +1856,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+        version: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+        version: 3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1926,7 +1926,7 @@ importers:
         version: 7.5.8
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
@@ -1938,7 +1938,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   packages/utils:
     dependencies:
@@ -1990,7 +1990,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -2002,7 +2002,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -2027,7 +2027,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       tsup:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
@@ -2036,7 +2036,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   sdk:
     dependencies:
@@ -2058,7 +2058,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
 
   tests/blackbox:
     devDependencies:
@@ -2136,10 +2136,10 @@ importers:
         version: 9.0.1
       vite-tsconfig-paths:
         specifier: 4.3.2
-        version: 4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+        version: 4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       vitest:
         specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
       ws:
         specifier: 8.17.0
         version: 8.17.0
@@ -10187,8 +10187,8 @@ packages:
   sanitize-html@2.13.0:
     resolution: {integrity: sha512-Xff91Z+4Mz5QiNSLdLWwjgBDm5b1RU6xBT0+12rapjiaR7SwfRdjw8f+6Rir2MXKLrDicRFHdb51hGOAxmsUIA==}
 
-  sass@1.77.2:
-    resolution: {integrity: sha512-eb4GZt1C3avsX3heBNlrc7I09nyT00IUuo4eFhAbeXWU2fvA7oXI53SxODVAA+zgZCk9aunAZgO+losjR3fAwA==}
+  sass@1.77.4:
+    resolution: {integrity: sha512-vcF3Ckow6g939GMA4PeU7b2K/9FALXk2KF9J87txdHzXbUF9XRQRwSxcAs/fGaTnJeBFd7UoV22j3lzMLdM0Pw==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -13581,10 +13581,10 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@histoire/app@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))':
+  '@histoire/app@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))':
     dependencies:
-      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
-      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
+      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       '@histoire/vendors': 0.17.17
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.21
@@ -13592,7 +13592,7 @@ snapshots:
     transitivePeerDependencies:
       - vite
 
-  '@histoire/controls@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))':
+  '@histoire/controls@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))':
     dependencies:
       '@codemirror/commands': 6.3.2
       '@codemirror/lang-json': 6.0.1
@@ -13601,26 +13601,26 @@ snapshots:
       '@codemirror/state': 6.3.3
       '@codemirror/theme-one-dark': 6.1.2
       '@codemirror/view': 6.22.3
-      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       '@histoire/vendors': 0.17.17
     transitivePeerDependencies:
       - vite
 
-  '@histoire/plugin-vue@0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
+  '@histoire/plugin-vue@0.17.17(histoire@0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)))(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
-      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
+      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       '@histoire/vendors': 0.17.17
       change-case: 4.1.2
       globby: 13.2.2
-      histoire: 0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+      histoire: 0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       launch-editor: 2.6.1
       pathe: 1.1.2
       vue: 3.4.27(typescript@5.4.5)
     transitivePeerDependencies:
       - vite
 
-  '@histoire/shared@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))':
+  '@histoire/shared@0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))':
     dependencies:
       '@histoire/vendors': 0.17.17
       '@types/fs-extra': 9.0.13
@@ -13628,7 +13628,7 @@ snapshots:
       chokidar: 3.6.0
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
 
   '@histoire/vendors@0.17.17': {}
 
@@ -15584,17 +15584,17 @@ snapshots:
       unhead: 1.9.9
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
+  '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      vite: 4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vitejs/plugin-vue@5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
+  '@vitejs/plugin-vue@5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vitest/coverage-v8@1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0))':
+  '@vitest/coverage-v8@1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -15609,7 +15609,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0)
+      vitest: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -18313,12 +18313,12 @@ snapshots:
 
   hexoid@1.0.0: {}
 
-  histoire@0.17.17(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)):
+  histoire@0.17.17(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)):
     dependencies:
       '@akryum/tinypool': 0.3.1
-      '@histoire/app': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
-      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
-      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))
+      '@histoire/app': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
+      '@histoire/controls': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
+      '@histoire/shared': 0.17.17(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))
       '@histoire/vendors': 0.17.17
       '@types/flexsearch': 0.7.6
       '@types/markdown-it': 12.2.3
@@ -18345,8 +18345,8 @@ snapshots:
       sade: 1.8.1
       shiki-es: 0.2.0
       sirv: 2.0.4
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
-      vite-node: 0.34.7(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
+      vite-node: 0.34.7(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -21627,7 +21627,7 @@ snapshots:
       parse-srcset: 1.0.2
       postcss: 8.4.35
 
-  sass@1.77.2:
+  sass@1.77.4:
     dependencies:
       chokidar: 3.6.0
       immutable: 4.3.4
@@ -22996,14 +22996,14 @@ snapshots:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
-  vite-node@0.34.7(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0):
+  vite-node@0.34.7(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4(supports-color@5.5.0)
       mlly: 1.6.1
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -23014,13 +23014,13 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@1.5.3(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0):
+  vite-node@1.5.3(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -23031,7 +23031,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)):
+  vite-plugin-dts@3.9.1(@types/node@18.19.33)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@18.19.33)
       '@rollup/pluginutils': 5.1.0(rollup@4.17.2)
@@ -23042,24 +23042,24 @@ snapshots:
       typescript: 5.4.5
       vue-tsc: 1.8.27(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)):
+  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)):
     dependencies:
       debug: 4.3.4(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0):
+  vite@4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.4.32
@@ -23067,10 +23067,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 18.19.33
       fsevents: 2.3.3
-      sass: 1.77.2
+      sass: 1.77.4
       terser: 5.31.0
 
-  vite@5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0):
+  vite@5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
@@ -23078,19 +23078,19 @@ snapshots:
     optionalDependencies:
       '@types/node': 18.19.33
       fsevents: 2.3.3
-      sass: 1.77.2
+      sass: 1.77.4
       terser: 5.31.0
 
-  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.2)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
+  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.4)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
     dependencies:
-      vitepress: 1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.2)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5)
+      vitepress: 1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.4)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5)
       vue: 3.4.27(typescript@5.4.5)
 
-  vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.2)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5):
+  vitepress@1.0.0-rc.4(@algolia/client-search@4.23.3)(@types/node@18.19.33)(axios@1.7.2)(change-case@5.4.4)(qrcode@1.5.3)(sass@1.77.4)(search-insights@2.13.0)(sortablejs@1.15.2)(terser@5.31.0)(typescript@5.4.5):
     dependencies:
       '@docsearch/css': 3.5.2
       '@docsearch/js': 3.5.2(@algolia/client-search@4.23.3)(search-insights@2.13.0)
-      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+      '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@vue/devtools-api': 6.5.1
       '@vueuse/core': 10.9.0(vue@3.4.27(typescript@5.4.5))
       '@vueuse/integrations': 10.7.0(axios@1.7.2)(change-case@5.4.4)(focus-trap@7.5.4)(qrcode@1.5.3)(sortablejs@1.15.2)(vue@3.4.27(typescript@5.4.5))
@@ -23099,7 +23099,7 @@ snapshots:
       mark.js: 8.11.1
       minisearch: 6.3.0
       shiki: 0.14.7
-      vite: 4.5.2(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 4.5.2(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       vue: 3.4.27(typescript@5.4.5)
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -23128,7 +23128,7 @@ snapshots:
       - typescript
       - universal-cookie
 
-  vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.2)(terser@5.31.0):
+  vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0):
     dependencies:
       '@vitest/expect': 1.5.3
       '@vitest/runner': 1.5.3
@@ -23147,8 +23147,8 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
-      vite-node: 1.5.3(@types/node@18.19.33)(sass@1.77.2)(terser@5.31.0)
+      vite: 5.2.11(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
+      vite-node: 1.5.3(@types/node@18.19.33)(sass@1.77.4)(terser@5.31.0)
       why-is-node-running: 2.2.2
     optionalDependencies:
       '@types/node': 18.19.33
