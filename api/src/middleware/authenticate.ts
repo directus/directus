@@ -1,4 +1,3 @@
-import { PUBLIC_ROLE_ID } from '@directus/constants';
 import type { Accountability } from '@directus/types';
 import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash-es';
@@ -57,12 +56,6 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 		}
 
 		throw err;
-	}
-
-	if (req.accountability.role === null) {
-		// If the role is null, use the public role instead
-		req.accountability.role = PUBLIC_ROLE_ID;
-		req.accountability.roles = [PUBLIC_ROLE_ID];
 	}
 
 	return next();

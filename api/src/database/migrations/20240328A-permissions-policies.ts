@@ -118,18 +118,9 @@ export async function up(knex: Knex) {
 		await knex('directus_access').insert(chunk);
 	});
 
-	// Insert a new public role
-	await knex('directus_roles').insert({
-		id: PUBLIC_ROLE_ID,
-		name: '$t:public_label',
-		description: '$t:public_description',
-		icon: 'public',
-	});
-
-	// Attach public policy to public role
 	await knex('directus_access').insert({
 		id: randomUUID(),
-		role: PUBLIC_ROLE_ID,
+		role: null,
 		user: null,
 		policy: PUBLIC_POLICY_ID,
 		sort: 1,
@@ -203,7 +194,4 @@ export async function down(knex: Knex) {
 	// Drop policies table
 
 	await knex.schema.dropTable('directus_policies');
-
-	// Remove public role
-	await knex('directus_roles').where({ id: PUBLIC_ROLE_ID }).delete();
 }
