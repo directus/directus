@@ -98,7 +98,7 @@ function discardAndLeave() {
 <template>
 	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -106,7 +106,7 @@ function discardAndLeave() {
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						v-if="deleteAllowed"
