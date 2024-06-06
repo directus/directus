@@ -186,10 +186,16 @@ export class FieldsService {
 				{ knex: this.knex, schema: this.schema },
 			);
 
-			const allowedFieldsInCollection: Record<string, string[]> = {};
+			const allowedFieldsInCollection: Record<string, Set<string>> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
+				if (!allowedFieldsInCollection[permission.collection]) {
+					allowedFieldsInCollection[permission.collection] = new Set();
+				}
+
+				for (const field of permission.fields ?? []) {
+					allowedFieldsInCollection[permission.collection]!.add(field);
+				}
 			});
 
 			if (collection && collection in allowedFieldsInCollection === false) {
@@ -199,8 +205,8 @@ export class FieldsService {
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection]!;
-				if (allowedFields[0] === '*') return true;
-				return allowedFields.includes(field.field);
+				if (allowedFields.has('*')) return true;
+				return allowedFields.has(field.field);
 			});
 		}
 

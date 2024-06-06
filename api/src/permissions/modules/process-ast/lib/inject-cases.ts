@@ -59,7 +59,7 @@ function processChildren(
 	for (const child of children) {
 		// If there's one or more permissions that allow full access to this field, we can safe some
 		// query perf overhead by ignoring the whole case/where system
-		if (allowedFields.has(child.fieldKey)) continue;
+		if (allowedFields.has('*') || allowedFields.has(child.fieldKey)) continue;
 
 		const globalWhenCase = caseMap['*'];
 		const fieldWhenCase = caseMap[child.fieldKey];
