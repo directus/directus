@@ -1,6 +1,6 @@
 import type { RestCommand } from '../../types.js';
 
-// TODO better options for ouput typing
+// TODO better options for output typing
 
 /**
  * Trigger a flow
