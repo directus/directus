@@ -247,7 +247,7 @@ export class RolesService extends ItemsService {
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
 
-			if ('users' in partialItem && needsUserLimitCheck) {
+			if (needsUserLimitCheck && 'users' in partialItem) {
 				const type = this.getRoleAccessType(partialItem);
 				increasedCounts[type] += partialItem['users'].length;
 
