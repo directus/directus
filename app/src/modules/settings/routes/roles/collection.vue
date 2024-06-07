@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Header as TableHeader } from '@/components/v-table/types';
-import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -13,24 +12,23 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
 
-type RoleResponse = Pick<Role, RoleBaseFields | 'admin_access'> & {
+type RoleResponse = Pick<Role, RoleBaseFields> & {
 	users: [{ count: { id: number } }];
 };
 
-type RoleItem = Pick<Role, RoleBaseFields> &
-	Partial<Pick<Role, 'admin_access'>> & {
-		public?: boolean;
-		count?: number;
-	};
+type RoleItem = Pick<Role, RoleBaseFields> & {
+	public?: boolean;
+	count?: number;
+};
 
 const { t } = useI18n();
 
 const router = useRouter();
-const fieldsStore = useFieldsStore();
 
 const roles = ref<RoleItem[]>([]);
 const loading = ref(false);
 
+// TODO
 const lastAdminRoleId = computed(() => {
 	const adminRoles = roles.value.filter((role) => role.admin_access === true);
 	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
