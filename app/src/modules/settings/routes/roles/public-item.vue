@@ -4,13 +4,18 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import { useApi } from '@directus/composables';
-import { Alterations, Item, Policy } from '@directus/types';
-import { isEmpty, isEqual, isObjectLike } from 'lodash';
+import { Alterations, Filter, Item, Policy } from '@directus/types';
+import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
+
+type Access = {
+	id: string;
+	policy: Policy;
+};
 
 const { t } = useI18n();
 
@@ -18,13 +23,34 @@ const api = useApi();
 const router = useRouter();
 
 const fieldsStore = useFieldsStore();
-const policiesField = fieldsStore.getField('directus_roles', 'policies');
+const policiesField = cloneDeep(fieldsStore.getField('directus_roles', 'policies'));
+
+// Add filter in order to correctly display the policies of the public role
+policiesField!.meta!.options = {
+	...policiesField!.meta!.options,
+	// Needed for showing policies of the public role in the field
+	junctionFilter: {
+		role: { _null: true },
+		user: { _null: true },
+	},
+	// Needed for filtering the policies that can be selected, as the list-m2m field applies the same filter, but with
+	// _eq: null, which does not work correctly
+	filter: {
+		'$FOLLOW(directus_access,policy)': {
+			_none: {
+				role: {
+					_null: true,
+				},
+			},
+		},
+	},
+};
 
 const loading = ref(false);
 const error = ref<any | null>(null);
 const saving = ref(false);
 const initialValue = ref<{ policies: string[] | null }>({ policies: null });
-const edits = ref<{ policies?: Policy[] | Alterations<Policy> | null }>({});
+const edits = ref<{ policies?: Alterations<Access> | null }>({});
 
 const hasEdits = computed(() => !isEmpty(edits.value) && !isEqual(initialValue.value, edits.value));
 
@@ -68,19 +94,32 @@ async function save() {
 	saving.value = true;
 
 	try {
-		if (isAlterations(edits.value)) {
-			const { create, update, delete: deleted } = edits.value;
+		console.log('edits', edits.value);
+
+		if (isAlterations(edits.value.policies)) {
+			console.log('isAlterations');
+			const { create, update, delete: deleted } = edits.value.policies;
 			const requests = [];
 
-			if (create) {
-				requests.push(api.post('/access', { data: create }));
+			if (create && create.length > 0) {
+				requests.push(
+					api.post(
+						'/access',
+						create.map((access) => ({ id: access.id, policy: access.policy!.id })),
+					),
+				);
 			}
 
-			if (update) {
-				requests.push(api.patch('/access', { data: update }));
+			if (update && update.length > 0) {
+				requests.push(
+					api.patch(
+						'/access',
+						update.map((access) => ({ id: access.id, policy: access.policy!.id })),
+					),
+				);
 			}
 
-			if (deleted) {
+			if (deleted && deleted.length > 0) {
 				requests.push(api.delete('/access', { data: deleted }));
 			}
 
@@ -145,6 +184,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<div v-if="!loading" class="roles">
+			<!-- TODO lets add a note here on what the public role is and what it influences -->
 			<v-form v-model="edits" :initial-values="initialValue" :fields="[policiesField]" :primary-key="null" />
 		</div>
 
