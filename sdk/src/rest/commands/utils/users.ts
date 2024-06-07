@@ -75,7 +75,7 @@ export const registerUser =
 export const registerUserVerify =
 	<Schema>(token: string): RestCommand<void, Schema> =>
 	() => ({
-		path: `/register/verify-email`,
+		path: `/users/register/verify-email`,
 		params: { token },
 		method: 'GET',
 	});
