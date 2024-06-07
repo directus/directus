@@ -42,7 +42,7 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	async fetchPolicyFlagsForAccountability(): Promise<Pick<Policy, 'app_access' | 'admin_access' | 'enforce_tfa'>> {
-		if (!this.accountability?.user || !this.accountability?.role) throw new ForbiddenError();
+		if (!this.accountability?.user && !this.accountability?.role) throw new ForbiddenError();
 
 		const ids = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
 		const policies = await this.readMany(ids, { fields: ['enforce_tfa'] });

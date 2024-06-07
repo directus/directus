@@ -76,7 +76,7 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) throw new ForbiddenError();
+		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
 
 		const service = new RolesService({
 			accountability: req.accountability,
