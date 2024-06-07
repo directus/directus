@@ -215,6 +215,7 @@ data:
     many_field: role
     one_collection: directus_roles
     one_field: policies
+    one_deselect_action: 'delete'
     junction_field: policy
     sort_field: sort
 
@@ -222,6 +223,7 @@ data:
     many_field: user
     one_collection: directus_users
     one_field: policies
+    one_deselect_action: 'delete'
     junction_field: policy
     sort_field: sort
 

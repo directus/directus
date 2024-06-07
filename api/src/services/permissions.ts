@@ -113,7 +113,7 @@ export class PermissionsService extends ItemsService {
 	 * The permissions will be filtered by IP access.
 	 */
 	async fetchCollectionAccessForAccountability() {
-		if (!this.accountability?.user || !this.accountability?.role) throw new ForbiddenError();
+		if (!this.accountability?.user && !this.accountability?.role) throw new ForbiddenError();
 
 		if (this.accountability?.admin) {
 			return mapValues(this.schema.collections, () =>
