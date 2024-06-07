@@ -94,29 +94,16 @@ async function save() {
 	saving.value = true;
 
 	try {
-		console.log('edits', edits.value);
-
 		if (isAlterations(edits.value.policies)) {
-			console.log('isAlterations');
 			const { create, update, delete: deleted } = edits.value.policies;
 			const requests = [];
 
 			if (create && create.length > 0) {
-				requests.push(
-					api.post(
-						'/access',
-						create.map((access) => ({ id: access.id, policy: access.policy!.id })),
-					),
-				);
+				requests.push(api.post('/access', create));
 			}
 
 			if (update && update.length > 0) {
-				requests.push(
-					api.patch(
-						'/access',
-						update.map((access) => ({ id: access.id, policy: access.policy!.id })),
-					),
-				);
+				requests.push(api.patch('/access', update));
 			}
 
 			if (deleted && deleted.length > 0) {
