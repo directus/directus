@@ -444,7 +444,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 
-			if (('admin_access' in data || 'app_access' in data) && shouldCheckUserLimits()) {
+			if (shouldCheckUserLimits() && ('admin_access' in data || 'app_access' in data)) {
 				const existingCounts: AccessTypeCount = await getUserCountsByRoles(this.knex, keys);
 
 				const increasedCounts: AccessTypeCount = {

@@ -218,7 +218,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 
-			if (roles.length && shouldCheckUserLimits()) {
+			if (shouldCheckUserLimits() && roles.length) {
 				const increasedCounts: AccessTypeCount = {
 					admin: 0,
 					app: 0,
@@ -325,7 +325,7 @@ export class UsersService extends ItemsService {
 					await this.checkRemainingAdminExistence(keys);
 				}
 
-				if (newRole && needsUserLimitCheck) {
+				if (needsUserLimitCheck && newRole) {
 					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
 
 					const increasedCounts: AccessTypeCount = {
@@ -346,7 +346,7 @@ export class UsersService extends ItemsService {
 				}
 			}
 
-			if (data['role'] === null && needsUserLimitCheck) {
+			if (needsUserLimitCheck && data['role'] === null) {
 				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
 			}
 
@@ -354,7 +354,7 @@ export class UsersService extends ItemsService {
 				await this.checkRemainingActiveAdmin(keys);
 			}
 
-			if (data['status'] === 'active' && needsUserLimitCheck) {
+			if (needsUserLimitCheck && data['status'] === 'active') {
 				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);
