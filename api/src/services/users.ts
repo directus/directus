@@ -184,6 +184,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 
+			// TODO rework
 			if (shouldCheckUserLimits() && roles.length) {
 				const increasedCounts: UserCount = {
 					admin: 0,
@@ -292,6 +293,7 @@ export class UsersService extends ItemsService {
 				// 	await this.checkRemainingAdminExistence(keys);
 				// }
 
+				// TODO rework
 				if (needsUserLimitCheck && newRole) {
 					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
 
@@ -313,6 +315,7 @@ export class UsersService extends ItemsService {
 				}
 			}
 
+			// TODO rework
 			if (needsUserLimitCheck && data['role'] === null) {
 				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
 			}
@@ -322,6 +325,7 @@ export class UsersService extends ItemsService {
 			// 	await this.checkRemainingActiveAdmin(keys);
 			// }
 
+			// TODO rework
 			if (needsUserLimitCheck && data['status'] === 'active') {
 				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
 

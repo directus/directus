@@ -1,12 +1,12 @@
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { type AccessTypeCount } from './get-user-count.js';
+import type { UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 
 /**
  * Get the role type counts by role IDs
  */
-export async function getRoleCountsByRoles(db: Knex, roles: string[]): Promise<AccessTypeCount> {
-	const counts: AccessTypeCount = {
+export async function getRoleCountsByRoles(db: Knex, roles: string[]): Promise<UserCount> {
+	const counts: UserCount = {
 		admin: 0,
 		app: 0,
 		api: 0,

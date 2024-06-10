@@ -3,7 +3,6 @@ import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
-import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
@@ -38,7 +37,7 @@ vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
-let mockUserCounts: AccessTypeCount;
+let mockUserCounts: UserCount;
 let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;

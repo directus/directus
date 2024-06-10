@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { LimitExceededError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { getUserCount, type AccessTypeCount } from './get-user-count.js';
+import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import type { PrimaryKey } from '@directus/types';
 
 const env = useEnv();
@@ -11,12 +11,14 @@ const env = useEnv();
  */
 export async function checkIncreasedUserLimits(
 	db: Knex,
-	increasedUserCounts: AccessTypeCount,
+	increasedUserCounts: UserCount,
+	// TODO
+	// @ts-ignore
 	ignoreIds: PrimaryKey[] = [],
 ): Promise<void> {
 	if (!increasedUserCounts.admin && !increasedUserCounts.app && !increasedUserCounts.api) return;
 
-	const userCounts = await getUserCount(db, ignoreIds);
+	const userCounts = await fetchUserCount(db); // TODO , ignoreIds);
 
 	if (
 		increasedUserCounts.admin > 0 &&

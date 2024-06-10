@@ -4,10 +4,10 @@ import { getMatch } from 'ip-matching';
 import { omit } from 'lodash-es';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
-import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import type { UserCount } from '../utils/fetch-user-count/fetch-user-count.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
@@ -197,6 +197,7 @@ export class RolesService extends ItemsService {
 		}
 	}
 
+	// TODO rework with policies
 	private getRoleAccessType(data: Partial<Item>) {
 		if ('admin_access' in data && data['admin_access'] === true) {
 			return 'admin';
@@ -210,8 +211,9 @@ export class RolesService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
 
+		// TODO rework
 		if (shouldCheckUserLimits()) {
-			const increasedCounts: AccessTypeCount = {
+			const increasedCounts: UserCount = {
 				admin: 0,
 				app: 0,
 				api: 0,
@@ -241,7 +243,7 @@ export class RolesService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const needsUserLimitCheck = shouldCheckUserLimits();
 
-		const increasedCounts: AccessTypeCount = {
+		const increasedCounts: UserCount = {
 			admin: 0,
 			app: 0,
 			api: 0,
@@ -266,6 +268,7 @@ export class RolesService extends ItemsService {
 			}
 		}
 
+		// TODO rework
 		if (needsUserLimitCheck) {
 			await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 		}
@@ -281,8 +284,9 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminUsers(key, data['users']);
 			}
 
+			// TODO rework
 			if (shouldCheckUserLimits()) {
-				const increasedCounts: AccessTypeCount = {
+				const increasedCounts: UserCount = {
 					admin: 0,
 					app: 0,
 					api: 0,
@@ -450,10 +454,11 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 
+			// TODO rework
 			if (shouldCheckUserLimits() && ('admin_access' in data || 'app_access' in data)) {
-				const existingCounts: AccessTypeCount = await getUserCountsByRoles(this.knex, keys);
+				const existingCounts: UserCount = await getUserCountsByRoles(this.knex, keys);
 
-				const increasedCounts: AccessTypeCount = {
+				const increasedCounts: UserCount = {
 					admin: 0,
 					app: 0,
 					api: 0,

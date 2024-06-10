@@ -1,7 +1,7 @@
 import type { PrimaryKey } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import type { AccessTypeCount } from './get-user-count.js';
+import type { UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 
 type CountOptions = {
 	inactiveUsers?: boolean;
@@ -14,8 +14,8 @@ export async function getRoleCountsByUsers(
 	db: Knex,
 	userIds: PrimaryKey[],
 	options: CountOptions = {},
-): Promise<AccessTypeCount> {
-	const counts: AccessTypeCount = {
+): Promise<UserCount> {
+	const counts: UserCount = {
 		admin: 0,
 		app: 0,
 		api: 0,
