@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Skipped user limits check if no limit is set
+Optimized user limit checks by skipping them early if no limit is configured
