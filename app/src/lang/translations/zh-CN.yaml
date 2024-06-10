@@ -91,6 +91,7 @@ n_files: '{n} 个文件'
 verified: 已验证
 homepage: 首页
 repository: 存储库
+reload_page: 重新加载页面
 reload_required: 需要重载
 report_an_issue: 反馈问题
 website: 网站
@@ -361,6 +362,7 @@ fields_group: 字段组
 no_collections_found: 未找到任何模型
 new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
+search_role: 搜索角色...
 search_field: 搜索字段
 new_field: '新建字段'
 new_collection: '新建模型'
@@ -446,6 +448,7 @@ revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 presentation_text_values_cannot_be_reimported: '仅包含当前页面中展示的字段和数据，且无法被重新导入'
 download_page_as_csv: '导出当前页面数据为CSV格式'
+download_page_as_csv_unsupported: 此布局不支持下载当前页面。
 private_user: 私人用户
 creation_preview: 创建预览
 revision_preview: 修订预览
@@ -557,6 +560,7 @@ replace_from_url: 从 URL 中替换文件
 no_image_selected: 未选择图像
 no_file_selected: 未选择文件
 download_file: 下载文件
+open_file_in_tab: 在新标签中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
 exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
@@ -744,6 +748,7 @@ cannot_edit_global_bookmarks: 无法编辑全局书签
 bookmarks: 书签
 presets: 预设
 unexpected_error: 未知错误
+unexpected_error_copy: 发生意外错误。请重试。
 copy_details: 复制详细信息
 no_app_access: 没有应用权限
 no_app_access_copy: 此用户不允许使用管理员应用程序。
@@ -1253,6 +1258,8 @@ fields:
     height: 高度
     charset: 字符集
     duration: 持续时间
+    focal_point_x: X-坐标
+    focal_point_y: Y-坐标
   directus_users:
     first_name: 名
     last_name: 姓
@@ -1270,6 +1277,7 @@ fields:
     status: 状态
     status_draft: 草稿
     status_invited: 已邀请
+    status_unverified: 未验证
     status_active: 激活
     status_suspended: 已停用
     status_archived: 已存档
@@ -1333,6 +1341,14 @@ fields:
     custom_aspect_ratios: 自定义长宽比
     theme_light_overrides: 亮色主题自定义
     theme_dark_overrides: 暗色主题自定义
+    public_registration: 用户注册
+    public_registration_note: 允许用户通过 [注册路径] (/admin/register) 注册。
+    public_registration_role: 用户角色
+    public_registration_role_note: 此角色分配给使用此方法注册的用户。不影响已注册用户。
+    public_registration_email_filter: 电子邮件地址过滤器
+    public_registration_email_filter_note: 只有符合此过滤规则的电子邮件地址才能注册。
+    public_registration_verify_email: 验证电子邮件
+    public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
   directus_shares:
     name: 名称
     role: 角色
@@ -1580,6 +1596,7 @@ authenticated: 已认证。
 options: 选项
 otp: 一次性密码
 password: 密码
+confirm_password: 确认密码
 permissions: 权限
 relationship: 关联
 reset: 重置
@@ -1596,6 +1613,14 @@ select_field_type: 选择字段类型
 select_interface: 选择接口
 select_display: 选择一个显示
 settings: 设置
+register: 注册
+registration_successful_headline: 成功！
+registration_successful_note: 您现在可以进入登录页面。
+registration_successful_check_email_note: |
+  请注意，您需要通过点击发送给您的验证链接来验证您的电子邮件地址。
+dont_have_an_account: 还没有帐户吗？
+already_have_an_account: 已经有一个帐户了？
+sign_up_now: 立即注册
 sign_in: 登录
 sign_out: 退出登录
 sign_out_confirm: 您确定要退出登录吗?
@@ -1628,6 +1653,7 @@ delete_item: 删除项目
 interfaces:
   list-m2a:
     prefix_note: 默认情况下使用相关项目的收藏名称
+    sorting_disabled: 排序被禁用，因为有太多的条目而无法适应在一张页面上。
   filter:
     name: 筛选
     description: 配置过滤对象。
@@ -2166,6 +2192,7 @@ layouts:
     not_all_loaded: 只能加载前 1000 个条目。
 horizontal: 横向
 vertical: 垂直
+axis: 轴
 x_axis: X-轴
 y_axis: Y-轴
 y_axis_function: Y-轴函数
