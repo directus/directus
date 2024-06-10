@@ -19,6 +19,7 @@ import {
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -37,6 +38,7 @@ vi.mock('@directus/env', () => ({
 vi.mock('../telemetry/utils/check-increased-user-limits.js');
 vi.mock('../telemetry/utils/get-role-counts-by-users.js');
 vi.mock('../telemetry/utils/get-user-counts-by-roles.js');
+vi.mock('../telemetry/utils/should-check-user-limits.js');
 
 const testSchema = {
 	collections: {
@@ -92,6 +94,7 @@ describe('Integration Tests', () => {
 
 		vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, api: 0, app: 0 });
 		vi.mocked(getUserCountsByRoles).mockResolvedValueOnce({ admin: 0, app: 0, api: 0 });
+		vi.mocked(shouldCheckUserLimits).mockReturnValue(true);
 	});
 
 	afterEach(() => {
@@ -899,6 +902,14 @@ describe('Integration Tests', () => {
 
 				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
 			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
 		});
 
 		describe('createMany', () => {
@@ -930,6 +941,18 @@ describe('Integration Tests', () => {
 				]);
 
 				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 }, []);
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.createMany([
+					{ admin_access: true, app_access: true, users: [1] },
+					{ admin_access: true, app_access: true, users: [2, 3] },
+					{ admin_access: true, app_access: true, users: [4, 5, 6] },
+				]);
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -1058,6 +1081,18 @@ describe('Integration Tests', () => {
 
 				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 }, []);
 			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
 		});
 
 		describe('updateMany', () => {
@@ -1092,6 +1127,17 @@ describe('Integration Tests', () => {
 				});
 
 				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 33 });
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.updateMany([randomUUID(), randomUUID(), randomUUID()], {
+					admin_access: false,
+					app_access: true,
+				});
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
 			});
 		});
 	});

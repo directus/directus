@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
 import { getSimpleHash, toArray, toBoolean, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
@@ -13,7 +13,9 @@ import { createDefaultAccountability } from '../permissions/utils/create-default
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import type { UserCount } from '../utils/fetch-user-count/fetch-user-count.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -182,8 +184,8 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 
-			if (roles.length) {
-				const increasedCounts: AccessTypeCount = {
+			if (shouldCheckUserLimits() && roles.length) {
+				const increasedCounts: UserCount = {
 					admin: 0,
 					app: 0,
 					api: 0,
@@ -262,6 +264,8 @@ export class UsersService extends ItemsService {
 	 */
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
+			const needsUserLimitCheck = shouldCheckUserLimits();
+
 			if (data['role']) {
 				/*
 				 * data['role'] has the following cases:
@@ -283,14 +287,15 @@ export class UsersService extends ItemsService {
 					newRole = role;
 				}
 
-				if (!newRole?.admin_access) {
-					await this.checkRemainingAdminExistence(keys);
-				}
+				// TODO
+				// if (!newRole?.admin_access) {
+				// 	await this.checkRemainingAdminExistence(keys);
+				// }
 
-				if (newRole) {
+				if (needsUserLimitCheck && newRole) {
 					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
 
-					const increasedCounts: AccessTypeCount = {
+					const increasedCounts: UserCount = {
 						admin: 0,
 						app: 0,
 						api: 0,
@@ -308,15 +313,16 @@ export class UsersService extends ItemsService {
 				}
 			}
 
-			if (data['role'] === null) {
+			if (needsUserLimitCheck && data['role'] === null) {
 				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
 			}
 
-			if (data['status'] !== undefined && data['status'] !== 'active') {
-				await this.checkRemainingActiveAdmin(keys);
-			}
+			// TODO
+			// if (data['status'] !== undefined && data['status'] !== 'active') {
+			// 	await this.checkRemainingActiveAdmin(keys);
+			// }
 
-			if (data['status'] === 'active') {
+			if (needsUserLimitCheck && data['status'] === 'active') {
 				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);
