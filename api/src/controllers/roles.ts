@@ -85,9 +85,19 @@ router.get(
 
 		const query = { ...req.sanitizedQuery, limit: -1 };
 
-		const roles = await service.readMany(req.accountability.roles, query);
+		try {
+			const roles = await service.readMany(req.accountability.roles, query);
 
-		res.locals['payload'] = { data: roles || null };
+			res.locals['payload'] = { data: roles || null };
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				res.locals['payload'] = { data: req.accountability.roles.map((id) => ({ id })) };
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 	respond,
