@@ -11,7 +11,7 @@ export function withCache<F extends (...args: any[]) => any>(namespace: string, 
 		const key = namespace + '-' + getSimpleHash(JSON.stringify(args[0]));
 		const cached = await cache.get(key);
 
-		if (cached) {
+		if (cached !== undefined) {
 			return cached;
 		}
 
