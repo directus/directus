@@ -102,5 +102,10 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 	}
 
-	await usersService.createOne({ email: adminEmail, password: adminPassword, role, ...defaultAdminUser });
+	let adminToken = env['ADMIN_TOKEN'];
+	if (!adminToken) {
+		adminToken = null;
+	}
+
+	await usersService.createOne({ email: adminEmail, password: adminPassword, token: adminToken, role, ...defaultAdminUser });
 }
