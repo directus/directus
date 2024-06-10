@@ -7,7 +7,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { computed, inject, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
@@ -62,6 +62,7 @@ const props = withDefaults(
 const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
+const parentValuesInject = inject('values', ref<Record<string, any>>({}));
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
@@ -130,6 +131,7 @@ watch(
 	},
 );
 
+provide('parents', parentValuesInject);
 provide('values', values);
 
 function useForm() {
