@@ -131,7 +131,7 @@ watch(
 	},
 );
 
-provide('parents', parentValuesInject);
+provide('parent_values', parentValuesInject);
 provide('values', values);
 
 function useForm() {
