@@ -79,7 +79,9 @@ export const useRelationsStore = defineStore({
 				if (isM2M) {
 					const secondaryRelation = this.relations.find((relation) => {
 						return (
-							relation.collection === firstRelation.collection && relation.field === firstRelation.meta?.junction_field
+							relation.collection === firstRelation.collection &&
+							relation.field === firstRelation.meta?.junction_field &&
+							relation.meta?.junction_field === firstRelation.field
 						);
 					});
 
