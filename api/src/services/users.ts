@@ -13,6 +13,7 @@ import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-use
 import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
@@ -217,7 +218,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 
-			if (roles.length) {
+			if (shouldCheckUserLimits() && roles.length) {
 				const increasedCounts: AccessTypeCount = {
 					admin: 0,
 					app: 0,
@@ -297,6 +298,8 @@ export class UsersService extends ItemsService {
 	 */
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
+			const needsUserLimitCheck = shouldCheckUserLimits();
+
 			if (data['role']) {
 				/*
 				 * data['role'] has the following cases:
@@ -322,7 +325,7 @@ export class UsersService extends ItemsService {
 					await this.checkRemainingAdminExistence(keys);
 				}
 
-				if (newRole) {
+				if (needsUserLimitCheck && newRole) {
 					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
 
 					const increasedCounts: AccessTypeCount = {
@@ -343,7 +346,7 @@ export class UsersService extends ItemsService {
 				}
 			}
 
-			if (data['role'] === null) {
+			if (needsUserLimitCheck && data['role'] === null) {
 				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
 			}
 
@@ -351,7 +354,7 @@ export class UsersService extends ItemsService {
 				await this.checkRemainingActiveAdmin(keys);
 			}
 
-			if (data['status'] === 'active') {
+			if (needsUserLimitCheck && data['status'] === 'active') {
 				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);
