@@ -1,5 +1,5 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updatePermissions =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple permissions rules as batch.
+ * @param items
+ * @param query
+ * @returns Returns the permission object for the updated permissions.
+ */
+export const updatePermissionsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+		items: NestedPartial<DirectusPermission<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/permissions`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing permissions rule.
