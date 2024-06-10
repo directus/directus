@@ -91,9 +91,18 @@ router.get(
 			schema: req.schema,
 		});
 
-		const result = await service.fetchPolicyFlagsForAccountability();
+		try {
+			const result = await service.fetchPolicyFlagsForAccountability();
+			res.locals['payload'] = { data: result };
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				res.locals['payload'] = { data: { app_access: false } };
+				return next();
+			}
 
-		res.locals['payload'] = { data: result };
+			throw error;
+		}
+
 		return next();
 	}),
 	respond,
