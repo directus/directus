@@ -55,7 +55,10 @@ import {
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
-import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import {
+	fetchAllowedFieldMap,
+	type FetchAllowedFieldMapOptions,
+} from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
@@ -208,12 +211,22 @@ export class GraphQLService {
 				delete: sanitizedSchema,
 			};
 		} else {
+			// Subset of accountability to make it consistent for caching
+			const accountabilitySubset: FetchAllowedFieldMapOptions['accountability'] = {
+				admin: this.accountability.admin,
+				app: this.accountability.app,
+				role: this.accountability.role,
+				roles: this.accountability.roles,
+				user: this.accountability.user,
+				ip: this.accountability.ip ?? null,
+			};
+
 			schema = {
 				read: reduceSchema(
 					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
-							accountability: this.accountability,
+							accountability: accountabilitySubset,
 							action: 'read',
 						},
 						{ schema: this.schema, knex: this.knex },
@@ -223,7 +236,7 @@ export class GraphQLService {
 					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
-							accountability: this.accountability,
+							accountability: accountabilitySubset,
 							action: 'create',
 						},
 						{ schema: this.schema, knex: this.knex },
@@ -233,7 +246,7 @@ export class GraphQLService {
 					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
-							accountability: this.accountability,
+							accountability: accountabilitySubset,
 							action: 'update',
 						},
 						{ schema: this.schema, knex: this.knex },
@@ -243,7 +256,7 @@ export class GraphQLService {
 					sanitizedSchema,
 					await fetchAllowedFieldMap(
 						{
-							accountability: this.accountability,
+							accountability: accountabilitySubset,
 							action: 'delete',
 						},
 						{ schema: this.schema, knex: this.knex },

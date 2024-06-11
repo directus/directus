@@ -67,7 +67,14 @@ class OASSpecsService implements SpecificationSubService {
 		if (this.accountability && this.accountability.admin !== true) {
 			const allowedFields = await fetchAllowedFieldMap(
 				{
-					accountability: this.accountability,
+					accountability: {
+						admin: this.accountability.admin,
+						app: this.accountability.app,
+						role: this.accountability.role,
+						roles: this.accountability.roles,
+						user: this.accountability.user,
+						ip: this.accountability.ip ?? null,
+					},
 					action: 'read',
 				},
 				{ schema, knex: this.knex },
