@@ -26,12 +26,12 @@ const links = computed<Link[][]>(() => [
 			to: `/settings/data-model`,
 		},
 		{
-			icon: 'admin_panel_settings',
+			icon: 'group',
 			name: t('settings_roles'),
 			to: `/settings/roles`,
 		},
 		{
-			icon: 'badge',
+			icon: 'admin_panel_settings',
 			name: t('settings_permissions'),
 			to: `/settings/policies`,
 		},
