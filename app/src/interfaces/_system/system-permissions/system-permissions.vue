@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import api from '@/api';
+import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
 import { DisplayItem } from '@/composables/use-relation-multiple';
 import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
-import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
+import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { computed, inject, Ref, ref, toRefs, watch } from 'vue';
+import { Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
-import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
@@ -603,7 +603,7 @@ function useGroupedPermissions() {
 				</template>
 				<template v-if="regularPermissions.length + systemPermissions.length === 0">
 					<tr>
-						<td colspan="2" class="empty-state">
+						<td class="empty-state">
 							{{ t('no_permissions') }}
 						</td>
 					</tr>
@@ -659,10 +659,8 @@ function useGroupedPermissions() {
 		max-width: 792px;
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
-	}
-
-	table {
 		border-spacing: 0;
+		table-layout: fixed;
 	}
 
 	.monospace {
@@ -691,7 +689,6 @@ function useGroupedPermissions() {
 
 	.empty-state {
 		padding: 12px;
-		text-align: center;
 		color: var(--theme--foreground-subdued);
 	}
 

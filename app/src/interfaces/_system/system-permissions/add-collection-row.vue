@@ -56,18 +56,12 @@ function notExcluded({ collection }: Collection) {
 				item-text="collection"
 				item-value="collection"
 				:show-arrow="false"
+				:placeholder="t('permission_add_collection')"
 				placement="bottom-start"
 				inline
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('select', $event)"
-			>
-				<template #preview>
-					<v-button class="add-button" align="left">
-						<v-icon name="add" small />
-						<span>{{ t('permission_add_collection') }}</span>
-					</v-button>
-				</template>
-			</v-select>
+			></v-select>
 		</td>
 		<td></td>
 	</tr>
@@ -75,46 +69,17 @@ function notExcluded({ collection }: Collection) {
 
 <style scoped lang="scss">
 .add-collection-row {
+	td {
+		padding: 12px;
+		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
+
 	.monospace {
 		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
-	:deep(.placeholder) {
-		display: flex;
-		align-items: center;
-		--v-button-color: var(--theme--foreground-subdued);
-
-		.v-icon {
-			position: relative !important;
-			transition: var(--fast) var(--transition) !important;
-		}
-
-		&:hover {
-			--v-button-color: var(--theme--foreground-accent);
-			--v-button-color-hover: var(--theme--foreground-accent);
-
-			.v-icon {
-				color: var(--theme--foreground-accent);
-			}
-		}
-	}
-
-	.add-button {
-		--v-button-background-color: var(--theme--form--field--input--background);
-		--v-button-background-color-hover: var(--theme--form--field--input--background);
-		--v-button-font-size: 14px;
-
-		:deep(.button) {
-			padding-left: 4px;
-		}
-
-		:deep(.content) {
-			gap: 4px;
-		}
-	}
-
-	td {
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	.v-select:hover {
+		--v-select-placeholder-color: var(--theme--foreground);
 	}
 }
 </style>

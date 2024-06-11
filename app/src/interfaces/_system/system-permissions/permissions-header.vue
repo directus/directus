@@ -6,21 +6,9 @@ const { t } = useI18n();
 
 <template>
 	<thead class="permissions-overview-header">
-		<tr class="labels">
-			<th class="name">{{ t('collection') }}</th>
-			<th>
-				{{ t('actions') }}
-			</th>
-		</tr>
 		<tr>
-			<th></th>
-			<th class="actions">
-				<v-icon v-tooltip="t('create')" name="add" />
-				<v-icon v-tooltip="t('read')" name="visibility" />
-				<v-icon v-tooltip="t('update')" name="edit" />
-				<v-icon v-tooltip="t('delete_label')" name="delete" />
-				<v-icon v-tooltip="t('share')" name="share" />
-			</th>
+			<th>{{ t('collection') }}</th>
+			<th>{{ t('actions') }}</th>
 		</tr>
 	</thead>
 </template>
@@ -42,24 +30,7 @@ const { t } = useI18n();
 		background-color: var(--theme--form--field--input--background);
 		border-top-left-radius: var(--theme--border-radius);
 		border-top-right-radius: var(--theme--border-radius);
-		border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	}
-
-	th:first-child {
-		width: 100%;
-	}
-
-	.labels th {
-		border-bottom: none;
-	}
-
-	.actions {
-		display: flex;
-		flex-wrap: nowrap;
-
-		.v-icon + .v-icon {
-			margin-left: 20px;
-		}
+		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

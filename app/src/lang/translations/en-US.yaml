@@ -535,6 +535,11 @@ hours: Hours
 month: Month
 year: Year
 select_all: Select All
+permissionsLevel:
+  all: Full {action} Access
+  partial: Partial {action} Access
+  custom: Partial {action} Access
+  none: No {action} Access
 months:
   january: January
   february: February

@@ -102,6 +102,7 @@ const { t } = useI18n();
 		align-items: center;
 		height: 48px;
 		padding: 0 12px;
+		gap: 8px;
 	}
 
 	.null {

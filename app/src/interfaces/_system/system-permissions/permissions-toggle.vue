@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
 import { Collection, Permission } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -53,25 +54,19 @@ const appMinimalLevel = computed(() => {
 
 <template>
 	<div
-		v-tooltip="appMinimal && t('required_for_app_access')"
-		class="permissions-overview-toggle"
-		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
+		v-tooltip="
+			(appMinimal && t('required_for_app_access')) || t(`permissionsLevel.${permissionLevel}`, { action: t(action) })
+		"
+		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>
-		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
+		<v-chip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ t(action) }}</v-chip>
 
 		<v-menu v-else show-arrow>
-			<template #activator="{ toggle }">
-				<div>
+			<template #activator="{ toggle, active }">
+				<v-chip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
 					<v-progress-circular v-if="loading || saving" indeterminate small />
-					<v-icon v-else-if="permissionLevel === 'all'" clickable name="check" @click="toggle" />
-					<v-icon
-						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
-						clickable
-						name="rule"
-						@click="toggle"
-					/>
-					<v-icon v-else-if="permissionLevel === 'none'" clickable name="block" @click="toggle" />
-				</div>
+					<template v-else>{{ t(action) }}</template>
+				</v-chip>
 			</template>
 
 			<v-list>
@@ -117,63 +112,53 @@ const appMinimalLevel = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.permissions-overview-toggle {
-	position: relative;
+.toggle {
+	--v-chip-font-family: var(--theme--fonts--monospace--font-family);
 
-	&::before {
-		position: absolute;
-		top: -4px;
-		left: -4px;
-		width: calc(100% + 8px);
-		height: calc(100% + 8px);
-		background-color: var(--background-highlight);
-		border-radius: 50%;
-		opacity: 0;
-		transition: opacity var(--slow) var(--transition);
-		content: '';
+	&.all {
+		--v-chip-color: var(--theme--background);
+		--v-chip-color-hover: var(--theme--background);
+		--v-chip-background-color: var(--theme--primary);
+		--v-chip-background-color-hover: var(--theme--primary);
+		--v-chip-border-color: transparent;
+		--v-chip-border-color-hover: var(--theme--primary-background);
+
+		&.active {
+			--v-chip-color: var(--theme--background);
+			--v-chip-background-color: var(--theme--primary);
+			--v-chip-border-color: var(--theme--primary-accent);
+		}
 	}
 
-	&:hover::before,
-	&.has-app-minimal::before {
-		opacity: 1;
+	&.partial,
+	&.custom {
+		--v-chip-color: var(--theme--primary);
+		--v-chip-color-hover: var(--theme--primary);
+		--v-chip-background-color: var(--theme--primary-background);
+		--v-chip-background-color-hover: var(--theme--primary-background);
+		--v-chip-border-color: transparent;
+		--v-chip-border-color-hover: var(--theme--primary);
+
+		&.active {
+			--v-chip-color: var(--theme--primary);
+			--v-chip-background-color: var(--theme--primary-background);
+			--v-chip-border-color: var(--theme--primary);
+		}
 	}
-}
 
-.none {
-	--v-icon-color: var(--theme--danger);
-	--v-icon-color-hover: var(--theme--danger);
+	&.none {
+		--v-chip-color: var(--theme--foreground-subdued);
+		--v-chip-color-hover: var(--theme--foreground);
+		--v-chip-background-color: transparent;
+		--v-chip-background-color-hover: transparent;
+		--v-chip-border-color: var(--theme--border-color-subdued);
+		--v-chip-border-color-hover: var(--theme--border-color);
 
-	&::before {
-		background-color: var(--danger-10);
+		&.active {
+			--v-chip-color: var(--theme--foreground);
+			--v-chip-background-color: transparent;
+			--v-chip-border-color: var(--theme--border-color);
+		}
 	}
-}
-
-.partial,
-.custom {
-	--v-icon-color: var(--theme--warning);
-	--v-icon-color-hover: var(--theme--warning);
-
-	&::before {
-		background-color: var(--warning-10);
-	}
-}
-
-.all {
-	--v-icon-color: var(--theme--success);
-	--v-icon-color-hover: var(--theme--success);
-
-	&::before {
-		background-color: var(--success-10);
-	}
-}
-
-.has-app-minimal {
-	&::before {
-		background-color: var(--background-highlight) !important;
-	}
-}
-
-.app-minimal {
-	cursor: not-allowed;
 }
 </style>
