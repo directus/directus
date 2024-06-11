@@ -250,7 +250,7 @@ importers:
         version: 4.5.4
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       ldapjs:
         specifier: 2.3.3
         version: 2.3.3
@@ -373,8 +373,8 @@ importers:
         specifier: 2.8.4
         version: 2.8.4
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.10.0
+        version: 3.10.0
       nodemailer-mailgun-transport:
         specifier: 2.1.5
         version: 2.1.5(lodash@4.17.21)(underscore@1.13.6)
@@ -510,7 +510,7 @@ importers:
         version: 4.0.0
       knex-mock-client:
         specifier: 2.0.1
-        version: 2.0.1(knex@3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0))
+        version: 2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1217,7 +1217,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.0)(jsdom@24.0.0)(sass@1.77.4)(terser@5.31.0))
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       pino:
         specifier: 9.1.0
         version: 9.1.0
@@ -1525,7 +1525,7 @@ importers:
     dependencies:
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1883,7 +1883,7 @@ importers:
         version: link:../tsconfig
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2115,7 +2115,7 @@ importers:
         version: 2.2.5
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       listr2:
         specifier: 8.2.1
         version: 8.2.1
@@ -8701,8 +8701,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  mysql2@3.9.7:
-    resolution: {integrity: sha512-KnJT8vYRcNAZv73uf9zpXqNbvBG7DJrs+1nACsjZP1HMJ1TgXEy8wnNilXAn/5i57JizXKtrUtwDB7HxT9DDpw==}
+  mysql2@3.10.0:
+    resolution: {integrity: sha512-qx0mfWYt1DpTPkw8mAcHW/OwqqyNqBLBHvY5IjN8+icIYTjt6znrgYJ+gxqNNRpVknb5Wc/gcCM4XjbCR0j5tw==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -19111,12 +19111,12 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)):
+  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)):
     dependencies:
-      knex: 3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
+      knex: 3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.9.7)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0):
+  knex@3.1.0(mysql2@3.10.0)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -19133,7 +19133,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.9.7
+      mysql2: 3.10.0
       pg: 8.11.5
       sqlite3: 5.1.7
       tedious: 18.2.0
@@ -19920,7 +19920,7 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  mysql2@3.9.7:
+  mysql2@3.10.0:
     dependencies:
       denque: 2.1.0
       generate-function: 2.3.1
