@@ -224,7 +224,7 @@
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
-		"oracledb": "6.5.0",
+		"oracledb": "6.5.1",
 		"pg": "8.11.5",
 		"sqlite3": "5.1.7",
 		"tedious": "18.2.0"
