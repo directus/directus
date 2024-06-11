@@ -4,14 +4,12 @@ import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-
-// Taken from 20240328A-permissions-policies.ts
-const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 type PolicyBaseFields = 'id' | 'name' | 'description';
 
