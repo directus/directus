@@ -267,7 +267,7 @@ export class UsersService extends ItemsService {
 		try {
 			const needsUserLimitCheck = shouldCheckUserLimits();
 
-			if (data['role']) {
+			if (data['role'] && needsUserLimitCheck) {
 				/*
 				 * data['role'] has the following cases:
 				 * - a string with existing role id
