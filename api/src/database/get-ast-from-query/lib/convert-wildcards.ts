@@ -30,7 +30,13 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 			{
 				collection: options.parentCollection,
 				action: 'read',
-				accountability: options.accountability,
+				accountability: {
+					app: options.accountability.app,
+					role: options.accountability.role,
+					roles: options.accountability.roles,
+					user: options.accountability.user,
+					ip: options.accountability.ip ?? null,
+				},
 			},
 			context,
 		);

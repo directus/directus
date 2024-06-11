@@ -102,7 +102,17 @@ export class RelationsService {
 			);
 
 			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'read', accountability: this.accountability },
+				{
+					collection,
+					action: 'read',
+					accountability: {
+						app: this.accountability.app,
+						role: this.accountability.role,
+						roles: this.accountability.roles,
+						user: this.accountability.user,
+						ip: this.accountability.ip ?? null,
+					},
+				},
 				{ schema: this.schema, knex: this.knex },
 			);
 
