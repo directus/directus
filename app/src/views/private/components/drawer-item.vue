@@ -151,11 +151,12 @@ const templatePrimaryKey = computed(() =>
 );
 
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
-const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
 
-const template = computed(
-	() => relatedCollectionInfo.value?.meta?.display_template || collectionInfo.value?.meta?.display_template || null,
-);
+const {
+	template,
+	templateData,
+	loading: templateDataLoading,
+} = useTemplateData(templateCollection, templatePrimaryKey);
 
 const { file } = useFile();
 

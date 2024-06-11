@@ -1,6 +1,6 @@
 {
 	"name": "@directus/memory",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Memory / Redis abstraction for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,7 +36,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.19.33",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.0.2",
+		"tsup": "8.1.0",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}
