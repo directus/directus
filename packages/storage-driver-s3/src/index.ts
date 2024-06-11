@@ -1,21 +1,24 @@
 import type {
+	CompletedPart,
 	CopyObjectCommandInput,
+	CreateMultipartUploadCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
-	PutObjectCommandInput,
 	S3ClientConfig,
 	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
+	CompleteMultipartUploadCommand,
 	CopyObjectCommand,
+	CreateMultipartUploadCommand,
 	DeleteObjectCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
 	S3Client,
+	UploadPartCommand,
 } from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
@@ -170,11 +173,10 @@ export class DriverS3 implements Driver {
 		await this.client.send(new CopyObjectCommand(params));
 	}
 
-	async write(filepath: string, content: Readable, type?: string) {
-		const params: PutObjectCommandInput = {
-			Key: this.fullPath(filepath),
-			Body: content,
+	async createMultipartUpload(keyName: string, type?: string) {
+		const params: CreateMultipartUploadCommandInput = {
 			Bucket: this.config.bucket,
+			Key: keyName,
 		};
 
 		if (type) {
@@ -189,12 +191,72 @@ export class DriverS3 implements Driver {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
 		}
 
-		const upload = new Upload({
-			client: this.client,
-			params,
+		const createCommand = new CreateMultipartUploadCommand(params);
+		const response = await this.client.send(createCommand);
+		return response.UploadId!;
+	}
+
+	async uploadPart(uploadId: string, keyName: string, partNumber: number, partData: Buffer) {
+		const uploadPartCommand = new UploadPartCommand({
+			Bucket: this.config.bucket,
+			Key: keyName,
+			UploadId: uploadId,
+			PartNumber: partNumber,
+			Body: partData,
 		});
 
-		await upload.done();
+		const response = await this.client.send(uploadPartCommand);
+		return {
+			ETag: response.ETag!,
+			PartNumber: partNumber,
+		};
+	}
+
+	async completeMultipartUpload(uploadId: string, keyName: string, parts: CompletedPart[]) {
+		const completeCommand = new CompleteMultipartUploadCommand({
+			Bucket: this.config.bucket,
+			Key: keyName,
+			UploadId: uploadId,
+			MultipartUpload: {
+				Parts: parts,
+			},
+		});
+
+		await this.client.send(completeCommand);
+	}
+
+	async write(filepath: string, content: Readable, type?: string) {
+		const key = this.fullPath(filepath);
+		const uploadId = await this.createMultipartUpload(key, type);
+		const parts: CompletedPart[] = [];
+		const partSize = 5 * 1024 * 1024; // 5MB
+
+		let partNumber = 1;
+		let accumulatedSize = 0;
+		let buffer = Buffer.alloc(0);
+
+		for await (const chunk of content) {
+			const chunkBuffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+			buffer = Buffer.concat([buffer, chunkBuffer]);
+			accumulatedSize += chunkBuffer.length;
+
+			while (accumulatedSize >= partSize) {
+				const partData = buffer.slice(0, partSize);
+				buffer = buffer.slice(partSize);
+				accumulatedSize -= partSize;
+
+				const part = await this.uploadPart(uploadId, key, partNumber, partData);
+				parts.push(part);
+				partNumber++;
+			}
+		}
+
+		if (buffer.length > 0) {
+			const part = await this.uploadPart(uploadId, key, partNumber, buffer);
+			parts.push(part);
+		}
+
+		await this.completeMultipartUpload(uploadId, key, parts);
 	}
 
 	async delete(filepath: string) {
