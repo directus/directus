@@ -1258,8 +1258,8 @@ fields:
     height: Altura
     charset: Codificação de caracteres
     duration: Duração
-    focal_point_x: Coordenada (X)
-    focal_point_y: Coordenada Y
+    focal_point_x: Ponto Focal X
+    focal_point_y: Ponto Focal Y
   directus_users:
     first_name: Primeiro Nome
     last_name: Sobrenome

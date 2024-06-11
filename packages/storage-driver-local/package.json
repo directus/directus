@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-local",
-	"version": "10.0.19",
+	"version": "10.0.20",
 	"description": "Local file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,7 +33,7 @@
 		"@ngneat/falso": "7.2.0",
 		"@types/node": "18.19.33",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.0.2",
+		"tsup": "8.1.0",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}

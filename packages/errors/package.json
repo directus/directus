@@ -1,6 +1,6 @@
 {
 	"name": "@directus/errors",
-	"version": "0.3.0",
+	"version": "0.3.2",
 	"description": "Create consistent error objects around the codebase",
 	"repository": {
 		"type": "git",
@@ -34,7 +34,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/ms": "0.7.34",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.0.2",
+		"tsup": "8.1.0",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}
