@@ -192,7 +192,8 @@ appearance:
 
 ## Add Template to Directus
 
-Place email templates in the ./templates directory, or set the new location in the EMAIL_TEMPLATES_PATH environment variable.
+Custom email templates are stored in the configured `EMAIL_TEMPLATES_PATH` location, which defaults to the `./templates`
+folder relative to your project.
 
 1. Inside the templates directory, copy and paste the required liquid files for your email. These cannot go in a
    subdirectory.
