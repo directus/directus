@@ -59,7 +59,10 @@ import {
 	fetchAllowedFieldMap,
 	type FetchAllowedFieldMapOptions,
 } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
+import {
+	fetchInconsistentFieldMap,
+	type FetchInconsistentFieldMapOptions,
+} from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, AuthenticationMode, GraphQLParams } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -265,31 +268,43 @@ export class GraphQLService {
 			};
 		}
 
+		// Subset of accountability to make it consistent for caching
+		const inconsistentFieldMapAccSubset: FetchInconsistentFieldMapOptions['accountability'] = this.accountability
+			? {
+					admin: this.accountability.admin,
+					app: this.accountability.app,
+					role: this.accountability.role,
+					roles: this.accountability.roles,
+					user: this.accountability.user,
+					ip: this.accountability.ip ?? null,
+			  }
+			: null;
+
 		const inconsistentFields = {
 			read: await fetchInconsistentFieldMap(
 				{
-					accountability: this.accountability,
+					accountability: inconsistentFieldMapAccSubset,
 					action: 'read',
 				},
 				{ schema: this.schema, knex: this.knex },
 			),
 			create: await fetchInconsistentFieldMap(
 				{
-					accountability: this.accountability,
+					accountability: inconsistentFieldMapAccSubset,
 					action: 'create',
 				},
 				{ schema: this.schema, knex: this.knex },
 			),
 			update: await fetchInconsistentFieldMap(
 				{
-					accountability: this.accountability,
+					accountability: inconsistentFieldMapAccSubset,
 					action: 'update',
 				},
 				{ schema: this.schema, knex: this.knex },
 			),
 			delete: await fetchInconsistentFieldMap(
 				{
-					accountability: this.accountability,
+					accountability: inconsistentFieldMapAccSubset,
 					action: 'delete',
 				},
 				{ schema: this.schema, knex: this.knex },
