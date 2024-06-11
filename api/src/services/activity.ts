@@ -47,7 +47,11 @@ export class ActivityService extends ItemsService {
 				});
 
 				const roles = await fetchRolesTree(user['role'], this.knex);
-				const globalAccess = await fetchGlobalAccess(this.knex, roles, user['id']);
+
+				const globalAccess = await fetchGlobalAccess(
+					{ accountability: { user: userID, roles, ip: this.accountability?.ip ?? null } },
+					{ knex: this.knex },
+				);
 
 				const accountability: Accountability = createDefaultAccountability({
 					user: userID,

@@ -23,7 +23,11 @@ export async function getAccountabilityForRole(
 		});
 	} else {
 		const roles = await fetchRolesTree(role, context.database);
-		const globalAccess = await fetchGlobalAccess(context.database, roles);
+
+		const globalAccess = await fetchGlobalAccess(
+			{ accountability: { user: null, roles, ip: context.accountability?.ip ?? null } },
+			{ knex: context.database },
+		);
 
 		generatedAccountability = createDefaultAccountability({
 			role,
