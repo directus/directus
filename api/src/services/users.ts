@@ -18,7 +18,7 @@ import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
-import { USER_INTEGRITY_CHECK_ALL, USER_INTEGRITY_CHECK_USER_LIMITS } from '../utils/validate-user-count-integrity.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
@@ -173,7 +173,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if ('role' in data || ('status' in data && data['status'] === 'active')) {
-			const flags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_USER_LIMITS;
+			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
 			if (opts.onRequireUserIntegrityCheck) {
 				opts.onRequireUserIntegrityCheck(flags);
@@ -208,7 +208,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if (someHaveRoles || someActive) {
-			const flags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_USER_LIMITS;
+			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
 			if (opts.onRequireUserIntegrityCheck) {
 				opts.onRequireUserIntegrityCheck(flags);
@@ -293,15 +293,16 @@ export class UsersService extends ItemsService {
 		}
 
 		if ('role' in data) {
-			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_ALL;
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
 		if ('status' in data) {
 			if (data['status'] === 'active') {
 				// User are being activated, no need to check if there are enough admins
-				opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_USER_LIMITS;
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 			} else {
-				opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_ALL;
+				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 			}
 		}
 
@@ -327,7 +328,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? 0);
+			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
 		} else {
 			try {
 				await validateRemainingAdminUsers({ excludeUsers: keys }, { knex: this.knex, schema: this.schema });

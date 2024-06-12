@@ -5,10 +5,7 @@ import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import {
-	USER_INTEGRITY_CHECK_ALL,
-	USER_INTEGRITY_CHECK_REMAINING_ADMINS,
-} from '../utils/validate-user-count-integrity.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 export class PoliciesService extends ItemsService<Policy> {
@@ -65,18 +62,18 @@ export class PoliciesService extends ItemsService<Policy> {
 		this.assertValidIpAccess(data);
 
 		if ('admin_access' in data) {
-			let flags = USER_INTEGRITY_CHECK_REMAINING_ADMINS;
+			let flags = UserIntegrityCheckFlag.RemainingAdmins;
 
 			if (data['admin_access'] === true) {
 				// Only need to perform a full user count if the policy allows admin access
-				flags |= USER_INTEGRITY_CHECK_ALL;
+				flags |= UserIntegrityCheckFlag.All;
 			}
 
-			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | flags;
+			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | flags;
 		}
 
 		if ('app_access' in data) {
-			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_ALL;
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
 		const result = await super.updateMany(keys, data, opts);
@@ -89,7 +86,9 @@ export class PoliciesService extends ItemsService<Policy> {
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck((opts?.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_REMAINING_ADMINS);
+			opts.onRequireUserIntegrityCheck(
+				(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins,
+			);
 		} else {
 			// This is the top level mutation, perform an admin user count check
 			try {

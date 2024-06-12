@@ -1,6 +1,7 @@
 import type { DirectusError } from '@directus/errors';
 import type { EventContext, PrimaryKey } from '@directus/types';
 import type { MutationTracker } from '../services/items.js';
+import type { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
 export type MutationOptions = {
 	/**
@@ -49,10 +50,9 @@ export type MutationOptions = {
 	/**
 	 * Indicate that the top level mutation needs to perform a user integrity check before commiting the transaction
 	 * This is a combination of flags
-	 * @see USER_INTEGRITY_REMAINING_ADMINS_FLAG
-	 * @see USER_INTEGRITY_USER_LIMITS_FLAG
+	 * @see UserIntegrityCheckFlag
 	 */
-	userIntegrityCheckFlags?: number;
+	userIntegrityCheckFlags?: UserIntegrityCheckFlag;
 
 	/**
 	 * Callback function that is called whenever a mutation requires a user integrity check to be made

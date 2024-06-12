@@ -3,10 +3,7 @@ import { validateRemainingAdminUsers } from '../permissions/modules/validate-rem
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
-import {
-	USER_INTEGRITY_CHECK_ALL,
-	USER_INTEGRITY_CHECK_REMAINING_ADMINS,
-} from '../utils/validate-user-count-integrity.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { AccessService } from './access.js';
 import { PresetsService } from './presets.js';
@@ -23,7 +20,7 @@ export class RolesService extends ItemsService {
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		if ('parent' in data) {
-			opts.userIntegrityCheckFlags = USER_INTEGRITY_CHECK_ALL;
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
 		const result = await super.updateMany(keys, data, opts);
@@ -35,7 +32,9 @@ export class RolesService extends ItemsService {
 
 	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck((opts?.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_REMAINING_ADMINS);
+			opts.onRequireUserIntegrityCheck(
+				(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins,
+			);
 		} else {
 			try {
 				await validateRemainingAdminUsers({ excludeRoles: keys }, { schema: this.schema, knex: this.knex });

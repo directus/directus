@@ -27,7 +27,7 @@ import type { AbstractService, AbstractServiceOptions, ActionEventParams, Mutati
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -258,7 +258,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			nestedActionEvents.push(...nestedActionEventsO2M);
 
 			const userIntegrityCheckFlags =
-				(opts.userIntegrityCheckFlags ?? 0) |
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) |
 				userIntegrityCheckFlagsM2O |
 				userIntegrityCheckFlagsA2O |
 				userIntegrityCheckFlagsO2M;
@@ -378,7 +378,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				knex: knex,
 			});
 
-			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? 0;
+			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
 
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
@@ -604,7 +604,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					schema: this.schema,
 				});
 
-				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? 0;
+				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
 
 				for (const item of data) {
 					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
@@ -755,7 +755,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
 
 			let userIntegrityCheckFlags =
-				opts.userIntegrityCheckFlags ?? 0 | userIntegrityCheckFlagsM2O | userIntegrityCheckFlagsA2O;
+				opts.userIntegrityCheckFlags ??
+				UserIntegrityCheckFlag.None | userIntegrityCheckFlagsM2O | userIntegrityCheckFlagsA2O;
 
 			nestedActionEvents.push(...nestedActionEventsM2O);
 			nestedActionEvents.push(...nestedActionEventsA2O);
