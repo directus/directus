@@ -35,7 +35,7 @@
 		"typedoc-plugin-zod": "1.1.2",
 		"typedoc-vitepress-theme": "1.0.0-next.10",
 		"typescript": "5.4.5",
-		"vitepress": "1.0.0-rc.4",
+		"vitepress": "1.2.3",
 		"vitepress-plugin-tabs": "0.3.0",
 		"vue": "3.4.27"
 	}
