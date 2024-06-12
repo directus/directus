@@ -145,13 +145,13 @@ function setFullAccess(collection: string, action: PermissionsAction) {
 	const existing = getPermission(collection, action);
 
 	if (existing) {
-		update(
-			createEmptyPermission({
-				action: existing.action,
-				collection: existing.collection,
-				fields: ['*'],
-			}),
-		);
+		update({
+			...existing,
+			fields: ['*'],
+			permissions: null,
+			validation: null,
+			presets: null,
+		});
 	} else {
 		create(
 			createEmptyPermission({
