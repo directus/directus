@@ -14,16 +14,10 @@ import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
 
-const props = withDefaults(
-	defineProps<{
-		primaryKey: string;
-		permissionKey?: string;
-		deleteAllowed?: boolean;
-	}>(),
-	{
-		deleteAllowed: true,
-	},
-);
+const props = defineProps<{
+	primaryKey: string;
+	permissionKey?: string;
+}>();
 
 const { t } = useI18n();
 
@@ -109,7 +103,6 @@ function discardAndLeave() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="deleteAllowed"
 						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon

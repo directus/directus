@@ -61,7 +61,7 @@ function notExcluded({ collection }: Collection) {
 				inline
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('select', $event)"
-			></v-select>
+			/>
 		</td>
 		<td></td>
 	</tr>

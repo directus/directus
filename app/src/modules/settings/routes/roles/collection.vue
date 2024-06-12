@@ -28,12 +28,6 @@ const router = useRouter();
 const roles = ref<RoleItem[]>([]);
 const loading = ref(false);
 
-// TODO
-const lastAdminRoleId = computed(() => {
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
-});
-
 const search = ref<string | null>(null);
 
 const filteredRoles = computed(() => {
@@ -149,7 +143,7 @@ function navigateToRole({ item }: { item: Role }) {
 	} else {
 		router.push({
 			name: 'settings-roles-item',
-			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+			params: { primaryKey: item.id },
 		});
 	}
 }
