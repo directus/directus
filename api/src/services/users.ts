@@ -19,7 +19,6 @@ import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
-import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
@@ -196,8 +195,43 @@ export class UsersService extends ItemsService {
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await this.createMany([data], opts);
-		return result[0]!;
+		try {
+			if (data['email']) {
+				this.validateEmail(data['email']);
+				await this.checkUniqueEmails([data['email']]);
+			}
+
+			if (data['password']) {
+				await this.checkPasswordPolicy([data['password']]);
+			}
+
+			if (shouldCheckUserLimits() && data['role']) {
+				const increasedCounts: AccessTypeCount = {
+					admin: 0,
+					app: 0,
+					api: 0,
+				};
+
+				if (typeof data['role'] === 'object') {
+					if ('admin_access' in data['role'] && data['role']['admin_access'] === true) {
+						increasedCounts.admin++;
+					} else if ('app_access' in data['role'] && data['role']['app_access'] === true) {
+						increasedCounts.app++;
+					} else {
+						increasedCounts.api++;
+					}
+				} else {
+					const existingRoleCounts = await getRoleCountsByRoles(this.knex, [data['role']]);
+					mergeWith(increasedCounts, existingRoleCounts, (x, y) => x + y);
+				}
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationError = err;
+		}
+
+		return await super.createOne(data, opts);
 	}
 
 	/**
@@ -252,45 +286,6 @@ export class UsersService extends ItemsService {
 		}
 
 		return await super.createMany(data, opts);
-	}
-
-	/**
-	 * Update many users by query
-	 */
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
-		return keys.length ? await this.updateMany(keys, data, opts) : [];
-	}
-
-	/**
-	 * Update a single user by primary key
-	 */
-	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.updateMany([key], data, opts);
-		return key;
-	}
-
-	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
-
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-
-		const keys: PrimaryKey[] = [];
-
-		await transaction(this.knex, async (trx) => {
-			const service = new UsersService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
-				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
-			}
-		});
-
-		return keys;
 	}
 
 	/**
