@@ -15,12 +15,12 @@ export const USER_INTEGRITY_CHECK_USER_LIMITS = 1 << UserIntegrityCheckType.User
 export const USER_INTEGRITY_CHECK_ALL = USER_INTEGRITY_CHECK_REMAINING_ADMINS | USER_INTEGRITY_CHECK_USER_LIMITS;
 
 export interface ValidateUserCountIntegrityOptions extends Omit<FetchUserCountOptions, 'adminOnly'> {
-	checkType: number;
+	flags: number;
 }
 
 export async function validateUserCountIntegrity(options: ValidateUserCountIntegrityOptions) {
-	const validateUserLimits = (options.checkType & USER_INTEGRITY_CHECK_USER_LIMITS) !== 0;
-	const validateRemainingAdminUsers = (options.checkType & USER_INTEGRITY_CHECK_REMAINING_ADMINS) !== 0;
+	const validateUserLimits = (options.flags & USER_INTEGRITY_CHECK_USER_LIMITS) !== 0;
+	const validateRemainingAdminUsers = (options.flags & USER_INTEGRITY_CHECK_REMAINING_ADMINS) !== 0;
 
 	const limitCheck = validateUserLimits && shouldCheckUserLimits();
 

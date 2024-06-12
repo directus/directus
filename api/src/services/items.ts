@@ -267,7 +267,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ checkType: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
 				}
 			}
 
@@ -410,7 +410,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ checkType: userIntegrityCheckFlags, knex });
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
 				}
 			}
 
@@ -624,7 +624,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					if (opts.onRequireUserIntegrityCheck) {
 						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 					} else {
-						await validateUserCountIntegrity({ checkType: userIntegrityCheckFlags, knex: trx });
+						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
 					}
 				}
 			});
@@ -778,7 +778,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				} else {
 					// Having no onRequireUserIntegrityCheck callback indicates that
 					// this is the top level invocation of the nested updates, so perform the user integrity check
-					await validateUserCountIntegrity({ checkType: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
 				}
 			}
 
