@@ -2,14 +2,14 @@ import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset } from '@directus/types';
+import { SettingsStorageAssetPreset, File } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	lazy?: boolean;
-	width?: number;
-	height?: number;
+	width?: number | null;
+	height?: number | null;
 	transformationKey?: string | null;
 	previewUrl?: string;
 };
@@ -25,7 +25,7 @@ type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	imageSelection: Ref<ImageSelection | null>;
 	closeImageDrawer: () => void;
-	onImageSelect: (image: Record<string, any>) => void;
+	onImageSelect: (image: File) => void;
 	saveImage: () => void;
 	imageButton: ImageButton;
 };
@@ -115,12 +115,12 @@ export default function useImage(
 		imageDrawerOpen.value = false;
 	}
 
-	function onImageSelect(image: Record<string, any>) {
-		const assetUrl = getPublicURL() + 'assets/' + image.id;
+	function onImageSelect(image: File) {
+		const assetUrl = getPublicURL() + 'assets/' + image.filename_disk;
 
 		imageSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
-			alt: image.title,
+			alt: image.title!,
 			lazy: false,
 			width: image.width,
 			height: image.height,
