@@ -15,6 +15,7 @@ defineProps<{
 
 const emit = defineEmits<{
 	editItem: [action: PermissionsAction];
+	removeRow: [];
 	setFullAccess: [action: PermissionsAction];
 	setNoAccess: [action: PermissionsAction];
 	setFullAccessAll: [];
@@ -49,6 +50,7 @@ const { t } = useI18n();
 				/>
 				<value-null v-else />
 			</template>
+			<v-icon v-tooltip="t('remove')" class="remove" name="close" clickable @click="emit('removeRow')" />
 		</td>
 	</tr>
 </template>
@@ -119,6 +121,15 @@ const { t } = useI18n();
 
 	& + .permissions-row td {
 		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
+
+	.v-icon.remove {
+		--v-icon-size: 20px;
+		--v-icon-color: var(--theme--foreground-subdued);
+
+		&:hover {
+			--v-icon-color: var(--theme--foreground);
+		}
 	}
 }
 </style>

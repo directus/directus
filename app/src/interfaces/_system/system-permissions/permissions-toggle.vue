@@ -121,7 +121,7 @@ const appMinimalLevel = computed(() => {
 		--v-chip-background-color: var(--theme--primary);
 		--v-chip-background-color-hover: var(--theme--primary);
 		--v-chip-border-color: transparent;
-		--v-chip-border-color-hover: var(--theme--primary-background);
+		--v-chip-border-color-hover: var(--theme--primary-subdued);
 
 		&.active {
 			--v-chip-color: var(--theme--background);
@@ -152,7 +152,7 @@ const appMinimalLevel = computed(() => {
 		--v-chip-background-color: transparent;
 		--v-chip-background-color-hover: transparent;
 		--v-chip-border-color: var(--theme--border-color-subdued);
-		--v-chip-border-color-hover: var(--theme--border-color);
+		--v-chip-border-color-hover: var(--theme--border-color-accent);
 
 		&.active {
 			--v-chip-color: var(--theme--foreground);

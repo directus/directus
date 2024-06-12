@@ -7,10 +7,10 @@ import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
-import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
+import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { Ref, computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, nextTick, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
@@ -63,7 +63,8 @@ const value = computed({
 const { update, remove, create, displayItems, getItemEdits, loading, resetActive, resetSystemPermissions } =
 	usePermissions(value, relationInfo, primaryKey, appAccess);
 
-const { allPermissions, regularPermissions, systemPermissions, addEmptyPermission } = useGroupedPermissions();
+const { allPermissions, regularPermissions, systemPermissions, addEmptyPermission, removeEmptyCollection } =
+	useGroupedPermissions();
 
 function getPermission(collection: string, action: PermissionsAction) {
 	return displayItems.value.find(
@@ -119,6 +120,11 @@ function stageEdits(item: Record<string, any>) {
 
 function cancelEdit() {
 	currentlyEditing.value = null;
+}
+
+function removeCollection(collection: string) {
+	setNoAccessAll(collection);
+	removeEmptyCollection(collection);
 }
 
 function setFullAccessAll(collection: string) {
@@ -494,12 +500,12 @@ function useGroupedPermissions() {
 	});
 
 	watch(groupedPermissions, (newValue, oldValue) => {
-		// remove local permissions that have since been added to the configured permissions
+		// Remove local permissions that have since been added to the configured permissions
 		localPermissions.value = localPermissions.value.filter(
 			(local) => !newValue.find((group) => group.collection.collection === local.collection.collection),
 		);
 
-		// add local permissions that have been removed from the configured permissions for visual consistency
+		// Add local permissions that have been removed from the configured permissions for visual consistency
 		localPermissions.value.push(
 			...oldValue
 				.filter((old) => !newValue.find((group) => group.collection.collection === old.collection.collection))
@@ -522,6 +528,7 @@ function useGroupedPermissions() {
 	return {
 		loading,
 		addEmptyPermission,
+		removeEmptyCollection,
 		allPermissions,
 		regularPermissions,
 		systemPermissions,
@@ -545,6 +552,14 @@ function useGroupedPermissions() {
 			systemVisible.value = true;
 		}
 	}
+
+	function removeEmptyCollection(collection: string) {
+		// Delay this to the next tick, since in the meantime it will have been added to the localPermissions
+		nextTick(
+			() =>
+				(localPermissions.value = localPermissions.value.filter((group) => group.collection.collection !== collection)),
+		);
+	}
 }
 </script>
 
@@ -562,6 +577,7 @@ function useGroupedPermissions() {
 					:permissions="group.permissions"
 					:collection="group.collection"
 					@edit-item="editItem(group.collection.collection, $event)"
+					@remove-row="removeCollection(group.collection.collection)"
 					@set-full-access-all="setFullAccessAll(group.collection.collection)"
 					@set-no-access-all="setNoAccessAll(group.collection.collection)"
 					@set-full-access="setFullAccess(group.collection.collection, $event)"
@@ -594,6 +610,7 @@ function useGroupedPermissions() {
 									: undefined
 							"
 							@edit-item="editItem(group.collection.collection, $event)"
+							@remove-row="removeCollection(group.collection.collection)"
 							@set-full-access-all="setFullAccessAll(group.collection.collection)"
 							@set-no-access-all="setNoAccessAll(group.collection.collection)"
 							@set-full-access="setFullAccess(group.collection.collection, $event)"
@@ -660,7 +677,6 @@ function useGroupedPermissions() {
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
-		table-layout: fixed;
 	}
 
 	.monospace {
