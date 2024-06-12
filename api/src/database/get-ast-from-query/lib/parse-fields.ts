@@ -210,9 +210,9 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
 					{
-						policies: policies,
-						collections: [relatedCollection],
 						action: 'read',
+						collections: [relatedCollection],
+						policies: policies,
 						accountability: options.accountability,
 					},
 					context,
