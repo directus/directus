@@ -158,7 +158,30 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		try {
+			if ('email' in data) {
+				this.validateEmail(data['email']);
+				await this.checkUniqueEmails(data['email']);
+			}
+
+			if ('password' in data) {
+				await this.checkPasswordPolicy(data['password']);
+			}
+		} catch (err: any) {
+			opts.preMutationError = err;
+		}
+
+		if ('role' in data || ('status' in data && data['status'] === 'active')) {
+			const flags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_USER_LIMITS;
+
+			if (opts.onRequireUserIntegrityCheck) {
+				opts.onRequireUserIntegrityCheck(flags);
+			} else {
+				opts.userIntegrityCheckFlags = flags;
+			}
+		}
+
 		return await super.createOne(data, opts);
 	}
 
@@ -194,7 +217,15 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		return await super.createMany(data, opts);
+		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
+		// as this requires one query per email if done in `createOne`
+		const itemsService = new ItemsService(this.collection, {
+			schema: this.schema,
+			accountability: this.accountability,
+			knex: this.knex,
+		});
+
+		return await itemsService.createMany(data, opts);
 	}
 
 	/**
