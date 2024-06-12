@@ -25,7 +25,6 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
-import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -75,9 +74,11 @@ export class ImportService {
 		}
 	}
 
-	importJSON(collection: string, stream: Readable): Promise<void> {
+	async importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
+
+		const { getService } = await import('../utils/get-service.js');
 
 		return transaction(this.knex, (trx) => {
 			const service = getService(collection, {
@@ -126,6 +127,8 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		const nestedActionEvents: ActionEventParams[] = [];
+
+		const { getService } = await import('../utils/get-service.js');
 
 		return transaction(this.knex, (trx) => {
 			const service = getService(collection, {
@@ -274,6 +277,7 @@ export class ExportService {
 			};
 
 			const database = getDatabase();
+			const { getService } = await import('../utils/get-service.js');
 
 			await transaction(database, async (trx) => {
 				const service = getService(collection, {
