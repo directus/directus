@@ -38,7 +38,7 @@ test('Returns correct count when user has admin access policy directly associate
 		},
 	]);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 1,
@@ -64,7 +64,7 @@ test('Returns correct count when user has app access policy directly associated'
 		},
 	]);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 0,
@@ -92,7 +92,7 @@ test('Looks up admin status from user role if not directly associated', async ()
 
 	vi.mocked(fetchRolesTree).mockResolvedValue(['role-a']);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 1,
@@ -120,7 +120,7 @@ test('Looks up app status from user role if not directly associated', async () =
 
 	vi.mocked(fetchRolesTree).mockResolvedValue(['role-a']);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 0,
@@ -148,7 +148,7 @@ test('Reads admin status from parent tree', async () => {
 
 	vi.mocked(fetchRolesTree).mockResolvedValue(['role-c', 'role-b', 'role-a']);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 1,
@@ -178,7 +178,7 @@ test('Prioritizes admin over app', async () => {
 
 	vi.mocked(fetchRolesTree).mockResolvedValue(['role-a']);
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	expect(counts).toEqual({
 		admin: 1,
@@ -275,7 +275,7 @@ test('More complicated example of the above', async () => {
 		}
 	});
 
-	const counts = await fetchUserCount(knex);
+	const counts = await fetchUserCount({ knex });
 
 	/**
 	 * Role A has 3 definitions. One of them contains admin, so users in A are counted as admin

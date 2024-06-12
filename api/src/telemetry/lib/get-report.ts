@@ -30,7 +30,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize] = await Promise.all([
 		getItemCount(db, basicCountTasks),
-		fetchUserCount(db),
+		fetchUserCount({ knex: db }),
 		getUserItemCount(db),
 		getFieldCount(db),
 		getExtensionCount(db),

@@ -45,6 +45,19 @@ export type MutationOptions = {
 	preMutationError?: DirectusError | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
+
+	/**
+	 * Indicate that the top level mutation needs to perform a user integrity check before commiting the transaction
+	 * This is a combination of flags
+	 * @see USER_INTEGRITY_REMAINING_ADMINS_FLAG
+	 * @see USER_INTEGRITY_USER_LIMITS_FLAG
+	 */
+	userIntegrityCheckFlags?: number;
+
+	/**
+	 * Callback function that is called whenever a mutation requires a user integrity check to be made
+	 */
+	onRequireUserIntegrityCheck?: ((flags: number) => void) | undefined;
 };
 
 export type ActionEventParams = {

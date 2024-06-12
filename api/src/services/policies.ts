@@ -1,8 +1,14 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Policy, PrimaryKey } from '@directus/types';
+import { getMatch } from 'ip-matching';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import {
+	USER_INTEGRITY_CHECK_ALL,
+	USER_INTEGRITY_CHECK_REMAINING_ADMINS,
+} from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 export class PoliciesService extends ItemsService<Policy> {
@@ -10,7 +16,39 @@ export class PoliciesService extends ItemsService<Policy> {
 		super('directus_policies', options);
 	}
 
+	private isIpAccessValid(value?: any[] | null): boolean {
+		if (value === undefined) return false;
+		if (value === null) return true;
+		if (Array.isArray(value) && value.length === 0) return true;
+
+		for (const ip of value) {
+			if (typeof ip !== 'string' || ip.includes('*')) return false;
+
+			try {
+				const match = getMatch(ip);
+				if (match.type == 'IPMask') return false;
+			} catch {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private assertValidIpAccess(partialItem: Partial<Policy>): void {
+		if ('ip_access' in partialItem && !this.isIpAccessValid(partialItem['ip_access'])) {
+			throw new InvalidPayloadError({
+				reason: 'IP Access contains an incorrect value. Valid values are: IP addresses, IP ranges and CIDR blocks',
+			});
+		}
+	}
+
 	override async createOne(data: Partial<Policy>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		this.assertValidIpAccess(data);
+
+		// A policy has been created, but the attachment to a user/role happens in the AccessService,
+		// so no need to check user integrity
+
 		const result = await super.createOne(data, opts);
 
 		// A new policy has created, clear the permissions cache
@@ -24,6 +62,23 @@ export class PoliciesService extends ItemsService<Policy> {
 		data: Partial<Policy>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
+		this.assertValidIpAccess(data);
+
+		if ('admin_access' in data) {
+			let flags = USER_INTEGRITY_CHECK_REMAINING_ADMINS;
+
+			if (data['admin_access'] === true) {
+				// Only need to perform a full user count if the policy allows admin access
+				flags |= USER_INTEGRITY_CHECK_ALL;
+			}
+
+			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | flags;
+		}
+
+		if ('app_access' in data) {
+			opts.userIntegrityCheckFlags = (opts.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_ALL;
+		}
+
 		const result = await super.updateMany(keys, data, opts);
 
 		// Some policies have been updated, clear the permissions cache
@@ -33,6 +88,17 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (opts?.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck((opts?.userIntegrityCheckFlags ?? 0) | USER_INTEGRITY_CHECK_REMAINING_ADMINS);
+		} else {
+			// This is the top level mutation, perform an admin user count check
+			try {
+				await validateRemainingAdminUsers({ excludePolicies: keys }, { schema: this.schema, knex: this.knex });
+			} catch (err: any) {
+				opts.preMutationError = err;
+			}
+		}
+
 		const result = await super.deleteMany(keys, opts);
 
 		// Some policies have been deleted, clear the permissions cache
