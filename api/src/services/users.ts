@@ -162,7 +162,7 @@ export class UsersService extends ItemsService {
 		try {
 			if ('email' in data) {
 				this.validateEmail(data['email']);
-				await this.checkUniqueEmails(data['email']);
+				await this.checkUniqueEmails([data['email']]);
 			}
 
 			if ('password' in data) {
