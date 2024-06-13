@@ -1,6 +1,7 @@
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getUserCount } from './get-user-count.js';
+import { getUserCountsByRoles } from './get-user-counts-by-roles.js';
+import { randomUUID } from 'crypto';
 
 let mockResult: { admin_access: number | null; app_access: number | null; count: string }[];
 let mockDb: Knex;
@@ -39,10 +40,9 @@ beforeEach(() => {
 		count: vi.fn().mockReturnThis(),
 		select: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
-		leftJoin: vi.fn().mockReturnThis(),
-		where: vi.fn().mockReturnThis(),
+		whereIn: vi.fn().mockReturnThis(),
 		andWhere: vi.fn().mockReturnThis(),
-		whereNotIn: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
 		groupBy: vi.fn().mockResolvedValue(mockResult),
 	} as unknown as Knex;
 });
@@ -52,18 +52,20 @@ afterEach(() => {
 });
 
 test('Fetches counts from the database', async () => {
-	await getUserCount(mockDb);
+	const roleIds = [randomUUID(), randomUUID(), randomUUID()];
+	await getUserCountsByRoles(mockDb, roleIds);
 
 	expect(mockDb.count).toHaveBeenCalledWith('directus_users.id', { as: 'count' });
 	expect(mockDb.select).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 	expect(mockDb.from).toHaveBeenCalledWith('directus_users');
-	expect(mockDb.where).toHaveBeenCalledWith('directus_users.status', '=', 'active');
+	expect(mockDb.whereIn).toHaveBeenCalledWith('directus_roles.id', roleIds);
+	expect(mockDb.andWhere).toHaveBeenCalledWith('directus_users.status', '=', 'active');
 	expect(mockDb.leftJoin).toHaveBeenCalledWith('directus_roles', 'directus_users.role', '=', 'directus_roles.id');
 	expect(mockDb.groupBy).toHaveBeenCalledWith('directus_roles.admin_access', 'directus_roles.app_access');
 });
 
 test('Sets final counts based on combination of admin/app access', async () => {
-	const res = await getUserCount(mockDb);
+	const res = await getUserCountsByRoles(mockDb, []);
 
 	expect(res).toEqual({
 		admin: 45,

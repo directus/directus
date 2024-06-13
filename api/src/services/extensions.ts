@@ -71,7 +71,7 @@ export class ExtensionsService {
 			const afterInstallCount = currentlyInstalledCount + points;
 
 			if (afterInstallCount >= limit) {
-				throw new LimitExceededError();
+				throw new LimitExceededError({ category: 'Extensions' });
 			}
 		}
 

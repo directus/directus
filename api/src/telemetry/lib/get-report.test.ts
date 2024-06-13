@@ -6,7 +6,7 @@ import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getItemCount } from '../utils/get-item-count.js';
-import { getUserCount, type UserCount } from '../utils/get-user-count.js';
+import { getUserCount, type AccessTypeCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
 
@@ -37,7 +37,7 @@ vi.mock('../utils/get-extension-count.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
-let mockUserCounts: UserCount;
+let mockUserCounts: AccessTypeCount;
 let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
