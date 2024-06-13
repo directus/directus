@@ -1,5 +1,4 @@
 import type { Item, PrimaryKey } from '@directus/types';
-import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
@@ -30,17 +29,11 @@ export class RolesService extends ItemsService {
 		return result;
 	}
 
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(
-				(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins,
-			);
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (opts.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
 		} else {
-			try {
-				await validateRemainingAdminUsers({ excludeRoles: keys }, { schema: this.schema, knex: this.knex });
-			} catch (err: any) {
-				(opts || (opts = {})).preMutationError = err;
-			}
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
 		await transaction(this.knex, async (trx) => {

@@ -3,7 +3,6 @@ import type { Policy, PrimaryKey } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
@@ -85,17 +84,10 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(
-				(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins,
-			);
+		if (opts.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
 		} else {
-			// This is the top level mutation, perform an admin user count check
-			try {
-				await validateRemainingAdminUsers({ excludePolicies: keys }, { schema: this.schema, knex: this.knex });
-			} catch (err: any) {
-				opts.preMutationError = err;
-			}
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
 		const result = await super.deleteMany(keys, opts);
