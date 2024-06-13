@@ -21,6 +21,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 type Action = 'create' | 'read' | 'update';
@@ -39,7 +40,7 @@ type Transformers = {
 type PayloadServiceProcessRelationResult = {
 	revisions: PrimaryKey[];
 	nestedActionEvents: ActionEventParams[];
-	userIntegrityCheckFlags: number;
+	userIntegrityCheckFlags: UserIntegrityCheckFlag;
 };
 
 /**
@@ -416,7 +417,7 @@ export class PayloadService {
 		});
 
 		const revisions: PrimaryKey[] = [];
-		let userIntegrityCheckFlags = 0;
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -516,7 +517,7 @@ export class PayloadService {
 
 		// All the revisions saved on this level
 		const revisions: PrimaryKey[] = [];
-		let userIntegrityCheckFlags = 0;
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -598,7 +599,7 @@ export class PayloadService {
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult> {
 		const revisions: PrimaryKey[] = [];
-		let userIntegrityCheckFlags = 0;
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
