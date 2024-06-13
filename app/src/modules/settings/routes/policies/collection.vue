@@ -169,7 +169,7 @@ function navigateToPolicy({ item }: { item: Policy }) {
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="badge" />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 

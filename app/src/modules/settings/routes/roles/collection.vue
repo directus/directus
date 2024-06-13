@@ -155,7 +155,7 @@ function navigateToRole({ item }: { item: Role }) {
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="admin_panel_settings" />
+				<v-icon name="group" />
 			</v-button>
 		</template>
 

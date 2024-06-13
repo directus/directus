@@ -5,7 +5,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import { Role } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
