@@ -57,7 +57,7 @@ export type MutationOptions = {
 	/**
 	 * Callback function that is called whenever a mutation requires a user integrity check to be made
 	 */
-	onRequireUserIntegrityCheck?: ((flags: number) => void) | undefined;
+	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
 
 export type ActionEventParams = {
