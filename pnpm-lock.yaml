@@ -1493,8 +1493,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 3.0.2
-        version: 3.0.2(@pnpm/logger@5.0.0)
+        specifier: 3.0.5
+        version: 3.0.5(@pnpm/logger@5.0.0)
       semver:
         specifier: 7.6.2
         version: 7.6.2
@@ -3936,8 +3936,8 @@ packages:
     resolution: {integrity: sha512-yQosGUvYPpAjb1jOFcdbwekRjZRVxN6C0hHzfRCZrMKbxGjt/E0g0RcFlEDNVZ95tm4oMMcr7nEPa7H7LX3emw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/core-loggers@10.0.0':
-    resolution: {integrity: sha512-nf6DWO+75llaOxZ4Wb5xIzC86jb9PEeD8y7E4bbkLCJUvv/vRVgaPO3+Fo2GFTw5ZY7cip60rTF6dUzbP9dOVw==}
+  '@pnpm/core-loggers@10.0.1':
+    resolution: {integrity: sha512-u4fVBKK1scEmcQcZj2T4+N4ugRB6Zlrf1p3vHDLXjoETWDimtFybHsKxjwzwBmoAXk76Ewr2GXPAQ879C5nA7Q==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
@@ -3965,10 +3965,6 @@ packages:
   '@pnpm/error@5.0.1':
     resolution: {integrity: sha512-JQSOeSEqrV6k6+kKgrlSJ7gddJRcjxtNCxSVJRIqwckkGSdSTNpXmKEdGgLlaDuEwElPAZUmLDGSqk5InJ5pMA==}
     engines: {node: '>=16.14'}
-
-  '@pnpm/error@6.0.0':
-    resolution: {integrity: sha512-SKtHdV09k9+6jkohv9YuYmKMKNpxknoGjo0c6eN8x2Z3MHW2cuSt1OD/L16eCqdKQL+FUbvULxig0b9X9VK2/g==}
-    engines: {node: '>=18.12'}
 
   '@pnpm/error@6.0.1':
     resolution: {integrity: sha512-7yjO0RgmWYb4OKgcWC33yD4Z2CxE7Tm7vXX1SmS7GDifDT/bgZZhHeS2xq/+W6y9yhwIrRSA+7AlQL1NM2wIvw==}
@@ -4042,8 +4038,8 @@ packages:
     resolution: {integrity: sha512-oQYP08exi6mOPdAZZWcNIGS+KKPsnNwUBzSuAEGWuCcqwMAt3k/WVCqVIXzBxhO5sP2b43og69VHmPj6IroKqw==}
     engines: {node: '>=14.6'}
 
-  '@pnpm/npm-resolver@19.0.2':
-    resolution: {integrity: sha512-p5a0RFyGuBOg/LsE72tfIq9cMQEWC+BEe1+AIrzxgRdHgphiqo/TAyfFIRtzoj7npMwUcSOWZJMxYXHuGcPG+g==}
+  '@pnpm/npm-resolver@20.0.0':
+    resolution: {integrity: sha512-lH3hrln2jjKOgs0Uidu+hJE3vSVufnrRFwlW6CN9HnD+wMqsVYmURa1cIrqaCUOUdHL5PiWndL8d+6P/uw2BMw==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
@@ -4079,8 +4075,8 @@ packages:
     resolution: {integrity: sha512-2yufLOpiPKQyNVLbL3dgoytkDuuURB5yBOrFtafiuZieGZJid2AeHmFfPhU9hNc/ZM1+wqH3EuVHe/1DdEgm4Q==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/resolver-base@12.0.0':
-    resolution: {integrity: sha512-R5FmojIoHRIC8hZDyr6a9SM6TkpAQXQXgq5QrycUwknRvGjTnrOFD5JaTzMZohcfFg6TWdA3sp3B0w/mhj98Rg==}
+  '@pnpm/resolver-base@12.0.1':
+    resolution: {integrity: sha512-EobGNigWvWSPNIZaA5GZFzq2ENutyVYmyTobz2vg6KPH2RLvVo3hO2VYTZ8ARPKOfsFLLFei90ncrm7k+Z5U1g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/store-controller-types@15.0.1':
@@ -4091,8 +4087,8 @@ packages:
     resolution: {integrity: sha512-DRWtTmmxQQtuWHf1xPt9bqzCSq8d0MQF5x1kdpCDMLd7xk3nP4To2/OGkPrb8MKbrWsgCNDwXyKCFlEKrAg7fg==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/types@10.0.0':
-    resolution: {integrity: sha512-P608MRTOExt5BkIN2hsrb/ycEchwaPW/x80ujJUAqxKZSXNVAOrlEu3KJ+2+jTCunyWmo/EcE01ZdwCw8jgVrQ==}
+  '@pnpm/types@10.1.0':
+    resolution: {integrity: sha512-cM2UhtQJs06zWm3wsXoVVi4b1P8rA7xioZCct/Q4sR5GAUq0VUReZMd9TkPEVdNlAiitctTAi9EM8D5hrO937A==}
     engines: {node: '>=18.12'}
 
   '@pnpm/types@9.1.0':
@@ -4103,8 +4099,8 @@ packages:
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  '@pnpm/workspace.pkgs-graph@3.0.2':
-    resolution: {integrity: sha512-FEsSOa1ME7/uznKsYXmQ4qNSvPHftJkMrqkLX2b92FSxT2Q+T9MnG9/ykO6pFNlPzSAHzUa2AD+8gnWRQGeYWg==}
+  '@pnpm/workspace.pkgs-graph@3.0.5':
+    resolution: {integrity: sha512-dCjeG47dkVWMLwj15g8ffuMt4R4+L4uBbhckYZ9Na22hHIAZzEIHp6bdGnBkljyF52p8Sd1WniovipmklDX1tg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/workspace.spec-parser@1.0.0':
@@ -14100,10 +14096,10 @@ snapshots:
 
   '@pnpm/constants@8.0.0': {}
 
-  '@pnpm/core-loggers@10.0.0(@pnpm/logger@5.0.0)':
+  '@pnpm/core-loggers@10.0.1(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/logger': 5.0.0
-      '@pnpm/types': 10.0.0
+      '@pnpm/types': 10.1.0
 
   '@pnpm/core-loggers@9.0.1(@pnpm/logger@5.0.0)':
     dependencies:
@@ -14145,10 +14141,6 @@ snapshots:
   '@pnpm/error@5.0.1':
     dependencies:
       '@pnpm/constants': 7.1.0
-
-  '@pnpm/error@6.0.0':
-    dependencies:
-      '@pnpm/constants': 8.0.0
 
   '@pnpm/error@6.0.1':
     dependencies:
@@ -14252,16 +14244,16 @@ snapshots:
       semver: 7.6.2
       validate-npm-package-name: 4.0.0
 
-  '@pnpm/npm-resolver@19.0.2(@pnpm/logger@5.0.0)':
+  '@pnpm/npm-resolver@20.0.0(@pnpm/logger@5.0.0)':
     dependencies:
-      '@pnpm/core-loggers': 10.0.0(@pnpm/logger@5.0.0)
-      '@pnpm/error': 6.0.0
+      '@pnpm/core-loggers': 10.0.1(@pnpm/logger@5.0.0)
+      '@pnpm/error': 6.0.1
       '@pnpm/fetching-types': 6.0.0
       '@pnpm/graceful-fs': 4.0.0
       '@pnpm/logger': 5.0.0
       '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/resolver-base': 12.0.0
-      '@pnpm/types': 10.0.0
+      '@pnpm/resolver-base': 12.0.1
+      '@pnpm/types': 10.1.0
       '@pnpm/workspace.spec-parser': 1.0.0
       '@zkochan/retry': 0.2.0
       encode-registry: 3.0.1
@@ -14336,9 +14328,9 @@ snapshots:
     dependencies:
       '@pnpm/types': 9.1.0
 
-  '@pnpm/resolver-base@12.0.0':
+  '@pnpm/resolver-base@12.0.1':
     dependencies:
-      '@pnpm/types': 10.0.0
+      '@pnpm/types': 10.1.0
 
   '@pnpm/store-controller-types@15.0.1':
     dependencies:
@@ -14350,18 +14342,18 @@ snapshots:
     dependencies:
       strip-comments-strings: 1.2.0
 
-  '@pnpm/types@10.0.0': {}
+  '@pnpm/types@10.1.0': {}
 
   '@pnpm/types@9.1.0': {}
 
   '@pnpm/util.lex-comparator@1.0.0': {}
 
-  '@pnpm/workspace.pkgs-graph@3.0.2(@pnpm/logger@5.0.0)':
+  '@pnpm/workspace.pkgs-graph@3.0.5(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 19.0.2(@pnpm/logger@5.0.0)
+      '@pnpm/npm-resolver': 20.0.0(@pnpm/logger@5.0.0)
       '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/types': 10.0.0
+      '@pnpm/types': 10.1.0
       ramda: '@pnpm/ramda@0.28.1'
     transitivePeerDependencies:
       - '@pnpm/logger'
