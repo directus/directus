@@ -101,7 +101,7 @@ async function fetchRoles() {
 		const response = await fetchAll<RoleResponse>(`/roles`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users', 'children.name', 'children.id'],
+				fields: ['id', 'name', 'description', 'icon', 'users', 'children.name', 'children.id'],
 				deep: {
 					users: {
 						_aggregate: { count: 'id' },
