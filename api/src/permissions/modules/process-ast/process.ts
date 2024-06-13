@@ -8,7 +8,8 @@ import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
-import { validatePath } from './utils/validate-path.js';
+import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
+import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
 
 export interface ProcessAstOptions {
 	ast: AST;
@@ -17,16 +18,19 @@ export interface ProcessAstOptions {
 }
 
 export async function processAst(options: ProcessAstOptions, context: Context) {
-	if (!options.accountability || options.accountability.admin) {
-		// TODO this should still go through validatePath to check for non-existing
-		// collections/fields
-		return options.ast;
-	}
-
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
 	const collections = collectionsInFieldMap(fieldMap);
+
+	if (!options.accountability || options.accountability.admin) {
+		// Validate the field existence, even if no permissions apply to the current accountability
+		for (const [path, { collection, fields }] of fieldMap.entries()) {
+			validatePathExistence(path, collection, fields, context.schema);
+		}
+
+		return options.ast;
+	}
 
 	const policies = await fetchPolicies(options.accountability, context);
 
@@ -36,7 +40,8 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
-		validatePath(path, permissions, collection, fields, context.schema);
+		validatePathExistence(path, collection, fields, context.schema);
+		validatePathPermissions(path, permissions, collection, fields);
 	}
 
 	injectCases(options.ast, permissions);
