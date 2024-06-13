@@ -36,7 +36,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	);
 
 	for (const [path, { collection, fields }] of fieldMap.entries()) {
-		validatePath(path, permissions, collection, fields);
+		validatePath(path, permissions, collection, fields, context.schema);
 	}
 
 	injectCases(options.ast, permissions);

@@ -51,10 +51,6 @@ vi.mock('./middleware/schema', () => ({
 	default: Router(),
 }));
 
-vi.mock('./middleware/get-permissions', () => ({
-	default: Router(),
-}));
-
 vi.mock('./auth', () => ({
 	registerAuthProviders: vi.fn(),
 }));

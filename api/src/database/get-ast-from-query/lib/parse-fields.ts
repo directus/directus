@@ -2,9 +2,11 @@ import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
+import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
-import { convertWildcards } from '../lib/convert-wildcards.js';
+import { convertWildcards } from './convert-wildcards.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
@@ -39,6 +41,11 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 	if (!fields || !Array.isArray(fields)) return [];
 
 	const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
+
+	const policies =
+		options.accountability && options.accountability.admin === false
+			? await fetchPolicies(options.accountability, context)
+			: null;
 
 	const relationalStructure: Record<
 		string,
@@ -200,6 +207,23 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 				child.relatedKey[relatedCollection] = context.schema.collections[relatedCollection]!.primary;
 			}
 		} else if (relatedCollection) {
+			if (options.accountability && options.accountability.admin === false && policies) {
+				const permissions = await fetchPermissions(
+					{
+						action: 'read',
+						collections: [relatedCollection],
+						policies: policies,
+						accountability: options.accountability,
+					},
+					context,
+				);
+
+				// Skip related collection if no permissions
+				if (permissions.length === 0) {
+					continue;
+				}
+			}
+
 			// update query alias for children parseFields
 			const deepAlias = getDeepQuery(options.deep?.[fieldKey] || {})?.['alias'];
 			if (!isEmpty(deepAlias)) options.query.alias = deepAlias;
