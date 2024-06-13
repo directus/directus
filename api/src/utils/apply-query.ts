@@ -845,13 +845,13 @@ export function applyFilter(
 	}
 }
 
-export async function applySearch(
+export function applySearch(
 	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
-): Promise<void> {
+) {
 	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 

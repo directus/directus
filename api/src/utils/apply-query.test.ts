@@ -105,7 +105,7 @@ describe('applySearch', () => {
 				return db;
 			});
 
-			await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
+			applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
@@ -123,7 +123,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
+		applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
@@ -144,7 +144,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+		applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(0);
@@ -198,7 +198,7 @@ describe('applyFilter', () => {
 						_and: [{ [field]: { [`_${filterOperator}`]: filterValue } }],
 					};
 
-					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {});
+					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
 
 					const tracker = createTracker(db);
 					tracker.on.select('*').response([]);
@@ -264,7 +264,7 @@ describe('applyFilter', () => {
 			},
 		};
 
-		const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {});
+		const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
 
 		const tracker = createTracker(db);
 		tracker.on.select('*').response([]);
