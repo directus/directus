@@ -6,10 +6,14 @@ import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js'
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
-import { convertWildcards } from './convert-wildcards.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
+import { convertWildcards } from './convert-wildcards.js';
+
+interface CollectionScope {
+	[collectionScope: string]: string[];
+}
 
 export interface ParseFieldsOptions {
 	accountability: Accountability | null;
@@ -47,13 +51,7 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 			? await fetchPolicies(options.accountability, context)
 			: null;
 
-	const relationalStructure: Record<
-		string,
-		| string[]
-		| {
-				[collectionScope: string]: string[];
-		  }
-	> = Object.create(null);
+	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
 	for (const fieldKey of fields) {
 		let name = fieldKey;
@@ -100,18 +98,10 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 
 				if (collectionScope) {
 					if (collectionScope in relationalStructure[rootField]! === false) {
-						(
-							relationalStructure[rootField] as {
-								[collectionScope: string]: string[];
-							}
-						)[collectionScope] = [];
+						(relationalStructure[rootField] as CollectionScope)[collectionScope] = [];
 					}
 
-					(
-						relationalStructure[rootField] as {
-							[collectionScope: string]: string[];
-						}
-					)[collectionScope]!.push(childKey);
+					(relationalStructure[rootField] as CollectionScope)[collectionScope]!.push(childKey);
 				} else {
 					(relationalStructure[rootField] as string[]).push(childKey);
 				}
@@ -190,11 +180,7 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 						parentCollection: relatedCollection,
 						fields: Array.isArray(nestedFields)
 							? nestedFields
-							: (
-									nestedFields as {
-										[collectionScope: string]: string[];
-									}
-							  )[relatedCollection] || [],
+							: (nestedFields as CollectionScope)[relatedCollection] || [],
 						query: options.query,
 						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
 						accountability: options.accountability,
