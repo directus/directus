@@ -172,8 +172,10 @@ export class UsersService extends ItemsService {
 			opts.preMutationError = err;
 		}
 
-		if ('role' in data || ('status' in data && data['status'] === 'active')) {
-			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		if ('status' in data && data['status'] === 'active') {
+			// Creating a user only requires checking user limits if the user is active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
 			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
@@ -187,7 +189,6 @@ export class UsersService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload['email']).filter((email) => email);
 		const passwords = data.map((payload) => payload['password']).filter((password) => password);
-		const someHaveRoles = data.some((payload) => payload['role'] !== undefined);
 		const someActive = data.some((payload) => payload['status'] === 'active');
 
 		try {
@@ -203,8 +204,8 @@ export class UsersService extends ItemsService {
 			opts.preMutationError = err;
 		}
 
-		if (someHaveRoles || someActive) {
-			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		if (someActive) {
+			// Creating users only requires checking user limits if the users are active, no need to care about the role
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
