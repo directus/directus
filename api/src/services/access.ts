@@ -10,12 +10,11 @@ export class AccessService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (opts.onRequireUserIntegrityCheck) {
-			// Creating a new policy attachments affects the number of admin/app/api users
-			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
-		}
+		// Creating a new policy attachments affects the number of admin/app/api users
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
-		const result = await super.createOne(data, { ...opts, userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
+		const result = await super.createOne(data, opts);
 
 		// A new policy has been attached to a user or a role, clear the permissions cache
 		await clearPermissionsCache();
@@ -28,10 +27,9 @@ export class AccessService extends ItemsService {
 		data: Partial<Item>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
-		if (opts.onRequireUserIntegrityCheck) {
-			// Updating policy attachments might affect the number of admin/app/api users
-			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
-		}
+		// Updating policy attachments might affect the number of admin/app/api users
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
 		const result = await super.updateMany(keys, data, { ...opts, userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -43,11 +41,8 @@ export class AccessService extends ItemsService {
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		// Changes here can affect the number of admin/app/api users
-		if (opts.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
-		} else {
-			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		}
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
 		const result = await super.deleteMany(keys, opts);
 

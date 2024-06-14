@@ -75,6 +75,8 @@ export class PoliciesService extends ItemsService<Policy> {
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
+		if (opts.userIntegrityCheckFlags) opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
 		const result = await super.updateMany(keys, data, opts);
 
 		// Some policies have been updated, clear the permissions cache
@@ -84,11 +86,8 @@ export class PoliciesService extends ItemsService<Policy> {
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (opts.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
-		} else {
-			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		}
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
 		const result = await super.deleteMany(keys, opts);
 

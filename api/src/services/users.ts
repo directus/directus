@@ -175,11 +175,7 @@ export class UsersService extends ItemsService {
 		if ('role' in data || ('status' in data && data['status'] === 'active')) {
 			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-			if (opts.onRequireUserIntegrityCheck) {
-				opts.onRequireUserIntegrityCheck(flags);
-			} else {
-				opts.userIntegrityCheckFlags = flags;
-			}
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
 
 		return await super.createOne(data, opts);
@@ -209,12 +205,10 @@ export class UsersService extends ItemsService {
 
 		if (someHaveRoles || someActive) {
 			const flags = (opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-			if (opts.onRequireUserIntegrityCheck) {
-				opts.onRequireUserIntegrityCheck(flags);
-			} else {
-				opts.userIntegrityCheckFlags = flags;
-			}
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
 
 		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
@@ -290,8 +284,13 @@ export class UsersService extends ItemsService {
 			}
 		}
 
+		if (opts.userIntegrityCheckFlags) {
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
 		const result = await super.updateMany(keys, data, opts);
 
+		// Only clear the permissions cache if the role or status has been updated
 		if (opts.userIntegrityCheckFlags) {
 			await clearPermissionsCache();
 		}

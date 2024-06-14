@@ -13,28 +13,34 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
+	// No need to check user integrity in createOne, as the creation of a role itself does not influence the number of
+	// users, as the role of a user is actually updated in the UsersService on the user, which will make sure to
+	// initiate a user integrity check if necessary
+
 	override async updateMany(
 		keys: PrimaryKey[],
 		data: Partial<Item>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		if ('parent' in data) {
+			// If the parent of a role changed we need to make a full integrity check.
+			// Anything related to policies will be checked in the AccessService, where the policies are attached to roles
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
 
 		const result = await super.updateMany(keys, data, opts);
 
+		// Only clear the permissions cache if the parent role has changed
+		// If anything policies related has changed, the cache will be cleared in the AccessService as well
 		if (opts.userIntegrityCheckFlags) await clearPermissionsCache();
 
 		return result;
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (opts.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(UserIntegrityCheckFlag.All);
-		} else {
-			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		}
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
 		await transaction(this.knex, async (trx) => {
 			const options: AbstractServiceOptions = {
