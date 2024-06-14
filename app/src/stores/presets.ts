@@ -114,6 +114,25 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			},
 		},
 	},
+	directus_presets: {
+		collection: 'directus_presets',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				fields: ['bookmark', 'collection', 'user', 'role'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					bookmark: 200,
+					collection: 200,
+					user: 200,
+					role: 200,
+				},
+			},
+		},
+	},
 };
 
 const currentUpdate: Record<number, string> = {};
