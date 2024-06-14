@@ -1,4 +1,4 @@
-import { expect, describe, test, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { getAccountabilityForRole } from './get-accountability-for-role.js';
@@ -70,22 +70,16 @@ describe('getAccountabilityForRole', async () => {
 		expect(fetchGlobalAccess).toHaveBeenCalledWith({}, roles);
 	});
 
-	test('invalid role returns default accountability', async () => {
+	test('invalid role throws error', async () => {
 		vi.mocked(fetchRolesTree).mockResolvedValue([]);
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: false });
 
-		const result = await getAccountabilityForRole('456-789', {
-			accountability: null,
-			schema: {} as any,
-			database: {} as any,
-		});
-
-		expect(result).toStrictEqual({
-			admin: false,
-			app: false,
-			roles: [],
-			role: null,
-			user: null,
-		});
+		expect(
+			getAccountabilityForRole('456-789', {
+				accountability: null,
+				schema: {} as any,
+				database: {} as any,
+			}),
+		).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`);
 	});
 });

@@ -23,6 +23,13 @@ export async function getAccountabilityForRole(
 		});
 	} else {
 		const roles = await fetchRolesTree(role, context.database);
+
+		// The roles tree should always include the passed role. If it doesn't, it's because it
+		// couldn't be read from the database and therefore doesn't exist
+		if (roles.length === 0) {
+			throw new Error(`Configured role "${role}" isn't a valid role ID or doesn't exist.`);
+		}
+
 		const globalAccess = await fetchGlobalAccess(context.database, roles);
 
 		generatedAccountability = createDefaultAccountability({
