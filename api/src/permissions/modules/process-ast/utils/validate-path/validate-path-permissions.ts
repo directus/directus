@@ -35,7 +35,7 @@ export function validatePathPermissions(
 
 	const forbiddenFields = allowedFields.has('*')
 		? []
-		: requestedFields.filter((field) => allowedFields.has(field) === false);
+		: requestedFields.filter((field) => !field.startsWith('$FOLLOW') && allowedFields.has(field) === false);
 
 	if (forbiddenFields.length > 0) {
 		throw createFieldsForbiddenError(path, collection, forbiddenFields);
