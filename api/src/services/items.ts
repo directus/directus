@@ -1,6 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
@@ -236,7 +236,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					primaryKey = primaryKey ?? returnedKey;
 				}
 			} catch (err: any) {
-				throw await translateDatabaseError(err);
+				const dbError = await translateDatabaseError(err);
+
+				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
+					// if the unique constraint is the primary key
+					dbError.extensions.field = pkField?.field ?? null;
+
+					delete dbError.extensions.primaryKey;
+				}
+
+				throw dbError;
 			}
 
 			// Most database support returning, those who don't tend to return the PK anyways
