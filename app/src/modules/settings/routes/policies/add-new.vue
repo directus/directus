@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { appRecommendedPermissions } from '@/app-permissions.js';
+import { useSave } from './use-save.js';
 
 const { t } = useI18n();
 
@@ -17,41 +15,7 @@ const name = ref<string | null>(null);
 const appAccess = ref(false);
 const adminAccess = ref(false);
 
-const { saving, save } = useSave();
-
-function useSave() {
-	const saving = ref(false);
-
-	return { saving, save };
-
-	async function save() {
-		saving.value = true;
-
-		try {
-			const policyResponse = await api.post('/policies', {
-				name: name.value,
-				admin_access: adminAccess.value,
-				app_access: appAccess.value,
-			});
-
-			if (appAccess.value === true && adminAccess.value === false) {
-				await api.post(
-					'/permissions',
-					appRecommendedPermissions.map((permission) => ({
-						...permission,
-						policy: policyResponse.data.data.id,
-					})),
-				);
-			}
-
-			router.push(`/settings/policies/${policyResponse.data.data.id}`);
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			saving.value = false;
-		}
-	}
-}
+const { saving, save } = useSave({ name, appAccess, adminAccess });
 </script>
 
 <template>

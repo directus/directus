@@ -33,12 +33,6 @@ const router = useRouter();
 const policies = ref<PolicyItem[]>([]);
 const loading = ref(false);
 
-// Todo make this use a util endpoint for determining if a policy can be deleted
-const lastAdminPolicyId = computed(() => {
-	const adminPolicies = policies.value.filter((role) => role.admin_access === true);
-	return adminPolicies.length === 1 ? (adminPolicies[0] as PolicyItem).id : null;
-});
-
 const search = ref<string | null>(null);
 
 const filteredPolicies = computed(() => {
@@ -152,14 +146,7 @@ async function fetchPolicies() {
 }
 
 function navigateToPolicy({ item }: { item: Policy }) {
-	if (item.id !== 'public' && lastAdminPolicyId.value) {
-		router.push({
-			name: 'settings-policies-item',
-			params: { primaryKey: item.id, lastAdminPolicyId: lastAdminPolicyId.value },
-		});
-	} else {
-		router.push(`/settings/policies/${item.id}`);
-	}
+	router.push(`/settings/policies/${item.id}`);
 }
 </script>
 
