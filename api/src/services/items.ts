@@ -1,6 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
@@ -223,11 +223,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
 					// if the unique constraint is the primary key
 					dbError.extensions.field = pkField?.field ?? null;
-
-					if (dbError.extensions.collection === null) {
-						// This is a special case for MySQL 5.7, where the collection is not returned for the primary key constraint
-						dbError.extensions.collection = this.collection;
-					}
 
 					delete dbError.extensions.primaryKey;
 				}
