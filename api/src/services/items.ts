@@ -27,6 +27,7 @@ import type { AbstractService, AbstractServiceOptions, ActionEventParams, Mutati
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
+import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -194,12 +195,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
 			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
@@ -263,15 +266,29 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// At this point, the primary key is guaranteed to be set.
 			primaryKey = primaryKey as PrimaryKey;
 
-			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-				payloadWithPresets,
-				primaryKey,
-				opts,
-			);
+			const {
+				revisions: revisionsO2M,
+				nestedActionEvents: nestedActionEventsO2M,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+			} = await payloadService.processO2M(payloadWithPresets, primaryKey, opts);
 
 			nestedActionEvents.push(...nestedActionEventsM2O);
 			nestedActionEvents.push(...nestedActionEventsA2O);
 			nestedActionEvents.push(...nestedActionEventsO2M);
+
+			const userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) |
+				userIntegrityCheckFlagsM2O |
+				userIntegrityCheckFlagsA2O |
+				userIntegrityCheckFlagsO2M;
+
+			if (userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+				}
+			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
@@ -378,6 +395,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
 			const service = this.fork({ knex });
 
+			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
 
@@ -395,12 +414,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
 					bypassAutoIncrementSequenceReset,
 				});
 
 				primaryKeys.push(primaryKey);
+			}
+
+			if (userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+				}
 			}
 
 			return { primaryKeys, nestedActionEvents };
@@ -599,12 +627,27 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await transaction(this.knex, async (knex) => {
 				const service = this.fork({ knex });
 
+				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+
 				for (const item of data) {
 					const primaryKey = item[primaryKeyField];
 					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 
-					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					const combinedOpts: MutationOptions = {
+						autoPurgeCache: false,
+						...opts,
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+					};
+
 					keys.push(await service.updateOne(primaryKey, omit(item, primaryKeyField), combinedOpts));
+				}
+
+				if (userIntegrityCheckFlags) {
+					if (opts.onRequireUserIntegrityCheck) {
+						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					} else {
+						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					}
 				}
 			});
 		} finally {
@@ -710,12 +753,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
 			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
@@ -731,18 +776,33 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
 
+			let userIntegrityCheckFlags =
+				opts.userIntegrityCheckFlags ??
+				UserIntegrityCheckFlag.None | userIntegrityCheckFlagsM2O | userIntegrityCheckFlagsA2O;
+
 			nestedActionEvents.push(...nestedActionEventsM2O);
 			nestedActionEvents.push(...nestedActionEventsA2O);
 
 			for (const key of keys) {
-				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-					payloadWithA2O,
-					key,
-					opts,
-				);
+				const {
+					revisions,
+					nestedActionEvents: nestedActionEventsO2M,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+				} = await payloadService.processO2M(payloadWithA2O, key, opts);
 
 				childrenRevisions.push(...revisions);
 				nestedActionEvents.push(...nestedActionEventsO2M);
+				userIntegrityCheckFlags |= userIntegrityCheckFlagsO2M;
+			}
+
+			if (userIntegrityCheckFlags) {
+				if (opts?.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					// Having no onRequireUserIntegrityCheck callback indicates that
+					// this is the top level invocation of the nested updates, so perform the user integrity check
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+				}
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row

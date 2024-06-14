@@ -1,3 +1,4 @@
+import type { PrimaryKey } from '@directus/types';
 import type { Knex } from 'knex';
 
 export interface AccessLookup {
@@ -7,8 +8,17 @@ export interface AccessLookup {
 	admin_access: boolean | number;
 }
 
-export async function fetchAccessLookup(knex: Knex): Promise<AccessLookup[]> {
-	return await knex
+export interface FetchAccessLookupOptions {
+	excludeAccessRows?: PrimaryKey[];
+	excludePolicies?: PrimaryKey[];
+	excludeUsers?: PrimaryKey[];
+	excludeRoles?: PrimaryKey[];
+	adminOnly?: boolean;
+	knex: Knex;
+}
+
+export async function fetchAccessLookup(options: FetchAccessLookupOptions): Promise<AccessLookup[]> {
+	let query = options.knex
 		.select(
 			'directus_access.role',
 			'directus_access.user',
@@ -17,4 +27,30 @@ export async function fetchAccessLookup(knex: Knex): Promise<AccessLookup[]> {
 		)
 		.from('directus_access')
 		.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id');
+
+	if (options.excludeAccessRows && options.excludeAccessRows.length > 0) {
+		query = query.whereNotIn('directus_access.id', options.excludeAccessRows);
+	}
+
+	if (options.excludePolicies && options.excludePolicies.length > 0) {
+		query = query.whereNotIn('directus_access.policy', options.excludePolicies);
+	}
+
+	if (options.excludeUsers && options.excludeUsers.length > 0) {
+		query = query.where((q) =>
+			q.whereNotIn('directus_access.user', options.excludeUsers!).orWhereNull('directus_access.user'),
+		);
+	}
+
+	if (options.excludeRoles && options.excludeRoles.length > 0) {
+		query = query.where((q) =>
+			q.whereNotIn('directus_access.role', options.excludeRoles!).orWhereNull('directus_access.role'),
+		);
+	}
+
+	if (options.adminOnly) {
+		query = query.where('directus_policies.admin_access', 1);
+	}
+
+	return query;
 }
