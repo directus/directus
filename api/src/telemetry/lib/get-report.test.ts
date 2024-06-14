@@ -5,6 +5,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
+import { getFilesizeSum, type FilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount, type AccessTypeCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
@@ -34,6 +35,7 @@ vi.mock('../utils/get-user-item-count.js');
 vi.mock('../utils/get-user-count.js');
 vi.mock('../utils/get-field-count.js');
 vi.mock('../utils/get-extension-count.js');
+vi.mock('../utils/get-filesize-sum.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
@@ -41,6 +43,7 @@ let mockUserCounts: AccessTypeCount;
 let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
+let mockFilesizeSums: FilesizeSum;
 
 beforeEach(() => {
 	mockEnv = {
@@ -57,6 +60,8 @@ beforeEach(() => {
 
 	mockExtensionCounts = { totalEnabled: 55 };
 
+	mockFilesizeSums = { total: 10 };
+
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
@@ -65,6 +70,7 @@ beforeEach(() => {
 	vi.mocked(getUserItemCount).mockResolvedValue(mockUserItemCounts);
 	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
 	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
+	vi.mocked(getFilesizeSum).mockResolvedValue(mockFilesizeSums);
 });
 
 afterEach(() => {
@@ -143,4 +149,12 @@ test('Runs and returns extension counts', async () => {
 	expect(getExtensionCount).toHaveBeenCalledWith(mockDb);
 
 	expect(report.extensions).toBe(mockExtensionCounts.totalEnabled);
+});
+
+test('Runs and returns extension counts', async () => {
+	const report = await getReport();
+
+	expect(getFilesizeSum).toHaveBeenCalledWith(mockDb);
+
+	expect(report.files_size_total).toBe(mockFilesizeSums.total);
 });
