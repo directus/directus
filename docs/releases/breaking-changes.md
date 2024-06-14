@@ -13,6 +13,22 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.0.0
+
+### Replaced `mysql` with `mysql2`
+
+The database client library [`mysql`](https://www.npmjs.com/package/mysql) has been replaced with
+[`mysql2`](https://www.npmjs.com/package/mysql2), which is a continuation of the former. The client is used to connect
+to MySQL/MariaDB databases.
+
+If you're using MySQL/MariaDB, please note that:
+
+- `mysql2` leads to cross-collection queries (filtering on relations) with stricter charset comparison. Therefore,
+  ensure again that the value of the config option
+  [`DB_CHARSET`/`DB_CHARSET_NUMBER`](/self-hosted/config-options#database) matches the charset of your tables.
+- Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
+  preserved.
+
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders
