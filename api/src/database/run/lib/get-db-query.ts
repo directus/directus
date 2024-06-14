@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Filter, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { clone } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import type { FieldNode, FunctionFieldNode } from '../../../types/ast.js';
 import type { ColumnSortRecord } from '../../../utils/apply-query.js';
 import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
@@ -10,7 +10,6 @@ import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
-import type { Filter } from '@directus/types';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 
 export async function getDBQuery(
@@ -24,7 +23,7 @@ export async function getDBQuery(
 	const aliasMap: AliasMap = Object.create(null);
 	const env = useEnv();
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
-	const queryCopy = clone(query);
+	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
 	const hasCaseWhen = cases.length > 0;
 
