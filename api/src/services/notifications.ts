@@ -29,16 +29,6 @@ export class NotificationsService extends ItemsService {
 		return response;
 	}
 
-	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const response = await super.createMany(data, opts);
-
-		for (const notification of data) {
-			await this.sendEmail(notification);
-		}
-
-		return response;
-	}
-
 	async sendEmail(data: Partial<Notification>) {
 		if (data.recipient) {
 			const user = await this.usersService.readOne(data.recipient, {

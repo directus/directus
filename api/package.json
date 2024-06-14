@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "19.3.0",
+	"version": "19.3.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -166,7 +166,7 @@
 		"rollup": "4.17.2",
 		"samlify": "2.8.10",
 		"sanitize-html": "2.13.0",
-		"sharp": "0.33.3",
+		"sharp": "0.33.4",
 		"snappy": "7.2.2",
 		"stream-json": "1.8.0",
 		"tar": "7.2.0",
@@ -224,7 +224,7 @@
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
-		"oracledb": "6.5.0",
+		"oracledb": "6.5.1",
 		"pg": "8.11.5",
 		"sqlite3": "5.1.7",
 		"tedious": "18.2.0"
