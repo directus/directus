@@ -72,7 +72,8 @@ export class PoliciesService extends ItemsService<Policy> {
 		}
 
 		if ('app_access' in data) {
-			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
 		if (opts.userIntegrityCheckFlags) opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
