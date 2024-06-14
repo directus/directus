@@ -15,8 +15,6 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-overview-header {
-	--v-icon-color: var(--theme--foreground-subdued);
-
 	tr:last-child {
 		z-index: 4;
 		position: sticky;
