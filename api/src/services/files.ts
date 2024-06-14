@@ -418,14 +418,6 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
-	 * Delete a file
-	 */
-	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
-		await this.deleteMany([key]);
-		return key;
-	}
-
-	/**
 	 * Delete multiple files
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {

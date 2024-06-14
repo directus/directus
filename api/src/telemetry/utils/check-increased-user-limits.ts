@@ -20,6 +20,10 @@ export async function checkIncreasedUserLimits(
 
 	const userCounts = await fetchUserCount(db); // TODO , ignoreIds);
 
+	// Admins have full permissions, therefore should count under app access limit
+	const existingAppUsersCount = userCounts.admin + userCounts.app;
+	const newAppUsersCount = increasedUserCounts.admin + increasedUserCounts.app;
+
 	if (
 		increasedUserCounts.admin > 0 &&
 		increasedUserCounts.admin + userCounts.admin > Number(env['USERS_ADMIN_ACCESS_LIMIT'])
@@ -27,7 +31,7 @@ export async function checkIncreasedUserLimits(
 		throw new LimitExceededError({ category: 'Active Admin users' });
 	}
 
-	if (increasedUserCounts.app > 0 && increasedUserCounts.app + userCounts.app > Number(env['USERS_APP_ACCESS_LIMIT'])) {
+	if (newAppUsersCount > 0 && newAppUsersCount + existingAppUsersCount > Number(env['USERS_APP_ACCESS_LIMIT'])) {
 		throw new LimitExceededError({ category: 'Active App users' });
 	}
 
