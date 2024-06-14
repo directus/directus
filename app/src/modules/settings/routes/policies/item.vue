@@ -52,14 +52,14 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function saveAndStay() {
 	await save();
-	await userStore.hydrate();
 	revisionsDrawerDetailRef.value?.refresh?.();
+	await userStore.hydrate();
 }
 
 async function saveAndQuit() {
 	await save();
-	await userStore.hydrate();
 	router.push(`/settings/policies`);
+	await userStore.hydrate();
 }
 
 async function deleteAndQuit() {
