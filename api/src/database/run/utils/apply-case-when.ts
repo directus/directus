@@ -9,7 +9,7 @@ export interface ApplyCaseWhenOptions {
 	table: string;
 	cases: Filter[];
 	aliasMap: AliasMap;
-	alias: string;
+	alias?: string;
 }
 
 export interface ApplyCaseWhenContext {
@@ -47,5 +47,11 @@ export function applyCaseWhen(
 	const sql = sqlParts.join(' ');
 	const bindings = caseQuery.toSQL().bindings;
 
-	return knex.raw(`(CASE WHEN ${sql} THEN ?? ELSE null END) as ??`, [...bindings, column, alias]);
+	const result = knex.raw(`(CASE WHEN ${sql} THEN ?? END)`, [...bindings, column]);
+
+	if (alias) {
+		return knex.raw(result + ' AS ??', [alias]);
+	}
+
+	return result;
 }

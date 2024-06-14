@@ -11,6 +11,7 @@ import { getColumn } from '../../../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import type { Filter } from '@directus/types';
+import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 
 export async function getDBQuery(
 	schema: SchemaOverview,
@@ -25,6 +26,7 @@ export async function getDBQuery(
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
+	const hasCaseWhen = cases.length > 0;
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
@@ -58,7 +60,10 @@ export async function getDBQuery(
 	const needsInnerQuery = hasMultiRelationalSort || hasMultiRelationalFilter;
 
 	if (needsInnerQuery) {
-		dbQuery.select(`${table}.${primaryKey}`).distinct();
+		dbQuery.select(`${table}.${primaryKey}`);
+
+		// Only add distinct if there are no case/when constructs, since otherwise we rely on group by
+		if (!hasCaseWhen) dbQuery.distinct();
 	} else {
 		dbQuery.select(fieldNodes.map(preProcess));
 	}
@@ -126,10 +131,88 @@ export async function getDBQuery(
 
 	if (!needsInnerQuery) return dbQuery;
 
+	const innerCaseWhenAliasPrefix = generateAlias();
+
+	if (hasCaseWhen) {
+		/* If there are cases, we need to employ a trick in order to evaluate the case/when structure in the inner query,
+		   while passing the result of the evaluation to the outer query. The case/when needs to be evaluated in the inner
+		   query since only there all joined in tables, that might be required for the case/when, are available.
+
+		   The problem is, that the resulting columns can not be directly selected in the inner query,
+		   as a `SELECT DISTINCT` does not work for all datatypes in all vendors.
+
+		   So instead of having an inner query which might look like this:
+
+		   SELECT DISTINCT ...,
+		     CASE WHEN <condition> THEN <actual-column> END AS <alias>
+
+			 Another problem is that all not all rows with the same primary key are guaranteed to have the same value for
+			 the columns with the case/when, so we to `or` those together, but counting the number of flags in a group by
+			 operation. This way the flag is set to > 0 if any of the rows in the group allows access to the column.
+
+		   The inner query only evaluates the condition and passes up or-ed flag, that is used in the wrapper query to select
+		   the actual column:
+
+		   SELECT ...,
+		     COUNT (CASE WHEN <condition> THEN 1 END) AS <random-prefix>_<alias>
+		     ...
+		     GROUP BY <primary-key>
+
+		    Then, in the wrapper query there is no need to evaluate the condition again, but instead rely on the flag:
+
+		    SELECT ...,
+		      CASE WHEN `inner`.<random-prefix>_<alias> > 0 THEN <actual-column> END AS <alias>
+		 */
+
+		const innerPreprocess = getInnerQueryColumnPreProcessor(
+			knex,
+			schema,
+			table,
+			cases,
+			aliasMap,
+			innerCaseWhenAliasPrefix,
+		);
+
+		// To optimize the query we avoid having unnecessary columns in the inner query, that don't have a caseWhen, since
+		// they are selected in the outer query directly
+		dbQuery.select(fieldNodes.map(innerPreprocess).filter((x) => x !== null) as Knex.Raw<string>[]);
+
+		dbQuery.groupByRaw(`${table}.${primaryKey}`);
+	}
+
 	const wrapperQuery = knex
-		.select(fieldNodes.map(preProcess))
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
+
+	if (!hasCaseWhen) {
+		// No need for case/when in the wrapper query, just select the preprocessed columns
+		wrapperQuery.select(fieldNodes.map(preProcess));
+	} else {
+		// Distinguish between column with and without case/when and handle them differently
+		const plainColumns = fieldNodes.filter((fieldNode) => !fieldNode.whenCase || fieldNode.whenCase.length === 0);
+		const whenCaseColumns = fieldNodes.filter((fieldNode) => fieldNode.whenCase && fieldNode.whenCase.length > 0);
+
+		// Select the plain columns
+		wrapperQuery.select(plainColumns.map(preProcess));
+
+		// Select the case/when columns based on the flag from the inner query
+		wrapperQuery.select(
+			whenCaseColumns.map((fieldNode) => {
+				let alias = fieldNode.name;
+
+				if (fieldNode.name !== fieldNode.fieldKey) {
+					alias = fieldNode.fieldKey;
+				}
+
+				const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
+
+				// Preprocess the column without the case/when, since that is applied in a simpler fashion in the select
+				const column = preProcess({ ...fieldNode, whenCase: [] });
+
+				return knex.raw(`CASE WHEN ??.?? > 0 THEN ?? END as ??`, ['inner', innerAlias, column, alias]);
+			}),
+		);
+	}
 
 	if (sortRecords && needsInnerQuery) {
 		innerQuerySortRecords.map((innerQuerySortRecord) => {

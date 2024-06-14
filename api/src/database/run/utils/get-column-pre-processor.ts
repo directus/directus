@@ -49,6 +49,7 @@ export function getColumnPreprocessor(
 				columnCases.push(cases[index]!);
 			}
 
+			// TODO verify that case/when generation works with a column that already has an `AS` alias or drop it before applying
 			column = applyCaseWhen(
 				{
 					column,
