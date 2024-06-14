@@ -765,7 +765,7 @@ describe('Integration Tests', () => {
 			});
 		});
 
-		describe.only('deleteByQuery', () => {
+		describe('deleteByQuery', () => {
 			it('should checkRemainingAdminExistence once', async () => {
 				const service = new UsersService({
 					knex: db,
