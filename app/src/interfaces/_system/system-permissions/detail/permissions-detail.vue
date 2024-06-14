@@ -17,6 +17,7 @@ const props = defineProps<{
 	active: boolean;
 	policyKey: PrimaryKey | null;
 	permissionKey: PrimaryKey | null;
+	policyEdits?: Record<string, any>;
 	edits: Record<string, any>;
 }>();
 
@@ -38,7 +39,13 @@ const modalTitle = computed(() => {
 	if (loading.value || !permission.value) return t('loading');
 
 	if (props.policyKey) {
-		return policy.value!.name + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
+		return (
+			(policy.value?.name ?? t('editing_policy')) +
+			' -> ' +
+			permission.value!.collection +
+			' -> ' +
+			t(permission.value.action)
+		);
 	}
 
 	return t('public_label') + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
@@ -137,6 +144,8 @@ async function load() {
 			});
 
 			policy.value = response.data.data;
+		} else {
+			policy.value = { ...props.policyEdits } as Policy;
 		}
 
 		if (props.permissionKey !== null && props.permissionKey !== '+') {

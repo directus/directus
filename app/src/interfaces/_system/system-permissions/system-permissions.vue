@@ -650,6 +650,7 @@ function useGroupedPermissions() {
 		:edits="editsAtStart"
 		:permission-key="currentlyEditing"
 		:policy-key="primaryKey"
+		:policy-edits="values"
 		@input="stageEdits"
 		@update:active="cancelEdit"
 	/>
