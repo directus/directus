@@ -1,6 +1,6 @@
 import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@directus/types';
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
-import { runAst } from '../../../../database/run/run.js';
+import { runAst } from '../../../../database/run-ast/run-ast.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process.js';
 

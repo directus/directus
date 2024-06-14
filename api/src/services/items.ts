@@ -18,7 +18,7 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { runAst } from '../database/run/run.js';
+import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
