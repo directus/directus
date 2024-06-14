@@ -65,7 +65,7 @@
 		"@fortawesome/free-brands-svg-icons": "6.5.2",
 		"@fullcalendar/core": "6.1.7",
 		"@fullcalendar/daygrid": "6.1.7",
-		"@fullcalendar/interaction": "6.1.7",
+		"@fullcalendar/interaction": "6.1.14",
 		"@fullcalendar/list": "6.1.7",
 		"@fullcalendar/timegrid": "6.1.7",
 		"@histoire/plugin-vue": "0.17.17",
