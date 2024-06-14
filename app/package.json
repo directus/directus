@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "12.1.3",
+	"version": "12.1.4",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -90,7 +90,7 @@
 		"@types/dompurify": "3.0.5",
 		"@types/file-saver": "2.0.7",
 		"@types/geojson": "7946.0.14",
-		"@types/lodash": "4.17.1",
+		"@types/lodash": "4.17.5",
 		"@types/mapbox__mapbox-gl-draw": "1.4.6",
 		"@types/mapbox__mapbox-gl-geocoder": "4.7.7",
 		"@types/qrcode": "1.5.5",
@@ -137,7 +137,7 @@
 		"pinia": "2.1.7",
 		"pretty-ms": "9.0.0",
 		"qrcode": "1.5.3",
-		"sass": "1.77.4",
+		"sass": "1.77.5",
 		"semver": "7.6.2",
 		"tinymce": "7.1.1",
 		"typescript": "5.4.5",
@@ -145,7 +145,7 @@
 		"vitest": "1.5.3",
 		"vue": "3.4.27",
 		"vue-i18n": "9.13.1",
-		"vue-router": "4.3.2",
+		"vue-router": "4.3.3",
 		"vue-tsc": "2.0.19",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
