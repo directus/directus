@@ -5,7 +5,7 @@ import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep, isEmpty, mergeWith } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
@@ -115,7 +115,7 @@ export class UsersService extends ItemsService {
 	private async getUserByEmail(
 		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
-		return await this.knex
+		return this.knex
 			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
@@ -166,7 +166,7 @@ export class UsersService extends ItemsService {
 			}
 
 			if ('password' in data) {
-				await this.checkPasswordPolicy(data['password']);
+				await this.checkPasswordPolicy([data['password']]);
 			}
 		} catch (err: any) {
 			opts.preMutationError = err;

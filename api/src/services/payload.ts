@@ -22,7 +22,6 @@ import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-import { ItemsService } from './items.js';
 
 type Action = 'create' | 'read' | 'update';
 

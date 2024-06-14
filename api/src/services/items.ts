@@ -646,7 +646,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					if (opts.onRequireUserIntegrityCheck) {
 						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 					} else {
-						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
 					}
 				}
 			});
@@ -792,7 +792,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				childrenRevisions.push(...revisions);
 				nestedActionEvents.push(...nestedActionEventsO2M);
-				userIntegrityCheckFlags ||= userIntegrityCheckFlagsO2M;
+				userIntegrityCheckFlags |= userIntegrityCheckFlagsO2M;
 			}
 
 			if (userIntegrityCheckFlags) {
