@@ -25,6 +25,12 @@ function processChildren(
 	const cases: Filter[] = [];
 	const caseMap: Record<FieldKey, number[]> = {};
 
+	// TODO this can be optimized if there is only one rule to skip the whole case/where system,
+	//  since fields that are not allowed at all are already filtered out
+
+	// TODO this can be optimized if all cases are the same for all requested keys, as those should be
+	//
+
 	const requestedKeys = children.map(({ fieldKey }) => fieldKey);
 
 	let index = 0;
