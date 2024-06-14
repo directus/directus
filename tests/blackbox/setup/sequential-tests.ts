@@ -15,6 +15,7 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 			'/tests/db/routes/schema/schema.test.ts',
 			'/tests/db/routes/collections/crud.test.ts',
 			'/tests/db/routes/fields/change-fields.test.ts',
+			'/tests/db/routes/fields/crud.test.ts',
 		],
 		after: [
 			'/tests/db/schema/timezone/timezone.test.ts',
