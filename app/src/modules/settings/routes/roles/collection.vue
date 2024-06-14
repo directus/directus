@@ -210,7 +210,9 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.children`]="{ item }">
+					<value-null v-if="item.public || item.children.length === 0" />
 					<render-display
+						v-else
 						:value="item.children"
 						:display="tableHeaders[3]!.display"
 						:options="tableHeaders[3]!.displayOptions"
