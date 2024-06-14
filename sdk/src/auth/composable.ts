@@ -38,9 +38,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
 		const storage = authConfig.storage ?? memoryStorage();
 
-		const resetStorage = () => {
+		const resetStorage = async () =>
 			storage.set({ access_token: null, refresh_token: null, expires: null, expires_at: null });
-		};
 
 		const activeRefresh = async () => {
 			try {
@@ -66,10 +65,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			return activeRefresh();
 		};
 
-		const setCredentials = (data: AuthenticationData) => {
+		const setCredentials = async (data: AuthenticationData) => {
 			const expires = data.expires ?? 0;
 			data.expires_at = new Date().getTime() + expires;
-			storage.set(data);
+			await storage.set(data);
 
 			if (authConfig.autoRefresh && expires > authConfig.msRefreshBeforeExpires && expires < MAX_INT32) {
 				if (refreshTimeout) clearTimeout(refreshTimeout);
@@ -87,7 +86,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		const refresh = async () => {
 			const awaitRefresh = async () => {
 				const authData = await storage.get();
-				resetStorage();
+				await resetStorage();
 
 				const fetchOptions: RequestInit = {
 					method: 'POST',
@@ -110,10 +109,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) => {
-					setCredentials(data);
-					return data;
-				});
+				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) =>
+					setCredentials(data).then(() => data),
+				);
 			};
 
 			refreshPromise = awaitRefresh();
@@ -124,7 +122,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		return {
 			refresh,
 			async login(email: string, password: string, options: LoginOptions = {}) {
-				resetStorage();
+				await resetStorage();
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
@@ -147,7 +145,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
-				setCredentials(data);
+				await setCredentials(data);
 				return data;
 			},
 			async logout() {
@@ -176,7 +174,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				this.stopRefreshing();
-				resetStorage();
+				await resetStorage();
 			},
 			stopRefreshing() {
 				if (refreshTimeout) {
@@ -191,8 +189,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const data = await storage.get();
 				return data?.access_token ?? null;
 			},
-			setToken(access_token: string | null) {
-				storage.set({
+			async setToken(access_token: string | null) {
+				return storage.set({
 					access_token,
 					refresh_token: null,
 					expires: null,

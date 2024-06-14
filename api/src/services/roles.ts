@@ -479,11 +479,6 @@ export class RolesService extends ItemsService {
 		return super.updateByQuery(query, data, opts);
 	}
 
-	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
-		await this.deleteMany([key]);
-		return key;
-	}
-
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const opts: MutationOptions = {};
 
@@ -549,9 +544,5 @@ export class RolesService extends ItemsService {
 		});
 
 		return keys;
-	}
-
-	override deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		return super.deleteByQuery(query, opts);
 	}
 }
