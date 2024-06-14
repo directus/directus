@@ -15,7 +15,7 @@ export const staticToken = (access_token: string) => {
 			async getToken() {
 				return token;
 			},
-			setToken(access_token: string | null) {
+			async setToken(access_token: string | null) {
 				token = access_token;
 			},
 		};
