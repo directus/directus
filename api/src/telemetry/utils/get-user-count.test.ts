@@ -41,6 +41,8 @@ beforeEach(() => {
 		from: vi.fn().mockReturnThis(),
 		leftJoin: vi.fn().mockReturnThis(),
 		where: vi.fn().mockReturnThis(),
+		andWhere: vi.fn().mockReturnThis(),
+		whereNotIn: vi.fn().mockReturnThis(),
 		groupBy: vi.fn().mockResolvedValue(mockResult),
 	} as unknown as Knex;
 });

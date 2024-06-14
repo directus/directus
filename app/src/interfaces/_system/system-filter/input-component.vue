@@ -47,14 +47,14 @@ const inputPattern = computed(() => {
 	switch (props.type) {
 		case 'integer':
 		case 'bigInteger':
-			return '[+\\-]?[0-9]+';
+			return '^[+\\-]?[0-9]+$';
 		case 'decimal':
 		case 'float':
-			return '[+\\-]?[0-9]+\\.?[0-9]*';
+			return '^[+\\-]?[0-9]+\\.?[0-9]*$';
 		case 'uuid':
-			return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+			return '^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$';
 		default:
-			return '';
+			return undefined;
 	}
 });
 
@@ -77,7 +77,7 @@ watch(
 );
 
 function isValueValid(value: any): boolean {
-	if (value === '' || typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
+	if (value === '' || typeof value !== 'string' || !inputPattern.value || new RegExp(inputPattern.value).test(value)) {
 		return true;
 	}
 
