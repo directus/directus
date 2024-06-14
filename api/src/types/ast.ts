@@ -34,13 +34,6 @@ export type A2MNode = {
 		[collection: string]: string;
 	};
 
-	/**
-	 * Permissions rules for the item access of the children of this item.
-	 */
-	cases: {
-		[collection: string]: Filter[];
-	};
-
 	fieldKey: string;
 	relation: Relation;
 	parentKey: string;
@@ -49,6 +42,13 @@ export type A2MNode = {
 	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
 	whenCase: number[];
+
+	/**
+	 * Permissions rules for the item access of the children of this item.
+	 */
+	cases: {
+		[collection: string]: Filter[];
+	};
 };
 
 export type O2MNode = {
