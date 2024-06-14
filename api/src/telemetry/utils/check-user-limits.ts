@@ -12,7 +12,8 @@ export async function checkUserLimits(userCounts: UserCount): Promise<void> {
 		throw new LimitExceededError({ category: 'Active Admin users' });
 	}
 
-	if (userCounts.app > Number(env['USERS_APP_ACCESS_LIMIT'])) {
+	// Both app and admin users count against the app access limit
+	if (userCounts.app + userCounts.admin > Number(env['USERS_APP_ACCESS_LIMIT'])) {
 		throw new LimitExceededError({ category: 'Active App users' });
 	}
 
