@@ -67,7 +67,7 @@
 		"@fullcalendar/daygrid": "6.1.7",
 		"@fullcalendar/interaction": "6.1.7",
 		"@fullcalendar/list": "6.1.7",
-		"@fullcalendar/timegrid": "6.1.7",
+		"@fullcalendar/timegrid": "6.1.14",
 		"@histoire/plugin-vue": "0.17.17",
 		"@joeattardi/emoji-button": "4.6.4",
 		"@json2csv/plainjs": "7.0.6",
