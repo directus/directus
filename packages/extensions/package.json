@@ -54,7 +54,7 @@
 		"typescript": "5.4.5",
 		"vitest": "1.5.3",
 		"vue": "3.4.27",
-		"vue-router": "4.3.2"
+		"vue-router": "4.3.3"
 	},
 	"peerDependencies": {
 		"knex": "3",
