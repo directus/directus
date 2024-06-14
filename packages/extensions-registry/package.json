@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,7 +29,7 @@
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"ky": "1.2.4",
+		"ky": "1.3.0",
 		"lodash-es": "4.17.21",
 		"validate-npm-package-name": "5.0.1",
 		"zod": "3.23.8"

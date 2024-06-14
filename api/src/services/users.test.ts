@@ -115,7 +115,7 @@ describe('Integration Tests', () => {
 	describe('Services / Users', () => {
 		let service: UsersService;
 		let mailService: MailService;
-		let superCreateManySpy: MockInstance;
+		let superCreateOneSpy: MockInstance;
 		let superUpdateManySpy: MockInstance;
 		let checkUniqueEmailsSpy: MockInstance;
 		let checkPasswordPolicySpy: MockInstance;
@@ -156,7 +156,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany');
+			superCreateOneSpy = vi.spyOn(ItemsService.prototype as any, 'createOne');
 			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany');
 
 			// "as any" are needed since these are private methods
@@ -217,7 +217,7 @@ describe('Integration Tests', () => {
 
 			it('should checkUniqueEmails once', async () => {
 				await service.createMany([{ email: 'test@example.com' }]);
-				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+				expect(checkUniqueEmailsSpy).toBeCalledTimes(2);
 			});
 
 			it('should not checkPasswordPolicy', async () => {
@@ -227,7 +227,7 @@ describe('Integration Tests', () => {
 
 			it('should checkPasswordPolicy once', async () => {
 				await service.createMany([{ password: 'testpassword' }]);
-				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+				expect(checkPasswordPolicySpy).toBeCalledTimes(2);
 			});
 
 			it('should process user limits for new roles', async () => {
@@ -774,7 +774,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([{ id: 1 }]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 
 				const promise = service.deleteByQuery({ filter: { id: { _eq: 1 } } });
 
@@ -808,13 +808,13 @@ describe('Integration Tests', () => {
 
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy.mock.lastCall![0]).toEqual([
+				expect(superCreateOneSpy.mock.lastCall![0]).toEqual(
 					expect.objectContaining({
 						email: 'user@example.com',
 						status: 'invited',
 						role: 'invite-role',
 					}),
-				]);
+				);
 
 				expect(mailService.send).toBeCalledTimes(1);
 			});
@@ -835,7 +835,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).toBeCalledTimes(1);
 			});
 
@@ -855,7 +855,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).not.toBeCalled();
 			});
 

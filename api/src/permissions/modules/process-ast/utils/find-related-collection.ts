@@ -1,4 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
+import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import type { CollectionKey, FieldKey } from '../types.js';
 
 export function findRelatedCollection(
@@ -6,12 +7,7 @@ export function findRelatedCollection(
 	field: FieldKey,
 	schema: SchemaOverview,
 ): CollectionKey | null {
-	const relation = schema.relations.find((relation) => {
-		return (
-			/* m2o */ (relation.collection === collection && relation.field === field) ||
-			/* o2m */ (relation.related_collection === collection && relation.meta?.one_field === field)
-		);
-	});
+	const { relation } = getRelationInfo(schema.relations, collection, field);
 
 	if (!relation) return null;
 

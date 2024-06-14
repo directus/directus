@@ -26,11 +26,11 @@ import { useLogger } from '../logger.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
-import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 
@@ -90,12 +90,12 @@ export class ImportService {
 		}
 	}
 
-	importJSON(collection: string, stream: Readable): Promise<void> {
+	async importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		return transaction(this.knex, (trx) => {
-			const service = new ItemsService(collection, {
+			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
@@ -143,7 +143,7 @@ export class ImportService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		return transaction(this.knex, (trx) => {
-			const service = new ItemsService(collection, {
+			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
@@ -291,7 +291,7 @@ export class ExportService {
 			const database = getDatabase();
 
 			await transaction(database, async (trx) => {
-				const service = new ItemsService(collection, {
+				const service = getService(collection, {
 					accountability: this.accountability,
 					schema: this.schema,
 					knex: trx,
