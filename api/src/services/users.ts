@@ -1,11 +1,11 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
+import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
 import { getSimpleHash, toArray, toBoolean, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep, isEmpty, mergeWith } from 'lodash-es';
+import { isEmpty, mergeWith } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
