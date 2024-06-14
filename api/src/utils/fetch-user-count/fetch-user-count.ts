@@ -1,8 +1,9 @@
-import { processChunk, toBoolean } from '@directus/utils';
-import { type Knex } from 'knex';
-import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
-import { fetchAccessLookup } from './fetch-access-lookup.js';
-import { fetchActiveUsers } from './fetch-active-users.js';
+import { toBoolean } from '@directus/utils';
+import { fetchAccessLookup, type FetchAccessLookupOptions } from './fetch-access-lookup.js';
+import { fetchAccessRoles } from './fetch-access-roles.js';
+import { getUserCountQuery } from './get-user-count-query.js';
+
+export interface FetchUserCountOptions extends FetchAccessLookupOptions {}
 
 export interface UserCount {
 	admin: number;
@@ -13,53 +14,78 @@ export interface UserCount {
 /**
  * Returns counts of all active users in the system grouped by admin, app, and api access
  */
-export const fetchUserCount = async (knex: Knex): Promise<UserCount> => {
-	const counts: UserCount = {
-		admin: 0,
-		app: 0,
-		api: 0,
-	};
+export async function fetchUserCount(options: FetchUserCountOptions): Promise<UserCount> {
+	const accessRows = await fetchAccessLookup(options);
 
-	const accessRows = await fetchAccessLookup(knex);
+	const adminRoles = new Set(
+		accessRows.filter((row) => toBoolean(row.admin_access) && row.role !== null).map((row) => row.role!),
+	);
 
-	const adminRoles = accessRows
-		.filter((row) => toBoolean(row.admin_access) && row.role !== null)
-		.map((row) => row.role!);
-
-	const appRoles = accessRows.filter((row) => toBoolean(row.app_access) && row.role !== null).map((row) => row.role!);
+	const appRoles = new Set(
+		accessRows
+			.filter((row) => !toBoolean(row.admin_access) && toBoolean(row.app_access) && row.role !== null)
+			.map((row) => row.role!),
+	);
 
 	// All users that are directly granted rights through a connected policy
-	const adminUsers = accessRows
-		.filter((row) => toBoolean(row.admin_access) && row.user !== null)
-		.map((row) => row.user!);
+	const adminUsers = new Set(
+		accessRows.filter((row) => toBoolean(row.admin_access) && row.user !== null).map((row) => row.user!),
+	);
 
-	const appUsers = accessRows.filter((row) => toBoolean(row.app_access) && row.user !== null).map((row) => row.user!);
+	// Some roles might be granted access rights through nesting, so determine all roles that grant admin or app access,
+	// including nested roles
+	const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
+		{
+			adminRoles,
+			appRoles,
+			...options,
+		},
+		{ knex: options.knex },
+	);
 
-	const activeUsers = await fetchActiveUsers(knex);
-
-	await processChunk(activeUsers, 50, async (users) => {
-		const rolesForUsers = await Promise.all(
-			users.map(async ({ role }) => {
-				return await fetchRolesTree(role, knex);
-			}),
-		);
-
-		for (const [index, roles] of rolesForUsers.entries()) {
-			const user = users[index]!;
-
-			if (roles.some((role) => adminRoles.includes(role)) || adminUsers.includes(user.id)) {
-				counts.admin++;
-				continue;
-			}
-
-			if (roles.some((role) => appRoles.includes(role)) || appUsers.includes(user.id)) {
-				counts.app++;
-				continue;
-			}
-
-			counts.api++;
-		}
+	// All users that are granted admin rights through a role, but not directly
+	const adminCountQuery = getUserCountQuery(options.knex, {
+		includeRoles: Array.from(allAdminRoles),
+		excludeIds: [...adminUsers, ...(options.excludeUsers ?? [])],
 	});
 
-	return counts;
-};
+	if (options.adminOnly) {
+		// Shortcut for only counting admin users
+
+		const adminResult = await adminCountQuery;
+
+		return {
+			admin: Number(adminResult?.['count'] ?? 0) + adminUsers.size,
+			app: 0,
+			api: 0,
+		};
+	}
+
+	const appUsers = new Set(
+		accessRows
+			.filter((row) => !toBoolean(row.admin_access) && toBoolean(row.app_access) && row.user !== null)
+			.map((row) => row.user!),
+	);
+
+	// All users that are granted app rights through a role, but not directly, and that aren't admin users
+	const appCountQuery = getUserCountQuery(options.knex, {
+		includeRoles: Array.from(allAppRoles),
+		excludeRoles: Array.from(allAdminRoles),
+		excludeIds: [...appUsers, ...adminUsers, ...(options.excludeUsers ?? [])],
+	});
+
+	const allCountQuery = getUserCountQuery(options.knex, {
+		excludeIds: options.excludeUsers ?? [],
+	});
+
+	const [adminResult, appResult, allResult] = await Promise.all([adminCountQuery, appCountQuery, allCountQuery]);
+
+	const adminCount = Number(adminResult?.['count'] ?? 0) + adminUsers.size;
+	const appCount = Number(appResult?.['count'] ?? 0) + appUsers.size;
+
+	return {
+		admin: adminCount,
+		app: appCount,
+		api: Number(allResult?.['count'] ?? 0) - adminCount - appCount,
+	};
+}

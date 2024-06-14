@@ -1,6 +1,7 @@
 import type { Item, PrimaryKey } from '@directus/types';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 export class AccessService extends ItemsService {
@@ -9,6 +10,10 @@ export class AccessService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		// Creating a new policy attachments affects the number of admin/app/api users
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
 		const result = await super.createOne(data, opts);
 
 		// A new policy has been attached to a user or a role, clear the permissions cache
@@ -22,18 +27,26 @@ export class AccessService extends ItemsService {
 		data: Partial<Item>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
-		const result = await super.updateMany(keys, data, opts);
+		// Updating policy attachments might affect the number of admin/app/api users
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
-		// Some policy attachments has been updated, clear the permissions cache
+		const result = await super.updateMany(keys, data, { ...opts, userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
+
+		// Some policy attachments have been updated, clear the permissions cache
 		await clearPermissionsCache();
 
 		return result;
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		// Changes here can affect the number of admin/app/api users
+		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
 		const result = await super.deleteMany(keys, opts);
 
-		// Some policy attachments has been deleted, clear the permissions cache
+		// Some policy attachments have been deleted, clear the permissions cache
 		await clearPermissionsCache();
 
 		return result;
