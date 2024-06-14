@@ -1,80 +1,47 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
-import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import UsersInvite from '@/views/private/components/users-invite.vue';
 import { Role } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import PermissionsOverview from './components/permissions-overview.vue';
-import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
+import SettingsNavigation from '../../components/navigation.vue';
 
-const props = defineProps<{
-	primaryKey: string;
-	permissionKey?: string;
-	lastAdminRoleId?: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		primaryKey: string;
+		permissionKey?: string;
+		deleteAllowed?: boolean;
+	}>(),
+	{
+		deleteAllowed: true,
+	},
+);
 
 const { t } = useI18n();
 
 const router = useRouter();
 
 const userStore = useUserStore();
-const serverStore = useServerStore();
-const userInviteModalActive = ref(false);
 const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem<Role>(
-	ref('directus_roles'),
+	ref('directus_policies'),
 	primaryKey,
-	{
-		deep: { users: { _limit: 0 } },
-	},
 );
 
 const confirmDelete = ref(false);
-
-const adminEnabled = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.admin_access;
-});
-
-const appAccess = computed(() => {
-	const values = {
-		...item.value,
-		...edits.value,
-	} as Record<string, any>;
-
-	return !!values.app_access;
-});
 
 useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const { createAllowed: usersCreateAllowed } = useCollectionPermissions('directus_users');
-
-const { readAllowed: rolesReadAllowed } = useCollectionPermissions('directus_roles');
-
-const canInviteUsers = computed(() => {
-	if (serverStore.auth.disableDefault === true) return false;
-
-	return usersCreateAllowed.value && rolesReadAllowed.value;
-});
 
 /**
  * @NOTE
@@ -85,20 +52,20 @@ const canInviteUsers = computed(() => {
 
 async function saveAndStay() {
 	await save();
-	await userStore.hydrate();
 	revisionsDrawerDetailRef.value?.refresh?.();
+	await userStore.hydrate();
 }
 
 async function saveAndQuit() {
 	await save();
+	router.push(`/settings/policies`);
 	await userStore.hydrate();
-	router.push(`/settings/roles`);
 }
 
 async function deleteAndQuit() {
 	await remove();
 	edits.value = {};
-	router.replace(`/settings/roles`);
+	router.replace(`/settings/policies`);
 }
 
 function discardAndLeave() {
@@ -110,20 +77,21 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+	<private-view :title="loading ? t('loading') : t('editing_policy', { policy: item && item.name })">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
+			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 		<template #actions>
+			<!-- TODO figure out when deletes are allowed, probably some API call involved? -->
 			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="primaryKey !== lastAdminRoleId"
+						v-if="deleteAllowed"
 						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
@@ -151,17 +119,6 @@ function discardAndLeave() {
 			</v-dialog>
 
 			<v-button
-				v-if="canInviteUsers"
-				v-tooltip.bottom="t('invite_users')"
-				rounded
-				icon
-				secondary
-				@click="userInviteModalActive = true"
-			>
-				<v-icon name="person_add" />
-			</v-button>
-
-			<v-button
 				v-tooltip.bottom="t('save')"
 				rounded
 				icon
@@ -177,21 +134,16 @@ function discardAndLeave() {
 			<settings-navigation />
 		</template>
 
-		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
-
 		<div v-if="!loading" class="roles">
-			<v-notice v-if="adminEnabled">
-				{{ t('admins_have_all_permissions') }}
-			</v-notice>
-
-			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
-
-			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
+			<v-form v-model="edits" collection="directus_policies" :primary-key="primaryKey" :initial-values="item" />
 		</div>
 
 		<template #sidebar>
-			<role-info-sidebar-detail :role="item" />
-			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
+			<revisions-drawer-detail
+				ref="revisionsDrawerDetailRef"
+				collection="directus_policies"
+				:primary-key="primaryKey"
+			/>
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -218,6 +170,9 @@ function discardAndLeave() {
 .roles {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	display: flex;
+	flex-direction: column;
+	row-gap: var(--theme--form--row-gap);
 }
 
 .v-notice,

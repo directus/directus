@@ -14,6 +14,7 @@ data:
   - collection: directus_access
     icon: admin_panel_settings
     note: $t:directus_collection.directus_access
+    display_template: '{{ policy.name }}'
 
   - collection: directus_activity
     note: $t:directus_collection.directus_activity

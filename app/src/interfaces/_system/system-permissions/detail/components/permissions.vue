@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { DeepPartial, Field, Permission, Role } from '@directus/types';
+import type { DeepPartial, Field, Permission, Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;
-	role?: Role;
+	policy?: Policy;
 	appMinimal?: Permission['permissions'];
 }>();
 
@@ -51,9 +51,9 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 	<div>
 		<v-notice>
 			{{
-				t('permissions_for_role', {
+				t('permissions_for_policy', {
 					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
+					policy: policy ? policy.name : t('public_label'),
 				})
 			}}
 		</v-notice>

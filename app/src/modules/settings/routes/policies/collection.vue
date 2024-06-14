@@ -4,36 +4,41 @@ import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Role } from '@directus/types';
+import { PUBLIC_POLICY_ID } from '@directus/constants';
+import { Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
-type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
+type PolicyBaseFields = 'id' | 'name' | 'description';
 
-type RoleResponse = Pick<Role, RoleBaseFields> & {
-	users: [{ count: { id: number } }];
+type PolicyResponse = Pick<Policy, PolicyBaseFields | 'admin_access'> & {
+	users: [{ count: { user: number } }];
+	roles: [{ count: { role: number } }];
 };
 
-type RoleItem = Pick<Role, RoleBaseFields> & {
-	public?: boolean;
-	count?: number;
-};
+type PolicyItem = Pick<Policy, PolicyBaseFields> &
+	Partial<Pick<Policy, 'admin_access'>> & {
+		public?: boolean;
+		userCount?: number;
+		roleCount?: number;
+		icon?: string;
+	};
 
 const { t } = useI18n();
 
 const router = useRouter();
 
-const roles = ref<RoleItem[]>([]);
+const policies = ref<PolicyItem[]>([]);
 const loading = ref(false);
 
 const search = ref<string | null>(null);
 
-const filteredRoles = computed(() => {
+const filteredPolicies = computed(() => {
 	const normalizedSearch = search.value?.toLowerCase();
-	if (!normalizedSearch) return roles.value;
-	return roles.value.filter(
+	if (!normalizedSearch) return policies.value;
+	return policies.value.filter(
 		(role) =>
 			role.name?.toLowerCase().includes(normalizedSearch) || role.description?.toLowerCase().includes(normalizedSearch),
 	);
@@ -58,23 +63,17 @@ const tableHeaders = ref<TableHeader[]>([
 	},
 	{
 		text: t('users'),
-		value: 'count',
+		value: 'userCount',
 		sortable: false,
-		width: 140,
+		width: 100,
 		align: 'left',
 		description: null,
 	},
 	{
-		text: t('fields.directus_roles.children'),
-		display: 'related-values',
-		displayOptions: {
-			template: '{{ name }}',
-		},
-		field: 'children',
-		collection: 'directus_roles',
-		value: 'children',
+		text: t('roles'),
+		value: 'roleCount',
 		sortable: false,
-		width: 140,
+		width: 100,
 		align: 'left',
 		description: null,
 	},
@@ -88,25 +87,31 @@ const tableHeaders = ref<TableHeader[]>([
 	},
 ]);
 
-fetchRoles();
+fetchPolicies();
 
 const addNewLink = computed(() => {
-	return `/settings/roles/+`;
+	return `/settings/policies/+`;
 });
 
-async function fetchRoles() {
+async function fetchPolicies() {
 	loading.value = true;
 
 	try {
-		const response = await fetchAll<RoleResponse>(`/roles`, {
+		const response = await fetchAll<PolicyResponse>(`/policies`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'description', 'icon', 'users', 'children.name', 'children.id'],
+				fields: ['id', 'name', 'description', 'admin_access', 'users', 'roles'],
 				deep: {
 					users: {
-						_aggregate: { count: 'id' },
-						_groupBy: ['role'],
-						_sort: 'role',
+						_aggregate: { count: 'user' },
+						_groupBy: ['policy'],
+						_sort: 'policy',
+						_limit: -1,
+					},
+					roles: {
+						_aggregate: { count: 'role' },
+						_groupBy: ['policy'],
+						_sort: 'policy',
 						_limit: -1,
 					},
 				},
@@ -114,21 +119,25 @@ async function fetchRoles() {
 			},
 		});
 
-		roles.value = [
-			{
-				id: 'public',
-				name: t('public_label'),
-				description: t('public_description'),
-				icon: 'public',
-				public: true,
-			},
-			...response.map((role) => {
-				return {
-					...translate(role),
-					count: role.users[0]?.count.id || 0,
-				};
-			}),
-		];
+		policies.value = response.map((policy) => {
+			let icon = 'badge';
+			if (policy.admin_access) icon = 'verified';
+			if (policy.id === PUBLIC_POLICY_ID) icon = 'public';
+
+			return {
+				...translate(policy),
+				public: policy.id === PUBLIC_POLICY_ID,
+				userCount: policy.users?.[0]?.count.user ?? 0,
+				roleCount: policy.roles?.[0]?.count.role ?? 0,
+				icon,
+			};
+		});
+
+		policies.value.sort((a, b) => {
+			if (a.public && !b.public) return -1;
+			if (!a.public && b.public) return 1;
+			return a.name.localeCompare(b.name);
+		});
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -136,26 +145,18 @@ async function fetchRoles() {
 	}
 }
 
-function navigateToRole({ item }: { item: Role }) {
-	if (item.id === 'public') {
-		router.push({ name: 'settings-roles-public-item' });
-		return;
-	} else {
-		router.push({
-			name: 'settings-roles-item',
-			params: { primaryKey: item.id },
-		});
-	}
+function navigateToPolicy({ item }: { item: Policy }) {
+	router.push(`/settings/policies/${item.id}`);
 }
 </script>
 
 <template>
-	<private-view :title="t('settings_roles')">
+	<private-view :title="t('settings_permissions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="group" />
+				<v-icon name="admin_panel_settings" />
 			</v-button>
 		</template>
 
@@ -163,12 +164,12 @@ function navigateToRole({ item }: { item: Role }) {
 			<search-input
 				v-if="!loading"
 				v-model="search"
-				:autofocus="roles.length > 25"
-				:placeholder="t('search_role')"
+				:autofocus="policies.length > 25"
+				:placeholder="t('search_policy')"
 				:show-filter="false"
 			/>
 
-			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
+			<v-button v-tooltip.bottom="t('create_policy')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -179,46 +180,38 @@ function navigateToRole({ item }: { item: Role }) {
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
+				<div v-md="t('page_help_settings_policies_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
-		<div v-if="!search || filteredRoles.length > 0" class="roles">
+		<div v-if="!search || filteredPolicies.length > 0" class="policies">
 			<v-table
 				v-model:headers="tableHeaders"
 				show-resize
-				:items="filteredRoles"
+				:items="filteredPolicies"
 				fixed-header
 				item-key="id"
 				:loading="loading"
-				@click:row="navigateToRole"
+				@click:row="navigateToPolicy"
 			>
 				<template #[`item.icon`]="{ item }">
 					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
 				</template>
 
-				<template #[`item.count`]="{ item }">
+				<template #[`item.userCount`]="{ item }">
+					<value-null v-if="item.public" />
+				</template>
+
+				<template #[`item.roleCount`]="{ item }">
 					<value-null v-if="item.public" />
 				</template>
 
 				<template #[`item.description`]="{ item }">
 					<v-text-overflow :text="item.description" class="description" :highlight="search" />
-				</template>
-
-				<template #[`item.children`]="{ item }">
-					<value-null v-if="item.public || item.children.length === 0" />
-					<render-display
-						v-else
-						:value="item.children"
-						:display="tableHeaders[3]!.display"
-						:options="tableHeaders[3]!.displayOptions"
-						:field="tableHeaders[3]!.field"
-						:collection="tableHeaders[3]!.collection"
-					/>
 				</template>
 			</v-table>
 		</div>
@@ -243,7 +236,7 @@ function navigateToRole({ item }: { item: Role }) {
 	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
-.roles {
+.policies {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);

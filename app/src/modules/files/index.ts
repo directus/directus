@@ -70,13 +70,9 @@ export default defineModule({
 		},
 	],
 	preRegisterCheck(user, permissions) {
-		const admin = user.role.admin_access;
+		const admin = user.admin_access;
 		if (admin) return true;
 
-		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'read',
-		);
-
-		return !!permission;
+		return permissions['directus_files']?.['read']?.access ?? false;
 	},
 });
