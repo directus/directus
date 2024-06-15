@@ -588,7 +588,7 @@ function useGroupedPermissions() {
 
 				<template v-if="regularPermissions.length === 0">
 					<tr>
-						<td class="empty-state">
+						<td class="empty-state" colspan="7">
 							{{ t('no_permissions') }}
 						</td>
 					</tr>
@@ -603,7 +603,7 @@ function useGroupedPermissions() {
 			</tbody>
 		</table>
 
-		<v-detail class="system-collections" :label="t('system_collections')">
+		<v-detail v-model="systemVisible" class="system-collections" :label="t('system_collections')">
 			<table>
 				<permissions-header />
 				<tbody>
@@ -630,7 +630,7 @@ function useGroupedPermissions() {
 					/>
 
 					<tr v-if="appAccess">
-						<td colspan="2" class="reset-toggle">
+						<td colspan="7" class="reset-toggle">
 							<span>
 								{{ t('reset_system_permissions_to') }}
 								<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>

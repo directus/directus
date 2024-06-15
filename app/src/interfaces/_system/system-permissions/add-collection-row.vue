@@ -51,7 +51,7 @@ function notExcluded({ collection }: Collection) {
 
 <template>
 	<tr class="add-collection-row">
-		<td>
+		<td colspan="7">
 			<v-select
 				:items="displayItems"
 				item-text="collection"
@@ -64,7 +64,6 @@ function notExcluded({ collection }: Collection) {
 				@update:model-value="$emit('select', $event)"
 			/>
 		</td>
-		<td></td>
 	</tr>
 </template>
 
@@ -80,7 +79,7 @@ function notExcluded({ collection }: Collection) {
 	}
 
 	.v-select:hover {
-		--v-select-placeholder-color: var(--theme--foreground);
+		--v-select-placeholder-color: var(--theme--foreground-accent);
 	}
 }
 </style>

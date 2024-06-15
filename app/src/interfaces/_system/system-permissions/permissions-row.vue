@@ -36,21 +36,21 @@ const { t } = useI18n();
 			</span>
 		</td>
 
-		<td class="actions">
-			<template v-for="action in editablePermissionActions" :key="action">
-				<permissions-toggle
-					v-if="!disabledActions?.includes(action)"
-					:action="action"
-					:collection="collection"
-					:permission="permissions.find((permission) => permission.action === action)"
-					:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
-					@edit="emit('editItem', action)"
-					@set-full-access="emit('setFullAccess', action)"
-					@set-no-access="emit('setNoAccess', action)"
-				/>
-				<value-null v-else />
-			</template>
-			<v-icon v-tooltip="t('remove')" class="remove" name="close" clickable @click="emit('removeRow')" />
+		<td v-for="action in editablePermissionActions" :key="action" class="action">
+			<permissions-toggle
+				v-if="!disabledActions?.includes(action)"
+				:action="action"
+				:collection="collection"
+				:permission="permissions.find((permission) => permission.action === action)"
+				:app-minimal="appMinimal && appMinimal.find((permission) => permission.action === action)"
+				@edit="emit('editItem', action)"
+				@set-full-access="emit('setFullAccess', action)"
+				@set-no-access="emit('setNoAccess', action)"
+			/>
+			<value-null v-else />
+		</td>
+		<td class="remove">
+			<v-icon v-tooltip="t('remove')" name="close" clickable @click="emit('removeRow')" />
 		</td>
 	</tr>
 </template>
@@ -99,19 +99,17 @@ const { t } = useI18n();
 		opacity: 1;
 	}
 
-	.actions {
-		display: flex;
-		align-items: center;
+	.action {
 		height: 48px;
-		padding: 0 12px;
-		gap: 8px;
+		padding-left: 12px;
+		text-align: center;
+	}
+
+	.action + .action {
+		padding-left: 4px;
 	}
 
 	.null {
-		display: flex;
-		justify-content: center;
-		width: 24px;
-		color: var(--theme--foreground);
 		cursor: not-allowed;
 	}
 
@@ -123,12 +121,15 @@ const { t } = useI18n();
 		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
-	.v-icon.remove {
-		--v-icon-size: 20px;
-		--v-icon-color: var(--theme--foreground-subdued);
+	.remove {
+		padding: 0 12px;
 
-		&:hover {
-			--v-icon-color: var(--theme--foreground);
+		.v-icon {
+			--v-icon-size: 20px;
+			--v-icon-color: var(--theme--foreground-subdued);
+			&:hover {
+				--v-icon-color: var(--theme--foreground);
+			}
 		}
 	}
 }

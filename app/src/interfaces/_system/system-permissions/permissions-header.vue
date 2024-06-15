@@ -8,7 +8,7 @@ const { t } = useI18n();
 	<thead class="permissions-overview-header">
 		<tr>
 			<th>{{ t('collection') }}</th>
-			<th>{{ t('actions') }}</th>
+			<th colspan="6">{{ t('actions') }}</th>
 		</tr>
 	</thead>
 </template>
