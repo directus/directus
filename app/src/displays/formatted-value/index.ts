@@ -180,6 +180,21 @@ export default defineDisplay({
 				},
 			},
 			{
+				field: 'translate',
+				name: '$t:displays.formatted-value.translate',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.translate_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
 				field: 'conditionalFormatting',
 				type: 'json',
 				name: '$t:conditional_styles',
