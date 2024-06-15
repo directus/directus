@@ -91,9 +91,11 @@ n_files: '{n} ملفات'
 verified: محقق
 homepage: الصفحة الرئيسية
 repository: المصادر
+reload_page: إعادة تحميل الصفحة
 reload_required: إعادة التحميل مطلوبة
 report_an_issue: إبلاغ عن مشكلة
 website: الموقع
+github: GitHub
 beta: الإصدار التجريبي
 n_downloads: '{n} تحميلات'
 downloads: التنزيلات
@@ -331,8 +333,11 @@ hash: الهاش
 geometry:
   All: الهندسة (الكل)
   Point: نقطة
+  LineString: LineString
   Polygon: مضلّع
   MultiPoint: نقاط متعددة
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: تلقائي (مبني على النظام)
 theme_light: الوضع الفاتح
 theme_dark: الوضع المُعتِم
@@ -743,6 +748,7 @@ cannot_edit_global_bookmarks: لا يمكن تعديل العلامات المر
 bookmarks: محفوظات
 presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
+unexpected_error_copy: حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.
 copy_details: نسخ التفاصيل
 no_app_access: لا توجد صلاحيه للوصول
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
@@ -987,15 +993,19 @@ media: وسائط الإعلام
 quality: الجودة
 width: العرض
 height: الارتفاع
+transformation_preset_key: مفتاح التعديل المسبق
 source: مصدر
 url_placeholder: أدخل عنوان الرابط
 display_text: عرض النص
+display_text_placeholder: أدخل نص العرض...
+interface_group_text_and_numbers: نص وأرقام
 interface_group_selection: الاختيار
 interface_group_relational: مرتبطة
 interface_group_presentation: عرض
 interface_group_groups: المجموعات
 interface_group_other: غير ذلك
 tooltip: تلميح
+tooltip_placeholder: أدخل تلميح الأداة...
 unlimited: غير محدود
 open_link_in: افتح الرابط في
 new_tab: تبويب جديد
@@ -1006,6 +1016,7 @@ wysiwyg_options:
   aligncenter: محاذاة للمركز
   alignjustify: ضبط المحاذاة
   alignleft: محاذاة إلى اليسار
+  alignnone: لا تقم بالمحاذاة
   alignright: محاذاة إلى اليمين
   forecolor: لون الواجهة
   backcolor: لون الخلفية
@@ -1037,6 +1048,7 @@ wysiwyg_options:
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
   indent: إزاحة
+  outdent: تحريك للأعلى
   undo: التراجع
   redo: اعادة
   remove: احذف
@@ -1047,6 +1059,8 @@ wysiwyg_options:
   source_code: تعديل رمز المصدر
   fullscreen: ملء الشاشة
   directionality: الاتجاهية
+  lazy_loading: التحميل البطيء للصور
+  lazy_loading_label: تمكين التحميل البطيء
 dropdown: قائمة منسدلة
 choices: الخيارات
 choices_option_configured_incorrectly: تم تكوين الخيارات بشكل غير صحيح
@@ -1054,6 +1068,8 @@ deselect: إلغاء تحديد
 deselect_all: إلغاء تحديد الكل
 theme: السمة
 select_a_theme: أختر سمة
+default_sync_with_project: الافتراضي (مزامنة مع المشروع)
+appearance_auto: تلقائي (مزامنة مع النظام)
 appearance_light: فاتح
 appearance_dark: داكن
 other: أخرى...
@@ -1075,6 +1091,7 @@ settings_flows: التدفقات
 settings_presets: محفوظات
 settings_translations: الترجمة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
+configure_field_key_to_continue: قم بتكوين مفتاح الحقل للمتابعة
 scope: مجال
 actions: الإجراءات
 select: حدد...
@@ -1109,6 +1126,7 @@ page_help_files_collection: >-
   **مكتبة الملفات** - قائمة جميع أصول الملفات التي تم تحميلها إلى هذا المشروع. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_files_item: >-
   **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
+page_help_settings_project: "**الإعدادات** — خيارات التكوين العالمي لمشروعك."
 page_help_settings_appearance: "**المظهر** — مظهر مشروعك وخيارات السمات."
 page_help_settings_extensions: '**الإضافات** - الإضافات المثبتة في مشروعك.'
 page_help_settings_datamodel_collections: >-
@@ -1125,11 +1143,15 @@ page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
 page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
 page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
+page_help_settings_translations_collection: '**تصفح الترجمات المخصصة** - يدرج جميع الترجمات المخصصة داخل المشروع.'
+page_help_settings_translations_item: '**تفاصيل الترجمات المخصصة** - نموذج لعرض وإدارة هذا العنصر.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
 page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
 page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
+page_help_marketplace_account: '**الحساب** - ناشر أو مشرف امتداد منشور.'
+page_help_marketplace_registry: '**السجل** - الإضافات المتاحة في سوق Directus.'
 activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد

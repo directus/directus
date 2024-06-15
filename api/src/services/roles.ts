@@ -1,12 +1,25 @@
-import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { Alterations, Item, PrimaryKey, Query, User } from '@directus/types';
 import { getMatch } from 'ip-matching';
+import { omit } from 'lodash-es';
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
+import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions/index.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
+
+type RoleCount = {
+	count: number | string;
+	admin_access: number | boolean | null;
+	app_access: number | boolean | null;
+};
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -35,7 +48,8 @@ export class RolesService extends ItemsService {
 	): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
-		if (!role) throw new ForbiddenError();
+		// No-op if role doesn't exist
+		if (!role) return;
 
 		const usersBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id,
@@ -178,15 +192,77 @@ export class RolesService extends ItemsService {
 		}
 	}
 
+	private getRoleAccessType(data: Partial<Item>) {
+		if ('admin_access' in data && data['admin_access'] === true) {
+			return 'admin';
+		} else if (('app_access' in data && data['app_access'] === true) || 'app_access' in data === false) {
+			return 'app';
+		} else {
+			return 'api';
+		}
+	}
+
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		this.assertValidIpAccess(data);
+
+		if (shouldCheckUserLimits()) {
+			const increasedCounts: AccessTypeCount = {
+				admin: 0,
+				app: 0,
+				api: 0,
+			};
+
+			const existingIds: PrimaryKey[] = [];
+
+			if ('users' in data) {
+				const type = this.getRoleAccessType(data);
+				increasedCounts[type] += data['users'].length;
+
+				for (const user of data['users']) {
+					if (typeof user === 'string') {
+						existingIds.push(user);
+					} else if (typeof user === 'object' && 'id' in user) {
+						existingIds.push(user['id']);
+					}
+				}
+			}
+
+			await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
+		}
 
 		return super.createOne(data, opts);
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const needsUserLimitCheck = shouldCheckUserLimits();
+
+		const increasedCounts: AccessTypeCount = {
+			admin: 0,
+			app: 0,
+			api: 0,
+		};
+
+		const existingIds: PrimaryKey[] = [];
+
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
+
+			if (needsUserLimitCheck && 'users' in partialItem) {
+				const type = this.getRoleAccessType(partialItem);
+				increasedCounts[type] += partialItem['users'].length;
+
+				for (const user of partialItem['users']) {
+					if (typeof user === 'string') {
+						existingIds.push(user);
+					} else if (typeof user === 'object' && 'id' in user) {
+						existingIds.push(user['id']);
+					}
+				}
+			}
+		}
+
+		if (needsUserLimitCheck) {
+			await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 		}
 
 		return super.createMany(data, opts);
@@ -199,6 +275,125 @@ export class RolesService extends ItemsService {
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data['users']);
 			}
+
+			if (shouldCheckUserLimits()) {
+				const increasedCounts: AccessTypeCount = {
+					admin: 0,
+					app: 0,
+					api: 0,
+				};
+
+				let increasedUsers = 0;
+
+				const existingIds: PrimaryKey[] = [];
+
+				let existingRole: RoleCount | undefined = await this.knex
+					.count('directus_users.id', { as: 'count' })
+					.select('directus_roles.admin_access', 'directus_roles.app_access')
+					.from('directus_users')
+					.where('directus_roles.id', '=', key)
+					.andWhere('directus_users.status', '=', 'active')
+					.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+					.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
+					.first();
+
+				if (!existingRole) {
+					try {
+						const role = (await this.knex
+							.select('admin_access', 'app_access')
+							.from('directus_roles')
+							.where('id', '=', key)
+							.first()) ?? { admin_access: null, app_access: null };
+
+						existingRole = { count: 0, ...role } as RoleCount;
+					} catch {
+						existingRole = { count: 0, admin_access: null, app_access: null } as RoleCount;
+					}
+				}
+
+				if ('users' in data) {
+					const users: Alterations<User, 'id'> | (string | Partial<User>)[] = data['users'];
+
+					if (Array.isArray(users)) {
+						increasedUsers = users.length - Number(existingRole.count);
+
+						for (const user of users) {
+							if (typeof user === 'string') {
+								existingIds.push(user);
+							} else if (typeof user === 'object' && 'id' in user) {
+								existingIds.push(user['id']);
+							}
+						}
+					} else {
+						increasedUsers += users.create.length;
+						increasedUsers -= users.delete.length;
+
+						const userIds = [];
+
+						for (const user of users.update) {
+							if ('status' in user) {
+								// account for users being activated and deactivated
+								if (user['status'] === 'active') {
+									increasedUsers++;
+								} else {
+									increasedUsers--;
+								}
+							}
+
+							userIds.push(user.id);
+						}
+
+						try {
+							const existingCounts = await getRoleCountsByUsers(this.knex, userIds);
+
+							if (existingRole.admin_access) {
+								increasedUsers += existingCounts.app + existingCounts.api;
+							} else if (existingRole.app_access) {
+								increasedUsers += existingCounts.admin + existingCounts.api;
+							} else {
+								increasedUsers += existingCounts.admin + existingCounts.app;
+							}
+						} catch {
+							// ignore failed user call
+						}
+					}
+				}
+
+				let isAccessChanged = false;
+				let accessType: 'admin' | 'app' | 'api' = 'api';
+
+				if ('app_access' in data) {
+					if (data['app_access'] === true) {
+						accessType = 'app';
+
+						if (!existingRole.app_access) isAccessChanged = true;
+					} else if (existingRole.app_access) {
+						isAccessChanged = true;
+					}
+				} else if (existingRole.app_access) {
+					accessType = 'app';
+				}
+
+				if ('admin_access' in data) {
+					if (data['admin_access'] === true) {
+						accessType = 'admin';
+
+						if (!existingRole.admin_access) isAccessChanged = true;
+					} else if (existingRole.admin_access) {
+						isAccessChanged = true;
+					}
+				} else if (existingRole.admin_access) {
+					accessType = 'admin';
+				}
+
+				if (isAccessChanged) {
+					increasedCounts[accessType] += Number(existingRole.count);
+				}
+
+				increasedCounts[accessType] += increasedUsers;
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
+			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
 		}
@@ -206,24 +401,39 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		for (const partialItem of data) {
 			this.assertValidIpAccess(partialItem);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const keys = data.map((item) => item[primaryKeyField]);
-		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
-		try {
-			if (setsToNoAdmin) {
-				await this.checkForOtherAdminRoles(keys);
-			}
-		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+		if (!opts.mutationTracker) {
+			opts.mutationTracker = this.createMutationTracker();
 		}
 
-		return super.updateBatch(data, opts);
+		const keys: PrimaryKey[] = [];
+
+		try {
+			await transaction(this.knex, async (trx) => {
+				const service = new RolesService({
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+				});
+
+				for (const item of data) {
+					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+				}
+			});
+		} finally {
+			if (shouldClearCache(this.cache, opts, this.collection)) {
+				await this.cache.clear();
+			}
+		}
+
+		return keys;
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -232,6 +442,25 @@ export class RolesService extends ItemsService {
 		try {
 			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
+			}
+
+			if (shouldCheckUserLimits() && ('admin_access' in data || 'app_access' in data)) {
+				const existingCounts: AccessTypeCount = await getUserCountsByRoles(this.knex, keys);
+
+				const increasedCounts: AccessTypeCount = {
+					admin: 0,
+					app: 0,
+					api: 0,
+				};
+
+				const type = this.getRoleAccessType(data);
+
+				for (const [existingType, existingCount] of Object.entries(existingCounts)) {
+					if (existingType === type) continue;
+					increasedCounts[type] += existingCount;
+				}
+
+				await checkIncreasedUserLimits(this.knex, increasedCounts);
 			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
@@ -248,11 +477,6 @@ export class RolesService extends ItemsService {
 		this.assertValidIpAccess(data);
 
 		return super.updateByQuery(query, data, opts);
-	}
-
-	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
-		await this.deleteMany([key]);
-		return key;
 	}
 
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
@@ -320,9 +544,5 @@ export class RolesService extends ItemsService {
 		});
 
 		return keys;
-	}
-
-	override deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		return super.deleteByQuery(query, opts);
 	}
 }
