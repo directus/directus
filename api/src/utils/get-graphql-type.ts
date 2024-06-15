@@ -31,6 +31,7 @@ export function getGraphQLType(
 			return GraphQLJSON;
 		case 'geometry':
 			return GraphQLGeoJSON;
+		case 'time':
 		case 'timestamp':
 		case 'dateTime':
 		case 'date':
