@@ -573,6 +573,14 @@ function useGroupedPermissions() {
 			<permissions-header />
 
 			<tbody>
+				<template v-if="regularPermissions.length + systemPermissions.length === 0">
+					<tr>
+						<td class="empty-state" colspan="7">
+							{{ t('no_permissions') }}
+						</td>
+					</tr>
+				</template>
+
 				<permissions-row
 					v-for="group in regularPermissions"
 					:key="group.collection.collection"
@@ -586,13 +594,38 @@ function useGroupedPermissions() {
 					@set-no-access="setNoAccess(group.collection.collection, $event)"
 				/>
 
-				<template v-if="regularPermissions.length === 0">
-					<tr>
-						<td class="empty-state" colspan="7">
-							{{ t('no_permissions') }}
-						</td>
-					</tr>
-				</template>
+				<permissions-row
+					v-for="group in systemPermissions"
+					:key="group.collection.collection"
+					:permissions="group.permissions"
+					:collection="group.collection"
+					:policy="primaryKey"
+					:disabled-actions="disabledActions[group.collection.collection]"
+					:app-minimal="
+						appAccess
+							? appAccessMinimalPermissions.filter(
+									(permission) => permission.collection === group.collection.collection,
+							  )
+							: undefined
+					"
+					@edit-item="editItem(group.collection.collection, $event)"
+					@remove-row="removeCollection(group.collection.collection)"
+					@set-full-access-all="setFullAccessAll(group.collection.collection)"
+					@set-no-access-all="setNoAccessAll(group.collection.collection)"
+					@set-full-access="setFullAccess(group.collection.collection, $event)"
+					@set-no-access="setNoAccess(group.collection.collection, $event)"
+				/>
+
+				<tr v-if="appAccess">
+					<td colspan="7" class="reset-toggle">
+						<span>
+							{{ t('reset_system_permissions_to') }}
+							<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+							/
+							<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+						</span>
+					</td>
+				</tr>
 
 				<add-collection-row
 					:exclude-collections="
@@ -602,46 +635,6 @@ function useGroupedPermissions() {
 				/>
 			</tbody>
 		</table>
-
-		<v-detail v-model="systemVisible" class="system-collections" :label="t('system_collections')">
-			<table>
-				<permissions-header />
-				<tbody>
-					<permissions-row
-						v-for="group in systemPermissions"
-						:key="group.collection.collection"
-						:permissions="group.permissions"
-						:collection="group.collection"
-						:policy="primaryKey"
-						:disabled-actions="disabledActions[group.collection.collection]"
-						:app-minimal="
-							appAccess
-								? appAccessMinimalPermissions.filter(
-										(permission) => permission.collection === group.collection.collection,
-								  )
-								: undefined
-						"
-						@edit-item="editItem(group.collection.collection, $event)"
-						@remove-row="removeCollection(group.collection.collection)"
-						@set-full-access-all="setFullAccessAll(group.collection.collection)"
-						@set-no-access-all="setNoAccessAll(group.collection.collection)"
-						@set-full-access="setFullAccess(group.collection.collection, $event)"
-						@set-no-access="setNoAccess(group.collection.collection, $event)"
-					/>
-
-					<tr v-if="appAccess">
-						<td colspan="7" class="reset-toggle">
-							<span>
-								{{ t('reset_system_permissions_to') }}
-								<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
-								/
-								<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
-							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</v-detail>
 	</div>
 
 	<permissions-detail
