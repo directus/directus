@@ -29,15 +29,16 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const env = useEnv();
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize] = await Promise.all([
-		getItemCount(db, basicCountTasks),
-		fetchUserCount({ knex: db }),
-		getUserItemCount(db),
-		getFieldCount(db),
-		getExtensionCount(db),
-		helpers.schema.getDatabaseSize(),
-		getFilesizeSum(db),
-	]);
+	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes] =
+		await Promise.all([
+			getItemCount(db, basicCountTasks),
+			fetchUserCount({ knex: db }),
+			getUserItemCount(db),
+			getFieldCount(db),
+			getExtensionCount(db),
+			helpers.schema.getDatabaseSize(),
+			getFilesizeSum(db),
+		]);
 
 	return {
 		url: env['PUBLIC_URL'] as string,
