@@ -24,19 +24,20 @@ const availableCollections = computed(() => {
 	]);
 });
 
-const systemCollections = orderBy(
-	collectionsStore.collections.filter(({ collection }) => isSystemCollection(collection)).filter(notExcluded),
-	['collection'],
+const systemCollections = computed(() =>
+	orderBy(collectionsStore.collections.filter(({ collection }) => isSystemCollection(collection)).filter(notExcluded), [
+		'collection',
+	]),
 );
 
 const displayItems = computed(() => {
 	const items: any[] = availableCollections.value;
 
-	if (systemCollections.length > 0) {
+	if (systemCollections.value.length > 0) {
 		items.push(
 			{ divider: true },
 			// Don't do a separate group, since the v-select search does not open groups, so the experience is rather unpleasant
-			...systemCollections,
+			...systemCollections.value,
 		);
 	}
 
@@ -44,7 +45,7 @@ const displayItems = computed(() => {
 });
 
 function notExcluded({ collection }: Collection) {
-	return props.excludeCollections?.includes(collection) !== true;
+	return props.excludeCollections?.includes(collection) === false;
 }
 </script>
 
