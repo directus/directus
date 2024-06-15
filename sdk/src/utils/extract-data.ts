@@ -11,15 +11,14 @@ export async function extractData(response: unknown) {
 
 		if (type?.startsWith('application/json') || type?.startsWith('application/health+json')) {
 			const result = await response.json();
-			if (!response.ok || 'errors' in result) throw result;
-			if ('data' in result) return result.data;
-			return result;
+			if (!response.ok) throw result;
+			return withErrors(result);
 		}
 
 		if (type?.startsWith('text/html') || type?.startsWith('text/plain')) {
 			const result = await response.text();
 			if (!response.ok) throw result;
-			return result;
+			return withErrors(result);
 		}
 
 		// fallback for anything else
@@ -27,5 +26,17 @@ export async function extractData(response: unknown) {
 	}
 
 	// exception for alternatives like ofetch that don't return the Response object
-	return 'data' in response ? response.data : response;
+	return withErrors(response);
+}
+
+function withErrors(result) {
+	const handler = {
+		get(target, prop) {
+			if (prop === 'apiErrors' && 'errors' in result) {
+				return target[prop];
+			}
+		},
+	};
+
+	return new Proxy('data' in result ? result.data : result, handler);
 }
