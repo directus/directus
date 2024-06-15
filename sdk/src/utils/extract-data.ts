@@ -29,14 +29,16 @@ export async function extractData(response: unknown) {
 	return withErrors(response);
 }
 
-function withErrors(result) {
+function withErrors(result: any) {
 	const handler = {
-		get(target, prop) {
+		get(target: any, prop: any) {
 			if (prop === 'apiErrors' && 'errors' in result) {
-				return target[prop];
+				return result.errors;
 			}
+
+			return target[prop];
 		},
 	};
 
-	return new Proxy('data' in result ? result.data : result, handler);
+	return new Proxy<any>('data' in result ? result.data : result, handler);
 }
