@@ -32,7 +32,8 @@ export class CacheMulti implements Cache {
 		this.redis = new CacheRedis(config.redis);
 		this.bus = createBus({ type: 'redis', redis: config.redis.redis, namespace: config.redis.namespace });
 
-		this.bus.subscribe<CacheMultiMessageClear>(CACHE_CHANNEL_KEY, this.onMessageClear);
+		// Explicitly wrap the function in a lambda to preserve the `this` context
+		this.bus.subscribe<CacheMultiMessageClear>(CACHE_CHANNEL_KEY, (payload) => this.onMessageClear(payload));
 	}
 
 	async get<T = unknown>(key: string) {
