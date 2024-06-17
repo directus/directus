@@ -4,26 +4,23 @@ import { useCache } from '../cache.js';
 /**
  * @NOTE only uses the first parameter for memoization
  */
-export function withCache<F extends (arg0: any, ...args: any[]) => R, R, Arg0 = Parameters<F>[0]>(
-	namespace: string,
-	handler: F,
-	pick?: (arg0: any) => Arg0,
-) {
+export function withCache<F extends (...args: any[]) => any>(namespace: string, handler: F) {
 	const cache = useCache();
 
-	return (async (arg0: Arg0, ...args: any[]) => {
-		arg0 = pick ? pick(arg0) : arg0;
-		const key = namespace + '-' + getSimpleHash(JSON.stringify(arg0));
+	const fn = async (...args: any[]) => {
+		const key = namespace + '-' + getSimpleHash(JSON.stringify(args[0]));
 		const cached = await cache.get(key);
 
 		if (cached !== undefined) {
-			return cached as R;
+			return cached;
 		}
 
-		const res = await handler(arg0, ...args);
+		const res = await handler(...args);
 
 		cache.set(key, res);
 
 		return res;
-	}) as F;
+	};
+
+	return fn as F;
 }
