@@ -1,9 +1,9 @@
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { ActionPermission } from '@/types/permissions';
 import { useCollection } from '@directus/composables';
 import { randomIdentifier } from '@directus/random';
-import { Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -102,7 +102,7 @@ describe('non-admin users', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { sort_field: sample.sortField } }) } as any);
 
 		const permissionsStore = mockedStore(usePermissionsStore());
-		permissionsStore.getPermission.mockReturnValue({} as Permission);
+		permissionsStore.getPermission.mockReturnValue({} as ActionPermission);
 
 		vi.mocked(isFieldAllowed).mockReturnValue(false);
 
@@ -115,7 +115,7 @@ describe('non-admin users', () => {
 		vi.mocked(useCollection).mockReturnValue({ info: ref({ meta: { sort_field: sample.sortField } }) } as any);
 
 		const permissionsStore = mockedStore(usePermissionsStore());
-		permissionsStore.getPermission.mockReturnValue({} as Permission);
+		permissionsStore.getPermission.mockReturnValue({} as ActionPermission);
 
 		vi.mocked(isFieldAllowed).mockReturnValue(true);
 

@@ -155,7 +155,7 @@ export type FieldValidationOperator = {
 
 export type Permission = {
 	id?: number;
-	role: string | null;
+	policy: string | null;
 	collection: string;
 	action: PermissionsAction;
 	permissions: Filter | null;

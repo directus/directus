@@ -1,41 +1,75 @@
 table: directus_policies
 
+.hide_in_public_policy: &hide_in_public_policy
+  conditions:
+    - rule:
+        id:
+          _eq: abf8a154-5b1c-4a46-ac9c-7300570f4f17
+      hidden: true
+
 fields:
   - field: id
+    hidden: true
     special:
       - uuid
 
   - field: name
+    width: half
+    display: formatted-value
+    display_options:
+      translate: true
 
   - field: description
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_policies.description
+    width: full
+    display: formatted-value
+    display_options:
+      translate: true
+
+
+  - field: permissions
+    interface: system-permissions
+    special:
+      - o2m
 
   - field: app_access
     interface: boolean
     special:
       - cast-boolean
     width: half
+    <<: *hide_in_public_policy
 
   - field: admin_access
     interface: boolean
     special:
       - cast-boolean
     width: half
+    <<: *hide_in_public_policy
 
   - field: ip_access
     interface: tags
     options:
-      placeholder: $t:fields.directus_policies.ip_access
+      placeholder: $t:field_options.directus_policies.ip_access
     special:
       - cast-csv
     width: full
 
   - field: enforce_tfa
+    note: $t:field_options.directus_policies.enforce_tfa
     interface: boolean
     special:
       - cast-boolean
     width: half
+    <<: *hide_in_public_policy
 
-  - field: permissions
+  - field: users
+    hidden: true
     special:
       - o2m
-    # TODO this will have a new system-interface for managing the permissions in a coming PR
+
+  - field: roles
+    hidden: true
+    special:
+      - o2m

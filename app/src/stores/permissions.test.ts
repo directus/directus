@@ -1,5 +1,6 @@
 import api from '@/api';
-import { Permission, PermissionsAction, User } from '@directus/types';
+import { ActionPermission, CollectionPermission } from '@/types/permissions';
+import { PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, it, vi } from 'vitest';
@@ -53,29 +54,14 @@ describe('actions', () => {
 			const hydrateAdditionalFieldsSpy = vi.spyOn(userStore, 'hydrateAdditionalFields').mockResolvedValue();
 
 			const permissionWithDynamicVariablesInPresets = {
-				role: sample.role.id,
-				permissions: {
-					collection_b: {
-						role: {
-							_eq: '$CURRENT_ROLE.name',
-						},
-					},
-				},
-				validation: {
-					user: {
-						_eq: '$CURRENT_USER',
-					},
-				},
 				presets: {
-					field_c: '$CURRENT_USER.custom_user_field',
+					field_a: '$CURRENT_ROLE.name',
+					field_b: '$CURRENT_USER.custom_user_field',
 				},
-				fields: ['*'],
-				collection: 'test',
-				action: 'create',
 			};
 
 			vi.spyOn(vi.mocked(api), 'get').mockResolvedValueOnce({
-				data: { data: [permissionWithDynamicVariablesInPresets] },
+				data: { data: { [sample.collection]: { read: permissionWithDynamicVariablesInPresets } } },
 			});
 
 			const permissionsStore = usePermissionsStore();
@@ -104,25 +90,22 @@ describe('actions', () => {
 
 	describe('getPermission', () => {
 		it.each(actions)('should return matching permission if it exists', (action) => {
-			const mockPermissions: [Permission] = [
-				{
-					role: sample.role.id,
-					collection: sample.collection,
-					action,
-					permissions: null,
-					validation: null,
-					presets: null,
-					fields: ['*'],
+			const permission: ActionPermission = {
+				access: true,
+				full_access: true,
+				fields: ['*'],
+			};
+
+			const mockPermissions: Record<string, CollectionPermission> = {
+				[sample.collection]: {
+					[action as PermissionsAction]: permission,
 				},
-			];
+			};
 
 			const permissionsStore = usePermissionsStore();
 			permissionsStore.permissions = mockPermissions;
 
-			expect(permissionsStore.getPermission(sample.collection, action)).toMatchObject({
-				collection: sample.collection,
-				action,
-			});
+			expect(permissionsStore.getPermission(sample.collection, action)).toMatchObject(permission);
 		});
 
 		it.each(actions)('should return null when not matching permission exists', (action) => {
@@ -162,17 +145,17 @@ describe('actions', () => {
 				const userStore = mockedStore(useUserStore());
 				userStore.isAdmin = false;
 
-				const mockPermissions: [Permission] = [
-					{
-						role: sample.role.id,
-						collection: sample.collection,
-						action,
-						permissions: null,
-						validation: null,
-						presets: null,
-						fields: ['*'],
+				const permission: ActionPermission = {
+					access: true,
+					full_access: true,
+					fields: ['*'],
+				};
+
+				const mockPermissions: Record<string, CollectionPermission> = {
+					[sample.collection]: {
+						[action as PermissionsAction]: permission,
 					},
-				];
+				};
 
 				const permissionsStore = usePermissionsStore();
 				permissionsStore.permissions = mockPermissions;

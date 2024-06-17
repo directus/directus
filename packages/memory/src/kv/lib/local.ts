@@ -68,4 +68,8 @@ export class KvLocal implements Kv {
 
 		return true;
 	}
+
+	async clear() {
+		this.store.clear();
+	}
 }

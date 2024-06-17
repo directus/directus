@@ -4,7 +4,7 @@ export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comme
 
 export type Permission = {
 	id?: number;
-	role: string | null;
+	policy: string | null;
 	collection: string;
 	action: PermissionsAction;
 	permissions: Filter | null;

@@ -1,20 +1,13 @@
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
+import { PUBLIC_POLICY_ID } from '@directus/constants';
+import { processChunk } from '@directus/utils';
 
 /**
  * The public role used to be `null`, we gotta create a single new policy for the permissions
  * previously attached to the public role (marked through `role = null`).
- *
- * This UUID is a randomly generated arbitrary UUID.
+ * And a new public role that is marked by a different, arbitrary UUID.
  */
-const PUBLIC_POLICY = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
-
-async function processChunk<T = unknown>(arr: T[], size: number, callback: (chunk: T[]) => Promise<void>) {
-	for (let i = 0; i < arr.length; i += size) {
-		const chunk = arr.slice(i, i + size);
-		await callback(chunk);
-	}
-}
 
 export async function up(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,11 +38,19 @@ export async function up(knex: Knex) {
 
 	await knex
 		.insert({
-			id: PUBLIC_POLICY,
-			name: 'Public',
+			id: PUBLIC_POLICY_ID,
+			name: '$t:public_label',
+			description: '$t:public_description',
 			app_access: false,
 		})
 		.into('directus_policies');
+
+	// Change the admin policy description to $t:admin_policy_description
+	await knex('directus_policies')
+		.update({
+			description: '$t:admin_policy_description',
+		})
+		.where({ description: '$t:admin_description' });
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Remove access control + add nesting to roles
@@ -67,7 +68,7 @@ export async function up(knex: Knex) {
 	// Link permissions to policies instead of roles
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').references('directus_policies.id');
+		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
 	});
 
 	await knex('directus_permissions').update({
@@ -76,7 +77,7 @@ export async function up(knex: Knex) {
 
 	await knex('directus_permissions')
 		.update({
-			policy: PUBLIC_POLICY,
+			policy: PUBLIC_POLICY_ID,
 		})
 		.whereNull('policy');
 
@@ -96,9 +97,9 @@ export async function up(knex: Knex) {
 
 	await knex.schema.createTable('directus_access', (table) => {
 		table.uuid('id').primary();
-		table.uuid('role').references('directus_roles.id').nullable();
-		table.uuid('user').references('directus_users.id').nullable();
-		table.uuid('policy').references('directus_policies.id').notNullable();
+		table.uuid('role').references('directus_roles.id').nullable().onDelete('CASCADE');
+		table.uuid('user').references('directus_users.id').nullable().onDelete('CASCADE');
+		table.uuid('policy').references('directus_policies.id').notNullable().onDelete('CASCADE');
 		table.integer('sort');
 	});
 
@@ -121,7 +122,7 @@ export async function up(knex: Knex) {
 		id: randomUUID(),
 		role: null,
 		user: null,
-		policy: PUBLIC_POLICY,
+		policy: PUBLIC_POLICY_ID,
 		sort: 1,
 	});
 }
@@ -145,7 +146,7 @@ export async function down(knex: Knex) {
 	const policies = await knex
 		.select('id', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
 		.from('directus_policies')
-		.whereNot({ id: PUBLIC_POLICY });
+		.whereNot({ id: PUBLIC_POLICY_ID });
 
 	for (const policy of policies) {
 		await knex('directus_roles')
@@ -161,10 +162,14 @@ export async function down(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Drop policy attachments
 
+	// TODO query all policies that are attached to a user and delete their permissions,
+	//  since we don't know were to put them now and it'll cause a foreign key problem
+	//  as soon as we reference directus_roles in directus_permissions again
+
 	await knex.schema.dropTable('directus_access');
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Reattach permissions to roles instead of permissions
+	// Reattach permissions to roles instead of policies
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('role').nullable();
@@ -178,7 +183,7 @@ export async function down(knex: Knex) {
 		.update({
 			role: null,
 		})
-		.where({ role: PUBLIC_POLICY });
+		.where({ role: PUBLIC_POLICY_ID });
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('role').references('directus_roles.id').alter();

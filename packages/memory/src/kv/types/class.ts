@@ -46,4 +46,9 @@ export interface Kv {
 	 * @returns Whether or not the given value was saved
 	 */
 	setMax(key: string, value: number): Promise<boolean>;
+
+	/**
+	 * Remove all keys from the kv store
+	 */
+	clear(): Promise<void>;
 }

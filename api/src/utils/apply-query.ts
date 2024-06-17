@@ -36,6 +36,7 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
+	cases: Filter[],
 	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
@@ -68,8 +69,24 @@ export default function applyQuery(
 		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
 	}
 
-	if (query.filter) {
-		const filterResult = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
+	// `cases` are the permissions cases that are required for the current data set. We're
+	// dynamically adding those into the filters that the user provided to enforce the permission
+	// rules. You should be able to read an item if one or more of the cases matches. The actual case
+	// is reused in the column selection case/when to dynamically return or nullify the field values
+	// you're actually allowed to read
+
+	let filter: Filter | null = null;
+
+	if (cases.length > 0 && !query.filter) {
+		filter = { _or: cases };
+	} else if (query.filter && cases.length === 0) {
+		filter = query.filter;
+	} else if (query.filter && cases.length > 0) {
+		filter = { _and: [query.filter, { _or: cases }] };
+	}
+
+	if (filter) {
+		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases);
 
 		if (!hasJoins) {
 			hasJoins = filterResult.hasJoins;
@@ -392,6 +409,7 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	aliasMap: AliasMap,
+	cases: Filter[],
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
@@ -511,7 +529,7 @@ export function applyFilter(
 							.from(collection)
 							.whereNotNull(column);
 
-						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema);
+						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases);
 					};
 
 					const childKey = Object.keys(value)?.[0];
@@ -827,13 +845,13 @@ export function applyFilter(
 	}
 }
 
-export async function applySearch(
+export function applySearch(
 	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
-): Promise<void> {
+) {
 	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 

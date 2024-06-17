@@ -20,8 +20,9 @@ export class GeometryHelperMSSQL extends GeometryHelper {
 		return table.specificType(field.field, 'geometry');
 	}
 
-	override asText(table: string, column: string): Knex.Raw {
-		return this.knex.raw('??.??.STAsText() as ??', [table, column, column]);
+	override asText(table: string, column: string, alias: string | false): Knex.Raw {
+		if (alias) return this.knex.raw('??.??.STAsText() as ??', [table, column, alias]);
+		return this.knex.raw('??.??.STAsText()', [table, column]);
 	}
 
 	override fromText(text: string): Knex.Raw {

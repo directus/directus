@@ -1,7 +1,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '@directus/errors';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
 
@@ -38,16 +38,24 @@ export class MetaService {
 	async totalCount(collection: string): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
 
-		if (this.accountability?.admin !== true) {
-			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 
-			if (!permissionsRecord) throw new ForbiddenError();
+			// const policies = await fetchPolicies(this.accessService, this.accountability);
+			// const permissions = await fetchPermissions(this.permissionsService, 'read', policies, collection ? [collection] : undefined);
 
-			const permissions = permissionsRecord.permissions ?? {};
-
-			applyFilter(this.knex, this.schema, dbQuery, permissions, collection, {});
+			// TODO replace with applyCases (TBD)
+			// applyFilter(this.knex, this.schema, dbQuery, permissions, collection, {});
 		}
 
 		const result = await dbQuery;
@@ -58,27 +66,34 @@ export class MetaService {
 	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection);
 
-		let filter = query.filter || {};
+		const filter = query.filter || {};
 		let hasJoins = false;
 
-		if (this.accountability?.admin !== true) {
-			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 
-			if (!permissionsRecord) throw new ForbiddenError();
+			// TODO rely on applyCases
+			// const permissions = permissionsRecord.permissions ?? {};
 
-			const permissions = permissionsRecord.permissions ?? {};
-
-			if (Object.keys(filter).length > 0) {
-				filter = { _and: [permissions, filter] };
-			} else {
-				filter = permissions;
-			}
+			// if (Object.keys(filter).length > 0) {
+			// 	filter = { _and: [permissions, filter] };
+			// } else {
+			// 	filter = permissions;
+			// }
 		}
 
 		if (Object.keys(filter).length > 0) {
-			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}));
+			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, []));
 		}
 
 		if (query.search) {
