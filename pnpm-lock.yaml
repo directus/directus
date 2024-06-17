@@ -204,14 +204,14 @@ importers:
         specifier: 0.4.1
         version: 0.4.1
       graphql:
-        specifier: 16.8.1
-        version: 16.8.1
+        specifier: 16.8.2
+        version: 16.8.2
       graphql-compose:
         specifier: 9.0.11
-        version: 9.0.11(graphql@16.8.1)
+        version: 9.0.11(graphql@16.8.2)
       graphql-ws:
         specifier: 5.16.0
-        version: 5.16.0(graphql@16.8.1)
+        version: 5.16.0(graphql@16.8.2)
       helmet:
         specifier: 7.1.0
         version: 7.1.0
@@ -315,8 +315,8 @@ importers:
         specifier: 5.4.1
         version: 5.4.1
       pino:
-        specifier: 9.1.0
-        version: 9.1.0
+        specifier: 9.2.0
+        version: 9.2.0
       pino-http:
         specifier: 9.0.0
         version: 9.0.0
@@ -1219,8 +1219,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(mysql@2.18.1)(pg@8.11.5)(sqlite3@5.1.7)(tedious@18.2.0)
       pino:
-        specifier: 9.1.0
-        version: 9.1.0
+        specifier: 9.2.0
+        version: 9.2.0
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -2106,7 +2106,7 @@ importers:
         version: 14.0.1
       graphql-ws:
         specifier: 5.16.0
-        version: 5.16.0(graphql@16.8.1)
+        version: 5.16.0(graphql@16.8.2)
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -7283,8 +7283,8 @@ packages:
     peerDependencies:
       graphql: '>=0.11 <=16'
 
-  graphql@16.8.1:
-    resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
+  graphql@16.8.2:
+    resolution: {integrity: sha512-cvVIBILwuoSyD54U4cF/UXDh5yAobhNV/tPygI4lZhgOIJQE/WLWC4waBRb4I6bDVYb3OVx3lfHbaQOEoUD5sg==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gray-matter@4.0.3:
@@ -9317,8 +9317,8 @@ packages:
     resolution: {integrity: sha512-uhIfMj5TVp+WynVASaVEJFTncTUe4dHBq6CWplu/vBgvGHhvBvQfxz+vcOrnnBQdORH3izaGEurLfNlq3YxdFQ==}
     hasBin: true
 
-  pino@9.1.0:
-    resolution: {integrity: sha512-qUcgfrlyOtjwhNLdbhoL7NR4NkHjzykAPw0V2QLFbvu/zss29h4NkRnibyFzBrNCbzCOY3WZ9hhKSwfOkNggYA==}
+  pino@9.2.0:
+    resolution: {integrity: sha512-g3/hpwfujK5a4oVbaefoJxezLzsDgLcNJeITvC6yrfwYeT9la+edCK42j5QpEQSQCZgTKapXvnQIdgZwvRaZug==}
     hasBin: true
 
   pirates@4.0.6:
@@ -18229,20 +18229,20 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  graphql-compose@9.0.11(graphql@16.8.1):
+  graphql-compose@9.0.11(graphql@16.8.2):
     dependencies:
-      graphql: 16.8.1
-      graphql-type-json: 0.3.2(graphql@16.8.1)
+      graphql: 16.8.2
+      graphql-type-json: 0.3.2(graphql@16.8.2)
 
-  graphql-type-json@0.3.2(graphql@16.8.1):
+  graphql-type-json@0.3.2(graphql@16.8.2):
     dependencies:
-      graphql: 16.8.1
+      graphql: 16.8.2
 
-  graphql-ws@5.16.0(graphql@16.8.1):
+  graphql-ws@5.16.0(graphql@16.8.2):
     dependencies:
-      graphql: 16.8.1
+      graphql: 16.8.2
 
-  graphql@16.8.1: {}
+  graphql@16.8.2: {}
 
   gray-matter@4.0.3:
     dependencies:
@@ -20690,7 +20690,7 @@ snapshots:
       sonic-boom: 3.7.0
       thread-stream: 2.7.0
 
-  pino@9.1.0:
+  pino@9.2.0:
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.3.0
