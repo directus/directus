@@ -1117,7 +1117,7 @@ editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
 settings_roles: User Roles
-settings_permissions: Access Control
+settings_permissions: Access Policies
 settings_project: Settings
 settings_appearance: Appearance
 settings_webhooks: Webhooks
