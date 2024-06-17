@@ -1,6 +1,9 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Filter, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { dedupeAccess } from '../permissions/modules/process-ast/utils/dedupe-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
@@ -36,29 +39,54 @@ export class MetaService {
 	}
 
 	async totalCount(collection: string): Promise<number> {
-		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
+		const dbQuery = this.knex(collection);
 
-		if (this.accountability) {
+		let hasJoins = false;
+
+		if (this.accountability && this.accountability.admin === false) {
+			const context = { knex: this.knex, schema: this.schema };
+
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'read',
 					collection,
 				},
-				{
-					schema: this.schema,
-					knex: this.knex,
-				},
+				context,
 			);
 
-			// const policies = await fetchPolicies(this.accessService, this.accountability);
-			// const permissions = await fetchPermissions(this.permissionsService, 'read', policies, collection ? [collection] : undefined);
+			const policies = await fetchPolicies(this.accountability, context);
 
-			// TODO replace with applyCases (TBD)
-			// applyFilter(this.knex, this.schema, dbQuery, permissions, collection, {});
+			const permissions = await fetchPermissions(
+				{
+					action: 'read',
+					policies,
+					accountability: this.accountability,
+					...(collection ? { collections: [collection] } : {}),
+				},
+				context,
+			);
+
+			const rules = dedupeAccess(permissions);
+			const cases = rules.map(({ rule }) => rule);
+
+			const filter = {
+				_or: cases,
+			};
+
+			const result = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases);
+			hasJoins = result.hasJoins;
 		}
 
-		const result = await dbQuery;
+		if (hasJoins) {
+			const primaryKeyName = this.schema.collections[collection]!.primary;
+
+			dbQuery.countDistinct({ count: [`${collection}.${primaryKeyName}`] });
+		} else {
+			dbQuery.count('*', { as: 'count' });
+		}
+
+		const result = await dbQuery.first();
 
 		return Number(result?.count ?? 0);
 	}
@@ -66,34 +94,50 @@ export class MetaService {
 	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection);
 
-		const filter = query.filter || {};
+		let filter = query.filter || {};
 		let hasJoins = false;
+		let cases: Filter[] = [];
 
-		if (this.accountability) {
+		if (this.accountability && this.accountability.admin === false) {
+			const context = { knex: this.knex, schema: this.schema };
+
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'read',
 					collection,
 				},
-				{
-					schema: this.schema,
-					knex: this.knex,
-				},
+				context,
 			);
 
-			// TODO rely on applyCases
-			// const permissions = permissionsRecord.permissions ?? {};
+			const policies = await fetchPolicies(this.accountability, context);
 
-			// if (Object.keys(filter).length > 0) {
-			// 	filter = { _and: [permissions, filter] };
-			// } else {
-			// 	filter = permissions;
-			// }
+			const permissions = await fetchPermissions(
+				{
+					action: 'read',
+					policies,
+					accountability: this.accountability,
+					...(collection ? { collections: [collection] } : {}),
+				},
+				context,
+			);
+
+			const rules = dedupeAccess(permissions);
+			cases = rules.map(({ rule }) => rule);
+
+			const permissionsFilter = {
+				_or: cases,
+			};
+
+			if (Object.keys(filter).length > 0) {
+				filter = { _and: [permissionsFilter, filter] };
+			} else {
+				filter = permissionsFilter;
+			}
 		}
 
 		if (Object.keys(filter).length > 0) {
-			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, []));
+			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases));
 		}
 
 		if (query.search) {
@@ -108,8 +152,8 @@ export class MetaService {
 			dbQuery.count('*', { as: 'count' });
 		}
 
-		const records = await dbQuery;
+		const result = await dbQuery.first();
 
-		return Number(records[0]!['count']);
+		return Number(result?.count ?? 0);
 	}
 }

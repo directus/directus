@@ -8,9 +8,9 @@ import hash from 'object-hash';
  * This allows the cases injection to be more efficient by not having to generate duplicate
  * case/when clauses for permission sets where the rule access is identical
  */
-export function dedupeAccess(permissions: Permission[]): { rule: Filter | null; fields: Set<string> }[] {
+export function dedupeAccess(permissions: Permission[]): { rule: Filter; fields: Set<string> }[] {
 	// Map of `ruleHash: fields[]`
-	const map: Map<string, { rule: Filter | null; fields: Set<string> }> = new Map();
+	const map: Map<string, { rule: Filter; fields: Set<string> }> = new Map();
 
 	for (const permission of permissions) {
 		const rule = permission.permissions ?? {};
