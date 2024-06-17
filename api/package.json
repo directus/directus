@@ -157,7 +157,7 @@
 		"p-limit": "5.0.0",
 		"p-queue": "8.0.1",
 		"papaparse": "5.4.1",
-		"pino": "9.1.0",
+		"pino": "9.2.0",
 		"pino-http": "9.0.0",
 		"pino-http-print": "3.1.0",
 		"pino-pretty": "11.0.0",
