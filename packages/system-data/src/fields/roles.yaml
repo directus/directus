@@ -36,11 +36,8 @@ fields:
     options:
       template: '{{ name }}'
       filter:
-        _and:
-          - id:
-              _neq: '{{ id }}'
-          - id:
-              _nin: '{{ children }}'
+        - id:
+            _neq: '{{ id }}'
     special:
       - m2o
     width: half
@@ -60,11 +57,8 @@ fields:
       fields:
         - name
       filter:
-        _and:
-          - id:
-              _neq: '{{ id }}'
-          - id:
-              _nin: '{{ children }}'
+        - id:
+            _neq: '{{ id }}'
     display: related-values
     display_options:
       template: '{{ name }}'
