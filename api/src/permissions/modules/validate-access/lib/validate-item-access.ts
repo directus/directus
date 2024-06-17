@@ -2,7 +2,7 @@ import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@dire
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
 import { runAst } from '../../../../database/run-ast/run-ast.js';
 import type { Context } from '../../../types.js';
-import { processAst } from '../../process-ast/process.js';
+import { processAst } from '../../process-ast/process-ast.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
