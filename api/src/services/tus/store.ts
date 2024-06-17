@@ -1,18 +1,15 @@
 /**
- * TUS implementation for resumable uploads
+ * TUS storage implementation for resumable uploads
  *
  * https://tus.io/
  */
-import { toArray } from '@directus/utils';
 import { FileConfigstore, type Configstore } from '@tus/file-store';
-import { DataStore, ERRORS, Server, Upload } from '@tus/server';
-import { FilesService } from './services/files.js';
+import { DataStore, ERRORS, Upload } from '@tus/server';
 import fs from 'fs';
 import fsProm from 'fs/promises';
 import path from 'path';
 import stream from 'node:stream';
 import http from 'node:http';
-import { useEnv } from '@directus/env';
 
 type Options = {
 	directory: string;
@@ -23,7 +20,7 @@ const MASK = '0777';
 const IGNORED_MKDIR_ERROR = 'EEXIST';
 const FILE_DOESNT_EXIST = 'ENOENT';
 
-class DirectusFileStore extends DataStore {
+export class DirectusFileStore extends DataStore {
 	directory: string;
 	configstore: Configstore;
 	expirationPeriodInMilliseconds: number;
@@ -34,7 +31,7 @@ class DirectusFileStore extends DataStore {
 		this.configstore = configstore ?? new FileConfigstore(directory);
 		this.expirationPeriodInMilliseconds = expirationPeriodInMilliseconds ?? 0;
 
-		this.extensions = ['creation', 'creation-with-upload', 'creation-defer-length', 'termination', 'expiration'];
+		this.extensions = ['creation', 'termination', 'expiration'];
 
 		// TODO: this async call can not happen in the constructor
 		this.checkOrCreateDirectory();
@@ -222,49 +219,3 @@ class DirectusFileStore extends DataStore {
 		return this.expirationPeriodInMilliseconds;
 	}
 }
-
-const env = useEnv();
-
-const store = new DirectusFileStore({
-	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
-	expirationPeriodInMilliseconds: 60_000
-});
-
-export const tusServer = new Server({
-	path: '/files/tus',
-	datastore: store,
-	onUploadCreate: async (_req, res, upload) => {
-		console.log('create', /*req, res,*/ upload);
-		return res;
-	},
-	onUploadFinish: async (req: any, res, upload) => {
-		console.log('finished', /*req, res,*/ upload);
-
-		try {
-			const service = new FilesService({
-				// accountability: req.accountability,
-				schema: req.schema,
-			});
-
-			const disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-
-			console.log(
-				'stored?',
-				await service.uploadOne(store.read(upload.id), {
-					storage: disk,
-					type: upload.metadata?.['filetype'] ?? 'unknown',
-					title: upload.metadata?.['filename'] ?? null,
-					filename_download: upload.metadata?.['filename'] ?? 'test',
-				}),
-			);
-
-			await store.remove(upload.id);
-		} catch (err) {
-			console.warn('why', err);
-		}
-
-		return res;
-	},
-});
-
-// tusServer.cleanUpExpiredUploads();

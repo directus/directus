@@ -55,6 +55,9 @@ export type Info = {
 	extensions?: {
 		limit: number | null;
 	};
+	uploads?: {
+		chunkSize: number;
+	}
 };
 
 export type Auth = {

@@ -17,7 +17,7 @@ import { FilesService } from '../services/files.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { tusServer } from '../tus.js';
+import { registerTusEndpoints, scheduleTusCleanup } from './resumable-uploads.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -183,11 +183,6 @@ router.post(
 	}),
 	respond,
 );
-
-const handler = tusServer.handle.bind(tusServer);
-
-router.use('/tus', handler);
-router.use('/tus/*', handler);
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
@@ -371,5 +366,8 @@ router.delete(
 	}),
 	respond,
 );
+
+registerTusEndpoints(router);
+scheduleTusCleanup();
 
 export default router;

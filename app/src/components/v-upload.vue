@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
 import { emitter, Events } from '@/events';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-// import * as tus from 'tus-js-client';
 
 interface Props {
 	multiple?: boolean;
@@ -25,16 +25,28 @@ const props = withDefaults(defineProps<Props>(), {
 	fromUser: true,
 });
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'start']);
 
 const { t } = useI18n();
 
-const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
+let uploader: any = null;
+
+const serverStore = useServerStore();
+
+const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload(serverStore.info.uploads);
 const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
 const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+
+function abortUpload() {
+	uploader?.abort();
+}
+
+defineExpose({
+	abort: abortUpload
+});
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
@@ -46,11 +58,13 @@ function validFiles(files: FileList) {
 	return true;
 }
 
-function useUpload() {
+function useUpload(chunked?: {chunkSize: number;}) {
 	const uploading = ref(false);
 	const progress = ref(0);
 	const numberOfFiles = ref(0);
 	const done = ref(0);
+
+	console.log('chunked', chunked);
 
 	return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
 
@@ -76,6 +90,10 @@ function useUpload() {
 						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 						done.value = percentage.filter((p) => p === 100).length;
 					},
+					callback: (idk) => {
+						uploader = idk;
+						emit('start', idk);
+					},
 					preset,
 				});
 
@@ -86,11 +104,16 @@ function useUpload() {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
 					},
+					callback: (idk) => {
+						uploader = idk;
+						emit('start', idk);
+					},
 					fileId: props.fileId,
 					preset,
 				});
 
 				uploadedFile && emit('input', uploadedFile);
+				uploader = null;
 			}
 		} catch (error) {
 			unexpectedError(error);
