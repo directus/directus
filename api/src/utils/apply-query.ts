@@ -422,12 +422,22 @@ export function applyFilter(
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
-		for (const [key, value] of Object.entries(filter)) {
+		// eslint-disable-next-line prefer-const
+		for (let [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
-					continue;
+					// But only do so, if the value is not equal to `cases` (since then this is not permission related at all)
+					// or the length of value is 1, ie. only the empty filter.
+					// If the length is more than one it means that some items (and fields) might now be available, so
+					// the joins are required for the case/when construction.
+					if (value !== cases || value.length === 1) {
+						continue;
+					} else {
+						// Otherwise we can at least filter out all empty filters that would not add joins anyway
+						value = value.filter((subFilter: Record<string, any>) => Object.keys(subFilter).length > 0);
+					}
 				}
 
 				value.forEach((subFilter: Record<string, any>) => {
