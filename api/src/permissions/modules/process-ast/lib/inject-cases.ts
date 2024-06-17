@@ -1,5 +1,6 @@
 import type { Filter, Permission } from '@directus/types';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import type { FieldKey } from '../types.js';
 import { dedupeAccess } from '../utils/dedupe-access.js';
 import { hasItemPermissions } from '../utils/has-item-permissions.js';
@@ -31,7 +32,7 @@ function processChildren(
 	// TODO this can be optimized if all cases are the same for all requested keys, as those should be
 	//
 
-	const requestedKeys = children.map(({ fieldKey }) => fieldKey);
+	const requestedKeys = children.map(getUnaliasedFieldKey);
 
 	let index = 0;
 
@@ -65,16 +66,18 @@ function processChildren(
 	for (const child of children) {
 		// If there's one or more permissions that allow full access to this field, we can safe some
 		// query perf overhead by ignoring the whole case/where system
-		if (allowedFields.has('*') || allowedFields.has(child.fieldKey)) continue;
+		const fieldKey = getUnaliasedFieldKey(child);
+
+		if (allowedFields.has('*') || allowedFields.has(fieldKey)) continue;
 
 		const globalWhenCase = caseMap['*'];
-		const fieldWhenCase = caseMap[child.fieldKey];
+		const fieldWhenCase = caseMap[fieldKey];
 
 		// Validation should catch any fields that are attempted to be read that don't have any access control configured.
 		// When there are no access rules for this field, and no rules for "all" fields `*`, we missed something in the validation
 		// and should abort.
 		if (!globalWhenCase && !fieldWhenCase) {
-			throw new Error(`Cannot extract access permissions for field "${child.fieldKey}" in collection "${collection}"`);
+			throw new Error(`Cannot extract access permissions for field "${fieldKey}" in collection "${collection}"`);
 		}
 
 		// Global and field can't both be undefined as per the error check prior

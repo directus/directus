@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
-import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
+import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import type { FieldMap, QueryPath } from '../types.js';
 import { formatA2oKey } from '../utils/format-a2o-key.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
@@ -16,9 +16,9 @@ export function extractFieldsFromChildren(
 	const info = getInfoForPath(fieldMap, path, collection);
 
 	for (const child of children) {
-		if (child.type === 'a2o') {
-			info.fields.add(child.fieldKey);
+		info.fields.add(getUnaliasedFieldKey(child));
 
+		if (child.type === 'a2o') {
 			for (const [collection, children] of Object.entries(child.children)) {
 				extractFieldsFromChildren(collection, children, fieldMap, schema, [
 					...path,
@@ -35,8 +35,6 @@ export function extractFieldsFromChildren(
 				}
 			}
 		} else if (child.type === 'm2o') {
-			info.fields.add(child.fieldKey);
-
 			extractFieldsFromChildren(child.relation.related_collection!, child.children, fieldMap, schema, [
 				...path,
 				child.fieldKey,
@@ -47,8 +45,6 @@ export function extractFieldsFromChildren(
 				child.fieldKey,
 			]);
 		} else if (child.type === 'o2m') {
-			info.fields.add(child.fieldKey);
-
 			extractFieldsFromChildren(child.relation.collection!, child.children, fieldMap, schema, [
 				...path,
 				child.fieldKey,
@@ -56,16 +52,10 @@ export function extractFieldsFromChildren(
 
 			extractFieldsFromQuery(child.relation.collection!, child.query, fieldMap, schema, [...path, child.fieldKey]);
 		} else if (child.type === 'functionField') {
-			const { fieldName } = parseFilterKey(child.fieldKey);
-			info.fields.add(fieldName);
-
 			// functionFields operate on a related o2m collection, we have to make sure we include a
 			// no-field read check to the related collection
 			extractFieldsFromChildren(child.relatedCollection, [], fieldMap, schema, [...path, child.fieldKey]);
 			extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, [...path, child.fieldKey]);
-		} else {
-			const { fieldName } = parseFilterKey(child.fieldKey);
-			info.fields.add(fieldName);
 		}
 	}
 }
