@@ -71,7 +71,7 @@ function notExcluded({ collection }: Collection) {
 .add-collection-row {
 	td {
 		padding: 12px;
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 
 	.monospace {

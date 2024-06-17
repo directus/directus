@@ -573,7 +573,7 @@ function useGroupedPermissions() {
 			<permissions-header />
 
 			<tbody>
-				<template v-if="regularPermissions.length + systemPermissions.length === 0">
+				<template v-if="allPermissions.length === 0">
 					<tr>
 						<td class="empty-state" colspan="7">
 							{{ t('no_permissions') }}
@@ -593,6 +593,14 @@ function useGroupedPermissions() {
 					@set-full-access="setFullAccess(group.collection.collection, $event)"
 					@set-no-access="setNoAccess(group.collection.collection, $event)"
 				/>
+
+				<tr>
+					<td colspan="7" class="system-divider">
+						<v-divider v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
+							{{ t('system_collections') }}
+						</v-divider>
+					</td>
+				</tr>
 
 				<permissions-row
 					v-for="group in systemPermissions"
@@ -715,6 +723,11 @@ function useGroupedPermissions() {
 		button:hover {
 			color: var(--theme--foreground) !important;
 		}
+	}
+
+	.system-divider {
+		--v-divider-label-color: var(--theme--foreground-subdued);
+		padding-left: 12px;
 	}
 }
 
