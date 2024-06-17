@@ -27,7 +27,13 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input v-model="name" autofocus :placeholder="t('policy_name') + '...'" @keyup.enter="save" />
+						<v-input
+							v-model="name"
+							autofocus
+							:placeholder="t('policy_name') + '...'"
+							:max-length="100"
+							@keyup.enter="save"
+						/>
 					</div>
 
 					<div class="field half">

@@ -48,7 +48,13 @@ function useSave() {
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input v-model="roleName" autofocus :placeholder="t('role_name') + '...'" @keyup.enter="save" />
+						<v-input
+							v-model="roleName"
+							autofocus
+							:placeholder="t('role_name') + '...'"
+							:max-length="100"
+							@keyup.enter="save"
+						/>
 					</div>
 				</div>
 			</v-card-text>
