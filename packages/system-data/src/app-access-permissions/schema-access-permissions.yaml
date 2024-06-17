@@ -7,23 +7,5 @@
 - collection: directus_fields
   action: read
 
-- collection: directus_access
-  action: read
-  permissions:
-    policy:
-      _in: $CURRENT_POLICIES
-
-- collection: directus_permissions
-  action: read
-  permissions:
-    policy:
-      _in: $CURRENT_POLICIES
-
-- collection: directus_policies
-  action: read
-  permissions:
-    id:
-      _in: $CURRENT_POLICIES
-
 - collection: directus_relations
   action: read
