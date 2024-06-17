@@ -203,12 +203,14 @@ data:
     many_field: policy
     one_collection: directus_policies
     one_field: roles
+    one_deselect_action: 'delete'
     junction_field: role
 
   - many_collection: directus_access
     many_field: policy
     one_collection: directus_policies
     one_field: users
+    one_deselect_action: 'delete'
     junction_field: user
 
   - many_collection: directus_access
