@@ -17,6 +17,5 @@ export default defineConfig({
 			sequencer: Sequencer,
 		},
 		testTimeout: 15_000,
-		reporters: process.env['GITHUB_ACTIONS'] ? ['hanging-process', 'github-actions'] : ['default', 'hanging-process'],
 	},
 });
