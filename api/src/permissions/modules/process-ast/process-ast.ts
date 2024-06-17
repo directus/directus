@@ -24,7 +24,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 
 	if (!options.accountability || options.accountability.admin) {
 		// Validate the field existence, even if no permissions apply to the current accountability
-		for (const [path, { collection, fields }] of fieldMap.entries()) {
+		for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
 			validatePathExistence(path, collection, fields, context.schema);
 		}
 
@@ -38,9 +38,27 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		context,
 	);
 
-	for (const [path, { collection, fields }] of fieldMap.entries()) {
+	const readPermissions =
+		options.action === 'read'
+			? permissions
+			: await fetchPermissions(
+					{ action: 'read', policies, collections, accountability: options.accountability },
+					context,
+			  );
+
+	// Validate field existence first
+	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
 		validatePathExistence(path, collection, fields, context.schema);
+	}
+
+	// Validate permissions for the fields
+	for (const [path, { collection, fields }] of fieldMap.other.entries()) {
 		validatePathPermissions(path, permissions, collection, fields);
+	}
+
+	// Validate permission for read only fields
+	for (const [path, { collection, fields }] of fieldMap.read.entries()) {
+		validatePathPermissions(path, readPermissions, collection, fields);
 	}
 
 	injectCases(options.ast, permissions);

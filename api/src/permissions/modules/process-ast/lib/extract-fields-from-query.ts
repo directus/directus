@@ -13,46 +13,53 @@ export function extractFieldsFromQuery(
 ) {
 	if (!query) return;
 
-	const paths = extractPathsFromQuery(query);
+	const { paths: otherPaths, readOnlyPaths } = extractPathsFromQuery(query);
 
-	for (const path of paths) {
-		/**
-		 * Current path stack. For each iteration of the path loop this will be appended with the
-		 * current part we're operating on. So when looping over ['category', 'created_by', 'name']
-		 * the first iteration it'll be `['category']`, and then `['category', 'created_by']` etc.
-		 */
-		const stack = [];
+	const groupedPaths = {
+		other: otherPaths,
+		read: readOnlyPaths,
+	};
 
-		/**
-		 * Current collection the path part we're operating on lives in. Once we hit a relational
-		 * field, this will be updated to the related collection, so we can follow the relational path
-		 * left to right.
-		 */
-		let collectionContext = collection;
-
-		for (const part of path) {
-			const info = getInfoForPath(fieldMap, [...pathPrefix, ...stack], collectionContext);
-
-			// A2o specifier field fetch
-			if (part.includes(':')) {
-				const [fieldKey, collection] = part.split(':') as [string, string];
-				info.fields.add(fieldKey);
-				collectionContext = collection;
-				stack.push(part);
-				continue;
-			}
-
-			info.fields.add(part);
+	for (const [group, paths] of Object.entries(groupedPaths) as [keyof FieldMap, string[][]][]) {
+		for (const path of paths) {
+			/**
+			 * Current path stack. For each iteration of the path loop this will be appended with the
+			 * current part we're operating on. So when looping over ['category', 'created_by', 'name']
+			 * the first iteration it'll be `['category']`, and then `['category', 'created_by']` etc.
+			 */
+			const stack = [];
 
 			/**
-			 * Related collection for the current part. Is null when the current field isn't a
-			 * relational field.
+			 * Current collection the path part we're operating on lives in. Once we hit a relational
+			 * field, this will be updated to the related collection, so we can follow the relational path
+			 * left to right.
 			 */
-			const relatedCollection = findRelatedCollection(collectionContext, part, schema);
+			let collectionContext = collection;
 
-			if (relatedCollection) {
-				collectionContext = relatedCollection;
-				stack.push(part);
+			for (const part of path) {
+				const info = getInfoForPath(fieldMap, group, [...pathPrefix, ...stack], collectionContext);
+
+				// A2o specifier field fetch
+				if (part.includes(':')) {
+					const [fieldKey, collection] = part.split(':') as [string, string];
+					info.fields.add(fieldKey);
+					collectionContext = collection;
+					stack.push(part);
+					continue;
+				}
+
+				info.fields.add(part);
+
+				/**
+				 * Related collection for the current part. Is null when the current field isn't a
+				 * relational field.
+				 */
+				const relatedCollection = findRelatedCollection(collectionContext, part, schema);
+
+				if (relatedCollection) {
+					collectionContext = relatedCollection;
+					stack.push(part);
+				}
 			}
 		}
 	}

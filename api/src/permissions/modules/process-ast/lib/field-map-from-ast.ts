@@ -5,7 +5,7 @@ import { extractFieldsFromChildren } from './extract-fields-from-children.js';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
 export function fieldMapFromAst(ast: AST, schema: SchemaOverview): FieldMap {
-	const fieldMap: FieldMap = new Map();
+	const fieldMap: FieldMap = { read: new Map(), other: new Map() };
 
 	extractFieldsFromChildren(ast.name, ast.children, fieldMap, schema);
 	extractFieldsFromQuery(ast.name, ast.query, fieldMap, schema);

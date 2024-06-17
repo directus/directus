@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
 test('Appends paths used in query to FieldMap', () => {
-	const fieldMap = new Map();
+	const fieldMap = { read: new Map(), other: new Map() };
 
 	const query: Query = {
 		filter: {
@@ -18,11 +18,11 @@ test('Appends paths used in query to FieldMap', () => {
 
 	extractFieldsFromQuery('test-collection', query, fieldMap, schema as SchemaOverview);
 
-	expect(fieldMap).toEqual(new Map([['', { collection: 'test-collection', fields: new Set(['author', 'id']) }]]));
+	expect(fieldMap.read).toEqual(new Map([['', { collection: 'test-collection', fields: new Set(['author', 'id']) }]]));
 });
 
 test('Appends nested paths based on m2o relational information', () => {
-	const fieldMap = new Map();
+	const fieldMap = { read: new Map(), other: new Map() };
 
 	const query: Query = {
 		filter: {
@@ -47,7 +47,7 @@ test('Appends nested paths based on m2o relational information', () => {
 
 	extractFieldsFromQuery('test-collection', query, fieldMap, schema as SchemaOverview);
 
-	expect(fieldMap).toEqual(
+	expect(fieldMap.read).toEqual(
 		new Map([
 			['', { collection: 'test-collection', fields: new Set(['author', 'id']) }],
 			['author', { collection: 'test-collection-authors', fields: new Set(['name']) }],
@@ -56,7 +56,7 @@ test('Appends nested paths based on m2o relational information', () => {
 });
 
 test('Appends nested paths based on o2m relational information', () => {
-	const fieldMap = new Map();
+	const fieldMap = { read: new Map(), other: new Map() };
 
 	const query: Query = {
 		filter: {
@@ -86,7 +86,7 @@ test('Appends nested paths based on o2m relational information', () => {
 
 	extractFieldsFromQuery('test-collection', query, fieldMap, schema as SchemaOverview);
 
-	expect(fieldMap).toEqual(
+	expect(fieldMap.read).toEqual(
 		new Map([
 			['', { collection: 'test-collection', fields: new Set(['categories', 'id']) }],
 			['categories', { collection: 'test-collection-categories', fields: new Set(['name']) }],
@@ -95,7 +95,7 @@ test('Appends nested paths based on o2m relational information', () => {
 });
 
 test('Appends nested paths based on collection scope in a2o filter', () => {
-	const fieldMap = new Map();
+	const fieldMap = { read: new Map(), other: new Map() };
 
 	const query: Query = {
 		filter: {
@@ -113,7 +113,7 @@ test('Appends nested paths based on collection scope in a2o filter', () => {
 
 	extractFieldsFromQuery('test-collection', query, fieldMap, schema as SchemaOverview);
 
-	expect(fieldMap).toEqual(
+	expect(fieldMap.read).toEqual(
 		new Map([
 			['', { collection: 'test-collection', fields: new Set(['item']) }],
 			['item:headings', { collection: 'headings', fields: new Set(['title']) }],
@@ -122,7 +122,7 @@ test('Appends nested paths based on collection scope in a2o filter', () => {
 });
 
 test('All together now', () => {
-	const fieldMap = new Map();
+	const fieldMap = { read: new Map(), other: new Map() };
 
 	const query: Query = {
 		filter: {
@@ -171,7 +171,7 @@ test('All together now', () => {
 
 	extractFieldsFromQuery('test-collection', query, fieldMap, schema as SchemaOverview);
 
-	expect(fieldMap).toEqual(
+	expect(fieldMap.read).toEqual(
 		new Map([
 			['', { collection: 'test-collection', fields: new Set(['item']) }],
 			['item:headings', { collection: 'headings', fields: new Set(['categories', 'status']) }],

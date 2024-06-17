@@ -13,7 +13,7 @@ export function extractFieldsFromChildren(
 	schema: SchemaOverview,
 	path: QueryPath = [],
 ) {
-	const info = getInfoForPath(fieldMap, path, collection);
+	const info = getInfoForPath(fieldMap, 'other', path, collection);
 
 	for (const child of children) {
 		info.fields.add(getUnaliasedFieldKey(child));
