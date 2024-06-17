@@ -58,7 +58,7 @@
 	},
 	"peerDependencies": {
 		"knex": "3",
-		"pino": "8",
+		"pino": "9",
 		"vue": "^3.4",
 		"vue-router": "4"
 	},
