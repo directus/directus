@@ -20,7 +20,7 @@ export async function up(knex: Knex) {
 		table.text('ip_access');
 		table.boolean('enforce_tfa').defaultTo(false).notNullable();
 		table.boolean('admin_access').defaultTo(false).notNullable();
-		table.boolean('app_access').defaultTo(true).notNullable();
+		table.boolean('app_access').defaultTo(false).notNullable();
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
