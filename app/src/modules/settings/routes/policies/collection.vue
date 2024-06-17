@@ -199,7 +199,7 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
+					<v-text-overflow v-if="item.name" :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
 				</template>
 
 				<template #[`item.userCount`]="{ item }">
@@ -211,7 +211,7 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" :highlight="search" />
+					<v-text-overflow v-if="item.description" :text="item.description" class="description" :highlight="search" />
 				</template>
 			</v-table>
 		</div>
