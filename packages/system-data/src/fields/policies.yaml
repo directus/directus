@@ -64,12 +64,33 @@ fields:
     width: half
     <<: *hide_in_public_policy
 
-  - field: users
-    hidden: true
+  - field: assigned_to_divider
+    interface: presentation-divider
+    options:
+      title: $t:field_options.directus_policies.assigned_to
     special:
-      - o2m
+      - alias
+      - no-data
+    width: full
+
+  - field: users
+    interface: list-m2m
+    options:
+      template: '{{ user.first_name }} {{ user.last_name }}'
+      junctionFilter:
+        user:
+          _nnull: true
+    special:
+      - m2m
+    <<: *hide_in_public_policy
 
   - field: roles
-    hidden: true
+    interface: list-m2m
+    options:
+      template: '{{ role.name }}'
+      junctionFilter:
+        role:
+          _nnull: true
     special:
-      - o2m
+      - m2m
+    <<: *hide_in_public_policy
