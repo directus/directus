@@ -3,6 +3,7 @@ import { createError, ErrorCode } from '../index.js';
 export interface RecordNotUniqueErrorExtensions {
 	collection: string | null;
 	field: string | null;
+	primaryKey?: boolean;
 }
 
 export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorExtensions) => {
