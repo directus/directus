@@ -500,6 +500,14 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ### Work With Images
 
+::: warning DEPRECATED
+
+Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) the query parameter authentication is
+no longer required and considered deprecated, you can rely on
+[session cookies](/reference/authentication.html#access-tokens) instead.
+
+:::
+
 To use internal images, an access token needs to be included in the request. Create a new file called
 `use-directus-token.js` and copy the following code:
 
@@ -742,6 +750,7 @@ import { ref, watch } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
 import { useRouter } from 'vue-router';
 import PageNavigation from './components/navigation.vue';
+import useDirectusToken from './use-directus-token.js';
 
 export default {
 	components: {
@@ -916,6 +925,36 @@ export default {
 		}
 	}
 </style>
+```
+
+```vue [components/navigation.vue]
+<template>
+  <v-list nav v-if="pages">
+    <v-list-item v-for="navItem in pages" :key="navItem.to" :active="navItem.uri == current" :to="navItem.to">
+      <v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
+      <v-list-item-content>
+        <v-text-overflow :text="navItem.label" />
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
+</template>
+
+<script>
+export default {
+  name: 'PageNavigation',
+  inheritAttrs: false,
+  props: {
+    current: {
+      type: String,
+      default: null,
+    },
+    pages: {
+      type: Array,
+      default: [],
+    },
+  },
+}
+</script>
 ```
 
 ```js [use-directus-token.js]

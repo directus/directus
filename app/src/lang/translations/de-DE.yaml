@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Über
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -27,10 +28,12 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+marketplace: Marktplatz
 extensions: Erweiterungen
 modules: Module
 module_bar: Modulleiste
 logs: Logs
+unknown: Unbekannt
 reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
@@ -48,6 +51,8 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+popular: Beliebt
+recent: Aktuell
 export_items: Elemente exportieren
 and: Und
 or: Oder
@@ -69,10 +74,32 @@ extension_displays: Darstellungen
 extension_layouts: Layouts
 extension_modules: Module
 extension_panels: Panels
+extension_themes: Erscheinungsbilder
 extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
 extension_bundles: Pakete
+extension_missing: Fehlend
+extension_reload_required: Neuladen der Seite erforderlich
+extension_reload_required_copy: Um die Änderungen nach Aktivierung oder Deaktivierung von App-Erweiterungen sehen zu können, ist ein Neuladen der Seite erforderlich.
+extension_reload_now: Jetzt neu laden
+published_relative: Veröffentlicht {relativeTime}
+compatible_with_your_project: Mit Ihrem Projekt kompatibel
+compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, die mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
+last_updated_relative: Letzte Aktualisierung {relativeTime}
+n_files: '{n} Dateien'
+verified: Verifiziert
+homepage: Hello world
+repository: Repository
+reload_page: Seite neu laden
+reload_required: Erneutes Laden erforderlich
+report_an_issue: Problem melden
+website: Webseite
+github: GitHub
+beta: Beta
+n_downloads: '{n} downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilität nicht garantiert
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -161,6 +188,7 @@ logoutReason:
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+no_description: Keine Beschreibung ...
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -300,16 +328,20 @@ time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
 hash: Hash
-geometry: Geometrie (alle)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
+geometry:
+  All: Geometrie (alle)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatisch (Systemeinstellung folgen)
 theme_light: Heller Modus
 theme_dark: Dunkler Modus
+theme_directus_default: Directus Standard
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus-Farbwiedergabe
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -519,14 +551,13 @@ replace_from_url: Mit Datei von URL ersetzen
 no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
-open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
 exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
 exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
-exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
-exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
+exporting_download_hint: Sobald die {format}-Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
+exporting_library_hint: Sobald die {format}-Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
 exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
@@ -557,7 +588,8 @@ expand: Ausklappen
 collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
-search_items: Elemente suchen...
+search_items: Elemente suchen ...
+search_extensions: Durchsuche Erweiterungen ...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
@@ -639,6 +671,10 @@ select_an_item: Element auswählen...
 edit: Bearbeiten
 edit_item: Element bearbeiten
 enabled: Aktiviert
+partially_enabled: Teilweise aktiviert
+enable_all: Alle aktivieren
+disable_all: Alle deaktivieren
+enabled_dev_tooltip: App-Erweiterungen sind im Dev-Modus immer aktiviert
 disable_tfa: 2FA deaktivieren
 admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
 tfa_setup: 2FA einrichten
@@ -650,39 +686,40 @@ auto_fill: Autom. ausfüllen
 corresponding_field: Korrespondierendes Feld
 errors:
   COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
+  CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
+  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
+  GRAPHQL_VALIDATION: GraphQL-Validierung
+  ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
+  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
+  INVALID_CONFIG: Ungültige Konfiguration
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
+  INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
+  INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_OTP: Falsches Einmalpasswort
   INVALID_PAYLOAD: Ungültige Nutzdaten
   INVALID_PROVIDER: Benutzer gehört zu einem anderen Authentifizierungsanbieter
   INVALID_QUERY: Ungültige anfrage
-  INVALID_CONFIG: Ungültige Konfiguration
   INVALID_TOKEN: Token ungültig
-  INVALID_IP: IP-Adresse nicht erlaubt
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
-  ROUTE_NOT_FOUND: Nicht gefunden
-  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
-  USER_SUSPENDED: Benutzer gesperrt
-  CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_CONTENT: Nicht verarbeitbarer Inhalt
-  INTERNAL_SERVER_ERROR: Unerwarteter Fehler
-  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
-  ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
-  VALUE_TOO_LONG: Wert ist zu lang
-  VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
-  INVALID_FOREIGN_KEY: Ungültiger Fremdschlüssel
-  UNKNOWN: Unerwarteter Fehler
-  SERVICE_UNAVAILABLE: Dienst nicht verfügbar
-  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
-  UNEXPECTED_RESPONSE: Unerwartete Antwort
-  TOKEN_EXPIRED: Token abgelaufen
-  RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
+  NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
+  RANGE_NOT_SATISFIABLE: Ungültiger Bereich
+  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
-  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
+  ROUTE_NOT_FOUND: Nicht gefunden
+  SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  TOKEN_EXPIRED: Token abgelaufen
+  UNEXPECTED_RESPONSE: Unerwartete Antwort
+  UNKNOWN: Unerwarteter Fehler
+  UNPROCESSABLE_CONTENT: Nicht verarbeitbarer Inhalt
+  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
+  USER_SUSPENDED: Benutzer gesperrt
+  VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
+  VALUE_TOO_LONG: Wert ist zu lang
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -696,7 +733,6 @@ cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
-unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
@@ -866,7 +902,7 @@ run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktual
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
-field_name_placeholder: Feldnamen eingeben...
+field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -940,6 +976,7 @@ media: Medien
 quality: Qualität
 width: Breite
 height: Höhe
+transformation_preset_key: Vorgabe-Schlüssel Transformation
 source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
@@ -1108,6 +1145,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+source_registry: Marktplatz
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
@@ -1220,6 +1258,8 @@ fields:
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
     appearance: Erscheinung
+    theme_light: Helles Erscheinungsbild
+    theme_dark: Dunkles Erscheinungsbild
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
@@ -1250,6 +1290,9 @@ fields:
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
     theming: Design-Standardwerte
+    default_appearance: Standard-Erscheinung
+    default_theme_light: 'Standard Erscheinungsbild: Hell'
+    default_theme_dark: 'Standard Erscheinungsbild: Dunkel'
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
@@ -1364,7 +1407,7 @@ field_options:
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
     preview_divider: Vorschau
-    content_versioning_divider: Content Versioning
+    content_versioning_divider: Inhalts-Versionierung
     enable_versioning: Versionierung aktivieren
   directus_files:
     title: Ein einzigartiger Titel...
@@ -1376,7 +1419,7 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
-    ip_access: Erlaubte IP-Adressen hinzufügen, leer lassen um alle zuzulassen...
+    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1760,7 +1803,7 @@ interfaces:
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
-    radio-buttons: Radio Buttons
+    radio-buttons: Radio-Buttons
     description: Eine von mehreren Optionen auswählen
   list:
     repeater: Repeater
@@ -1845,7 +1888,9 @@ interfaces:
     description: Ein Rich-Text-Editor, der HTML-Inhalte erzeugt
     toolbar: Toolbar
     custom_formats: Benutzerdefinierte Formate
+    custom_formats_note: Liste der TinyMCE Inhaltsformate. Siehe TinyMCE Dokumentation über [Inhaltsformatierung](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) für weitere Informationen.
     options_override: Optionen überschreiben
+    options_override_note: Die TinyMCE Schlüssel und Werte für Benutzer-Formatierung. Siehe TinyMCE Dokumentation über [Benutzer-Formatierung](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) für weitere Informationen.
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
@@ -1984,6 +2029,9 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatierter JSON-Wert
     description: Eine formatierte Version des Objekts anzeigen
+  hash:
+    hash: Hash
+    description: Eine zensierte Version des Wertes anzeigen
   icon:
     icon: Symbol
     description: Icon anzeigen
@@ -2068,7 +2116,7 @@ layouts:
     group_title: Gruppentitel
     group_title_placeholder: Feld für Gruppentitel...
     title: Karten-Titel
-    title_placeholder: Optionales Titelfeld...
+    title_placeholder: Optionales Titelfeld ...
     text: Karten-Text
     text_placeholder: Optionales Textfeld...
     date: Karten-Datum
@@ -2076,7 +2124,7 @@ layouts:
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
     user: Karten-Benutzer
-    user_placeholder: Optionales Benutzerfeld...
+    user_placeholder: Optionales Benutzerfeld ...
     image: Karten-Bild
     image_placeholder: Optionales Bildfeld...
     image_fit: Karten-Bild Füllmodus
@@ -2142,8 +2190,8 @@ panels:
   linechart:
     name: Liniendiagramm
     description: Liniendiagramm zum Vergleich der Änderung eines Feldes
-    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
-    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist
+    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist
     show_marker: Tooltip-Marker anzeigen
     curve_type: Kurventyp
     smooth: Weich
@@ -2264,8 +2312,8 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
-    recipient_placeholder: Eine UUID eingeben...
-    recipient_note: Benutzer UUID hinzufügen und Enter drücken...
+    recipient_placeholder: Eine UUID eingeben ...
+    recipient_note: Benutzer-UUID hinzufügen und Enter drücken ...
     item_note: Elementschlüssel oder relative URL
     message: Nachricht
     subject: Betreff
@@ -2339,5 +2387,5 @@ date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
 search_dashboard: Dashboard suchen...
-search_flow: Flow suchen...
+search_flow: Flow suchen ...
 percent: Prozent

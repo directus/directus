@@ -1,4 +1,4 @@
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -127,20 +127,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			groupTitleFields,
 			groupsCollection,
 			changeGroupSort,
+			getGroups,
 			addGroup,
 			editGroup,
 			deleteGroup,
 			isRelational,
 		} = useGrouping();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields,
-			filter,
-			search,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
+			collection,
+			{
+				sort,
+				limit,
+				page,
+				fields,
+				filter,
+				search,
+			},
+		);
 
 		const limitWarning = computed(() => items.value.length >= limit.value);
 
@@ -250,6 +254,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			showUngrouped,
 			limitWarning,
 			userFieldType,
+			resetPresetAndRefresh,
+			refresh,
 		};
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
@@ -303,7 +309,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fit = crop.value ? '&width=250&height=150' : `&key=system-medium-contain`;
 
 			const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}` + fit;
-			return addTokenToURL(url);
+			return url;
+		}
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
+
+		function refresh() {
+			getItems();
+			// potentially reload the related group items, if the group field is relational
+			if (isRelational.value) getGroups();
 		}
 
 		function useLayoutOptions() {
@@ -450,6 +467,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				groupsPrimaryKeyField,
 				groupsSortField,
 				groupsCollection,
+				getGroups,
 				addGroup,
 				editGroup,
 				deleteGroup,
@@ -608,7 +626,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					fields.push(`${relatedUser}.avatar.modified_on`);
 				}
 
-				if (sort.value.length > 0) {
+				if (sort.value[0]) {
 					const sortField = sort.value[0].startsWith('-') ? sort.value[0].substring(1) : sort.value[0];
 
 					if (fields.includes(sortField) === false) {

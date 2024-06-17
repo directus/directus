@@ -1,11 +1,14 @@
-import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
+import { useEnv } from '@directus/env';
+import { InvalidQueryError } from '@directus/errors';
+import type { Accountability, Aggregate, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import env from '../env.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
+	const env = useEnv();
+
 	const query: Query = {};
 
 	const hasMaxLimit =
@@ -62,6 +65,11 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery['version']) {
 		query.version = rawQuery['version'];
+
+		// whether or not to merge the relational results
+		query.versionRaw = Boolean(
+			'versionRaw' in rawQuery && (rawQuery['versionRaw'] === '' || rawQuery['versionRaw'] === 'true'),
+		);
 	}
 
 	if (rawQuery['export']) {
@@ -109,6 +117,8 @@ function sanitizeSort(rawSort: any) {
 }
 
 function sanitizeAggregate(rawAggregate: any): Aggregate {
+	const logger = useLogger();
+
 	let aggregate: Aggregate = rawAggregate;
 
 	if (typeof rawAggregate === 'string') {
@@ -128,17 +138,21 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 }
 
 function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
-	let filters: Filter | null = rawFilter;
+	let filters = rawFilter;
 
-	if (typeof rawFilter === 'string') {
+	if (typeof filters === 'string') {
 		try {
-			filters = parseJSON(rawFilter);
+			filters = parseJSON(filters);
 		} catch {
-			logger.warn('Invalid value passed for filter query parameter.');
+			throw new InvalidQueryError({ reason: 'Invalid JSON for filter object' });
 		}
 	}
 
-	return parseFilter(filters, accountability);
+	try {
+		return parseFilter(filters, accountability);
+	} catch {
+		throw new InvalidQueryError({ reason: 'Invalid filter object' });
+	}
 }
 
 function sanitizeLimit(rawLimit: any) {
@@ -171,6 +185,8 @@ function sanitizeMeta(rawMeta: any) {
 }
 
 function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
+	const logger = useLogger();
+
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {
@@ -216,6 +232,8 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 }
 
 function sanitizeAlias(rawAlias: any) {
+	const logger = useLogger();
+
 	let alias: Record<string, string> = rawAlias;
 
 	if (typeof rawAlias === 'string') {

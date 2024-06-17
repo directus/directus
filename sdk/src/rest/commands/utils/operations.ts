@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Result of the flow, if any.
  */
 export const triggerOperation =
-	<Schema extends object>(id: string, data?: any): RestCommand<unknown, Schema> =>
+	<Schema>(id: string, data?: any): RestCommand<unknown, Schema> =>
 	() => ({
 		path: `/operations/trigger/${id}`,
 		body: JSON.stringify(data ?? {}),

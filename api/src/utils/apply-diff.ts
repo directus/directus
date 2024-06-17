@@ -7,7 +7,7 @@ import { flushCaches } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import logger from '../logger.js';
+import { useLogger } from '../logger.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
@@ -20,12 +20,15 @@ import type {
 	SnapshotField,
 } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { getSchema } from './get-schema.js';
 
 type CollectionDelta = {
 	collection: string;
 	diff: Diff<Collection | undefined>[];
 };
+
+const logger = useLogger();
 
 export async function applyDiff(
 	currentSnapshot: Snapshot,
@@ -46,7 +49,7 @@ export async function applyDiff(
 
 	const runPostColumnChange = await helpers.schema.preColumnChange();
 
-	await database.transaction(async (trx) => {
+	await transaction(database, async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>

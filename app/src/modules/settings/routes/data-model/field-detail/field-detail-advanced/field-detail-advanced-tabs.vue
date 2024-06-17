@@ -78,7 +78,7 @@ const tabs = computed(() => {
 
 <template>
 	<v-tabs v-model="currentTabSync" vertical>
-		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tab.disabled">
+		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 			{{ tab.text }}
 		</v-tab>
 	</v-tabs>

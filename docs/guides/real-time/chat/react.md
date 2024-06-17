@@ -17,7 +17,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 [managed Directus Cloud service](https://directus.cloud).
 
 Create a new collection called `messages`, with `date_created` and `user_created` fields enabled in the _Optional System
-Fields_ pane on collection creation. Create a text field called `text`.
+Fields_ pane on collection creation. Create an input field called `text`.
 
 Create a new Role called `Users`. Give Create and Read access to the `Messages` collection, and Read access to the
 `Directus Users` system collection. Now, create a new user with this role and take note of the password you set.
@@ -40,7 +40,7 @@ function App() {
 
 			<form>
 				<label htmlFor="message">Message</label>
-				<input type="text" id="message" />
+				<input type="text" id="text" />
 				<button type="submit">Submit</button>
 			</form>
 		</div>
@@ -54,14 +54,35 @@ populated with messages we will create shortly.
 Create a `url` variable and be sure to replace `your-directus-url` with your project’s URL:
 
 ```js
-const url = 'wss://your-directus-url/websocket';
+const url = 'https://your-directus-url';
 ```
 
-Now, create a variable called `connectionRef` that has an initial null value. The `connectionRef` will later contain a
-WebSocket instance.
+## Import the Required Composables and Methods
+
+At the top of your file, import the SDK composables needed for this project
 
 ```js
-const connectionRef = useRef(null);
+import { authentication, createDirectus, realtime } from '@directus/sdk';
+```
+
+- `createDirectus` is a function that initializes a Directus client.
+- `authentication` provides methods to authenticate a user.
+- `realtime` provides methods to establish a WebSocket connection.
+
+Also import `useState` and `useEffect` from react.
+
+```js
+import { useState, useEffect } from 'react';
+```
+
+## Establish and Authenticate a WebSocket Client
+
+Create and authenticate the WebSocket client
+
+```js
+const client = createDirectus(url)
+  .with(authentication())
+  .with(realtime());
 ```
 
 ## Set Up Form Submission Methods
@@ -87,129 +108,67 @@ const messageSubmit = (event) => {
 };
 ```
 
-## Establish WebSocket Connection
-
-At the top of your component, create a piece of state to hold the `email` and `password` values of the login form:
+Now, extract the `email` and `password` values from the login form.
 
 ```js
-const [formValue, setFormValue] = useState({ email: '', password: '' });
+ const loginSubmit = (event) => {
+    event.preventDefault();
+    const email = event.target.elements.email.value; // [!code ++]
+    const password = event.target.elements.password.value; // [!code ++]
+  };
 ```
 
-Set up a `handleLoginChange` method that updates the value of the login input field as the user types.
+Once the client is authenticated, immediately create a WebSocket connection:
 
 ```js
-const handleLoginChange = (event) => {
-	setFormValue({ ...formValue, [event.target.name]: event.target.value });
-};
+client.connect();
 ```
 
-Then, connect these values to the form input fields:
+## Subscribe To Messages
 
-```jsx
-<form onSubmit={loginSubmit}>
-	<label htmlFor="email">Email</label>
-	<input type="email" id="email" /> // [!code --]
-	<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} /> // [!code ++]
-	<label htmlFor="password">Password</label>
-	<input type="password" id="password" /> // [!code --]
-	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code ++]
-	<button type="submit">Submit</button>
-</form>
-```
-
-Within the `loginSubmit` method, create a new WebSocket, which will immediately attempt connection:
+As soon as you have successfully authenticated, a message will be sent. When this happens, within `useEffect`, subscribe
+to updates on the `Messages` collection.
 
 ```js
-const loginSubmit = (event) => {
-	connectionRef.current = new WebSocket(url); // [!code ++]
-};
+useEffect(() => {
+  const cleanup = client.onWebSocket('message', function (data) {
+    if (data.type == 'auth' && data.status == 'ok') {
+      subscribe('create');
+    }
+  });
+
+  client.connect();
+
+  return cleanup;
+}, []);
 ```
 
-On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an
-event handler for the connection's `open` event:
+Create a `subscribe` function that subscribes to events.
 
 ```js
-const loginSubmit = (event) => {
-	connectionRef.current = new WebSocket(url);
-	connectionRef.current.addEventListener('open', authenticate(formValue)); // [!code ++]
-};
+async function subscribe(event) {
+  const { subscription } = await client.subscribe('messages', {
+    event,
+    query: {
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
+
+  for await (const message of subscription) {
+    receiveMessage(message);
+  }
+}
 ```
 
-Then, create a new `authenticate` method:
+When a subscription is started, a message will be sent to confirm. Create a `receiveMessage` function with the
+following:
 
 ```js
-const authenticate = (opts) => {
-	const { email, password } = opts;
-	connectionRef.current.send(JSON.stringify({ type: 'auth', email, password }));
-};
-```
-
-### Subscribe to Messages
-
-In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Inside
-`loginSubmit`, add an event handler:
-
-```js
-const loginSubmit = (event) => {
-	connectionRef.current = new WebSocket(url);
-	connectionRef.current.addEventListener('open', authenticate(formValue));
-	connectionRef.current.addEventListener('message', (message) => receiveMessage(message)); // [!code ++]
-};
-```
-
-Then, create a new `receiveMessage` method:
-
-```js
-const receiveMessage = (message) => {
-	const data = JSON.parse(message.data);
-};
-```
-
-As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
-`Messages` collection. Add this inside of the `receiveMessage` method:
-
-```js
-const receiveMessage = (message) => {
-	const data = JSON.parse(message.data);
-
-	if (data.type === 'auth' && data.status === 'ok') { // [!code ++]
-		connectionRef.current.send( // [!code ++]
-			JSON.stringify({ // [!code ++]
-				type: 'subscribe', // [!code ++]
-				collection: 'messages', // [!code ++]
-				query: { // [!code ++]
-					fields: ['*', 'user_created.first_name'], // [!code ++]
-					sort: 'date_created', // [!code ++]
-				}, // [!code ++]
-			}) // [!code ++]
-		); // [!code ++]
-	} // [!code ++]
-};
-```
-
-When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` method:
-
-```js {15-17}
-const receiveMessage = (message) => {
-	const data = JSON.parse(message.data);
-
-	if (data.type === 'auth' && data.status === 'ok') {
-		connectionRef.current.send(
-			JSON.stringify({
-				type: 'subscribe',
-				collection: 'messages',
-				query: {
-					fields: ['*', 'user_created.first_name'],
-					sort: 'date_created',
-				},
-			})
-		);
-	}
-
-	if (data.type === 'subscription' && data.event === 'init') { // [!code ++]
-		console.log('subscription started'); // [!code ++]
-	} // [!code ++]
-};
+function receiveMessage() {
+  if (data.type == 'subscription' && data.event == 'init') {
+	  console.log('subscription started');
+  }
+}
 ```
 
 Open your browser, enter your user’s email and password, and hit submit. Check the browser console. You should see
@@ -217,47 +176,28 @@ Open your browser, enter your user’s email and password, and hit submit. Check
 
 ## Create New Messages
 
-At the top of your component, set up two pieces of state to hold messages: one to keep track of new messages and another
-to store an array of previous message history.
+At the top of your component, set up a piece of state to store an array of previous message history.
 
 ```js
-const [newMessage, setNewMessage] = useState('');
 const [messageHistory, setMessageHistory] = useState([]);
-```
-
-Create a `handleMessageChange` method that updates the value of the message input field as the user types.
-
-```js
-const handleMessageChange = (event) => {
-	setNewMessage(event.target.value);
-};
-```
-
-Then, connect these values to the form input fields:
-
-```jsx
-<form onSubmit={messageSubmit}>
-	<label htmlFor="message">Message</label>
-	<input type="text" id="message" /> // [!code --]
-	<input type="text" id="message" name="message" value={newMessage} onChange={handleMessageChange} /> // [!code ++]
-	<button type="submit">Submit</button>
-</form>
 ```
 
 Within the `messageSubmit` method, send a new message to create the item in your Directus collection:
 
 ```js
 const messageSubmit = (event) => {
-	connectionRef.current.send(
-		JSON.stringify({
-			type: 'items',
-			collection: 'messages',
-			action: 'create',
-			data: { text: newMessage },
-		})
-	);
+  event.preventDefault();
 
-	setNewMessage('');
+  const text = event.target.elements.text.value;
+
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'create',
+    data: { text },
+  });
+
+  event.target.reset();
 };
 ```
 
@@ -272,8 +212,16 @@ In your `receiveMessage` function, listen for new `create` events on the `Messag
 `messageHistory`:
 
 ```js
-if (data.type === 'subscription' && data.event === 'create') {
-	setMessageHistory((history) => [...history, data.data[0]]);
+if (data.type == 'subscription' && data.event == 'create') {
+    addMessageToList(message.data[0]);
+  }
+```
+
+Create an `addMessageToList` function that adds new messages to list:
+
+```js
+function addMessageToList(message) {
+  setMessageHistory([...messageHistory, message]);
 }
 ```
 
@@ -296,16 +244,49 @@ and navigate to your index.html file, login and submit a message there and both 
 
 ## Display Historical Messages
 
-Replace the `console.log()` you created when the subscription is initialized:
+To display the list of all existing messages, create a function `readAllMessages` with the following:
 
 ```js
-if (data.type === 'subscription' && data.event === 'init') {
-	console.log('subscription started'); // [!code --]
-
-	for (const message of data.data) { // [!code ++]
-		setMessageHistory((history) => [...history, message]); // [!code ++]
-	} // [!code ++]
+function readAllMessages() {
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'read',
+    query: {
+      limit: 10,
+      sort: '-date_created',
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
 }
+```
+
+Run this function directly before subscribing to any events
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages(); // [!code ++]
+    subscribe('create');
+  }
+});
+```
+
+Within the connection, listen for "items" message to update the user interface with message history.
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages();
+    subscribe('create');
+  }
+
+  if (data.type == 'items') { // [!code ++]
+    for (const item of data.data) { // [!code ++]
+      addMessageToList(item); // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+});
 ```
 
 Refresh your browser, login, and you should see the existing messages shown in your browser.
@@ -322,103 +303,121 @@ This guide covers authentication, item creation, and subscription using WebSocke
 ## Full Code Sample
 
 ```jsx
-import { useState, useRef } from 'react';
+import { authentication, createDirectus, realtime } from '@directus/sdk';
+import { useState, useEffect } from 'react';
 
-const url = 'wss://your-directus-url/websocket';
+const url = 'https://your-directus-url';
+
+const client = createDirectus(url).with(authentication()).with(realtime());
 
 export default function App() {
-	const [formValue, setFormValue] = useState({ email: '', password: '' });
-	const [newMessage, setNewMessage] = useState('');
-	const [messageHistory, setMessageHistory] = useState([]);
+  const [messageHistory, setMessageHistory] = useState([]);
 
-	const connectionRef = useRef(null);
+  useEffect(() => {
+    const cleanup = client.onWebSocket('message', function (data) {
+      if (data.type == 'auth' && data.status == 'ok') {
+        readAllMessages();
+        subscribe('create');
+      }
 
-	const authenticate = (opts) => {
-		const { email, password } = opts;
-		connectionRef.current.send(JSON.stringify({ type: 'auth', email, password }));
-	};
+      if (data.type === 'items') {
+        for (const item of data.data) {
+          addMessageToList(item);
+        }
+      }
+    });
 
-	const loginSubmit = (event) => {
-		event.preventDefault();
-		connectionRef.current = new WebSocket(url);
-		connectionRef.current.addEventListener('open', authenticate(formValue));
-		connectionRef.current.addEventListener('message', (message) => receiveMessage(message));
-	};
+    client.connect();
 
-	const receiveMessage = (message) => {
-		const data = JSON.parse(message.data);
+    return cleanup;
+  }, []);
 
-		if (data.type == 'auth' && data.status == 'ok') {
-			connectionRef.current.send(
-				JSON.stringify({
-					type: 'subscribe',
-					collection: 'messages',
-					query: {
-						fields: ['*', 'user_created.first_name'],
-						sort: 'date_created',
-					},
-				})
-			);
-		}
+  const loginSubmit = (event) => {
+    event.preventDefault();
+    const email = event.target.elements.email.value;
+    const password = event.target.elements.password.value;
+    client.login(email, password);
+  };
 
-		if (data.type === 'subscription' && data.event === 'init') {
-			for (const message of data.data) {
-				setMessageHistory((history) => [...history, message]);
-			}
-		}
+  async function subscribe(event) {
+    const { subscription } = await client.subscribe('messages', {
+      event,
+      query: {
+        fields: ['*', 'user_created.first_name'],
+      },
+    });
 
-		if (data.type === 'subscription' && data.event === 'create') {
-			setMessageHistory((history) => [...history, data.data[0]]);
-		}
-	};
+    for await (const message of subscription) {
+      console.log('receiveMessage', message);
+      receiveMessage(message);
+    }
+  }
 
-	const messageSubmit = (event) => {
-		event.preventDefault();
+  function readAllMessages() {
+    client.sendMessage({
+      type: 'items',
+      collection: 'messages',
+      action: 'read',
+      query: {
+        limit: 10,
+        sort: '-date_created',
+        fields: ['*', 'user_created.first_name'],
+      },
+    });
+  }
 
-		connectionRef.current.send(
-			JSON.stringify({
-				type: 'items',
-				collection: 'messages',
-				action: 'create',
-				data: { text: newMessage },
-			})
-		);
+  function receiveMessage(data) {
+    if (data.type == 'subscription' && data.event == 'init') {
+      console.log('subscription started');
+    }
+    if (data.type == 'subscription' && data.event == 'create') {
+      addMessageToList(message.data[0]);
+    }
+  }
 
-		setNewMessage('');
-	};
+  function addMessageToList(message) {
+    setMessageHistory([...messageHistory, message]);
+  }
 
-	const handleLoginChange = (event) => {
-		setFormValue({ ...formValue, [event.target.name]: event.target.value });
-	};
+  const messageSubmit = (event) => {
+    event.preventDefault();
 
-	const handleMessageChange = (event) => {
-		setNewMessage(event.target.value);
-	};
+    const text = event.target.elements.text.value;
 
-	return (
-		<div className="App">
-			<form onSubmit={loginSubmit}>
-				<label htmlFor="email">Email</label>
-				<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} />
-				<label htmlFor="password">Password</label>
-				<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} />
-				<button type="submit">Submit</button>
-			</form>
+    client.sendMessage({
+      type: 'items',
+      collection: 'messages',
+      action: 'create',
+      data: { text },
+    });
 
-			<ol>
-				{messageHistory.map((message) => (
-					<li key={message.id}>
-						{message.user_created.first_name}: {message.text}
-					</li>
-				))}
-			</ol>
+    event.target.reset();
+  };
 
-			<form onSubmit={messageSubmit}>
-				<label htmlFor="message">Message</label>
-				<input type="text" id="message" name="message" value={newMessage} onChange={handleMessageChange} />
-				<button type="submit">Submit</button>
-			</form>
-		</div>
-	);
+  return (
+    <div className='App'>
+      <form onSubmit={loginSubmit}>
+        <label htmlFor='email'>Email</label>
+        <input type='email' id='email' defaultValue='admin@example.com' />
+        <label htmlFor='password'>Password</label>
+        <input type='password' id='password' defaultValue='d1r3ctu5' />
+        <input type='submit' />
+      </form>
+
+      <ol>
+        {messageHistory.map((message) => (
+          <li key={message.id}>
+            {message.user_created.first_name}: {message.text}
+          </li>
+        ))}
+      </ol>
+
+      <form onSubmit={messageSubmit}>
+        <label htmlFor='message'>Message</label>
+        <input type='text' id='text' />
+        <input type='submit' />
+      </form>
+    </div>
+  );
 }
 ```

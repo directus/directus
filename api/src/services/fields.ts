@@ -1,4 +1,10 @@
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import {
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
+	DEFAULT_NUMERIC_PRECISION,
+	DEFAULT_NUMERIC_SCALE,
+} from '@directus/constants';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
@@ -12,18 +18,20 @@ import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { ItemsService } from './items.js';
-import { PayloadService } from './payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+
+const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
 export class FieldsService {
 	knex: Knex;
@@ -280,25 +288,28 @@ export class FieldsService {
 				addFieldFlag(field, flagToAdd);
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
 					schema: this.schema,
 				});
 
-				const hookAdjustedField = await emitter.emitFilter(
-					`fields.create`,
-					field,
-					{
-						collection: collection,
-					},
-					{
-						database: trx,
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				);
+				const hookAdjustedField =
+					opts?.emitEvents !== false
+						? await emitter.emitFilter(
+								`fields.create`,
+								field,
+								{
+									collection: collection,
+								},
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								},
+						  )
+						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
@@ -381,20 +392,29 @@ export class FieldsService {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		// 'type' is required for further checks on schema update
+		if (field.schema && !field.type) {
+			const existingType = this.schema.collections[collection]?.fields[field.field]?.type;
+			if (existingType) field.type = existingType;
+		}
+
 		try {
-			const hookAdjustedField = await emitter.emitFilter(
-				`fields.update`,
-				field,
-				{
-					keys: [field.field],
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			const hookAdjustedField =
+				opts?.emitEvents !== false
+					? await emitter.emitFilter(
+							`fields.update`,
+							field,
+							{
+								keys: [field.field],
+								collection: collection,
+							},
+							{
+								database: this.knex,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+					  )
+					: field;
 
 			const record = field.meta
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
@@ -412,15 +432,21 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
+				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
+					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+				}
+
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
 				const columnToCompare =
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
-						await this.knex.schema.alterTable(collection, (table) => {
-							if (!hookAdjustedField.schema) return;
-							this.addColumnToTable(table, field, existingColumn);
+						await transaction(this.knex, async (trx) => {
+							await trx.schema.alterTable(collection, async (table) => {
+								if (!hookAdjustedField.schema) return;
+								this.addColumnToTable(table, field, existingColumn);
+							});
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err);
@@ -496,6 +522,43 @@ export class FieldsService {
 		}
 	}
 
+	async updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
+		try {
+			const fieldNames = [];
+
+			for (const field of fields) {
+				fieldNames.push(
+					await this.updateField(collection, field, {
+						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+					}),
+				);
+			}
+
+			return fieldNames;
+		} finally {
+			if (shouldClearCache(this.cache, opts)) {
+				await this.cache.clear();
+			}
+
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+			}
+
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
+
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
+			}
+		}
+	}
+
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -505,20 +568,22 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await emitter.emitFilter(
-				'fields.delete',
-				[field],
-				{
-					collection: collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
+			if (opts?.emitEvents !== false) {
+				await emitter.emitFilter(
+					'fields.delete',
+					[field],
+					{
+						collection: collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				);
+			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const relations = this.schema.relations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
@@ -678,7 +743,12 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
+
+			column = table[type](
+				field.field,
+				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
 		} else if (field.type === 'hash') {

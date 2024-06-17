@@ -1,18 +1,17 @@
+import { useEnv } from '@directus/env';
 import type { Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
-import { getHelpers } from './helpers/index.js';
-import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
-import type { ColumnSortRecord } from '../utils/apply-query.js';
-import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
+import applyQuery, { applyLimit, applySort, generateAlias, type ColumnSortRecord } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
-import { stripFunction } from '../utils/strip-function.js';
+import { parseFilterKey } from '../utils/parse-filter-key.js';
+import { getHelpers } from './helpers/index.js';
 import getDatabase from './index.js';
 
 type RunASTOptions = {
@@ -66,6 +65,8 @@ export default async function runAST(
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 		query: Query,
 	) {
+		const env = useEnv();
+
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
@@ -83,7 +84,7 @@ export default async function runAST(
 
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
-		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
+		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, query.alias ?? {});
 
 		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 
@@ -102,7 +103,7 @@ export default async function runAST(
 					const node = merge({}, nestedNode, {
 						query: {
 							limit: env['RELATIONAL_BATCH_SIZE'],
-							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * (env['RELATIONAL_BATCH_SIZE'] as number),
 							page: null,
 						},
 					});
@@ -113,7 +114,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 					}
 
-					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
+					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
 						hasMore = false;
 					}
 
@@ -159,7 +160,7 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
-			const fieldName = stripFunction(child.name);
+			const { fieldName } = parseFilterKey(child.name);
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
@@ -222,7 +223,8 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
+			const { fieldName } = parseFilterKey(fieldNode.name);
+			field = schema.collections[table]!.fields[fieldName];
 		} else {
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
@@ -246,6 +248,7 @@ async function getDBQuery(
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query,
 ): Promise<Knex.QueryBuilder> {
+	const env = useEnv();
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
@@ -439,6 +442,7 @@ function mergeWithParentItems(
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
 ) {
+	const env = useEnv();
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
 
@@ -472,21 +476,18 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
 
+			const limit = nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
+
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1),
-				);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(limit * (nestedNode.query.page - 1));
 			}
 
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
 			}
 
-			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					0,
-					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']),
-				);
+			if (limit !== -1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, limit);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {

@@ -1,10 +1,10 @@
 import type { DirectusVersion } from '../../../schema/version.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateContentVersionOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusVersion<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateContentVersionOutput<
  * @throws Will throw if keys is empty
  */
 export const updateContentVersions =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		keys: DirectusVersion<Schema>['id'][],
 		item: Partial<DirectusVersion<Schema>>,
 		query?: TQuery,
@@ -35,6 +35,24 @@ export const updateContentVersions =
 	};
 
 /**
+ * Update multiple Content Versions as batch.
+ * @param items
+ * @param query
+ * @returns Returns the Content Version objects for the updated Content Versions.
+ */
+export const updateContentVersionsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
+		items: NestedPartial<DirectusVersion<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/versions`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing Content Version.
  * @param key
  * @param item
@@ -43,7 +61,7 @@ export const updateContentVersions =
  * @throws Will throw if key is empty
  */
 export const updateContentVersion =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		key: DirectusVersion<Schema>['id'],
 		item: Partial<DirectusVersion<Schema>>,
 		query?: TQuery,

@@ -96,14 +96,14 @@ const generatedKey = computed(() =>
 
 const { operations } = useExtensions();
 
-const displayOperations = computed(() => {
-	return operations.value.map((operation) => ({
+const displayOperations = computed(() =>
+	operations.value.map((operation) => ({
 		value: operation.id,
 		icon: operation.icon,
 		text: operation.name,
 		description: operation.description,
-	}));
-});
+	})),
+);
 
 const operationOptions = computed(() => {
 	if (typeof selectedOperation.value?.options === 'function') {

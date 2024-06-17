@@ -1,0 +1,58 @@
+table: directus_presets
+
+fields:
+  - field: filter
+    hidden: true
+    special:
+      - cast-json
+
+  - field: layout_query
+    hidden: true
+    special:
+      - cast-json
+
+  - field: layout_options
+    hidden: true
+    special:
+      - cast-json
+
+  - field: role
+    width: half
+    special:
+      - m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: user
+    width: half
+    special:
+      - m2o
+    display: related-values
+    display_options:
+      template: '{{ email }}'
+
+  - field: id
+    width: half
+
+  - field: bookmark
+    width: half
+
+  - field: icon
+    width: half
+    display: icon
+
+  - field: color
+    width: half
+    display: color
+
+  - field: search
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: layout
+    width: half
+
+  - field: refresh_interval

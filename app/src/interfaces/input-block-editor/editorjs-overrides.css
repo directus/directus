@@ -2,6 +2,9 @@
 	--bg-color: var(--theme--background-normal) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--theme--form--field--input--border-color) !important;
+
+	/* To ensure overlapping popovers are rendered above other interfaces' elements (Map / WYSIWYG) */
+	z-index: 3;
 }
 
 .codex-editor ::selection {
@@ -99,6 +102,14 @@
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
 	color: var(--theme--primary);
+}
+
+.codex-editor .ce-popover-item__icon i {
+	font-family: 'Material Symbols', sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
 }
 
 .codex-editor .ce-inline-toolbar__toggler-and-button-wrapper {

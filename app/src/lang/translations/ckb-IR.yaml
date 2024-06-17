@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: دەربارە
 identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
@@ -27,14 +28,18 @@ method: ڕێگە
 published: بڵاوکراوە
 draft: ڕەشنوس
 archived: ئەرشیفکراو
+marketplace: کۆگا
+extensions: زیادکراوەکان
 modules: یەکەکان
 module_bar: شریتی یەکەکان
 logs: تۆمارەکان
+unknown: نەناسراو
 reset_width: ڕێکخستنەوەی پانی
 tile_size: قەبارەی خشت
 edit_field: دەستکاری خانە
 conditions: مەرجەکان
 location: شوێن
+collection_names_are_case_sensitive: گەورە و بچووکی پیتەکانی ناوی کۆمەڵەکان حسابە
 condition_rules: یاسای ئەگەرەکان
 input: تێچون
 maps: نەخشەکان
@@ -46,6 +51,8 @@ duplicate_field: لەبەرگرتنەوەی خانە
 half_width: نیوەی پانی
 full_width: پانی تەواو
 group: دەستە
+popular: بڵاوترین
+recent: دواین
 export_items: هەناردەکردنی مادەکان
 and: و
 or: یان
@@ -55,8 +62,14 @@ modifier: گۆڕەر
 extension_interface: ڕوکار
 extension_display: پیشاندان
 extension_layout: خشتە
+extension_module: یەکە
 extension_panel: پانێڵ
+extension_theme: ڕووکار
 extension_hook: قولاپ
+extension_endpoint: ئێندپۆینت
+extension_operation: کردار
+extension_bundle: کۆمەڵە
+extension_interfaces: ڕووکار
 extension_modules: یەکەکان
 enable: کاراکردن
 custom: تایبەتمەند
@@ -243,13 +256,6 @@ time: کات
 timestamp: مۆری کات
 uuid: UUID
 hash: هاش
-geometry: ئەندازەیی (هەموو)
-geometry.Point: خاڵ
-geometry.LineString: ڕیزەهێڵ
-geometry.Polygon: فرەگۆشە
-geometry.MultiPoint: چەندخاڵی
-geometry.MultiLineString: چەند ڕیزەهێڵی
-geometry.MultiPolygon: چەند فرەگۆشەیی
 not_available_for_type: بەردەست نییە بۆ ئەم جۆرە
 create_translations: دروستکردنی وەرگێڕان
 auto_refresh: نوێبونەوەی خۆکاری
@@ -449,7 +455,6 @@ replace_from_library: جێگرتنەوەی پەڕگە لە پێشانگاوە
 replace_from_url: جێگرتنەوەی پەڕگە لە ڕێگای بەستەرەوە
 no_file_selected: هیچ پەڕگەیەک دیاری نەکراوە
 download_file: داگرتنی پەڕگە
-open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
 start_export: دەستپێکردنی هەناردەکردن
 not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
 exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
@@ -569,37 +574,37 @@ auto_fill: پڕکردنەوەی خۆکاری
 corresponding_field: خانەی هاوچەشن
 errors:
   COLLECTION_NOT_FOUND: "کۆمەڵە بونی نییە"
+  CONTAINS_NULL_VALUES: خانە بەهای هیچی تێدایە
   FIELD_NOT_FOUND: خانە نەدۆزرایەوە
   FORBIDDEN: قەدەغە
+  ILLEGAL_ASSET_TRANSFORMATION: سەرچاوەی وێنە زۆر گەورەیە بۆ پیشاندان
+  INTERNAL_SERVER_ERROR: هەڵەی پێشبینی نەکراو
+  INVALID_CONFIG: ڕێکخستنی نادروست
   INVALID_CREDENTIALS: ناوی بەکارهێنەر و تێپەڕەوشەی هەڵە
+  INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
+  INVALID_IP: IP Address ڕێگەپێدراو نییە
   INVALID_OTP: یەکجارە تێپەڕەوشەی هەڵە
   INVALID_PAYLOAD: سودباری نادروست
   INVALID_PROVIDER: بەکارهێنەر سەر بەدابینکەرێکی جیاوازی پشتڕاستکەرەوەیە
   INVALID_QUERY: پرسی نادروست
-  INVALID_CONFIG: ڕێکخستنی نادروست
   INVALID_TOKEN: تۆکنی نادروست
-  INVALID_IP: IP Address ڕێگەپێدراو نییە
   INVALID_USER: هەڵەڕویدا لە پشتڕاستکردنەوەی بەکارهێنەر
   ITEM_LIMIT_REACHED: ماددە گەیشتە سنور
   ITEM_NOT_FOUND: ماددە نەدۆزرایەوە
-  ROUTE_NOT_FOUND: نەدۆزرایەوە
-  RECORD_NOT_UNIQUE: بەهای لەبەرگیراوە دۆزرایەوە
-  USER_SUSPENDED: بەکارهێنەر ڕاگیراوە
-  CONTAINS_NULL_VALUES: خانە بەهای هیچی تێدایە
-  INTERNAL_SERVER_ERROR: هەڵەی پێشبینی نەکراو
-  NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
-  ILLEGAL_ASSET_TRANSFORMATION: سەرچاوەی وێنە زۆر گەورەیە بۆ پیشاندان
-  VALUE_TOO_LONG: بەها زۆر گەورەیە
-  VALUE_OUT_OF_RANGE: بەها لە دەرەوەی سنوری دیاریکراوە
-  INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
-  UNKNOWN: هەڵەی پێشبینی نەکراو
-  SERVICE_UNAVAILABLE: خزمەتگوزاری بەردەست نییە
-  UNSUPPORTED_MEDIA_TYPE: جۆری میدیای پشتگیری نەکراو
-  UNEXPECTED_RESPONSE: وەڵامێکی چاوەڕواننەکراو
-  TOKEN_EXPIRED: تۆکن بەسەرچوو
-  RANGE_NOT_SATISFIABLE: مەودای نادروست
   METHOD_NOT_ALLOWED: شێوازەكە ڕێگا پێنەدراوە
+  NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
+  RANGE_NOT_SATISFIABLE: مەودای نادروست
+  RECORD_NOT_UNIQUE: بەهای لەبەرگیراوە دۆزرایەوە
   REQUESTS_EXCEEDED: داواکاریەکان گەیشتە سنور
+  ROUTE_NOT_FOUND: نەدۆزرایەوە
+  SERVICE_UNAVAILABLE: خزمەتگوزاری بەردەست نییە
+  TOKEN_EXPIRED: تۆکن بەسەرچوو
+  UNEXPECTED_RESPONSE: وەڵامێکی چاوەڕواننەکراو
+  UNKNOWN: هەڵەی پێشبینی نەکراو
+  UNSUPPORTED_MEDIA_TYPE: جۆری میدیای پشتگیری نەکراو
+  USER_SUSPENDED: بەکارهێنەر ڕاگیراوە
+  VALUE_OUT_OF_RANGE: بەها لە دەرەوەی سنوری دیاریکراوە
+  VALUE_TOO_LONG: بەها زۆر گەورەیە
 security: پارێزراوی
 value_hashed: بەها بە پارێزراوی هاشكراوە
 bookmark_name: ناوی نیشانکردن...
@@ -613,7 +618,6 @@ cannot_edit_global_bookmarks: ناتوانرێت دەستکاری نیشانکە
 bookmarks: نیشانکراوەکان
 presets: پێشسێتەکان
 unexpected_error: هەڵەی پێشبینی نەکراو
-unexpected_error_copy: هەڵەیەکی چاوەڕوان نەکراو ڕویدا. تکایە دواتر دووبارە هەوڵبدەرەوە.
 copy_details: لەبەرگرتنەوەی وردەکاریەکان
 no_app_access: نەبوونی دەسەڵاتی پێگە
 no_app_access_copy: ئەم بەکارهێنەرە ڕێگەپێنەدراوە بۆ بەکارهێنانی پێگەی بەڕێوبەر.
@@ -993,6 +997,7 @@ batch_delete_confirm: >-
   هیچ ماددەیەک دیاری نەکراوە | ئایا دڵنیای دەتەوێت ئەم ماددەیە بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە. | ئایا دڵنیای لەوەی کە {count} ماددە بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
 cancel: پاشگەزبوونەوە
 no_upscale: ئاستی وێنەکان بەرزمەکەوە
+source_registry: کۆگا
 collection: کۆمەڵە
 collections: کۆمەڵەکان
 content: ناوەڕۆک
@@ -1245,7 +1250,6 @@ field_options:
   directus_roles:
     name: ناوێکی بێ هاوتا بۆ ئەم پلەیە...
     description: وەسفێک بۆ ئەم پلەیە...
-    ip_access: ناونیشانێکی ڕێگەپێدراوی IP زیاد بکە، بە بەتاڵی جێی بهێڵە بۆ ڕێگەپێدان بە هەمووان...
     fields:
       icon_name: ئایکۆن
       name_name: ناو
@@ -1818,6 +1822,8 @@ displays:
   formatted-json-value:
     formatted-json-value: بەهای JSONی داڕێژراو
     description: پیشاندانی وەشانی داڕێژراوی تەن
+  hash:
+    hash: هاش
   icon:
     icon: ئایکۆن
     description: نیشاندانی ئایکۆنێک

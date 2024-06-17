@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
@@ -14,11 +15,13 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { isSystemCollection } from '@directus/system-data';
+
+const env = useEnv();
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -63,7 +66,7 @@ class OASSpecsService implements SpecificationSubService {
 		const components = await this.generateComponents(tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : env['PUBLIC_URL'];
+		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
@@ -105,7 +108,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		for (const collection of collections) {
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
@@ -139,7 +142,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
@@ -334,7 +337,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (!tag) continue;
 
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			const fieldsInCollection = Object.values(collection.fields);
 

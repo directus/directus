@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Hashed string.
  */
 export const generateHash =
-	<Schema extends object>(string: string): RestCommand<string, Schema> =>
+	<Schema>(string: string): RestCommand<string, Schema> =>
 	() => ({
 		method: 'POST',
 		path: `/utils/hash/generate`,
@@ -20,7 +20,7 @@ export const generateHash =
  * @returns Boolean.
  */
 export const verifyHash =
-	<Schema extends object>(string: string, hash: string): RestCommand<boolean, Schema> =>
+	<Schema>(string: string, hash: string): RestCommand<boolean, Schema> =>
 	() => ({
 		method: 'POST',
 		path: `/utils/hash/verify`,

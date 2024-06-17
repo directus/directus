@@ -1,5 +1,7 @@
-import { isDirectusError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
+import type { Request } from 'express';
 import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
@@ -8,18 +10,22 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import env from '../env.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
-import logger from '../logger.js';
+import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
+import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
+import type { AuthenticationMode } from '../types/auth.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import { getSecret } from '../utils/get-secret.js';
+import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../utils/jwt.js';
 
 const router = Router();
+const env = useEnv();
+const logger = useLogger();
 
 const authProviders = getAuthProviders();
 
@@ -60,6 +66,39 @@ if (!env['AUTH_DISABLE_DEFAULT']) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
 
+function getCurrentMode(req: Request): AuthenticationMode {
+	if (req.body.mode) {
+		return req.body.mode as AuthenticationMode;
+	}
+
+	if (req.body.refresh_token) {
+		return 'json';
+	}
+
+	return 'cookie';
+}
+
+function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string | undefined {
+	if (mode === 'json') {
+		return req.body.refresh_token;
+	}
+
+	if (mode === 'cookie') {
+		return req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
+	}
+
+	if (mode === 'session') {
+		const token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
+
+		if (isDirectusJWT(token)) {
+			const payload = verifyAccessJWT(token, getSecret());
+			return payload.session;
+		}
+	}
+
+	return undefined;
+}
+
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
@@ -68,7 +107,7 @@ router.post(
 			role: null,
 		};
 
-		const userAgent = req.get('user-agent');
+		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
 
 		const origin = req.get('origin');
@@ -79,29 +118,36 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+		const mode = getCurrentMode(req);
+		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({
+				reason: `The refresh token is required in either the payload or cookie`,
+			});
 		}
 
-		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken, {
+			session: mode === 'session',
+		});
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
-
-		const payload = {
-			data: { access_token: accessToken, expires },
-		} as Record<string, Record<string, any>>;
+		const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
 
 		if (mode === 'json') {
-			payload['data']!['refresh_token'] = refreshToken;
+			payload.refresh_token = refreshToken;
+			payload.access_token = accessToken;
 		}
 
 		if (mode === 'cookie') {
-			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+			payload.access_token = accessToken;
 		}
 
-		res.locals['payload'] = payload;
+		if (mode === 'session') {
+			res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+		}
+
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,
@@ -115,7 +161,7 @@ router.post(
 			role: null,
 		};
 
-		const userAgent = req.get('user-agent');
+		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
 
 		const origin = req.get('origin');
@@ -126,21 +172,23 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+		const mode = getCurrentMode(req);
+		const currentRefreshToken = getCurrentRefreshToken(req, mode);
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
+			throw new InvalidPayloadError({
+				reason: `The refresh token is required in either the payload or cookie`,
+			});
 		}
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
-			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], {
-				httpOnly: true,
-				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
-				secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
-				sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-			});
+		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
+			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, REFRESH_COOKIE_OPTIONS);
+		}
+
+		if (req.cookies[env['SESSION_COOKIE_NAME'] as string]) {
+			res.clearCookie(env['SESSION_COOKIE_NAME'] as string, SESSION_COOKIE_OPTIONS);
 		}
 
 		return next();
@@ -160,7 +208,7 @@ router.post(
 			role: null,
 		};
 
-		const userAgent = req.get('user-agent');
+		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
 
 		const origin = req.get('origin');
@@ -199,7 +247,7 @@ router.post(
 			role: null,
 		};
 
-		const userAgent = req.get('user-agent');
+		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
 
 		const origin = req.get('origin');
@@ -214,9 +262,12 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (_req, res, next) => {
+	asyncHandler(async (req, res, next) => {
+		const sessionOnly =
+			'sessionOnly' in req.query && (req.query['sessionOnly'] === '' || Boolean(req.query['sessionOnly']));
+
 		res.locals['payload'] = {
-			data: getAuthProviders(),
+			data: getAuthProviders({ sessionOnly }),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 

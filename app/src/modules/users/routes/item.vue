@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import type { Field, User } from '@directus/types';
+import type { User } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -47,6 +47,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	save,
@@ -68,6 +69,11 @@ const {
 		: undefined,
 );
 
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, fields },
+} = permissions;
+
 const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
 if (props.role) {
@@ -84,7 +90,9 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
+const avatarSrc = computed(() =>
+	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
+);
 
 const avatarError = ref(null);
 
@@ -99,14 +107,11 @@ const title = computed(() => {
 	return t('adding_user');
 });
 
-const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-	usePermissions(ref('directus_users'), item, isNew);
-
 // These fields will be shown in the sidebar instead
 const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
 const fieldsFiltered = computed(() => {
-	return fields.value.filter((field: Field) => {
+	return fields.value.filter((field) => {
 		// These fields should only be editable when creating new users or by administrators
 		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 			field.meta.readonly = true;

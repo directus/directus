@@ -14,7 +14,7 @@ export type ServerHealthOutput = {
  * @returns The current health status of the server.
  */
 export const serverHealth =
-	<Schema extends object>(): RestCommand<ServerHealthOutput, Schema> =>
+	<Schema>(): RestCommand<ServerHealthOutput, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/server/health',

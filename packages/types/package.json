@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "11.0.3",
+	"version": "11.1.3",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,21 +21,23 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
+		"build": "tsc",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@types/geojson": "7946.0.13"
+		"@types/geojson": "7946.0.14"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"typescript": "5.3.3"
+		"knex": "3.1.0",
+		"typescript": "5.4.5",
+		"vue": "3.4.27"
 	},
 	"peerDependencies": {
-		"knex": "3.1.0",
-		"vue": "3.3.13"
+		"knex": "3",
+		"vue": "^3.4"
 	},
 	"peerDependenciesMeta": {
 		"knex": {

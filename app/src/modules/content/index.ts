@@ -6,7 +6,6 @@ import RouterPass from '@/utils/router-passthrough';
 import { Collection } from '@directus/types';
 import { defineModule } from '@directus/extensions';
 import { isNil, orderBy } from 'lodash';
-import { ref } from 'vue';
 import { LocationQuery, NavigationGuard } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
 import CollectionOrItem from './routes/collection-or-item.vue';
@@ -34,7 +33,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		'bookmark' in from.query &&
 		typeof from.query.bookmark === 'string' &&
 		'bookmark' in to.query === false &&
-		to.params.collection === from.params.collection
+		to.params.collection === from.params.collection &&
+		'primaryKey' in to.params
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}
@@ -63,7 +63,7 @@ export default defineModule({
 			component: NoCollections,
 			beforeEnter() {
 				const collectionsStore = useCollectionsStore();
-				const { activeGroups } = useNavigation(ref(null));
+				const { activeGroups } = useNavigation();
 
 				if (collectionsStore.visibleCollections.length === 0) return;
 

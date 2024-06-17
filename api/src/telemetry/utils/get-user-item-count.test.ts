@@ -17,7 +17,7 @@ beforeEach(() => {
 		const res: Record<string, number> = {};
 
 		for (const collection of collections) {
-			res[collection] = 15;
+			res[collection.collection] = 15;
 		}
 
 		return res;
@@ -42,12 +42,17 @@ describe('getUserItemCount', () => {
 				'test-a': {},
 				'test-b': {},
 				directus_a: {},
+				directus_users: {},
 			},
 		} as unknown as SchemaOverview);
 
 		await getUserItemCount(mockDb);
 
-		expect(getItemCount).toHaveBeenCalledWith(mockDb, ['test-a', 'test-b']);
+		expect(getItemCount).toHaveBeenCalledWith(mockDb, [
+			{ collection: 'test-a' },
+			{ collection: 'test-b' },
+			{ collection: 'directus_a' },
+		]);
 	});
 
 	test('Returns collection count and summed item total', async () => {
@@ -56,11 +61,12 @@ describe('getUserItemCount', () => {
 				'test-a': {},
 				'test-b': {},
 				directus_a: {},
+				directus_users: {},
 			},
 		} as unknown as SchemaOverview);
 
 		const res = await getUserItemCount(mockDb);
 
-		expect(res).toEqual({ collections: 2, items: 30 });
+		expect(res).toEqual({ collections: 3, items: 45 });
 	});
 });

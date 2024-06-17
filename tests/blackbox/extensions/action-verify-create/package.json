@@ -1,0 +1,11 @@
+{
+	"name": "action-verify-create",
+	"version": "0.0.0",
+	"private": true,
+	"directus:extension": {
+		"type": "hook",
+		"path": "index.mjs",
+		"source": "index.mjs",
+		"host": "^10.10.0"
+	}
+}

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "11.0.3",
+	"version": "11.0.9",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,9 +33,11 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"date-fns": "3.0.1",
+		"@directus/system-data": "workspace:*",
+		"date-fns": "3.6.0",
 		"fs-extra": "11.2.0",
-		"joi": "17.11.0",
+		"joi": "17.13.1",
+		"js-yaml": "4.1.0",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3"
 	},
@@ -43,17 +45,19 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.4",
+		"@types/js-yaml": "4.0.9",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.3",
+		"@types/node": "18.19.33",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "1.1.0",
-		"tmp": "0.2.1",
-		"tsup": "8.0.1",
-		"typescript": "5.3.3",
-		"vitest": "1.1.0"
+		"@vitest/coverage-v8": "1.5.3",
+		"tmp": "0.2.3",
+		"tsup": "8.1.0",
+		"typescript": "5.4.5",
+		"vitest": "1.5.3",
+		"vue": "3.4.27"
 	},
 	"peerDependencies": {
-		"vue": "3.3.13"
+		"vue": "^3.4"
 	},
 	"peerDependenciesMeta": {
 		"vue": {

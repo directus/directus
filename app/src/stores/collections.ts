@@ -13,9 +13,11 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 import { useUserStore } from '../stores/user';
+import { isSystemCollection } from '@directus/system-data';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const collections = ref<Collection[]>([]);
+
 
 	const visibleCollections = computed(() => {
 		const userStore = useUserStore(); // Assuming useUserStore is a function that returns a store object
@@ -40,18 +42,15 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 
 	const allCollections = computed(() =>
-		collections.value.filter(({ collection }) => collection.startsWith('directus_') === false),
+		collections.value.filter(({ collection }) => isSystemCollection(collection) === false),
 	);
 
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
 
 	const crudSafeSystemCollections = computed(() =>
 		orderBy(
-			collections.value.filter((collection) => {
-				return collection.collection.startsWith('directus_') === true;
-			}),
-			['collection'],
-			['asc'],
+			collections.value.filter((collection) => isSystemCollection(collection.collection)),
+			'collection',
 		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
 	);
 

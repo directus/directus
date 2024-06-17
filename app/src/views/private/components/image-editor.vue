@@ -1,21 +1,27 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
+import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
+import { isEqual } from 'lodash';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type Image = {
-	type: string;
-	filesize: number;
-	filename_download: string;
-	width: number;
-	height: number;
-};
+const imageFields = [
+	'type',
+	'filesize',
+	'filename_download',
+	'width',
+	'height',
+	'focal_point_x',
+	'focal_point_y',
+] as const;
+
+type Image = Pick<File, (typeof imageFields)[number]>;
 
 const props = defineProps<{
 	id: string;
@@ -43,7 +49,7 @@ const internalActive = computed({
 	},
 });
 
-const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
+const { loading, error, imageData, imageElement, hasEdits, save, saving, fetchImage, onImageLoad } = useImage();
 
 const {
 	cropperInstance,
@@ -75,7 +81,7 @@ watch(internalActive, (isActive) => {
 const randomId = ref<string>(nanoid());
 
 const imageURL = computed(() => {
-	return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
+	return getAssetUrl(`${props.id}?${randomId.value}`);
 });
 
 const dimensionsString = computed(() => {
@@ -115,14 +121,24 @@ function useImage() {
 
 	const imageElement = ref<HTMLImageElement | null>(null);
 
+	const hasEdits = computed(() => {
+		return (
+			!isEqual(
+				{ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 },
+				cropperInstance.value?.getData(),
+			) || cropping.value
+		);
+	});
+
 	return {
 		loading,
 		error,
 		imageData,
-		saving,
 		fetchImage,
 		imageElement,
+		hasEdits,
 		save,
+		saving,
 		onImageLoad,
 	};
 
@@ -132,7 +148,7 @@ function useImage() {
 
 			const response = await api.get(`/files/${props.id}`, {
 				params: {
-					fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
+					fields: imageFields,
 				},
 			});
 
@@ -144,36 +160,88 @@ function useImage() {
 		}
 	}
 
-	function save() {
+	async function saveImage(focalPoint?: { x: number | null; y: number | null }) {
+		// Wrap the callback so that we can actually listen to it
+		return new Promise<void>((resolve, reject) => {
+			cropperInstance.value
+				?.getCroppedCanvas({
+					imageSmoothingQuality: 'high',
+				})
+				.toBlob(
+					async (blob) => {
+						if (blob === null) {
+							return reject(`Couldn't process and save edited image`);
+						}
+
+						const formData = new FormData();
+
+						if (focalPoint) {
+							formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
+							formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
+						}
+
+						formData.append('file', blob, imageData.value?.filename_download);
+
+						api.patch(`/files/${props.id}`, formData).then(
+							() => resolve(),
+							(err) => reject(err),
+						);
+					},
+					imageData.value?.type ?? undefined,
+				);
+		});
+	}
+
+	async function save() {
 		saving.value = true;
 
-		cropperInstance.value
-			?.getCroppedCanvas({
-				imageSmoothingQuality: 'high',
-			})
-			.toBlob(
-				async (blob) => {
-					if (blob === null) {
-						saving.value = false;
-						return;
-					}
+		// Only save focal point if we're also actively selecting it
+		const gotChangeForFocalPoint = localDragMode.value === 'focal_point' && cropping.value;
 
-					const formData = new FormData();
-					formData.append('file', blob, imageData.value?.filename_download);
+		let focalPointX = null;
+		let focalPointY = null;
 
-					try {
-						await api.patch(`/files/${props.id}`, formData);
-						emit('refresh');
-						internalActive.value = false;
-						randomId.value = nanoid();
-					} catch (error) {
-						unexpectedError(error);
-					} finally {
-						saving.value = false;
-					}
-				},
-				imageData.value?.type,
-			);
+		// Important: Check focal point first because we must(!) reset the cropping area
+		// before saving so that we're not wrongfully cropping
+		if (gotChangeForFocalPoint) {
+			const data = cropperInstance.value?.getData();
+			focalPointX = Math.round((data?.x ?? 0) + (data?.width ?? 0) / 2);
+			focalPointY = Math.round((data?.y ?? 0) + (data?.height ?? 0) / 2);
+			cropperInstance.value?.clear();
+		}
+
+		// Important: This check has to go after(!) we reset the cropping area because
+		// `getData` returns info about our focal point, which leads to a false positive
+		const gotChangeForImg = !isEqual(
+			{ x: 0, y: 0, width: 0, height: 0, rotate: 0, scaleX: 1, scaleY: 1 },
+			cropperInstance.value?.getData(),
+		);
+
+		// Collapse focal point patch request and image data into one request if we can
+		let patchRequest = null;
+
+		if (gotChangeForImg && gotChangeForFocalPoint) {
+			patchRequest = saveImage({ x: focalPointX, y: focalPointY });
+		} else if (gotChangeForImg) {
+			patchRequest = saveImage();
+		} else if (gotChangeForFocalPoint) {
+			patchRequest = api.patch(`/files/${props.id}`, {
+				focal_point_x: focalPointX,
+				focal_point_y: focalPointY,
+			} satisfies Partial<File>);
+		}
+
+		try {
+			await patchRequest;
+			emit('refresh');
+			localDragMode.value = 'move';
+			randomId.value = nanoid();
+			internalActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			saving.value = false;
+		}
 	}
 
 	async function onImageLoad() {
@@ -181,6 +249,8 @@ function useImage() {
 		initCropper();
 	}
 }
+
+const localDragMode = ref<'move' | 'crop' | 'focal_point'>('move');
 
 function useCropper() {
 	const cropperInstance = ref<Cropper | null>(null);
@@ -193,7 +263,7 @@ function useCropper() {
 	});
 
 	watch(imageData, () => {
-		if (!imageData.value) return;
+		if (!imageData.value || !imageData.value.width || !imageData.value.height) return;
 		localAspectRatio.value = imageData.value.width / imageData.value.height;
 		newDimensions.width = imageData.value.width;
 		newDimensions.height = imageData.value.height;
@@ -207,12 +277,11 @@ function useCropper() {
 			localAspectRatio.value = newAspectRatio;
 			cropperInstance.value?.setAspectRatio(newAspectRatio);
 			cropperInstance.value?.crop();
-			dragMode.value = 'crop';
 		},
 	});
 
 	const aspectRatioIcon = computed(() => {
-		if (!imageData.value) return 'crop_original';
+		if (!imageData.value || !imageData.value.width || !imageData.value.height) return 'crop_original';
 
 		if (customAspectRatios) {
 			const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
@@ -237,19 +306,36 @@ function useCropper() {
 		}
 	});
 
-	const localDragMode = ref<'move' | 'crop'>('move');
-
 	const dragMode = computed({
 		get() {
 			return localDragMode.value;
 		},
-		set(newMode: 'move' | 'crop') {
-			cropperInstance.value?.setDragMode(newMode);
+		set(newMode) {
+			cropperInstance.value?.setDragMode(newMode === 'move' ? 'move' : 'crop');
 			localDragMode.value = newMode;
 
 			if (newMode === 'move') {
 				cropperInstance.value?.clear();
 				localCropping.value = false;
+			} else if (newMode === 'crop') {
+				cropperInstance.value?.crop();
+			} else if (newMode === 'focal_point') {
+				const canvasData = cropperInstance.value?.getCanvasData();
+				// Size the box as percentage so that it stays visible for both small and large images
+				const boxSize = Math.max(16, (canvasData?.naturalWidth ?? 0) * 0.1);
+				let centeredX = 0;
+				let centeredY = 0;
+
+				if (imageData.value && imageData.value.focal_point_x !== null && imageData.value.focal_point_y !== null) {
+					centeredX = imageData.value.focal_point_x - boxSize / 2;
+					centeredY = imageData.value.focal_point_y - boxSize / 2;
+				} else {
+					centeredX = (canvasData?.naturalWidth ?? 0) / 2 - boxSize / 2;
+					centeredY = (canvasData?.naturalHeight ?? 0) / 2 - boxSize / 2;
+				}
+
+				aspectRatio.value = 1;
+				cropperInstance.value?.setData({ x: centeredX, y: centeredY, width: boxSize, height: boxSize });
 			}
 		},
 	});
@@ -290,6 +376,7 @@ function useCropper() {
 		}
 
 		localCropping.value = false;
+		localDragMode.value = 'move';
 
 		cropperInstance.value = new Cropper(imageElement.value as HTMLImageElement, {
 			autoCrop: false,
@@ -347,7 +434,7 @@ function useCropper() {
 }
 
 function setAspectRatio() {
-	if (imageData.value) {
+	if (imageData.value && imageData.value.width && imageData.value.height) {
 		aspectRatio.value = imageData.value.width / imageData.value.height;
 	}
 }
@@ -375,19 +462,35 @@ function setAspectRatio() {
 
 		<v-notice v-else-if="error" type="error">error</v-notice>
 
-		<div v-if="imageData && !loading && !error" class="editor-container">
+		<div
+			v-if="imageData && !loading && !error"
+			class="editor-container"
+			:class="{ 'focal-point': localDragMode === 'focal_point' }"
+		>
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
 
 			<div class="toolbar">
-				<div
-					v-tooltip.top.inverted="t('drag_mode')"
-					class="drag-mode toolbar-button"
-					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
-				>
-					<v-icon name="pan_tool" :class="{ active: dragMode === 'move' }" />
-					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
+				<div class="drag-mode toolbar-button">
+					<v-icon
+						v-tooltip.top.inverted="t('move_tool')"
+						name="pan_tool"
+						:class="{ active: localDragMode === 'move' }"
+						@click="dragMode = 'move'"
+					/>
+					<v-icon
+						v-tooltip.top.inverted="t('crop_tool')"
+						name="crop"
+						:class="{ active: localDragMode === 'crop' }"
+						@click="dragMode = 'crop'"
+					/>
+					<v-icon
+						v-tooltip.top.inverted="t('focal_point_tool')"
+						name="location_searching"
+						:class="{ active: localDragMode === 'focal_point' }"
+						@click="dragMode = 'focal_point'"
+					/>
 				</div>
 
 				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
@@ -445,7 +548,7 @@ function setAspectRatio() {
 							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
-							v-if="imageData"
+							v-if="imageData && imageData.width && imageData.height"
 							clickable
 							:active="aspectRatio === imageData.width / imageData.height"
 							@click="setAspectRatio"
@@ -465,13 +568,13 @@ function setAspectRatio() {
 				</div>
 
 				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
-					{{ t('cancel_crop') }}
+					{{ localDragMode === 'focal_point' ? t('cancel_selection') : t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -479,6 +582,22 @@ function setAspectRatio() {
 </template>
 
 <style lang="scss" scoped>
+.focal-point:deep(.editor) {
+	.cropper-point.point-nw,
+	.cropper-point.point-ne,
+	.cropper-point.point-se,
+	.cropper-point.point-sw,
+	.cropper-dashed,
+	.cropper-line {
+		display: none;
+	}
+
+	.cropper-face,
+	.cropper-view-box {
+		border-radius: 100%;
+	}
+}
+
 .modal {
 	--v-drawer-content-padding-small: 0px;
 	--v-drawer-content-padding: 0px;
@@ -554,6 +673,11 @@ function setAspectRatio() {
 .drag-mode {
 	margin-right: 16px;
 	margin-left: -8px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
 
 	.v-icon {
 		margin-right: 0;
@@ -562,10 +686,6 @@ function setAspectRatio() {
 		&.active {
 			opacity: 1;
 		}
-	}
-
-	.v-icon:first-child {
-		margin-right: 8px;
 	}
 }
 

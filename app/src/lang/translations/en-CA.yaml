@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -222,13 +202,6 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -500,22 +473,22 @@ auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
+  CONTAINS_NULL_VALUES: Field contains null values
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  INTERNAL_SERVER_ERROR: Unexpected Error
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_QUERY: Invalid query
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
-  ROUTE_NOT_FOUND: Not found
-  RECORD_NOT_UNIQUE: Duplicate value detected
-  USER_SUSPENDED: User Suspended
-  CONTAINS_NULL_VALUES: Field contains null values
-  INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
-  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  RECORD_NOT_UNIQUE: Duplicate value detected
+  ROUTE_NOT_FOUND: Not found
   UNKNOWN: Unexpected Error
+  USER_SUSPENDED: User Suspended
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -524,7 +497,6 @@ edit_bookmark: Edit Bookmark
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
@@ -1086,7 +1058,6 @@ field_options:
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
@@ -1594,6 +1565,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
   icon:
     icon: Icon
     description: Display an icon

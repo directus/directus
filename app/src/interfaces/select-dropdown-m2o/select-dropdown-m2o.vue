@@ -25,13 +25,14 @@ const props = withDefaults(
 		filter?: Filter | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		loading?: boolean;
 	}>(),
 	{
-		value: () => null,
+		value: null,
 		selectMode: 'auto',
 		disabled: false,
-		template: () => null,
-		filter: () => null,
+		template: null,
+		filter: null,
 		enableCreate: true,
 		enableSelect: true,
 	},
@@ -93,7 +94,10 @@ const query = computed<RelationQuerySingle>(() => ({
 	fields: requiredFields.value,
 }));
 
-const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo);
+const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo, {
+	enabled: computed(() => !props.loading),
+});
+
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {
@@ -144,10 +148,12 @@ const selection = computed<(number | string)[]>(() => {
 });
 
 function onSelection(selection: (number | string)[] | null) {
-	if (selection!.length === 0) {
-		remove();
-	} else {
-		update(selection![0]);
+	if (selection) {
+		if (selection[0]) {
+			update(selection[0]);
+		} else {
+			remove();
+		}
 	}
 
 	selectModalActive.value = false;

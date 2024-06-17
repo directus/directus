@@ -1,10 +1,10 @@
 import type { DirectusFolder } from '../../../schema/folder.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateFolderOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFolder<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -18,7 +18,7 @@ export type UpdateFolderOutput<
  * @throws Will throw if keys is empty
  */
 export const updateFolders =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
 		item: Partial<DirectusFolder<Schema>>,
 		query?: TQuery,
@@ -35,6 +35,24 @@ export const updateFolders =
 	};
 
 /**
+ * Update multiple folders as batch.
+ * @param items
+ * @param query
+ * @returns Returns the folder objects of the folders that were updated.
+ */
+export const updateFoldersBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+		items: NestedPartial<DirectusFolder<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/folders`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing folder.
  * @param key
  * @param item
@@ -43,7 +61,7 @@ export const updateFolders =
  * @throws Will throw if key is empty
  */
 export const updateFolder =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
 		item: Partial<DirectusFolder<Schema>>,
 		query?: TQuery,

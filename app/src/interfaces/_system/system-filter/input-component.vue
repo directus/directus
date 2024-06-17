@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUpdated, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -27,23 +27,10 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const inputEl = ref<HTMLInputElement | null>(null);
-const inputLength = ref<number>();
 const dateTimeMenu = ref();
-
-onMounted(() => {
-	if (props.focus) inputEl.value?.focus();
-});
-
-watch(
-	() => props.value,
-	(value) => {
-		inputLength.value = value?.toString().length;
-	},
-	{ immediate: true },
-);
-
-const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
+const inputEl = ref<HTMLInputElement | null>(null);
+const isInputValid = ref(true);
+const inputBorderColor = computed(() => (isInputValid.value ? 'none' : 'var(--theme--danger)'));
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -60,20 +47,38 @@ const inputPattern = computed(() => {
 	switch (props.type) {
 		case 'integer':
 		case 'bigInteger':
-			return '[+\\-]?[0-9]+';
+			return '^[+\\-]?[0-9]+$';
 		case 'decimal':
 		case 'float':
-			return '[+\\-]?[0-9]+\\.?[0-9]*';
+			return '^[+\\-]?[0-9]+\\.?[0-9]*$';
 		case 'uuid':
-			return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+			return '^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$';
 		default:
-			return '';
+			return undefined;
 	}
 });
 
-function emitValue(value: string | null) {
-	if (value === '') {
-		return emit('input', null);
+onMounted(() => {
+	if (props.focus) inputEl.value?.focus();
+});
+
+/*
+ * Because there's currently (2024-01-09) no way to uniquely identify filters
+ * we run into rendering issues when dragging and reordering input-groups/input-components.
+ * By listening for the DOM changes via `onUpdated` we can keep this component updated
+ * without having a `key` for each input-group in nodes.
+ */
+onUpdated(() => onEffect(props.value));
+
+watch(
+	() => props.value,
+	(value) => onEffect(value),
+	{ immediate: true },
+);
+
+function isValueValid(value: any): boolean {
+	if (value === '' || typeof value !== 'string' || !inputPattern.value || new RegExp(inputPattern.value).test(value)) {
+		return true;
 	}
 
 	if (
@@ -81,17 +86,22 @@ function emitValue(value: string | null) {
 		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
 			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		return emit('input', value);
+		return true;
 	}
 
-	if (typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
-		return emit('input', value);
-	}
+	return false;
+}
+
+function onEffect(value: typeof props.value) {
+	isInputValid.value = isValueValid(value);
 }
 
 function onInput(value: string | null) {
-	inputLength.value = value?.length;
-	emitValue(value);
+	isInputValid.value = isValueValid(value);
+
+	if (isInputValid.value) {
+		emit('input', value === '' ? null : value);
+	}
 }
 </script>
 
@@ -107,6 +117,7 @@ function onInput(value: string | null) {
 	<input
 		v-else-if="is === 'interface-input'"
 		ref="inputEl"
+		v-input-auto-width
 		type="text"
 		:pattern="inputPattern"
 		:value="value"
@@ -121,13 +132,13 @@ function onInput(value: string | null) {
 		:placeholder="t('select')"
 		allow-other
 		group-selectable
-		@update:model-value="emitValue($event)"
+		@update:model-value="onInput($event)"
 	/>
 	<template v-else-if="is === 'interface-datetime'">
 		<input
 			ref="inputEl"
+			v-input-auto-width
 			type="text"
-			:pattern="inputPattern"
 			:value="value"
 			placeholder="--"
 			@input="onInput(($event.target as HTMLInputElement).value)"
@@ -158,7 +169,7 @@ function onInput(value: string | null) {
 			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
 		</template>
 		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="onInput($event)" />
 		</div>
 	</v-menu>
 </template>
@@ -203,7 +214,8 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
-	width: clamp(3ch, v-bind(inputWidth), 40ch);
+	max-width: 40ch;
+	box-shadow: 0 4px 0 -2px v-bind(inputBorderColor);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);

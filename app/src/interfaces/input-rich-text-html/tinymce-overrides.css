@@ -6,6 +6,11 @@
 	height: 36px;
 	margin: 0;
 	color: var(--theme--form--field--input--foreground);
+	background: transparent;
+}
+
+.tox .tox-tbtn:focus {
+	background: transparent;
 }
 
 .tox .tox-listbox__select-chevron svg,
@@ -387,6 +392,10 @@ body.dark .tox .tox-toolbar__overflow {
 	border-color: var(--theme--form--field--input--border-color);
 }
 
+.tox .tox-insert-table-picker {
+	background-color: unset;
+}
+
 .tox .tox-insert-table-picker__label {
 	color: var(--theme--form--field--input--foreground);
 }
@@ -397,6 +406,7 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
 	border-color: var(--theme--primary);
+	background-color: var(--theme--primary-subdued);
 }
 
 .tox .tox-pop.tox-pop--top::after {

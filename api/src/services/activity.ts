@@ -1,19 +1,21 @@
 import { Action } from '@directus/constants';
-import { isDirectusError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import { useEnv } from '@directus/env';
+import { ErrorCode, isDirectusError } from '@directus/errors';
+import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
-import validateUUID from 'uuid-validate';
-import env from '../env.js';
-import { ErrorCode } from '@directus/errors';
-import logger from '../logger.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { useLogger } from '../logger.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -74,14 +76,14 @@ export class ActivityService extends ItemsService {
 
 					for (const mention of mentions) {
 						const uuid = mention.substring(1);
-						// We only match on UUIDs in the first place. This is just an extra sanity check
-						if (validateUUID(uuid) === false) continue;
+						// We only match on UUIDs in the first place. This is just an extra sanity check.
+						if (isValidUuid(uuid) === false) continue;
 						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
 					}
 
 					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-					const href = new Url(env['PUBLIC_URL'])
+					const href = new Url(env['PUBLIC_URL'] as string)
 						.addPath('admin', 'content', data['collection'], data['item'])
 						.toString();
 

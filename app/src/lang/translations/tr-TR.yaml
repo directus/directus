@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Hakkında
 identifier: Tanımlayıcı
 avatar: Avatar
 application: Uygulama
@@ -27,10 +28,12 @@ method: Metod
 published: Yayınlandı
 draft: Taslak
 archived: Arşivlendi
+marketplace: Pazaryeri
 extensions: Eklentiler
 modules: Modüller
 module_bar: Kenar Çubuğu
 logs: Kayıtlar
+unknown: Bilinmeyen
 reset_width: Genişliği Sıfırla
 tile_size: Blok boyutu
 edit_field: Alanı Düzenle
@@ -48,6 +51,8 @@ duplicate_field: Alanı Kopyala
 half_width: Yarı Genişlik
 full_width: Tam Genişlik
 group: Grup
+popular: Popüler
+recent: Güncel
 export_items: Ögeleri Dışa Aktar
 and: Ve
 or: Veya
@@ -61,13 +66,41 @@ extension_module: Modül
 extension_panel: Panel
 extension_theme: Tema
 extension_hook: Kanca
+extension_endpoint: Uç nokta
+extension_operation: Operasyon
 extension_bundle: Paket
 extension_interfaces: Arayüzler
-extension_displays: Görüntülemeler
+extension_displays: Görüntüler
+extension_layouts: Düzenler
 extension_modules: Modüller
 extension_panels: Paneller
+extension_themes: Temalar
 extension_hooks: Kancalar
+extension_endpoints: Uç noktalar
+extension_operations: Operasyonlar
 extension_bundles: Paketler
+extension_missing: Eksik
+extension_reload_required: Sayfa Yenilemesi Gerekiyor
+extension_reload_required_copy: Bir eklentiyi etkinleştirdikten veya etkisizleştirdikten sonra değişiklikleri görmek için sayfa yenilemesi gerekir.
+extension_reload_now: Şimdi yenile
+published_relative: Yayınlama {relativeTime}
+compatible_with_your_project: Projen ile Uyumlu
+compatible_with_your_project_copy: Bu eklentinin yazarı eklentinin uyumluluğunu sizin projenizin de versiyonu ({currentVersion}) ile uyumlu olan {hostVersion} versiyonu olarak belirtmiştir
+last_updated_relative: Son güncelleme {relativeTime}
+n_files: '{n} adet dosya'
+verified: Doğrulandı
+homepage: Anasayfa
+repository: Depo
+reload_page: Sayfayı Yenile
+reload_required: Sayfa Yenilemesi Gerekli
+report_an_issue: Sorun Bildir
+website: İnternet Sitesi
+github: GitHub
+beta: Beta
+n_downloads: '{n} kere indirildi'
+downloads: İndirmeler
+compatibility_not_guaranteed: Uyumluluk garanti edilmez
+compatibility_not_guaranteed_copy: Bu eklentinin yazarı eklentinin uyumluluğunu {hostVersion} versiyonu olarak belirtmiştir nitekim bu versiyon sizin proje versiyonunuz ile uyuşmamaktadır ({currentVersion}
 enable: Etkinleştir
 disable: Devre dışı
 custom: Özel
@@ -283,13 +316,6 @@ time: Zaman
 timestamp: Zaman Damgası
 uuid: UUID
 hash: Hash
-geometry: Geometri (Tümü)
-geometry.Point: Nokta
-geometry.LineString: Nokta Dizisi
-geometry.Polygon: Poligon
-geometry.MultiPoint: Çoklu Nokta
-geometry.MultiLineString: Çoklu Nokta Dizisi
-geometry.MultiPolygon: Çoklu Poligon
 theme_light: Açık Mod
 theme_dark: Koyu Mod
 not_available_for_type: Bu Tip için Mevcut Değil
@@ -499,7 +525,6 @@ replace_from_library: Kütüphanedeki Dosya ile Değiştir
 replace_from_url: URL'deki Dosya ile Değiştir
 no_file_selected: Hiç Dosya Seçilmedi
 download_file: Dosyayı İndir
-open_file_in_tab: Dosyayı yeni sekmede aç
 start_export: Dışa Aktarmayı Başlat
 not_available_for_local_downloads: Yerel indirmeler için mevcut değil
 exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
@@ -626,37 +651,37 @@ auto_fill: Otomatik Doldur
 corresponding_field: İlgili Alan
 errors:
   COLLECTION_NOT_FOUND: "Koleksiyon yok"
+  CONTAINS_NULL_VALUES: Alan null değer içeriyor
   FIELD_NOT_FOUND: Alan Bulunamadı
   FORBIDDEN: Yetkisiz Erişim
+  ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
+  INTERNAL_SERVER_ERROR: Beklenmeyen Hata
+  INVALID_CONFIG: Geçersiz yapılandırma
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
+  INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
+  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_PROVIDER: Kullanıcı farklı bir yetkilendirme sağlayıcısına ait
   INVALID_QUERY: Geçersiz sorgu
-  INVALID_CONFIG: Geçersiz yapılandırma
   INVALID_TOKEN: Geçersiz belirteç
-  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
-  ROUTE_NOT_FOUND: Bulunamadı
-  RECORD_NOT_UNIQUE: Yinelenen değer algılandı
-  USER_SUSPENDED: Kullanıcı Askıya Alındı
-  CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  INTERNAL_SERVER_ERROR: Beklenmeyen Hata
-  NOT_NULL_VIOLATION: Değer null olamaz
-  ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
-  VALUE_TOO_LONG: Değer çok uzun
-  VALUE_OUT_OF_RANGE: Değer sınır dışında
-  INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
-  UNKNOWN: Beklenmeyen Hata
-  SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
-  UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
-  UNEXPECTED_RESPONSE: Beklenmeyen yanıt
-  TOKEN_EXPIRED: Belirteç süresi doldu
-  RANGE_NOT_SATISFIABLE: Geçersiz aralık
   METHOD_NOT_ALLOWED: İzin verilmeyen yöntem
+  NOT_NULL_VIOLATION: Değer null olamaz
+  RANGE_NOT_SATISFIABLE: Geçersiz aralık
+  RECORD_NOT_UNIQUE: Yinelenen değer algılandı
   REQUESTS_EXCEEDED: İstek sınırına ulaşıldı
+  ROUTE_NOT_FOUND: Bulunamadı
+  SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
+  TOKEN_EXPIRED: Belirteç süresi doldu
+  UNEXPECTED_RESPONSE: Beklenmeyen yanıt
+  UNKNOWN: Beklenmeyen Hata
+  UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
+  USER_SUSPENDED: Kullanıcı Askıya Alındı
+  VALUE_OUT_OF_RANGE: Değer sınır dışında
+  VALUE_TOO_LONG: Değer çok uzun
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
@@ -670,7 +695,6 @@ cannot_edit_global_bookmarks: Genel Yer İmleri Düzenlenemiyor
 bookmarks: Yer İmleri
 presets: Ön Ayarlar
 unexpected_error: Beklenmeyen Hata
-unexpected_error_copy: Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
@@ -1063,6 +1087,7 @@ batch_delete_confirm: >-
   Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 no_upscale: Fotoğrafların çözünürlüğünü arttırma
+source_registry: Pazaryeri
 collection: Koleksiyon
 collections: Koleksiyonlar
 content: İçerik
@@ -1319,7 +1344,6 @@ field_options:
   directus_roles:
     name: Bu rol için benzersiz bir isim...
     description: Bu rolün bir açıklaması...
-    ip_access: İzin verilen IP adreslerini ekle, hepsine izin vermek için boş bırakın...
     fields:
       icon_name: İkon
       name_name: İsim
@@ -1903,6 +1927,8 @@ displays:
   formatted-json-value:
     formatted-json-value: Biçimlendirilmiş JSON Değeri
     description: Objenin biçimlendirilmiş bir halini göster
+  hash:
+    hash: Hash
   icon:
     icon: İkon
     description: Simge olarak görüntüle

@@ -1,24 +1,16 @@
-import type { Extension } from '@directus/extensions';
-import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import env from '../../env.js';
+import { useEnv } from '@directus/env';
+import { resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
+import { join } from 'node:path';
 import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
-	const localExtensions = await getLocalExtensions(getExtensionsPath());
+	const env = useEnv();
 
-	const loadedNames = localExtensions.map(({ name }) => name);
+	const localExtensions = await resolveFsExtensions(getExtensionsPath());
+	const registryExtensions = await resolveFsExtensions(join(getExtensionsPath(), '.registry'));
 
-	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
+	/** Extensions that are listed as dependencies in the root package.json */
+	const moduleExtensions = await resolveModuleExtensions(env['PACKAGE_FILE_LOCATION'] as string);
 
-	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
-		filterDuplicates(extension),
-	);
-
-	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
-
-	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
-		filterDuplicates(extension),
-	);
-
-	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];
+	return { local: localExtensions, registry: registryExtensions, module: moduleExtensions };
 };

@@ -5,10 +5,6 @@
 	font-family: var(--theme--fonts--display--font-family);
 	font-style: normal;
 	line-height: 34px;
-
-	@media (min-width: 600px) {
-		font-size: 24px;
-	}
 }
 
 @mixin type-label {

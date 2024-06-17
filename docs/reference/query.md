@@ -258,7 +258,7 @@ query {
 
 ## Search
 
-The search parameter allows you to perform a search on all string and text type fields within a collection. It's an easy
+The search parameter allows you to perform a search on textual and numeric type fields within a collection. It's an easy
 way to search for an item without creating complex field filters – though it is far less optimized. It only searches the
 root item's fields, related item fields are not included.
 
@@ -679,15 +679,17 @@ query {
 ```js
 import { createDirectus, rest, readItems } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
-		filter: {
-			authors: {
-				name: {
-					_eq: 'John',
-				},
+		deep: {
+			translations: {
+				_filter: {
+					languages_code: {
+						_eq: 'en-US',
+					},
+				}
 			},
 		},
 	})

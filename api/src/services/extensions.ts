@@ -1,37 +1,34 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
-import type { SchemaInspector } from '@directus/schema';
-import { createInspector } from '@directus/schema';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
+import type { ApiOutput, BundleExtension, ExtensionSettings } from '@directus/extensions';
+import { describe, type DescribeOptions } from '@directus/extensions-registry';
 import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
-import Joi from 'joi';
-import type Keyv from 'keyv';
+import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
-import { omit, pick } from 'lodash-es';
-import { getCache } from '../cache.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
+
+export class ExtensionReadError extends Error {
+	originalError: unknown;
+	constructor(originalError: unknown) {
+		super();
+		this.originalError = originalError;
+	}
+}
 
 export class ExtensionsService {
 	knex: Knex;
-	permissionsService: PermissionsService;
-	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	extensionsItemService: ItemsService<ExtensionSettings>;
-	systemCache: Keyv<any>;
-	helpers: Helpers;
 	extensionsManager: ExtensionManager;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
-		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.extensionsManager = getExtensionManager();
@@ -39,134 +36,251 @@ export class ExtensionsService {
 		this.extensionsItemService = new ItemsService('directus_extensions', {
 			knex: this.knex,
 			schema: this.schema,
-			// No accountability here, as every other method is hardcoded to be admin only
+			accountability: this.accountability,
+		});
+	}
+
+	private async preInstall(extensionId: string, versionId: string) {
+		const env = useEnv();
+
+		const describeOptions: DescribeOptions = {};
+
+		if (typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+			describeOptions.registry = env['MARKETPLACE_REGISTRY'];
+		}
+
+		const extension = await describe(extensionId, describeOptions);
+		const version = extension.data.versions.find((version) => version.id === versionId);
+
+		if (!version) {
+			throw new ForbiddenError();
+		}
+
+		const limit = env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null;
+
+		if (limit !== null) {
+			const currentlyInstalledCount = this.extensionsManager.extensions.length;
+
+			/**
+			 * Bundle extensions should be counted as the number of nested entries rather than a single
+			 * extension to avoid a vulnerability where you can get around the technical limit by bundling
+			 * all extensions you want
+			 */
+			const points = version.bundled.length ?? 1;
+
+			const afterInstallCount = currentlyInstalledCount + points;
+
+			if (afterInstallCount >= limit) {
+				throw new LimitExceededError({ category: 'Extensions' });
+			}
+		}
+
+		return { extension, version };
+	}
+
+	async install(extensionId: string, versionId: string) {
+		const { extension, version } = await this.preInstall(extensionId, versionId);
+
+		await this.extensionsItemService.createOne({
+			id: extensionId,
+			enabled: true,
+			folder: versionId,
+			source: 'registry',
+			bundle: null,
 		});
 
-		this.systemCache = getCache().systemCache;
-		this.helpers = getHelpers(this.knex);
+		if (extension.data.type === 'bundle' && version.bundled.length > 0) {
+			await this.extensionsItemService.createMany(
+				version.bundled.map((entry) => ({
+					enabled: true,
+					folder: entry.name,
+					source: 'registry',
+					bundle: extensionId,
+				})),
+			);
+		}
+
+		await this.extensionsManager.install(versionId);
+	}
+
+	async uninstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall sub extensions of bundles separately',
+			});
+		}
+
+		await this.deleteOne(id);
+		await this.extensionsManager.uninstall(settings.folder);
+	}
+
+	async reinstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall sub extensions of bundles separately',
+			});
+		}
+
+		const extensionId = settings.id;
+		const versionId = settings.folder;
+
+		await this.preInstall(extensionId, versionId);
+		await this.extensionsManager.install(versionId);
 	}
 
 	async readAll() {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
+		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
+
+		const regular = settings.filter(({ bundle }) => bundle === null);
+		const bundled = settings.filter(({ bundle }) => bundle !== null);
+
+		const output: ApiOutput[] = [];
+
+		for (const meta of regular) {
+			output.push({
+				id: meta.id,
+				bundle: meta.bundle,
+				meta: meta,
+				schema: this.extensionsManager.getExtension(meta.source, meta.folder) ?? null,
+			});
 		}
 
-		const installedExtensions = this.extensionsManager.getExtensions();
-		const configuredExtensions = await this.extensionsItemService.readByQuery({ limit: -1 });
+		for (const meta of bundled) {
+			const parentBundle = output.find((ext) => ext.id === meta.bundle);
 
-		return this.stitch(installedExtensions, configuredExtensions);
+			if (!parentBundle) continue;
+
+			const schema = (parentBundle.schema as BundleExtension | null)?.entries.find(
+				(entry) => entry.name === meta.folder,
+			);
+
+			if (!schema) continue;
+
+			output.push({
+				id: meta.id,
+				bundle: meta.bundle,
+				meta: meta,
+				schema: schema,
+			});
+		}
+
+		return output;
 	}
 
-	async readOne(bundle: string | null, name: string) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
+	async readOne(id: string): Promise<ApiOutput> {
+		const meta = await this.extensionsItemService.readOne(id);
+		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;
 
-		const key = this.getKey(bundle, name);
-
-		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === (bundle ?? name));
-		const meta = await this.extensionsItemService.readOne(key);
-
-		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
-
-		if (stitched) return stitched;
-
-		throw new ForbiddenError();
+		return {
+			id: meta.id,
+			bundle: meta.bundle,
+			schema,
+			meta,
+		};
 	}
 
-	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
+	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
+		const result = await transaction(this.knex, async (trx) => {
+			if (!isObject(data.meta)) {
+				throw new InvalidPayloadError({ reason: `"meta" is required` });
+			}
 
-		const key = this.getKey(bundle, name);
+			const service = new ExtensionsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
 
-		const updateExtensionSchema = Joi.object({
-			meta: Joi.object({
-				enabled: Joi.boolean(),
-			}),
+			await service.extensionsItemService.updateOne(id, data.meta);
+
+			let extension;
+
+			try {
+				extension = await service.readOne(id);
+			} catch (error) {
+				throw new ExtensionReadError(error);
+			}
+
+			if ('enabled' in data.meta) {
+				await service.checkBundleAndSyncStatus(trx, id, extension);
+			}
+
+			return extension;
 		});
 
-		const { error } = updateExtensionSchema.validate(data);
+		this.extensionsManager.reload().then(() => {
+			this.extensionsManager.broadcastReloadNotification();
+		});
 
-		if (error) {
-			throw new InvalidPayloadError({ reason: error.message });
-		}
-
-		if ('meta' in data && 'enabled' in data.meta) {
-			await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
-
-			this.extensionsManager.reload();
-		}
+		return result;
 	}
 
-	private getKey(bundle: string | null, name: string) {
-		return bundle ? `${bundle}/${name}` : name;
+	async deleteOne(id: string) {
+		await this.extensionsItemService.deleteOne(id);
+		await this.extensionsItemService.deleteByQuery({ filter: { bundle: { _eq: id } } });
 	}
 
 	/**
-	 * Combine the settings stored in the database with the information available from the installed
-	 * extensions into the standardized extensions api output
+	 * Sync a bundles enabled status
+	 *  - If the extension or extensions parent is not a bundle changes are skipped
+	 *  - If a bundles status is toggled, all children are set to that status
+	 *  - If an entries status is toggled, then if the:
+	 *    - Parent bundle is non-partial throws UnprocessableContentError
+	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
+	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private stitch(installed: Extension[], configured: ExtensionSettings[]): ApiOutput[] {
-		/**
-		 * On startup, the extensions manager will automatically create the rows for installed
-		 * extensions that don't have configured settings yet, so there should always be equal or more
-		 * settings rows than installed extensions.
-		 */
+	private async checkBundleAndSyncStatus(trx: Knex, extensionId: string, extension: ApiOutput) {
+		if (extension.bundle === null && extension.schema?.type === 'bundle') {
+			// If extension is the parent bundle, set it and all nested extensions to enabled
+			await trx('directus_extensions')
+				.update({ enabled: extension.meta.enabled })
+				.where({ bundle: extensionId })
+				.orWhere({ id: extensionId });
 
-		return configured.map((meta) => {
-			let bundleName: string | null = null;
-			let name = meta.name;
+			return;
+		}
 
-			if (name.includes('/')) {
-				const parts = name.split('/');
+		const parentId = extension.bundle ?? extension.meta.bundle;
 
-				// NPM packages can have an optional organization scope in the format
-				// `@<org>/<package>`. This is limited to a single `/`.
-				//
-				// `foo` -> extension
-				// `foo/bar` -> bundle
-				// `@rijk/foo` -> extension
-				// `@rijk/foo/bar -> bundle
+		if (!parentId) return;
 
-				const hasOrg = parts.at(0)!.startsWith('@');
+		const parent = await this.readOne(parentId);
 
-				if (hasOrg && parts.length > 2) {
-					name = parts.pop() as string;
-					bundleName = parts.join('/');
-				} else if (hasOrg === false) {
-					[bundleName, name] = parts as [string, string];
-				}
-			}
+		if (parent.schema?.type !== 'bundle') {
+			return;
+		}
 
-			let schema;
+		if (parent.schema.partial === false) {
+			throw new UnprocessableContentError({
+				reason: 'Unable to toggle status of an entry for a bundle marked as non partial',
+			});
+		}
 
-			if (bundleName) {
-				const bundle = installed.find((extension) => extension.name === bundleName);
+		const hasEnabledChildren = !!(await trx('directus_extensions')
+			.where({ bundle: parentId })
+			.where({ enabled: true })
+			.first());
 
-				if (bundle && 'entries' in bundle) {
-					const entry = bundle.entries.find((entry) => entry.name === name) ?? null;
-
-					if (entry) {
-						schema = {
-							type: entry.type,
-							local: bundle.local,
-						};
-					}
-				} else {
-					schema = null;
-				}
-			} else {
-				schema = installed.find((extension) => extension.name === name) ?? null;
-			}
-
-			return {
-				name,
-				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local', 'version') : null,
-				meta: omit(meta, 'name'),
-			};
-		});
+		if (hasEnabledChildren) {
+			await trx('directus_extensions').update({ enabled: true }).where({ id: parentId });
+		} else {
+			await trx('directus_extensions').update({ enabled: false }).where({ id: parentId });
+		}
 	}
 }

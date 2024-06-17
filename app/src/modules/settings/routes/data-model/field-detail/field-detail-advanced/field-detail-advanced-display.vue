@@ -41,12 +41,12 @@ const selectItems = computed(() => {
 		return item;
 	});
 
-	const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
+	const recommendedItems: FancySelectItem[] = [];
 
 	const recommendedList = recommended.map((key: any) => displayItems.find((item) => item.value === key));
 
 	if (recommendedList !== undefined) {
-		recommendedItems.push(...recommendedList.filter((i: any) => i));
+		recommendedItems.push(...recommendedList.filter((item): item is FancySelectItem => !!item));
 	}
 
 	if (displayItems.length >= 5 && recommended.length > 0) {
@@ -67,7 +67,7 @@ const customOptionsFields = computed(() => {
 		return selectedDisplay.value?.options(fieldDetailStore);
 	}
 
-	return null;
+	return undefined;
 });
 
 const options = computed({
@@ -75,11 +75,12 @@ const options = computed({
 		return fieldDetailStore.field.meta?.display_options ?? {};
 	},
 	set(newOptions: Record<string, any>) {
-		fieldDetailStore.$patch((state) => {
-			state.field.meta = {
-				...(state.field.meta ?? {}),
-				display_options: newOptions,
-			};
+		fieldDetailStore.update({
+			field: {
+				meta: {
+					display_options: newOptions,
+				},
+			},
 		});
 	},
 });

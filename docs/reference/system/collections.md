@@ -158,10 +158,6 @@ List the available collections.
 
 `SEARCH /collections`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
 </template>
 <template #graphql>
 
@@ -343,22 +339,7 @@ import { createDirectus, rest, createCollection } from '@directus/sdk';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createCollection({
-		collection: 'collection_name',
-		fields: [
-			{
-				field: 'title',
-				type: 'string',
-				meta: {
-					icon: 'title'
-				},
-				schema: {
-					is_primary_key: true,
-					is_nullable: false
-				}
-			}
-		],
-	})
+	createCollection(collection_object)
 );
 ```
 

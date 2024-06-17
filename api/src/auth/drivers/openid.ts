@@ -1,6 +1,8 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	InvalidCredentialsError,
+	InvalidPayloadError,
 	InvalidProviderConfigError,
 	InvalidProviderError,
 	InvalidTokenError,
@@ -15,10 +17,10 @@ import jwt from 'jsonwebtoken';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
@@ -26,7 +28,8 @@ import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { getSecret } from '../../utils/get-secret.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -39,6 +42,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const env = useEnv();
+		const logger = useLogger();
+
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
 		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
@@ -46,7 +52,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
+		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
+			'auth',
+			'login',
+			additionalConfig['provider'],
+			'callback',
+		);
 
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
@@ -129,6 +140,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const logger = useLogger();
+
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsError();
@@ -252,6 +265,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async refresh(user: User): Promise<void> {
+		const logger = useLogger();
+
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -281,6 +296,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 }
 
 const handleError = (e: any) => {
+	const logger = useLogger();
+
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
@@ -305,6 +322,7 @@ const handleError = (e: any) => {
 };
 
 export function createOpenIDAuthRouter(providerName: string): Router {
+	const env = useEnv();
 	const router = Router();
 
 	router.get(
@@ -313,15 +331,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+			const redirect = req.query['redirect'];
 
-			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
-				env['SECRET'] as string,
-				{
-					expiresIn: '5m',
-					issuer: 'directus',
-				},
-			);
+			if (isLoginRedirectAllowed(redirect, providerName) === false) {
+				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
+			}
+
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
 
 			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,
@@ -345,10 +364,12 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			const logger = useLogger();
+
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env['SECRET'] as string, {
+				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], getSecret(), {
 					issuer: 'directus',
 				}) as {
 					verifier: string;
@@ -367,7 +388,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				role: null,
 			};
 
-			const userAgent = req.get('user-agent');
+			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;
 
 			const origin = req.get('origin');
@@ -378,17 +399,23 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				schema: req.schema,
 			});
 
+			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
+
 			let authResponse;
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				authResponse = await authenticationService.login(providerName, {
-					code: req.query['code'],
-					codeVerifier: verifier,
-					state: req.query['state'],
-					iss: req.query['iss'],
-				});
+				authResponse = await authenticationService.login(
+					providerName,
+					{
+						code: req.query['code'],
+						codeVerifier: verifier,
+						state: req.query['state'],
+						iss: req.query['iss'],
+					},
+					{ session: authMode === 'session' },
+				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
@@ -416,13 +443,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
-					httpOnly: true,
-					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
-					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
-					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				if (authMode === 'session') {
+					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+				} else {
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+				}
 
 				return res.redirect(redirect);
 			}

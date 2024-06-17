@@ -10,7 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const inviteUser =
-	<Schema extends object>(email: string, role: string, invite_url?: string): RestCommand<void, Schema> =>
+	<Schema>(email: string, role: string, invite_url?: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/invite`,
 		method: 'POST',
@@ -30,7 +30,7 @@ export const inviteUser =
  * @returns Nothing
  */
 export const acceptUserInvite =
-	<Schema extends object>(token: string, password: string): RestCommand<void, Schema> =>
+	<Schema>(token: string, password: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/invite/accept`,
 		method: 'POST',
@@ -41,6 +41,46 @@ export const acceptUserInvite =
 	});
 
 /**
+ * Register a new user.
+ *
+ * @param email The new user email.
+ * @param password The new user password.
+ * @param options Optional registration fields.
+ *
+ * @returns Nothing
+ */
+export const registerUser =
+	<Schema>(
+		email: string,
+		password: string,
+		options: { verification_url?: string; first_name?: string; last_name?: string } = {},
+	): RestCommand<void, Schema> =>
+	() => ({
+		path: `/users/register`,
+		method: 'POST',
+		body: JSON.stringify({
+			email,
+			password,
+			...options,
+		}),
+	});
+
+/**
+ * Verify a registered user email using a token sent to the address.
+ *
+ * @param token Accept registration token.
+ *
+ * @returns Nothing
+ */
+export const registerUserVerify =
+	<Schema>(token: string): RestCommand<void, Schema> =>
+	() => ({
+		path: `/users/register/verify-email`,
+		params: { token },
+		method: 'GET',
+	});
+
+/**
  * Generates a secret and returns the URL to be used in an authenticator app.
  *
  * @param password The user's password.
@@ -48,7 +88,7 @@ export const acceptUserInvite =
  * @returns A two-factor secret
  */
 export const generateTwoFactorSecret =
-	<Schema extends object>(password: string): RestCommand<{ secret: string; otpauth_url: string }, Schema> =>
+	<Schema>(password: string): RestCommand<{ secret: string; otpauth_url: string }, Schema> =>
 	() => ({
 		path: `/users/me/tfa/generate`,
 		method: 'POST',
@@ -66,7 +106,7 @@ export const generateTwoFactorSecret =
  * @returns Nothing
  */
 export const enableTwoFactor =
-	<Schema extends object>(secret: string, otp: string): RestCommand<void, Schema> =>
+	<Schema>(secret: string, otp: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/me/tfa/enable`,
 		method: 'POST',
@@ -84,7 +124,7 @@ export const enableTwoFactor =
  * @returns Nothing
  */
 export const disableTwoFactor =
-	<Schema extends object>(otp: string): RestCommand<void, Schema> =>
+	<Schema>(otp: string): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/me/tfa/disable`,
 		method: 'POST',

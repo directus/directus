@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
-import api from '@/api';
+import { requestQueue } from '@/api';
+
+defineOptions({
+	inheritAttrs: false,
+});
 
 interface Props {
 	src: string;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
@@ -31,43 +34,13 @@ const observer = new IntersectionObserver((entries, observer) => {
 
 watch(
 	() => props.src,
-	() => {
-		loadImage();
-	},
+	() => loadImage(),
 );
 
-async function loadImage() {
-	try {
-		const res = await api.get(props.src, {
-			responseType: 'arraybuffer',
-			params: {
-				download: true,
-			},
-		});
-
-		if (res.headers['content-type'].startsWith('image') === false) return;
-
-		const contentType = res.headers['content-type'];
-
-		const data = new Uint8Array(res.data);
-
-		// 5mb
-		if (data.length > 1048576 * 5) {
-			emit('error', new Error('Image too big to render'));
-			return;
-		}
-
-		let raw = '';
-
-		data.forEach((byte) => {
-			raw += String.fromCharCode(byte);
-		});
-
-		const base64 = window.btoa(raw);
-		srcData.value = `data:${contentType};base64,${base64}`;
-	} catch (err) {
-		emit('error', err);
-	}
+function loadImage() {
+	requestQueue.add(() => {
+		srcData.value = props.src;
+	});
 }
 
 onMounted(() => {
@@ -80,14 +53,6 @@ onUnmounted(() => {
 });
 
 const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-});
 </script>
 
 <template>

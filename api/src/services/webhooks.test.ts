@@ -1,8 +1,9 @@
+import { createError, ErrorCode } from '@directus/errors';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
-import { getMessenger } from '../messenger.js';
+import { useBus } from '../bus/index.js';
 import { WebhooksService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -33,6 +34,12 @@ describe('Integration Tests', () => {
 	describe('Services / Webhooks', () => {
 		let service: WebhooksService;
 		let messengerPublishSpy: MockInstance;
+
+		const errorDeprecation = new (createError(
+			ErrorCode.MethodNotAllowed,
+			'Webhooks are deprecated, use Flows instead',
+			405,
+		))();
 
 		beforeEach(() => {
 			service = new WebhooksService({
@@ -68,7 +75,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			messengerPublishSpy = vi.spyOn(getMessenger(), 'publish');
+			messengerPublishSpy = vi.spyOn(useBus(), 'publish');
 		});
 
 		afterEach(() => {
@@ -76,30 +83,32 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createOne', () => {
-			it('should publish webhooks reload message once', async () => {
-				await service.createOne({});
-				expect(messengerPublishSpy).toBeCalledTimes(1);
+			it('should error because of deprecation', async () => {
+				return expect(service.createOne({})).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('createMany', () => {
-			it('should publish webhooks reload message once', async () => {
-				await service.createMany([{}]);
-				expect(messengerPublishSpy).toBeCalledTimes(1);
+			it('should error because of deprecation', async () => {
+				return expect(service.createMany([{}])).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('updateOne', () => {
-			it('should publish webhooks reload message once', async () => {
-				await service.updateOne(1, {});
-				expect(messengerPublishSpy).toBeCalledTimes(1);
+			it('should error because of deprecation', async () => {
+				return expect(service.updateOne(1, {})).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('updateMany', () => {
-			it('should publish webhooks reload message once', async () => {
-				await service.updateMany([1], {});
-				expect(messengerPublishSpy).toBeCalledTimes(1);
+			it('should error because of deprecation', async () => {
+				return expect(service.updateMany([1], {})).rejects.toEqual(errorDeprecation);
+			});
+		});
+
+		describe('updateBatch', () => {
+			it('should error because of deprecation', async () => {
+				return expect(service.updateBatch()).rejects.toEqual(errorDeprecation);
 			});
 		});
 

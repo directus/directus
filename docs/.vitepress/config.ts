@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import sidebar from './data/sidebar.js';
+import { useMaterialIconsNoTranslate } from './lib/markdown-plugins/material-icons-no-translate.js';
 
 export default defineConfig({
 	base: '/',
@@ -19,6 +20,7 @@ export default defineConfig({
 		},
 		config(md) {
 			md.use(tabsMarkdownPlugin);
+			useMaterialIconsNoTranslate(md);
 		},
 	},
 	head: [
@@ -133,21 +135,15 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
-		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
+		socialLinks: [
+			{ icon: 'github', link: 'https://github.com/directus/directus' },
+			{ icon: 'twitter', link: 'https://twitter.com/directus' },
+			{ icon: 'discord', link: 'https://directus.chat' },
+		],
 		nav: [
-			{
-				text: 'Developer Reference',
-				link: '/getting-started/quickstart',
-				// Active on every path except for '/', '/user-guide', '/packages'
-				activeMatch: '^\\/(?!$|user-guide|packages).*',
-			},
-			{
-				text: 'User Guide',
-				link: '/user-guide/overview/data-studio-app',
-				activeMatch: '/user-guide',
-			},
 			{ text: 'Website', link: 'https://directus.io/' },
-			{ text: 'Cloud', link: 'https://directus.cloud/' },
+			{ text: 'Cloud Dashboard', link: 'https://directus.cloud/' },
+			{ text: 'Directus TV', link: 'https://directus.io/tv' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',

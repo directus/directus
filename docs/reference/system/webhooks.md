@@ -9,6 +9,13 @@ pageClass: page-reference
 > Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a
 > specific event is triggered.
 
+::: warning
+
+Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
+[Flows](/app/flows).
+
+:::
+
 ## The Webhook Object
 
 `id` **integer**\

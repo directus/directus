@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useServerStore } from '@/stores/server';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
@@ -26,9 +26,10 @@ const props = defineProps<{
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
+	onDownload?: () => Promise<void>;
 }>();
 
-const emit = defineEmits(['refresh', 'download']);
+const emit = defineEmits(['refresh']);
 
 const { t, n, te } = useI18n();
 
@@ -47,6 +48,8 @@ const fileExtension = computed(() => {
 });
 
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
+
+const { createAllowed } = useCollectionPermissions(collection);
 
 const { info } = useServerStore();
 
@@ -309,7 +312,6 @@ function exportDataLocal() {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
 
@@ -358,10 +360,6 @@ async function exportDataFiles() {
 		exporting.value = false;
 	}
 }
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
 
 <template>
@@ -424,9 +422,12 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 				</v-button>
 
 				<button
-					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
+					v-tooltip.bottom="
+						!!onDownload ? t('presentation_text_values_cannot_be_reimported') : t('download_page_as_csv_unsupported')
+					"
 					class="download-local"
-					@click="$emit('download')"
+					:disabled="!onDownload"
+					@click="onDownload"
 				>
 					{{ t('download_page_as_csv') }}
 				</button>
@@ -637,8 +638,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	justify-content: center;
 	height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 0px;
-	padding-bottom: 0px;
+	padding-top: 0;
+	padding-bottom: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -719,6 +720,11 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 
 	&:hover {
 		color: var(--theme--primary);
+	}
+
+	&:disabled {
+		color: var(--theme--foreground-subdued);
+		cursor: not-allowed;
 	}
 }
 </style>

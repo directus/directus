@@ -227,25 +227,27 @@ prefixing the value with `{type}:`. The following types are available:
 
 ## General
 
-| Variable                   | Description                                                                                                                 | Default Value                |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
-| `HOST`                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
-| `PORT`                     | What port to run the API under.                                                                                             | `8055`                       |
-| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                                               | `/`                          |
-| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
-| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
-| `LOG_HTTP_IGNORE_PATHS`    | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
-| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
-| `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                | Whether or not to serve the Admin application                                                                               | `true`                       |
-| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
-| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
-| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
-| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
-| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
-| `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
+| Variable                        | Description                                                                                                                 | Default Value                |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
+| `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
+| `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                     | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
+| `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`          | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`           | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`               | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`                    | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
+| `TEMP_PATH`                     | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
+| `MIGRATIONS_PATH`               | Where custom migrations are located                                                                                         | `./migrations`               |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -325,6 +327,7 @@ WebSockets work reliably across multiple containers of Directus.
 
 | Variable         | Description                                                                                                                                                | Default Value |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS_ENABLED`  | Whether or not Redis should be used. Defaults to whether or not you have any of the vars below configured                                                  | --            |
 | `REDIS`          | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
 | `REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
 | `REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
@@ -335,26 +338,40 @@ Redis is required when you run Directus load balanced across multiple containers
 
 ## Security
 
-| Variable                         | Description                                                                                                                                                                                          | Default Value             |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `KEY`                            | Unique identifier for the project.                                                                                                                                                                   | --                        |
-| `SECRET`                         | Secret string for the project.                                                                                                                                                                       | --                        |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                                                                                     | `7d`                      |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                                                                                             | --                        |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                                                                                          | `false`                   |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                                                                                                | `lax`                     |
-| `REFRESH_TOKEN_COOKIE_NAME`      | Name of refresh token cookie .                                                                                                                                                                       | `directus_refresh_token`  |
-| `LOGIN_STALL_TIME`               | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
-| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
-| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
-| `IP_TRUST_PROXY`                 | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
-| `IP_CUSTOM_HEADER`               | What custom request header to use for the IP address                                                                                                                                                 | false                     |
-| `ASSETS_CONTENT_SECURITY_POLICY` | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
-| `IMPORT_IP_DENY_LIST`            | Deny importing files from these IP addresses. Use `0.0.0.0` for any local IP address                                                                                                                 | `0.0.0.0,169.254.169.254` |
-| `CONTENT_SECURITY_POLICY_*`      | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
-| `HSTS_ENABLED`                   | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
-| `HSTS_*`                         | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
+| Variable                            | Description                                                                                                                                                                                          | Default Value             |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `SECRET`<sup>[1]</sup>              | Secret string for the project.                                                                                                                                                                       | Random value              |
+| `ACCESS_TOKEN_TTL`                  | The duration that the access token is valid.                                                                                                                                                         | `15m`                     |
+| `EMAIL_VERIFICATION_TOKEN_TTL`      | The duration that the email verification token is valid.                                                                                                                                             | `7d`                      |
+| `REFRESH_TOKEN_TTL`                 | The duration that the refresh token is valid. This value should be higher than `ACCESS_TOKEN_TTL` resp. `SESSION_COOKIE_TTL`.                                                                        | `7d`                      |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`       | Which domain to use for the refresh token cookie. Useful for development mode.                                                                                                                       | --                        |
+| `REFRESH_TOKEN_COOKIE_SECURE`       | Whether or not to set the `secure` attribute for the refresh token cookie.                                                                                                                           | `false`                   |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE`    | Value for `sameSite` in the refresh token cookie.                                                                                                                                                    | `lax`                     |
+| `REFRESH_TOKEN_COOKIE_NAME`         | Name of the refresh token cookie.                                                                                                                                                                    | `directus_refresh_token`  |
+| `SESSION_COOKIE_TTL`                | The duration that the session cookie/token is valid, and also how long users stay logged-in to the App.                                                                                              | `1d`                      |
+| `SESSION_COOKIE_DOMAIN`             | Which domain to use for the session cookie. Useful for development mode.                                                                                                                             | --                        |
+| `SESSION_COOKIE_SECURE`             | Whether or not to set the `secure` attribute for the session cookie.                                                                                                                                 | `false`                   |
+| `SESSION_COOKIE_SAME_SITE`          | Value for `sameSite` in the session cookie.                                                                                                                                                          | `lax`                     |
+| `SESSION_COOKIE_NAME`               | Name of the session cookie.                                                                                                                                                                          | `directus_session_token`  |
+| `SESSION_REFRESH_GRACE_PERIOD`      | The duration during which a refresh request will permit recently refreshed sessions to be used, thereby preventing race conditions in refresh calls                                                  | `10s`                     |
+| `LOGIN_STALL_TIME`                  | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
+| `REGISTER_STALL_TIME`               | The duration in milliseconds that a registration request will be stalled for, and it should be greater than the time taken for a registration request with an already registered email               | `750`                     |
+| `PASSWORD_RESET_URL_ALLOW_LIST`     | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
+| `USER_INVITE_URL_ALLOW_LIST`        | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
+| `USER_REGISTER_URL_ALLOW_LIST`      | List of URLs that can be used as `verification_url` in /users/register                                                                                                                               | --                        |
+| `IP_TRUST_PROXY`                    | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
+| `IP_CUSTOM_HEADER`                  | What custom request header to use for the IP address                                                                                                                                                 | false                     |
+| `ASSETS_CONTENT_SECURITY_POLICY`    | Custom overrides for the Content-Security-Policy header for the /assets endpoint. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information. | --                        |
+| `IMPORT_IP_DENY_LIST`<sup>[2]</sup> | Deny importing files from these IP addresses / IP ranges / CIDR blocks. Use `0.0.0.0` to match any local IP address.                                                                                 | `0.0.0.0,169.254.169.254` |
+| `CONTENT_SECURITY_POLICY_*`         | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
+| `HSTS_ENABLED`                      | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
+| `HSTS_*`                            | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
+
+<sup>[1]</sup> When `SECRET` is not set, a random value will be used. This means sessions won't persist across system
+restarts or horizontally scaled deployments. Must be explicitly set to a secure random value in production.
+
+<sup>[2]</sup> localhost can get resolved to `::1` as well as `127.0.0.1` depending on the system - ensure to include
+both if you want to specifically block localhost.
 
 ::: tip Cookie Strictness
 
@@ -414,20 +431,22 @@ For more details about each configuration variable, please see the
 You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
 will set a default maximum of 50 requests per second, tracked in memory.
 
-| Variable                                    | Description                                                       | Default Value |
-| ------------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.         | `false`       |
-| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                          | `50`          |
-| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
-| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                              | `150`         |
-| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.         | `false`       |
-| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                    | `1000`        |
-| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                              | `150`         |
-| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
+| Variable                                    | Description                                                             | Default Value |
+| ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.               | `false`       |
+| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                                | `50`          |
+| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.             | `1`           |
+| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`.       | `memory`      |
+| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                                    | `150`         |
+| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.               | `false`       |
+| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                          | `1000`        |
+| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.             | `1`           |
+| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                    | `150`         |
+| `RATE_LIMITER_REGISTRATION_ENABLED`         | Whether or not to enable rate limiting per IP on the user registration. | `true`        |
+| `RATE_LIMITER_REGISTRATION_POINTS`          | The amount of allowed hits per duration.                                | `5`           |
+| `RATE_LIMITER_REGISTRATION_DURATION`        | The time window in seconds in which the points are counted.             | `60`          |
 
-Based on the `RATE_LIMITER_STORE`/`RATE_LIMITER_GLOBAL_STORE` used, you must also provide the following configurations:
+Based on the `RATE_LIMITER_STORE` used, you must also provide the following configurations:
 
 ### Example: Basic
 
@@ -481,22 +500,23 @@ than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                                     | Description                                                                                                             | Default Value                        |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
-| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
-| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                 | `false`                              |
-| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
-| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
-| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
-| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
-| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `system-cache`                       |
-| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
-| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
-| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
-| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
-| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                    | `150`                                |
+| Variable                                     | Description                                                                                                               | Default Value                        |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                   | `false`                              |
+| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                     | `5m`                                 |
+| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                   | `false`                              |
+| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                        | `directus_activity,directus_presets` |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                            | --                                   |
+| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
+| `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
+| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                    | `true`                               |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
+| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
+| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
+| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit   | false                                |
+| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                   | false                                |
+| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                      | `150`                                |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -651,12 +671,12 @@ STORAGE_AWS_BUCKET="my-files"
 
 ### Metadata
 
-When uploading an image, Directus persists the _description, title, and tags_ from available EXIF metadata. For security
+When uploading an image, Directus persists the _description, title, and tags_ from available Exif metadata. For security
 purposes, collection of additional metadata must be configured:
 
-| Variable                   | Description                                                                                           | Default Value                                                                 |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
+| Variable                   | Description                                                                                           | Default Value                                                                             |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings |
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
@@ -690,9 +710,10 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 For each auth provider you list, you must also provide the following configuration:
 
-| Variable                 | Description                                                             | Default Value |
-| ------------------------ | ----------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap`, `saml` | --            |
+| Variable                 | Description                                                                                                                                | Default Value |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| `AUTH_<PROVIDER>_DRIVER` | Which driver to use, either `local`, `oauth2`, `openid`, `ldap`, `saml`                                                                    | --            |
+| `AUTH_<PROVIDER>_MODE`   | Whether to use `'cookie'` or `'session'` authentication mode when redirecting. Applies to the following drivers `oauth2`, `openid`, `saml` | `session`     |
 
 You may also be required to specify additional variables depending on the auth driver. See configuration details below.
 
@@ -738,23 +759,24 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 
 ### OAuth 2.0
 
-| Variable                                    | Description                                                                                       | Default Value    |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                         | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                             | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                     | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                           | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                           | --               |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                          | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                           | `email`          |
-| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                      | --               |
-| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                       | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle` |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                    | `<PROVIDER>`     |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                         | --               |
+| Variable                                    | Description                                                                                               | Default Value    |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                                 | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                                     | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                             | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                                   | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                                   | --               |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                                  | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                                   | `email`          |
+| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                              | --               |
+| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                               | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle` |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`     |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --               |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -763,19 +785,20 @@ Directus users "External Identifier".
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
-| Variable                                    | Description                                                                                       | Default Value          |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                       | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                           | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                              | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                       | `sub`<sup>[2]</sup>    |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                           | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle`       |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                    | `<PROVIDER>`           |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                         | --                     |
+| Variable                                    | Description                                                                                               | Default Value          |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                               | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                   | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                      | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                                  | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                   | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle`       |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -839,14 +862,17 @@ without a password.
 - Identity provider (IdP) authenticates users and provides to service providers an authentication assertion that
   indicates a user has been authenticated.
 
-| Variable                                    | Description                                                              | Default Value |
-| ------------------------------------------- | ------------------------------------------------------------------------ | ------------- |
-| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider                      | --            |
-| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider                     | --            |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                  | `false`       |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                              | --            |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`. | --            |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                  | `email`       |
+| Variable                                    | Description                                                                                               | Default Value                                                          |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider                                                       | --                                                                     |
+| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider                                                      | --                                                                     |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                                                                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                                                                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                               | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                                   | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`   |
+| `AUTH_<PROVIDER>_GIVEN_NAME_KEY`            | User first name attribute.                                                                                | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`      |
+| `AUTH_<PROVIDER>_FAMILY_NAME_KEY`           | User last name attribute.                                                                                 | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`        |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                                                                     |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -904,13 +930,14 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                               | Description                                             | Default Value  |
-| -------------------------------------- | ------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                   | `./extensions` |
-| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.   | `false`        |
-| `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed. | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
-| `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
+| Variable                               | Description                                                                    | Default Value  |
+| -------------------------------------- | ------------------------------------------------------------------------------ | -------------- |
+| `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                                          | `./extensions` |
+| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.                          | `false`        |
+| `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed.                        | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.                         | --             |
+| `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions.                        | --             |
+| `EXTENSIONS_LIMIT`                     | Maximum number of extensions you allow to be installed through the marketplace |                |
 
 <sup>[1]</sup> If `EXTENSIONS_LOCATION` is configured, this is the path to the extensions folder within the selected
 storage location.
@@ -925,15 +952,15 @@ By default, extensions are not cached. The input data type for this environment 
 [`CACHE_TTL`](#cache).
 
 <sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
-extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
-and then loaded from there.
+extensions from a storage location instead. Under the hood, they are synced into a local directory within
+[`TEMP_PATH`](#general) and then loaded from there.
 
-## Messenger
+## Marketplace
 
-| Variable              | Description                            | Default Value        |
-| --------------------- | -------------------------------------- | -------------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
+| Variable               | Description                                       | Default Value                  |
+| ---------------------- | ------------------------------------------------- | ------------------------------ |
+| `MARKETPLACE_TRUST`    | One of `sandbox`, `all`                           | `sandbox`                      |
+| `MARKETPLACE_REGISTRY` | The registry to use for the Directus Marketplace. | `https://registry.directus.io` |
 
 ## Synchronization
 
@@ -944,11 +971,12 @@ and then loaded from there.
 
 ## Email
 
-| Variable             | Description                                                                          | Default Value          |
-| -------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_VERIFY_SETUP` | Check if email setup is properly configured.                                         | `true`                 |
-| `EMAIL_FROM`         | Email address from which emails are sent.                                            | `no-reply@example.com` |
-| `EMAIL_TRANSPORT`    | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
+| Variable               | Description                                                                          | Default Value          |
+| ---------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                                         | `true`                 |
+| `EMAIL_FROM`           | Email address from which emails are sent.                                            | `no-reply@example.com` |
+| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
+| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                                   | `./templates`          |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -1019,10 +1047,14 @@ Directus collects little and anonymized data about your environment.
 
 Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
 
-| Variable                | Description                                                                               | Default Value |
-| ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
-| `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
-| `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |
+| Variable                    | Description                                                                                                                     | Default Value |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RELATIONAL_BATCH_SIZE`     | How many rows are read into memory at a time when constructing nested relational datasets                                       | 25000         |
+| `EXPORT_BATCH_SIZE`         | How many rows are read into memory at a time when constructing exports                                                          | 5000          |
+| `USERS_ADMIN_ACCESS_LIMIT`  | How many active users with admin privilege are allowed                                                                          | `Infinity`    |
+| `USERS_APP_ACCESS_LIMIT`    | How many active users with access to the Data Studio are allowed                                                                | `Infinity`    |
+| `USERS_API_ACCESS_LIMIT`    | How many active API access users are allowed                                                                                    | `Infinity`    |
+| `GRAPHQL_QUERY_TOKEN_LIMIT` | How many GraphQL query tokens will be parsed. [More details here](https://graphql-js.org/api/interface/parseoptions/#maxTokens) | 5000          |
 
 ## WebSockets
 
@@ -1070,16 +1102,18 @@ These environment variables only exist when you're using the official Docker Con
 For more information on what these options do, please refer to
 [the `pm2` documentation](https://pm2.keymetrics.io/docs/usage/application-declaration/).
 
-| Variable                      | Description                                                        | Default     |
-| ----------------------------- | ------------------------------------------------------------------ | ----------- |
-| `PM2_INSTANCES`<sup>[1]</sup> | Number of app instance to be launched                              | `1`         |
-| `PM2_EXEC_MODE`               | One of `fork`, `cluster`                                           | `'cluster'` |
-| `PM2_MAX_MEMORY_RESTART`      | App will be restarted if it exceeds the amount of memory specified | —           |
-| `PM2_MIN_UPTIME`              | Min uptime of the app to be considered started                     | —           |
-| `PM2_LISTEN_TIMEOUT`          | Time in ms before forcing a reload if app not listening            | —           |
-| `PM2_KILL_TIMEOUT`            | Time in milliseconds before sending a final SIGKILL                | —           |
-| `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             | —           |
-| `PM2_RESTART_DELAY`           | Time to wait before restarting a crashed app                       | `0`         |
-| `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`     |
+| Variable                      | Description                                                        | Default                                      |
+| ----------------------------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| `PM2_INSTANCES`<sup>[1]</sup> | Number of app instance to be launched                              | `1`                                          |
+| `PM2_EXEC_MODE`               | One of `fork`, `cluster`                                           | `'cluster'`                                  |
+| `PM2_MAX_MEMORY_RESTART`      | App will be restarted if it exceeds the amount of memory specified | —                                            |
+| `PM2_MIN_UPTIME`              | Min uptime of the app to be considered started                     | —                                            |
+| `PM2_LISTEN_TIMEOUT`          | Time in ms before forcing a reload if app not listening            | —                                            |
+| `PM2_KILL_TIMEOUT`            | Time in milliseconds before sending a final SIGKILL                | —                                            |
+| `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             | —                                            |
+| `PM2_RESTART_DELAY`           | Time to wait before restarting a crashed app                       | `0`                                          |
+| `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`                                      |
+| `PM2_LOG_ERROR_FILE`          | Error file path                                                    | `$HOME/.pm2/logs/<app name>-error-<pid>.log` |
+| `PM2_LOG_OUT_FILE`            | Output file path                                                   | `$HOME/.pm2/logs/<app name>-out-<pid>.log`   |
 
 <sup>[1]</sup> [Redis](#redis) is required in case of multiple instances.
