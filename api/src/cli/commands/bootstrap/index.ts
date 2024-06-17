@@ -91,13 +91,7 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 	const role = await rolesService.createOne(defaultAdminRole);
 	const policy = await policiesService.createOne(defaultAdminPolicy);
 
-	await accessService.createOne(
-		{ policy, role },
-		{
-			// Skip the user integrity check as the first admin has yet to be created
-			onRequireUserIntegrityCheck: () => {},
-		},
-	);
+	await accessService.createOne({ policy, role });
 
 	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
