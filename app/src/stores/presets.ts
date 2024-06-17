@@ -133,6 +133,10 @@ export const usePresetsStore = defineStore({
 					'bookmark',
 				],
 			);
+
+
+
+			//return temp.filter((preset) => preset.bookmark === 'New Incidents')
 		},
 	},
 	actions: {
@@ -166,7 +170,19 @@ export const usePresetsStore = defineStore({
 				}),
 			]);
 
-			const presets = values.flat();
+			let presets = values.flat();
+
+			if(role?.id === 'b3ab233d-75bd-4477-8520-e4c3a4681bea') { // vendor
+				presets = presets.filter((preset) => preset.bookmark === 'More Info Required')
+			}
+
+			if(role?.id === 'f0fa8dc0-6962-4d03-886d-650eafe194ed') { // manager
+				if(userStore.currentUser.Region === 1) presets = presets.filter((preset) => (preset.collection == 'Cases' && preset.bookmark?.startsWith('APAC')))
+				if(userStore.currentUser.Region === 2) presets = presets.filter((preset) => (preset.collection == 'Cases' && preset.bookmark?.startsWith('AMERICAS')))
+				if(userStore.currentUser.Region === 3) presets = presets.filter((preset) => (preset.collection == 'Cases' && preset.bookmark?.startsWith('EMEA')))
+			}
+
+			console.log(presets)
 
 			// Inject system defaults if they don't exist
 			for (const systemCollection of Object.keys(systemDefaults)) {
