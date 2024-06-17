@@ -15,19 +15,24 @@ fields:
 
   - field: name
     width: half
+    display: formatted-value
+    display_options:
+      translate: true
 
   - field: description
     interface: input
     options:
       placeholder: $t:field_options.directus_policies.description
     width: full
+    display: formatted-value
+    display_options:
+      translate: true
 
 
   - field: permissions
     interface: system-permissions
     special:
       - o2m
-    # TODO this will have a new system-interface for managing the permissions in a coming PR
 
   - field: app_access
     interface: boolean
