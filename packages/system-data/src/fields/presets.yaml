@@ -40,9 +40,11 @@ fields:
 
   - field: icon
     width: half
+    display: icon
 
   - field: color
     width: half
+    display: color
 
   - field: search
     width: half
