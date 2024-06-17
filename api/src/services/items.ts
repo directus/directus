@@ -1059,6 +1059,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		await transaction(this.knex, async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
+			if (opts.userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: opts.userIntegrityCheckFlags, knex: trx });
+				}
+			}
+
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
 				const activityService = new ActivityService({
 					knex: trx,
