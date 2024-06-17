@@ -31,7 +31,7 @@ export async function runAst(
 				collection,
 				ast.children[collection]!,
 				ast.query[collection]!,
-				ast.cases[collection]!,
+				ast.cases[collection] ?? [],
 			);
 		}
 

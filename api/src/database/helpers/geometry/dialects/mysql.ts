@@ -5,7 +5,7 @@ export class GeometryHelperMySQL extends GeometryHelper {
 	override collect(table: string, column: string): Knex.Raw {
 		return this.knex.raw(
 			`concat('geometrycollection(', group_concat(? separator ', '), ')'`,
-			this.asText(table, column),
+			this.asText(table, column, column),
 		);
 	}
 

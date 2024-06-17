@@ -7,6 +7,11 @@ import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from './apply-case-when.js';
 
+interface NodePreProcessOptions {
+	/** Don't assign an alias to the column but instead return the column as is */
+	noAlias?: boolean;
+}
+
 export function getColumnPreprocessor(
 	knex: Knex,
 	schema: SchemaOverview,
@@ -16,12 +21,20 @@ export function getColumnPreprocessor(
 ) {
 	const helpers = getHelpers(knex);
 
-	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Knex.Raw<string> {
+	return function (
+		fieldNode: FieldNode | FunctionFieldNode | M2ONode,
+		options?: NodePreProcessOptions,
+	): Knex.Raw<string> {
+		// Don't assign an alias to the column expression if the field has a whenCase
+		// (since the alias will be assigned in applyCaseWhen)
+		const noAlias = options?.noAlias || (fieldNode.whenCase && fieldNode.whenCase.length > 0);
 		let alias = fieldNode.name;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
 			alias = fieldNode.fieldKey;
 		}
+
+		const rawColumnAlias = noAlias ? false : alias;
 
 		let field;
 
@@ -32,14 +45,16 @@ export function getColumnPreprocessor(
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
 
-		let column = getColumn(knex, table, fieldNode.name, alias, schema);
+		let column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema);
 
 		if (field?.type?.startsWith('geometry')) {
-			column = helpers.st.asText(table, field.field);
+			column = helpers.st.asText(table, field.field, rawColumnAlias);
 		}
 
 		if (fieldNode.type === 'functionField') {
-			column = getColumn(knex, table, fieldNode.name, alias, schema, { query: fieldNode.query });
+			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema, {
+				query: fieldNode.query,
+			});
 		}
 
 		if (fieldNode.whenCase && fieldNode.whenCase.length > 0) {
@@ -49,7 +64,6 @@ export function getColumnPreprocessor(
 				columnCases.push(cases[index]!);
 			}
 
-			// TODO verify that case/when generation works with a column that already has an `AS` alias or drop it before applying
 			column = applyCaseWhen(
 				{
 					column,

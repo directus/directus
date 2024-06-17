@@ -31,7 +31,7 @@ export async function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table).select(fieldNodes.map(preProcess));
+		const flatQuery = knex.from(table).select(fieldNodes.map((node) => preProcess(node)));
 		return applyQuery(knex, table, flatQuery, queryCopy, schema, cases).query;
 	}
 
@@ -64,7 +64,7 @@ export async function getDBQuery(
 		// Only add distinct if there are no case/when constructs, since otherwise we rely on group by
 		if (!hasCaseWhen) dbQuery.distinct();
 	} else {
-		dbQuery.select(fieldNodes.map(preProcess));
+		dbQuery.select(fieldNodes.map((node) => preProcess(node)));
 	}
 
 	if (sortRecords) {
@@ -185,14 +185,16 @@ export async function getDBQuery(
 
 	if (!hasCaseWhen) {
 		// No need for case/when in the wrapper query, just select the preprocessed columns
-		wrapperQuery.select(fieldNodes.map(preProcess));
+		wrapperQuery.select(fieldNodes.map((node) => preProcess(node)));
 	} else {
+		// This applies a simplified case/when construct in the wrapper query, that only looks at flag > 1
+
 		// Distinguish between column with and without case/when and handle them differently
 		const plainColumns = fieldNodes.filter((fieldNode) => !fieldNode.whenCase || fieldNode.whenCase.length === 0);
 		const whenCaseColumns = fieldNodes.filter((fieldNode) => fieldNode.whenCase && fieldNode.whenCase.length > 0);
 
 		// Select the plain columns
-		wrapperQuery.select(plainColumns.map(preProcess));
+		wrapperQuery.select(plainColumns.map((node) => preProcess(node)));
 
 		// Select the case/when columns based on the flag from the inner query
 		wrapperQuery.select(
@@ -206,7 +208,7 @@ export async function getDBQuery(
 				const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
 
 				// Preprocess the column without the case/when, since that is applied in a simpler fashion in the select
-				const column = preProcess({ ...fieldNode, whenCase: [] });
+				const column = preProcess({ ...fieldNode, whenCase: [] }, { noAlias: true });
 
 				return knex.raw(`CASE WHEN ??.?? > 0 THEN ?? END as ??`, ['inner', innerAlias, column, alias]);
 			}),
