@@ -41,16 +41,16 @@ export const useUserStore = defineStore({
 			try {
 				const fields = ['*', 'role.id'];
 
-				const [{ data: user }, { data: flags }, { data: roles }] = await Promise.all([
+				const [{ data: user }, { data: globals }, { data: roles }] = await Promise.all([
 					api.get(`/users/me`, { params: { fields } }),
-					api.get('/policies/me/flags'),
+					api.get('/policies/me/globals'),
 					api.get('/roles/me', { params: { fields: ['id'] } }),
 				]);
 
 				this.currentUser = {
 					...user.data,
 					...(user.data?.avatar != null ? { avatar: { id: user.data?.avatar } } : {}),
-					...flags.data,
+					...globals.data,
 					roles: roles.data,
 				};
 			} catch (error: any) {

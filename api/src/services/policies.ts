@@ -1,8 +1,7 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Policy, PrimaryKey } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
@@ -96,18 +95,5 @@ export class PoliciesService extends ItemsService<Policy> {
 		await clearPermissionsCache();
 
 		return result;
-	}
-
-	async fetchPolicyFlagsForAccountability(): Promise<Pick<Policy, 'app_access' | 'admin_access' | 'enforce_tfa'>> {
-		if (!this.accountability?.user && !this.accountability?.role) throw new ForbiddenError();
-
-		const ids = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
-		const policies = await this.readMany(ids, { fields: ['enforce_tfa'] });
-		const enforce_tfa = policies.some((policy) => policy.enforce_tfa);
-		return {
-			app_access: this.accountability.app,
-			admin_access: this.accountability.admin,
-			enforce_tfa,
-		};
 	}
 }

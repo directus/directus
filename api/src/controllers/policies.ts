@@ -1,9 +1,11 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
+import getDatabase from '../database/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { fetchAccountabilityPolicyGlobals } from '../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { MetaService } from '../services/meta.js';
 import { PoliciesService } from '../services/policies.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -84,15 +86,16 @@ router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
-	'/me/flags',
+	'/me/globals',
 	asyncHandler(async (req, res, next) => {
-		const service = new PoliciesService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		try {
-			const result = await service.fetchPolicyFlagsForAccountability();
+			if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
+
+			const result = await fetchAccountabilityPolicyGlobals(req.accountability, {
+				schema: req.schema,
+				knex: getDatabase(),
+			});
+
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
