@@ -10,8 +10,11 @@ export class AccessService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		// Creating a new policy attachments affects the number of admin/app/api users
-		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		// Creating a new policy attachments affects the number of admin/app/api users.
+		// But it can only add app or admin users, so no need to check the remaining admin users.
+		opts.userIntegrityCheckFlags =
+			(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+
 		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 
 		const result = await super.createOne(data, opts);
