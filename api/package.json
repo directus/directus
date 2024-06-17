@@ -120,7 +120,7 @@
 		"flat": "6.0.1",
 		"fs-extra": "11.2.0",
 		"glob-to-regexp": "0.4.1",
-		"graphql": "16.8.1",
+		"graphql": "16.8.2",
 		"graphql-compose": "9.0.11",
 		"graphql-ws": "5.16.0",
 		"helmet": "7.1.0",
