@@ -143,7 +143,7 @@ async function load() {
 				},
 			});
 
-			policy.value = response.data.data;
+			policy.value = { ...response.data.data, ...props.policyEdits };
 		} else {
 			policy.value = { ...props.policyEdits } as Policy;
 		}
