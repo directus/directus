@@ -96,6 +96,7 @@ const addNewLink = computed(() => {
 async function fetchPolicies() {
 	loading.value = true;
 
+	// TODO since there might be a query limit enforced in the API we either need pagination or a fetch more
 	try {
 		const response = await fetchAll<PolicyResponse>(`/policies`, {
 			params: {
@@ -199,7 +200,13 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow v-if="item.name" :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
+					<v-text-overflow
+						v-if="item.name"
+						:text="item.name"
+						class="name"
+						:class="{ public: item.public }"
+						:highlight="search"
+					/>
 				</template>
 
 				<template #[`item.userCount`]="{ item }">

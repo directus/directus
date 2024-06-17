@@ -67,16 +67,13 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	let result;
 
-	// TODO fix this at the service level
-	const temporaryQuery = { ...req.sanitizedQuery, limit: -1 };
-
 	if (req.body.keys) {
-		result = await service.readMany(req.body.keys, temporaryQuery);
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
 	} else {
-		result = await service.readByQuery(temporaryQuery);
+		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_policies', temporaryQuery);
+	const meta = await metaService.getMetaForQuery('directus_policies', req.sanitizedQuery);
 
 	res.locals['payload'] = { data: result, meta };
 	return next();
