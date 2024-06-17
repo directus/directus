@@ -1,11 +1,8 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
 import type Keyv from 'keyv';
-import { mapValues, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -106,78 +103,6 @@ export class PermissionsService extends ItemsService {
 		await clearPermissionsCache();
 
 		return res;
-	}
-
-	/**
-	 * Get all permissions + minimal app permissions (if applicable) for the user + role in the current accountability.
-	 * The permissions will be filtered by IP access.
-	 */
-	async fetchCollectionAccessForAccountability() {
-		if (!this.accountability?.user && !this.accountability?.role) throw new ForbiddenError();
-
-		if (this.accountability?.admin) {
-			return mapValues(this.schema.collections, () =>
-				Object.fromEntries(
-					['create', 'read', 'update', 'delete', 'share'].map((action) => [
-						action,
-						{
-							access: true,
-							full_access: true,
-							fields: ['*'],
-						},
-					]),
-				),
-			);
-		}
-
-		const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
-
-		const permissions = withAppMinimalPermissions(
-			this.accountability,
-			await fetchPermissions(
-				{ policies, accountability: this.accountability },
-				{ schema: this.schema, knex: this.knex },
-			),
-			{},
-		);
-
-		const infos: Record<string, any> = {};
-
-		for (const perm of permissions) {
-			if (!infos[perm.collection]) {
-				infos[perm.collection] = {};
-			}
-
-			if (!infos[perm.collection][perm.action]) {
-				infos[perm.collection][perm.action] = {
-					access: true,
-					full_access: false,
-				};
-			}
-
-			const info = infos[perm.collection][perm.action];
-
-			if (info.full_access === false && (perm.permissions === null || Object.keys(perm.permissions).length > 0)) {
-				info.full_access = false;
-			}
-
-			if (perm.fields && info.fields?.[0] !== '*') {
-				info.fields = uniq([...(info.fields || []), ...(perm.fields || [])]);
-
-				if (info.fields.includes('*')) {
-					info.fields = ['*'];
-				}
-			}
-
-			if (perm.presets) {
-				info.presets = { ...(info.presets ?? {}), ...perm.presets };
-			}
-		}
-
-		// TODO add missing actions here with access: false, full_access: false?
-		// TODO Should fields by null or undefined if no access?
-
-		return infos;
 	}
 
 	async getItemPermissions(collection: string, primaryKey?: string): Promise<ItemPermissions> {

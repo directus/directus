@@ -1,9 +1,11 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
+import getDatabase from '../database/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { fetchAccountabilityCollectionAccess } from '../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { MetaService } from '../services/meta.js';
 import { PermissionsService } from '../services/permissions.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -89,12 +91,12 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		const service = new PermissionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
 
-		const result = await service.fetchCollectionAccessForAccountability();
+		const result = await fetchAccountabilityCollectionAccess(req.accountability, {
+			schema: req.schema,
+			knex: getDatabase(),
+		});
 
 		res.locals['payload'] = { data: result };
 		return next();
