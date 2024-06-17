@@ -2119,8 +2119,6 @@ displays:
     border_label: Show border
     mask: Masked
     mask_label: Hide the real value
-    translate: Translate Value
-    translate_label: Translate the value if possible
     text: Text
     text_placeholder: Optional value override...
   formatted-json-value:
