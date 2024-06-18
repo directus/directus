@@ -286,16 +286,6 @@ async function getDBQuery(
 	const needsInnerQuery = hasMultiRelationalSort || hasMultiRelationalFilter;
 
 	if (needsInnerQuery) {
-		const hasMaxLimit =
-			'QUERY_LIMIT_MAX' in env &&
-			Number(env['QUERY_LIMIT_MAX']) >= 0 &&
-			!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
-			Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
-		if (hasMaxLimit) {
-			dbQuery.limit(Number(env['QUERY_LIMIT_MAX']));
-		} else {
-			dbQuery.clear('limit');
-		}
 		dbQuery.select(`${table}.${primaryKey}`).distinct();
 	} else {
 		dbQuery.select(fieldNodes.map(preProcess));
@@ -370,6 +360,16 @@ async function getDBQuery(
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
 	if (sortRecords && needsInnerQuery) {
+		const hasMaxLimit =
+			'QUERY_LIMIT_MAX' in env &&
+			Number(env['QUERY_LIMIT_MAX']) >= 0 &&
+			!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
+			Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
+		if (hasMaxLimit) {
+			dbQuery.limit(Number(env['QUERY_LIMIT_MAX']));
+		} else {
+			dbQuery.clear('limit');
+		}
 		innerQuerySortRecords.map((innerQuerySortRecord) => {
 			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});
