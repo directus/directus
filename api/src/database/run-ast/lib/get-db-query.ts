@@ -25,7 +25,7 @@ export async function getDBQuery(
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
-	const hasCaseWhen = cases.length > 0;
+	const hasCaseWhen = fieldNodes.some((fieldNode) => fieldNode.whenCase && fieldNode.whenCase.length > 0);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
