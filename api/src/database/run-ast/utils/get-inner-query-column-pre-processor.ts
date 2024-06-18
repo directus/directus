@@ -1,6 +1,6 @@
 import type { Filter, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/index.js';
+import type { FieldNode, FunctionFieldNode, M2ONode, O2MNode } from '../../../types/index.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { applyCaseWhen } from './apply-case-when.js';
 
@@ -12,7 +12,7 @@ export function getInnerQueryColumnPreProcessor(
 	aliasMap: AliasMap,
 	aliasPrefix: string,
 ) {
-	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Knex.Raw<string> | null {
+	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode | O2MNode): Knex.Raw<string> | null {
 		let alias = fieldNode.name;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
