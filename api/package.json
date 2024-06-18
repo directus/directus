@@ -160,7 +160,7 @@
 		"pino": "9.2.0",
 		"pino-http": "9.0.0",
 		"pino-http-print": "3.1.0",
-		"pino-pretty": "11.0.0",
+		"pino-pretty": "11.2.1",
 		"qs": "6.12.1",
 		"rate-limiter-flexible": "5.0.3",
 		"rollup": "4.17.2",
