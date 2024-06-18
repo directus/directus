@@ -126,46 +126,39 @@ const searchFilter = ref<Filter>();
 const sort = ref<Sort>();
 const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
 
-const query = computed<RelationQueryMultiple>(
-	() => {
-		const q: RelationQueryMultiple = {
-			limit: limit.value,
-			page: page.value,
-			fields: fields.value || ['id'],
-		};
+const query = computed<RelationQueryMultiple>(() => {
+	const q: RelationQueryMultiple = {
+		limit: limit.value,
+		page: page.value,
+		fields: fields.value || ['id'],
+	};
 
-		if (!relationInfo.value) {
-			return q;
-		}
-
-		if (searchFilter.value) {
-			q.filter = searchFilter.value;
-		}
-
-		if (junctionFilter.value) {
-			if (q.filter) {
-				q.filter = { _and: [q.filter, junctionFilter.value] };
-			} else {
-				q.filter = junctionFilter.value;
-			}
-		}
-
-		if (search.value) {
-			q.search = search.value;
-		}
-
-		if (sort.value) {
-			q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
-		}
-
+	if (!relationInfo.value) {
 		return q;
-	},
-	{
-		onTrigger(e) {
-			console.log(e);
-		},
-	},
-);
+	}
+
+	if (searchFilter.value) {
+		q.filter = searchFilter.value;
+	}
+
+	if (junctionFilter.value) {
+		if (q.filter) {
+			q.filter = { _and: [q.filter, junctionFilter.value] };
+		} else {
+			q.filter = junctionFilter.value;
+		}
+	}
+
+	if (search.value) {
+		q.search = search.value;
+	}
+
+	if (sort.value) {
+		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+	}
+
+	return q;
+});
 
 watch([search, searchFilter, limit], () => {
 	page.value = 1;
