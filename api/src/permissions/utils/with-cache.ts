@@ -18,7 +18,7 @@ export function withCache<F extends (arg0: Arg0, ...args: any[]) => R, R, Arg0 =
 	const cache = useCache();
 
 	return (async (arg0: Arg0, ...args: any[]) => {
-		arg0 = pick ? pick(arg0) : arg0;
+		// arg0 = pick ? pick(arg0) : arg0;
 		const key = namespace + '-' + getSimpleHash(JSON.stringify(arg0));
 		const cached = await cache.get(key);
 
