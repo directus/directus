@@ -2,13 +2,14 @@ import { useEnv } from '@directus/env';
 import type { Filter, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
-import type { FieldNode, FunctionFieldNode } from '../../../types/ast.js';
+import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
 import type { ColumnSortRecord } from '../../../utils/apply-query.js';
 import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
+import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 
@@ -17,6 +18,7 @@ export async function getDBQuery(
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
+	o2mNodes: O2MNode[],
 	query: Query,
 	cases: Filter[],
 ): Promise<Knex.QueryBuilder> {
@@ -25,7 +27,10 @@ export async function getDBQuery(
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
-	const hasCaseWhen = fieldNodes.some((fieldNode) => fieldNode.whenCase && fieldNode.whenCase.length > 0);
+
+	const hasCaseWhen =
+		o2mNodes.some((node) => node.whenCase && node.whenCase.length > 0) ||
+		fieldNodes.some((node) => node.whenCase && node.whenCase.length > 0);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
@@ -65,6 +70,26 @@ export async function getDBQuery(
 		if (!hasCaseWhen) dbQuery.distinct();
 	} else {
 		dbQuery.select(fieldNodes.map((node) => preProcess(node)));
+
+		// Add flags for o2m fields with case/when to the let the DB to the partial item permissions
+		dbQuery.select(
+			o2mNodes
+				.filter((node) => node.whenCase && node.whenCase.length > 0)
+				.map((node) => {
+					const columnCases = node.whenCase!.map((index) => cases[index]!);
+					return applyCaseWhen(
+						{
+							column: knex.raw(1),
+							columnCases,
+							aliasMap,
+							cases,
+							table,
+							alias: node.fieldKey,
+						},
+						{ knex, schema },
+					);
+				}),
+		);
 	}
 
 	if (sortRecords) {
@@ -174,7 +199,11 @@ export async function getDBQuery(
 
 		// To optimize the query we avoid having unnecessary columns in the inner query, that don't have a caseWhen, since
 		// they are selected in the outer query directly
-		dbQuery.select(fieldNodes.map(innerPreprocess).filter((x) => x !== null) as Knex.Raw<string>[]);
+		dbQuery.select(fieldNodes.map(innerPreprocess).filter((x) => x !== null));
+
+		// In addition to the regular columns select a flag that indicates if a user has access to o2m related field
+		// based on the case/when of that field.
+		dbQuery.select(o2mNodes.map(innerPreprocess).filter((x) => x !== null));
 
 		dbQuery.groupByRaw(`${table}.${primaryKey}`);
 	}
@@ -212,6 +241,19 @@ export async function getDBQuery(
 
 				return knex.raw(`CASE WHEN ??.?? > 0 THEN ?? END as ??`, ['inner', innerAlias, column, alias]);
 			}),
+		);
+
+		// Pass the flags of o2m fields up through the wrapper query
+		wrapperQuery.select(
+			o2mNodes
+				.filter((node) => node.whenCase && node.whenCase.length > 0)
+				.map((node) => {
+					const alias = node.fieldKey;
+
+					const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
+
+					return knex.raw(`CASE WHEN ??.?? > 0 THEN 1 END as ??`, ['inner', innerAlias, alias]);
+				}),
 		);
 	}
 

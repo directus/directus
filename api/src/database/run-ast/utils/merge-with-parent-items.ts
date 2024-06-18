@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { clone } from 'lodash-es';
+import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
 
 export function mergeWithParentItems(
@@ -9,6 +9,7 @@ export function mergeWithParentItems(
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
+	fieldAllowed: boolean | boolean[],
 ) {
 	const env = useEnv();
 	const nestedItems = toArray(nestedItem);
@@ -26,7 +27,12 @@ export function mergeWithParentItems(
 			parentItem[nestedNode.fieldKey] = itemChild || null;
 		}
 	} else if (nestedNode.type === 'o2m') {
-		for (const parentItem of parentItems) {
+		for (const [index, parentItem] of parentItems.entries()) {
+			if (fieldAllowed === false || (isArray(fieldAllowed) && !fieldAllowed[index])) {
+				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
+
 			if (!parentItem[nestedNode.fieldKey]) parentItem[nestedNode.fieldKey] = [] as Item[];
 
 			const itemChildren = nestedItems.filter((nestedItem) => {

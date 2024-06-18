@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep, merge } from 'lodash-es';
 import { PayloadService } from '../../services/payload.js';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../types/ast.js';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -56,8 +56,10 @@ export async function runAst(
 			query,
 		);
 
+		const o2mNodes = nestedCollectionNodes.filter((node): node is O2MNode => node.type === 'o2m');
+
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, cases);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -80,6 +82,27 @@ export async function runAst(
 
 				let batchCount = 0;
 
+				// If a nested node has a whenCase it indicates that the user might not be able to access the field for all items.
+				// In that case the queried item includes a flag under the fieldKey that is populated in the db and indicates
+				// if the user has access to that field for that specific item.
+				const hasWhenCase = nestedNode.whenCase && nestedNode.whenCase.length > 0;
+				let fieldAllowed: boolean | boolean[] = true;
+
+				if (hasWhenCase) {
+					// Extract flag and remove field from item, so it can be populated with the actual items
+					if (Array.isArray(items)) {
+						fieldAllowed = [];
+
+						for (const item of items) {
+							fieldAllowed.push(!!item[nestedNode.fieldKey]);
+							delete item[nestedNode.fieldKey];
+						}
+					} else {
+						fieldAllowed = !!items[nestedNode.fieldKey];
+						delete items[nestedNode.fieldKey];
+					}
+				}
+
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
 						query: {
@@ -92,7 +115,7 @@ export async function runAst(
 					nestedItems = (await runAst(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
-						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
+						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, fieldAllowed)!;
 					}
 
 					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
@@ -110,7 +133,7 @@ export async function runAst(
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
-					items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
+					items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, true)!;
 				}
 			}
 		}
@@ -119,6 +142,8 @@ export async function runAst(
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
+		// The field allowed flags injected in `getDBQuery` are already removed while processing the nested nodes in
+		// the previous step.
 		if (options?.nested !== true && options?.stripNonRequested !== false) {
 			items = removeTemporaryFields(schema, items, originalAST, primaryKeyField);
 		}
