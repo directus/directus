@@ -14,6 +14,7 @@ import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { isSystemCollection } from '@directus/system-data';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 const { t } = useI18n();
 
@@ -22,6 +23,12 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+
+const {data: isCollectionsExpanded} = useLocalStorage('settings-collapsed-all', true as boolean);
+
+const toggleCollections = () => {
+  	isCollectionsExpanded.value = !isCollectionsExpanded.value;
+};
 
 const collections = computed(() => {
 	return translate(
@@ -164,6 +171,15 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				:placeholder="t('search_collection')"
 			/>
 
+			<v-button
+				v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
+				icon rounded secondary
+				@click.passive="toggleCollections"
+			>
+				<v-icon :name="isCollectionsExpanded ? 'unfold_less' : 'unfold_more'"/>
+			</v-button>
+
+
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
 					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
@@ -205,6 +221,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 						<collection-item
 							:collection="element"
 							:collections="collections"
+							:expand-all="isCollectionsExpanded || false"
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
@@ -246,6 +263,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:key="collection.collection"
 					:collection="collection"
 					:collections="systemCollections"
+					:expand-all="isCollectionsExpanded || false"
 					:visibility-tree="findVisibilityChild(collection.collection)!"
 					disable-drag
 				/>
