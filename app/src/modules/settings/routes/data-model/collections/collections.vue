@@ -174,7 +174,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 			<v-button
 				v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
 				icon rounded secondary
-				@click.passive="toggleCollections"
+				@click="toggleCollections"
 			>
 				<v-icon :name="isCollectionsExpanded ? 'unfold_less' : 'unfold_more'"/>
 			</v-button>
