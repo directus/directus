@@ -584,8 +584,8 @@ importers:
         specifier: 2.29.1
         version: 2.29.1
       '@editorjs/embed':
-        specifier: 2.7.2
-        version: 2.7.2
+        specifier: 2.7.4
+        version: 2.7.4
       '@editorjs/header':
         specifier: 2.8.1
         version: 2.8.1
@@ -2722,8 +2722,8 @@ packages:
   '@editorjs/editorjs@2.29.1':
     resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==}
 
-  '@editorjs/embed@2.7.2':
-    resolution: {integrity: sha512-gQbSpFXT6osH37bdS/tI9mGS2Pu64bMKzZNfMIRPWguDmwP+J+8Ly2Y9I0ptAZham4e48Ri5ZPCDAUXKT2WpSg==}
+  '@editorjs/embed@2.7.4':
+    resolution: {integrity: sha512-ByvSZnVuh9FhjLGmvjNlxhk3hnqN0g5K+E/tJY6Whdspgh9mst0iBARoVJQDGeJC+NNL2sSgYGt1ZjvEK5Z+lQ==}
 
   '@editorjs/header@2.8.1':
     resolution: {integrity: sha512-y0HVXRP7m2W617CWo3fsb5HhXmSLaRpb9GzFx0Vkp/HEm9Dz5YO1s8tC7R8JD3MskwoYh7V0hRFQt39io/r6hA==}
@@ -13034,7 +13034,9 @@ snapshots:
 
   '@editorjs/editorjs@2.29.1': {}
 
-  '@editorjs/embed@2.7.2': {}
+  '@editorjs/embed@2.7.4':
+    dependencies:
+      '@editorjs/editorjs': 2.29.1
 
   '@editorjs/header@2.8.1':
     dependencies:
