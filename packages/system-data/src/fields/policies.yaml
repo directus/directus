@@ -72,6 +72,7 @@ fields:
       - alias
       - no-data
     width: full
+    <<: *hide_in_public_policy
 
   - field: users
     interface: list-m2m
