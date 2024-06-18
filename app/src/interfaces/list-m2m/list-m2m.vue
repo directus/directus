@@ -124,40 +124,48 @@ const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
 const sort = ref<Sort>();
+const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
 
-const query = computed<RelationQueryMultiple>(() => {
-	const q: RelationQueryMultiple = {
-		limit: limit.value,
-		page: page.value,
-		fields: fields.value || ['id'],
-	};
+const query = computed<RelationQueryMultiple>(
+	() => {
+		const q: RelationQueryMultiple = {
+			limit: limit.value,
+			page: page.value,
+			fields: fields.value || ['id'],
+		};
 
-	if (!relationInfo.value) {
-		return q;
-	}
-
-	if (searchFilter.value) {
-		q.filter = searchFilter.value;
-	}
-
-	if (props.junctionFilter) {
-		if (q.filter) {
-			q.filter = { _and: [q.filter, props.junctionFilter] };
-		} else {
-			q.filter = props.junctionFilter;
+		if (!relationInfo.value) {
+			return q;
 		}
-	}
 
-	if (search.value) {
-		q.search = search.value;
-	}
+		if (searchFilter.value) {
+			q.filter = searchFilter.value;
+		}
 
-	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
-	}
+		if (junctionFilter.value) {
+			if (q.filter) {
+				q.filter = { _and: [q.filter, junctionFilter.value] };
+			} else {
+				q.filter = junctionFilter.value;
+			}
+		}
 
-	return q;
-});
+		if (search.value) {
+			q.search = search.value;
+		}
+
+		if (sort.value) {
+			q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+		}
+
+		return q;
+	},
+	{
+		onTrigger(e) {
+			console.log(e);
+		},
+	},
+);
 
 watch([search, searchFilter, limit], () => {
 	page.value = 1;
@@ -230,7 +238,9 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true },
+	{
+		immediate: true,
+	},
 );
 
 const spacings = {
