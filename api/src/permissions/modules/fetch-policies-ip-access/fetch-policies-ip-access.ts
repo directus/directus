@@ -35,5 +35,5 @@ export async function _fetchPoliciesIpAccess(
 
 	const rows = await query;
 
-	return rows.map(({ ip_access }) => toArray(ip_access));
+	return rows.filter(({ ip_access }) => ip_access).map(({ ip_access }) => toArray(ip_access));
 }
