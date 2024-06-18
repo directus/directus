@@ -171,15 +171,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				:placeholder="t('search_collection')"
 			/>
 
-			<v-button
-				v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
-				icon rounded secondary
-				@click="toggleCollections"
-			>
-				<v-icon :name="isCollectionsExpanded ? 'unfold_less' : 'unfold_more'"/>
-			</v-button>
-
-
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
 					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
@@ -198,6 +189,21 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
+
+			<div class="expand-collapse-button">
+				<div>
+					<span>{{ t('expand') }}:</span>
+					<v-button
+						v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
+						primary small
+						:outlined="isCollectionsExpanded"
+						@click="toggleCollections"
+					>
+						{{ isCollectionsExpanded ? t('none') : t('all') }}
+					</v-button>
+				</div>
+			</div>
+
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
@@ -336,5 +342,17 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .db-only {
 	margin-bottom: 16px;
+}
+
+.expand-collapse-button {
+	display: flex;
+	margin-bottom: 8px;
+	& > div {
+		margin-left: auto;
+		& > span {
+			margin-right: 8px;
+			font-weight: var(--theme--header--title--font-weight);
+		}
+	}
 }
 </style>
