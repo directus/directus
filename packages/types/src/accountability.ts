@@ -11,7 +11,7 @@ export type Accountability = {
 	app: boolean;
 	share?: string;
 	share_scope?: ShareScope;
-	ip?: string | null;
+	ip: string | null;
 	userAgent?: string;
 	origin?: string;
 };

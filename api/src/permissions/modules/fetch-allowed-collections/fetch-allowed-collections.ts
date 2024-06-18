@@ -10,7 +10,21 @@ export interface FetchAllowedCollectionsOptions {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'admin' | 'app'>;
 }
 
-export const fetchAllowedCollections = withCache('allowed-collections', _fetchAllowedCollections);
+export const fetchAllowedCollections = withCache(
+	'allowed-collections',
+	_fetchAllowedCollections,
+	({ action, accountability: { user, role, roles, ip, admin, app } }) => ({
+		action,
+		accountability: {
+			user,
+			role,
+			roles,
+			ip,
+			admin,
+			app,
+		},
+	}),
+);
 
 export async function _fetchAllowedCollections(
 	{ action, accountability }: FetchAllowedCollectionsOptions,

@@ -13,12 +13,12 @@ import { useCache } from '../cache.js';
 export function withCache<F extends (arg0: Arg0, ...args: any[]) => R, R, Arg0 = Parameters<F>[0]>(
 	namespace: string,
 	handler: F,
-	pick?: (arg0: any) => Arg0,
+	pick?: (arg0: Arg0) => Arg0,
 ) {
 	const cache = useCache();
 
 	return (async (arg0: Arg0, ...args: any[]) => {
-		// arg0 = pick ? pick(arg0) : arg0;
+		arg0 = pick ? pick(arg0) : arg0;
 		const key = namespace + '-' + getSimpleHash(JSON.stringify(arg0));
 		const cached = await cache.get(key);
 
