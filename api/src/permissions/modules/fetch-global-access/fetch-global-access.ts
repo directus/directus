@@ -5,7 +5,11 @@ import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.j
 import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 import type { GlobalAccess } from './types.js';
 
-export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess);
+export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess, ({ user, roles, ip }) => ({
+	user,
+	roles,
+	ip,
+}));
 
 /**
  * Fetch the global access (eg admin/app access) rules for the given roles, or roles+user combination

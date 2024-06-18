@@ -3,7 +3,19 @@ import type { Context } from '../types.js';
 import { extractRequiredDynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 import { withCache } from './with-cache.js';
 
-export const fetchDynamicVariableContext = withCache('permission-dynamic-variables', _fetchDynamicVariableContext);
+export const fetchDynamicVariableContext = withCache(
+	'permission-dynamic-variables',
+	_fetchDynamicVariableContext,
+	({ policies, permissions, accountability: { user, role, roles } }) => ({
+		policies,
+		permissions,
+		accountability: {
+			user,
+			role,
+			roles,
+		},
+	}),
+);
 
 export interface FetchDynamicVariableContext {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles'>;

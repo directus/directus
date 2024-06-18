@@ -11,7 +11,15 @@ export interface FetchAllowedFieldsOptions {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'app'>;
 }
 
-export const fetchAllowedFields = withCache('allowed-fields', _fetchAllowedFields);
+export const fetchAllowedFields = withCache(
+	'allowed-fields',
+	_fetchAllowedFields,
+	({ action, collection, accountability: { user, role, roles, ip, app } }) => ({
+		action,
+		collection,
+		accountability: { user, role, roles, ip, app },
+	}),
+);
 
 /**
  * Look up all fields that are allowed to be used for the given collection and action for the given

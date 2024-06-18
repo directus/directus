@@ -4,7 +4,10 @@ import { withCache } from '../../../utils/with-cache.js';
 import type { GlobalAccess } from '../types.js';
 import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
 
-export const fetchGlobalAccessForUser = withCache('global-access-user', _fetchGlobalAccessForUser);
+export const fetchGlobalAccessForUser = withCache('global-access-user', _fetchGlobalAccessForUser, ({ user, ip }) => ({
+	user,
+	ip,
+}));
 
 export async function _fetchGlobalAccessForUser(
 	accountability: Pick<Accountability, 'user' | 'ip'>,

@@ -15,7 +15,21 @@ export interface FetchInconsistentFieldMapOptions {
 /**
  * Fetch a field map for fields that may or may not be null based on item-by-item permissions.
  */
-export const fetchInconsistentFieldMap = withCache('inconsistent-field-map', _fetchInconsistentFieldMap);
+export const fetchInconsistentFieldMap = withCache(
+	'inconsistent-field-map',
+	_fetchInconsistentFieldMap,
+	({ action, accountability: { user, role, roles, ip, admin, app } }) => ({
+		action,
+		accountability: {
+			user,
+			role,
+			roles,
+			ip,
+			admin,
+			app,
+		},
+	}),
+);
 
 export async function _fetchInconsistentFieldMap(
 	{ accountability, action }: FetchInconsistentFieldMapOptions,

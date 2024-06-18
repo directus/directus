@@ -12,7 +12,14 @@ export interface FetchAllowedFieldMapOptions {
 	action: PermissionsAction;
 }
 
-export const fetchAllowedFieldMap = withCache('allowed-field-map', _fetchAllowedFieldMap);
+export const fetchAllowedFieldMap = withCache(
+	'allowed-field-map',
+	_fetchAllowedFieldMap,
+	({ action, accountability: { user, role, roles, ip, admin, app } }) => ({
+		action,
+		accountability: { user, role, roles, ip, admin, app },
+	}),
+);
 
 export async function _fetchAllowedFieldMap(
 	{ accountability, action }: FetchAllowedFieldMapOptions,

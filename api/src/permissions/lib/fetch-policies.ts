@@ -4,17 +4,17 @@ import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
 import type { Context } from '../types.js';
 
-export const fetchPolicies = withCache('policies', _fetchPolicies);
+export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, user, ip }) => ({ roles, user, ip }));
 
 /**
  * Fetch the policies associated with the current user accountability
  */
 export async function _fetchPolicies(
 	{ roles, user, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
-	ctx: Context,
+	context: Context,
 ): Promise<string[]> {
 	const { AccessService } = await import('../../services/access.js');
-	const accessService = new AccessService(ctx);
+	const accessService = new AccessService(context);
 
 	let filter: Filter;
 
