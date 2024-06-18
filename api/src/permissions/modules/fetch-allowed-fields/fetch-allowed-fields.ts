@@ -46,5 +46,5 @@ export async function _fetchAllowedFields(
 		allowedFields.push(...fields);
 	}
 
-	return uniq(allowedFields);
+	return uniq(allowedFields).filter((field) => field in (schema.collections[collection]?.fields ?? {}));
 }
