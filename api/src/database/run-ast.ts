@@ -365,11 +365,13 @@ async function getDBQuery(
 			Number(env['QUERY_LIMIT_MAX']) >= 0 &&
 			!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
 			Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
+
 		if (hasMaxLimit) {
 			dbQuery.limit(Number(env['QUERY_LIMIT_MAX']));
 		} else {
 			dbQuery.clear('limit');
 		}
+
 		innerQuerySortRecords.map((innerQuerySortRecord) => {
 			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});
