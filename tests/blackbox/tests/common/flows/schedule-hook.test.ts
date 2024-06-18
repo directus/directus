@@ -4,6 +4,7 @@ import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { delayedSleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
@@ -48,13 +49,13 @@ describe('Flows Schedule Hook Tests', () => {
 			delete envMemory[vendor]['SYNCHRONIZATION_STORE'];
 			envMemory[vendor][envTargetVariable] = 'memory-1';
 
-			const newServerPort1 = Number(envRedis1[vendor]!.PORT) + 150;
-			const newServerPort2 = Number(envRedis2[vendor]!.PORT) + 200;
-			const newServerPort3 = Number(envMemory[vendor]!.PORT) + 250;
+			const newServerPort1 = await getPort();
+			const newServerPort2 = await getPort();
+			const newServerPort3 = await getPort();
 
-			envRedis1[vendor]!.PORT = String(newServerPort1);
-			envRedis2[vendor]!.PORT = String(newServerPort2);
-			envMemory[vendor]!.PORT = String(newServerPort3);
+			envRedis1[vendor].PORT = String(newServerPort1);
+			envRedis2[vendor].PORT = String(newServerPort2);
+			envMemory[vendor].PORT = String(newServerPort3);
 
 			const server1 = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envRedis1[vendor] });
 			const server2 = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envRedis2[vendor] });
@@ -63,9 +64,11 @@ describe('Flows Schedule Hook Tests', () => {
 			directusInstances[vendor] = [server1, server2, server3];
 			envs[vendor] = [envRedis1, envRedis2, envMemory];
 
-			promises.push(awaitDirectusConnection(newServerPort1));
-			promises.push(awaitDirectusConnection(newServerPort2));
-			promises.push(awaitDirectusConnection(newServerPort3));
+			promises.push(
+				awaitDirectusConnection(newServerPort1),
+				awaitDirectusConnection(newServerPort2),
+				awaitDirectusConnection(newServerPort3),
+			);
 		}
 
 		// Give the server some time to start

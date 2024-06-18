@@ -6,6 +6,7 @@ import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
@@ -22,32 +23,32 @@ describe('WebSocket Auth Tests', () => {
 		const directusInstances = {} as { [vendor: string]: ChildProcess };
 		const env = cloneDeep(config.envs);
 
-		for (const vendor of vendors) {
-			env[vendor]['WEBSOCKETS_REST_AUTH'] = authMethod;
-			env[vendor]['WEBSOCKETS_REST_AUTH_TIMEOUT'] = String(authenticationTimeoutSeconds);
-			env[vendor]['WEBSOCKETS_REST_PATH'] = `/${pathREST}`;
-			env[vendor].PORT = String(Number(env[vendor].PORT) + 500);
-		}
-
 		beforeAll(async () => {
 			const promises = [];
 
 			for (const vendor of vendors) {
-				databases.set(vendor, knex(config.knexConfig[vendor]!));
+				databases.set(vendor, knex(config.knexConfig[vendor]));
+
+				const newServerPort = await getPort();
+
+				env[vendor]['WEBSOCKETS_REST_AUTH'] = authMethod;
+				env[vendor]['WEBSOCKETS_REST_AUTH_TIMEOUT'] = String(authenticationTimeoutSeconds);
+				env[vendor]['WEBSOCKETS_REST_PATH'] = `/${pathREST}`;
+				env[vendor].PORT = String(newServerPort);
 
 				const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 				directusInstances[vendor] = server;
 
-				promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
+				promises.push(awaitDirectusConnection(newServerPort));
 			}
 
 			// Give the server some time to start
 			await Promise.all(promises);
-		}, 180000);
+		}, 180_000);
 
 		afterAll(async () => {
 			for (const [vendor, connection] of databases) {
-				directusInstances[vendor]!.kill();
+				directusInstances[vendor]?.kill();
 
 				await connection.destroy();
 			}
