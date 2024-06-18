@@ -195,7 +195,11 @@ export class AuthenticationService {
 		}
 
 		const roles = await fetchRolesTree(user.role, this.knex);
-		const globalAccess = await fetchGlobalAccess(this.knex, roles, user.id);
+
+		const globalAccess = await fetchGlobalAccess(
+			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
+			this.knex,
+		);
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
@@ -337,7 +341,11 @@ export class AuthenticationService {
 		}
 
 		const roles = await fetchRolesTree(record.user_role, this.knex);
-		const globalAccess = await fetchGlobalAccess(this.knex, roles, record.user_id);
+
+		const globalAccess = await fetchGlobalAccess(
+			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
+			this.knex,
+		);
 
 		if (record.user_id) {
 			const provider = getAuthProvider(record.user_provider);

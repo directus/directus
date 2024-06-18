@@ -8,6 +8,8 @@ export async function fetchAccountabilityPolicyGlobals(
 ) {
 	const policies = await fetchPolicies(accountability, context);
 
+	// Policies are already filtered down by the accountability IP, so we don't need to check it again
+
 	const result = await context.knex
 		.select(1)
 		.from('directus_policies')

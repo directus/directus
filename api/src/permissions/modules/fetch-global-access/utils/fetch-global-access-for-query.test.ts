@@ -1,14 +1,9 @@
-import type { Cache } from '@directus/memory';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { useCache } from '../../../cache.js';
-import type { GlobalAccess } from '../types.js';
 import { fetchGlobalAccessForQuery } from './fetch-global-access-for-query.js';
 
-vi.mock('../../../cache.js');
-
 let qb: Knex.QueryBuilder;
-let cache: Cache;
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -18,27 +13,10 @@ beforeEach(() => {
 		from: vi.fn().mockReturnThis(),
 		leftJoin: vi.fn().mockResolvedValue([]),
 	} as unknown as Knex.QueryBuilder;
-
-	cache = {
-		get: vi.fn(),
-		set: vi.fn(),
-	} as unknown as Cache;
-
-	vi.mocked(useCache).mockReturnValue(cache);
-});
-
-test('Returns cached value if exists', async () => {
-	const cached = {} as unknown as GlobalAccess;
-	vi.mocked(cache.get).mockResolvedValue(cached);
-
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
-
-	expect(res).toBe(cached);
-	expect(cache.get).toHaveBeenCalledWith('cache-key');
 });
 
 test('Returns false by default if no access is found', async () => {
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, {} as Accountability);
 
 	expect(res).toEqual({
 		app: false,
@@ -53,7 +31,7 @@ test('Sets app true if one or more access rows have app access set as true', asy
 		{ admin_access: false, app_access: false },
 	]);
 
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, {} as Accountability);
 
 	expect(res).toEqual({ admin: false, app: true });
 });
@@ -65,7 +43,7 @@ test('Sets admin & app true if one or more access rows have app admin set as tru
 		{ admin_access: false, app_access: false },
 	]);
 
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, {} as Accountability);
 
 	expect(res).toEqual({ admin: true, app: true });
 });
@@ -77,7 +55,7 @@ test('Sets app true if one or more access rows have app access set as 1', async 
 		{ admin_access: 0, app_access: 0 },
 	]);
 
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, {} as Accountability);
 
 	expect(res).toEqual({ admin: false, app: true });
 });
@@ -89,15 +67,30 @@ test('Sets admin & app true if one or more access rows have app admin set as tru
 		{ admin_access: 0, app_access: 0 },
 	]);
 
-	const res = await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, {} as Accountability);
 
 	expect(res).toEqual({ admin: true, app: true });
 });
 
-test('Saves output to cache under given cache key', async () => {
-	vi.mocked(qb.leftJoin).mockResolvedValue([{ admin_access: false, app_access: true }]);
+test('Includes policies that have an ip access restriction that does matches the accountability ip', async () => {
+	vi.mocked(qb.leftJoin).mockResolvedValue([
+		{ admin_access: false, app_access: false },
+		{ admin_access: false, app_access: true, ip_access: '127.0.0.1/24,127.0.0.2' },
+	]);
 
-	await fetchGlobalAccessForQuery(qb, 'cache-key');
+	const res = await fetchGlobalAccessForQuery(qb, { ip: '127.0.0.5' } as Accountability);
 
-	expect(cache.set).toHaveBeenCalledWith('cache-key', { admin: false, app: true });
+	expect(res).toEqual({ admin: false, app: true });
+});
+
+test('Ignores policies that have an ip access restriction that does not match the accountability ip', async () => {
+	vi.mocked(qb.leftJoin).mockResolvedValue([
+		{ admin_access: false, app_access: false },
+		{ admin_access: true, app_access: false, ip_access: '127.0.0.1,127.0.0.2' },
+		{ admin_access: false, app_access: true, ip_access: '128.0.0.1' },
+	]);
+
+	const res = await fetchGlobalAccessForQuery(qb, { ip: '1.1.1.1' } as Accountability);
+
+	expect(res).toEqual({ admin: false, app: false });
 });

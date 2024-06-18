@@ -30,7 +30,10 @@ export async function getAccountabilityForRole(
 			throw new Error(`Configured role "${role}" isn't a valid role ID or doesn't exist.`);
 		}
 
-		const globalAccess = await fetchGlobalAccess(context.database, roles);
+		const globalAccess = await fetchGlobalAccess(
+			{ user: null, roles, ip: context.accountability?.ip ?? null },
+			context.database,
+		);
 
 		generatedAccountability = createDefaultAccountability({
 			role,
