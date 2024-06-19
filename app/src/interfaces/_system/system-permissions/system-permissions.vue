@@ -85,7 +85,8 @@ function createEmptyPermission<P extends Permission>(
 	} as P;
 }
 
-const currentlyEditing = ref<string | null>(null);
+const currentlyEditingKey = ref<string | null>(null);
+const currentlyEditingItem = ref<DisplayItem | null>(null);
 const editsAtStart = ref<Record<string, any>>({});
 const newItem = ref(false);
 
@@ -104,22 +105,27 @@ function editItem(collection: string, action: PermissionsAction) {
 		  });
 
 	if (newItem.value || existingPermission?.$type === 'created') {
-		currentlyEditing.value = '+';
+		currentlyEditingKey.value = '+';
 	} else {
-		currentlyEditing.value = existingPermission!.id;
+		currentlyEditingKey.value = existingPermission!.id;
 	}
+
+	currentlyEditingItem.value = existingPermission ?? null;
 }
 
 function stageEdits(item: Record<string, any>) {
 	if (newItem.value) {
 		create(item);
-	} else {
+	} else if (item) {
 		update(item);
+	} else if (currentlyEditingItem.value) {
+		remove(currentlyEditingItem.value);
 	}
 }
 
 function cancelEdit() {
-	currentlyEditing.value = null;
+	currentlyEditingItem.value = null;
+	currentlyEditingKey.value = null;
 }
 
 function removeCollection(collection: string) {
@@ -646,9 +652,9 @@ function useGroupedPermissions() {
 	</div>
 
 	<permissions-detail
-		:active="currentlyEditing !== null"
+		:active="currentlyEditingKey !== null"
 		:edits="editsAtStart"
-		:permission-key="currentlyEditing"
+		:permission-key="currentlyEditingKey"
 		:policy-key="primaryKey"
 		:policy-edits="values"
 		@input="stageEdits"
