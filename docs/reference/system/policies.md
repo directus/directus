@@ -9,6 +9,12 @@ pageClass: page-reference
 > Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles
 > and users. [Learn more about Policies](/user-guide/overview/glossary#policies).
 
+:::tip Directus 11 RC
+
+Policies are a new concept available from the Directus 11 Release Candidate. In prior versions, they do not exist. There have also been changes to [users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
+
+:::
+
 ## The Policy Object
 
 `id` **uuid**\
@@ -18,13 +24,13 @@ Primary key of the policy.
 Name of the policy.
 
 `icon` **string**\
-Icon for the policy. Displayed in the Admin App.
+Icon for the policy. Displayed in the Data Studio.
 
 `description` **string**\
-Description for the policy. Displayed in the Admin App.
+Description for the policy. Displayed in the Data Studio.
 
 `ip_access` **csv**\
-A CSV of IP addresses that this policy applies to. Allows you to configure an allowlist of IP addresses. 
+A CSV of IP addresses that this policy applies to. Allows you to configure an allowlist of IP addresses.
 If empty, no IP restrictions are applied.
 
 `enforce_tfa` **boolean**\
@@ -34,10 +40,10 @@ Whether or not Two-Factor Authentication is required for users that have this po
 If this policy grants the user admin access. This means that users with this policy have full permissions to everything.
 
 `app_access` **boolean**\
-Whether or not users with this policy have access to use the Admin App.
+Whether or not users with this policy have access to use the Data Studio.
 
 `users` **one-to-many**\
-The users this policy is assigned to directly, this does not include users which receive this policy through a role. 
+The users this policy is assigned to directly, this does not include users which receive this policy through a role.
 One-to-many to [users](/reference/system/users).
 
 `roles` **one-to-many**\
