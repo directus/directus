@@ -9,6 +9,12 @@ pageClass: page-reference
 > Permissions are assigned to Policies, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
+:::tip Directus 11 RC
+
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's data structure and relations.
+
+:::
+
 ## The Permission Object
 
 `id` **uuid**\
@@ -24,7 +30,7 @@ Collection this permission rule applies to.
 What CRUD operation this permission rule applies to. One of `create`, `read`, `update`, `delete`.
 
 `permissions` **object**\
-What rules the item must pass before users with the policy are allowed to alter it. Follows [the Filter Rules spec](/reference/filter-rules).
+What custom permission rules the item must pass before users with the policy are allowed to operate on it. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `validation` **object**\
 What rules the provided values must pass before users with the policy are allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
@@ -778,7 +784,7 @@ An array of permission primary keys
 
 Empty body.
 
-##### Example
+### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
@@ -815,9 +821,9 @@ const result = await client.request(deletePermissions(['56', '57']));
 </SnippetToggler>
 
 
-## Get all Permissions for the Current User
+## Get Current User's Permissions
 
-Check the current user's permissions on all collections.
+Check the current user's permissions across all collections.
 
 ### Request
 
@@ -835,11 +841,11 @@ N/A
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readUserPermissisons } from '@directus/sdk';
+import { createDirectus, rest, readUserPermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readUserPermissisons());
+const result = await client.request(readUserPermissions());
 ```
 
 </template>
@@ -847,10 +853,11 @@ const result = await client.request(readUserPermissisons());
 
 ### Response
 
-The response is an object that contains one entry for every collection the user is able to access. 
-Each collection has entries corresponding to the actions the user is able to perform on the collection. 
-`access` indicates the level of access the user has for an action for a collection. 
-`"none"` means the user has no access, `"partial"` means the user has access to 
+The response is an object that contains one entry for every collection with at least one permission.
+Each collection has entries corresponding to the actions the user is able to perform on the collection.
+
+The `access` property indicates the level of access the user has for an action for a collection.
+`"none"` means the user has no access, `"partial"` means the user has access to
 some items, but may not have access to all items, and `"full"` means the user has access to all items.
 
 ```json
@@ -865,7 +872,7 @@ some items, but may not have access to all items, and `"full"` means the user ha
       "read": {
         "access": "none" | "partial" | "full",
         "full_access": boolean,
-        "fields": permission_fields,   
+        "fields": permission_fields,
       },
       "update": {
         "access": "none" | "partial" | "full",
@@ -886,7 +893,7 @@ some items, but may not have access to all items, and `"full"` means the user ha
 }
 ```
 
-##### Example
+### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
@@ -1030,7 +1037,7 @@ existence of an item, use the [Get Items](/reference/items.html#get-items) endpo
 
 :::
 
-##### Example
+### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
