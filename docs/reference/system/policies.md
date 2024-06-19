@@ -51,6 +51,9 @@ to [users](/reference/system/users).
 `roles` **one-to-many**\
 The roles this policy is assigned to. One-to-many to [roles](/reference/system/policies).
 
+`permissions` **one-to-many**\
+The permissions assigned to this policy. One-to-many to [permissions](/reference/system/policies).
+
 ```json
 {
 	"id": "653925a9-970e-487a-bfc0-ab6c96affcdc",
@@ -63,6 +66,7 @@ The roles this policy is assigned to. One-to-many to [roles](/reference/system/p
 	"app_access": true,
 	"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"],
     "roles": ["8b4474c0-288d-4bb8-b62e-8330646bb6aa"]
+    "permissions": ["5c74c86f-cab0-4b14-a3c4-cd4f2363e826"]
 }
 ```
 
