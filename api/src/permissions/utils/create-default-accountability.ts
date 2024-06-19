@@ -7,6 +7,7 @@ export function createDefaultAccountability(overrides?: Partial<Accountability>)
 		roles: [],
 		admin: false,
 		app: false,
+		ip: null,
 		...overrides,
 	};
 }

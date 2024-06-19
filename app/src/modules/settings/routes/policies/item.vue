@@ -10,16 +10,10 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
-const props = withDefaults(
-	defineProps<{
-		primaryKey: string;
-		permissionKey?: string;
-		deleteAllowed?: boolean;
-	}>(),
-	{
-		deleteAllowed: true,
-	},
-);
+const props = defineProps<{
+	primaryKey: string;
+	permissionKey?: string;
+}>();
 
 const { t } = useI18n();
 
@@ -87,11 +81,9 @@ function discardAndLeave() {
 			</v-button>
 		</template>
 		<template #actions>
-			<!-- TODO figure out when deletes are allowed, probably some API call involved? -->
-			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-if="deleteAllowed"
 						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon

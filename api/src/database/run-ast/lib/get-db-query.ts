@@ -13,7 +13,7 @@ import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 
-export async function getDBQuery(
+export function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
@@ -21,7 +21,7 @@ export async function getDBQuery(
 	o2mNodes: O2MNode[],
 	query: Query,
 	cases: Filter[],
-): Promise<Knex.QueryBuilder> {
+): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
 	const env = useEnv();
 	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);

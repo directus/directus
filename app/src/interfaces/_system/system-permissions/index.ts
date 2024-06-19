@@ -10,4 +10,5 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	relational: true,
 	options: [],
+	system: true,
 });

@@ -4,7 +4,7 @@ import type { AccessRow } from '../modules/process-ast/types.js';
 export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | undefined) {
 	return policies.filter(({ policy }) => {
 		// Keep policies that don't have an ip address allow list configured
-		if (!policy.ip_access) {
+		if (!policy.ip_access || policy.ip_access.length === 0) {
 			return true;
 		}
 

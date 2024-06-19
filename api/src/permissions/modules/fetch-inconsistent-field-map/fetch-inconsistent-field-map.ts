@@ -1,5 +1,5 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
-import { uniq, intersection, difference } from 'lodash-es';
+import { uniq, intersection, difference, pick } from 'lodash-es';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { withCache } from '../../utils/with-cache.js';
@@ -18,16 +18,9 @@ export interface FetchInconsistentFieldMapOptions {
 export const fetchInconsistentFieldMap = withCache(
 	'inconsistent-field-map',
 	_fetchInconsistentFieldMap,
-	({ action, accountability: { user, role, roles, ip, admin, app } }) => ({
+	({ action, accountability }) => ({
 		action,
-		accountability: {
-			user,
-			role,
-			roles,
-			ip,
-			admin,
-			app,
-		},
+		accountability: accountability ? pick(accountability, ['user', 'role', 'roles', 'ip', 'admin', 'app']) : null,
 	}),
 );
 

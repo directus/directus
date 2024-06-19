@@ -4,27 +4,23 @@ import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { PUBLIC_POLICY_ID } from '@directus/constants';
 import { Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
-type PolicyBaseFields = 'id' | 'name' | 'description';
+type PolicyBaseFields = 'id' | 'name' | 'icon' | 'description';
 
-type PolicyResponse = Pick<Policy, PolicyBaseFields | 'admin_access'> & {
+type PolicyResponse = Pick<Policy, PolicyBaseFields> & {
 	users: [{ count: { user: number } }];
 	roles: [{ count: { role: number } }];
 };
 
-type PolicyItem = Pick<Policy, PolicyBaseFields> &
-	Partial<Pick<Policy, 'admin_access'>> & {
-		public?: boolean;
-		userCount?: number;
-		roleCount?: number;
-		icon?: string;
-	};
+type PolicyItem = Pick<Policy, PolicyBaseFields> & {
+	userCount?: number;
+	roleCount?: number;
+};
 
 const { t } = useI18n();
 
@@ -101,7 +97,7 @@ async function fetchPolicies() {
 		const response = await fetchAll<PolicyResponse>(`/policies`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'description', 'admin_access', 'users', 'roles'],
+				fields: ['id', 'name', 'icon', 'description', 'admin_access', 'users', 'roles'],
 				deep: {
 					users: {
 						_aggregate: { count: 'user' },
@@ -121,22 +117,14 @@ async function fetchPolicies() {
 		});
 
 		policies.value = response.map((policy) => {
-			let icon = 'badge';
-			if (policy.admin_access) icon = 'verified';
-			if (policy.id === PUBLIC_POLICY_ID) icon = 'public';
-
 			return {
 				...translate(policy),
-				public: policy.id === PUBLIC_POLICY_ID,
 				userCount: policy.users?.[0]?.count.user ?? 0,
 				roleCount: policy.roles?.[0]?.count.role ?? 0,
-				icon,
 			};
 		});
 
 		policies.value.sort((a, b) => {
-			if (a.public && !b.public) return -1;
-			if (!a.public && b.public) return 1;
 			return a.name.localeCompare(b.name);
 		});
 	} catch (error) {
@@ -196,25 +184,11 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				@click:row="navigateToPolicy"
 			>
 				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
+					<v-icon class="icon" :name="item.icon" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow
-						v-if="item.name"
-						:text="item.name"
-						class="name"
-						:class="{ public: item.public }"
-						:highlight="search"
-					/>
-				</template>
-
-				<template #[`item.userCount`]="{ item }">
-					<value-null v-if="item.public" />
-				</template>
-
-				<template #[`item.roleCount`]="{ item }">
-					<value-null v-if="item.public" />
+					<v-text-overflow v-if="item.name" :text="item.name" class="name" :highlight="search" />
 				</template>
 
 				<template #[`item.description`]="{ item }">
@@ -259,11 +233,5 @@ function navigateToPolicy({ item }: { item: Policy }) {
 	--v-highlight-color: var(--theme--background-accent);
 
 	color: var(--theme--foreground-subdued);
-}
-
-.public {
-	--v-icon-color: var(--theme--primary);
-
-	color: var(--theme--primary);
 }
 </style>

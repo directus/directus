@@ -11,8 +11,6 @@ export interface ValidateAccessOptions {
 	primaryKeys?: PrimaryKey[];
 }
 
-// TODO this should probably be cached as well
-
 /**
  * Validate if the current user has access to perform action against the given collection and
  * optional primary keys. This is done by reading the item from the database using the access

@@ -61,6 +61,7 @@ test('Removes fields that are not in the schema', async () => {
 		{ fields: ['field-a'] },
 		{ fields: ['field-a', 'field-b'] },
 		{ fields: ['field-c'] },
+		{ fields: ['*'] },
 	] as Permission[];
 
 	const schema = {
@@ -80,5 +81,5 @@ test('Removes fields that are not in the schema', async () => {
 		schema,
 	} as Context);
 
-	expect(fields).toEqual(['field-a']);
+	expect(fields).toEqual(['field-a', '*']);
 });

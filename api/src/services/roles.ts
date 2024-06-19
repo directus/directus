@@ -1,5 +1,7 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
@@ -27,6 +29,8 @@ export class RolesService extends ItemsService {
 			// Anything related to policies will be checked in the AccessService, where the policies are attached to roles
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+			await this.validateRoleNesting(keys as string[], data['parent']);
 		}
 
 		const result = await super.updateMany(keys, data, opts);
@@ -88,5 +92,18 @@ export class RolesService extends ItemsService {
 		await clearPermissionsCache();
 
 		return keys;
+	}
+
+	private async validateRoleNesting(ids: string[], parent: string) {
+		if (ids.includes(parent)) {
+			throw new InvalidPayloadError({ reason: 'A role cannot be a parent of itself' });
+		}
+
+		const roles = await fetchRolesTree(parent, this.knex);
+
+		if (ids.some((id) => roles.includes(id))) {
+			// The role tree up from the parent already includes this role, so it would create a circular reference
+			throw new InvalidPayloadError({ reason: 'A role cannot have a parent that is already a descendant of itself' });
+		}
 	}
 }

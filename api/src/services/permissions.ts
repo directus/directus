@@ -1,8 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
-import type Keyv from 'keyv';
-import { clearSystemCache, getCache } from '../cache.js';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { clearSystemCache } from '../cache.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -11,14 +9,8 @@ import { ItemsService } from './items.js';
 import { withAppMinimalPermissions } from './permissions/lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
-	systemCache: Keyv<any>;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
-
-		const { systemCache } = getCache();
-
-		this.systemCache = systemCache;
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
@@ -35,8 +27,6 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		await clearPermissionsCache();
-
 		return res;
 	}
 
@@ -47,8 +37,6 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
-
-		await clearPermissionsCache();
 
 		return res;
 	}
@@ -61,8 +49,6 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		await clearPermissionsCache();
-
 		return res;
 	}
 
@@ -73,8 +59,6 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
-
-		await clearPermissionsCache();
 
 		return res;
 	}
@@ -87,8 +71,6 @@ export class PermissionsService extends ItemsService {
 			await this.cache.clear();
 		}
 
-		await clearPermissionsCache();
-
 		return res;
 	}
 
@@ -99,8 +81,6 @@ export class PermissionsService extends ItemsService {
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
-
-		await clearPermissionsCache();
 
 		return res;
 	}

@@ -26,8 +26,6 @@ import { SettingsService } from './settings.js';
 const env = useEnv();
 const logger = useLogger();
 
-// TODO make sure there's always one user with admin status
-
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);

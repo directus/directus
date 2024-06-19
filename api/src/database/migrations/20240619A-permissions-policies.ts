@@ -1,13 +1,12 @@
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
-import { PUBLIC_POLICY_ID } from '@directus/constants';
 import { processChunk } from '@directus/utils';
 
 /**
  * The public role used to be `null`, we gotta create a single new policy for the permissions
  * previously attached to the public role (marked through `role = null`).
- * And a new public role that is marked by a different, arbitrary UUID.
  */
+const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 export async function up(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +15,7 @@ export async function up(knex: Knex) {
 	await knex.schema.createTable('directus_policies', (table) => {
 		table.uuid('id').primary();
 		table.string('name', 100).notNullable();
+		table.string('icon', 64).notNullable().defaultTo('badge');
 		table.text('description');
 		table.text('ip_access');
 		table.boolean('enforce_tfa').defaultTo(false).notNullable();
@@ -27,7 +27,7 @@ export async function up(knex: Knex) {
 	// Copy over all existing roles into new policies
 
 	const roles = await knex
-		.select('id', 'name', 'description', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
+		.select('id', 'name', 'icon', 'description', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
 		.from('directus_roles');
 
 	if (roles.length > 0) {
@@ -40,6 +40,7 @@ export async function up(knex: Knex) {
 		.insert({
 			id: PUBLIC_POLICY_ID,
 			name: '$t:public_label',
+			icon: 'public',
 			description: '$t:public_description',
 			app_access: false,
 		})
@@ -61,7 +62,7 @@ export async function up(knex: Knex) {
 		table.dropColumn('admin_access');
 		table.dropColumn('app_access');
 
-		table.uuid('parent').references('directus_roles.id');
+		table.uuid('parent').references('directus_roles.id').onDelete('SET NULL');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,11 +161,14 @@ export async function down(knex: Knex) {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Drop policy attachments
+	// Drop all permissions that are only attached to a user
 
 	// TODO query all policies that are attached to a user and delete their permissions,
 	//  since we don't know were to put them now and it'll cause a foreign key problem
 	//  as soon as we reference directus_roles in directus_permissions again
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Drop policy attachments
 
 	await knex.schema.dropTable('directus_access');
 

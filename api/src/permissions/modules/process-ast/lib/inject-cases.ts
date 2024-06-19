@@ -39,7 +39,11 @@ function processChildren(
 	for (const { rule, fields } of rules) {
 		// If none of the fields in the current permissions rule overlap with the actually requested
 		// fields in the AST, we can ignore this case altogether
-		if (fields.has('*') === false && Array.from(fields).every((field) => requestedKeys.includes(field) === false)) {
+		if (
+			requestedKeys.length > 0 &&
+			fields.has('*') === false &&
+			Array.from(fields).every((field) => requestedKeys.includes(field) === false)
+		) {
 			continue;
 		}
 

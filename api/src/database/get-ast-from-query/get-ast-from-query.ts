@@ -5,6 +5,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
+import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { AST } from '../../types/index.js';
 import { parseFields } from './lib/parse-fields.js';
 
@@ -62,18 +63,31 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 
 	if (!options.query.sort) {
 		// We'll default to the primary key for the standard sort output
-		let sortField = context.schema.collections[options.collection]!.primary;
+		let sortField: string | null = context.schema.collections[options.collection]!.primary;
 
 		// If a custom manual sort field is configured, use that
 		if (context.schema.collections[options.collection]?.sortField) {
-
-			/**
-			 * TODO The globally configured sort field may or may not be allowed for the current user.
-			 * This should be checked against allowed fields / admin and default to the first allowed field
-			 * otherwise
-			 */
-
 			sortField = context.schema.collections[options.collection]!.sortField as string;
+		}
+
+		if (options.accountability && options.accountability.admin === false) {
+			// Verify that the user has access to the sort field
+
+			const allowedFields = await fetchAllowedFields(
+				{
+					collection: options.collection,
+					action: 'read',
+					accountability: options.accountability,
+				},
+				context,
+			);
+
+			if (allowedFields.length === 0) {
+				sortField = null;
+			} else if (allowedFields.includes('*') === false && allowedFields.includes(sortField) === false) {
+				// If the sort field is not allowed, default to the first allowed field
+				sortField = allowedFields[0]!;
+			}
 		}
 
 		// When group by is used, default to the first column provided in the group by clause
@@ -81,7 +95,9 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 			sortField = options.query.group[0];
 		}
 
-		options.query.sort = [sortField];
+		if (sortField) {
+			options.query.sort = [sortField];
+		}
 	}
 
 	// When no group by is supplied, but an aggregate function is used, only a single row will be

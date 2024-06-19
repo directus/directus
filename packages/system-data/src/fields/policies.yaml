@@ -1,11 +1,5 @@
 table: directus_policies
 
-.hide_in_public_policy: &hide_in_public_policy
-  conditions:
-    - rule:
-        id:
-          _eq: abf8a154-5b1c-4a46-ac9c-7300570f4f17
-      hidden: true
 
 fields:
   - field: id
@@ -18,6 +12,11 @@ fields:
     display: formatted-value
     display_options:
       translate: true
+
+  - field: icon
+    interface: select-icon
+    display: icon
+    width: half
 
   - field: description
     interface: input
@@ -39,14 +38,12 @@ fields:
     special:
       - cast-boolean
     width: half
-    <<: *hide_in_public_policy
 
   - field: admin_access
     interface: boolean
     special:
       - cast-boolean
     width: half
-    <<: *hide_in_public_policy
 
   - field: ip_access
     interface: tags
@@ -62,7 +59,6 @@ fields:
     special:
       - cast-boolean
     width: half
-    <<: *hide_in_public_policy
 
   - field: assigned_to_divider
     interface: presentation-divider
@@ -72,7 +68,6 @@ fields:
       - alias
       - no-data
     width: full
-    <<: *hide_in_public_policy
 
   - field: users
     interface: list-m2m
@@ -83,7 +78,6 @@ fields:
           _nnull: true
     special:
       - m2m
-    <<: *hide_in_public_policy
 
   - field: roles
     interface: list-m2m
@@ -94,4 +88,3 @@ fields:
           _nnull: true
     special:
       - m2m
-    <<: *hide_in_public_policy

@@ -1,5 +1,5 @@
 import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
-import { sortBy } from 'lodash-es';
+import { pick, sortBy } from 'lodash-es';
 import { withAppMinimalPermissions } from '../../services/permissions/lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
 import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
@@ -9,16 +9,11 @@ import { withCache } from '../utils/with-cache.js';
 export const fetchPermissions = withCache(
 	'permissions',
 	_fetchPermissions,
-	({ action, policies, collections, accountability: { user, role, roles, app } }) => ({
-		action,
+	({ action, policies, collections, accountability }) => ({
 		policies, // we assume that policies always come from the same source, so they should be in the same order
-		collections: sortBy(collections),
-		accountability: {
-			user,
-			role,
-			roles,
-			app,
-		},
+		...(action && { action }),
+		...(collections && { collections: sortBy(collections) }),
+		...(accountability && { accountability: pick(accountability, ['user', 'role', 'roles', 'app']) }),
 	}),
 );
 
@@ -45,10 +40,15 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, contex
 		filter._and.push({ collection: { _in: options.collections } });
 	}
 
-	const permissions = (await permissionsService.readByQuery({
+	let permissions = (await permissionsService.readByQuery({
 		filter,
 		limit: -1,
 	})) as Permission[];
+
+	// Sort permissions by their order in the policies array
+	// This ensures that if a sorted array of policies is passed in the permissions are returned in the same order
+	// which is necessary for correctly applying the presets in order
+	permissions = sortBy(permissions, (permission) => options.policies.indexOf(permission.policy!));
 
 	if (options.accountability) {
 		// Add app minimal permissions for the request accountability, if applicable.

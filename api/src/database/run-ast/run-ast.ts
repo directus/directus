@@ -59,7 +59,7 @@ export async function runAst(
 		const o2mNodes = nestedCollectionNodes.filter((node): node is O2MNode => node.type === 'o2m');
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases);
+		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
