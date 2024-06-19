@@ -61,7 +61,7 @@ export async function up(knex: Knex) {
 		table.dropColumn('admin_access');
 		table.dropColumn('app_access');
 
-		table.uuid('parent').references('directus_roles.id');
+		table.uuid('parent').references('directus_roles.id').onDelete('SET NULL');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
