@@ -8,6 +8,7 @@ fields:
       - uuid
 
   - field: name
+    required: true
     interface: input
     options:
       placeholder: $t:field_options.directus_roles.name
