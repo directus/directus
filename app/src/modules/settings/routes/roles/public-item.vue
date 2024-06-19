@@ -4,7 +4,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import { useApi } from '@directus/composables';
-import { Alterations, Filter, Item, Policy } from '@directus/types';
+import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -45,6 +45,23 @@ policiesField!.meta!.options = {
 		},
 	},
 };
+
+const fields = [
+	{
+		field: 'notice',
+		type: 'alias',
+		meta: {
+			system: true,
+			interface: 'presentation-notice',
+			options: {
+				text: t('public_role_info'),
+			},
+			width: 'full',
+			sort: 0,
+		},
+	},
+	policiesField,
+];
 
 const loading = ref(false);
 const error = ref<any | null>(null);
@@ -172,7 +189,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 		<div v-if="!loading" class="roles">
 			<!-- TODO lets add a note here on what the public role is and what it influences -->
-			<v-form v-model="edits" :initial-values="initialValue" :fields="[policiesField]" :primary-key="null" />
+			<v-form v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" />
 		</div>
 
 		<template #sidebar>
@@ -205,5 +222,8 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 .roles {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	display: flex;
+	flex-direction: column;
+	gap: var(--theme--form--row-gap);
 }
 </style>
