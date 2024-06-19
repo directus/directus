@@ -567,23 +567,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
+					text: 'Key Concepts',
 					link: '/user-guide/user-management/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					type: 'page',
-					items: [
-						{
-							text: 'Users',
-							link: '/user-guide/user-management/users',
-						},
-						{
-							text: 'Roles',
-							link: '/user-guide/user-management/roles',
-						},
-						{
-							text: 'Permissions',
-							link: '/user-guide/user-management/permissions',
-						},
-					],
 				},
 				{
 					text: 'User Directory',

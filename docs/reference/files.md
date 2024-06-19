@@ -19,8 +19,7 @@ import { data as packages } from '@/data/packages.data.js';
 Data and permissions around files are associated to the `directus_files` collection.
 
 It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public'
-folder), rather than making the whole collection public. Read more on
-[custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
+folder), rather than making the whole collection public. Read more on custom access permissions.
 
 ::: warning Exporting Data Creates Files
 
