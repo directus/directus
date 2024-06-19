@@ -6,12 +6,14 @@ pageClass: page-reference
 
 # Policies
 
-> Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles
-> and users. [Learn more about Policies](/user-guide/overview/glossary#policies).
+> Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles and
+> users. [Learn more about Policies](/user-guide/overview/glossary#policies).
 
 :::tip Directus 11 RC
 
-Policies are a new concept available from the Directus 11 Release Candidate. In prior versions, they do not exist. There have also been changes to [users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
+Policies are a new concept available from the Directus 11 Release Candidate. In prior versions, they do not exist. There
+have also been changes to [users](/reference/system/users), [roles](/reference/system/roles), and
+[permissions](/reference/system/permissions).
 
 :::
 
@@ -30,8 +32,8 @@ Icon for the policy. Displayed in the Data Studio.
 Description for the policy. Displayed in the Data Studio.
 
 `ip_access` **csv**\
-A CSV of IP addresses that this policy applies to. Allows you to configure an allowlist of IP addresses.
-If empty, no IP restrictions are applied.
+A CSV of IP addresses that this policy applies to. Allows you to configure an allowlist of IP addresses. If empty, no IP
+restrictions are applied.
 
 `enforce_tfa` **boolean**\
 Whether or not Two-Factor Authentication is required for users that have this policy.
@@ -43,8 +45,8 @@ If this policy grants the user admin access. This means that users with this pol
 Whether or not users with this policy have access to use the Data Studio.
 
 `users` **one-to-many**\
-The users this policy is assigned to directly, this does not include users which receive this policy through a role.
-One-to-many to [users](/reference/system/users).
+The users this policy is assigned to directly, this does not include users which receive this policy through a role. One-to-many
+to [users](/reference/system/users).
 
 `roles` **one-to-many**\
 The roles this policy is assigned to. One-to-many to [roles](/reference/system/policies).
@@ -112,8 +114,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-An array of up to [limit](/reference/query#limit) [policy objects](#the-policy-object). If no items are available, data will
-be an empty array.
+An array of up to [limit](/reference/query#limit) [policy objects](#the-policy-object). If no items are available, data
+will be an empty array.
 
 ### Example
 

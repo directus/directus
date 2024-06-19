@@ -6,12 +6,13 @@ pageClass: page-reference
 
 # Users
 
-> Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a Role
-> and. [Learn more about Users](/user-guide/overview/glossary#users).
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a
+> Role and. [Learn more about Users](/user-guide/overview/glossary#users).
 
 :::tip Directus 11 RC
 
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's data structure and relations.
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
 
 :::
 
@@ -48,8 +49,8 @@ Tags for the user.
 Avatar file. Many-to-one to [files](/reference/files).
 
 `language` **string**\
-Language the Data Studio is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
-translations.
+Language the Data Studio is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages
+and translations.
 
 `appearance` **string**\
 One of `auto`, `light`, `dark`.

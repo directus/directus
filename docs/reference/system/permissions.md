@@ -11,7 +11,8 @@ pageClass: page-reference
 
 :::tip Directus 11 RC
 
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's data structure and relations.
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
 
 :::
 
@@ -33,7 +34,8 @@ What CRUD operation this permission rule applies to. One of `create`, `read`, `u
 What custom permission rules the item must pass before users with the policy are allowed to operate on it. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `validation` **object**\
-What rules the provided values must pass before users with the policy are allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
+What rules the provided values must pass before users with the policy are allowed to submit them for insertion/update. Follows
+[the Filter Rules spec](/reference/filter-rules).
 
 `presets` **object**\
 Additional default values for the item that are applied by users with the policy.
@@ -820,7 +822,6 @@ const result = await client.request(deletePermissions(['56', '57']));
 </template>
 </SnippetToggler>
 
-
 ## Get Current User's Permissions
 
 Check the current user's permissions across all collections.
@@ -853,12 +854,12 @@ const result = await client.request(readUserPermissions());
 
 ### Response
 
-The response is an object that contains one entry for every collection with at least one permission.
-Each collection has entries corresponding to the actions the user is able to perform on the collection.
+The response is an object that contains one entry for every collection with at least one permission. Each collection has
+entries corresponding to the actions the user is able to perform on the collection.
 
-The `access` property indicates the level of access the user has for an action for a collection.
-`"none"` means the user has no access, `"partial"` means the user has access to
-some items, but may not have access to all items, and `"full"` means the user has access to all items.
+The `access` property indicates the level of access the user has for an action for a collection. `"none"` means the user
+has no access, `"partial"` means the user has access to some items, but may not have access to all items, and `"full"`
+means the user has access to all items.
 
 ```json
 {
