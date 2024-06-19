@@ -63,7 +63,7 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 
 	if (!options.query.sort) {
 		// We'll default to the primary key for the standard sort output
-		let sortField = context.schema.collections[options.collection]!.primary;
+		let sortField: string | null = context.schema.collections[options.collection]!.primary;
 
 		// If a custom manual sort field is configured, use that
 		if (context.schema.collections[options.collection]?.sortField) {
@@ -82,11 +82,9 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 				context,
 			);
 
-			if (
-				allowedFields.length > 0 &&
-				allowedFields.includes('*') === false &&
-				allowedFields.includes(sortField) === false
-			) {
+			if (allowedFields.length === 0) {
+				sortField = null;
+			} else if (allowedFields.includes('*') === false && allowedFields.includes(sortField) === false) {
 				// If the sort field is not allowed, default to the first allowed field
 				sortField = allowedFields[0]!;
 			}
@@ -97,7 +95,9 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 			sortField = options.query.group[0];
 		}
 
-		options.query.sort = [sortField];
+		if (sortField) {
+			options.query.sort = [sortField];
+		}
 	}
 
 	// When no group by is supplied, but an aggregate function is used, only a single row will be
