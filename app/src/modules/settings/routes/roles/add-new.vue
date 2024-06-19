@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { useSave } from './use-save';
 
 const { t } = useI18n();
 
@@ -12,31 +11,9 @@ const router = useRouter();
 
 const isOpen = useDialogRoute();
 
-const roleName = ref<string | null>(null);
+const name = ref<string | null>(null);
 
-const { saving, save } = useSave();
-
-function useSave() {
-	const saving = ref(false);
-
-	return { saving, save };
-
-	async function save() {
-		saving.value = true;
-
-		try {
-			const roleResponse = await api.post('/roles', {
-				name: roleName.value,
-			});
-
-			router.push(`/settings/roles/${roleResponse.data.data.id}`);
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			saving.value = false;
-		}
-	}
-}
+const { saving, save } = useSave({ name });
 </script>
 
 <template>
@@ -49,7 +26,7 @@ function useSave() {
 				<div class="form-grid">
 					<div class="field full">
 						<v-input
-							v-model="roleName"
+							v-model="name"
 							autofocus
 							:placeholder="t('role_name') + '...'"
 							:max-length="100"
@@ -60,7 +37,7 @@ function useSave() {
 			</v-card-text>
 			<v-card-actions>
 				<v-button to="/settings/roles" secondary>{{ t('cancel') }}</v-button>
-				<v-button :disabled="roleName === null" :loading="saving" @click="save">{{ t('save') }}</v-button>
+				<v-button :disabled="name === null" :loading="saving" @click="save">{{ t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
