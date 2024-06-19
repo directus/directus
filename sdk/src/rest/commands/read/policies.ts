@@ -11,8 +11,8 @@ export type ReadPolicyOutput<
 
 export type ReadPolicyGlobalsOutput = {
 	app_access: boolean;
-    admin_access: boolean;
-    enforce_tfa: boolean;
+	admin_access: boolean;
+	enforce_tfa: boolean;
 };
 
 /**
@@ -61,6 +61,6 @@ export const readPolicy =
 export const readPolicyGlobals =
 	<Schema>(): RestCommand<ReadPolicyGlobalsOutput, Schema> =>
 	() => ({
-			path: `/policies/me/globals`,
-			method: 'GET',
+		path: `/policies/me/globals`,
+		method: 'GET',
 	});
