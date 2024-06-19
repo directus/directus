@@ -6,7 +6,7 @@ pageClass: page-reference
 
 # Permissions
 
-> Permissions are assigned to Roles, and control data access throughout the platform.
+> Permissions are assigned to Policies, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
 ## The Permission Object
@@ -14,8 +14,8 @@ pageClass: page-reference
 `id` **uuid**\
 Primary key of the permission rule.
 
-`role` **many-to-one**\
-Role this permission applies to. Many-to-one to [roles](/reference/system/roles). `null` is used for public permissions.
+`policy` **many-to-one**\
+Policy this permission applies to. Many-to-one to [policies](/reference/system/policies).
 
 `collection` **string**\
 Collection this permission rule applies to.
@@ -24,13 +24,13 @@ Collection this permission rule applies to.
 What CRUD operation this permission rule applies to. One of `create`, `read`, `update`, `delete`.
 
 `permissions` **object**\
-What rules the item must pass before the role is allowed to alter it. Follows [the Filter Rules spec](/reference/filter-rules).
+What rules the item must pass before users with the policy are allowed to alter it. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `validation` **object**\
-What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
+What rules the provided values must pass before users with the policy are allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
 
 `presets` **object**\
-Additional default values for the role.
+Additional default values for the item that are applied by users with the policy.
 
 `fields` **array**\
 What fields the user is allowed to alter.
@@ -38,7 +38,7 @@ What fields the user is allowed to alter.
 ```json
 {
 	"id": 34,
-	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+	"policy": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
 	"collection": "pages",
 	"action": "create",
 	"permissions": null,
@@ -57,13 +57,6 @@ What fields the user is allowed to alter.
 ## List Permissions
 
 List all permissions that exist in Directus.
-
-::: tip Permissions
-
-The data returned in this endpoint will be filtered based on the user's permissions. For example, permissions for a role
-other than the current user's role won't be returned.
-
-:::
 
 ### Request
 
@@ -130,7 +123,7 @@ available, data will be an empty array.
 query {
 	permissions {
 		action
-		role
+		policy
 		collection
 	}
 }
@@ -213,7 +206,7 @@ Returns the requested [permission object](#the-permission-object).
 ```graphql
 query {
 	permissions_by_id(id: 34) {
-		role
+		policy
 		collection
 		action
 	}
@@ -299,7 +292,7 @@ Returns the [permission object](#the-permission-object) for the created permissi
 {
 	"collection": "pages",
 	"action": "read",
-	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+	"policy": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
 	"fields": ["id", "title"]
 }
 ```
@@ -312,7 +305,7 @@ Returns the [permission object](#the-permission-object) for the created permissi
 ```graphql
 mutation {
 	create_permissions_item(
-		data: { collection: "pages", action: "read", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+		data: { collection: "pages", action: "read", policy: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
 	) {
 		id
 		collection
@@ -331,7 +324,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	createPermission({
-		role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+		policy: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
 		collection: 'articles',
 		action: 'delete',
 		fields: ['*'],
@@ -404,13 +397,13 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 	{
 		"collection": "pages",
 		"action": "read",
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+		"policy": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
 		"fields": ["id", "title"]
 	},
 	{
 		"collection": "pages",
 		"action": "create",
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+		"policy": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
 		"fields": ["id", "title"]
 	}
 ]
@@ -425,8 +418,8 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 mutation {
 	create_permissions_items(
 		data: [
-			{ collection: "pages", action: "read", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
-			{ collection: "pages", action: "create", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+			{ collection: "pages", action: "read", policy: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+			{ collection: "pages", action: "create", policy: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
 		]
 	) {
 		id
@@ -447,13 +440,13 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	createPermissions([
 		{
-			role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+			policy: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
 			collection: 'articles',
 			action: 'delete',
 			fields: ['*'],
 		},
 		{
-			role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+			policy: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
 			collection: 'articles',
 			action: 'update',
 			fields: ['*'],
@@ -816,6 +809,142 @@ import { createDirectus, rest, deletePermissions } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deletePermissions(['56', '57']));
+```
+
+</template>
+</SnippetToggler>
+
+
+## Get all Permissions for the Current User
+
+Check the current user's permissions on all collections.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me`
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readUserPermissisons } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readUserPermissisons());
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+The response is an object that contains one entry for every collection the user is able to access. 
+Each collection has entries corresponding to the actions the user is able to perform on the collection. 
+`access` indicates the level of access the user has for an action for a collection. 
+`"none"` means the user has no access, `"partial"` means the user has access to 
+some items, but may not have access to all items, and `"full"` means the user has access to all items.
+
+```json
+{
+  "data": {
+    "<collection>": {
+      "create": {
+        "access": "none" | "partial" | "full",
+        "fields": permission_fields,
+        "presets": permission_presets
+      },
+      "read": {
+        "access": "none" | "partial" | "full",
+        "full_access": boolean,
+        "fields": permission_fields,   
+      },
+      "update": {
+        "access": "none" | "partial" | "full",
+        "full_access": boolean,
+        "fields": permission_fields,
+        "presets": permission_presets
+      },
+      "delete": {
+        "access": "none" | "partial" | "full",
+        "full_access": boolean
+      },
+      "share": {
+        "access": "none" | "partial" | "full",
+        "full_access": boolean
+      }
+    }
+  }
+}
+```
+
+##### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /permissions/me`
+
+```json
+{
+  "data": {
+    "articles": {
+      "create": {
+        "access": "full",
+        "fields": [
+          "*"
+        ],
+        "presets": {
+          "title": "New Article"
+        }
+      },
+      "read": {
+        "access": "partial",
+        "fields": [
+          "*"
+        ]
+      },
+      "update": {
+        "access": "full",
+        "fields": [
+          "*"
+        ],
+        "presets": {}
+      },
+      "delete": {
+        "access": "full"
+      },
+      "share": {
+        "access": "none"
+      }
+    }
+  }
+}
+```
+
+</template>
+<template #graphql>
+
+N/A
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readUserPermissions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+// collection item
+const result = await client.request(readUserPermissions());
 ```
 
 </template>
