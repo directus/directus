@@ -48,7 +48,7 @@ Tags for the user.
 Avatar file. Many-to-one to [files](/reference/files).
 
 `language` **string**\
-Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
+Language the Data Studio is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
 translations.
 
 `appearance` **string**\
@@ -1367,7 +1367,7 @@ const result = await client.request(inviteUser('another@example.com', 'c86c2761-
 
 ## Accept User Invite
 
-Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Admin App.
+Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Data Studio.
 
 This link includes a token, which is then used to activate the invited user.
 

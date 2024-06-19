@@ -359,7 +359,7 @@ a Pull Request to the codebase, otherwise you can update this in your instance.
 
 ## Translations
 
-The platform supports internationalization across its entire Admin App. Many languages are currently supported, with
+The platform supports internationalization across its entire Data Studio. Many languages are currently supported, with
 more being added all the time. Anyone can add or refine any languages through the integration with
 [Crowdin](https://locales.directus.io).
 

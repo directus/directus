@@ -706,7 +706,7 @@ const result = await client.request(passwordRequest('admin@example.com'));
 
 ## Reset a Password
 
-The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses
+The request a password reset endpoint sends an email with a link to the Data Studio (or a custom route) which in turn uses
 this endpoint to allow the user to reset their password.
 
 ### Request

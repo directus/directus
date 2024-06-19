@@ -23,10 +23,10 @@ Primary key of the role.
 Name of the role.
 
 `icon` **string**\
-Icon for the role. Displayed in the Admin App.
+Icon for the role. Displayed in the Data Studio.
 
 `description` **string**\
-Description for the role. Displayed in the Admin App.
+Description for the role. Displayed in the Data Studio.
 
 `users` **one-to-many**\
 The users in this role. One-to-many to [users](/reference/system/users).
