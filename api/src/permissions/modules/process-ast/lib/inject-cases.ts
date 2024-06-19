@@ -35,7 +35,6 @@ function processChildren(
 	const requestedKeys = children.map(getUnaliasedFieldKey);
 
 	let index = 0;
-	3;
 
 	for (const { rule, fields } of rules) {
 		// If none of the fields in the current permissions rule overlap with the actually requested
