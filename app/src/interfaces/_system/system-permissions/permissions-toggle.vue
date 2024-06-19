@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import VChip from '@/components/v-chip.vue';
-import { Collection, Permission } from '@directus/types';
+import { Collection, Permission, PermissionsAction } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: Collection;
-	action: 'create' | 'read' | 'update' | 'delete' | 'share';
+	action: PermissionsAction;
 	permission?: Permission;
 	loading?: boolean;
 	appMinimal?: Partial<Permission>;
