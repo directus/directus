@@ -15,13 +15,16 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 11.0.0 RC.1
 
-Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in roles, but instead in policies. Policies can be attached to a role and also directly to users.
+Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
+roles, but instead in policies. Policies can be attached to a role and also directly to users.
 
-While users can still only have one direct role, roles can now also be nested within roles. A user's permissions are now an aggregate of all policies attached directly to them, to their role, and any nested roles.
+While users can still only have one direct role, roles can now also be nested within roles. A user's permissions are now
+an aggregate of all policies attached directly to them, to their role, and any nested roles.
 
 ### Changes to Object Properties
 
-Object properties have changed and moved. This should only impact users who use and rely on the users, roles, and permissions endpoints.
+Object properties have changed and moved. This should only impact users who use and rely on the users, roles, and
+permissions endpoints.
 
 #### Users
 
@@ -41,11 +44,16 @@ Permissions are no longer attached to a `role`. This has been changed to a `poli
 
 #### Properties Returned from `usersStore`
 
-The `usersStore` has a `role` object that previously contained the `admin_access`, `app_access`, and  `enforce_tfa` properties. These are now returned directly in the `user` object.
+The `usersStore` has a `role` object that previously contained the `admin_access`, `app_access`, and `enforce_tfa`
+properties. These are now returned directly in the `user` object.
 
 #### `preRegisterCheck` Data Structure
 
-If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now receives a different data structure. It previously received a list of permission objects. Now, it receives the same data returned from the new [Get Current User Permissions](https://silver-barnacle-x5797p5v993p45p-5173.app.github.dev/reference/system/permissions.html#get-current-user-permissions) endpoint.
+If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now
+receives a different data structure. It previously received a list of permission objects. Now, it receives the same data
+returned from the new
+[Get Current User Permissions](https://silver-barnacle-x5797p5v993p45p-5173.app.github.dev/reference/system/permissions.html#get-current-user-permissions)
+endpoint.
 
 ## Version 10.10.0
 
