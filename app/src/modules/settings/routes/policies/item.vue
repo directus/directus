@@ -4,7 +4,7 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import { Role } from '@directus/types';
+import { Policy } from '@directus/types';
 import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -24,7 +24,7 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem<Role>(
+const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Policy>(
 	ref('directus_policies'),
 	primaryKey,
 );
@@ -40,26 +40,38 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 /**
  * @NOTE
  * The userStore contains the information about the role of the current user. We want to
- * update the userstore to make sure the role information is accurate with the latest changes
+ * update the userStore to make sure the role information is accurate with the latest changes
  * in case we're changing the current user's role
  */
 
 async function saveAndStay() {
-	await save();
-	revisionsDrawerDetailRef.value?.refresh?.();
-	await userStore.hydrate();
+	try {
+		await save();
+		revisionsDrawerDetailRef.value?.refresh?.();
+		await userStore.hydrate();
+	} catch {
+		// 'save' shows unexpected error dialog
+	}
 }
 
 async function saveAndQuit() {
-	await save();
-	router.push(`/settings/policies`);
-	await userStore.hydrate();
+	try {
+		await save();
+		router.push(`/settings/policies`);
+		await userStore.hydrate();
+	} catch {
+		// 'save' shows unexpected error dialog
+	}
 }
 
 async function deleteAndQuit() {
-	await remove();
-	edits.value = {};
-	router.replace(`/settings/policies`);
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(`/settings/policies`);
+	} catch {
+		// 'remove' shows unexpected error dialog
+	}
 }
 
 function discardAndLeave() {
@@ -126,8 +138,15 @@ function discardAndLeave() {
 			<settings-navigation />
 		</template>
 
-		<div v-if="!loading" class="roles">
-			<v-form v-model="edits" collection="directus_policies" :primary-key="primaryKey" :initial-values="item" />
+		<div class="content">
+			<v-form
+				v-model="edits"
+				collection="directus_policies"
+				:primary-key="primaryKey"
+				:loading
+				:initial-values="item"
+				:validation-errors="validationErrors"
+			/>
 		</div>
 
 		<template #sidebar>
@@ -154,24 +173,6 @@ function discardAndLeave() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
-.roles {
-	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
-	display: flex;
-	flex-direction: column;
-	row-gap: var(--theme--form--row-gap);
-}
-
-.v-notice,
-.v-skeleton-loader {
-	max-width: 800px;
-}
-
 .header-icon {
 	--v-button-background-color: var(--theme--primary-background);
 	--v-button-color: var(--theme--primary);
@@ -179,8 +180,16 @@ function discardAndLeave() {
 	--v-button-color-hover: var(--theme--primary);
 }
 
-.permissions-overview,
-.roles .v-notice {
-	margin-bottom: 48px;
+.action-delete {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
+	display: flex;
+	flex-direction: column;
+	row-gap: var(--theme--form--row-gap);
 }
 </style>

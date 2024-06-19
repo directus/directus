@@ -2,6 +2,7 @@
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
@@ -64,7 +65,6 @@ const fields = [
 ];
 
 const loading = ref(false);
-const error = ref<any | null>(null);
 const saving = ref(false);
 const initialValue = ref<{ policies: string[] | null }>({ policies: null });
 const edits = ref<{ policies?: Alterations<Access> | null }>({});
@@ -100,8 +100,8 @@ async function fetchPolicies() {
 		initialValue.value = {
 			policies: response.data.data.map(({ id }) => id),
 		};
-	} catch (e) {
-		error.value = e;
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -132,21 +132,30 @@ async function save() {
 
 		edits.value = {};
 		await fetchPolicies();
-	} catch (e) {
-		error.value = e;
+	} catch (error) {
+		unexpectedError(error);
+		throw error;
 	} finally {
 		saving.value = false;
 	}
 }
 
 async function saveAndStay() {
-	await save();
-	revisionsDrawerDetailRef.value?.refresh?.();
+	try {
+		await save();
+		revisionsDrawerDetailRef.value?.refresh?.();
+	} catch {
+		// `save` shows unexpected error dialog
+	}
 }
 
 async function saveAndQuit() {
-	await save();
-	router.push(`/settings/roles`);
+	try {
+		await save();
+		router.push(`/settings/roles`);
+	} catch {
+		// `save` shows unexpected error dialog
+	}
 }
 
 function discardAndLeave() {
@@ -163,7 +172,9 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 <template>
 	<private-view :title="t('public_label')">
-		<template #headline>{{ t('settings_roles') }}</template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
+		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
 				<v-icon name="arrow_back" />
@@ -187,9 +198,8 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 			<settings-navigation />
 		</template>
 
-		<div v-if="!loading" class="roles">
-			<!-- TODO lets add a note here on what the public role is and what it influences -->
-			<v-form v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" />
+		<div class="content">
+			<v-form v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
 		</div>
 
 		<template #sidebar>
@@ -219,7 +229,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 	--v-button-color-hover: var(--theme--primary);
 }
 
-.roles {
+.content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 	display: flex;

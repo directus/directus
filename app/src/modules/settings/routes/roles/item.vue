@@ -30,7 +30,7 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem<Role>(
+const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
 	ref('directus_roles'),
 	primaryKey,
 	{
@@ -59,26 +59,38 @@ const canInviteUsers = computed(() => {
 /**
  * @NOTE
  * The userStore contains the information about the role of the current user. We want to
- * update the userstore to make sure the role information is accurate with the latest changes
+ * update the userStore to make sure the role information is accurate with the latest changes
  * in case we're changing the current user's role
  */
 
 async function saveAndStay() {
-	await save();
-	await userStore.hydrate();
-	revisionsDrawerDetailRef.value?.refresh?.();
+	try {
+		await save();
+		await userStore.hydrate();
+		revisionsDrawerDetailRef.value?.refresh?.();
+	} catch {
+		// `save` shows unexpected error dialog
+	}
 }
 
 async function saveAndQuit() {
-	await save();
-	await userStore.hydrate();
-	router.push(`/settings/roles`);
+	try {
+		await save();
+		await userStore.hydrate();
+		router.push(`/settings/roles`);
+	} catch {
+		// `save` shows unexpected error dialog
+	}
 }
 
 async function deleteAndQuit() {
-	await remove();
-	edits.value = {};
-	router.replace(`/settings/roles`);
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(`/settings/roles`);
+	} catch {
+		// `remove` shows unexpected error dialog
+	}
 }
 
 function discardAndLeave() {
@@ -158,8 +170,15 @@ function discardAndLeave() {
 
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
-		<div v-if="!loading" class="roles">
-			<v-form v-model="edits" collection="directus_roles" :primary-key="primaryKey" :initial-values="item" />
+		<div class="content">
+			<v-form
+				v-model="edits"
+				collection="directus_roles"
+				:primary-key="primaryKey"
+				:loading
+				:initial-values="item"
+				:validation-errors="validationErrors"
+			/>
 		</div>
 
 		<template #sidebar>
@@ -183,21 +202,6 @@ function discardAndLeave() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
-.roles {
-	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
-}
-
-.v-notice,
-.v-skeleton-loader {
-	max-width: 800px;
-}
-
 .header-icon {
 	--v-button-background-color: var(--theme--primary-background);
 	--v-button-color: var(--theme--primary);
@@ -205,8 +209,13 @@ function discardAndLeave() {
 	--v-button-color-hover: var(--theme--primary);
 }
 
-.permissions-overview,
-.roles .v-notice {
-	margin-bottom: 48px;
+.action-delete {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>
