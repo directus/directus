@@ -1,23 +1,27 @@
 import api, { RequestConfig } from '@/api';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
+import { Role, User } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
 
 type ShareUser = {
 	share: string;
-	role: {
-		id: string;
-		admin_access: false;
-		app_access: false;
-	};
+	admin_access: boolean;
+	app_access: boolean;
+};
+
+type AppUser = User & {
+	admin_access: boolean;
+	app_access: boolean;
+	enforce_tfa: boolean;
+	roles: Role[];
 };
 
 export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
-		currentUser: null as User | ShareUser | null,
+		currentUser: null as AppUser | ShareUser | null,
 		loading: false,
 		error: null,
 	}),
@@ -27,7 +31,7 @@ export const useUserStore = defineStore({
 			return userName(this.currentUser);
 		},
 		isAdmin(): boolean {
-			return this.currentUser?.role?.admin_access === true || false;
+			return this.currentUser?.admin_access === true || false;
 		},
 	},
 	actions: {
@@ -35,11 +39,20 @@ export const useUserStore = defineStore({
 			this.loading = true;
 
 			try {
-				const fields = ['*', 'avatar.id', 'role.admin_access', 'role.app_access', 'role.id', 'role.enforce_tfa'];
+				const fields = ['*', 'role.id'];
 
-				const { data } = await api.get(`/users/me`, { params: { fields } });
+				const [{ data: user }, { data: globals }, { data: roles }] = await Promise.all([
+					api.get(`/users/me`, { params: { fields } }),
+					api.get('/policies/me/globals'),
+					api.get('/roles/me', { params: { fields: ['id'] } }),
+				]);
 
-				this.currentUser = data.data;
+				this.currentUser = {
+					...user.data,
+					...(user.data?.avatar != null ? { avatar: { id: user.data?.avatar } } : {}),
+					...globals.data,
+					roles: roles.data,
+				};
 			} catch (error: any) {
 				this.error = error;
 			} finally {

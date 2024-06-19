@@ -1,10 +1,9 @@
+import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { Mock } from 'vitest';
 import { describe, expect, test, vi } from 'vitest';
-import { InvalidCredentialsError } from '@directus/errors';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
-import { getPermissions } from '../utils/get-permissions.js';
-import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';
+import { authenticateConnection, authenticationSuccess } from './authenticate.js';
 import type { WebSocketAuthMessage } from './messages.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
 
@@ -103,23 +102,6 @@ describe('authenticateConnection', () => {
 				access_token: '',
 			} as WebSocketAuthMessage),
 		).rejects.toThrow('Authentication failed.');
-	});
-});
-
-describe('refreshAccountability', () => {
-	test('update permissions', async () => {
-		(getPermissions as Mock).mockReturnValue([]);
-
-		const result = await refreshAccountability({
-			role: '123-456-789',
-			user: 'abc-def-ghi',
-		});
-
-		expect(result).toStrictEqual({
-			role: '123-456-789',
-			user: 'abc-def-ghi',
-			permissions: [],
-		});
 	});
 });
 

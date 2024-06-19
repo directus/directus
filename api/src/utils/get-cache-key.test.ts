@@ -1,12 +1,27 @@
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
+import type { Knex } from 'knex';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
+import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
+import { getDatabase } from '../database/index.js';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 
+vi.mock('../database/index.js');
+
+vi.mock('../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js');
+
 vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
-vi.mock('@directus/env');
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		REDIS_ENABLED: false,
+	}),
+}));
+
+beforeEach(() => {
+	vi.mocked(getDatabase).mockReturnValue({} as Knex);
+});
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;
@@ -67,8 +82,8 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('get cache key', () => {
-	describe('isGraphQl', () => {
+describe('get cache key', async () => {
+	describe('isGraphQl', async () => {
 		let getGraphqlQuerySpy: MockInstance;
 
 		beforeAll(() => {
@@ -77,30 +92,30 @@ describe('get cache key', () => {
 
 		test.each(['/items/test', '/items/graphql', '/collections/test', '/collections/graphql'])(
 			'path "%s" should not be interpreted as a graphql query',
-			(path) => {
-				getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
+			async (path) => {
+				await getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
 				expect(getGraphqlQuerySpy).not.toHaveBeenCalled();
 			},
 		);
 
-		test.each(['/graphql', '/graphql/system'])('path "%s" should be interpreted as a graphql query', (path) => {
-			getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
+		test.each(['/graphql', '/graphql/system'])('path "%s" should be interpreted as a graphql query', async (path) => {
+			await getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
 			expect(getGraphqlQuerySpy).toHaveBeenCalledOnce();
 		});
 	});
 
-	test.each(cases)('should create a cache key for %s', (_, params, key) => {
-		expect(getCacheKey(params as unknown as Request)).toEqual(key);
+	test.each(cases)('should create a cache key for %s', async (_, params, key) => {
+		expect(await getCacheKey(params as unknown as Request)).toEqual(key);
 	});
 
-	test('should create a unique key for each request', () => {
-		const keys = cases.map(([, params]) => getCacheKey(params as unknown as Request));
+	test('should create a unique key for each request', async () => {
+		const keys = cases.map(async ([, params]) => await getCacheKey(params as unknown as Request));
 		const hasDuplicate = keys.some((key) => keys.indexOf(key) !== keys.lastIndexOf(key));
 
 		expect(hasDuplicate).toBeFalsy();
 	});
 
-	test('should create a unique key for GraphQL requests with different variables', () => {
+	test('should create a unique key for GraphQL requests with different variables', async () => {
 		const query = 'query Test ($name: String) { test (filter: { name: { _eq: $name } }) { id } }';
 		const operationName = 'test';
 		const variables1 = JSON.stringify({ name: 'test 1' });
@@ -110,9 +125,30 @@ describe('get cache key', () => {
 		const postReq1: any = { method: 'POST', originalUrl: req1.originalUrl, body: req1.query };
 		const postReq2: any = { method: 'POST', originalUrl: req2.originalUrl, body: req2.query };
 
-		expect(getCacheKey(req1)).not.toEqual(getCacheKey(req2));
-		expect(getCacheKey(postReq1)).not.toEqual(getCacheKey(postReq2));
-		expect(getCacheKey(req1)).toEqual(getCacheKey(postReq1));
-		expect(getCacheKey(req2)).toEqual(getCacheKey(postReq2));
+		expect(await getCacheKey(req1)).not.toEqual(await getCacheKey(req2));
+		expect(await getCacheKey(postReq1)).not.toEqual(await getCacheKey(postReq2));
+		expect(await getCacheKey(req1)).toEqual(await getCacheKey(postReq1));
+		expect(await getCacheKey(req2)).toEqual(await getCacheKey(postReq2));
+	});
+
+	test('it should create a unique key for requests which match a policy ip_access filter', async () => {
+		const reqWithMatchingIp: any = {
+			method,
+			originalUrl: restUrl,
+			accountability: { ...accountability, ip: '127.0.0.1' },
+		};
+
+		const reqWithNotMatchingIp: any = {
+			method,
+			originalUrl: restUrl,
+			accountability: { ...accountability, ip: '127.0.0.2' },
+		};
+
+		const reqWithoutIp: any = { method, originalUrl: restUrl, accountability: { ...accountability } };
+
+		vi.mocked(fetchPoliciesIpAccess).mockResolvedValue([['127.0.0.1']]);
+
+		expect(await getCacheKey(reqWithMatchingIp)).not.toEqual(await getCacheKey(reqWithoutIp));
+		expect(await getCacheKey(reqWithNotMatchingIp)).toEqual(await getCacheKey(reqWithoutIp));
 	});
 });

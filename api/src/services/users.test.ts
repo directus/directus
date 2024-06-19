@@ -14,7 +14,7 @@ import {
 	type MockInstance,
 	type MockedFunction,
 } from 'vitest';
-import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
@@ -115,7 +115,7 @@ describe('Integration Tests', () => {
 	describe('Services / Users', () => {
 		let service: UsersService;
 		let mailService: MailService;
-		let superCreateManySpy: MockInstance;
+		let superCreateOneSpy: MockInstance;
 		let superUpdateManySpy: MockInstance;
 		let checkUniqueEmailsSpy: MockInstance;
 		let checkPasswordPolicySpy: MockInstance;
@@ -156,7 +156,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany');
+			superCreateOneSpy = vi.spyOn(ItemsService.prototype as any, 'createOne');
 			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany');
 
 			// "as any" are needed since these are private methods
@@ -217,7 +217,7 @@ describe('Integration Tests', () => {
 
 			it('should checkUniqueEmails once', async () => {
 				await service.createMany([{ email: 'test@example.com' }]);
-				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+				expect(checkUniqueEmailsSpy).toBeCalledTimes(2);
 			});
 
 			it('should not checkPasswordPolicy', async () => {
@@ -227,13 +227,13 @@ describe('Integration Tests', () => {
 
 			it('should checkPasswordPolicy once', async () => {
 				await service.createMany([{ password: 'testpassword' }]);
-				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+				expect(checkPasswordPolicySpy).toBeCalledTimes(2);
 			});
 
 			it('should process user limits for new roles', async () => {
 				await service.createMany([{ role: { admin_access: true } }, { role: { app_access: true } }, { role: {} }]);
 				expect(getRoleCountsByRoles).toBeCalledWith(db, []);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 1, api: 1 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 1, app: 1, api: 1 });
 			});
 
 			it('should process user limits for existing roles', async () => {
@@ -241,7 +241,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getRoleCountsByRoles).mockResolvedValue({ admin: 1, app: 2, api: 3 });
 				await service.createMany([{ role: randomUUID() }, { role: randomUUID() }, { role: randomUUID() }]);
 				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 2, api: 3 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 1, app: 2, api: 3 });
 			});
 
 			it('should process user limits for new and existing roles', async () => {
@@ -258,7 +258,7 @@ describe('Integration Tests', () => {
 				]);
 
 				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 2, app: 3, api: 4 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 2, app: 3, api: 4 });
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -266,7 +266,7 @@ describe('Integration Tests', () => {
 
 				await service.createMany([{ role: randomUUID() }, { role: randomUUID() }, { role: randomUUID() }]);
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -513,7 +513,7 @@ describe('Integration Tests', () => {
 			it('should process user limits for new admin role', async () => {
 				await service.updateMany([1, 2, 3], { role: { admin_access: true } });
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
 			});
 
 			it('should process user limits for existing admin role', async () => {
@@ -524,13 +524,13 @@ describe('Integration Tests', () => {
 				await service.updateMany([1, 2, 3], { role: randomUUID() });
 
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
 			});
 
 			it('should process user limits for new app role', async () => {
 				await service.updateMany([1, 2, 3], { role: { app_access: true } });
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
 			});
 
 			it('should process user limits for existing app role', async () => {
@@ -541,13 +541,13 @@ describe('Integration Tests', () => {
 				await service.updateMany([1, 2, 3], { role: randomUUID() });
 
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
 			});
 
 			it('should process user limits for new api role', async () => {
 				await service.updateMany([1, 2, 3], { role: {} });
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
 			});
 
 			it('should process user limits for existing api role', async () => {
@@ -558,7 +558,7 @@ describe('Integration Tests', () => {
 				await service.updateMany([1, 2, 3], { role: randomUUID() });
 
 				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -570,7 +570,7 @@ describe('Integration Tests', () => {
 
 				await service.updateMany([1, 2, 3], { role: randomUUID() });
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -774,7 +774,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([{ id: 1 }]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 
 				const promise = service.deleteByQuery({ filter: { id: { _eq: 1 } } });
 
@@ -808,13 +808,13 @@ describe('Integration Tests', () => {
 
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy.mock.lastCall![0]).toEqual([
+				expect(superCreateOneSpy.mock.lastCall![0]).toEqual(
 					expect.objectContaining({
 						email: 'user@example.com',
 						status: 'invited',
 						role: 'invite-role',
 					}),
-				]);
+				);
 
 				expect(mailService.send).toBeCalledTimes(1);
 			});
@@ -835,7 +835,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).toBeCalledTimes(1);
 			});
 
@@ -855,7 +855,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).not.toBeCalled();
 			});
 

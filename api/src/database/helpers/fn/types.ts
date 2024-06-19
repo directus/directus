@@ -59,6 +59,7 @@ export abstract class FnHelper extends DatabaseHelper {
 				},
 			};
 
+			// TODO verify if any cases need to be passed here?
 			countQuery = applyFilter(
 				this.knex,
 				this.schema,
@@ -66,6 +67,7 @@ export abstract class FnHelper extends DatabaseHelper {
 				options.query.filter,
 				relation.collection,
 				aliasMap,
+				[],
 			).query;
 		}
 

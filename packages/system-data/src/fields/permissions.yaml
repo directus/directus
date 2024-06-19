@@ -15,7 +15,11 @@ fields:
     width: half
 
   - field: policy
+    hidden: true
+    interface: select-dropdown-m2o
     width: half
+    special:
+      - m2o
 
   - field: collection
     width: half

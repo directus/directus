@@ -3,12 +3,8 @@ export type Role = {
 	name: string;
 	description: string;
 	icon: string;
-	enforce_tfa: null | boolean;
-	external_id: null | string;
-	ip_access: string[];
-	app_access: boolean;
-	admin_access: boolean;
 	users: string[];
+	parent: string | null;
 };
 
 export type Avatar = {

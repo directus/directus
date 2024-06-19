@@ -16,7 +16,7 @@ import {
 	type MockedFunction,
 } from 'vitest';
 
-import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
 import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
@@ -865,7 +865,7 @@ describe('Integration Tests', () => {
 				schema: testSchema,
 			});
 
-			vi.mocked(checkIncreasedUserLimits).mockReset();
+			vi.mocked(checkUserLimits).mockReset();
 			vi.mocked(getRoleCountsByUsers).mockReset();
 			vi.mocked(getUserCountsByRoles).mockReset();
 
@@ -888,19 +888,19 @@ describe('Integration Tests', () => {
 			it('calculates the number of increased admin users', async () => {
 				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
 				await service.createOne({ admin_access: false, app_access: true, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
 				await service.createOne({ admin_access: false, app_access: false, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -908,7 +908,7 @@ describe('Integration Tests', () => {
 
 				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -920,7 +920,7 @@ describe('Integration Tests', () => {
 					{ admin_access: true, app_access: true, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 6, app: 0, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 6, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
@@ -930,7 +930,7 @@ describe('Integration Tests', () => {
 					{ admin_access: false, app_access: true, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 6, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 6, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
@@ -940,7 +940,7 @@ describe('Integration Tests', () => {
 					{ admin_access: false, app_access: false, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 }, []);
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -952,7 +952,7 @@ describe('Integration Tests', () => {
 					{ admin_access: true, app_access: true, users: [4, 5, 6] },
 				]);
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -975,7 +975,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased admin users with access change', async () => {
@@ -996,7 +996,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 5, app: 0, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 5, app: 0, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users', async () => {
@@ -1016,7 +1016,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
 			});
 
 			it('calculates the number of increased app users with access change', async () => {
@@ -1037,7 +1037,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 5, api: 0 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 5, api: 0 }, []);
 			});
 
 			it('calculates the number of increased api users', async () => {
@@ -1058,7 +1058,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
 			});
 
 			it('calculates the number of increased api users with access change', async () => {
@@ -1079,7 +1079,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 }, []);
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 }, []);
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -1091,7 +1091,7 @@ describe('Integration Tests', () => {
 					users: [1, 2, 3, 4, 5],
 				});
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 
@@ -1104,7 +1104,7 @@ describe('Integration Tests', () => {
 					app_access: true,
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 55, app: 0, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 55, app: 0, api: 0 });
 			});
 
 			it('calculates the number of increased app users', async () => {
@@ -1115,7 +1115,7 @@ describe('Integration Tests', () => {
 					app_access: true,
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 44, api: 0 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 44, api: 0 });
 			});
 
 			it('calculates the number of increased api users', async () => {
@@ -1126,7 +1126,7 @@ describe('Integration Tests', () => {
 					app_access: false,
 				});
 
-				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 33 });
+				expect(checkUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 33 });
 			});
 
 			it('skips user limits check when no limit is set', async () => {
@@ -1137,7 +1137,7 @@ describe('Integration Tests', () => {
 					app_access: true,
 				});
 
-				expect(checkIncreasedUserLimits).not.toBeCalled();
+				expect(checkUserLimits).not.toBeCalled();
 			});
 		});
 	});

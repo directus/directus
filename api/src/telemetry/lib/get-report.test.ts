@@ -3,10 +3,11 @@ import { version } from 'directus/version';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
+import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
+import { getFilesizeSum, type FilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
-import { getUserCount, type AccessTypeCount } from '../utils/get-user-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
 
@@ -31,16 +32,18 @@ vi.mock('@directus/env', () => ({
 vi.mock('../utils/get-item-count.js');
 vi.mock('../utils/get-storage.js');
 vi.mock('../utils/get-user-item-count.js');
-vi.mock('../utils/get-user-count.js');
 vi.mock('../utils/get-field-count.js');
 vi.mock('../utils/get-extension-count.js');
+vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
+vi.mock('../utils/get-filesize-sum.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
-let mockUserCounts: AccessTypeCount;
+let mockUserCounts: UserCount;
 let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
+let mockFilesizeSums: FilesizeSum;
 
 beforeEach(() => {
 	mockEnv = {
@@ -57,14 +60,17 @@ beforeEach(() => {
 
 	mockExtensionCounts = { totalEnabled: 55 };
 
+	mockFilesizeSums = { total: 10 };
+
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
 	vi.mocked(getItemCount).mockResolvedValue({});
-	vi.mocked(getUserCount).mockResolvedValue(mockUserCounts);
+	vi.mocked(fetchUserCount).mockResolvedValue(mockUserCounts);
 	vi.mocked(getUserItemCount).mockResolvedValue(mockUserItemCounts);
 	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
 	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
+	vi.mocked(getFilesizeSum).mockResolvedValue(mockFilesizeSums);
 });
 
 afterEach(() => {
@@ -112,7 +118,7 @@ test('Runs and returns basic counts', async () => {
 test('Runs and returns user counts', async () => {
 	const report = await getReport();
 
-	expect(getUserCount).toHaveBeenCalledWith(mockDb);
+	expect(fetchUserCount).toHaveBeenCalledWith(mockDb);
 
 	expect(report.admin_users).toBe(mockUserCounts.admin);
 	expect(report.app_users).toBe(mockUserCounts.app);
@@ -143,4 +149,12 @@ test('Runs and returns extension counts', async () => {
 	expect(getExtensionCount).toHaveBeenCalledWith(mockDb);
 
 	expect(report.extensions).toBe(mockExtensionCounts.totalEnabled);
+});
+
+test('Runs and returns extension counts', async () => {
+	const report = await getReport();
+
+	expect(getFilesizeSum).toHaveBeenCalledWith(mockDb);
+
+	expect(report.files_size_total).toBe(mockFilesizeSums.total);
 });
