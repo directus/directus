@@ -1,6 +1,5 @@
 import { Permission } from '@directus/types';
 
-// TODO update to respect policies
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_files',
@@ -141,6 +140,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		permissions: {
 			_or: [
 				{
+					// TODO should this be _in $CURRENT_ROLES?
 					role: {
 						_eq: '$CURRENT_ROLE',
 					},
