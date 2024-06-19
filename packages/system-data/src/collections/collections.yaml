@@ -15,6 +15,7 @@ data:
     icon: admin_panel_settings
     note: $t:directus_collection.directus_access
     display_template: '{{ policy.name }}'
+    sort_field: sort
 
   - collection: directus_activity
     note: $t:directus_collection.directus_activity
