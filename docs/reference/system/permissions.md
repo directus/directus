@@ -822,7 +822,7 @@ const result = await client.request(deletePermissions(['56', '57']));
 </template>
 </SnippetToggler>
 
-## Get Current User's Permissions
+## Get Current User Permissions
 
 Check the current user's permissions across all collections.
 
