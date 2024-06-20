@@ -11,10 +11,10 @@ export type CreatePolicyOutput<
 /**
  * Create multiple new policies
  *
- * @param items The policy to create
+ * @param items The policies to create
  * @param query Optional return data query
  *
- * @returns Returns the policy objects for the created policy.
+ * @returns Returns the policy objects for the created policies.
  */
 export const createPolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
