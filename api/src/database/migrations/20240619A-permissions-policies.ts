@@ -70,7 +70,7 @@ export async function up(knex: Knex) {
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('policy').notNullable().references('directus_policies.id').onDelete('CASCADE');
-		// Drop the foreign key constraint here in order to update `null` roel to public policy ID
+		// Drop the foreign key constraint here in order to update `null` role to public policy ID
 		table.dropForeign('role');
 	});
 
