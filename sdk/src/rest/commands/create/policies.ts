@@ -34,7 +34,7 @@ export const createPolicies =
  * @param item The policy to create
  * @param query Optional return data query
  *
- * @returns Returns the policy for the created policy.
+ * @returns Returns the policy object for the created policy.
  */
 export const createPolicy =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
