@@ -18,7 +18,7 @@ export type ReadPolicyGlobalsOutput = {
 /**
  * List all policies that exist in the project.
  * @param query The query parameters
- * @returns An array of up to limit Permission objects. If no items are available, data will be an empty array.
+ * @returns An array of up to limit Policy objects. If no items are available, data will be an empty array.
  */
 export const readPolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
