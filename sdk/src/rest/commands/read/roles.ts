@@ -49,7 +49,7 @@ export const readRole =
 /**
  * List the attached roles for the current user.
  * @param query The query parameters
- * @returns Returns a Role object if a valid primary key was provided.
+ * @returns Returns Role objects
  * @throws Will throw if key is empty
  */
 export const readRolesMe =
