@@ -23,7 +23,7 @@ export function reduceSchema(schema: SchemaOverview, fieldMap: FieldMap): Schema
 				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName,
 			);
 
-			if (o2mRelation && !!fieldMap[collectionName]) {
+			if (o2mRelation && !fieldMap[collectionName]) {
 				continue;
 			}
 
