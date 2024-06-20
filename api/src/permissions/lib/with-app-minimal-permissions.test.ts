@@ -1,6 +1,6 @@
 import type { Accountability, Permission, Query } from '@directus/types';
 import { expect, it, vi } from 'vitest';
-import { filterItems } from '../../../utils/filter-items.js';
+import { filterItems } from '../../utils/filter-items.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 const mocks = vi.hoisted(() => {
@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => {
 });
 
 vi.mock('@directus/system-data', () => ({ appAccessMinimalPermissions: mocks.appAccessMinimalPermissions }));
-vi.mock('../../../utils/filter-items.js');
+vi.mock('.../../utils/filter-items.js');
 
 it('should not modify permissions if role has no app access', () => {
 	const accountability = { app: false } as Accountability;

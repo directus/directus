@@ -2,16 +2,16 @@ import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
+import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { _fetchPermissions as fetchPermissions } from './fetch-permissions.js';
-import { withAppMinimalPermissions } from '../../services/permissions/lib/with-app-minimal-permissions.js';
-import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
+import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 vi.mock('../../services/permissions.js', () => ({
 	PermissionsService: vi.fn(),
 }));
 
-vi.mock('../../services/permissions/lib/with-app-minimal-permissions.js');
+vi.mock('./with-app-minimal-permissions.js');
 vi.mock('../utils/fetch-dynamic-variable-context.js');
 vi.mock('../utils/process-permissions.js');
 
