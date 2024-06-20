@@ -722,8 +722,8 @@ importers:
         specifier: 1.9.9
         version: 1.9.9(rollup@4.17.2)
       '@unhead/vue':
-        specifier: 1.9.9
-        version: 1.9.9(vue@3.4.27(typescript@5.4.5))
+        specifier: 1.9.13
+        version: 1.9.13(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.5)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
@@ -1840,8 +1840,8 @@ importers:
         specifier: 4.17.12
         version: 4.17.12
       '@unhead/vue':
-        specifier: 1.9.9
-        version: 1.9.9(vue@3.4.27(typescript@5.4.5))
+        specifier: 1.9.13
+        version: 1.9.13(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.2.11(@types/node@18.19.33)(sass@1.77.5)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
@@ -4965,17 +4965,23 @@ packages:
   '@unhead/addons@1.9.9':
     resolution: {integrity: sha512-84urquIUPD+4DraKVNZLzuHqYOw6MlgznDyHsGggXhU/4N+e1TzbKR52kw+Fozj8LfcVQlaxG0TPVgsZ7H5jng==}
 
-  '@unhead/dom@1.9.9':
-    resolution: {integrity: sha512-8XIMafnSImv9qZRxmnGjpg+TXYjIyOKYV6ifF/vWNwcNeirOGZuZkBlFk73bNk9VdF28niSAsy2eHwiK98cIsg==}
+  '@unhead/dom@1.9.13':
+    resolution: {integrity: sha512-Fzc929W+5f88c90kn9aKs7EbgRBhphArMqBbifre134GWgrgDVR0odoadNa7i9eH4roPEDE1FIGcKVWuxOIHbg==}
+
+  '@unhead/schema@1.9.13':
+    resolution: {integrity: sha512-keOfTXC/tI21fURcEszBHgGvIg2AszQVQEXBG5BYgC2TQph25Bmv7Fk8W2ogFmj+DdZmFiDnSJdz/NKv3bqnTQ==}
 
   '@unhead/schema@1.9.9':
     resolution: {integrity: sha512-WSeCCXaavP/zsBmeYa5DMJv7eFpJTUST5fIcisb2WrA8W9G8c1Yw+ybOInZvoBDyH9TQYMLM08K8y8N/4GJUJA==}
 
+  '@unhead/shared@1.9.13':
+    resolution: {integrity: sha512-zNlJ2i5WonQZu/UMHJJzYMyBLhlCCxj1JxHL6lEG+Z6XiERfJDFr8mEAsQY7M2KrGAHR+WRBxNVoLw03j/kfrA==}
+
   '@unhead/shared@1.9.9':
     resolution: {integrity: sha512-oyOI+27cuT5RmezVE/EsNkAUqsRo0Te6IFYIC8XRk6jsCZ9mp9TavQ2KfwR+579RrDnjq/MCq7f2FlxSp8N9/A==}
 
-  '@unhead/vue@1.9.9':
-    resolution: {integrity: sha512-PrpoyEsSSPH0oo+s07Zh9GOrfjsWLVDYjhLr+S1+90D2ZBzt29aY7jAKYd77ozyMUOr9farjTh+fHjg90stJ0A==}
+  '@unhead/vue@1.9.13':
+    resolution: {integrity: sha512-vIMNrB0kZ/3zalmE4j64eBLTkXkrcms78YbptXLvfnnQ9BLGiwsSuB3c0e+4S5Cn1dpMqUTfg5e/hCQYGDMhEA==}
     peerDependencies:
       vue: '>=2.7 || >=3'
 
@@ -11043,8 +11049,8 @@ packages:
     resolution: {integrity: sha512-o/MQLTwRm9IVhOqhZ0NQ9oXax1ygPjw6Vs+Vq/4QRjbOAC3B1GCHy7TYxxbExKlb7bzDRzt9vBWU6BDz0RFfYg==}
     engines: {node: '>=18.17'}
 
-  unhead@1.9.9:
-    resolution: {integrity: sha512-RwheobyCir358HfvDrY2bFb/puievoCu1f+OpxdA9mFnKs8k6JyMvGxrsaPlFbTeC47JSeN2URdW94Z/JdGzsA==}
+  unhead@1.9.13:
+    resolution: {integrity: sha512-r7O7s5nw1vUrolueEitawh1HnrzXoekHPM1gsYMF3Tu0A2SzochDJw/1F+Nhu3e073rJ9cUGZqobZY3+RZS4Ew==}
 
   unherit@3.0.1:
     resolution: {integrity: sha512-akOOQ/Yln8a2sgcLj4U0Jmx0R5jpIg2IUyRrWOzmEbjBtGzBdHtSeFKgoEcoH4KYIG/Pb8GQ/BwtYm0GCq1Sqg==}
@@ -15449,26 +15455,35 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@unhead/dom@1.9.9':
+  '@unhead/dom@1.9.13':
     dependencies:
-      '@unhead/schema': 1.9.9
-      '@unhead/shared': 1.9.9
+      '@unhead/schema': 1.9.13
+      '@unhead/shared': 1.9.13
+
+  '@unhead/schema@1.9.13':
+    dependencies:
+      hookable: 5.5.3
+      zhead: 2.2.4
 
   '@unhead/schema@1.9.9':
     dependencies:
       hookable: 5.5.3
       zhead: 2.2.4
 
+  '@unhead/shared@1.9.13':
+    dependencies:
+      '@unhead/schema': 1.9.13
+
   '@unhead/shared@1.9.9':
     dependencies:
       '@unhead/schema': 1.9.9
 
-  '@unhead/vue@1.9.9(vue@3.4.27(typescript@5.4.5))':
+  '@unhead/vue@1.9.13(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      '@unhead/schema': 1.9.9
-      '@unhead/shared': 1.9.9
+      '@unhead/schema': 1.9.13
+      '@unhead/shared': 1.9.13
       hookable: 5.5.3
-      unhead: 1.9.9
+      unhead: 1.9.13
       vue: 3.4.27(typescript@5.4.5)
 
   '@vitejs/plugin-vue@4.6.2(vite@4.5.2(@types/node@18.19.33)(sass@1.77.5)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
@@ -22638,11 +22653,11 @@ snapshots:
 
   undici@6.18.2: {}
 
-  unhead@1.9.9:
+  unhead@1.9.13:
     dependencies:
-      '@unhead/dom': 1.9.9
-      '@unhead/schema': 1.9.9
-      '@unhead/shared': 1.9.9
+      '@unhead/dom': 1.9.13
+      '@unhead/schema': 1.9.13
+      '@unhead/shared': 1.9.13
       hookable: 5.5.3
 
   unherit@3.0.1: {}
