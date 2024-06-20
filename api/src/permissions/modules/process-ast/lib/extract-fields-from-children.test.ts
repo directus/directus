@@ -1,29 +1,38 @@
 import type { DeepPartial, SchemaOverview } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
+import type { FieldMap } from '../types.js';
 import { extractFieldsFromChildren } from './extract-fields-from-children.js';
+
+function createFieldMap({ read, other }: Partial<FieldMap> = {}): FieldMap {
+	return { read: new Map(read), other: new Map(other) };
+}
 
 describe('Global', () => {
 	it('Creates FieldMap entry for passed collection', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		extractFieldsFromChildren('test-collection', [], fieldMap, {} as SchemaOverview, []);
 
-		expect(fieldMap).toEqual(new Map([['', { collection: 'test-collection', fields: new Set() }]]));
+		expect(fieldMap).toEqual(
+			createFieldMap({ other: new Map([['', { collection: 'test-collection', fields: new Set() }]]) }),
+		);
 	});
 
 	it('Uses passed path as map key', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		extractFieldsFromChildren('test-collection', [], fieldMap, {} as SchemaOverview, ['path', 'to', 'fields']);
 
-		expect(fieldMap).toEqual(new Map([['path.to.fields', { collection: 'test-collection', fields: new Set() }]]));
+		expect(fieldMap).toEqual(
+			createFieldMap({ other: new Map([['path.to.fields', { collection: 'test-collection', fields: new Set() }]]) }),
+		);
 	});
 });
 
 describe('a2o', () => {
 	it('Extracts children for each related collection with the prefixed path', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: Partial<NestedCollectionNode>[] = [
 			{
@@ -32,6 +41,9 @@ describe('a2o', () => {
 				children: {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 					'test-collection-b': [{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' }],
+				},
+				relation: {
+					field: 'test-a2o-a',
 				},
 				query: {
 					'test-collection-a': {
@@ -43,7 +55,7 @@ describe('a2o', () => {
 					},
 				},
 			},
-		];
+		] as unknown as Partial<NestedCollectionNode>[];
 
 		extractFieldsFromChildren(
 			'test-collection',
@@ -54,19 +66,24 @@ describe('a2o', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-a2o-a']) }],
-				[
-					'test-a2o-a:test-collection-a',
-					{ collection: 'test-collection-a', fields: new Set(['test-field-key-a', 'test-filter-field-a']) },
-				],
-				['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-key-b']) }],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-a2o-a']) }],
+					['test-a2o-a:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-name-a']) }],
+					['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-name-b']) }],
+				]),
+				read: new Map([
+					[
+						'test-a2o-a:test-collection-a',
+						{ collection: 'test-collection-a', fields: new Set(['test-filter-field-a']) },
+					],
+				]),
+			}),
 		);
 	});
 
 	it('Extracts fields used in query', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: Partial<NestedCollectionNode>[] = [
 			{
@@ -76,6 +93,9 @@ describe('a2o', () => {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 					'test-collection-b': [{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' }],
 				},
+				relation: {
+					field: 'test-a2o-a',
+				},
 			},
 			{
 				type: 'a2o',
@@ -84,8 +104,11 @@ describe('a2o', () => {
 					'test-collection-a': [{ type: 'field', fieldKey: 'test-field-key-a2', name: 'test-field-name-a2' }],
 					'test-collection-c': [{ type: 'field', fieldKey: 'test-field-key-c', name: 'test-field-name-c' }],
 				},
+				relation: {
+					field: 'test-a2o-b',
+				},
 			},
-		];
+		] as unknown as Partial<NestedCollectionNode>[];
 
 		extractFieldsFromChildren(
 			'test-collection',
@@ -96,42 +119,49 @@ describe('a2o', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-a2o-a', 'test-a2o-b']) }],
-				['test-a2o-a:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-key-a']) }],
-				['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-key-b']) }],
-				['test-a2o-b:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-key-a2']) }],
-				['test-a2o-b:test-collection-c', { collection: 'test-collection-c', fields: new Set(['test-field-key-c']) }],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-a2o-a', 'test-a2o-b']) }],
+					['test-a2o-a:test-collection-a', { collection: 'test-collection-a', fields: new Set(['test-field-name-a']) }],
+					['test-a2o-a:test-collection-b', { collection: 'test-collection-b', fields: new Set(['test-field-name-b']) }],
+					[
+						'test-a2o-b:test-collection-a',
+						{ collection: 'test-collection-a', fields: new Set(['test-field-name-a2']) },
+					],
+					['test-a2o-b:test-collection-c', { collection: 'test-collection-c', fields: new Set(['test-field-name-c']) }],
+				]),
+			}),
 		);
 	});
 });
 
 describe('m2o', () => {
 	it('Extract children with correct path', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: DeepPartial<NestedCollectionNode>[] = [
 			{
 				type: 'm2o',
 				fieldKey: 'test-m2o-a',
 				relation: {
+					field: 'test-m2o-a',
 					related_collection: 'test-related-collection-a',
 				},
 				children: [
-					{ type: 'field', fieldKey: 'test-field-key-a' },
-					{ type: 'field', fieldKey: 'test-field-key-b' },
+					{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' },
+					{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' },
 				],
 			},
 			{
 				type: 'm2o',
 				fieldKey: 'test-m2o-b',
 				relation: {
+					field: 'test-m2o-b',
 					related_collection: 'test-related-collection-b',
 				},
 				children: [
-					{ type: 'field', fieldKey: 'test-field-key-a' },
-					{ type: 'field', fieldKey: 'test-field-key-b' },
+					{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' },
+					{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' },
 				],
 			},
 		];
@@ -145,31 +175,34 @@ describe('m2o', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-m2o-a', 'test-m2o-b']) }],
-				[
-					'test-m2o-a',
-					{ collection: 'test-related-collection-a', fields: new Set(['test-field-key-a', 'test-field-key-b']) },
-				],
-				[
-					'test-m2o-b',
-					{ collection: 'test-related-collection-b', fields: new Set(['test-field-key-a', 'test-field-key-b']) },
-				],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-m2o-a', 'test-m2o-b']) }],
+					[
+						'test-m2o-a',
+						{ collection: 'test-related-collection-a', fields: new Set(['test-field-name-a', 'test-field-name-b']) },
+					],
+					[
+						'test-m2o-b',
+						{ collection: 'test-related-collection-b', fields: new Set(['test-field-name-a', 'test-field-name-b']) },
+					],
+				]),
+			}),
 		);
 	});
 
 	it('Extracts fields used in query', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: DeepPartial<NestedCollectionNode>[] = [
 			{
 				type: 'm2o',
 				fieldKey: 'test-m2o-a',
 				relation: {
+					field: 'test-m2o-a',
 					related_collection: 'test-related-collection-a',
 				},
-				children: [{ type: 'field', fieldKey: 'test-field-key-a' }],
+				children: [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 				query: {
 					filter: {
 						'test-filter-field-a': {
@@ -189,20 +222,22 @@ describe('m2o', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-m2o-a']) }],
-				[
-					'test-m2o-a',
-					{ collection: 'test-related-collection-a', fields: new Set(['test-field-key-a', 'test-filter-field-a']) },
-				],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-m2o-a']) }],
+					['test-m2o-a', { collection: 'test-related-collection-a', fields: new Set(['test-field-name-a']) }],
+				]),
+				read: new Map([
+					['test-m2o-a', { collection: 'test-related-collection-a', fields: new Set(['test-filter-field-a']) }],
+				]),
+			}),
 		);
 	});
 });
 
 describe('o2m', () => {
 	it('Extract children with correct path', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: DeepPartial<NestedCollectionNode>[] = [
 			{
@@ -210,10 +245,13 @@ describe('o2m', () => {
 				fieldKey: 'test-o2m-a',
 				relation: {
 					collection: 'test-related-collection-a',
+					meta: {
+						one_field: 'test-o2m-a',
+					},
 				},
 				children: [
-					{ type: 'field', fieldKey: 'test-field-key-a' },
-					{ type: 'field', fieldKey: 'test-field-key-b' },
+					{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' },
+					{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' },
 				],
 			},
 			{
@@ -221,10 +259,13 @@ describe('o2m', () => {
 				fieldKey: 'test-o2m-b',
 				relation: {
 					collection: 'test-related-collection-b',
+					meta: {
+						one_field: 'test-o2m-b',
+					},
 				},
 				children: [
-					{ type: 'field', fieldKey: 'test-field-key-a' },
-					{ type: 'field', fieldKey: 'test-field-key-b' },
+					{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' },
+					{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' },
 				],
 			},
 		];
@@ -238,22 +279,24 @@ describe('o2m', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-o2m-a', 'test-o2m-b']) }],
-				[
-					'test-o2m-a',
-					{ collection: 'test-related-collection-a', fields: new Set(['test-field-key-a', 'test-field-key-b']) },
-				],
-				[
-					'test-o2m-b',
-					{ collection: 'test-related-collection-b', fields: new Set(['test-field-key-a', 'test-field-key-b']) },
-				],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-o2m-a', 'test-o2m-b']) }],
+					[
+						'test-o2m-a',
+						{ collection: 'test-related-collection-a', fields: new Set(['test-field-name-a', 'test-field-name-b']) },
+					],
+					[
+						'test-o2m-b',
+						{ collection: 'test-related-collection-b', fields: new Set(['test-field-name-a', 'test-field-name-b']) },
+					],
+				]),
+			}),
 		);
 	});
 
 	it('Extracts fields used in query', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: DeepPartial<NestedCollectionNode>[] = [
 			{
@@ -261,10 +304,13 @@ describe('o2m', () => {
 				fieldKey: 'test-o2m-a',
 				relation: {
 					collection: 'test-related-collection-a',
+					meta: {
+						one_field: 'test-o2m-a',
+					},
 				},
-				children: [{ type: 'field', fieldKey: 'test-field-key-a' }],
+				children: [{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' }],
 				query: {
-					sort: ['-test-filter-field-a'],
+					sort: ['-test-sort-field-a'],
 				},
 			},
 		];
@@ -278,20 +324,22 @@ describe('o2m', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-o2m-a']) }],
-				[
-					'test-o2m-a',
-					{ collection: 'test-related-collection-a', fields: new Set(['test-field-key-a', 'test-filter-field-a']) },
-				],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-o2m-a']) }],
+					['test-o2m-a', { collection: 'test-related-collection-a', fields: new Set(['test-field-name-a']) }],
+				]),
+				read: new Map([
+					['test-o2m-a', { collection: 'test-related-collection-a', fields: new Set(['test-sort-field-a']) }],
+				]),
+			}),
 		);
 	});
 });
 
 describe('functionField', () => {
 	it('Adds basic function field to field set', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 			{
@@ -301,20 +349,22 @@ describe('functionField', () => {
 				query: {},
 				relatedCollection: 'test-related-collection',
 			},
-		];
+		] as FunctionFieldNode[];
 
 		extractFieldsFromChildren('test-collection', children, fieldMap, {} as SchemaOverview, []);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-field-key-a']) }],
-				['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set([]) }],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }],
+					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set([]) }],
+				]),
+			}),
 		);
 	});
 
 	it('Processes query', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 			{
@@ -326,7 +376,7 @@ describe('functionField', () => {
 				},
 				relatedCollection: 'test-related-collection',
 			},
-		];
+		] as FunctionFieldNode[];
 
 		extractFieldsFromChildren(
 			'test-collection',
@@ -337,39 +387,52 @@ describe('functionField', () => {
 		);
 
 		expect(fieldMap).toEqual(
-			new Map([
-				['', { collection: 'test-collection', fields: new Set(['test-field-key-a']) }],
-				['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set(['rating']) }],
-			]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }],
+					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set() }],
+				]),
+				read: new Map([
+					['year(test-field-key-a)', { collection: 'test-related-collection', fields: new Set(['rating']) }],
+				]),
+			}),
 		);
 	});
 });
 
 describe('field', () => {
 	it('Adds basic fields to field set', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 			{ type: 'field', fieldKey: 'test-field-key-a', name: 'test-field-name-a' },
 			{ type: 'field', fieldKey: 'test-field-key-b', name: 'test-field-name-b' },
-		];
+		] as FieldNode[];
 
 		extractFieldsFromChildren('test-collection', children, fieldMap, {} as SchemaOverview, []);
 
 		expect(fieldMap).toEqual(
-			new Map([['', { collection: 'test-collection', fields: new Set(['test-field-key-a', 'test-field-key-b']) }]]),
+			createFieldMap({
+				other: new Map([
+					['', { collection: 'test-collection', fields: new Set(['test-field-name-a', 'test-field-name-b']) }],
+				]),
+			}),
 		);
 	});
 
 	it('Strips functions from field keys', () => {
-		const fieldMap = new Map();
+		const fieldMap = createFieldMap();
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 			{ type: 'field', fieldKey: 'someFn(test-field-key-a)', name: 'test-field-name-a' },
-		];
+		] as FieldNode[];
 
 		extractFieldsFromChildren('test-collection', children, fieldMap, {} as SchemaOverview, []);
 
-		expect(fieldMap).toEqual(new Map([['', { collection: 'test-collection', fields: new Set(['test-field-key-a']) }]]));
+		expect(fieldMap).toEqual(
+			createFieldMap({
+				other: new Map([['', { collection: 'test-collection', fields: new Set(['test-field-name-a']) }]]),
+			}),
+		);
 	});
 });
