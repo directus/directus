@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => {
 });
 
 vi.mock('@directus/system-data', () => ({ appAccessMinimalPermissions: mocks.appAccessMinimalPermissions }));
-vi.mock('.../../utils/filter-items.js');
+vi.mock('../../utils/filter-items.js');
 
 it('should not modify permissions if role has no app access', () => {
 	const accountability = { app: false } as Accountability;
