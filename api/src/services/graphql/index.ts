@@ -3248,7 +3248,7 @@ export class GraphQLService {
 			schemaComposer.Query.addFields({
 				permissions_me: {
 					type: schemaComposer.createScalarTC<CollectionAccess>({
-						name: 'test',
+						name: 'permissions_me_type',
 						parseValue: (value: unknown) => value as CollectionAccess,
 						serialize: (value) => value,
 					}),
