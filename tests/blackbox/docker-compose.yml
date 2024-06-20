@@ -49,14 +49,12 @@ services:
 
   mysql:
     image: mysql:8
-    command: --default-authentication-plugin=mysql_native_password
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
       - 6102:3306
-    cap_add:
-      - SYS_NICE
 
   mysql5:
     image: mysql:5
@@ -67,7 +65,8 @@ services:
       - 6103:3306
 
   maria:
-    image: mariadb:10
+    image: mariadb:11.4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
