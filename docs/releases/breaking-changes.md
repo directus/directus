@@ -16,7 +16,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 ## Version 11.0.0 RC.1
 
 Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
-roles, but instead in policies. Policies can be attached to a role and also directly to users.
+roles, but instead in policies. Policies can be attached to roles and also directly to users.
 
 While users can still only have one direct role, roles can now also be nested within roles. A user's permissions are now
 an aggregate of all policies attached directly to them, to their role, and any nested roles.
@@ -52,7 +52,7 @@ properties. These are now returned directly in the `user` object.
 If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now
 receives a different data structure. It previously received a list of permission objects. Now, it receives the same data
 returned from the new
-[Get Current User Permissions](https://silver-barnacle-x5797p5v993p45p-5173.app.github.dev/reference/system/permissions.html#get-current-user-permissions)
+[Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
 endpoint.
 
 ## Version 10.10.0
