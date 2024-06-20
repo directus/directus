@@ -3,9 +3,6 @@ import type { DirectusPermission } from './permission.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
-/**
- * directus_policies type
- */
 export type DirectusPolicy<Schema> = MergeCoreCollection<
 	Schema,
 	'directus_policies',
