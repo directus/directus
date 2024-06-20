@@ -39,7 +39,7 @@ const mockGlobalsResponse = {
 	enforce_tfa: false,
 } as Globals;
 
-const mockRolesResponse: string[] = [];
+const mockRolesResponse: Pick<Role, 'id'>[] = [{ id: '00000000-0000-0000-0000-000000000000' }];
 
 vi.mock('@/api', () => {
 	return {
