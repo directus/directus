@@ -678,8 +678,6 @@ function useGroupedPermissions() {
 
 <style scoped lang="scss">
 .permissions-list {
-	overflow-x: auto;
-
 	table {
 		width: 100%;
 		max-width: 792px;

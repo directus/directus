@@ -30,6 +30,7 @@ test('Returns false if permissions is an empty array', async () => {
 
 	expect(fetchPermissions).toHaveBeenCalledWith(
 		{
+			accountability,
 			action: 'read',
 			policies: [],
 			collections: ['collection-a'],
@@ -54,6 +55,7 @@ test('Returns true if permissions exist', async () => {
 
 	expect(fetchPermissions).toHaveBeenCalledWith(
 		{
+			accountability,
 			action: 'read',
 			policies: [],
 			collections: ['collection-a'],

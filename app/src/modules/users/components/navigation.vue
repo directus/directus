@@ -1,25 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
 
-defineProps<{
+const props = defineProps<{
 	currentRole?: string;
 }>();
+
+const { currentRole } = toRefs(props);
 
 const { t } = useI18n();
 const router = useRouter();
 
-const { roles, roleTree, openRoles, loading } = useNavigation();
-
-// TODO make this work with policies
-const lastAdminRoleId = computed(() => {
-	if (!roles.value) return null;
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? adminRoles[0].id : null;
-});
+const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 
 function handleClick({ role }: { role: string }) {
 	router.push(`/users/roles/${role}`);
@@ -46,7 +41,6 @@ function handleClick({ role }: { role: string }) {
 				v-for="role in roleTree"
 				:key="role.id"
 				:role="role"
-				:last-admin="lastAdminRoleId === role.id"
 				:current-role="currentRole"
 				@click="handleClick"
 			/>

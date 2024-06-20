@@ -6,6 +6,8 @@ import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import '../types/express.d.ts';
 import { handler } from './authenticate.js';
 
@@ -38,6 +40,9 @@ vi.mock('@directus/env', () => ({
 		SESSION_COOKIE_SECURE: false,
 	}),
 }));
+
+vi.mock('../permissions/lib/fetch-roles-tree.js');
+vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js');
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -124,11 +129,15 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	const res = {} as Response;
 	const next = vi.fn();
 
+	vi.mocked(fetchRolesTree).mockResolvedValue([roleID]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: appAccess, admin: adminAccess });
+
 	await handler(req, res, next);
 
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -161,6 +170,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -212,6 +222,7 @@ test('Sets accountability to user information when static token is used', async 
 	const expectedAccountability = {
 		user: testUser.id,
 		role: testUser.role,
+		roles: [testUser.role],
 		app: testUser.app_access,
 		admin: testUser.admin_access,
 		ip: '127.0.0.1',
@@ -226,6 +237,9 @@ test('Sets accountability to user information when static token is used', async 
 		where: vi.fn().mockReturnThis(),
 		first: vi.fn().mockResolvedValue(testUser),
 	} as unknown as Knex);
+
+	vi.mocked(fetchRolesTree).mockResolvedValue([testUser.role]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: testUser.app_access, admin: testUser.admin_access });
 
 	await handler(req, res, next);
 
@@ -246,6 +260,9 @@ test('Sets accountability to user information when static token is used', async 
 	testUser.app_access = '1' as never;
 	expectedAccountability.admin = false;
 	expectedAccountability.app = true;
+
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: true, admin: false });
+
 	await handler(req, res, next);
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);

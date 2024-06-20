@@ -1,6 +1,7 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Policy, PrimaryKey } from '@directus/types';
 import { getMatch } from 'ip-matching';
+import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
@@ -9,6 +10,14 @@ import { ItemsService } from './items.js';
 export class PoliciesService extends ItemsService<Policy> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_policies', options);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 
 	private isIpAccessValid(value?: any[] | null): boolean {
@@ -46,6 +55,7 @@ export class PoliciesService extends ItemsService<Policy> {
 
 		const result = await super.createOne(data, opts);
 
+		// TODO is this necessary? Since the attachment should be handled in the AccessService
 		// A new policy has created, clear the permissions cache
 		await clearPermissionsCache();
 
@@ -79,8 +89,10 @@ export class PoliciesService extends ItemsService<Policy> {
 
 		const result = await super.updateMany(keys, data, opts);
 
-		// Some policies have been updated, clear the permissions cache
-		await clearPermissionsCache();
+		if ('admin_access' in data || 'app_access' in data || 'ip_access' in data || 'enforce_tfa' in data) {
+			// Some relevant properties on policies have been updated, clear the caches
+			await this.clearCaches(opts);
+		}
 
 		return result;
 	}
@@ -91,8 +103,9 @@ export class PoliciesService extends ItemsService<Policy> {
 
 		const result = await super.deleteMany(keys, opts);
 
+		// TODO is this necessary? Since the detachment should be handled in the AccessService
 		// Some policies have been deleted, clear the permissions cache
-		await clearPermissionsCache();
+		await this.clearCaches(opts);
 
 		return result;
 	}

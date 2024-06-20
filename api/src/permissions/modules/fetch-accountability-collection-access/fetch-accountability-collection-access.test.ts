@@ -29,18 +29,18 @@ test('Returns all permissions for all collections if admin', async () => {
 
 	expect(result).toEqual({
 		'collection-a': {
-			create: { access: true, full_access: true, fields: ['*'] },
-			read: { access: true, full_access: true, fields: ['*'] },
-			update: { access: true, full_access: true, fields: ['*'] },
-			delete: { access: true, full_access: true, fields: ['*'] },
-			share: { access: true, full_access: true, fields: ['*'] },
+			create: { access: 'full', fields: ['*'] },
+			read: { access: 'full', fields: ['*'] },
+			update: { access: 'full', fields: ['*'] },
+			delete: { access: 'full', fields: ['*'] },
+			share: { access: 'full', fields: ['*'] },
 		},
 		'collection-b': {
-			create: { access: true, full_access: true, fields: ['*'] },
-			read: { access: true, full_access: true, fields: ['*'] },
-			update: { access: true, full_access: true, fields: ['*'] },
-			delete: { access: true, full_access: true, fields: ['*'] },
-			share: { access: true, full_access: true, fields: ['*'] },
+			create: { access: 'full', fields: ['*'] },
+			read: { access: 'full', fields: ['*'] },
+			update: { access: 'full', fields: ['*'] },
+			delete: { access: 'full', fields: ['*'] },
+			share: { access: 'full', fields: ['*'] },
 		},
 	});
 });
@@ -57,23 +57,23 @@ test('Returns permissions for collections for accountability if not admin', asyn
 
 	expect(result).toEqual({
 		'collection-a': {
-			read: {
-				access: true,
-				full_access: true,
-				fields: ['field-a', 'field-b'],
-			},
+			create: { access: 'none' },
+			read: { access: 'full', fields: ['field-a', 'field-b'] },
+			update: { access: 'none' },
+			delete: { access: 'none' },
+			share: { access: 'none' },
 		},
 		'collection-b': {
-			update: {
-				access: true,
-				full_access: true,
-				fields: ['field-c'],
-			},
+			create: { access: 'none' },
+			read: { access: 'none' },
+			update: { access: 'full', fields: ['field-c'] },
+			delete: { access: 'none' },
+			share: { access: 'none' },
 		},
 	});
 });
 
-test('Returns permissions with full_access false if permissions have filters', async () => {
+test('Returns permissions with partial access if permissions have filters', async () => {
 	const permissions = [
 		{
 			collection: 'collection-a',
@@ -91,11 +91,14 @@ test('Returns permissions with full_access false if permissions have filters', a
 
 	expect(result).toEqual({
 		'collection-a': {
+			create: { access: 'none' },
 			read: {
-				access: true,
-				full_access: false,
+				access: 'partial',
 				fields: ['field-a', 'field-b'],
 			},
+			update: { access: 'none' },
+			delete: { access: 'none' },
+			share: { access: 'none' },
 		},
 	});
 });
@@ -112,11 +115,11 @@ test('Returns fields with * if any permission has *', async () => {
 
 	expect(result).toEqual({
 		'collection-a': {
-			read: {
-				access: true,
-				full_access: true,
-				fields: ['*'],
-			},
+			create: { access: 'none' },
+			read: { access: 'full', fields: ['*'] },
+			update: { access: 'none' },
+			delete: { access: 'none' },
+			share: { access: 'none' },
 		},
 	});
 });
@@ -138,12 +141,11 @@ test('Returns combined presets', async () => {
 
 	expect(result).toEqual({
 		'collection-a': {
-			read: {
-				access: true,
-				full_access: true,
-				fields: ['*'],
-				presets: { 'field-a': 3, 'field-b': 2, 'field-c': 4 },
-			},
+			create: { access: 'none' },
+			read: { access: 'full', fields: ['*'], presets: { 'field-a': 3, 'field-b': 2, 'field-c': 4 } },
+			update: { access: 'none' },
+			delete: { access: 'none' },
+			share: { access: 'none' },
 		},
 	});
 });

@@ -2,7 +2,7 @@ import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';
 import { groupBy } from 'lodash';
-import { computed, ref, Ref } from 'vue';
+import { computed, ref, Ref, watch } from 'vue';
 
 let roles: Ref<BasicRole[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
@@ -12,7 +12,12 @@ export type BasicRole = Pick<Role, 'id' | 'name' | 'icon' | 'parent'> & { childr
 const globalOpenRoles = ref<string[]>([]);
 
 // TODO make this work with new r&p
-export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loading: Ref<boolean> } {
+export default function useNavigation(initialRole: Ref<string | undefined>): {
+	roles: Ref<BasicRole[] | null>;
+	roleTree: Ref<BasicRole[]>;
+	openRoles: Ref<string[]>;
+	loading: Ref<boolean>;
+} {
 	if (roles === null) {
 		roles = ref<BasicRole[] | null>(null);
 	}
@@ -26,14 +31,14 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 	}
 
 	const roleTree = computed(() => {
-		if (!roles.value) return [];
+		if (!roles?.value) return [];
 
-		const rolesByParent = groupBy(roles.value, 'parent');
+		const root = Symbol();
+		const rolesByParent = groupBy(roles.value, (role) => role.parent ?? root) as Record<string | symbol, BasicRole[]>;
 
-		// TODO this currently does not account for circular roles (which is a thing we want to avoid anyways)
-		return rolesByParent[null]?.map(buildTree);
+		return rolesByParent[root]?.map(buildTree) ?? [];
 
-		function buildTree(role: BasicRole) {
+		function buildTree(role: BasicRole): BasicRole {
 			const children = rolesByParent[role.id];
 
 			if (!children) return role;
@@ -44,6 +49,23 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 			};
 		}
 	});
+
+	watch(
+		[() => initialRole.value, roles],
+		() => {
+			if (!initialRole?.value) return;
+			if (globalOpenRoles.value.includes(initialRole.value!)) return;
+			if (!roles?.value) return;
+
+			let current = roles.value.find((role) => role.id === initialRole.value);
+
+			while (current) {
+				globalOpenRoles.value.push(current.id);
+				current = roles.value.find((role) => role.id === current?.parent);
+			}
+		},
+		{ immediate: true },
+	);
 
 	return { roles, roleTree, openRoles: globalOpenRoles, loading };
 

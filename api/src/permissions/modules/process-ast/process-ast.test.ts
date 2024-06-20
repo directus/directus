@@ -95,7 +95,9 @@ test('Injects permission cases for the provided AST', async () => {
 		name: 'test-collection',
 		children: [
 			{
+				type: 'field',
 				fieldKey: 'test-field-a',
+				name: 'test-field-a',
 			},
 		],
 	} as unknown as AST;
@@ -140,7 +142,9 @@ test('Injects permission cases for the provided AST', async () => {
 		],
 		children: [
 			{
+				type: 'field',
 				fieldKey: 'test-field-a',
+				name: 'test-field-a',
 				whenCase: [0],
 			},
 		],

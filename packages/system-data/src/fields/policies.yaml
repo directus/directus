@@ -1,6 +1,5 @@
 table: directus_policies
 
-
 fields:
   - field: id
     hidden: true
@@ -8,6 +7,7 @@ fields:
       - uuid
 
   - field: name
+    required: true
     width: half
     display: formatted-value
     display_options:
@@ -26,7 +26,6 @@ fields:
     display: formatted-value
     display_options:
       translate: true
-
 
   - field: permissions
     interface: system-permissions
