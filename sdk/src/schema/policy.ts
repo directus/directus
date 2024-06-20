@@ -8,7 +8,7 @@ export type DirectusPolicy<Schema> = MergeCoreCollection<
 	'directus_policies',
 	{
 		id: string; // uuid
-		icon: string | null;
+		icon: string;
 		description: string | null;
 		ip_access: string | null;
 		enforce_tfa: boolean;
