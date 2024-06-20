@@ -118,7 +118,7 @@ test('Runs and returns basic counts', async () => {
 test('Runs and returns user counts', async () => {
 	const report = await getReport();
 
-	expect(fetchUserCount).toHaveBeenCalledWith(mockDb);
+	expect(fetchUserCount).toHaveBeenCalledWith({ knex: mockDb });
 
 	expect(report.admin_users).toBe(mockUserCounts.admin);
 	expect(report.app_users).toBe(mockUserCounts.app);
