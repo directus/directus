@@ -64,6 +64,7 @@ export class RolesService extends ItemsService {
 			};
 
 			const itemsService = new ItemsService('directus_roles', options);
+			const rolesService = new RolesService(options);
 			const accessService = new AccessService(options);
 			const presetsService = new PresetsService(options);
 			const usersService = new UsersService(options);
@@ -93,6 +94,15 @@ export class RolesService extends ItemsService {
 					role: null,
 				},
 				{ ...opts, bypassLimits: true },
+			);
+
+			// If the about to be deleted roles are the parent of other roles set those parents to null
+			// Use a newly created RolesService here that works within the current transaction
+			await rolesService.updateByQuery(
+				{
+					filter: { parent: { _in: keys } },
+				},
+				{ parent: null },
 			);
 
 			await itemsService.deleteMany(keys, opts);
