@@ -53,10 +53,7 @@ export const readPolicy =
 	};
 
 /**
- * Check the current user's global policy.
- * @param collection The collection of the item
- * @param key The primary key of the item
- * @returns Return
+ * Check the current user's policy globals.
  */
 export const readPolicyGlobals =
 	<Schema>(): RestCommand<ReadPolicyGlobalsOutput, Schema> =>
