@@ -6,6 +6,7 @@ import { getColumn } from '../../../utils/get-column.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from './apply-case-when.js';
+import { getNodeAlias } from './get-field-alias.js';
 
 interface NodePreProcessOptions {
 	/** Don't assign an alias to the column but instead return the column as is */
@@ -26,13 +27,10 @@ export function getColumnPreprocessor(
 		options?: NodePreProcessOptions,
 	): Knex.Raw<string> {
 		// Don't assign an alias to the column expression if the field has a whenCase
-		// (since the alias will be assigned in applyCaseWhen)
-		const noAlias = options?.noAlias || (fieldNode.whenCase && fieldNode.whenCase.length > 0);
-		let alias = fieldNode.name;
-
-		if (fieldNode.name !== fieldNode.fieldKey) {
-			alias = fieldNode.fieldKey;
-		}
+		// (since the alias will be assigned in applyCaseWhen) or if the noAlias option is set
+		const hasWhenCase = fieldNode.whenCase && fieldNode.whenCase.length > 0;
+		const noAlias = options?.noAlias || hasWhenCase;
+		const alias = getNodeAlias(fieldNode);
 
 		const rawColumnAlias = noAlias ? false : alias;
 
@@ -57,7 +55,7 @@ export function getColumnPreprocessor(
 			});
 		}
 
-		if (fieldNode.whenCase && fieldNode.whenCase.length > 0) {
+		if (hasWhenCase) {
 			const columnCases: Filter[] = [];
 
 			for (const index of fieldNode.whenCase) {

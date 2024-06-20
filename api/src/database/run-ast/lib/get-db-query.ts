@@ -11,6 +11,7 @@ import { getColumn } from '../../../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
+import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 
 export function getDBQuery(
@@ -228,11 +229,7 @@ export function getDBQuery(
 		// Select the case/when columns based on the flag from the inner query
 		wrapperQuery.select(
 			whenCaseColumns.map((fieldNode) => {
-				let alias = fieldNode.name;
-
-				if (fieldNode.name !== fieldNode.fieldKey) {
-					alias = fieldNode.fieldKey;
-				}
+				const alias = getNodeAlias(fieldNode);
 
 				const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
 
