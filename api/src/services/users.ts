@@ -291,11 +291,7 @@ export class UsersService extends ItemsService {
 
 		// Only clear the caches if the role has been updated
 		if ('role' in data) {
-			await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-			if (this.cache && opts?.autoPurgeCache !== false) {
-				await this.cache.clear();
-			}
+			await this.clearCaches(opts);
 		}
 
 		return result;
@@ -603,5 +599,13 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 }

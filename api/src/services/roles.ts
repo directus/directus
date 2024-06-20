@@ -15,17 +15,9 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
-	private async clearCaches(opts?: MutationOptions) {
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-		if (this.cache && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
-		}
-	}
-
 	// No need to check user integrity in createOne, as the creation of a role itself does not influence the number of
 	// users, as the role of a user is actually updated in the UsersService on the user, which will make sure to
-	// initiate a user integrity check if necessary
+	// initiate a user integrity check if necessary. Same goes for role nesting check as well as cache clearing.
 
 	override async updateMany(
 		keys: PrimaryKey[],
@@ -124,6 +116,14 @@ export class RolesService extends ItemsService {
 		if (ids.some((id) => roles.includes(id))) {
 			// The role tree up from the parent already includes this role, so it would create a circular reference
 			throw new InvalidPayloadError({ reason: 'A role cannot have a parent that is already a descendant of itself' });
+		}
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
 		}
 	}
 }
