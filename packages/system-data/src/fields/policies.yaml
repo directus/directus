@@ -1,0 +1,89 @@
+table: directus_policies
+
+fields:
+  - field: id
+    hidden: true
+    special:
+      - uuid
+
+  - field: name
+    required: true
+    width: half
+    display: formatted-value
+    display_options:
+      translate: true
+
+  - field: icon
+    interface: select-icon
+    display: icon
+    width: half
+
+  - field: description
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_policies.description
+    width: full
+    display: formatted-value
+    display_options:
+      translate: true
+
+  - field: permissions
+    interface: system-permissions
+    special:
+      - o2m
+
+  - field: app_access
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: admin_access
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: ip_access
+    interface: tags
+    options:
+      placeholder: $t:field_options.directus_policies.ip_access
+    special:
+      - cast-csv
+    width: full
+
+  - field: enforce_tfa
+    note: $t:field_options.directus_policies.enforce_tfa
+    interface: boolean
+    special:
+      - cast-boolean
+    width: half
+
+  - field: assigned_to_divider
+    interface: presentation-divider
+    options:
+      title: $t:field_options.directus_policies.assigned_to
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: users
+    interface: list-m2m
+    options:
+      template: '{{ user.first_name }} {{ user.last_name }}'
+      junctionFilter:
+        user:
+          _nnull: true
+    special:
+      - m2m
+
+  - field: roles
+    interface: list-m2m
+    options:
+      template: '{{ role.name }}'
+      junctionFilter:
+        role:
+          _nnull: true
+    special:
+      - m2m

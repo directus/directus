@@ -11,6 +11,12 @@ defaults:
   accountability: 'all'
 
 data:
+  - collection: directus_access
+    icon: admin_panel_settings
+    note: $t:directus_collection.directus_access
+    display_template: '{{ policy.name }}'
+    sort_field: sort
+
   - collection: directus_activity
     note: $t:directus_collection.directus_activity
     accountability: null
@@ -38,6 +44,10 @@ data:
   - collection: directus_permissions
     icon: admin_panel_settings
     note: $t:directus_collection.directus_permissions
+
+  - collection: directus_policies
+    icon: admin_panel_settings
+    note: $t:directus_collection.directus_policies
 
   - collection: directus_presets
     icon: bookmark

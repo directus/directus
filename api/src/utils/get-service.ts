@@ -1,5 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import {
+	AccessService,
 	ActivityService,
 	DashboardsService,
 	FilesService,
@@ -10,6 +11,7 @@ import {
 	OperationsService,
 	PanelsService,
 	PermissionsService,
+	PoliciesService,
 	PresetsService,
 	RevisionsService,
 	RolesService,
@@ -28,6 +30,8 @@ import type { AbstractServiceOptions } from '../types/services.js';
  */
 export function getService(collection: string, opts: AbstractServiceOptions): ItemsService {
 	switch (collection) {
+		case 'directus_access':
+			return new AccessService(opts);
 		case 'directus_activity':
 			return new ActivityService(opts);
 		case 'directus_dashboards':
@@ -48,6 +52,8 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new PermissionsService(opts);
 		case 'directus_presets':
 			return new PresetsService(opts);
+		case 'directus_policies':
+			return new PoliciesService(opts);
 		case 'directus_revisions':
 			return new RevisionsService(opts);
 		case 'directus_roles':

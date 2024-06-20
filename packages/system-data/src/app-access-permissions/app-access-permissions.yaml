@@ -19,6 +19,7 @@
     _or:
       - user:
           _eq: $CURRENT_USER
+      # TODO decide if want to allow users to see all presets of nested roles
       - _and:
           - user:
               _null: true
@@ -52,7 +53,7 @@
   action: read
   permissions:
     id:
-      _eq: $CURRENT_ROLE
+      _in: $CURRENT_ROLES
 
 - collection: directus_settings
   action: read

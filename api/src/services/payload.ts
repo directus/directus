@@ -21,6 +21,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -33,6 +34,12 @@ type Transformers = {
 		specials: string[];
 		helpers: Helpers;
 	}) => Promise<any>;
+};
+
+type PayloadServiceProcessRelationResult = {
+	revisions: PrimaryKey[];
+	nestedActionEvents: ActionEventParams[];
+	userIntegrityCheckFlags: UserIntegrityCheckFlag;
 };
 
 /**
@@ -399,12 +406,17 @@ export class PayloadService {
 	async processA2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
-	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
+	): Promise<
+		PayloadServiceProcessRelationResult & {
+			payload: Partial<Item>;
+		}
+	> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
 		});
 
 		const revisions: PrimaryKey[] = [];
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -466,6 +478,7 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await service.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
@@ -475,6 +488,7 @@ export class PayloadService {
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
@@ -486,7 +500,7 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions, nestedActionEvents };
+		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
 	}
 
 	/**
@@ -495,11 +509,16 @@ export class PayloadService {
 	async processM2O(
 		data: Partial<Item>,
 		opts?: MutationOptions,
-	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
+	): Promise<
+		PayloadServiceProcessRelationResult & {
+			payload: Partial<Item>;
+		}
+	> {
 		const payload = cloneDeep(data);
 
 		// All the revisions saved on this level
 		const revisions: PrimaryKey[] = [];
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -548,6 +567,7 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await service.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
@@ -557,6 +577,7 @@ export class PayloadService {
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
@@ -568,7 +589,7 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions, nestedActionEvents };
+		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
 	}
 
 	/**
@@ -578,8 +599,9 @@ export class PayloadService {
 		data: Partial<Item>,
 		parent: PrimaryKey,
 		opts?: MutationOptions,
-	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
+	): Promise<PayloadServiceProcessRelationResult> {
 		const revisions: PrimaryKey[] = [];
+		let userIntegrityCheckFlags = UserIntegrityCheckFlag.None;
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -669,6 +691,7 @@ export class PayloadService {
 				savedPrimaryKeys.push(
 					...(await service.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
@@ -697,6 +720,7 @@ export class PayloadService {
 				if (relation.meta.one_deselect_action === 'delete') {
 					// There's no revision for a deletion
 					await service.deleteByQuery(query, {
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
@@ -708,6 +732,7 @@ export class PayloadService {
 						{ [relation.field]: null },
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
@@ -757,6 +782,7 @@ export class PayloadService {
 
 					await service.createMany(createPayload, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
@@ -776,6 +802,7 @@ export class PayloadService {
 							},
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
@@ -805,6 +832,7 @@ export class PayloadService {
 
 					if (relation.meta.one_deselect_action === 'delete') {
 						await service.deleteByQuery(query, {
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
@@ -816,6 +844,7 @@ export class PayloadService {
 							{ [relation.field]: null },
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
@@ -827,7 +856,7 @@ export class PayloadService {
 			}
 		}
 
-		return { revisions, nestedActionEvents };
+		return { revisions, nestedActionEvents, userIntegrityCheckFlags };
 	}
 
 	/**

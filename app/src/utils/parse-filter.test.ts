@@ -16,6 +16,7 @@ beforeEach(() => {
 							id: '1',
 							name: 'admin',
 						},
+						roles: [{ id: '1' }, { id: '2' }],
 						// Custom nested user field
 						org: { name: 'Directus' },
 					},
@@ -32,13 +33,19 @@ describe('parse-filter', () => {
 			user: { _eq: 'Kay' },
 			// Dynamic fields
 			role: { _in: ['$CURRENT_ROLE', '2'] },
+			roles: { _in: ['$CURRENT_ROLES'] },
 			orgName: { _eq: '$CURRENT_USER.org.name' },
 		};
 
 		const parsedFilter = parseFilter(filter);
 
 		expect(parsedFilter).toEqual({
-			_and: [{ user: { _eq: 'Kay' } }, { role: { _in: ['1', '2'] } }, { orgName: { _eq: 'Directus' } }],
+			_and: [
+				{ user: { _eq: 'Kay' } },
+				{ role: { _in: ['1', '2'] } },
+				{ roles: { _in: ['1', '2'] } },
+				{ orgName: { _eq: 'Directus' } },
+			],
 		});
 	});
 });

@@ -6,11 +6,18 @@ readTime:
 # Users
 
 > Users represent the distinct people _(and entities)_ that interact with your project. Each user can be assigned a
-> role, which defines a user's access permissions.
+> role, and any number of policies, which defines a user's access permissions.
 
 ::: tip Learn More
 
 To configure users programmatically, see our API documentation on [users](/reference/system/users).
+
+:::
+
+:::tip Directus 11 RC
+
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
 
 :::
 

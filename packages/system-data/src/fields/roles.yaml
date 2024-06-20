@@ -8,10 +8,14 @@ fields:
       - uuid
 
   - field: name
+    required: true
     interface: input
     options:
       placeholder: $t:field_options.directus_roles.name
     width: half
+    display: formatted-value
+    display_options:
+      translate: true
 
   - field: icon
     interface: select-icon
@@ -23,32 +27,70 @@ fields:
     options:
       placeholder: $t:field_options.directus_roles.description
     width: full
+    display: formatted-value
+    display_options:
+      translate: true
 
-  - field: app_access
-    interface: boolean
-    special:
-      - cast-boolean
-    width: half
-
-  - field: admin_access
-    interface: boolean
-    special:
-      - cast-boolean
-    width: half
-
-  - field: ip_access
-    interface: tags
+  - field: parent
+    interface: select-dropdown-m2o
+    note: $t:field_options.directus_roles.parent_note
     options:
-      placeholder: $t:field_options.directus_roles.ip_access
+      template: '{{ name }}'
+      filter:
+        id:
+          _neq: '{{ id }}'
     special:
-      - cast-csv
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: children
+    hidden: true
+    interface: list-o2m-tree-view
+    note: $t:field_options.directus_roles.children_note
+    special:
+      - o2m
+    options:
+      displayTemplate: '{{ name }}'
+      enableCreate: false
+      fields:
+        - name
+      filter:
+        id:
+          _neq: '{{ id }}'
+    display: related-values
+    display_options:
+      template: '{{ name }}'
     width: full
 
-  - field: enforce_tfa
-    interface: boolean
+  - field: policies
+    interface: list-m2m
+    options:
+      layout: list
+    display: related-values
     special:
-      - cast-boolean
-    width: half
+      - m2m
+    width: full
+
+  - field: users_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: users_divider
+    interface: presentation-divider
+    options:
+      icon: people_alt
+      title: $t:users
+    special:
+      - alias
+      - no-data
+    width: full
+    group: users_group
 
   - field: users
     interface: list-o2m
@@ -59,3 +101,4 @@ fields:
         - first_name
         - last_name
     width: full
+    group: users_group

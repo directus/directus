@@ -23,6 +23,7 @@ import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
@@ -52,16 +53,30 @@ export class ImportService {
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
-		const createPermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'create',
-		);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'create',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 
-		const updatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'update',
-		);
-
-		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
-			throw new ForbiddenError();
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 		}
 
 		switch (mimetype) {

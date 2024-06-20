@@ -238,7 +238,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
 | `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
 | `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                     | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                                     | `true`                       |
 | `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
 | `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
 | `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
@@ -539,7 +539,7 @@ Instead, you can use the above `CACHE_STORE` environment variable to use `redis`
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
 Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same
-time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will
+time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Data Studio, files will
 automatically be uploaded to the first configured storage location (in this case `local`). The used storage location is
 saved under `storage` in `directus_files`.
 

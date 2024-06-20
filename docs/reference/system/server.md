@@ -306,7 +306,7 @@ const result = await client.request(serverInfo());
 ### Response
 
 `project` **object**\
-Public information about the project. Used to render the Admin App public pages.
+Public information about the project. Used to render the Data Studio public pages.
 
 See [the settings object](/reference/system/settings#the-settings-object) for more information on the individual
 properties of the `project` object.

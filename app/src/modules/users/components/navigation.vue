@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
 
-defineProps<{
+const props = defineProps<{
 	currentRole?: string;
 }>();
 
+const { currentRole } = toRefs(props);
+
 const { t } = useI18n();
+const router = useRouter();
 
-const { roles, loading } = useNavigation();
+const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 
-const lastAdminRoleId = computed(() => {
-	if (!roles.value) return null;
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? adminRoles[0].id : null;
-});
+function handleClick({ role }: { role: string }) {
+	router.push(`/users/roles/${role}`);
+}
 </script>
 
 <template>
@@ -34,13 +36,15 @@ const lastAdminRoleId = computed(() => {
 			</v-list-item>
 		</template>
 
-		<navigation-role
-			v-for="role in roles"
-			:key="role.id"
-			:role="role"
-			:last-admin="lastAdminRoleId === role.id"
-			:active="currentRole === role.id"
-		/>
+		<v-item-group v-model="openRoles" scope="role-navigation" multiple>
+			<navigation-role
+				v-for="role in roleTree"
+				:key="role.id"
+				:role="role"
+				:current-role="currentRole"
+				@click="handleClick"
+			/>
+		</v-item-group>
 	</v-list>
 </template>
 

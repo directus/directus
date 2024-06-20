@@ -1,25 +1,24 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
-import { getSimpleHash, toArray, toBoolean, validatePayload } from '@directus/utils';
+import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { isEmpty, mergeWith } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
+import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
-import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
-import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
-import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
-import { type AccessTypeCount } from '../telemetry/utils/get-user-count.js';
-import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
+import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
@@ -108,50 +107,13 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
-		}
-	}
-
-	/**
-	 * Make sure there's at least one active admin user when updating user status
-	 */
-	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.andWhere({ 'directus_users.status': 'active' })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
-		}
-	}
-
 	/**
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
 		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
-		return await this.knex
+		return this.knex
 			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
@@ -194,41 +156,26 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		try {
-			if (data['email']) {
+			if ('email' in data) {
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']]);
 			}
 
-			if (data['password']) {
+			if ('password' in data) {
 				await this.checkPasswordPolicy([data['password']]);
 			}
-
-			if (shouldCheckUserLimits() && data['role']) {
-				const increasedCounts: AccessTypeCount = {
-					admin: 0,
-					app: 0,
-					api: 0,
-				};
-
-				if (typeof data['role'] === 'object') {
-					if ('admin_access' in data['role'] && data['role']['admin_access'] === true) {
-						increasedCounts.admin++;
-					} else if ('app_access' in data['role'] && data['role']['app_access'] === true) {
-						increasedCounts.app++;
-					} else {
-						increasedCounts.api++;
-					}
-				} else {
-					const existingRoleCounts = await getRoleCountsByRoles(this.knex, [data['role']]);
-					mergeWith(increasedCounts, existingRoleCounts, (x, y) => x + y);
-				}
-
-				await checkIncreasedUserLimits(this.knex, increasedCounts);
-			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
+		}
+
+		if (!('status' in data) || data['status'] === 'active') {
+			// Creating a user only requires checking user limits if the user is active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
 
 		return await super.createOne(data, opts);
@@ -237,10 +184,10 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create multiple new users
 	 */
-	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data['map']((payload) => payload['email']).filter((email) => email);
-		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
-		const roles = data['map']((payload) => payload['role']).filter((role) => role);
+	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		const emails = data.map((payload) => payload['email']).filter((email) => email);
+		const passwords = data.map((payload) => payload['password']).filter((password) => password);
+		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
 			if (emails.length) {
@@ -251,110 +198,38 @@ export class UsersService extends ItemsService {
 			if (passwords.length) {
 				await this.checkPasswordPolicy(passwords);
 			}
-
-			if (shouldCheckUserLimits() && roles.length) {
-				const increasedCounts: AccessTypeCount = {
-					admin: 0,
-					app: 0,
-					api: 0,
-				};
-
-				const existingRoles = [];
-
-				for (const role of roles) {
-					if (typeof role === 'object') {
-						if ('admin_access' in role && role['admin_access'] === true) {
-							increasedCounts.admin++;
-						} else if ('app_access' in role && role['app_access'] === true) {
-							increasedCounts.app++;
-						} else {
-							increasedCounts.api++;
-						}
-					} else {
-						existingRoles.push(role);
-					}
-				}
-
-				const existingRoleCounts = await getRoleCountsByRoles(this.knex, existingRoles);
-
-				mergeWith(increasedCounts, existingRoleCounts, (x, y) => x + y);
-
-				await checkIncreasedUserLimits(this.knex, increasedCounts);
-			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return await super.createMany(data, opts);
+		if (someActive) {
+			// Creating users only requires checking user limits if the users are active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
+		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
+		// as this requires one query per email if done in `createOne`
+		const itemsService = new ItemsService(this.collection, {
+			schema: this.schema,
+			accountability: this.accountability,
+			knex: this.knex,
+		});
+
+		return await itemsService.createMany(data, opts);
 	}
 
 	/**
 	 * Update many users by primary key
 	 */
-	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Item>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
 		try {
-			const needsUserLimitCheck = shouldCheckUserLimits();
-
-			if (data['role']) {
-				/*
-				 * data['role'] has the following cases:
-				 * - a string with existing role id
-				 * - an object with existing role id for GraphQL mutations
-				 * - an object with data for new role
-				 */
-				const role = data['role']?.id ?? data['role'];
-
-				let newRole;
-
-				if (typeof role === 'string') {
-					newRole = await this.knex
-						.select('admin_access', 'app_access')
-						.from('directus_roles')
-						.where('id', role)
-						.first();
-				} else {
-					newRole = role;
-				}
-
-				if (!newRole?.admin_access) {
-					await this.checkRemainingAdminExistence(keys);
-				}
-
-				if (needsUserLimitCheck && newRole) {
-					const existingCounts = await getRoleCountsByUsers(this.knex, keys);
-
-					const increasedCounts: AccessTypeCount = {
-						admin: 0,
-						app: 0,
-						api: 0,
-					};
-
-					if (toBoolean(newRole.admin_access)) {
-						increasedCounts.admin = keys.length - existingCounts.admin;
-					} else if (toBoolean(newRole.app_access)) {
-						increasedCounts.app = keys.length - existingCounts.app;
-					} else {
-						increasedCounts.api = keys.length - existingCounts.api;
-					}
-
-					await checkIncreasedUserLimits(this.knex, increasedCounts);
-				}
-			}
-
-			if (needsUserLimitCheck && data['role'] === null) {
-				await checkIncreasedUserLimits(this.knex, { admin: 0, app: 0, api: 1 });
-			}
-
-			if (data['status'] !== undefined && data['status'] !== 'active') {
-				await this.checkRemainingActiveAdmin(keys);
-			}
-
-			if (needsUserLimitCheck && data['status'] === 'active') {
-				const increasedCounts = await getRoleCountsByUsers(this.knex, keys, { inactiveUsers: true });
-
-				await checkIncreasedUserLimits(this.knex, increasedCounts);
-			}
-
 			if (data['email']) {
 				if (keys.length > 1) {
 					throw new RecordNotUniqueError({
@@ -391,20 +266,49 @@ export class UsersService extends ItemsService {
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return await super.updateMany(keys, data, opts);
+		if ('role' in data) {
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		}
+
+		if ('status' in data) {
+			if (data['status'] === 'active') {
+				// User are being activated, no need to check if there are enough admins
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+			} else {
+				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+			}
+		}
+
+		if (opts.userIntegrityCheckFlags) {
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
+		const result = await super.updateMany(keys, data, opts);
+
+		// Only clear the caches if the role has been updated
+		if ('role' in data) {
+			await this.clearCaches(opts);
+		}
+
+		return result;
 	}
 
 	/**
 	 * Delete multiple users by primary key
 	 */
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		try {
-			await this.checkRemainingAdminExistence(keys);
-		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (opts?.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
+		} else {
+			try {
+				await validateRemainingAdminUsers({ excludeUsers: keys }, { knex: this.knex, schema: this.schema });
+			} catch (err: any) {
+				opts.preMutationError = err;
+			}
 		}
 
 		// Manual constraint, see https://github.com/directus/directus/pull/19912
@@ -689,11 +593,19 @@ export class UsersService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: {
-				...(this.accountability ?? { role: null }),
+				...(this.accountability ?? createDefaultAccountability()),
 				admin: true, // We need to skip permissions checks for the update call below
 			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 }

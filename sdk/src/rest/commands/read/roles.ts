@@ -26,7 +26,7 @@ export const readRoles =
 
 /**
  * List an existing Role by primary key.
- * @param key The primary key of the dashboard
+ * @param key The primary key of the role
  * @param query The query parameters
  * @returns Returns a Role object if a valid primary key was provided.
  * @throws Will throw if key is empty
@@ -45,3 +45,19 @@ export const readRole =
 			method: 'GET',
 		};
 	};
+
+/**
+ * List the attached roles for the current user.
+ * @param query The query parameters
+ * @returns Returns Role objects
+ * @throws Will throw if key is empty
+ */
+export const readRolesMe =
+	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
+		query?: TQuery,
+	): RestCommand<ReadRoleOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/roles/me`,
+		params: query ?? {},
+		method: 'GET',
+	});

@@ -6,7 +6,8 @@ readTime:
 
 # Roles
 
-> Roles are essentially a bundle of pre-configured access permissions which you can (re)assign to any number of users.
+> Roles are a bundle of pre-configured policies which you can (re)assign to any number of users. Roles can also contain
+> other roles.
 
 ::: tip Learn More
 
@@ -14,36 +15,35 @@ To configure roles programmatically, see our API documentation on [roles](/refer
 
 :::
 
+:::tip Directus 11 RC
+
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
+
+:::
+
 ## View a Role
 
-![How to view a role](https://marketing.directus.app/assets/167da47b-9eaa-465b-99d6-95a077a4ca8d.gif)
-
-To view an existing role, navigate to **Settings > Access Control > [Role]**. Now you can see the role's permissions and
-other details.
+To view an existing role, navigate to **Settings > User Roles > [Role]**. Now you can see the role's policies and other
+details.
 
 ## Create a Role
 
-![How to create a role](https://marketing.directus.app/assets/7ce402ec-9559-46a1-bffc-caa9ed76bd58.gif)
-
 To create a role, follow these steps.
 
-1. Navigate to **Settings > Access Control**.
+1. Navigate to **Settings > User Roles**.
 2. Click <span mi btn>add</span> in the page header.
 3. Enter a unique **Role Name**.
-4. Toggle **App Access** and **Admin Access** as desired.\
-   To learn more, see [configure role details](#configure-role-details).
-5. Click **Save** to confirm.
+4. Click **Save** to confirm.
 
 ::: tip
 
 Next, you will likely need to [configure the role's details](#configure-role-details) and
-[configure the role's permissions](#configure-role-permissions).
+[configure the role's policies](#configure-role-policies).
 
 :::
 
 ## Configure Role Details
-
-![How to configure role details](https://marketing.directus.app/assets/33827779-1ea8-4126-b62e-172b6a9d6616.gif)
 
 In addition to defining permissions, roles come with a number of other configuration options. To configure a role's
 details, follow these steps.
@@ -76,13 +76,11 @@ details, follow these steps.
 
 Roles with _App Access_ enabled are created with the minimum permissions required to login to the app and access their
 own profile information. Roles that have neither _Admin_ nor _App Access_ enabled are created with public permissions.
-You can always [reconfigure permissions](/user-guide/user-management/permissions#configure-permissions) later.
+You can always reconfigure permissions later.
 
 :::
 
 ## Delete a Role
-
-![How to delete a role](https://marketing.directus.app/assets/47571f2e-b3e2-436f-a8e5-a92aea787607.gif)
 
 To delete a role, follow these steps.
 
@@ -93,8 +91,7 @@ To delete a role, follow these steps.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which limits them to public
-permissions. However, you can always
-[assign them a new role](/user-guide/user-management/users#assign-role-to-existing-user).
+permissions. However, you can always assign them a new role.
 
 :::
 

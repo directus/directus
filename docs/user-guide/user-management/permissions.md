@@ -42,8 +42,7 @@ To configure a role's access permissions, follow these steps.
 
 ::: warning Admin Roles
 
-If you [configured the role's details](/user-guide/user-management/roles#configure-role-details) to have **Admin
-Access**, permission configuration is disabled.
+If you configured the role's details to have **Admin Access**, permission configuration is disabled.
 
 :::
 
@@ -84,8 +83,7 @@ To grant or restrict all CRUDS permissions to a collection at once, follow these
 
 ![How to reset system permissions](https://marketing.directus.app/assets/7db0408a-a456-43e7-bfe4-6bb9aef2374d.gif)
 
-This is only available when **App Access** is enabled when you
-[configure role details](/user-guide/user-management/roles#configure-role-details). If you made any custom
+This is only available when **App Access** is enabled when you configure role details. If you made any custom
 configurations to system collections, these will be reverted. To reset system permissions, follow these steps.
 
 1. Navigate to **Settings > Access Control > [Role]**.

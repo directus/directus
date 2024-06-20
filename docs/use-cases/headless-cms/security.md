@@ -28,8 +28,8 @@ may allow all data to be public, but it may instead require restricted access.
 **If you do want to make data public, we recommend these guidelines.**
 
 - On your public role, only enable read access.
-- Consider defining a [Custom Permission](/user-guide/user-management/permissions#configure-custom-permissions) for read
-  operations to control which items are available and which fields within those items consumers can see.
+- Consider defining a Custom Permission for read operations to control which items are available and which fields within
+  those items consumers can see.
 
   ![The custom permissions interface for the Public role is displayed. The Item Permissions table is active and one Rule is active - "Status" Equals "Published".](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/custom-permissions.webp)
 
@@ -103,8 +103,8 @@ But when it’s time to go to production and add all your different users, we re
 
 1. **Enable and enforce two-factor authentication.**
 
-   Two-factor authentication can be enforced for each specific role by checking the Require 2FA field in a
-   [role's settings](/user-guide/user-management/roles#configure-role-details).
+   Two-factor authentication can be enforced for each specific role by checking the Require 2FA field in a role's
+   settings.
 
    ![The Administrator role settings page is displayed. The Require 2FA form field is highlighted and enabled.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-role.webp)
 

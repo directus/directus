@@ -1,0 +1,30 @@
+table: directus_access
+
+fields:
+  - field: id
+    special:
+      - uuid
+    hidden: true
+    width: half
+
+  - field: role
+    hidden: true
+    width: half
+    special:
+      - m2o
+
+  - field: user
+    hidden: true
+    width: half
+    special:
+      - m2o
+
+  - field: policy
+    hidden: true
+    width: half
+    special:
+      - m2o
+
+  - field: sort
+    hidden: true
+    width: half

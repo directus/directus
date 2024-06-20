@@ -1,18 +1,16 @@
 ---
 description:
   Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines
-  its access Permissions.
+  its policies and access Permissions.
 readTime: 7 min read
 ---
 
-# Users, Roles & Permissions
+# Key User Management Concepts
 
-> Users, roles, and permissions work together to determine _who can access what_ inside your database.
+> Users, roles, policies, and permissions work together to determine _who can access what_ inside your database.
 > [Users](/user-guide/overview/glossary#users) are the individual accounts for authenticating into the project. Each
-> user is assigned a [role](/user-guide/overview/glossary#roles) which defines its
-> [access permissions](/user-guide/overview/glossary#permissions).
-
-![Users, Roles and Permissions](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-roles-permissions-20220907A.webp)
+> user is assigned a [role](/user-guide/overview/glossary#roles) and [policies](/user-guide/overview/glossary#policies)
+> which defines its [access permissions](/user-guide/overview/glossary#permissions).
 
 ::: tip Before You Begin
 
@@ -22,14 +20,15 @@ We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get 
 
 ::: tip Learn More
 
-To manage users, role and permissions programmatically via the API, please see our API guides on
-[users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
+To manage user roles and access policies programmatically via the API, please see our API guides on
+[users](/reference/system/users), [roles](/reference/system/roles), [policies](/reference/system/policies), and
+[permissions](/reference/system/permissions).
 
 :::
 
 In order to understand how users, roles, and permissions work in Directus, a conceptual understanding of _how they work
-in general_ will be helpful. The following few paragraphs will introduce you to how users, roles, and permissions work
-within a relational database. If you're already familiar with these concepts, feel free to skip to
+in general_ will be helpful. The following few paragraphs will introduce you to how users, roles, policies, and
+permissions work within a relational database. If you're already familiar with these concepts, feel free to skip to
 [How it Works in Directus](#how-it-works-in-directus).
 
 ### Users
@@ -55,11 +54,8 @@ other entity that can login and interact with the database.
 
 ### Roles
 
-In many cases, your project will have multiple users doing the same thing _(managers, writers, subscribers, etc)_. If we
-assigned permissions directly to the user, we would have to configure the same permissions over and over, which makes it
-tedious to change configurations for all users doing the same job and also leads to a higher chance of misconfiguration.
-This problem is an example of [data duplication](/app/data-model#avoid-data-duplication). To avoid this, we create
-roles, configure the role's permissions once, then assign the role to users as desired.
+Roles are an organizational unit and describe who your users are. For example, a member of the Engineering Team, or the
+Marketing Team.
 
 Regardless of your project, your SQL database will _always_ need an administrator role and a public role. In addition,
 you may need any number of custom roles.
@@ -76,9 +72,15 @@ the public to see. So to be safe, all permissions begin turned off by default. I
 these and define exactly what the public role has access to.
 
 **Custom Roles**\
-In addition to these two extreme types of roles, you may need to create more roles each with their own unique set of permissions.
-The roles you create and the permissions you configure for them are completely open-ended and dependent on your project's
-needs.
+In addition to these two extreme types of roles, you may need to create more roles each with their own unique set of policies.
+
+### Policies
+
+In many cases, your project will have multiple users doing the same thing _(managers, writers, subscribers, etc)_. If we
+assigned permissions directly to the user, we would have to configure the same permissions over and over, which makes it
+tedious to change configurations for all users doing the same job and also leads to a higher chance of misconfiguration.
+This problem is an example of [data duplication](/app/data-model#avoid-data-duplication). To avoid this, we create
+policies, configure the permissions once, then assign the policies to users or roles as desired.
 
 ### Permissions
 
@@ -94,93 +96,14 @@ permissions on each data table as desired. For example, you can grant:
 - read and write but not update or delete permissions
 - _any other combination of the four_
 
-### Business Rules
-
-In many cases, you will need to grant permissions to data based on its value, or by some other conditional logic. This
-type of conditional permission is often called a business rule.
-
-To give an example, students should be able to read to their own grades, but not the grades of other students. So you
-could create a business rule for the `student` role, so that a user can only see his or her own grade.
-
-Taking this example one step further, we'd also want to allow students to read and create answers to an online test, but
-not update or delete their test answers once submitted. Then you may need a business rule to crate a submission
-deadline. Finally, you likely want to restrict each student's CRUD access to all other student tests.
-
-It is common to have multiple, complex business rules in a project.
-
-## How it Works in Directus
-
-![How access control works in Directus](https://marketing.directus.app/assets/db5f4395-f0b9-40f6-a1ce-b5679e458c13.gif)
-
-While you have full reign to configure these using SQL, Directus also provides a complete system to configure and manage
-users, roles, and permissions without writing a single line of SQL. The process has three key steps.
-
-1. [Create a Role](/user-guide/user-management/roles#create-a-role)
-2. [Configure its Permissions](/user-guide/user-management/permissions#configure-role-permissions)
-3. [Assign Role to User](/user-guide/user-management/roles#assign-role-to-user)
-
-::: tip No Artificial Limits
-
-You can create as many roles as you need, (re)assign them to as many users as many times you please, and configure
-complex granular permissions as desired.
-
-:::
-
-::: tip
-
-Remember, the following users, role and permissions systems built into Directus cannot be deleted, however using them is
-optional. You may configure your own system as desired.
-
-:::
-
-## Directus Users
-
-![Users in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-20220807A.webp)
-
-Within the Data Studio, users are managed within the [User Directory](/user-guide/user-management/user-directory).
-However, there are some controls available to assign users to roles in **Settings > Access Control**.
-
-To learn more, please see our guide on [users](/user-guide/user-management/users).
-
-## Directus Roles
-
-![Roles in the Directus Data Studio](https://marketing.directus.app/assets/24c33108-396a-46bf-97cf-396b8ffe7524.png)
-
-You can create as many roles as you need for your project. Directus also comes with built-in administrator and public
-roles, which cannot be deleted.
-
-The administrator role provides full permissions for all data in the app, and this cannot be limited. You must always
-have at least one user with an administrator role.
-
-The public role comes with all access permissions turned off by default, but this can be reconfigured as desired.
-Remember, any access permissions granted to this role will apply to everyone, including unauthenticated web traffic _and
-all existing users_. If you wish to keep the project private, simply keep all permissions turned off.
-
-To learn more, see our guide on [roles](/user-guide/user-management/roles).
-
 ## Directus Permissions
 
 ![Permissions in the Directus Data Studio](https://marketing.directus.app/assets/55212af7-8c48-44f7-81fe-6ee4f00f1de2.png)
 
-Directus offers an extremely granular, yet easy to configure permissions system. When you
-[create a role](#create-a-role), all permissions are turned off by default, allowing you to explicitly grant permissions
-as desired.
+Directus offers an extremely granular, yet easy to configure permissions system. When you create a policy, all
+permissions are turned off by default, allowing you to explicitly grant permissions as desired.
 
-There are two other key points to note about Directus. First, the term
-[custom access permissions](/user-guide/user-management/permissions#configure-custom-permissions) is used in place of
-[business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD permissions,
-Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
-defines whether a user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in
-a collection.
-
-To learn more, see our guide on [permissions](/user-guide/user-management/permissions).
-
-## Workflows
-
-![Workflows in the Directus](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/workflows-20220909/workflows-20220909B.webp)
-
-Workflows are a way to setup structured stages to content authoring and data management. They are created primarily with
-custom access permissions, but can be enhanced with email notifications, custom [Interfaces](/extensions/interfaces) as
-well as [flows](/app/flows). Directus supports endlessly configurable workflows.
-
-To learn more, see our recipe on [Content Approval Workflows](/guides/headless-cms/approval-workflows).
+There are two other key points to note about Directus. First, the term custom access permissions is used in place of
+business rules, however the concept is the same. Second, instead of the standard CRUD permissions, Directus provides
+CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share, defines whether a
+user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in a collection.

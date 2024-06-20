@@ -13,6 +13,7 @@ import {
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger.js';
 import { respond } from '../middleware/respond.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
 import type { AuthenticationMode } from '../types/auth.js';
@@ -102,10 +103,7 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -156,10 +154,7 @@ router.post(
 router.post(
 	'/logout',
 	asyncHandler(async (req, res, next) => {
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -203,10 +198,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"email" field is required` });
 		}
 
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -242,10 +234,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"password" field is required` });
 		}
 
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;

@@ -5,8 +5,22 @@ import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import '../types/express.d.ts';
 import { handler } from './authenticate.js';
+
+const reqGetImplementation = (string: any) => {
+	switch (string) {
+		case 'user-agent':
+			return 'fake-user-agent';
+		case 'origin':
+			return 'fake-origin';
+		default:
+			return null;
+	}
+};
 
 vi.mock('../database/index');
 
@@ -27,6 +41,9 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
+vi.mock('../permissions/lib/fetch-roles-tree.js');
+vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js');
+
 afterEach(() => {
 	vi.clearAllMocks();
 });
@@ -35,7 +52,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn(),
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -55,16 +72,7 @@ test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -74,15 +82,13 @@ test('Uses default public accountability when no token is given', async () => {
 
 	await handler(req, res, next);
 
-	expect(req.accountability).toEqual({
-		user: null,
-		role: null,
-		admin: false,
-		app: false,
-		ip: '127.0.0.1',
-		userAgent: 'fake-user-agent',
-		origin: 'fake-origin',
-	});
+	expect(req.accountability).toEqual(
+		createDefaultAccountability({
+			ip: '127.0.0.1',
+			userAgent: 'fake-user-agent',
+			origin: 'fake-origin',
+		}),
+	);
 
 	expect(next).toHaveBeenCalledTimes(1);
 });
@@ -116,27 +122,22 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token,
 	} as unknown as Request;
 
 	const res = {} as Response;
 	const next = vi.fn();
 
+	vi.mocked(fetchRolesTree).mockResolvedValue([roleID]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: appAccess, admin: adminAccess });
+
 	await handler(req, res, next);
 
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -169,6 +170,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -193,16 +195,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -217,16 +210,7 @@ test('Sets accountability to user information when static token is used', async 
 	const req = {
 		ip: '127.0.0.1',
 		cookies: {},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -238,6 +222,7 @@ test('Sets accountability to user information when static token is used', async 
 	const expectedAccountability = {
 		user: testUser.id,
 		role: testUser.role,
+		roles: [testUser.role],
 		app: testUser.app_access,
 		admin: testUser.admin_access,
 		ip: '127.0.0.1',
@@ -252,6 +237,9 @@ test('Sets accountability to user information when static token is used', async 
 		where: vi.fn().mockReturnThis(),
 		first: vi.fn().mockResolvedValue(testUser),
 	} as unknown as Knex);
+
+	vi.mocked(fetchRolesTree).mockResolvedValue([testUser.role]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: testUser.app_access, admin: testUser.admin_access });
 
 	await handler(req, res, next);
 
@@ -272,6 +260,9 @@ test('Sets accountability to user information when static token is used', async 
 	testUser.app_access = '1' as never;
 	expectedAccountability.admin = false;
 	expectedAccountability.app = true;
+
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: true, admin: false });
+
 	await handler(req, res, next);
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
@@ -283,16 +274,7 @@ test('Invalid session token responds with error and clears the cookie', async ()
 		cookies: {
 			directus_session: 'session-token',
 		},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'session-token',
 	} as unknown as Request;
 
@@ -321,16 +303,7 @@ test('Invalid query token responds with error but does not clear the session coo
 		cookies: {
 			directus_session: 'session-token',
 		},
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 

@@ -6,8 +6,15 @@ pageClass: page-reference
 
 # Users
 
-> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a
+> Role and. [Learn more about Users](/user-guide/overview/glossary#users).
+
+:::tip Directus 11 RC
+
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
+
+:::
 
 ## The User Object
 
@@ -42,8 +49,8 @@ Tags for the user.
 Avatar file. Many-to-one to [files](/reference/files).
 
 `language` **string**\
-Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
-translations.
+Language the Data Studio is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages
+and translations.
 
 `appearance` **string**\
 One of `auto`, `light`, `dark`.
@@ -71,6 +78,9 @@ Role of the user. Many-to-one to [roles](/reference/system/roles).
 
 `token` **string**\
 Static access token for the user.
+
+`policies` **many-to-many**\
+The policies in this role. Many-to-many to [policies](/reference/system/policies).
 
 `last_access` **date**\
 Last time the user accessed the API.
@@ -1358,7 +1368,7 @@ const result = await client.request(inviteUser('another@example.com', 'c86c2761-
 
 ## Accept User Invite
 
-Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Admin App.
+Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Data Studio.
 
 This link includes a token, which is then used to activate the invited user.
 
