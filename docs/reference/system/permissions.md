@@ -836,7 +836,11 @@ Check the current user's permissions across all collections.
 </template>
 <template #graphql>
 
-N/A
+```graphql
+query {
+    permissions_me
+}
+```
 
 </template>
 <template #sdk>
