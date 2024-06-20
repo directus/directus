@@ -84,6 +84,7 @@ export async function up(knex: Knex) {
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('policy').notNullable().alter();
+		table.dropForeign('role');
 		table.dropColumns('role');
 	});
 
@@ -138,6 +139,7 @@ export async function down(knex: Knex) {
 		table.boolean('admin_access').defaultTo(false).notNullable();
 		table.boolean('app_access').defaultTo(true).notNullable();
 
+		table.dropForeign('parent');
 		table.dropColumn('parent');
 	});
 
@@ -191,6 +193,7 @@ export async function down(knex: Knex) {
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('role').references('directus_roles.id').alter();
+		table.dropForeign('policy');
 		table.dropColumn('policy');
 	});
 
