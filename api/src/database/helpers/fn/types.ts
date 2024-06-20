@@ -1,4 +1,4 @@
-import type { Query, SchemaOverview } from '@directus/types';
+import type { Filter, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
@@ -7,6 +7,7 @@ import { DatabaseHelper } from '../types.js';
 export type FnHelperOptions = {
 	type: string | undefined;
 	query: Query | undefined;
+	cases: Filter[] | undefined;
 	originalCollectionName: string | undefined;
 };
 
@@ -59,7 +60,6 @@ export abstract class FnHelper extends DatabaseHelper {
 				},
 			};
 
-			// TODO verify if any cases need to be passed here?
 			countQuery = applyFilter(
 				this.knex,
 				this.schema,
@@ -67,7 +67,7 @@ export abstract class FnHelper extends DatabaseHelper {
 				options.query.filter,
 				relation.collection,
 				aliasMap,
-				[],
+				options.cases ?? [],
 			).query;
 		}
 

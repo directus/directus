@@ -75,15 +75,7 @@ export default function applyQuery(
 	// is reused in the column selection case/when to dynamically return or nullify the field values
 	// you're actually allowed to read
 
-	let filter: Filter | null = null;
-
-	if (cases.length > 0 && !query.filter) {
-		filter = { _or: cases };
-	} else if (query.filter && cases.length === 0) {
-		filter = query.filter;
-	} else if (query.filter && cases.length > 0) {
-		filter = { _and: [query.filter, { _or: cases }] };
-	}
+	const filter: Filter | null = joinFilterWithCases(query.filter, cases);
 
 	if (filter) {
 		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases);
@@ -952,6 +944,18 @@ export function applyAggregate(
 			}
 		}
 	}
+}
+
+export function joinFilterWithCases(filter: Filter | null | undefined, cases: Filter[]) {
+	if (cases.length > 0 && !filter) {
+		return { _or: cases };
+	} else if (filter && cases.length === 0) {
+		return filter ?? null;
+	} else if (filter && cases.length > 0) {
+		return { _and: [filter, { _or: cases }] };
+	}
+
+	return null;
 }
 
 function getFilterPath(key: string, value: Record<string, any>) {

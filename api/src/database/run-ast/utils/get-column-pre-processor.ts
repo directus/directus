@@ -1,6 +1,7 @@
 import type { Filter, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
+import { joinFilterWithCases } from '../../../utils/apply-query.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
@@ -43,16 +44,21 @@ export function getColumnPreprocessor(
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
 
-		let column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema);
+		let column;
 
 		if (field?.type?.startsWith('geometry')) {
 			column = helpers.st.asText(table, field.field, rawColumnAlias);
-		}
-
-		if (fieldNode.type === 'functionField') {
+		} else if (fieldNode.type === 'functionField') {
+			// Include the field cases in the functionField query filter
 			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema, {
-				query: fieldNode.query,
+				query: {
+					...fieldNode.query,
+					filter: joinFilterWithCases(fieldNode.query.filter, fieldNode.cases),
+				},
+				cases: fieldNode.cases,
 			});
+		} else {
+			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema);
 		}
 
 		if (hasWhenCase) {
