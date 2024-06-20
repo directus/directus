@@ -16,7 +16,7 @@ export type ReadPolicyGlobalsOutput = {
 };
 
 /**
- * List all policies that exist in Directus.
+ * List all policies that exist in the project.
  * @param query The query parameters
  * @returns An array of up to limit Permission objects. If no items are available, data will be an empty array.
  */
