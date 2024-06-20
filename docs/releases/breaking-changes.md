@@ -29,6 +29,18 @@ If you're using MySQL/MariaDB, please note that:
 - Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
   preserved.
 
+## Version 10.12.2
+
+### Disallowed Mutation of Special System Collections via Relations
+
+For security reasons, mutations of the following system collections via relations are no longer permitted:
+
+- `directus_collections`
+- `directus_fields`
+- `directus_relations`
+- `directus_sessions`
+- `directus_extensions`
+
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders
