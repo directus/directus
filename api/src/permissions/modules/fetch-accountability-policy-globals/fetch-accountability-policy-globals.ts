@@ -1,11 +1,11 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, Globals } from '@directus/types';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 
 export async function fetchAccountabilityPolicyGlobals(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin' | 'app'>,
 	context: Context,
-) {
+): Promise<Globals> {
 	const policies = await fetchPolicies(accountability, context);
 
 	// Policies are already filtered down by the accountability IP, so we don't need to check it again
