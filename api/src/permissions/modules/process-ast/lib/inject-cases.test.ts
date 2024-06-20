@@ -1,7 +1,17 @@
 import type { DeepPartial, Permission } from '@directus/types';
-import { expect, test } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 import type { AST } from '../../../../types/ast.js';
+import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { injectCases } from './inject-cases.js';
+
+vi.mock('../../../utils/get-unaliased-field-key.js');
+
+beforeAll(() => {
+	vi.clearAllMocks();
+
+	// This just returns the field key, normally the ast would be of a proper type and getUnaliasedFieldKey would work
+	vi.mocked(getUnaliasedFieldKey).mockImplementation((field) => field.fieldKey);
+});
 
 test('Injects cases related to ast', () => {
 	const ast: DeepPartial<AST> = {
@@ -285,7 +295,7 @@ test('Processes a2o children recursively', () => {
 						{ fieldKey: 'test-field-related-a', whenCase: [] },
 						{ fieldKey: 'test-field-related-b', whenCase: [] },
 					],
-					'test-collection-c': []
+					'test-collection-c': [],
 				},
 			},
 		],

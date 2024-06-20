@@ -14,6 +14,7 @@ export const defaultAdminUser: Partial<User> = {
 
 export const defaultAdminPolicy: Partial<Policy> = {
 	name: 'Administrator',
+	icon: 'verified',
 	admin_access: true,
 	app_access: true,
 	description: '$t:admin_description',

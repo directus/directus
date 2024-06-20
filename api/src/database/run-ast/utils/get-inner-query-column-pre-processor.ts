@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode, O2MNode } from '../../../types/index.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { applyCaseWhen } from './apply-case-when.js';
+import { getNodeAlias } from './get-field-alias.js';
 
 export function getInnerQueryColumnPreProcessor(
 	knex: Knex,
@@ -13,11 +14,7 @@ export function getInnerQueryColumnPreProcessor(
 	aliasPrefix: string,
 ) {
 	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode | O2MNode): Knex.Raw<string> | null {
-		let alias = fieldNode.name;
-
-		if (fieldNode.name !== fieldNode.fieldKey) {
-			alias = fieldNode.fieldKey;
-		}
+		const alias = getNodeAlias(fieldNode);
 
 		if (fieldNode.whenCase && fieldNode.whenCase.length > 0) {
 			const columnCases: Filter[] = [];

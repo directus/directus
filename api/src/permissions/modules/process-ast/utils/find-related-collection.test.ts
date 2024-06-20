@@ -34,8 +34,8 @@ test('Returns `collection` from relationship if current field is o2m alias', () 
 				field: 'test-related-field',
 				related_collection: 'test-collection',
 				meta: {
-					one_field: 'test-field'
-				}
+					one_field: 'test-field',
+				},
 			},
 		],
 	};

@@ -8,3 +8,9 @@ export interface Policy {
 	app_access: boolean;
 	admin_access: boolean;
 }
+
+export interface Globals {
+	enforce_tfa: boolean;
+	app_access: boolean;
+	admin_access: boolean;
+}

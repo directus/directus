@@ -96,6 +96,10 @@ export type FunctionFieldNode = {
 	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
 	whenCase: number[];
+	/**
+	 * Permissions rules for the item access of the related collection of this item.
+	 */
+	cases: Filter[];
 };
 
 export type AST = {

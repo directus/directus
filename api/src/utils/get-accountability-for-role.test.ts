@@ -25,6 +25,7 @@ describe('getAccountabilityForRole', async () => {
 		expect(result).toStrictEqual({
 			admin: false,
 			app: false,
+			ip: null,
 			roles: [],
 			role: null,
 			user: null,
@@ -41,6 +42,7 @@ describe('getAccountabilityForRole', async () => {
 		expect(result).toStrictEqual({
 			admin: true,
 			app: true,
+			ip: null,
 			roles: [],
 			role: null,
 			user: null,
@@ -64,10 +66,11 @@ describe('getAccountabilityForRole', async () => {
 			roles: roles,
 			role: '123-456',
 			user: null,
+			ip: null,
 		});
 
 		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', {});
-		expect(fetchGlobalAccess).toHaveBeenCalledWith({}, roles);
+		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, {});
 	});
 
 	test('invalid role throws error', async () => {
@@ -80,6 +83,8 @@ describe('getAccountabilityForRole', async () => {
 				schema: {} as any,
 				database: {} as any,
 			}),
-		).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`);
+		).rejects.toThrowErrorMatchingInlineSnapshot(
+			`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`,
+		);
 	});
 });

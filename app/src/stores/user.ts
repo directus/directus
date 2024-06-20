@@ -1,22 +1,9 @@
 import api, { RequestConfig } from '@/api';
+import { AppUser, ShareUser } from '@/types/user';
 import { userName } from '@/utils/user-name';
-import { Role, User } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
-
-type ShareUser = {
-	share: string;
-	admin_access: boolean;
-	app_access: boolean;
-};
-
-type AppUser = User & {
-	admin_access: boolean;
-	app_access: boolean;
-	enforce_tfa: boolean;
-	roles: Role[];
-};
 
 export const useUserStore = defineStore({
 	id: 'userStore',

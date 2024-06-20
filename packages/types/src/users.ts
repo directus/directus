@@ -1,3 +1,5 @@
+import type { Policy } from './policies.js';
+
 export type Role = {
 	id: string;
 	name: string;
@@ -31,6 +33,7 @@ export type User = {
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
 	role: Role | null;
+	policies: Policy[];
 	language: string | null;
 	avatar: Avatar | null;
 	title: string | null;

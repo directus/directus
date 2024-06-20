@@ -10,9 +10,7 @@ export function validatePathExistence(path: string, collection: string, fields: 
 
 	const requestedFields = Array.from(fields);
 
-	const nonExistentFields = requestedFields.filter(
-		(field) => !field.startsWith('$FOLLOW') && collectionInfo.fields[field] === undefined,
-	);
+	const nonExistentFields = requestedFields.filter((field) => collectionInfo.fields[field] === undefined);
 
 	if (nonExistentFields.length > 0) {
 		throw createFieldsForbiddenError(path, collection, nonExistentFields);

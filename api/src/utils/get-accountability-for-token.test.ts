@@ -41,10 +41,12 @@ describe('getAccountabilityForToken', async () => {
 			issuer: 'directus',
 		});
 
+		const expectedAccountability = { admin: false, app: false, role: '123-456-789', roles: [], ip: null, user: null };
+
 		const result = await getAccountabilityForToken(token);
-		expect(result).toStrictEqual({ admin: false, app: false, role: '123-456-789', roles: [], user: null });
+		expect(result).toStrictEqual(expectedAccountability);
 		expect(fetchRolesTree).toHaveBeenCalledWith('123-456-789', db);
-		expect(fetchGlobalAccess).toHaveBeenCalledWith(db, [], undefined);
+		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, db);
 	});
 
 	test('full token payload', async () => {
@@ -72,6 +74,7 @@ describe('getAccountabilityForToken', async () => {
 			user: 'user-id',
 			role: 'role-id',
 			roles: [],
+			ip: null,
 			share: 'share-id',
 			share_scope: 'share-scope',
 		});
@@ -99,18 +102,22 @@ describe('getAccountabilityForToken', async () => {
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: true, admin: false });
 
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret');
-		const result = await getAccountabilityForToken(token);
 
-		expect(result).toStrictEqual({
+		const expectedAccountability = {
 			user: 'user-id',
 			role: 'role-id',
 			roles: [],
 			admin: false,
 			app: true,
-		});
+			ip: null,
+		};
+
+		const result = await getAccountabilityForToken(token);
+
+		expect(result).toStrictEqual(expectedAccountability);
 
 		expect(fetchRolesTree).toHaveBeenCalledWith('role-id', db);
-		expect(fetchGlobalAccess).toHaveBeenCalledWith(db, [], 'user-id');
+		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, db);
 	});
 
 	test('no user found', async () => {

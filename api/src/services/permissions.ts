@@ -1,12 +1,12 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
+import { withAppMinimalPermissions } from '../permissions/lib/with-app-minimal-permissions.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
-import { withAppMinimalPermissions } from './permissions/lib/with-app-minimal-permissions.js';
 
 export class PermissionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

@@ -1,6 +1,9 @@
+import { AppUser } from '@/types/user';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { useFlowsStore } from './flows';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
@@ -10,9 +13,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { useFlowsStore } from './flows';
-import { useUserStore } from './user';
 
 const mockFlows = [
 	{
@@ -55,9 +55,8 @@ const mockFlows = [
 	},
 ];
 
-const mockAdminUser = { role: { admin_access: true } } as any;
-
-const mockNonAdminUser = { role: { admin_access: false } } as any;
+const mockAdminUser = { admin_access: true } as AppUser;
+const mockNonAdminUser = { admin_access: false } as AppUser;
 
 vi.mock('@/api', () => {
 	return {

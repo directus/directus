@@ -1,10 +1,10 @@
 import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
 import { pick, sortBy } from 'lodash-es';
-import { withAppMinimalPermissions } from '../../services/permissions/lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
 import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { withCache } from '../utils/with-cache.js';
+import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 export const fetchPermissions = withCache(
 	'permissions',

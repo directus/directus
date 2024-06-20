@@ -170,7 +170,7 @@ export class UsersService extends ItemsService {
 			opts.preMutationError = err;
 		}
 
-		if ('status' in data && data['status'] === 'active') {
+		if (!('status' in data) || data['status'] === 'active') {
 			// Creating a user only requires checking user limits if the user is active, no need to care about the role
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
@@ -187,7 +187,7 @@ export class UsersService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload['email']).filter((email) => email);
 		const passwords = data.map((payload) => payload['password']).filter((password) => password);
-		const someActive = data.some((payload) => payload['status'] === 'active');
+		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
 			if (emails.length) {
@@ -291,11 +291,7 @@ export class UsersService extends ItemsService {
 
 		// Only clear the caches if the role has been updated
 		if ('role' in data) {
-			await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-			if (this.cache && opts?.autoPurgeCache !== false) {
-				await this.cache.clear();
-			}
+			await this.clearCaches(opts);
 		}
 
 		return result;
@@ -603,5 +599,13 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 }

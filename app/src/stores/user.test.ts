@@ -3,7 +3,8 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 
-import { User } from '@directus/types';
+import { AppUser } from '@/types/user';
+import { Role, User, Globals } from '@directus/types';
 import { useUserStore } from './user';
 
 beforeEach(() => {
@@ -15,7 +16,7 @@ beforeEach(() => {
 	);
 });
 
-const mockAdminUser = {
+const mockUsersResponse = {
 	id: '00000000-0000-0000-0000-000000000000',
 	language: null,
 	first_name: 'Test',
@@ -23,30 +24,46 @@ const mockAdminUser = {
 	email: 'test@example.com',
 	last_page: null,
 	tfa_secret: null,
-	// this should be "null", but mocked as "{ id: null }" due to lodash pick usage
-	avatar: {
-		id: null,
-	},
+	avatar: null,
 	custom_user_field: 'test',
 	role: {
-		admin_access: true,
-		app_access: true,
 		id: '00000000-0000-0000-0000-000000000000',
-		enforce_tfa: false,
 		custom_role_field: 'test',
-	},
-};
+	} as Partial<Role>,
+	policies: [],
+} as Partial<User>;
+
+const mockGlobalsResponse = {
+	app_access: true,
+	admin_access: true,
+	enforce_tfa: false,
+} as Globals;
+
+const mockRolesResponse: Pick<Role, 'id'>[] = [{ id: '00000000-0000-0000-0000-000000000000' }];
 
 vi.mock('@/api', () => {
 	return {
 		default: {
 			get: (path: string) => {
-				if (path === '/users/me') {
-					return Promise.resolve({
-						data: {
-							data: mockAdminUser,
-						},
-					});
+				switch (path) {
+					case '/users/me':
+						return Promise.resolve({
+							data: {
+								data: mockUsersResponse,
+							},
+						});
+					case '/policies/me/globals':
+						return Promise.resolve({
+							data: {
+								data: mockGlobalsResponse,
+							},
+						});
+					case '/roles/me':
+						return Promise.resolve({
+							data: {
+								data: mockRolesResponse,
+							},
+						});
 				}
 
 				return Promise.reject(new Error(`GET "${path}" is not mocked in this test`));
@@ -95,10 +112,8 @@ describe('getters', () => {
 			const userStore = useUserStore();
 
 			userStore.currentUser = {
-				role: {
-					admin_access: false,
-				},
-			} as User;
+				admin_access: false,
+			} as AppUser;
 
 			expect(userStore.isAdmin).toEqual(false);
 		});
@@ -107,10 +122,8 @@ describe('getters', () => {
 			const userStore = useUserStore();
 
 			userStore.currentUser = {
-				role: {
-					admin_access: true,
-				},
-			} as User;
+				admin_access: true,
+			} as AppUser;
 
 			expect(userStore.isAdmin).toEqual(true);
 		});
@@ -123,7 +136,7 @@ describe('actions', () => {
 			const userStore = useUserStore();
 			await userStore.hydrate();
 
-			expect(userStore.currentUser).toEqual(mockAdminUser);
+			expect(userStore.currentUser).toEqual({ ...mockUsersResponse, ...mockGlobalsResponse, roles: mockRolesResponse });
 		});
 	});
 

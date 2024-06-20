@@ -55,6 +55,30 @@ returned from the new
 [Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
 endpoint.
 
+### Replaced `mysql` with `mysql2`
+
+The database client library [`mysql`](https://www.npmjs.com/package/mysql) has been replaced with
+[`mysql2`](https://www.npmjs.com/package/mysql2), which is a continuation of the former. The client is used to connect
+to MySQL/MariaDB databases.
+
+If you're using MySQL/MariaDB, please note that:
+
+- `mysql2` leads to cross-collection queries (filtering on relations) with stricter charset comparison. Therefore,
+  ensure again that the value of the config option
+  [`DB_CHARSET`/`DB_CHARSET_NUMBER`](/self-hosted/config-options#database) matches the charset of your tables.
+- Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
+  preserved.
+
+### Disallowed Mutation of Special System Collections via Relations
+
+For security reasons, mutations of the following system collections via relations are no longer permitted:
+
+- `directus_collections`
+- `directus_fields`
+- `directus_relations`
+- `directus_sessions`
+- `directus_extensions`
+
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders

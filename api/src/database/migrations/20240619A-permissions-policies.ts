@@ -51,7 +51,7 @@ export async function up(knex: Knex) {
 		.update({
 			description: '$t:admin_policy_description',
 		})
-		.where({ description: '$t:admin_description' });
+		.where('description', 'LIKE', '$t:admin_description');
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Remove access control + add nesting to roles
@@ -62,29 +62,29 @@ export async function up(knex: Knex) {
 		table.dropColumn('admin_access');
 		table.dropColumn('app_access');
 
-		table.uuid('parent').references('directus_roles.id').onDelete('SET NULL');
+		table.uuid('parent').references('directus_roles.id');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Link permissions to policies instead of roles
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
+		table.uuid('policy').notNullable().references('directus_policies.id').onDelete('CASCADE');
+		// Drop the foreign key constraint here in order to update `null` role to public policy ID
+		table.dropForeign('role');
 	});
+
+	await knex('directus_permissions')
+		.update({
+			role: PUBLIC_POLICY_ID,
+		})
+		.whereNull('role');
 
 	await knex('directus_permissions').update({
 		policy: knex.ref('role'),
 	});
 
-	await knex('directus_permissions')
-		.update({
-			policy: PUBLIC_POLICY_ID,
-		})
-		.whereNull('policy');
-
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').notNullable().alter();
-		table.dropForeign('role');
 		table.dropColumns('role');
 	});
 

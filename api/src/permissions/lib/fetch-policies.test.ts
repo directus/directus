@@ -17,6 +17,32 @@ beforeEach(() => {
 	AccessService.prototype.readByQuery = vi.fn().mockResolvedValue(rows);
 });
 
+test('Fetches policies for public role and user when user is given without role', async () => {
+	const acc = { roles: [], user: 'user-a' } as unknown as Accountability;
+
+	const policies = await fetchPolicies(acc, {} as Context);
+
+	expect(AccessService.prototype.readByQuery).toHaveBeenCalledWith({
+		filter: {
+			_or: [
+				{ user: { _eq: 'user-a' } },
+				{
+					role: {
+						_null: true,
+					},
+					user: {
+						_null: true,
+					},
+				},
+			],
+		},
+		fields: ['policy.id', 'policy.ip_access'],
+		limit: -1,
+	});
+
+	expect(policies).toEqual([]);
+});
+
 test('Fetches policies for public role when no roles and user are given', async () => {
 	const acc = { roles: [], user: null } as unknown as Accountability;
 

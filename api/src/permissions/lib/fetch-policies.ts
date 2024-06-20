@@ -16,15 +16,17 @@ export async function _fetchPolicies(
 	const { AccessService } = await import('../../services/access.js');
 	const accessService = new AccessService(context);
 
-	let filter: Filter;
+	let roleFilter: Filter;
 
-	// No roles and no user means unauthenticated request
-	if (roles.length === 0 && !user) {
-		filter = { role: { _null: true }, user: { _null: true } };
+	if (roles.length === 0) {
+		// Users without role assumes the Public role permissions along with their attached policies
+		roleFilter = { role: { _null: true }, user: { _null: true } };
 	} else {
-		const roleFilter = { role: { _in: roles } };
-		filter = user ? { _or: [{ user: { _eq: user } }, roleFilter] } : roleFilter;
+		roleFilter = { role: { _in: roles } };
 	}
+
+	// If the user is not null, we also want to include the policies attached to the user
+	const filter = user ? { _or: [{ user: { _eq: user } }, roleFilter] } : roleFilter;
 
 	const accessRows = (await accessService.readByQuery({
 		filter,
