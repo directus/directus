@@ -49,9 +49,12 @@ export function extractFieldsFromQuery(
 					continue;
 				}
 
-				const { fieldName } = parseFilterKey(part);
-
-				info.fields.add(fieldName);
+				if (part.startsWith('$FOLLOW(') && part.endsWith(')')) {
+					// Don't add this implicit relation field to fields, as it will be accounted for in the reverse direction
+				} else {
+					const { fieldName } = parseFilterKey(part);
+					info.fields.add(fieldName);
+				}
 
 				/**
 				 * Related collection for the current part. Is null when the current field isn't a
