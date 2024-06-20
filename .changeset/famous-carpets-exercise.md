@@ -1,5 +1,5 @@
 ---
-"@directus/sdk": patch
+"@directus/sdk": minor
 ---
 
-Implemented new SDK functions for Auditus
+Implemented new SDK functions for policies

@@ -1,5 +1,5 @@
 ---
-"@directus/api": patch
+"@directus/api": minor
 ---
 
-Implemented new GraphQL queries for Auditus
+Implemented new GraphQL queries for policies

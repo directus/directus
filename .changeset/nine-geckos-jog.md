@@ -1,5 +1,5 @@
 ---
-"@directus/api": patch
+"@directus/api": minor
 ---
 
-Updated WebSocket subscriptions to include the new Auditus collections
+Updated WebSocket subscriptions to include the new policies
