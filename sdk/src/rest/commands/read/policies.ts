@@ -34,7 +34,7 @@ export const readPolicies =
  * Read a specific policy.
  * @param key The primary key of the permission
  * @param query The query parameters
- * @returns Returns a Permission object if a valid primary key was provided.
+ * @returns Returns a Policy object if a valid primary key was provided.
  * @throws Will throw if key is empty
  */
 export const readPolicy =
