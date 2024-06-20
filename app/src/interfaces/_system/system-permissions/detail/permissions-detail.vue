@@ -23,6 +23,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	input: [Permission | null];
+	'update:active': [boolean];
 }>();
 
 const { permissionKey, policyKey } = toRefs(props);

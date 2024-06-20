@@ -2,13 +2,11 @@
 import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
 import { BasicRole } from '../composables/use-navigation';
 
 const props = defineProps<{
 	role: BasicRole;
 	currentRole?: string;
-	lastAdmin: boolean;
 }>();
 
 defineEmits<{
@@ -58,7 +56,6 @@ const settingLink = computed(() => ({
 			:key="child.id"
 			:role="child"
 			:current-role="currentRole"
-			:last-admin="lastAdmin"
 			@click="$emit('click', $event)"
 		/>
 	</v-list-group>
