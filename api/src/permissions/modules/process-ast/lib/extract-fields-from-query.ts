@@ -1,4 +1,5 @@
 import type { Query, SchemaOverview } from '@directus/types';
+import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
 import { findRelatedCollection } from '../utils/find-related-collection.js';
@@ -48,7 +49,9 @@ export function extractFieldsFromQuery(
 					continue;
 				}
 
-				info.fields.add(part);
+				const { fieldName } = parseFilterKey(part);
+
+				info.fields.add(fieldName);
 
 				/**
 				 * Related collection for the current part. Is null when the current field isn't a
