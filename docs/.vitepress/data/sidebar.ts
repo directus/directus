@@ -191,6 +191,10 @@ function sidebarDeveloperReference() {
 					text: 'Permissions',
 				},
 				{
+					link: '/reference/system/policies',
+					text: 'Policies',
+				},
+				{
 					link: '/reference/system/presets',
 					text: 'Presets',
 				},
