@@ -170,7 +170,7 @@ export class UsersService extends ItemsService {
 			opts.preMutationError = err;
 		}
 
-		if ('status' in data && data['status'] === 'active') {
+		if (!('status' in data) || data['status'] === 'active') {
 			// Creating a user only requires checking user limits if the user is active, no need to care about the role
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
@@ -187,7 +187,7 @@ export class UsersService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload['email']).filter((email) => email);
 		const passwords = data.map((payload) => payload['password']).filter((password) => password);
-		const someActive = data.some((payload) => payload['status'] === 'active');
+		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
 			if (emails.length) {
