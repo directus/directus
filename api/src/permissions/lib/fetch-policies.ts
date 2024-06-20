@@ -18,8 +18,15 @@ export async function _fetchPolicies(
 
 	let filter: Filter;
 
-	// No roles and no user means unauthenticated request
-	if (roles.length === 0 && !user) {
+	if (roles.length === 0) {
+		// Users without role assumes the Public role permissions along with their attached policies
+		if (user) {
+			filter = { _or: [{ role: { _null: true }, user: { _null: true } }, { user: { _eq: user } }] };
+		}
+		// No roles and no user means an unauthenticated request
+		else {
+			filter = { role: { _null: true }, user: { _null: true } };
+		}
 		filter = { role: { _null: true }, user: { _null: true } };
 	} else {
 		const roleFilter = { role: { _in: roles } };
