@@ -51,7 +51,7 @@ export async function up(knex: Knex) {
 		.update({
 			description: '$t:admin_policy_description',
 		})
-		.where({ description: '$t:admin_description' });
+		.where('description', 'LIKE', '$t:admin_description');
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Remove access control + add nesting to roles
