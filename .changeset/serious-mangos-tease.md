@@ -2,4 +2,4 @@
 '@directus/memory': minor
 ---
 
-Added `clear` method to cache implementations
+Added new `clear` method to cache implementations

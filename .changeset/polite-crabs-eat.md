@@ -2,4 +2,4 @@
 '@directus/extensions': major
 ---
 
-Changed module `preRegisterCheck` signature to align with new permissions system
+Changed module `preRegisterCheck` signature to align with the changes made for Policies
