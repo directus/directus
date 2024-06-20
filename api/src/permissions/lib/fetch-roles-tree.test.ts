@@ -40,7 +40,7 @@ test('Exits if parent row is undefined', async () => {
 	const roles = await _fetchRolesTree('start', knex);
 
 	expect(roles).toEqual(['second', 'start']);
-})
+});
 
 test('Throws error if infinite recursion occurs', async () => {
 	vi.mocked(knex.first).mockResolvedValueOnce({ id: 'first', parent: 'second' });

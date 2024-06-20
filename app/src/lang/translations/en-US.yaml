@@ -198,8 +198,8 @@ logoutReason:
 public_label: Public
 public_description: Controls what API data is available without authenticating.
 public_role_info: >-
-  The public role controls what API data is available to unauthenticated users or users without a role.
-  Requests with the public role can not have app or admin access. If app or admin access are given to a policy assigned to the public
+  The public role controls what API data is available to unauthenticated users or users without a role. Requests with
+  the public role can not have app or admin access. If app or admin access are given to a policy assigned to the public
   role they will be ignored.
 admin_description: Initial administrative role with unrestricted App/API access.
 admin_policy_description: Initial administrative policy with unrestricted App/API access.

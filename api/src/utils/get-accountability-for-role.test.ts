@@ -80,6 +80,8 @@ describe('getAccountabilityForRole', async () => {
 				schema: {} as any,
 				database: {} as any,
 			}),
-		).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`);
+		).rejects.toThrowErrorMatchingInlineSnapshot(
+			`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`,
+		);
 	});
 });

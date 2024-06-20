@@ -285,7 +285,7 @@ test('Processes a2o children recursively', () => {
 						{ fieldKey: 'test-field-related-a', whenCase: [] },
 						{ fieldKey: 'test-field-related-b', whenCase: [] },
 					],
-					'test-collection-c': []
+					'test-collection-c': [],
 				},
 			},
 		],
