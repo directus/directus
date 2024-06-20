@@ -107,8 +107,8 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 				}
 			}
 		} else {
-			if (fieldKey.includes('(') && fieldKey.includes(')')) {
-				const columnName = fieldKey.match(REGEX_BETWEEN_PARENS)![1]!;
+			if (name.includes('(') && name.includes(')')) {
+				const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
 				const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
 
 				if (foundField && foundField.type === 'alias') {
@@ -125,6 +125,7 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 							query: {},
 							relatedCollection: foundRelation.collection,
 							whenCase: [],
+							cases: [],
 						});
 
 						continue;
