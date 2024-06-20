@@ -209,6 +209,8 @@ In addition to static values, you can also filter against _dynamic_ values using
 
 - `$CURRENT_USER` — The primary key of the currently authenticated user
 - `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
+- `$CURRENT_ROLES` - An array of roles containing the `$CURRENT_ROLE` and any roles included within it.
+- `$CURRENT_POLICIES` - An array of policies assigned to the user directly, or through their roles.
 - `$NOW` — The current timestamp
 - `$NOW(<adjustment>)` - The current timestamp plus/minus a given distance, for example `$NOW(-1 year)`,
   `$NOW(+2 hours)`
