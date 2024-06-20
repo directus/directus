@@ -269,7 +269,6 @@ platform. Extremely granular, these filter-based permissions control access for 
 
 Policies define a specific set of access permissions, and can be attached directly to users or to roles.
 
-
 ## Presets
 
 Presets store the exact state of a [collection page](#collections). They are used to set layout defaults for a user, or
@@ -317,8 +316,8 @@ to the activity event where it was created.
 
 ## Roles
 
-Roles define a specific set of Policies, and are the primary organizational structure for Users within the
-platform. You can create an unlimited number of roles, so organize your users in whatever way feels most appropriate.
+Roles define a specific set of Policies, and are the primary organizational structure for Users within the platform. You
+can create an unlimited number of roles, so organize your users in whatever way feels most appropriate.
 
 Roles can also contain any number of additional roles, each containing their own set of Policies.
 
@@ -403,6 +402,6 @@ For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
 
 ## Users
 
-An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines their policies what they have
-access to see and do. This means that the experience of users may vary significantly depending on their role's
-permissions. Users can also have policies directly attached to them.
+An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines their policies
+what they have access to see and do. This means that the experience of users may vary significantly depending on their
+role's permissions. Users can also have policies directly attached to them.

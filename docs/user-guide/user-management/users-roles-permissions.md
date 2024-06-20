@@ -9,8 +9,8 @@ readTime: 7 min read
 
 > Users, roles, policies, and permissions work together to determine _who can access what_ inside your database.
 > [Users](/user-guide/overview/glossary#users) are the individual accounts for authenticating into the project. Each
-> user is assigned a [role](/user-guide/overview/glossary#roles) and [policies](/user-guide/overview/glossary#policies) which defines its
-> [access permissions](/user-guide/overview/glossary#permissions).
+> user is assigned a [role](/user-guide/overview/glossary#roles) and [policies](/user-guide/overview/glossary#policies)
+> which defines its [access permissions](/user-guide/overview/glossary#permissions).
 
 ::: tip Before You Begin
 
@@ -21,13 +21,14 @@ We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get 
 ::: tip Learn More
 
 To manage user roles and access policies programmatically via the API, please see our API guides on
-[users](/reference/system/users), [roles](/reference/system/roles), [policies](/reference/system/policies), and [permissions](/reference/system/permissions).
+[users](/reference/system/users), [roles](/reference/system/roles), [policies](/reference/system/policies), and
+[permissions](/reference/system/permissions).
 
 :::
 
 In order to understand how users, roles, and permissions work in Directus, a conceptual understanding of _how they work
-in general_ will be helpful. The following few paragraphs will introduce you to how users, roles, policies, and permissions work
-within a relational database. If you're already familiar with these concepts, feel free to skip to
+in general_ will be helpful. The following few paragraphs will introduce you to how users, roles, policies, and
+permissions work within a relational database. If you're already familiar with these concepts, feel free to skip to
 [How it Works in Directus](#how-it-works-in-directus).
 
 ### Users
@@ -53,7 +54,8 @@ other entity that can login and interact with the database.
 
 ### Roles
 
-Roles are an organizational unit and describe who your users are. For example, a member of the Engineering Team, or the Marketing Team.
+Roles are an organizational unit and describe who your users are. For example, a member of the Engineering Team, or the
+Marketing Team.
 
 Regardless of your project, your SQL database will _always_ need an administrator role and a public role. In addition,
 you may need any number of custom roles.
@@ -98,13 +100,10 @@ permissions on each data table as desired. For example, you can grant:
 
 ![Permissions in the Directus Data Studio](https://marketing.directus.app/assets/55212af7-8c48-44f7-81fe-6ee4f00f1de2.png)
 
-Directus offers an extremely granular, yet easy to configure permissions system. When you
-create a policy, all permissions are turned off by default, allowing you to explicitly grant permissions
-as desired.
+Directus offers an extremely granular, yet easy to configure permissions system. When you create a policy, all
+permissions are turned off by default, allowing you to explicitly grant permissions as desired.
 
-There are two other key points to note about Directus. First, the term
-custom access permissions is used in place of
-business rules, however the concept is the same. Second, instead of the standard CRUD permissions,
-Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
-defines whether a user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in
-a collection.
+There are two other key points to note about Directus. First, the term custom access permissions is used in place of
+business rules, however the concept is the same. Second, instead of the standard CRUD permissions, Directus provides
+CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share, defines whether a
+user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in a collection.

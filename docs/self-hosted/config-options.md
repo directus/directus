@@ -238,7 +238,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
 | `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
 | `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                              | `true`                       |
+| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                                     | `true`                       |
 | `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
 | `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
 | `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |

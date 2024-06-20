@@ -51,8 +51,7 @@ properties. These are now returned directly in the `user` object.
 
 If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now
 receives a different data structure. It previously received a list of permission objects. Now, it receives the same data
-returned from the new
-[Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
+returned from the new [Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
 endpoint.
 
 ### Replaced `mysql` with `mysql2`

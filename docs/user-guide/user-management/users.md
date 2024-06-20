@@ -16,7 +16,8 @@ To configure users programmatically, see our API documentation on [users](/refer
 
 :::tip Directus 11 RC
 
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's data structure and relations.
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
 
 :::
 

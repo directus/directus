@@ -6,7 +6,8 @@ readTime:
 
 # Roles
 
-> Roles are a bundle of pre-configured policies which you can (re)assign to any number of users. Roles can also contain other roles.
+> Roles are a bundle of pre-configured policies which you can (re)assign to any number of users. Roles can also contain
+> other roles.
 
 ::: tip Learn More
 
@@ -23,8 +24,8 @@ data structure and relations.
 
 ## View a Role
 
-To view an existing role, navigate to **Settings > User Roles > [Role]**. Now you can see the role's policies and
-other details.
+To view an existing role, navigate to **Settings > User Roles > [Role]**. Now you can see the role's policies and other
+details.
 
 ## Create a Role
 
@@ -90,8 +91,7 @@ To delete a role, follow these steps.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which limits them to public
-permissions. However, you can always
-assign them a new role.
+permissions. However, you can always assign them a new role.
 
 :::
 
