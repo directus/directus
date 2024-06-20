@@ -2,7 +2,16 @@ import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, Aggregate, Filter, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	Aggregate,
+	CollectionAccess,
+	Filter,
+	Item,
+	PrimaryKey,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import type {
@@ -96,6 +105,9 @@ import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
 import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
+import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
+import { RolesService } from '../roles.js';
 
 const env = useEnv();
 
@@ -3227,6 +3239,81 @@ export class GraphQLService {
 						const query = this.getQuery(args, selections || [], info.variableValues);
 
 						return await service.readOne(this.accountability.user, query);
+					},
+				},
+			});
+		}
+
+		if ('directus_permissions' in schema.read.collections) {
+			schemaComposer.Query.addFields({
+				permissions_me: {
+					type: schemaComposer.createScalarTC<CollectionAccess>({
+						name: 'permissions_me_type',
+						parseValue: (value: unknown) => value as CollectionAccess,
+						serialize: (value) => value,
+					}),
+					resolve: async (_, _args, __, _info) => {
+						if (!this.accountability?.user && !this.accountability?.role) return null;
+
+						const result = await fetchAccountabilityCollectionAccess(this.accountability, {
+							schema: this.schema,
+							knex: getDatabase(),
+						});
+
+						return result;
+					},
+				},
+			});
+		}
+
+		if ('directus_roles' in schema.read.collections) {
+			schemaComposer.Query.addFields({
+				roles_me: {
+					type: ReadCollectionTypes['directus_roles']!.List,
+					resolve: async (_, args, __, info) => {
+						if (!this.accountability?.user && !this.accountability?.role) return null;
+
+						const service = new RolesService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const selections = this.replaceFragmentsInSelections(
+							info.fieldNodes[0]?.selectionSet?.selections,
+							info.fragments,
+						);
+
+						const query = this.getQuery(args, selections || [], info.variableValues);
+						query.limit = -1;
+
+						const roles = await service.readMany(this.accountability.roles, query);
+
+						return roles;
+					},
+				},
+			});
+		}
+
+		if ('directus_policies' in schema.read.collections) {
+			schemaComposer.Query.addFields({
+				policies_me_globals: {
+					type: schemaComposer.createObjectTC({
+						name: 'policy_me_globals_type',
+						fields: {
+							enforce_tfa: 'Boolean',
+							app_access: 'Boolean',
+							admin_access: 'Boolean',
+						},
+					}),
+					resolve: async (_, _args, __, _info) => {
+						if (!this.accountability?.user && !this.accountability?.role) return null;
+
+						const result = await fetchAccountabilityPolicyGlobals(this.accountability, {
+							schema: this.schema,
+							knex: getDatabase(),
+						});
+
+						return result;
 					},
 				},
 			});
