@@ -7,11 +7,11 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
+import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
@@ -289,9 +289,13 @@ export class UsersService extends ItemsService {
 
 		const result = await super.updateMany(keys, data, opts);
 
-		// Only clear the permissions cache if the role or status has been updated
-		if (opts.userIntegrityCheckFlags) {
-			await clearPermissionsCache();
+		// Only clear the caches if the role has been updated
+		if ('role' in data) {
+			await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+			if (this.cache && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
+			}
 		}
 
 		return result;

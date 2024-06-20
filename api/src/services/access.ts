@@ -1,5 +1,5 @@
 import type { Item, PrimaryKey } from '@directus/types';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { clearSystemCache } from '../cache.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
@@ -7,6 +7,14 @@ import { ItemsService } from './items.js';
 export class AccessService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_access', options);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
@@ -19,8 +27,8 @@ export class AccessService extends ItemsService {
 
 		const result = await super.createOne(data, opts);
 
-		// A new policy has been attached to a user or a role, clear the permissions cache
-		await clearPermissionsCache();
+		// A new policy has been attached to a user or a role, clear the caches
+		await this.clearCaches();
 
 		return result;
 	}
@@ -36,8 +44,8 @@ export class AccessService extends ItemsService {
 
 		const result = await super.updateMany(keys, data, { ...opts, userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
-		// Some policy attachments have been updated, clear the permissions cache
-		await clearPermissionsCache();
+		// Some policy attachments have been updated, clear the caches
+		await this.clearCaches();
 
 		return result;
 	}
@@ -49,8 +57,8 @@ export class AccessService extends ItemsService {
 
 		const result = await super.deleteMany(keys, opts);
 
-		// Some policy attachments have been deleted, clear the permissions cache
-		await clearPermissionsCache();
+		// Some policy attachments have been deleted, clear the caches
+		await this.clearCaches();
 
 		return result;
 	}

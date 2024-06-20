@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { clearSystemCache } from '../cache.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
@@ -13,6 +13,14 @@ import { UsersService } from './users.js';
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_roles', options);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 
 	// No need to check user integrity in createOne, as the creation of a role itself does not influence the number of
@@ -37,7 +45,9 @@ export class RolesService extends ItemsService {
 
 		// Only clear the permissions cache if the parent role has changed
 		// If anything policies related has changed, the cache will be cleared in the AccessService as well
-		if (opts.userIntegrityCheckFlags) await clearPermissionsCache();
+		if ('parent' in data) {
+			await this.clearCaches();
+		}
 
 		return result;
 	}
@@ -88,8 +98,8 @@ export class RolesService extends ItemsService {
 			await itemsService.deleteMany(keys, opts);
 		});
 
-		// Since nested roles could be updated, clear permissions cache
-		await clearPermissionsCache();
+		// Since nested roles could be updated, clear caches
+		await this.clearCaches();
 
 		return keys;
 	}
