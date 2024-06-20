@@ -18,15 +18,23 @@ const props = defineProps<{
 const emit = defineEmits(['setNestedSort', 'editCollection']);
 
 const { t } = useI18n();
-const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true as boolean);
+
+const { data: isCollectionExpanded } = useLocalStorage(
+	`settings-collapsed-${props.collection.collection}`,
+	true as boolean,
+);
 
 const toggleCollapse = () => {
 	isCollectionExpanded.value = !isCollectionExpanded.value;
 };
 
-watch(() => props.expandAll, (newVal) => {
-	isCollectionExpanded.value = newVal;
-}, { immediate: true });
+watch(
+	() => props.expandAll,
+	(newVal) => {
+		isCollectionExpanded.value = newVal;
+	},
+	{ immediate: true },
+);
 
 const nestedCollections = computed(() =>
 	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),

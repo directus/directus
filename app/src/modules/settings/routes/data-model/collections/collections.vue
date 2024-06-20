@@ -24,10 +24,10 @@ const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
 
-const {data: isCollectionsExpanded} = useLocalStorage('settings-collapsed-all', true as boolean);
+const { data: isCollectionsExpanded } = useLocalStorage('settings-collapsed-all', true as boolean);
 
 const toggleCollections = () => {
-  	isCollectionsExpanded.value = !isCollectionsExpanded.value;
+	isCollectionsExpanded.value = !isCollectionsExpanded.value;
 };
 
 const collections = computed(() => {
@@ -189,13 +189,13 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
-
 			<div class="expand-collapse-button">
 				<div>
 					<span>{{ t('expand') }}:</span>
 					<v-button
 						v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
-						primary small
+						primary
+						small
 						:outlined="isCollectionsExpanded"
 						@click="toggleCollections"
 					>
