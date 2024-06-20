@@ -2,7 +2,16 @@ import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, Aggregate, CollectionAccess, Filter, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	Aggregate,
+	CollectionAccess,
+	Filter,
+	Item,
+	PrimaryKey,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import { parseFilterFunctionPath, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import type {
@@ -3294,7 +3303,7 @@ export class GraphQLService {
 							enforce_tfa: 'Boolean',
 							app_access: 'Boolean',
 							admin_access: 'Boolean',
-						}
+						},
 					}),
 					resolve: async (_, _args, __, _info) => {
 						if (!this.accountability?.user && !this.accountability?.role) return null;
