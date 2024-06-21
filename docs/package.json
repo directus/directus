@@ -25,7 +25,7 @@
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.1",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@5.0.1-1",
-		"eslint-plugin-react": "7.34.2",
+		"eslint-plugin-react": "7.34.3",
 		"markdown-it-for-inline": "2.0.1",
 		"marked": "12.0.2",
 		"spellchecker-cli": "6.2.0",
