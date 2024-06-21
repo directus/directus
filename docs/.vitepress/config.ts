@@ -127,6 +127,7 @@ gtag('config', 'UA-24637628-7');
 				href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap',
 			},
 		],
+		['meta', { name: 'robots', content: 'noindex, nofollow' }],
 	],
 	lastUpdated: true,
 	themeConfig: {
