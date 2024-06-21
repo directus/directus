@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed the policies migration for the case were permissions had been configured for the public role
+Fixed the policies migration for the case where permissions had been configured for the public role
