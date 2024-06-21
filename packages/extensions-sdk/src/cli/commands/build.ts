@@ -274,10 +274,10 @@ async function buildAppOrApiExtension({
 		process.exit(1);
 	}
 
-	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
-
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
+
+	const config = await loadConfig(mode);
+	const plugins = config.plugins ?? [];
 
 	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, plugins });
 	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
@@ -328,15 +328,12 @@ async function buildHybridExtension({
 		process.exit(1);
 	}
 
-	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
-
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: inputApp,
 		sourcemap,
 		minify,
-		plugins,
+		plugins: (await loadConfig('browser')).plugins ?? [],
 	});
 
 	const rollupOptionsApi = getRollupOptions({
@@ -344,7 +341,7 @@ async function buildHybridExtension({
 		input: inputApi,
 		sourcemap,
 		minify,
-		plugins,
+		plugins: (await loadConfig('node')).plugins ?? [],
 	});
 
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
@@ -400,9 +397,6 @@ async function buildBundleExtension({
 		bundleEntryNames.add(name);
 	}
 
-	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
-
 	const entrypointApp = generateBundleEntrypoint('app', entries);
 	const entrypointApi = generateBundleEntrypoint('api', entries);
 
@@ -411,7 +405,7 @@ async function buildBundleExtension({
 		input: { entry: entrypointApp },
 		sourcemap,
 		minify,
-		plugins,
+		plugins: (await loadConfig('browser')).plugins ?? [],
 	});
 
 	const rollupOptionsApi = getRollupOptions({
@@ -419,7 +413,7 @@ async function buildBundleExtension({
 		input: { entry: entrypointApi },
 		sourcemap,
 		minify,
-		plugins,
+		plugins: (await loadConfig('node')).plugins ?? [],
 	});
 
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
