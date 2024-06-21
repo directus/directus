@@ -231,8 +231,8 @@ importers:
         specifier: 4.7.2
         version: 4.7.2
       joi:
-        specifier: 17.13.1
-        version: 17.13.1
+        specifier: 17.13.3
+        version: 17.13.3
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -1955,8 +1955,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       joi:
-        specifier: 17.13.1
-        version: 17.13.1
+        specifier: 17.13.3
+        version: 17.13.3
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -2016,8 +2016,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       joi:
-        specifier: 17.13.1
-        version: 17.13.1
+        specifier: 17.13.3
+        version: 17.13.3
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -7848,8 +7848,8 @@ packages:
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
-  joi@17.13.1:
-    resolution: {integrity: sha512-vaBlIKCyo4FCUtCm7Eu4QZd/q02bWcxfUO6YSXAZOWF6gzcLBeba8kwotUdYJjDLW8Cz8RywsSOqiNJZW0mNvg==}
+  joi@17.13.3:
+    resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
 
   jose@4.15.5:
     resolution: {integrity: sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==}
@@ -18713,7 +18713,7 @@ snapshots:
 
   jju@1.4.0: {}
 
-  joi@17.13.1:
+  joi@17.13.3:
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0
