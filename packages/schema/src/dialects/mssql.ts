@@ -341,8 +341,8 @@ export default class MSSQL implements SchemaInspector {
         ) AS [i]
         ON [i].[object_id] = [c].[object_id]
         AND [i].[column_id] = [c].[column_id]
-        AND ISNULL([i].[index_column_count], 1) = 1
-        AND ISNULL([i].[index_priority], 1) = 1`,
+        AND [i].[index_column_count] IS NOT NULL,
+        AND [i].[index_priority] IS NOT NULL`,
 			)
 			.where({ 's.schema_id': schemaId });
 
