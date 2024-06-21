@@ -61,9 +61,9 @@ export default {
 };
 ```
 
-If you are developing a bundle or hybrid extension, like a flow operation, your code will be bundled for two
-different modes: `node` for API extensions and `browser` for Data Studio extensions. You can specify different
-options for each mode by optionally including the `.node` or `.browser` suffixes to the configuration filename:
+If you are developing a bundle or hybrid extension, like a flow operation, your code will be bundled for two different
+modes: `node` for API extensions and `browser` for Data Studio extensions. You can specify different options for each
+mode by optionally including the `.node` or `.browser` suffixes to the configuration filename:
 `extension.config.node.js` and `extension.config.browser.js`.
 
 #### Supported Options
