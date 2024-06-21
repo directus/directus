@@ -13,6 +13,18 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.12.2
+
+### Disallowed Mutation of Special System Collections via Relations
+
+For security reasons, mutations of the following system collections via relations are no longer permitted:
+
+- `directus_collections`
+- `directus_fields`
+- `directus_relations`
+- `directus_sessions`
+- `directus_extensions`
+
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders

@@ -5,6 +5,7 @@ import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { validateDateDifference } from '@utils/validate-date-difference';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
@@ -28,6 +29,7 @@ type SchemaTimezoneTypesResponse = SchemaTimezoneTypesObject & {
 describe('schema', () => {
 	const databases = new Map<Vendor, Knex>();
 	const tzDirectus = {} as Record<Vendor, ChildProcess>;
+	const env = cloneDeep(config.envs);
 	const currentTzOffset = new Date().getTimezoneOffset();
 	const isWindows = ['win32', 'win64'].includes(process.platform);
 
@@ -74,21 +76,15 @@ describe('schema', () => {
 		const promises = [];
 
 		for (const vendor of vendors) {
-			const newServerPort = Number(config.envs[vendor]!.PORT) + 100;
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-			config.envs[vendor]['TZ'] = newTz;
-			config.envs[vendor].PORT = String(newServerPort);
+			const newServerPort = await getPort();
 
-			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: config.envs[vendor] });
+			env[vendor]['TZ'] = newTz;
+			env[vendor].PORT = String(newServerPort);
+
+			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 			tzDirectus[vendor] = server;
-
-			let serverOutput = '';
-			server.stdout.on('data', (data) => (serverOutput += data.toString()));
-
-			server.on('exit', (code) => {
-				if (code !== null) throw new Error(`Directus-${vendor} server failed (${code}): \n ${serverOutput}`);
-			});
 
 			promises.push(awaitDirectusConnection(newServerPort));
 		}
@@ -101,9 +97,6 @@ describe('schema', () => {
 		for (const [vendor, connection] of databases) {
 			tzDirectus[vendor].kill();
 
-			config.envs[vendor].PORT = String(Number(config.envs[vendor].PORT) - 100);
-			delete config.envs[vendor]['TZ'];
-
 			await connection.destroy();
 		}
 	});
@@ -113,7 +106,7 @@ describe('schema', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const currentTimestamp = new Date();
 
-				const response = await request(getUrl(vendor))
+				const response = await request(getUrl(vendor, env))
 					.get(`/items/${collectionName}?fields=*&limit=${sampleDates.length}`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
@@ -183,7 +176,7 @@ describe('schema', () => {
 
 				const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
 
-				const response2 = await request(getUrl(vendor))
+				const response2 = await request(getUrl(vendor, env))
 					.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length}`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
@@ -269,7 +262,7 @@ describe('schema', () => {
 
 					const insertionStartTimestamp = new Date();
 
-					await request(getUrl(vendor))
+					await request(getUrl(vendor, env))
 						.post(`/items/${collectionName}`)
 						.send(dates)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
@@ -278,7 +271,7 @@ describe('schema', () => {
 
 					const insertionEndTimestamp = new Date();
 
-					const response = await request(getUrl(vendor))
+					const response = await request(getUrl(vendor, env))
 						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length * 2}`)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
@@ -344,7 +337,7 @@ describe('schema', () => {
 					date: sampleDates[0]!.date,
 				};
 
-				const existingDataResponse = await request(getUrl(vendor))
+				const existingDataResponse = await request(getUrl(vendor, env))
 					.get(`/items/${collectionName}?fields=*&limit=1&offset=${sampleDates.length * 2}`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
@@ -352,7 +345,7 @@ describe('schema', () => {
 
 				const updateStartTimestamp = new Date();
 
-				await request(getUrl(vendor))
+				await request(getUrl(vendor, env))
 					.patch(`/items/${collectionName}/${existingDataResponse.body.data[0].id}`)
 					.send(payload)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
@@ -361,7 +354,7 @@ describe('schema', () => {
 
 				const updateEndTimestamp = new Date();
 
-				const response = await request(getUrl(vendor))
+				const response = await request(getUrl(vendor, env))
 					.get(`/items/${collectionName}/${existingDataResponse.body.data[0].id}?fields=*`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
