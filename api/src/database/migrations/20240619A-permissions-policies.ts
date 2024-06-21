@@ -69,7 +69,7 @@ export async function up(knex: Knex) {
 	// Link permissions to policies instead of roles
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').notNullable().references('directus_policies.id').onDelete('CASCADE');
+		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
 		// Drop the foreign key constraint here in order to update `null` role to public policy ID
 		table.dropForeign('role');
 	});
@@ -86,6 +86,7 @@ export async function up(knex: Knex) {
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.dropColumns('role');
+		table.dropNullable('policy');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
