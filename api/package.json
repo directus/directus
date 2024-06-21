@@ -129,7 +129,7 @@
 		"ioredis": "5.4.1",
 		"ip-matching": "2.1.2",
 		"isolated-vm": "4.7.2",
-		"joi": "17.13.1",
+		"joi": "17.13.3",
 		"js-yaml": "4.1.0",
 		"js2xmlparser": "5.0.0",
 		"json2csv": "5.0.7",
