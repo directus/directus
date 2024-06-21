@@ -20,6 +20,9 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 <template>
 	<Layout>
 		<template #sidebar-nav-before>
+			<a href="https://docs.directus.io" class="version-notice">
+				These docs are for the Directus 11 Release Candidate. Click here to return to our main docs.
+			</a>
 			<div class="sidebar-nav-before">
 				<div class="toggle">
 					<a href="/" :class="{ active: isDevPage }">Developers</a>
@@ -52,6 +55,18 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 </template>
 
 <style lang="scss" scoped>
+.version-notice {
+	background-color: var(--vp-c-purple-dimm-3);
+	border-radius: var(--rounded-lg);
+	padding: 1rem;
+	border: 1px solid var(--vp-c-purple-dimm-1);
+	margin-top: 1rem;
+	display: block;
+	font-size: 0.7rem;
+	line-height: 1.125rem;
+	margin-top: 0.75rems;
+}
+
 .sidebar-nav-before {
 	padding: 1em 0;
 	border-bottom: 1px solid var(--vp-c-divider);
