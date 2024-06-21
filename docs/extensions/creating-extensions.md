@@ -61,6 +61,11 @@ export default {
 };
 ```
 
+If you are developing a bundle or hybrid extension, like a flow operation, your code will be bundled for two
+different environments: `node` for API extensions and `browser` for Data Studio extensions. You can specify different
+options for each environment by optionally including the `.node` or `.browser` suffixes to the configuration filename:
+`extension.config.node.js` and `extension.config.browser.js`.
+
 #### Supported Options
 
 - `plugins` — An array of Rollup plugins that will be used when building extensions in addition to the built-in ones.
