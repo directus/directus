@@ -17,17 +17,33 @@ vi.mock('@directus/env', () => ({
 const mockDb: Knex = {} as unknown as Knex;
 
 test('Errors if limits are exceeded with an increase', () => {
-	vi.mocked(getUserCount).mockResolvedValue({ admin: 3, app: 3, api: 3 });
+	vi.mocked(getUserCount).mockResolvedValue({ admin: 1, app: 1, api: 1 });
 
-	expect(checkIncreasedUserLimits(mockDb, { admin: 1, app: 0, api: 0 })).rejects.toThrowError(
+	expect(checkIncreasedUserLimits(mockDb, { admin: 3, app: 0, api: 0 })).rejects.toThrowError(
 		'Active Admin users limit exceeded.',
 	);
 
-	expect(checkIncreasedUserLimits(mockDb, { admin: 0, app: 1, api: 0 })).rejects.toThrowError(
+	expect(checkIncreasedUserLimits(mockDb, { admin: 3, app: 2, api: 0 })).rejects.toThrowError(
+		'Active Admin users limit exceeded.',
+	);
+
+	expect(checkIncreasedUserLimits(mockDb, { admin: 0, app: 2, api: 0 })).rejects.toThrowError(
 		'Active App users limit exceeded.',
 	);
 
-	expect(checkIncreasedUserLimits(mockDb, { admin: 0, app: 0, api: 1 })).rejects.toThrowError(
+	expect(checkIncreasedUserLimits(mockDb, { admin: 2, app: 0, api: 0 })).rejects.toThrowError(
+		'Active App users limit exceeded.',
+	);
+
+	expect(checkIncreasedUserLimits(mockDb, { admin: 1, app: 1, api: 0 })).rejects.toThrowError(
+		'Active App users limit exceeded.',
+	);
+
+	expect(checkIncreasedUserLimits(mockDb, { admin: 2, app: 2, api: 0 })).rejects.toThrowError(
+		'Active App users limit exceeded.',
+	);
+
+	expect(checkIncreasedUserLimits(mockDb, { admin: 0, app: 0, api: 3 })).rejects.toThrowError(
 		'Active API users limit exceeded.',
 	);
 });
@@ -44,6 +60,6 @@ test('Does not errors if limits are not exceeded with an increase', () => {
 	expect(() => checkIncreasedUserLimits(mockDb, { admin: 1, app: 0, api: 0 })).not.toThrowError();
 	expect(() => checkIncreasedUserLimits(mockDb, { admin: 0, app: 1, api: 0 })).not.toThrowError();
 	expect(() => checkIncreasedUserLimits(mockDb, { admin: 0, app: 0, api: 1 })).not.toThrowError();
-	expect(() => checkIncreasedUserLimits(mockDb, { admin: 1, app: 1, api: 1 })).not.toThrowError();
-	expect(() => checkIncreasedUserLimits(mockDb, { admin: 2, app: 2, api: 2 })).not.toThrowError();
+	expect(() => checkIncreasedUserLimits(mockDb, { admin: 0, app: 1, api: 2 })).not.toThrowError();
+	expect(() => checkIncreasedUserLimits(mockDb, { admin: 1, app: 0, api: 2 })).not.toThrowError();
 });
