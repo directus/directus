@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Acerca de
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -7,9 +28,12 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
+marketplace: Marketplace
+extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
+unknown: Desconocido
 reset_width: Restablecer ancho
 tile_size: Tamaño del mosaico
 edit_field: Editar Campo
@@ -27,6 +51,8 @@ duplicate_field: Duplicar Campo
 half_width: Media Ancho
 full_width: Ancho Completo
 group: Grupo
+popular: Popular
+recent: Reciente
 export_items: Exportar elementos
 and: "Y"
 or: O
@@ -36,9 +62,36 @@ modifier: Modificador
 extension_interface: Interfaz
 extension_display: Mostrar
 extension_layout: Diseño
+extension_module: Módulo
 extension_panel: Panel
+extension_theme: Tema
 extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operación
+extension_bundle: Paquete
+extension_interfaces: Interfaces
+extension_displays: Visualización
+extension_layouts: Plantillas
 extension_modules: Módulos
+extension_panels: Paneles
+extension_themes: Temas
+extension_hooks: Conexiones
+extension_endpoints: Endpoints
+extension_operations: Operaciones
+extension_bundles: Packs
+extension_missing: Faltan
+extension_reload_required: Recarga de página requerida
+extension_reload_required_copy: Es necesario recargar una página para ver los cambios después de activar o desactivar las extensiones.
+extension_reload_now: Recargar ahora
+published_relative: Publicado {relativeTime}
+compatible_with_your_project: Compatible con tu proyecto
+compatible_with_your_project_copy: El autor ha indicado la compatibilidad de esta extensión con {hostVersion}, que coincide con la versión de tu proyecto ({currentVersion})
+last_updated_relative: Última actualización {relativeTime}
+n_files: '{n} Archivos'
+verified: Verificado
+homepage: Inicio
+repository: Repositorio
+reload_page: Recargar Página
 enable: Habilitado
 custom: Personalizar
 hook: Hook
@@ -978,6 +1031,7 @@ batch_delete_confirm: >-
   No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
 cancel: Cancelar
 no_upscale: No mejorar imágenes
+source_registry: Marketplace
 collection: Colección
 collections: Colecciones
 content: Contenido
