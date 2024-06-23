@@ -10,7 +10,8 @@ import { CollectionTree } from '../collections.vue';
 const props = defineProps<{
 	collection: Collection;
 	collections: Collection[];
-	expandAll: boolean;
+	expandAll?: boolean;
+	forceUpdate?: boolean;
 	visibilityTree: CollectionTree;
 	disableDrag?: boolean;
 }>();
@@ -29,15 +30,47 @@ const toggleCollapse = () => {
 };
 
 watch(
-	() => props.expandAll,
-	(newVal) => {
-		isCollectionExpanded.value = newVal;
+	() => props.forceUpdate,
+	() => {
+		isCollectionExpanded.value = props.expandAll;
 	},
-	{ immediate: true },
 );
 
 const nestedCollections = computed(() =>
 	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
+);
+
+watch(
+	() => props.expandAll,
+	(expanded) => {
+		switch (expanded) {
+			case true:
+				if (nestedCollections.value.length > 0) {
+					if (props.collection.meta?.group) {
+						isCollectionExpanded.value = expanded;
+					} else {
+						return;
+					}
+				} else {
+					isCollectionExpanded.value = expanded;
+				}
+
+				break;
+			case false:
+				if (nestedCollections.value.length > 0) {
+					if (props.collection.meta?.group) {
+						isCollectionExpanded.value = expanded;
+					} else {
+						return;
+					}
+				} else {
+					isCollectionExpanded.value = expanded;
+				}
+
+				break;
+		}
+	},
+	{ immediate: true },
 );
 
 function onGroupSortChange(collections: Collection[]) {
@@ -113,7 +146,8 @@ function onGroupSortChange(collections: Collection[]) {
 					<collection-item
 						:collection="element"
 						:collections="collections"
-						:expand-all="nestedCollections.length > 0 ? expandAll : false"
+						:expand-all="expandAll"
+						:force-update="forceUpdate"
 						:visibility-tree="visibilityTree.findChild(element.collection)!"
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"

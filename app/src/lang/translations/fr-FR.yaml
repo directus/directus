@@ -595,6 +595,7 @@ comments: Commentaires
 no_comments: Pas encore de commentaires
 expand: Agrandir
 expand_all: Tout agrandir
+expand_none: Tout réduire
 collapse: Replier
 collapse_all: Tout replier
 select_item: Sélectionner un élément

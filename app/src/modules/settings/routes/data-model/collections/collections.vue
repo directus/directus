@@ -21,14 +21,16 @@ const { t } = useI18n();
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
+const forceUpdate = ref<boolean>(false);
 
 const collectionsStore = useCollectionsStore();
 
 const { data: isCollectionsExpanded } = useLocalStorage('settings-collapsed-all', true as boolean);
 
-const toggleCollections = () => {
-	isCollectionsExpanded.value = !isCollectionsExpanded.value;
-};
+function toggleExpandAll(value: boolean) {
+	isCollectionsExpanded.value = value;
+	forceUpdate.value = !forceUpdate.value;
+}
 
 const collections = computed(() => {
 	return translate(
@@ -191,15 +193,11 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		<div class="padding-box">
 			<div class="expand-collapse-button">
 				<div>
-					<span>{{ t('expand') }}:</span>
-					<v-button
-						v-tooltip.bottom="isCollectionsExpanded ? t('collapse_all') : t('expand_all')"
-						primary
-						small
-						:outlined="isCollectionsExpanded"
-						@click="toggleCollections"
-					>
-						{{ isCollectionsExpanded ? t('none') : t('all') }}
+					<v-button v-tooltip.bottom="t('expand_none')" primary small @click="toggleExpandAll(false)">
+						{{ t('expand_none') }}
+					</v-button>
+					<v-button v-tooltip.bottom="t('expand_all')" primary small @click="toggleExpandAll(true)">
+						{{ t('expand_all') }}
 					</v-button>
 				</div>
 			</div>
@@ -227,7 +225,8 @@ async function onSort(updates: Collection[], removeGroup = false) {
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							:expand-all="isCollectionsExpanded || false"
+							:expand-all="isCollectionsExpanded"
+							:force-update="forceUpdate"
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
@@ -269,7 +268,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:key="collection.collection"
 					:collection="collection"
 					:collections="systemCollections"
-					:expand-all="isCollectionsExpanded || false"
 					:visibility-tree="findVisibilityChild(collection.collection)!"
 					disable-drag
 				/>
@@ -349,9 +347,8 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	margin-bottom: 8px;
 	& > div {
 		margin-left: auto;
-		& > span {
-			margin-right: 8px;
-			font-weight: var(--theme--header--title--font-weight);
+		.v-button {
+			margin-left: 8px;
 		}
 	}
 }
