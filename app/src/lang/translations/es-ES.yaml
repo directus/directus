@@ -441,7 +441,7 @@ revision_delta_created: Creado
 revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
-revision_delta_version_saved: 'Versión guardada (Actualizada 1 campo) | Versión guardada (Actualizada {count} campos)'
+revision_delta_version_saved: 'Versión guardada (1 campo actualizado) | Versión guardada ({count} campos actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -2207,15 +2207,21 @@ full_circle: Círculo completo
 stroke_width: Ancho del trazo
 rounded_stroke: Trazo redondeado
 thin: Delgado
+medium: Mediano
+broad: Amplio
 show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+donut: Dona
 panels:
   metric:
     name: Métrico
     description: Mostrar un único valor basado en una consulta
     field: Campo
+  metric_list:
+    name: Lista de métricas
+    description: Listar y visualizar métricas agregadas de una colección
   time_series:
     name: Series de tiempo
     description: Procesar un gráfico de línea basado en valores a lo largo del tiempo
@@ -2236,6 +2242,8 @@ panels:
     select_collection: Debe seleccionar una colección.
   linechart:
     name: Gráficos de línea
+    description: Gráfico de líneas para comparar el cambio de un campo
+    disabled_grouping: Desactivado cuando se selecciona la agrupación.
     disabled_no_grouping: Deshabilitado cuando no se selecciona ninguna agrupación.
     show_marker: Mostrar marcador de información sobre herramientas
     curve_type: Tipo de curva
@@ -2248,6 +2256,7 @@ panels:
     description: Medidor para los valores de seguimiento
   piechart:
     name: Gráfico de Pie o Donut
+    description: Gráfico circular que muestra las proporciones de grupos en una columna
   variable:
     name: Variable global
     description: Establecer un valor global para el uso en los filtros de otros Paneles
@@ -2287,6 +2296,9 @@ triggers:
     collection_and_item: Paginas de colección y elementos
     collection_only: Pagina de colección solamente
     item_only: Página de elemento solamente
+    collection_page: Página de Colección
+    require_selection: Requiere selección
+a_flow_uuid: Seleccione un Flow para activar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2323,9 +2335,19 @@ operations:
     payload: Payload
     query: Consulta
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Firmar y verificar JSON Web Tokens
+    operation: Operación
+    secret: Clave Secreta
+    secret_placeholder: Escriba un texto secreto...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opciones
+    options_placeholder: 'Consulte https://www.npmjs.com/package/jsonwebtoken#usage para ver las opciones disponibles'
+    sign: Firmar token
+    verify: Verificar token
+    decode: Decodificar token
   log:
     name: Registrar en la consola
     description: Envía algo a la consola
@@ -2343,6 +2365,7 @@ operations:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
+    recipient_placeholder: Introduzca un UUID...
     recipient_note: Añadir la UUID del usuario y presionar Enter...
     item_note: Clave de artículo o URL relativa
     message: Mensaje
