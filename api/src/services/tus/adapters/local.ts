@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * TUS local storage implementation for resumable uploads
  *
@@ -50,7 +51,7 @@ export class LocalFileStore extends DataStore {
 	 * Create an empty file.
 	 */
 	override async create(file: Upload): Promise<Upload> {
-		console.log('create')
+		console.log('create');
 		const dirs = file.id.split('/').slice(0, -1);
 
 		await fsProm.mkdir(path.join(this.directory, ...dirs), { recursive: true });
@@ -61,12 +62,12 @@ export class LocalFileStore extends DataStore {
 	}
 
 	read(file_id: string) {
-		console.log('read')
+		console.log('read');
 		return fs.createReadStream(path.join(this.directory, file_id));
 	}
 
 	override remove(file_id: string): Promise<void> {
-		console.log('remove')
+		console.log('remove');
 		return new Promise((resolve, reject) => {
 			fs.unlink(`${this.directory}/${file_id}`, (err) => {
 				if (err) {
@@ -85,7 +86,7 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override write(readable: http.IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
-		console.log('write')
+		console.log('write');
 		const file_path = path.join(this.directory, file_id);
 
 		const writeable = fs.createWriteStream(file_path, {
@@ -119,7 +120,7 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override async getUpload(id: string): Promise<Upload> {
-		console.log('getUpload')
+		console.log('getUpload');
 		const file = await this.configstore.get(id);
 
 		if (!file) {
@@ -163,7 +164,7 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override async declareUploadLength(id: string, upload_length: number) {
-		console.log('declareUploadLength')
+		console.log('declareUploadLength');
 		const file = await this.configstore.get(id);
 
 		if (!file) {
@@ -176,7 +177,7 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override async deleteExpired(): Promise<number> {
-		console.log('deleteExpired')
+		console.log('deleteExpired');
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
@@ -216,7 +217,7 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override getExpiration(): number {
-		console.log('getExpiration')
+		console.log('getExpiration');
 		return this.expirationPeriodInMilliseconds;
 	}
 }
