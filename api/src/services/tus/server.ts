@@ -8,10 +8,7 @@ import { Server } from '@tus/server';
 import { FilesService } from '../files.js';
 import path from 'path';
 import { useEnv } from '@directus/env';
-import { DirectusFileStore } from './store.js';
-import { AuthorizationService } from '../authorization.js';
-import { isDirectusError } from '@directus/errors';
-import type { Request, Response, NextFunction } from 'express';
+import type { Request/*, Response, NextFunction*/ } from 'express';
 import { randomUUID } from '@directus/random';
 
 const env = useEnv();
@@ -61,7 +58,7 @@ export const tusServer = new Server({
 		const folder = (req as Request).accountability?.user ?? 'public';
 		return `users/${folder}/${id}`;
 	},
-	generateUrl(req, {proto, host, path, id}) {
+	generateUrl(_req, {proto, host, path, id}) {
 		id = Buffer.from(id, 'utf-8').toString('base64url')
 		return `${proto}://${host}${path}/${id}`
 	},

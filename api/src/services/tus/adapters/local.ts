@@ -1,5 +1,5 @@
 /**
- * TUS storage implementation for resumable uploads
+ * TUS local storage implementation for resumable uploads
  *
  * https://tus.io/
  */
@@ -11,21 +11,22 @@ import path from 'path';
 import stream from 'node:stream';
 import http from 'node:http';
 
-type Options = {
+export type LocalOptions = {
 	directory: string;
 	configstore?: Configstore;
 	expirationPeriodInMilliseconds?: number;
 };
+
 const MASK = '0777';
 const IGNORED_MKDIR_ERROR = 'EEXIST';
 const FILE_DOESNT_EXIST = 'ENOENT';
 
-export class DirectusFileStore extends DataStore {
+export class LocalFileStore extends DataStore {
 	directory: string;
 	configstore: Configstore;
 	expirationPeriodInMilliseconds: number;
 
-	constructor({ directory, configstore, expirationPeriodInMilliseconds }: Options) {
+	constructor({ directory, configstore, expirationPeriodInMilliseconds }: LocalOptions) {
 		super();
 		this.directory = directory;
 		this.configstore = configstore ?? new FileConfigstore(directory);
