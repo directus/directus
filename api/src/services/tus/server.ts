@@ -10,11 +10,11 @@ import { PostHandler } from './handlers/post.js';
 import { DeleteHandler } from './handlers/delete.js';
 import { validateHeader } from './validator.js';
 
-import { EVENTS, ERRORS, EXPOSED_HEADERS, REQUEST_METHODS, TUS_RESUMABLE } from '@tus/utils';
+import { /*EVENTS,*/ ERRORS, EXPOSED_HEADERS, REQUEST_METHODS, TUS_RESUMABLE } from '@tus/utils';
 
 import type stream from 'node:stream';
 import type { ServerOptions, RouteHandler, WithOptional } from './types.js'
-import type { DataStore, Upload, CancellationContext } from '@tus/utils';
+import type { DataStore, /*Upload,*/ CancellationContext } from '@tus/utils';
 import { MemoryLocker } from './lockers.js';
 
 type Handlers = {
