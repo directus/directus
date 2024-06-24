@@ -3,7 +3,6 @@ import { useEnv } from '@directus/env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
-	InvalidProviderError,
 	ServiceUnavailableError,
 	UserSuspendedError,
 } from '@directus/errors';
@@ -125,19 +124,10 @@ export class AuthenticationService {
 			);
 		};
 
-		if (user?.status !== 'active') {
+		if (user?.status !== 'active' || user?.provider !== providerName) {
 			emitStatus('fail');
-
-			if (user?.status === 'suspended') {
-				await stall(STALL_TIME, timeStart);
-				throw new UserSuspendedError();
-			} else {
-				await stall(STALL_TIME, timeStart);
-				throw new InvalidCredentialsError();
-			}
-		} else if (user.provider !== providerName) {
 			await stall(STALL_TIME, timeStart);
-			throw new InvalidProviderError();
+			throw new InvalidCredentialsError();
 		}
 
 		const settingsService = new SettingsService({
