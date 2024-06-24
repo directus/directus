@@ -13,7 +13,7 @@ import { validateHeader } from './validator.js';
 import { /*EVENTS,*/ ERRORS, EXPOSED_HEADERS, REQUEST_METHODS, TUS_RESUMABLE } from '@tus/utils';
 
 import type stream from 'node:stream';
-import type { ServerOptions, RouteHandler, WithOptional } from './types.js'
+import type { ServerOptions, WithOptional } from './types.js'
 import type { DataStore, /*Upload,*/ CancellationContext } from '@tus/utils';
 import { MemoryLocker } from './lockers.js';
 
@@ -44,7 +44,6 @@ type Handlers = {
 // 	emit(eventName: Parameters<emit>[0], listener: Parameters<emit>[1]): ReturnType<emit>;
 // }
 
-// eslint-disable-next-line no-redeclare
 export class TusServer extends EventEmitter {
 	datastore: DataStore;
 	handlers: Handlers;
@@ -117,10 +116,6 @@ export class TusServer extends EventEmitter {
 		});
 	}
 
-	get(path: string, handler: RouteHandler) {
-		this.handlers.GET.registerPath(path, handler);
-	}
-
 	/**
 	 * Main server requestListener, invoked on every 'request' event.
 	 */
@@ -132,13 +127,6 @@ export class TusServer extends EventEmitter {
 		const context = this.createContext(req);
 
 		console.log(`[TusServer] handle: ${req.method} ${req.url}`);
-
-		// Allow overriding the HTTP method. The reason for this is
-		// that some libraries/environments to not support PATCH and
-		// DELETE requests, e.g. Flash in a browser and parts of Java
-		if (req.headers['x-http-method-override']) {
-			req.method = (req.headers['x-http-method-override'] as string).toUpperCase();
-		}
 
 		const onError = async (error: { status_code?: number; body?: string; message: string }) => {
 			let status_code = error.status_code || ERRORS.UNKNOWN_ERROR.status_code;

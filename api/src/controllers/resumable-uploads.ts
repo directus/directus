@@ -2,7 +2,6 @@ import type { Router } from "express";
 import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
 import { useEnv } from "@directus/env";
 import { tusServer } from "../services/tus/index.js";
-// import { ChunkedFilesService } from "../services/chunked-files.js";
 import { AuthorizationService } from "../services/authorization.js";
 import asyncHandler from "../utils/async-handler.js";
 

@@ -4,7 +4,7 @@ import { LocalFileStore, type LocalOptions } from './local.js';
 import type stream from 'stream';
 import type { ReadStream } from 'fs';
 
-interface DataStore2 extends DataStore {
+export interface DataStore2 extends DataStore {
 	read(id: string): Promise<stream.Readable> | ReadStream;
 }
 

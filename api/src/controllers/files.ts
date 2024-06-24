@@ -2,7 +2,8 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, PrimaryKey } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { toArray, toBoolean } from '@directus/utils';
+// import { registerResumableUploads } from '@directus/resumable-uploads';
 import Busboy from 'busboy';
 import bytes from 'bytes';
 import type { RequestHandler } from 'express';
@@ -367,7 +368,10 @@ router.delete(
 	respond,
 );
 
-registerTusEndpoints(router);
-scheduleTusCleanup();
+if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
+	// registerResumableUploads(router);
+	registerTusEndpoints(router);
+	scheduleTusCleanup();
+}
 
 export default router;

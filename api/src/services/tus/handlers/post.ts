@@ -3,7 +3,7 @@ import { BaseHandler } from './base.js';
 import { Upload, Uid, Metadata, EVENTS, ERRORS, DataStore, type CancellationContext } from '@tus/utils';
 import { validateHeader } from '../validator.js';
 
-import http from 'node:http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import type {ServerOptions, WithRequired} from '../types.js'
 
 export class PostHandler extends BaseHandler {
@@ -25,27 +25,24 @@ export class PostHandler extends BaseHandler {
 	/**
 	 * Create a file in the DataStore.
 	 */
-	async send(req: http.IncomingMessage, res: http.ServerResponse, context: CancellationContext) {
-		if ('upload-concat' in req.headers && !this.store.hasExtension('concatentation')) {
+	async send(req: IncomingMessage, res: ServerResponse, context: CancellationContext) {
+		// Throw errors for unsupported extensions
+		if ('upload-concat' in req.headers) {
 			throw ERRORS.UNSUPPORTED_CONCATENATION_EXTENSION;
 		}
 
-		const upload_length = req.headers['upload-length'] as string | undefined;
-		const upload_defer_length = req.headers['upload-defer-length'] as string | undefined;
-		const upload_metadata = req.headers['upload-metadata'] as string | undefined;
-
-		if (
-			upload_defer_length !== undefined && // Throw error if extension is not supported
-			!this.store.hasExtension('creation-defer-length')
-		) {
+		if ('upload-defer-length' in req.headers) {
 			throw ERRORS.UNSUPPORTED_CREATION_DEFER_LENGTH_EXTENSION;
 		}
 
-		if ((upload_length === undefined) === (upload_defer_length === undefined)) {
+		const upload_length = req.headers['upload-length'] as string | undefined;
+		const upload_metadata = req.headers['upload-metadata'] as string | undefined;
+
+		if (upload_length === undefined) {
 			throw ERRORS.INVALID_LENGTH;
 		}
 
-		let metadata: Record<string, string | null> = {};
+		let metadata: Record<string, string | null> | undefined = undefined;
 
 		if ('upload-metadata' in req.headers) {
 			try {
@@ -77,7 +74,7 @@ export class PostHandler extends BaseHandler {
 		const upload = new Upload({
 			id,
 			offset: 0,
-			metadata,
+			...(metadata ? { metadata } : {}),
 			...(upload_length ? { size: Number.parseInt(upload_length, 10) } : {})
 		});
 
@@ -88,13 +85,13 @@ export class PostHandler extends BaseHandler {
 				// Backwards compatibility, remove in next major
 				// Ugly check because we can't use `instanceof` because we mock the instance in tests
 				if (
-					typeof (resOrObject as http.ServerResponse).write === 'function' &&
-					typeof (resOrObject as http.ServerResponse).writeHead === 'function'
+					typeof (resOrObject as ServerResponse).write === 'function' &&
+					typeof (resOrObject as ServerResponse).writeHead === 'function'
 				) {
-					res = resOrObject as http.ServerResponse;
+					res = resOrObject as ServerResponse;
 				} else {
 					// Ugly types because TS only understands instanceof
-					type ExcludeServerResponse<T> = T extends http.ServerResponse ? never : T;
+					type ExcludeServerResponse<T> = T extends ServerResponse ? never : T;
 					const obj = resOrObject as ExcludeServerResponse<typeof resOrObject>;
 					res = obj.res;
 
@@ -154,13 +151,13 @@ export class PostHandler extends BaseHandler {
 				// Backwards compatibility, remove in next major
 				// Ugly check because we can't use `instanceof` because we mock the instance in tests
 				if (
-					typeof (resOrObject as http.ServerResponse).write === 'function' &&
-					typeof (resOrObject as http.ServerResponse).writeHead === 'function'
+					typeof (resOrObject as ServerResponse).write === 'function' &&
+					typeof (resOrObject as ServerResponse).writeHead === 'function'
 				) {
-					res = resOrObject as http.ServerResponse;
+					res = resOrObject as ServerResponse;
 				} else {
 					// Ugly types because TS only understands instanceof
-					type ExcludeServerResponse<T> = T extends http.ServerResponse ? never : T;
+					type ExcludeServerResponse<T> = T extends ServerResponse ? never : T;
 					const obj = resOrObject as ExcludeServerResponse<typeof resOrObject>;
 					res = obj.res;
 					if (obj.status_code) responseData.status = obj.status_code;
