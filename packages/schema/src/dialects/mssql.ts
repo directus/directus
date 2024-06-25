@@ -333,12 +333,11 @@ export default class MSSQL implements SchemaInspector {
             [sys].[index_columns] [ic]
           JOIN [sys].[indexes] AS [ix] ON [ix].[object_id] = [ic].[object_id]
             AND [ix].[index_id] = [ic].[index_id]
-			WHERE (SELECT MAX([ic].[index_column_id]) OVER (partition by [ic].[index_id], [ic].[object_id])) IS NOT NULL
-                AND (SELECT ROW_NUMBER() OVER (
+			WHERE ISNULL((SELECT MAX([ic].[index_column_id])
+                                             OVER (PARTITION BY [ic].[index_id], [ic].[object_id])), 1) = 1
+                      AND ISNULL((SELECT ROW_NUMBER() OVER (
                         PARTITION BY [ic].[object_id], [ic].[column_id]
-                        ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC)
-					) IS NOT NULL
-        ) AS [i]
+                        ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC)), 1) = 1) AS [i]
         ON [i].[object_id] = [c].[object_id]
         AND [i].[column_id] = [c].[column_id]`,
 			)
