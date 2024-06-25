@@ -20,9 +20,12 @@ const { t } = useI18n();
 
 const isCollectionExpanded = ref(!props.isCollapsed);
 
-watch(() => props.isCollapsed, (newVal) => {
-  	isCollectionExpanded.value = !newVal;
-});
+watch(
+	() => props.isCollapsed,
+	(newVal) => {
+		isCollectionExpanded.value = !newVal;
+	},
+);
 
 const toggleCollapse = () => {
 	isCollectionExpanded.value = !isCollectionExpanded.value;

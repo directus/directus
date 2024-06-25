@@ -28,20 +28,20 @@ const { data: collapsedIds } = useLocalStorage<string[]>('collapsed-collection-i
 const { data: expandedIds } = useLocalStorage<string[]>('expanded-collection-ids', []);
 
 function collapseAll() {
-	collapsedIds.value = collectionsStore.collections.map(c => c.collection);
+	collapsedIds.value = collectionsStore.collections.map((c) => c.collection);
 	expandedIds.value = [];
 }
 
 function expandAll() {
-	expandedIds.value = collectionsStore.collections.map(c => c.collection);
-  	collapsedIds.value = [];
+	expandedIds.value = collectionsStore.collections.map((c) => c.collection);
+	collapsedIds.value = [];
 }
 
-function handleCollapseStateChange({ collection, isCollapsed }: { collection: string, isCollapsed: boolean }) {
+function handleCollapseStateChange({ collection, isCollapsed }: { collection: string; isCollapsed: boolean }) {
 	if (!collapsedIds.value || !expandedIds.value) return;
 
 	const collapsedIndex = collapsedIds.value.indexOf(collection);
-    const expandedIndex = expandedIds.value.indexOf(collection);
+	const expandedIndex = expandedIds.value.indexOf(collection);
 
 	if (isCollapsed) {
 		if (collapsedIndex === -1) collapsedIds.value.push(collection);
@@ -63,9 +63,10 @@ const collections = computed(() => {
 			),
 			['meta.sort', 'collection'],
 		),
-	).map(collection => ({
+	).map((collection) => ({
 		...collection,
-		isCollapsed: collapsedIds.value?.includes(collection.collection) && !expandedIds.value?.includes(collection.collection)
+		isCollapsed:
+			collapsedIds.value?.includes(collection.collection) && !expandedIds.value?.includes(collection.collection),
 	}));
 });
 
