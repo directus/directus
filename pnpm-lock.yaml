@@ -71,6 +71,9 @@ importers:
       '@directus/pressure':
         specifier: workspace:*
         version: link:../packages/pressure
+      '@directus/resumable-uploads':
+        specifier: workspace:*
+        version: link:../packages/resumable-uploads
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
@@ -1527,6 +1530,46 @@ importers:
       '@vitest/coverage-v8':
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0))
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+      vitest:
+        specifier: 1.5.3
+        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
+
+  packages/resumable-uploads:
+    dependencies:
+      '@directus/env':
+        specifier: workspace:*
+        version: link:../env
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@tus/server':
+        specifier: 1.6.0
+        version: 1.6.0
+      '@tus/utils':
+        specifier: 0.2.0
+        version: 0.2.0
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
+      '@vitest/coverage-v8':
+        specifier: 1.5.3
+        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0))
+      tsup:
+        specifier: 8.1.0
+        version: 8.1.0(@microsoft/api-extractor@7.43.1(@types/node@18.19.33))(postcss@8.4.38)(typescript@5.4.5)
       typescript:
         specifier: 5.4.5
         version: 5.4.5

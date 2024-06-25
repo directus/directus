@@ -1,24 +1,24 @@
-/* eslint-disable no-console */
 /**
  * TUS local storage implementation for resumable uploads
  *
  * https://tus.io/
  */
+import path from 'node:path';
+import stream from 'node:stream';
+import { IncomingMessage } from 'node:http';
+import { extension } from 'mime-types';
+import fsProm from 'fs/promises';
 import { type Configstore } from '@tus/file-store';
 import { DataStore, ERRORS, Upload } from '@tus/server';
-import fs from 'fs';
-import fsProm from 'fs/promises';
-import path from 'path';
-import stream from 'node:stream';
-import http from 'node:http';
-import { FilesService } from '../../files.js';
-import type { AbstractServiceOptions } from '../../../types/services.js';
 import type { File } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { useEnv } from '@directus/env';
+import { FilesService } from '../../files.js';
+import type { AbstractServiceOptions } from '../../../types/services.js';
 import { getConfigFromEnv } from '../../../utils/get-config-from-env.js';
-import { extension } from 'mime-types';
 import { getSchema } from '../../../utils/get-schema.js';
+import formatTitle from '@directus/format-title';
+import { useLogger } from '../../../logger.js';
 
 export type LocalOptions = {
 	directory: string;
@@ -27,6 +27,7 @@ export type LocalOptions = {
 };
 
 const env = useEnv();
+const logger = useLogger();
 
 const FILE_DOESNT_EXIST = 'ENOENT';
 
@@ -67,55 +68,53 @@ export class LocalFileStore extends DataStore {
 		const storageTarget: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
 		file.metadata = file.metadata ?? {};
+		const fileName = file.metadata['filename']!;
+		const fileType = file.metadata['filetype'] ?? 'application/octet-stream';
 
 		const fileData: Partial<File> = {
 			tus_id: file.id,
 			tus_data: file,
-			filename_download: file.metadata!['filename']!,
-			type: file.metadata!['filetype']!,
+			type: fileType,
 			filesize: file.size!,
+			filename_download: fileName,
+			title: formatTitle(fileName),
 			storage: storageTarget,
 		};
 
-		try {
-			const key = await this.service?.createOne(fileData);
+		const key = await this.service?.createOne(fileData);
 
-			const fileExt = extension(fileData.type!);
-			const fileName = `${key}.${fileExt}`;
+		const fileExt = extension(fileData.type!);
+		const diskFileName = `${key}.${fileExt}`;
 
-			// create empty file
-			await fsProm.writeFile(path.join(this.directory, fileName), '');
+		await fsProm.writeFile(path.join(this.directory, diskFileName), '');
 
-			await this.service?.updateOne(key!, {
-				filename_disk: fileName,
-			});
-		} catch (err) {
-			console.warn(err)
-		}
+		await this.service?.updateOne(key!, {
+			filename_disk: diskFileName,
+		});
 
 		return file;
 	}
 
 	override async remove(file_id: string): Promise<void> {
-		await this.service?.deleteOne(file_id)
+		await this.service?.deleteOne(file_id);
 	}
 
-	override async write(readable: http.IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
-			const results = await this.service?.readByQuery({ filter: { tus_id: { _eq: file_id } } });
+	override async write(readable: IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
+		const results = await this.service?.readByQuery({ filter: { tus_id: { _eq: file_id } } });
 
-			if (!results) {
-				throw new Error('no file found');
-			}
+		if (!results) {
+			throw new Error('no file found');
+		}
 
-			const fileData = results[0] as File;
-			const fileExt = extension(fileData.type!);
-			const filePath = path.join(this.directory, `${fileData.id}.${fileExt}`);
+		const fileData = results[0] as File;
+		const fileExt = extension(fileData.type!);
+		const filePath = path.join(this.directory, `${fileData.id}.${fileExt}`);
 
-
-		const writeable = fs.createWriteStream(filePath, {
-			flags: 'r+',
-			start: offset,
-		});
+		const writeable = await fsProm.open(filePath, 'r+').then((file) =>
+			file.createWriteStream({
+				start: offset,
+			}),
+		);
 
 		let bytes_received = 0;
 
@@ -130,13 +129,13 @@ export class LocalFileStore extends DataStore {
 			// await disk.write(payload.filename_disk, stream, payload.type);
 			stream.pipeline(readable, transform, writeable, (err) => {
 				if (err) {
-					console.log('[FileStore] write: Error', err);
+					logger.error('[FileStore] write: Error', err);
 					return reject(ERRORS.FILE_WRITE_ERROR);
 				}
 
-				console.log(`[FileStore] write: ${bytes_received} bytes written to ${filePath}`);
+				logger.trace(`[FileStore] write: ${bytes_received} bytes written to ${filePath}`);
 				offset += bytes_received;
-				console.log(`[FileStore] write: File is now ${offset} bytes`);
+				logger.trace(`[FileStore] write: File is now ${offset} bytes`);
 
 				return resolve(offset);
 			});
@@ -145,7 +144,7 @@ export class LocalFileStore extends DataStore {
 				tus_data: {
 					...fileData.tus_data,
 					offset,
-				}
+				},
 			});
 
 			return offset;
@@ -153,9 +152,11 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override async getUpload(id: string): Promise<Upload> {
-		const results = await this.service?.readByQuery({
-			filter: { tus_id: { _eq: id } },
-		}).catch(() => {});
+		const results = await this.service
+			?.readByQuery({
+				filter: { tus_id: { _eq: id } },
+			})
+			.catch(() => {});
 
 		if (!results) {
 			throw ERRORS.FILE_NOT_FOUND;
@@ -163,35 +164,31 @@ export class LocalFileStore extends DataStore {
 
 		const fileData = results[0] as File;
 		const fileExt = extension(fileData.type!);
+		const filePath = path.join(this.directory, `${fileData.id}.${fileExt}`);
 
-		return new Promise((resolve, reject) => {
-			const file_path = path.join(this.directory, `${fileData.id}.${fileExt}`);
+		return fsProm
+			.stat(filePath)
+			.then((stats) => {
+				if (stats.isDirectory()) {
+					logger.error(`[FileStore] getUpload: ${filePath} is a directory`);
+					throw ERRORS.FILE_NOT_FOUND;
+				}
 
-			fs.stat(file_path, (error, stats) => {
+				return new Upload(fileData.tus_data as any);
+			})
+			.catch((error) => {
 				if (error && error.code === FILE_DOESNT_EXIST && fileData) {
-					console.log(`[FileStore] getUpload: No file found at ${file_path} but db record exists`, fileData);
-					return reject(ERRORS.FILE_NO_LONGER_EXISTS);
+					logger.error(`[FileStore] getUpload: No file found at ${filePath} but db record exists`, fileData);
+					throw ERRORS.FILE_NO_LONGER_EXISTS;
 				}
 
 				if (error && error.code === FILE_DOESNT_EXIST) {
-					console.log(`[FileStore] getUpload: No file found at ${file_path}`);
-					return reject(ERRORS.FILE_NOT_FOUND);
+					logger.error(`[FileStore] getUpload: No file found at ${filePath}`);
+					throw ERRORS.FILE_NOT_FOUND;
 				}
 
-				if (error) {
-					return reject(error);
-				}
-
-				if (stats.isDirectory()) {
-					console.log(`[FileStore] getUpload: ${file_path} is a directory`);
-					return reject(ERRORS.FILE_NOT_FOUND);
-				}
-
-				return resolve(
-					new Upload(fileData.tus_data as any),
-				);
+				throw error;
 			});
-		});
 	}
 
 	override async deleteExpired(): Promise<number> {
@@ -204,9 +201,9 @@ export class LocalFileStore extends DataStore {
 
 		this.service = service;
 
-		const uploadFiles = await service.readByQuery({
+		const uploadFiles = (await service.readByQuery({
 			filter: { tus_id: { _null: false } },
-		}) as undefined | File[];
+		})) as undefined | File[];
 
 		if (!uploadFiles) return 0;
 
