@@ -1,35 +1,25 @@
 <script setup lang="ts">
 import { Collection } from '@/types/collections';
-import { computed, watch, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import CollectionOptions from './collection-options.vue';
 import { CollectionTree } from '../collections.vue';
+import CollectionOptions from './collection-options.vue';
 
 const props = defineProps<{
 	collection: Collection;
 	collections: Collection[];
-	isCollapsed?: boolean;
+	isCollapsed: boolean;
 	visibilityTree: CollectionTree;
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection', 'updateCollapseState']);
+const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
 
 const { t } = useI18n();
 
-const isCollectionExpanded = ref(!props.isCollapsed);
-
-watch(
-	() => props.isCollapsed,
-	(newVal) => {
-		isCollectionExpanded.value = !newVal;
-	},
-);
-
 const toggleCollapse = () => {
-	isCollectionExpanded.value = !isCollectionExpanded.value;
-	emit('updateCollapseState', { collection: props.collection.collection, isCollapsed: !isCollectionExpanded.value });
+	emit('toggleCollapse', props.collection.collection);
 };
 
 const nestedCollections = computed(() =>
@@ -80,8 +70,8 @@ function onGroupSortChange(collections: Collection[]) {
 
 			<v-icon
 				v-if="nestedCollections?.length"
-				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
-				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
+				v-tooltip="!isCollapsed ? t('collapse') : t('expand')"
+				:name="!isCollapsed ? 'unfold_less' : 'unfold_more'"
 				clickable
 				class="collapse-toggle"
 				@click.stop.prevent="toggleCollapse"
@@ -95,7 +85,7 @@ function onGroupSortChange(collections: Collection[]) {
 
 		<transition-expand class="collection-items">
 			<draggable
-				v-if="isCollectionExpanded"
+				v-if="!isCollapsed"
 				:model-value="nestedCollections"
 				:group="{ name: 'collections' }"
 				:swap-threshold="0.3"
@@ -113,7 +103,7 @@ function onGroupSortChange(collections: Collection[]) {
 						:visibility-tree="visibilityTree.findChild(element.collection)!"
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
-						@update-collapse-state="$emit('updateCollapseState', $event)"
+						@toggle-collapse="$emit('toggleCollapse', $event)"
 					/>
 				</template>
 			</draggable>

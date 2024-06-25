@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { isSystemCollection } from '@directus/system-data';
 import { merge, sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,8 +15,6 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
-import { isSystemCollection } from '@directus/system-data';
-import { useLocalStorage } from '@/composables/use-local-storage';
 
 const { t } = useI18n();
 
@@ -34,15 +34,15 @@ function expandAll() {
 	collapsedIds.value = [];
 }
 
-function handleCollapseStateChange({ collection, isCollapsed }: { collection: string; isCollapsed: boolean }) {
+function toggleCollapse(collection: string) {
 	if (!collapsedIds.value) return;
 
-	const collapsedIndex = collapsedIds.value.indexOf(collection);
+	const isCollapsed = collapsedIds.value.includes(collection);
 
 	if (isCollapsed) {
-		if (collapsedIndex === -1) collapsedIds.value.push(collection);
+		collapsedIds.value = collapsedIds.value.filter((c) => c !== collection);
 	} else {
-		if (collapsedIndex !== -1) collapsedIds.value.splice(collapsedIndex, 1);
+		collapsedIds.value = [...collapsedIds.value, collection];
 	}
 
 	collapsedIds.value = [...collapsedIds.value];
@@ -58,8 +58,7 @@ const collections = computed(() => {
 		),
 	).map((collection) => ({
 		...collection,
-		isCollapsed:
-			collapsedIds.value?.includes(collection.collection),
+		isCollapsed: collapsedIds.value?.includes(collection.collection),
 	}));
 });
 
@@ -249,7 +248,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
-							@update-collapse-state="handleCollapseStateChange"
+							@toggle-collapse="toggleCollapse"
 						/>
 					</template>
 				</draggable>
@@ -289,6 +288,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:collection="collection"
 					:collections="systemCollections"
 					:visibility-tree="findVisibilityChild(collection.collection)!"
+					:is-collapsed="false"
 					disable-drag
 				/>
 			</v-detail>
