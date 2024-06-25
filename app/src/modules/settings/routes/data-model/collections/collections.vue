@@ -21,15 +21,38 @@ const { t } = useI18n();
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
-const forceUpdate = ref<boolean>(false);
 
 const collectionsStore = useCollectionsStore();
 
-const { data: isCollectionsExpanded } = useLocalStorage('settings-collapsed-all', true as boolean);
+const { data: collapsedIds } = useLocalStorage<string[]>('collapsed-collection-ids', []);
+const { data: expandedIds } = useLocalStorage<string[]>('expanded-collection-ids', []);
 
-function toggleExpandAll(value: boolean) {
-	isCollectionsExpanded.value = value;
-	forceUpdate.value = !forceUpdate.value;
+function collapseAll() {
+	collapsedIds.value = collectionsStore.collections.map(c => c.collection);
+	expandedIds.value = [];
+}
+
+function expandAll() {
+	expandedIds.value = collectionsStore.collections.map(c => c.collection);
+  	collapsedIds.value = [];
+}
+
+function handleCollapseStateChange({ collection, isCollapsed }: { collection: string, isCollapsed: boolean }) {
+	if (!collapsedIds.value || !expandedIds.value) return;
+
+	const collapsedIndex = collapsedIds.value.indexOf(collection);
+    const expandedIndex = expandedIds.value.indexOf(collection);
+
+	if (isCollapsed) {
+		if (collapsedIndex === -1) collapsedIds.value.push(collection);
+		if (expandedIndex !== -1) expandedIds.value.splice(expandedIndex, 1);
+	} else {
+		if (expandedIndex === -1) expandedIds.value.push(collection);
+		if (collapsedIndex !== -1) collapsedIds.value.splice(collapsedIndex, 1);
+	}
+
+	collapsedIds.value = [...collapsedIds.value];
+	expandedIds.value = [...expandedIds.value];
 }
 
 const collections = computed(() => {
@@ -40,7 +63,10 @@ const collections = computed(() => {
 			),
 			['meta.sort', 'collection'],
 		),
-	);
+	).map(collection => ({
+		...collection,
+		isCollapsed: collapsedIds.value?.includes(collection.collection) && !expandedIds.value?.includes(collection.collection)
+	}));
 });
 
 const rootCollections = computed(() => {
@@ -193,10 +219,10 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		<div class="padding-box">
 			<div class="expand-collapse-button">
 				<div>
-					<v-button v-tooltip.bottom="t('expand_none')" primary small @click="toggleExpandAll(false)">
+					<v-button v-tooltip.bottom="t('expand_none')" primary small @click="collapseAll">
 						{{ t('expand_none') }}
 					</v-button>
-					<v-button v-tooltip.bottom="t('expand_all')" primary small @click="toggleExpandAll(true)">
+					<v-button v-tooltip.bottom="t('expand_all')" primary small @click="expandAll">
 						{{ t('expand_all') }}
 					</v-button>
 				</div>
@@ -225,11 +251,11 @@ async function onSort(updates: Collection[], removeGroup = false) {
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							:expand-all="isCollectionsExpanded"
-							:force-update="forceUpdate"
+							:is-collapsed="element.isCollapsed"
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
+							@update-collapse-state="handleCollapseStateChange"
 						/>
 					</template>
 				</draggable>

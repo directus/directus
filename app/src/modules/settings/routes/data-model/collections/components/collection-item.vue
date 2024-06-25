@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { Collection } from '@/types/collections';
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import CollectionOptions from './collection-options.vue';
@@ -10,67 +9,28 @@ import { CollectionTree } from '../collections.vue';
 const props = defineProps<{
 	collection: Collection;
 	collections: Collection[];
-	expandAll?: boolean;
-	forceUpdate?: boolean;
+	isCollapsed?: boolean;
 	visibilityTree: CollectionTree;
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection']);
+const emit = defineEmits(['setNestedSort', 'editCollection', 'updateCollapseState']);
 
 const { t } = useI18n();
 
-const { data: isCollectionExpanded } = useLocalStorage(
-	`settings-collapsed-${props.collection.collection}`,
-	true as boolean,
-);
+const isCollectionExpanded = ref(!props.isCollapsed);
+
+watch(() => props.isCollapsed, (newVal) => {
+  	isCollectionExpanded.value = !newVal;
+});
 
 const toggleCollapse = () => {
 	isCollectionExpanded.value = !isCollectionExpanded.value;
+	emit('updateCollapseState', { collection: props.collection.collection, isCollapsed: !isCollectionExpanded.value });
 };
-
-watch(
-	() => props.forceUpdate,
-	() => {
-		isCollectionExpanded.value = props.expandAll;
-	},
-);
 
 const nestedCollections = computed(() =>
 	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
-);
-
-watch(
-	() => props.expandAll,
-	(expanded) => {
-		switch (expanded) {
-			case true:
-				if (nestedCollections.value.length > 0) {
-					if (props.collection.meta?.group) {
-						isCollectionExpanded.value = expanded;
-					} else {
-						return;
-					}
-				} else {
-					isCollectionExpanded.value = expanded;
-				}
-
-				break;
-			case false:
-				if (nestedCollections.value.length > 0) {
-					if (props.collection.meta?.group) {
-						isCollectionExpanded.value = expanded;
-					} else {
-						return;
-					}
-				} else {
-					isCollectionExpanded.value = expanded;
-				}
-
-				break;
-		}
-	},
-	{ immediate: true },
 );
 
 function onGroupSortChange(collections: Collection[]) {
@@ -146,11 +106,11 @@ function onGroupSortChange(collections: Collection[]) {
 					<collection-item
 						:collection="element"
 						:collections="collections"
-						:expand-all="expandAll"
-						:force-update="forceUpdate"
+						:is-collapsed="element.isCollapsed"
 						:visibility-tree="visibilityTree.findChild(element.collection)!"
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
+						@update-collapse-state="$emit('updateCollapseState', $event)"
 					/>
 				</template>
 			</draggable>
