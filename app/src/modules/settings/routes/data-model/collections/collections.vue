@@ -210,15 +210,13 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
-			<div class="expand-collapse-button">
-				<div>
-					<v-button v-tooltip.bottom="t('expand_none')" primary small @click="collapseAll">
-						{{ t('expand_none') }}
-					</v-button>
-					<v-button v-tooltip.bottom="t('expand_all')" primary small @click="expandAll">
-						{{ t('expand_all') }}
-					</v-button>
-				</div>
+			<div class="inline-header">
+				<span class="expand-collapse-button">
+					{{ t('expand') }}
+					<button @click="expandAll">{{ t('all') }}</button>
+					/
+					<button @click="collapseAll">{{ t('none') }}</button>
+				</span>
 			</div>
 
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
@@ -362,14 +360,33 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	margin-bottom: 16px;
 }
 
-.expand-collapse-button {
+.inline-header {
+	position: sticky;
+	top: var(--layout-offset-top);
+	z-index: 4;
 	display: flex;
-	margin-bottom: 8px;
-	& > div {
-		margin-left: auto;
-		.v-button {
-			margin-left: 8px;
-		}
+	align-items: center;
+	justify-content: end;
+	width: 100%;
+	height: 44px;
+	padding: 0 8px;
+	background-color: var(--theme--background);
+	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 2px var(--theme--background);
+}
+
+.expand-collapse-button {
+	color: var(--theme--foreground-subdued);
+
+	button {
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--theme--foreground);
+		transition: none;
 	}
 }
 </style>
