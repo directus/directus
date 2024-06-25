@@ -288,7 +288,7 @@ blog
 
 As described in the section on [Rows](/app/data-model#rows), we want each row in a data table to represent one unique
 record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the `blog`
-table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
+table and replace it with an `author_id` foreign key column, which stores foreign keys from the `users` table.
 
 ```
 blog
