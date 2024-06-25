@@ -25,34 +25,27 @@ const editCollection = ref<Collection | null>();
 const collectionsStore = useCollectionsStore();
 
 const { data: collapsedIds } = useLocalStorage<string[]>('collapsed-collection-ids', []);
-const { data: expandedIds } = useLocalStorage<string[]>('expanded-collection-ids', []);
 
 function collapseAll() {
 	collapsedIds.value = collectionsStore.collections.map((c) => c.collection);
-	expandedIds.value = [];
 }
 
 function expandAll() {
-	expandedIds.value = collectionsStore.collections.map((c) => c.collection);
 	collapsedIds.value = [];
 }
 
 function handleCollapseStateChange({ collection, isCollapsed }: { collection: string; isCollapsed: boolean }) {
-	if (!collapsedIds.value || !expandedIds.value) return;
+	if (!collapsedIds.value) return;
 
 	const collapsedIndex = collapsedIds.value.indexOf(collection);
-	const expandedIndex = expandedIds.value.indexOf(collection);
 
 	if (isCollapsed) {
 		if (collapsedIndex === -1) collapsedIds.value.push(collection);
-		if (expandedIndex !== -1) expandedIds.value.splice(expandedIndex, 1);
 	} else {
-		if (expandedIndex === -1) expandedIds.value.push(collection);
 		if (collapsedIndex !== -1) collapsedIds.value.splice(collapsedIndex, 1);
 	}
 
 	collapsedIds.value = [...collapsedIds.value];
-	expandedIds.value = [...expandedIds.value];
 }
 
 const collections = computed(() => {
@@ -66,7 +59,7 @@ const collections = computed(() => {
 	).map((collection) => ({
 		...collection,
 		isCollapsed:
-			collapsedIds.value?.includes(collection.collection) && !expandedIds.value?.includes(collection.collection),
+			collapsedIds.value?.includes(collection.collection),
 	}));
 });
 
