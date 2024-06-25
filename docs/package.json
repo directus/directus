@@ -32,7 +32,7 @@
 		"typedoc": "0.25.13",
 		"typedoc-plugin-frontmatter": "0.0.2",
 		"typedoc-plugin-markdown": "4.0.0-next.53",
-		"typedoc-plugin-zod": "1.1.2",
+		"typedoc-plugin-zod": "1.2.0",
 		"typedoc-vitepress-theme": "1.0.0-next.10",
 		"typescript": "5.4.5",
 		"vitepress": "1.0.0-rc.4",
