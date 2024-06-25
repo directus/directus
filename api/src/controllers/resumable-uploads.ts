@@ -1,4 +1,4 @@
-import type { Router } from "express";
+import { Router } from "express";
 import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
 import { useEnv } from "@directus/env";
 import { tusServer } from "../services/tus/index.js";
@@ -7,27 +7,33 @@ import asyncHandler from "../utils/async-handler.js";
 
 const env = useEnv();
 
-export function registerTusEndpoints(router: Router) {
-	const handler = tusServer.handle.bind(tusServer);
+const handler = tusServer.handle.bind(tusServer);
+const router = Router();
 
-	const checkAccess = () => asyncHandler(async (req, _res, next) => {
-		const auth = new AuthorizationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const checkAccess = () => asyncHandler(async (req, _res, next) => {
+	// const auth = new AuthorizationService({
+	// 	accountability: req.accountability,
+	// 	schema: req.schema,
+	// });
 
-		console.info('tus', req.accountability);
-		await auth.checkAccess('create', 'directus_files');
+	console.info('tus', req.method/*, req.accountability, req.token*/);
 
-		return next();
-	});
+	if (!req.accountability?.admin) {
 
-	router.post('/tus', checkAccess(), handler);
-	router.patch('/tus/:id', checkAccess(), handler);
+		// fix this somehow?
+		// await auth.checkAccess('create', 'directus_files');
+	}
 
-	router.options('/tus/:id', checkAccess(), handler);
-	router.head('/tus/:id', checkAccess(), handler);
-}
+	return next();
+});
+
+router.post('/', checkAccess(), handler);
+router.patch('/:id', checkAccess(), handler);
+
+router.options('/:id', checkAccess(), handler);
+router.head('/:id', checkAccess(), handler);
+
+export const tusRouter = router;
 
 const TUS_CLEANUP_CRON_RULE = (env['TUS_CLEANUP_CRON_RULE'] ?? '45 * * * *') as string;
 

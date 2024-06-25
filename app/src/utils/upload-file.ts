@@ -37,9 +37,15 @@ export async function uploadFile(
 		// Create a new tus upload
 		const upload = new tus.Upload(file, {
 			endpoint: '/files/tus',
-			retryDelays: [0, 3000, 5000, 10000, 20000],
+
+			// retryDelays: [0, 3000, 5000, 10000, 20000],
 			chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 			metadata: fileInfo,
+			onBeforeRequest: (req) => {
+				const xml = req.getUnderlyingObject();
+				xml.withCredentials = true;
+				console.log(xml)
+			},
 			onError: function (error) {
 				console.log('Failed because: ' + error);
 				reject(error);
@@ -62,6 +68,9 @@ export async function uploadFile(
 
 				resolve('test');
 			},
+			onShouldRetry() {
+				return false;
+			}
 		});
 
 		options?.callback?.(upload);

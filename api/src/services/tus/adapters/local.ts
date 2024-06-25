@@ -4,13 +4,21 @@
  *
  * https://tus.io/
  */
-import { FileConfigstore, type Configstore } from '@tus/file-store';
+import { type Configstore } from '@tus/file-store';
 import { DataStore, ERRORS, Upload } from '@tus/server';
 import fs from 'fs';
 import fsProm from 'fs/promises';
 import path from 'path';
 import stream from 'node:stream';
 import http from 'node:http';
+import { FilesService } from '../../files.js';
+import type { AbstractServiceOptions } from '../../../types/services.js';
+import type { File } from '@directus/types';
+import { toArray } from '@directus/utils';
+import { useEnv } from '@directus/env';
+import { getConfigFromEnv } from '../../../utils/get-config-from-env.js';
+import { extension } from 'mime-types';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export type LocalOptions = {
 	directory: string;
@@ -18,78 +26,93 @@ export type LocalOptions = {
 	expirationPeriodInMilliseconds?: number;
 };
 
-const MASK = '0777';
-const IGNORED_MKDIR_ERROR = 'EEXIST';
+const env = useEnv();
+
 const FILE_DOESNT_EXIST = 'ENOENT';
 
 export class LocalFileStore extends DataStore {
+	storageDriver = 'local';
 	directory: string;
-	configstore: Configstore;
 	expirationPeriodInMilliseconds: number;
+	service: FilesService | undefined;
 
-	constructor({ directory, configstore, expirationPeriodInMilliseconds }: LocalOptions) {
+	constructor({ expirationPeriodInMilliseconds }: LocalOptions) {
 		super();
-		this.directory = directory;
-		this.configstore = configstore ?? new FileConfigstore(directory);
+		this.directory = this.getDirectory();
 		this.expirationPeriodInMilliseconds = expirationPeriodInMilliseconds ?? 0;
-
 		this.extensions = ['creation', 'termination', 'expiration'];
-
-		// TODO: this async call can not happen in the constructor
-		this.checkOrCreateDirectory();
 	}
 
-	private checkOrCreateDirectory() {
-		fs.mkdir(this.directory, { mode: MASK, recursive: true }, (error) => {
-			if (error && error.code !== IGNORED_MKDIR_ERROR) {
-				throw error;
+	init(options: AbstractServiceOptions) {
+		this.service = new FilesService(options);
+	}
+
+	private getDirectory() {
+		const locations = toArray(env['STORAGE_LOCATIONS'] as string);
+
+		for (let location of locations) {
+			location = location.trim();
+			const driverConfig = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
+			const { driver, ...options } = driverConfig;
+
+			if (driver === this.storageDriver) {
+				return options['root'];
 			}
-		});
+		}
+
+		throw new Error('Location "local" not configured');
 	}
 
-	/**
-	 * Create an empty file.
-	 */
 	override async create(file: Upload): Promise<Upload> {
-		console.log('create');
-		const dirs = file.id.split('/').slice(0, -1);
+		const storageTarget: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
-		await fsProm.mkdir(path.join(this.directory, ...dirs), { recursive: true });
-		await fsProm.writeFile(path.join(this.directory, file.id), '');
-		await this.configstore.set(file.id, file);
+		file.metadata = file.metadata ?? {};
+
+		const fileData: Partial<File> = {
+			tus_id: file.id,
+			tus_data: file,
+			filename_download: file.metadata!['filename']!,
+			type: file.metadata!['filetype']!,
+			filesize: file.size!,
+			storage: storageTarget,
+		};
+
+		try {
+			const key = await this.service?.createOne(fileData);
+
+			const fileExt = extension(fileData.type!);
+			const fileName = `${key}.${fileExt}`;
+
+			// create empty file
+			await fsProm.writeFile(path.join(this.directory, fileName), '');
+
+			await this.service?.updateOne(key!, {
+				filename_disk: fileName,
+			});
+		} catch (err) {
+			console.warn(err)
+		}
 
 		return file;
 	}
 
-	read(file_id: string) {
-		console.log('read');
-		return fs.createReadStream(path.join(this.directory, file_id));
+	override async remove(file_id: string): Promise<void> {
+		await this.service?.deleteOne(file_id)
 	}
 
-	override remove(file_id: string): Promise<void> {
-		console.log('remove');
-		return new Promise((resolve, reject) => {
-			fs.unlink(`${this.directory}/${file_id}`, (err) => {
-				if (err) {
-					console.log('[FileStore] delete: Error', err);
-					reject(ERRORS.FILE_NOT_FOUND);
-					return;
-				}
+	override async write(readable: http.IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
+			const results = await this.service?.readByQuery({ filter: { tus_id: { _eq: file_id } } });
 
-				try {
-					resolve(this.configstore.delete(file_id));
-				} catch (error) {
-					reject(error);
-				}
-			});
-		});
-	}
+			if (!results) {
+				throw new Error('no file found');
+			}
 
-	override write(readable: http.IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
-		console.log('write');
-		const file_path = path.join(this.directory, file_id);
+			const fileData = results[0] as File;
+			const fileExt = extension(fileData.type!);
+			const filePath = path.join(this.directory, `${fileData.id}.${fileExt}`);
 
-		const writeable = fs.createWriteStream(file_path, {
+
+		const writeable = fs.createWriteStream(filePath, {
 			flags: 'r+',
 			start: offset,
 		});
@@ -103,36 +126,50 @@ export class LocalFileStore extends DataStore {
 			},
 		});
 
-		return new Promise((resolve, reject) => {
+		return new Promise<number>((resolve, reject) => {
+			// await disk.write(payload.filename_disk, stream, payload.type);
 			stream.pipeline(readable, transform, writeable, (err) => {
 				if (err) {
 					console.log('[FileStore] write: Error', err);
 					return reject(ERRORS.FILE_WRITE_ERROR);
 				}
 
-				console.log(`[FileStore] write: ${bytes_received} bytes written to ${file_path}`);
+				console.log(`[FileStore] write: ${bytes_received} bytes written to ${filePath}`);
 				offset += bytes_received;
 				console.log(`[FileStore] write: File is now ${offset} bytes`);
 
 				return resolve(offset);
 			});
+		}).then(async (offset) => {
+			await this.service?.updateOne(fileData.id, {
+				tus_data: {
+					...fileData.tus_data,
+					offset,
+				}
+			});
+
+			return offset;
 		});
 	}
 
 	override async getUpload(id: string): Promise<Upload> {
-		console.log('getUpload');
-		const file = await this.configstore.get(id);
+		const results = await this.service?.readByQuery({
+			filter: { tus_id: { _eq: id } },
+		}).catch(() => {});
 
-		if (!file) {
+		if (!results) {
 			throw ERRORS.FILE_NOT_FOUND;
 		}
 
+		const fileData = results[0] as File;
+		const fileExt = extension(fileData.type!);
+
 		return new Promise((resolve, reject) => {
-			const file_path = `${this.directory}/${id}`;
+			const file_path = path.join(this.directory, `${fileData.id}.${fileExt}`);
 
 			fs.stat(file_path, (error, stats) => {
-				if (error && error.code === FILE_DOESNT_EXIST && file) {
-					console.log(`[FileStore] getUpload: No file found at ${file_path} but db record exists`, file);
+				if (error && error.code === FILE_DOESNT_EXIST && fileData) {
+					console.log(`[FileStore] getUpload: No file found at ${file_path} but db record exists`, fileData);
 					return reject(ERRORS.FILE_NO_LONGER_EXISTS);
 				}
 
@@ -151,58 +188,43 @@ export class LocalFileStore extends DataStore {
 				}
 
 				return resolve(
-					new Upload({
-						id,
-						size: file.size!,
-						offset: stats.size,
-						metadata: file.metadata!,
-						creation_date: file.creation_date!,
-					}),
+					new Upload(fileData.tus_data as any),
 				);
 			});
 		});
 	}
 
-	override async declareUploadLength(id: string, upload_length: number) {
-		console.log('declareUploadLength');
-		const file = await this.configstore.get(id);
-
-		if (!file) {
-			throw ERRORS.FILE_NOT_FOUND;
-		}
-
-		file.size = upload_length;
-
-		await this.configstore.set(id, file);
-	}
-
 	override async deleteExpired(): Promise<number> {
-		console.log('deleteExpired');
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
-		if (!this.configstore.list) {
-			throw ERRORS.UNSUPPORTED_EXPIRATION_EXTENSION;
-		}
+		const service = new FilesService({
+			schema: await getSchema(),
+		});
 
-		const uploadKeys = await this.configstore.list();
+		this.service = service;
 
-		for (const file_id of uploadKeys) {
+		const uploadFiles = await service.readByQuery({
+			filter: { tus_id: { _null: false } },
+		}) as undefined | File[];
+
+		if (!uploadFiles) return 0;
+
+		for (const fileData of uploadFiles) {
 			try {
-				const info = await this.configstore.get(file_id);
-
 				if (
-					info &&
-					'creation_date' in info &&
+					fileData &&
+					fileData.tus_data &&
+					'creation_date' in fileData.tus_data &&
 					this.getExpiration() > 0 &&
-					info.size !== info.offset &&
-					info.creation_date
+					fileData.tus_data['size'] !== fileData.tus_data['offset'] &&
+					fileData.tus_data['creation_date']
 				) {
-					const creation = new Date(info.creation_date);
+					const creation = new Date(fileData.tus_data['creation_date']);
 					const expires = new Date(creation.getTime() + this.getExpiration());
 
 					if (now > expires) {
-						toDelete.push(this.remove(file_id));
+						toDelete.push(this.remove(fileData.id));
 					}
 				}
 			} catch (error) {
@@ -217,7 +239,6 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override getExpiration(): number {
-		console.log('getExpiration');
 		return this.expirationPeriodInMilliseconds;
 	}
 }

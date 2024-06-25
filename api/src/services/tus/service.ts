@@ -17,18 +17,26 @@ import type { AbstractServiceOptions } from '../../types/services.js';
 import type { Knex } from 'knex';
 import getDatabase from '../../database/index.js';
 import { ERRORS, Metadata, Upload, type CancellationContext, type DataStore, type Locker } from '@tus/utils';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview, File } from '@directus/types';
 import { Server } from '@tus/server';
+import { LocalFileStore } from './adapters/local.js';
+import bytes from 'bytes';
+import { extension } from 'mime-types';
 
 const env = useEnv();
 
 const reForwardedHost = /host="?([^";]+)/;
 const reForwardedProto = /proto=(https?)/;
 
-export const tusStore = getTusAdapter({
+export const tusStore = new LocalFileStore({
 	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
-	expirationPeriodInMilliseconds: 120_000,
+	expirationPeriodInMilliseconds: 300_000,
 });
+
+// getTusAdapter({
+// 	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
+// 	expirationPeriodInMilliseconds: 120_000,
+// });
 
 let _locker: Locker | undefined = undefined;
 
@@ -43,39 +51,43 @@ function getMemoryLocker() {
 export const tusServerOptions: ServerOptions = {
 	path: '/files/tus',
 	locker: new MemoryLocker(),
+	maxSize: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	async onIncomingRequest(req: any) {
+		await tusStore.init({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+	},
 	onUploadFinish: async (req: any, res, upload) => {
 		console.log('finished', /*req, res,*/ upload);
 
 		try {
 			const service = new FilesService({
-				// accountability: req.accountability,
+				accountability: req.accountability,
 				schema: req.schema,
 			});
 
-			const disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-
-			console.log(
-				'stored?',
-				await service.uploadOne(await tusStore.read(upload.id), {
-					storage: disk,
-					type: upload.metadata?.['filetype'] ?? 'unknown',
-					title: upload.metadata?.['filename'] ?? null,
-					filename_download: upload.metadata?.['filename'] ?? 'test',
-				}),
-			);
-
-			await tusStore.remove(upload.id);
+			await service.updateByQuery({
+				filter: { tus_id: {_eq: upload.id}}
+			}, {
+				tus_id: null,
+				tus_data: null,
+			});
 		} catch (err) {
 			console.warn('why', err);
 		}
 
 		return res;
 	},
+	generateUrl(_req, opts) {
+		return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
+	},
+	relativeLocation: String(env['PUBLIC_URL']).startsWith('http'),
 };
 
 export const tusServer = new Server({
 	...tusServerOptions,
-	datastore: tusStore,
+	datastore: tusStore
 });
 
 export type TusServiceOptions = AbstractServiceOptions & {

@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, PrimaryKey } from '@directus/types';
-import { toArray, toBoolean } from '@directus/utils';
+import { toArray } from '@directus/utils';
 // import { registerResumableUploads } from '@directus/resumable-uploads';
 import Busboy from 'busboy';
 import bytes from 'bytes';
@@ -18,7 +18,6 @@ import { FilesService } from '../services/files.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { registerTusEndpoints, scheduleTusCleanup } from './resumable-uploads.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -367,11 +366,5 @@ router.delete(
 	}),
 	respond,
 );
-
-if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
-	// registerResumableUploads(router);
-	registerTusEndpoints(router);
-	scheduleTusCleanup();
-}
 
 export default router;

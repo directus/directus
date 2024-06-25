@@ -66,6 +66,8 @@ import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { scheduleTusCleanup, tusRouter } from './controllers/resumable-uploads.js';
+import { toBoolean } from '@directus/utils';
 
 const require = createRequire(import.meta.url);
 
@@ -283,6 +285,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
+
+	if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
+		app.use('/files/tus', tusRouter);
+	}
+
 	app.use('/files', filesRouter);
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
@@ -316,6 +323,10 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	initTelemetry();
+
+	if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
+		scheduleTusCleanup();
+	}
 
 	await emitter.emitInit('app.after', { app });
 
