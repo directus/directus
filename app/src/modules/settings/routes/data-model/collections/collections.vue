@@ -44,8 +44,6 @@ function toggleCollapse(collection: string) {
 	} else {
 		collapsedIds.value = [...collapsedIds.value, collection];
 	}
-
-	collapsedIds.value = [...collapsedIds.value];
 }
 
 const collections = computed(() => {
