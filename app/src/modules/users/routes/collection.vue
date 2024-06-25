@@ -11,7 +11,7 @@ import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -23,9 +23,10 @@ type Item = {
 
 const props = defineProps<{ role?: string }>();
 
-const { t } = useI18n();
+const { role } = toRefs(props);
 
-const { roles } = useNavigation();
+const { t } = useI18n();
+const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 
