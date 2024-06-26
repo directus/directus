@@ -2,7 +2,7 @@ import { Router } from "express";
 import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
 import { useEnv } from "@directus/env";
 import { tusServer } from "../services/tus/index.js";
-import { AuthorizationService } from "../services/authorization.js";
+// import { AuthorizationService } from "../services/authorization.js";
 import asyncHandler from "../utils/async-handler.js";
 
 const env = useEnv();
@@ -31,7 +31,18 @@ router.post('/', checkAccess(), handler);
 router.patch('/:id', checkAccess(), handler);
 
 router.options('/:id', checkAccess(), handler);
-router.head('/:id', checkAccess(), handler);
+
+router.head('/:id', checkAccess(), handler,/*async (req, res) => {
+	const context = createTusContext(req);
+	const handler2 = new HeadHandler(tusServer.datastore, tusServer.options);
+
+	await handler2.send(req, res, context).catch((err) => {
+		res.status(err.status_code);
+		res.send(err.body);
+	})
+
+	return res;
+}*/);
 
 export const tusRouter = router;
 

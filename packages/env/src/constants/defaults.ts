@@ -123,6 +123,8 @@ export const DEFAULTS = {
 
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
+	RESUMABLE_UPLOADS_ENABLED: false,
+
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
 

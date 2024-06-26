@@ -67,7 +67,7 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { scheduleTusCleanup, tusRouter } from './controllers/resumable-uploads.js';
-import { toBoolean } from '@directus/utils';
+import { RESUMABLE_UPLOADS } from './constants.js';
 
 const require = createRequire(import.meta.url);
 
@@ -286,7 +286,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
-	if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
+	if (RESUMABLE_UPLOADS.ENABLED) {
 		app.use('/files/tus', tusRouter);
 	}
 
@@ -324,7 +324,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	initTelemetry();
 
-	if (toBoolean(env['ENABLE_TUS_CHUNKING'])) {
+	if (RESUMABLE_UPLOADS.ENABLED) {
 		scheduleTusCleanup();
 	}
 

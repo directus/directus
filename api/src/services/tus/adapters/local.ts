@@ -19,6 +19,7 @@ import { getConfigFromEnv } from '../../../utils/get-config-from-env.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import formatTitle from '@directus/format-title';
 import { useLogger } from '../../../logger.js';
+import { RESUMABLE_UPLOADS } from '../../../constants.js';
 
 export type LocalOptions = {
 	directory: string;
@@ -34,13 +35,11 @@ const FILE_DOESNT_EXIST = 'ENOENT';
 export class LocalFileStore extends DataStore {
 	storageDriver = 'local';
 	directory: string;
-	expirationPeriodInMilliseconds: number;
 	service: FilesService | undefined;
 
-	constructor({ expirationPeriodInMilliseconds }: LocalOptions) {
+	constructor() {
 		super();
 		this.directory = this.getDirectory();
-		this.expirationPeriodInMilliseconds = expirationPeriodInMilliseconds ?? 0;
 		this.extensions = ['creation', 'termination', 'expiration'];
 	}
 
@@ -158,7 +157,7 @@ export class LocalFileStore extends DataStore {
 			})
 			.catch(() => {});
 
-		if (!results) {
+		if (!results || !results[0]) {
 			throw ERRORS.FILE_NOT_FOUND;
 		}
 
@@ -236,6 +235,6 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override getExpiration(): number {
-		return this.expirationPeriodInMilliseconds;
+		return RESUMABLE_UPLOADS.EXPIRATION_TIME;
 	}
 }

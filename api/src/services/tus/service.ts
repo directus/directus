@@ -17,21 +17,17 @@ import type { AbstractServiceOptions } from '../../types/services.js';
 import type { Knex } from 'knex';
 import getDatabase from '../../database/index.js';
 import { ERRORS, Metadata, Upload, type CancellationContext, type DataStore, type Locker } from '@tus/utils';
-import type { Accountability, SchemaOverview, File } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { Server } from '@tus/server';
 import { LocalFileStore } from './adapters/local.js';
 import bytes from 'bytes';
-import { extension } from 'mime-types';
 
 const env = useEnv();
 
 const reForwardedHost = /host="?([^";]+)/;
 const reForwardedProto = /proto=(https?)/;
 
-export const tusStore = new LocalFileStore({
-	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
-	expirationPeriodInMilliseconds: 300_000,
-});
+export const tusStore = new LocalFileStore();
 
 // getTusAdapter({
 // 	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
@@ -256,42 +252,6 @@ export class TusService {
 		}
 
 		return this.storage.deleteExpired();
-	}
-
-	createContext(req: Request) {
-		// Initialize two AbortControllers:
-		// 1. `requestAbortController` for instant request termination, particularly useful for stopping clients to upload when errors occur.
-		// 2. `abortWithDelayController` to introduce a delay before aborting, allowing the server time to complete ongoing operations.
-		// This is particularly useful when a future request may need to acquire a lock currently held by this request.
-		const requestAbortController = new AbortController();
-		const abortWithDelayController = new AbortController();
-
-		const onDelayedAbort = (err: unknown) => {
-			abortWithDelayController.signal.removeEventListener('abort', onDelayedAbort);
-			setTimeout(() => requestAbortController.abort(err), this.lockDrainTimeout);
-		};
-
-		abortWithDelayController.signal.addEventListener('abort', onDelayedAbort);
-
-		req.on('close', () => {
-			abortWithDelayController.signal.removeEventListener('abort', onDelayedAbort);
-		});
-
-		return {
-			signal: requestAbortController.signal,
-			abort() {
-				// abort the request immediately
-				if (!requestAbortController.signal.aborted) {
-					requestAbortController.abort(ERRORS.ABORTED);
-				}
-			},
-			cancel() {
-				// Initiates the delayed abort sequence unless it's already in progress.
-				if (!abortWithDelayController.signal.aborted) {
-					abortWithDelayController.abort(ERRORS.ABORTED);
-				}
-			},
-		};
 	}
 
 	private writeResponse(res: Response, status: number, headers = {}, body = '') {

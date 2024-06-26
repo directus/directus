@@ -3,7 +3,6 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
-// import { registerResumableUploads } from '@directus/resumable-uploads';
 import Busboy from 'busboy';
 import bytes from 'bytes';
 import type { RequestHandler } from 'express';

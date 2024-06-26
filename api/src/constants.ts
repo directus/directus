@@ -2,6 +2,9 @@ import type { CookieOptions } from 'express';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import bytes from 'bytes';
+import { validateCron } from './utils/schedule.js';
 
 const env = useEnv();
 
@@ -93,3 +96,13 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/tiff',
 	'image/avif',
 ];
+
+/** Resumable uploads */
+export const RESUMABLE_UPLOADS = {
+	ENABLED: toBoolean(env['RESUMABLE_UPLOADS_ENABLED']),
+	CHUNK_SIZE: bytes(String(env['RESUMABLE_UPLOADS_CHUNK_SIZE'] ?? '10mb')),
+	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	EXPIRATION_TIME: getMilliseconds(env['RESUMABLE_UPLOADS_EXPIRATION']) ?? 0,
+	SCHEDULE: String(env['RESUMABLE_UPLOADS_CLEANUP_SCHEDULE'] ?? '0 * * * *'),
+	LOCK_DRAIN_TIMEOUT: Number(env['RESUMABLE_UPLOADS_LOCK_DRAIN_TIMEOUT'] ?? '3000') ,
+};
