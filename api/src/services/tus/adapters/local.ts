@@ -10,11 +10,8 @@ import { extension } from 'mime-types';
 import fsProm from 'fs/promises';
 import { DataStore, ERRORS, Upload } from '@tus/server';
 import type { File } from '@directus/types';
-import { toArray } from '@directus/utils';
-import { useEnv } from '@directus/env';
 import { FilesService } from '../../files.js';
 import type { AbstractServiceOptions } from '../../../types/services.js';
-import { getConfigFromEnv } from '../../../utils/get-config-from-env.js';
 import formatTitle from '@directus/format-title';
 import { useLogger } from '../../../logger.js';
 import { RESUMABLE_UPLOADS } from '../../../constants.js';
@@ -25,7 +22,6 @@ export type LocalOptions = {
 	expirationPeriodInMilliseconds?: number;
 };
 
-const env = useEnv();
 const logger = useLogger();
 
 const FILE_DOESNT_EXIST = 'ENOENT';
@@ -35,9 +31,9 @@ export class LocalFileStore extends DataStore {
 	private service: FilesService | undefined;
 	private sudoService: ItemsService | undefined;
 
-	constructor() {
+	constructor(directory: string) {
 		super();
-		this.directory = this.getDirectory();
+		this.directory = directory;
 		this.extensions = ['creation', 'termination', 'expiration'];
 	}
 
@@ -49,22 +45,6 @@ export class LocalFileStore extends DataStore {
 			knex: this.service.knex,
 			schema: options.schema,
 		})
-	}
-
-	private getDirectory() {
-		const locations = toArray(env['STORAGE_LOCATIONS'] as string);
-
-		for (let location of locations) {
-			location = location.trim();
-			const driverConfig = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
-			const { driver, ...options } = driverConfig;
-
-			if (driver === 'local') {
-				return options['root'];
-			}
-		}
-
-		throw new Error('Location "local" not configured');
 	}
 
 	override async create(file: Upload): Promise<Upload> {
