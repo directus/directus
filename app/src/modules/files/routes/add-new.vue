@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UploadController } from '@/components/v-upload.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,33 +15,32 @@ const router = useRouter();
 
 const isOpen = useDialogRoute();
 
-let uploader: any = null;
+let uploadController: any = null;
 const isUploading = ref(false);
 const isPaused = ref(false);
 
 function close() {
-	uploader?.abort();
-	uploader = null;
+	uploadController?.abort();
+	uploadController = null;
 	isUploading.value = false;
 	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
 }
 
 function pause() {
-	console.log('pause', uploader);
-	uploader?.abort();
+	console.log('pause', uploadController);
+	uploadController?.abort();
 	isPaused.value = true;
 }
 
 function resume() {
-	console.log('resume', uploader);
-	uploader?.start();
+	console.log('resume', uploadController);
+	uploadController?.start();
 	isUploading.value = true;
 	isPaused.value = false;
 }
 
-function start(idk) {
-	console.log('start')
-	uploader = idk;
+function start(controller: UploadController) {
+	uploadController = controller;
 	isUploading.value = true;
 	isPaused.value = false;
 }

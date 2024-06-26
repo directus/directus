@@ -8,7 +8,7 @@ export async function uploadFiles(
 	files: File[],
 	options?: {
 		onProgressChange?: (percentages: number[]) => void;
-		onChunkedUpload?: (idk: tus.Upload) => void;
+		onChunkedUpload?: (controllers: (tus.Upload | null)[]) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		folder?: string;
@@ -16,6 +16,7 @@ export async function uploadFiles(
 ): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
+	const uploadControllers: tus.Upload | null = Array(files.length).fill(null);
 
 	try {
 		const uploadedFiles = (
@@ -27,7 +28,10 @@ export async function uploadFiles(
 							progressForFiles[index] = percentage;
 							progressHandler(progressForFiles);
 						},
-						onChunkedUpload: options?.onChunkedUpload
+						onChunkedUpload: (controller: tus.Upload) => {
+							uploadControllers[index] = controller;
+							options?.onChunkedUpload(uploadControllers);
+						},
 					}),
 				),
 			)

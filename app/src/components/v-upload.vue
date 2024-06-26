@@ -10,6 +10,11 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import * as tus from 'tus-js-client';
 
+export type UploadController = {
+	start(): void;
+	abort(): void;
+};
+
 interface Props {
 	multiple?: boolean;
 	preset?: Record<string, any>;
@@ -26,7 +31,10 @@ const props = withDefaults(defineProps<Props>(), {
 	fromUser: true,
 });
 
-const emit = defineEmits(['input', 'start']);
+const emit = defineEmits<{
+	input: [files: null | File | File[]];
+	start: [controller: UploadController];
+}>();
 
 const { t } = useI18n();
 
@@ -82,6 +90,16 @@ function useUpload() {
 			numberOfFiles.value = files.length;
 			const fileSizes = Array.from(files).map((file) => file.size);
 			const totalBytes = sum(fileSizes);
+			const fileControllers: (UploadController | null)[] = new Array(files.length).fill(null);
+
+			const controller = {
+				start() {
+					fileControllers.forEach((controller) => controller?.start());
+				},
+				abort() {
+					fileControllers.forEach((controller) => controller?.abort());
+				},
+			};
 
 			if (props.multiple === true) {
 				const uploadedFiles = await uploadFiles(Array.from(files), {
@@ -89,11 +107,27 @@ function useUpload() {
 						progress.value = Math.round(
 							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
 						);
-						done.value = percentages.filter((p) => p === 100).length;
+
+						const doneIndices = percentages
+							.map((p, i) => [p, i])
+							.filter(([p]) => p === 100)
+							.map(([, i]) => i!);
+
+						done.value = doneIndices.length;
+
+						// Nullify controller for done uploads, to prevent resuming after pausing
+						for (const idx of doneIndices) {
+							if (fileControllers[idx]) fileControllers[idx] = null;
+						}
 					},
-					onChunkedUpload: (tusUpload) => {
-						uploader = tusUpload;
-						emit('start', tusUpload);
+					onChunkedUpload: (controllers) => {
+						controllers.forEach((controller, i) => (fileControllers[i] = controller));
+						uploader = controller;
+
+						if (controllers.every((c) => c !== null)) {
+							// Only emit start once every upload started
+							emit('start', controller);
+						}
 					},
 					preset,
 				});
