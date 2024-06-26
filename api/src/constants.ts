@@ -4,7 +4,6 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
-import { validateCron } from './utils/schedule.js';
 
 const env = useEnv();
 
@@ -104,5 +103,5 @@ export const RESUMABLE_UPLOADS = {
 	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
 	EXPIRATION_TIME: getMilliseconds(env['RESUMABLE_UPLOADS_EXPIRATION']) ?? 0,
 	SCHEDULE: String(env['RESUMABLE_UPLOADS_CLEANUP_SCHEDULE'] ?? '0 * * * *'),
-	LOCK_DRAIN_TIMEOUT: Number(env['RESUMABLE_UPLOADS_LOCK_DRAIN_TIMEOUT'] ?? '3000') ,
+	LOCK_DRAIN_TIMEOUT: Number(env['RESUMABLE_UPLOADS_LOCK_DRAIN_TIMEOUT'] ?? '3000'),
 };
