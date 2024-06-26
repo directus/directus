@@ -30,7 +30,7 @@ export async function uploadFiles(
 						},
 						onChunkedUpload: (controller: tus.Upload) => {
 							uploadControllers[index] = controller;
-							options?.onChunkedUpload(uploadControllers);
+							options?.onChunkedUpload?.(uploadControllers);
 						},
 					}),
 				),
