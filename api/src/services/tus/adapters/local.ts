@@ -33,7 +33,6 @@ const logger = useLogger();
 const FILE_DOESNT_EXIST = 'ENOENT';
 
 export class LocalFileStore extends DataStore {
-	storageDriver = 'local';
 	directory: string;
 	service: FilesService | undefined;
 
@@ -55,7 +54,7 @@ export class LocalFileStore extends DataStore {
 			const driverConfig = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
 			const { driver, ...options } = driverConfig;
 
-			if (driver === this.storageDriver) {
+			if (driver === 'local') {
 				return options['root'];
 			}
 		}
@@ -64,8 +63,6 @@ export class LocalFileStore extends DataStore {
 	}
 
 	override async create(file: Upload): Promise<Upload> {
-		const storageTarget: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-
 		file.metadata = file.metadata ?? {};
 		const fileName = file.metadata['filename']!;
 		const fileType = file.metadata['filetype'] ?? 'application/octet-stream';
@@ -77,7 +74,7 @@ export class LocalFileStore extends DataStore {
 			filesize: file.size!,
 			filename_download: fileName,
 			title: formatTitle(fileName),
-			storage: storageTarget,
+			storage: 'local',
 		};
 
 		const key = await this.service?.createOne(fileData);
@@ -153,7 +150,9 @@ export class LocalFileStore extends DataStore {
 	override async getUpload(id: string): Promise<Upload> {
 		const results = await this.service
 			?.readByQuery({
-				filter: { tus_id: { _eq: id } },
+				filter: {
+					tus_id: { _eq: id },
+				},
 			})
 			.catch(() => {});
 

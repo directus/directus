@@ -2,7 +2,7 @@ import { Router } from "express";
 import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
 import { useEnv } from "@directus/env";
 import { tusServer } from "../services/tus/index.js";
-// import { AuthorizationService } from "../services/authorization.js";
+import { AuthorizationService } from "../services/authorization.js";
 import asyncHandler from "../utils/async-handler.js";
 
 const env = useEnv();
@@ -11,17 +11,16 @@ const handler = tusServer.handle.bind(tusServer);
 const router = Router();
 
 const checkAccess = () => asyncHandler(async (req, _res, next) => {
-	// const auth = new AuthorizationService({
-	// 	accountability: req.accountability,
-	// 	schema: req.schema,
-	// });
+	const auth = new AuthorizationService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-	console.info('tus', req.method/*, req.accountability, req.token*/);
+	// console.info('tus', req.method/*, req.accountability, req.token*/);
 
 	if (!req.accountability?.admin) {
-
-		// fix this somehow?
-		// await auth.checkAccess('create', 'directus_files');
+		// TODO fix non-admin access
+		await auth.checkAccess('create', 'directus_files');
 	}
 
 	return next();

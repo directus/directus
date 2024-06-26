@@ -1,21 +1,20 @@
 import type { DataStore } from '@tus/utils';
-import { LocalFileStore, type LocalOptions } from './local.js';
+import { LocalFileStore } from './local.js';
 // import { S3FileStore, type S3Options } from './s3.js';
-import type stream from 'stream';
-import type { ReadStream } from 'fs';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
+import type { AbstractServiceOptions } from '../../../types/services.js';
 
-export interface DataStore2 extends DataStore {
-	read(id: string): Promise<stream.Readable> | ReadStream;
-}
+export function getTusAdapter(): DataStore & { init: (options: AbstractServiceOptions) => void } {
+	const env = useEnv();
 
-export function getTusAdapter(opts: LocalOptions): DataStore2 {
 	// return the correct adapter based on the env
-	switch ('local') {
+	switch (toArray(env['STORAGE_LOCATIONS'] as string)[0]!) {
 		case 'local':
-			return new LocalFileStore(opts as LocalOptions);
+			return new LocalFileStore();
 		// case 's3':
 		// 	return new S3FileStore(opts as S3Options);
+		default:
+			throw new Error('unknown or unsupported storage adapter');
 	}
-
-	// throw new Error('unknown or unsupported storage adapter');
 }

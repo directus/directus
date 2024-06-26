@@ -1,14 +1,11 @@
-/* eslint-disable no-console */
 /**
  * TUS implementation for resumable uploads
  *
  * https://tus.io/
  */
-import { toArray } from '@directus/utils';
 import { FilesService } from '../files.js';
-import path from 'path';
 import { useEnv } from '@directus/env';
-import type { Request, Response/*, NextFunction*/ } from 'express';
+import type { Request, Response /*, NextFunction*/ } from 'express';
 import { randomUUID } from '@directus/random';
 import { getTusAdapter } from './adapters/index.js';
 import type { ServerOptions } from './types.js';
@@ -19,7 +16,6 @@ import getDatabase from '../../database/index.js';
 import { ERRORS, Metadata, Upload, type CancellationContext, type DataStore, type Locker } from '@tus/utils';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { Server } from '@tus/server';
-import { LocalFileStore } from './adapters/local.js';
 import bytes from 'bytes';
 
 const env = useEnv();
@@ -27,12 +23,7 @@ const env = useEnv();
 const reForwardedHost = /host="?([^";]+)/;
 const reForwardedProto = /proto=(https?)/;
 
-export const tusStore = new LocalFileStore();
-
-// getTusAdapter({
-// 	directory: path.join(env['EXTENSIONS_PATH'] as string, '.temp'),
-// 	expirationPeriodInMilliseconds: 120_000,
-// });
+export const tusStore = getTusAdapter();
 
 let _locker: Locker | undefined = undefined;
 
@@ -55,23 +46,20 @@ export const tusServerOptions: ServerOptions = {
 		});
 	},
 	onUploadFinish: async (req: any, res, upload) => {
-		console.log('finished', /*req, res,*/ upload);
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		try {
-			const service = new FilesService({
-				accountability: req.accountability,
-				schema: req.schema,
-			});
-
-			await service.updateByQuery({
-				filter: { tus_id: {_eq: upload.id}}
-			}, {
+		await service.updateByQuery(
+			{
+				filter: { tus_id: { _eq: upload.id } },
+			},
+			{
 				tus_id: null,
 				tus_data: null,
-			});
-		} catch (err) {
-			console.warn('why', err);
-		}
+			},
+		);
 
 		return res;
 	},
@@ -83,7 +71,7 @@ export const tusServerOptions: ServerOptions = {
 
 export const tusServer = new Server({
 	...tusServerOptions,
-	datastore: tusStore
+	datastore: tusStore,
 });
 
 export type TusServiceOptions = AbstractServiceOptions & {
@@ -166,7 +154,7 @@ export class TusService {
 			id,
 			offset: 0,
 			...(metadata ? { metadata } : {}),
-			...(upload_length ? { size: Number.parseInt(upload_length, 10) } : {})
+			...(upload_length ? { size: Number.parseInt(upload_length, 10) } : {}),
 		});
 
 		const lock = await this.acquireLock(id, context);
@@ -229,13 +217,9 @@ export class TusService {
 		return writtenRes;
 	}
 
-	async uploadChunk() {
+	async uploadChunk() {}
 
-	}
-
-	async getOffset() {
-
-	}
+	async getOffset() {}
 
 	namingFunction() {
 		return randomUUID();

@@ -76,7 +76,6 @@
 		"@directus/format-title": "workspace:*",
 		"@directus/memory": "workspace:*",
 		"@directus/pressure": "workspace:*",
-		"@directus/resumable-uploads": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
