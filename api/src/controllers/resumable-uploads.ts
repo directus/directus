@@ -51,6 +51,7 @@ const checkFileAccess = () => asyncHandler(async (req, _res, next) => {
 
 router.post('/', checkFileAccess(), handler);
 router.patch('/:id', checkFileAccess(), handler);
+router.delete('/:id', checkFileAccess(), handler);
 
 router.options('/:id', checkFileAccess(), handler);
 
