@@ -5,6 +5,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import { sum } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import * as tus from 'tus-js-client';
@@ -43,7 +44,7 @@ function abortUpload() {
 }
 
 defineExpose({
-	abort: abortUpload
+	abort: abortUpload,
 });
 
 function validFiles(files: FileList) {
@@ -79,12 +80,16 @@ function useUpload() {
 			}
 
 			numberOfFiles.value = files.length;
+			const fileSizes = Array.from(files).map((file) => file.size);
+			const totalBytes = sum(fileSizes);
 
 			if (props.multiple === true) {
 				const uploadedFiles = await uploadFiles(Array.from(files), {
-					onProgressChange: (percentage) => {
-						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
-						done.value = percentage.filter((p) => p === 100).length;
+					onProgressChange: (percentages) => {
+						progress.value = Math.round(
+							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
+						);
+						done.value = percentages.filter((p) => p === 100).length;
 					},
 					onChunkedUpload: (tusUpload) => {
 						uploader = tusUpload;
