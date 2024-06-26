@@ -8,7 +8,7 @@ import { useEnv } from '@directus/env';
 import type { Request/*, Response /*, NextFunction*/ } from 'express';
 import { getTusAdapter } from './adapters/index.js';
 import type { ServerOptions } from './types.js';
-import { MemoryLocker } from './lockers.js';
+import { getTusLocker } from './lockers.js';
 import { Server } from '@tus/server';
 import bytes from 'bytes';
 import type { IncomingMessage } from 'node:http';
@@ -19,7 +19,7 @@ export const tusStore = getTusAdapter();
 
 export const tusServerOptions: ServerOptions = {
 	path: '/files/tus',
-	locker: new MemoryLocker(),
+	locker: getTusLocker(),
 	maxSize: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
 	async onIncomingRequest(msg: IncomingMessage) {
 		const req = msg as Request;

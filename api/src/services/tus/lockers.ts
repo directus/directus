@@ -1,4 +1,7 @@
 import { ERRORS, type Lock, type Locker, type RequestRelease } from '@tus/utils';
+import { useLock } from '../../lock/index.js';
+import type { Kv } from '@directus/memory';
+import { waitTimeout } from './utils/wait-timeout.js';
 
 /**
  * MemoryLocker is an implementation of the Locker interface that manages locks in memory.
@@ -20,41 +23,36 @@ import { ERRORS, type Lock, type Locker, type RequestRelease } from '@tus/utils'
  *   or fail after the timeout period.
  * - The `unlock` method releases a lock, making the resource available for other requests.
  */
+export class TusLocker implements Locker {
+	lockTimeout: number;
+	acquireTimeout: number;
 
-export interface MemoryLockerOptions {
-	acquireLockTimeout: number;
-}
-
-interface LockEntry {
-	requestRelease: RequestRelease;
-}
-
-export class MemoryLocker implements Locker {
-	timeout: number;
-	locks = new Map<string, LockEntry>();
-
-	constructor(options?: MemoryLockerOptions) {
-		this.timeout = options?.acquireLockTimeout ?? 1000 * 30;
+	constructor(options?: { acquireLockTimeout: number; lockTimeout: number; }) {
+		this.acquireTimeout = options?.acquireLockTimeout ?? 1000 * 30;
+		this.lockTimeout = options?.lockTimeout ?? 1000 * 60;
 	}
 
 	newLock(id: string) {
-		return new MemoryLock(id, this, this.timeout);
+		return new KvLock(id, this.lockTimeout, this.acquireTimeout);
 	}
 }
 
-class MemoryLock implements Lock {
+export class KvLock implements Lock {
+	private kv: Kv;
 	constructor(
 		private id: string,
-		private locker: MemoryLocker,
-		private timeout: number = 1000 * 30,
-	) {}
+		private lockTimeout: number = 1000 * 60,
+		private acquireTimeout: number = 1000 * 30,
+	) {
+		this.kv = useLock();
+	}
 
-	async lock(requestRelease: RequestRelease): Promise<void> {
+	async lock(cancelReq: RequestRelease) {
 		const abortController = new AbortController();
 
 		const lock = await Promise.race([
-			this.waitTimeout(abortController.signal),
-			this.acquireLock(this.id, requestRelease, abortController.signal),
+			waitTimeout(this.acquireTimeout, abortController.signal),
+			this.acquireLock(this.id, cancelReq, abortController.signal),
 		]);
 
 		abortController.abort();
@@ -69,18 +67,15 @@ class MemoryLock implements Lock {
 			return false;
 		}
 
-		const lock = this.locker.locks.get(id);
+		const lockTime = await this.kv.get(id);
+		const now = Date.now();
 
-		if (!lock) {
-			const lock = {
-				requestRelease,
-			};
-
-			this.locker.locks.set(id, lock);
+		if (!lockTime || Number(lockTime) < now - this.lockTimeout) {
+			await this.kv.set(id, now);
 			return true;
 		}
 
-		await lock.requestRelease?.();
+		await requestRelease();
 
 		return await new Promise((resolve, reject) => {
 			// Using setImmediate to:
@@ -93,29 +88,17 @@ class MemoryLock implements Lock {
 		});
 	}
 
-	async unlock(): Promise<void> {
-		const lock = this.locker.locks.get(this.id);
+	async unlock() {
+		await this.kv.delete(this.id);
+	}
+}
 
-		if (!lock) {
-			throw new Error('Releasing an unlocked lock!');
-		}
+let _locker: Locker | undefined = undefined;
 
-		this.locker.locks.delete(this.id);
+export function getTusLocker() {
+	if (!_locker) {
+		_locker = new TusLocker();
 	}
 
-	protected waitTimeout(signal: AbortSignal) {
-		return new Promise<boolean>((resolve) => {
-			const timeout = setTimeout(() => {
-				resolve(false);
-			}, this.timeout);
-
-			const abortListener = () => {
-				clearTimeout(timeout);
-				signal.removeEventListener('abort', abortListener);
-				resolve(false);
-			};
-
-			signal.addEventListener('abort', abortListener);
-		});
-	}
+	return _locker;
 }
