@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	done: [];
+	remove: [];
 	upload: [];
 	error: [error: Error | null];
 }>();
@@ -120,6 +121,7 @@ onUnmounted(() => {
 				<v-icon name="not_started" />
 				<span>{{ t('resume') }}</span>
 			</v-button>
+			<v-icon class="remove" name="close" clickable @click="emit('remove')" />
 		</div>
 	</v-list-item>
 </template>
@@ -142,6 +144,11 @@ onUnmounted(() => {
 	.actions {
 		--v-icon-size: 20px;
 
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding-right: 6px;
+
 		.v-button :deep(.x-small) {
 			padding: 0 12px 0 6px;
 
@@ -152,6 +159,10 @@ onUnmounted(() => {
 
 		.browse {
 			display: none;
+		}
+
+		.remove {
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
