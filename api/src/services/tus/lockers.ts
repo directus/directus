@@ -27,7 +27,7 @@ export class TusLocker implements Locker {
 	lockTimeout: number;
 	acquireTimeout: number;
 
-	constructor(options?: { acquireLockTimeout: number; lockTimeout: number; }) {
+	constructor(options?: { acquireLockTimeout: number; lockTimeout: number }) {
 		this.acquireTimeout = options?.acquireLockTimeout ?? 1000 * 30;
 		this.lockTimeout = options?.lockTimeout ?? 1000 * 60;
 	}

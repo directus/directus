@@ -117,7 +117,7 @@ export class ServerService {
 			if (RESUMABLE_UPLOADS.ENABLED) {
 				info['uploads'] = {
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
-				}
+				};
 			}
 
 			info['version'] = version;

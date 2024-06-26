@@ -5,7 +5,7 @@
  */
 import { FilesService } from '../files.js';
 import { useEnv } from '@directus/env';
-import type { Request/*, Response /*, NextFunction*/ } from 'express';
+import type { Request /*, Response /*, NextFunction*/ } from 'express';
 import { getTusAdapter } from './adapters/index.js';
 import type { ServerOptions } from './types.js';
 import { getTusLocker } from './lockers.js';
