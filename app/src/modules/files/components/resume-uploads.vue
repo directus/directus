@@ -1,25 +1,41 @@
 <script setup lang="ts">
 import VDivider from '@/components/v-divider.vue';
 import ResumableUploadItem from '@/modules/files/components/resumable-upload-item.vue';
-import { PreviousUpload } from '@/modules/files/composables/use-resumable-uploads';
-import { ref } from 'vue';
+import { useResumableUploads } from '@/modules/files/composables/use-resumable-uploads';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-defineProps<{
-	resumableUploads: PreviousUpload[];
-}>();
 
 const { t } = useI18n();
 
 const dialogActive = ref(false);
 const error = ref<Error | null>(null);
+
+const { uploads: resumableUploads, remove } = useResumableUploads();
+
+function close() {
+	dialogActive.value = false;
+	error.value = null;
+}
+
+watch(dialogActive, () => {
+	if (!dialogActive.value) {
+		error.value = null;
+	}
+});
 </script>
 
 <template>
-	<v-dialog v-model="dialogActive" @esc="dialogActive = false">
+	<v-dialog v-model="dialogActive" @esc="close">
 		<template #activator="{ on }">
-			<v-button v-if="resumableUploads.length > 0" v-tooltip="t('resume_uploads')" rounded icon secondary @click="on">
-				<v-icon name="cloud_upload" outline />
+			<v-button
+				v-if="resumableUploads.length > 0"
+				v-tooltip.bottom="t('resume_uploads')"
+				rounded
+				icon
+				secondary
+				@click="on"
+			>
+				<v-icon name="clock_loader_40" outline />
 			</v-button>
 		</template>
 
@@ -31,7 +47,9 @@ const error = ref<Error | null>(null);
 				<div class="info">
 					{{ t('resumable_uploads_info') }}
 				</div>
-				<v-error v-if="error" :error="error" />
+				<v-notice v-if="error" type="danger">
+					{{ error.response?.data?.errors?.[0]?.message || error?.message }}
+				</v-notice>
 				<v-divider />
 				<v-list>
 					<span v-if="resumableUploads.length === 0" class="empty">{{ t('no_resumable_uploads') }}</span>
@@ -41,12 +59,13 @@ const error = ref<Error | null>(null);
 						:upload="upload"
 						@upload="error = null"
 						@error="error = $event"
+						@remove="remove(upload.urlStorageKey)"
 					/>
 				</v-list>
 				<!--				<v-input v-model="newFolderName" autofocus :placeholder="t('folder_name')" @keyup.enter="addFolder" />-->
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ t('cancel') }}</v-button>
+				<v-button secondary @click="close">{{ t('cancel') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

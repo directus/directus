@@ -1,8 +1,8 @@
 import { emitter, Events } from '@/events';
 import { useServerStore } from '@/stores/server';
 import { useApi } from '@directus/composables';
-import * as tus from 'tus-js-client';
 import { onMounted, onUnmounted, ref } from 'vue';
+import * as tus from 'tus-js-client';
 
 export type PreviousUpload = tus.PreviousUpload & {
 	uploadUrl: string;
@@ -11,19 +11,16 @@ export type PreviousUpload = tus.PreviousUpload & {
 export function useResumableUploads() {
 	const server = useServerStore();
 	const uploads = ref<PreviousUpload[]>([]);
-
-	if (!server.info.uploads) {
-		return uploads;
-	}
-
 	const api = useApi();
 
-	onMounted(() => emitter.on(Events.tusResumableUploadsChanged, refresh));
-	onUnmounted(() => emitter.off(Events.tusResumableUploadsChanged, refresh));
+	if (server.info.uploads) {
+		onMounted(() => emitter.on(Events.tusResumableUploadsChanged, refresh));
+		onUnmounted(() => emitter.off(Events.tusResumableUploadsChanged, refresh));
 
-	refresh();
+		refresh();
+	}
 
-	return uploads;
+	return { uploads, remove };
 
 	async function refresh() {
 		const { urlStorage } = tus.defaultOptions;
@@ -53,5 +50,21 @@ export function useResumableUploads() {
 				urlStorage.removeUpload(infos[index].urlStorageKey);
 			}
 		});
+	}
+
+	async function remove(urlStorageKey: string) {
+		try {
+			const info = JSON.parse(localStorage.getItem(urlStorageKey)!);
+
+			if (!info) return;
+
+			await api.delete(info.uploadUrl, {
+				headers: {
+					'Tus-Resumable': '1.0.0',
+				},
+			});
+		} catch (_e) {
+			// Ignore
+		}
 	}
 }

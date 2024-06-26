@@ -40,7 +40,6 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { folders } = useFolders();
-const resumableUploads = useResumableUploads();
 
 const layoutRef = ref();
 const selection = ref<Item[]>([]);
@@ -383,7 +382,7 @@ function useFileUpload() {
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-				<resume-uploads :v-if="resumableUploads.length > 0" :resumable-uploads="resumableUploads" />
+				<resume-uploads />
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
