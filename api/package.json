@@ -137,7 +137,7 @@
 		"keyv": "4.5.4",
 		"knex": "3.1.0",
 		"ldapjs": "2.3.3",
-		"liquidjs": "10.13.1",
+		"liquidjs": "10.14.0",
 		"lodash-es": "4.17.21",
 		"marked": "12.0.2",
 		"micromustache": "8.0.3",
