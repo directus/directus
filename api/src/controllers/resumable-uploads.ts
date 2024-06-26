@@ -4,34 +4,57 @@ import { useEnv } from "@directus/env";
 import { tusServer } from "../services/tus/index.js";
 import { AuthorizationService } from "../services/authorization.js";
 import asyncHandler from "../utils/async-handler.js";
+import type { PermissionsAction } from "@directus/types";
+import { ForbiddenError } from "@directus/errors";
 
 const env = useEnv();
 
 const handler = tusServer.handle.bind(tusServer);
 const router = Router();
 
-const checkAccess = () => asyncHandler(async (req, _res, next) => {
+const mapAction = (method: string): PermissionsAction => {
+	switch (method) {
+		case 'POST': return 'create';
+		case 'PATCH': return 'update';
+		case 'DELETE': return 'delete';
+		default: return 'read';
+	}
+}
+
+const checkFileAccess = () => asyncHandler(async (req, _res, next) => {
 	const auth = new AuthorizationService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
 
-	// console.info('tus', req.method/*, req.accountability, req.token*/);
-
 	if (!req.accountability?.admin) {
-		// TODO fix non-admin access
-		await auth.checkAccess('create', 'directus_files');
+		const action = mapAction(req.method);
+
+		if (action === 'create') {
+			// checkAccess doesnt seem to work as expected for "create" actions
+			const hasPermission = Boolean(req.accountability?.permissions?.find((permission) => {
+				return permission.collection === 'directus_files' && permission.action === action;
+			}));
+
+			if (!hasPermission) throw new ForbiddenError();
+		} else {
+			try {
+				await auth.checkAccess(action, 'directus_files');
+			} catch(e) {
+				throw new ForbiddenError();
+			}
+		}
 	}
 
 	return next();
 });
 
-router.post('/', checkAccess(), handler);
-router.patch('/:id', checkAccess(), handler);
+router.post('/', checkFileAccess(), handler);
+router.patch('/:id', checkFileAccess(), handler);
 
-router.options('/:id', checkAccess(), handler);
+router.options('/:id', checkFileAccess(), handler);
 
-router.head('/:id', checkAccess(), handler,/*async (req, res) => {
+router.head('/:id', checkFileAccess(), handler,/*async (req, res) => {
 	const context = createTusContext(req);
 	const handler2 = new HeadHandler(tusServer.datastore, tusServer.options);
 
