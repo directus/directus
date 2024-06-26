@@ -930,20 +930,20 @@ importers:
         specifier: 6.2.0
         version: 6.2.0
       typedoc:
-        specifier: 0.25.13
-        version: 0.25.13(typescript@5.4.5)
+        specifier: 0.26.2
+        version: 0.26.2(typescript@5.4.5)
       typedoc-plugin-frontmatter:
         specifier: 0.0.2
         version: 0.0.2
       typedoc-plugin-markdown:
         specifier: 4.0.0-next.53
-        version: 4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))
+        version: 4.0.0-next.53(typedoc@0.26.2(typescript@5.4.5))
       typedoc-plugin-zod:
         specifier: 1.2.0
-        version: 1.2.0(typedoc@0.25.13(typescript@5.4.5))
+        version: 1.2.0(typedoc@0.26.2(typescript@5.4.5))
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.10
-        version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
+        version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.26.2(typescript@5.4.5)))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -4437,6 +4437,9 @@ packages:
   '@sendgrid/mail@6.5.5':
     resolution: {integrity: sha512-DSu8oTPI0BJFH60jMOG9gM+oeNMoRALFmdAYg2PIXpL+Zbxd7L2GzQZtmf1jLy/8UBImkbB3D74TjiOBiLRK1w==}
     engines: {node: '>=6.0.0'}
+
+  '@shikijs/core@1.9.1':
+    resolution: {integrity: sha512-EmUful2MQtY8KgCF1OkBtOuMcvaZEvmdubhW0UHCGXi21O9dRLeADVCj+k6ZS+de7Mz9d2qixOXJ+GLhcK3pXg==}
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -8353,6 +8356,9 @@ packages:
   linkify-it@3.0.3:
     resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
 
+  linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+
   liquidjs@10.14.0:
     resolution: {integrity: sha512-Zjg35Yo3L/2aNy7QkICha/ulbXRtZS7oRenWyDDfw+J34Xy3fOKWWHxASC9r0gbxN661nrwmG/kOIKHfYcVk4Q==}
     engines: {node: '>=14'}
@@ -8589,14 +8595,13 @@ packages:
     resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
     hasBin: true
 
+  markdown-it@14.1.0:
+    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+    hasBin: true
+
   marked@12.0.2:
     resolution: {integrity: sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==}
     engines: {node: '>= 18'}
-    hasBin: true
-
-  marked@4.3.0:
-    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
-    engines: {node: '>= 12'}
     hasBin: true
 
   mdast-util-from-markdown@0.8.5:
@@ -8628,6 +8633,9 @@ packages:
 
   mdurl@1.0.1:
     resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
+
+  mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
   media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -9953,6 +9961,10 @@ packages:
   pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
 
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
+
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
@@ -10459,6 +10471,9 @@ packages:
 
   shiki@0.14.7:
     resolution: {integrity: sha512-dNPAPrxSc87ua2sKJ3H5dQ/6ZaY8RNnaAqK+t0eG7p0Soi2ydiqbGOTaZCqaYvA/uZYfS1LJnemt3Q+mSfcPCg==}
+
+  shiki@1.9.1:
+    resolution: {integrity: sha512-8PDkgb5ja3nfujTjvC4VytL6wGOGCtFAClUb2r3QROevYXxcq+/shVJK5s6gy0HZnjaJgFxd6BpPqpRfqne5rA==}
 
   side-channel@1.0.6:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
@@ -11252,12 +11267,12 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0-next.51'
 
-  typedoc@0.25.13:
-    resolution: {integrity: sha512-pQqiwiJ+Z4pigfOnnysObszLiU3mVLWAExSPf+Mu06G/qsc3wzbuM56SZQvONhHLncLUhYzOVkjFFpFfL5AzhQ==}
-    engines: {node: '>= 16'}
+  typedoc@0.26.2:
+    resolution: {integrity: sha512-q/t+M+PZqhN9gPWLBZ3CCvP+KT8O1tyYkSzEYbcQ6mo89avdIrMlBEl3vfo5BgSzwC6Lbmq0W64E8RkY+eVsLA==}
+    engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
-      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x
 
   typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
@@ -11278,6 +11293,9 @@ packages:
 
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
+
+  uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -11972,6 +11990,11 @@ packages:
 
   yaml@2.4.2:
     resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
+    engines: {node: '>= 14'}
+    hasBin: true
+
+  yaml@2.4.5:
+    resolution: {integrity: sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==}
     engines: {node: '>= 14'}
     hasBin: true
 
@@ -15116,6 +15139,8 @@ snapshots:
       '@sendgrid/client': 6.5.5
       '@sendgrid/helpers': 6.5.5
     optional: true
+
+  '@shikijs/core@1.9.1': {}
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -19765,6 +19790,10 @@ snapshots:
     dependencies:
       uc.micro: 1.0.6
 
+  linkify-it@5.0.0:
+    dependencies:
+      uc.micro: 2.1.0
+
   liquidjs@10.14.0:
     dependencies:
       commander: 10.0.1
@@ -20055,9 +20084,16 @@ snapshots:
       mdurl: 1.0.1
       uc.micro: 1.0.6
 
-  marked@12.0.2: {}
+  markdown-it@14.1.0:
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
 
-  marked@4.3.0: {}
+  marked@12.0.2: {}
 
   mdast-util-from-markdown@0.8.5:
     dependencies:
@@ -20127,6 +20163,8 @@ snapshots:
   mdn-data@2.0.14: {}
 
   mdurl@1.0.1: {}
+
+  mdurl@2.0.0: {}
 
   media-typer@0.3.0: {}
 
@@ -21385,7 +21423,7 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.4.38):
     dependencies:
       lilconfig: 3.1.1
-      yaml: 2.4.2
+      yaml: 2.4.5
     optionalDependencies:
       postcss: 8.4.38
 
@@ -21667,6 +21705,8 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
+
+  punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
 
@@ -22376,6 +22416,10 @@ snapshots:
       jsonc-parser: 3.2.0
       vscode-oniguruma: 1.7.0
       vscode-textmate: 8.0.0
+
+  shiki@1.9.1:
+    dependencies:
+      '@shikijs/core': 1.9.1
 
   side-channel@1.0.6:
     dependencies:
@@ -23315,25 +23359,26 @@ snapshots:
     dependencies:
       yaml: 2.3.4
 
-  typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)):
+  typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.26.2(typescript@5.4.5)):
     dependencies:
-      typedoc: 0.25.13(typescript@5.4.5)
+      typedoc: 0.26.2(typescript@5.4.5)
 
-  typedoc-plugin-zod@1.2.0(typedoc@0.25.13(typescript@5.4.5)):
+  typedoc-plugin-zod@1.2.0(typedoc@0.26.2(typescript@5.4.5)):
     dependencies:
-      typedoc: 0.25.13(typescript@5.4.5)
+      typedoc: 0.26.2(typescript@5.4.5)
 
-  typedoc-vitepress-theme@1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))):
+  typedoc-vitepress-theme@1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.26.2(typescript@5.4.5))):
     dependencies:
-      typedoc-plugin-markdown: 4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))
+      typedoc-plugin-markdown: 4.0.0-next.53(typedoc@0.26.2(typescript@5.4.5))
 
-  typedoc@0.25.13(typescript@5.4.5):
+  typedoc@0.26.2(typescript@5.4.5):
     dependencies:
       lunr: 2.3.9
-      marked: 4.3.0
+      markdown-it: 14.1.0
       minimatch: 9.0.4
-      shiki: 0.14.7
+      shiki: 1.9.1
       typescript: 5.4.5
+      yaml: 2.4.5
 
   typescript@5.4.2: {}
 
@@ -23344,6 +23389,8 @@ snapshots:
   typical@4.0.0: {}
 
   uc.micro@1.0.6: {}
+
+  uc.micro@2.1.0: {}
 
   ufo@1.5.3: {}
 
@@ -24134,6 +24181,8 @@ snapshots:
   yaml@2.3.4: {}
 
   yaml@2.4.2: {}
+
+  yaml@2.4.5: {}
 
   yargs-parser@18.1.3:
     dependencies:
