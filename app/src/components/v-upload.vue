@@ -88,20 +88,21 @@ function useUpload() {
 			}
 
 			numberOfFiles.value = files.length;
-			const fileSizes = Array.from(files).map((file) => file.size);
-			const totalBytes = sum(fileSizes);
-			const fileControllers: (UploadController | null)[] = new Array(files.length).fill(null);
-
-			const controller = {
-				start() {
-					fileControllers.forEach((controller) => controller?.start());
-				},
-				abort() {
-					fileControllers.forEach((controller) => controller?.abort());
-				},
-			};
 
 			if (props.multiple === true) {
+				const fileSizes = Array.from(files).map((file) => file.size);
+				const totalBytes = sum(fileSizes);
+				const fileControllers: (UploadController | null)[] = new Array(files.length).fill(null);
+
+				const controller = {
+					start() {
+						fileControllers.forEach((controller) => controller?.start());
+					},
+					abort() {
+						fileControllers.forEach((controller) => controller?.abort());
+					},
+				};
+
 				const uploadedFiles = await uploadFiles(Array.from(files), {
 					onProgressChange: (percentages) => {
 						progress.value = Math.round(

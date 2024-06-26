@@ -11,18 +11,19 @@ export async function uploadFile(
 	file: File,
 	options?: {
 		onProgressChange?: (percentage: number) => void;
-		onChunkedUpload?: (idk: tus.Upload) => void;
+		onChunkedUpload?: (controller: tus.Upload) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
+		requirePreviousUpload?: boolean;
 	},
 ): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 
 	const server = useServerStore();
+	let notified = false;
 
 	if (server.info.uploads) {
-
 		const fileInfo: Record<string, any> = {
 			filename: file.name,
 			filetype: file.type,
@@ -38,24 +39,31 @@ export async function uploadFile(
 			//-------------------------------
 			// Create a new tus upload
 			const upload = new tus.Upload(file, {
+				// urlStorage: getReactiveUrlStorage(),
 				endpoint: '/files/tus',
 				// retryDelays: [0, 3000, 5000, 10000, 20000],
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 				metadata: fileInfo,
-				onBeforeRequest: (req) => {
+				onBeforeRequest(req) {
 					const xml = req.getUnderlyingObject();
 					xml.withCredentials = true;
 				},
-				onError: function (error) {
+				onError(error) {
 					// console.log('Failed because: ' + error);
 					reject(error);
+					emitter.emit(Events.tusResumableUploadsChanged);
 				},
-				onProgress: function (bytesUploaded, bytesTotal) {
+				onProgress(bytesUploaded, bytesTotal) {
 					const percentage = Number(((bytesUploaded / bytesTotal) * 100).toFixed(2));
 					progressHandler(percentage);
 					//   console.log(bytesUploaded, bytesTotal, percentage + '%')
+
+					if (!notified) {
+						emitter.emit(Events.tusResumableUploadsChanged);
+						notified = true;
+					}
 				},
-				onSuccess: function () {
+				onSuccess() {
 					//   console.log('Download %s from %s', upload.file.name, upload.url)
 
 					if (options?.notifications) {
@@ -65,18 +73,19 @@ export async function uploadFile(
 					}
 
 					emitter.emit(Events.upload);
+					emitter.emit(Events.tusResumableUploadsChanged);
 
 					resolve(fileInfo);
 				},
 				onShouldRetry() {
 					return false;
-				}
+				},
 			});
 
 			options?.onChunkedUpload?.(upload);
 
 			// Check if there are any previous uploads to continue.
-			upload.findPreviousUploads().then(function (previousUploads) {
+			upload.findPreviousUploads().then((previousUploads: tus.PreviousUpload[]) => {
 				console.log('prev', previousUploads);
 
 				// Found previous uploads so we select the first one.
@@ -89,7 +98,6 @@ export async function uploadFile(
 			});
 		});
 	} else {
-
 		const formData = new FormData();
 
 		if (options?.preset) {

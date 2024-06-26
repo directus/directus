@@ -6,4 +6,5 @@ export enum Events {
 	upload = 'upload',
 	tabIdle = 'tab-idle',
 	tabActive = 'tab-active',
+	tusResumableUploadsChanged = 'tus-resumable-uploads-changed',
 }

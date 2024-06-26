@@ -6,6 +6,8 @@ import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
+import ResumeUploads from '@/modules/files/components/resume-uploads.vue';
+import { useResumableUploads } from '@/modules/files/composables/use-resumable-uploads';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getFolderFilter } from '@/utils/get-folder-filter';
@@ -38,6 +40,7 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { folders } = useFolders();
+const resumableUploads = useResumableUploads();
 
 const layoutRef = ref();
 const selection = ref<Item[]>([]);
@@ -380,6 +383,8 @@ function useFileUpload() {
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
+				<resume-uploads :v-if="resumableUploads.length > 0" :resumable-uploads="resumableUploads" />
+
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
@@ -447,7 +452,7 @@ function useFileUpload() {
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? t('upload_file') : t('not_allowed')"
 					rounded
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
