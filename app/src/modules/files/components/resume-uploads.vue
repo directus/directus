@@ -18,7 +18,7 @@ const sortedUploads = computed(() => {
 	return [...resumableUploads.value].sort((a, b) => {
 		if (activeUploads.value.has(a.urlStorageKey)) return -1;
 		if (activeUploads.value.has(b.urlStorageKey)) return 1;
-		return 0;
+		return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
 	});
 });
 
