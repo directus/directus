@@ -15,7 +15,7 @@ export async function verifySessionJWT(payload: DirectusTokenPayload) {
 		.from('directus_sessions')
 		.where({
 			token: payload['session'],
-			user: payload['id'],
+			user: payload['id'] || null,
 		})
 		.andWhere('expires', '>=', new Date())
 		.first();
