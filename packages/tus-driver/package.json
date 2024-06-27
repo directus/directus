@@ -1,0 +1,41 @@
+{
+	"name": "@directus/tus-driver",
+	"version": "1.0.0",
+	"description": "Shared storage driver types for chunked uploads",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/tus-driver"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@tus/utils": "0.2.0"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/node": "18.19.33",
+		"@vitest/coverage-v8": "1.5.3",
+		"typescript": "5.4.5",
+		"vitest": "1.5.3",
+		"pino": "9.2.0",
+		"tsup": "8.1.0",
+		"knex": "3.1.0"
+	}
+}

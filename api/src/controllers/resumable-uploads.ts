@@ -1,16 +1,11 @@
-import { Router } from "express";
+import { Router, type Application } from "express";
 import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
-import { useEnv } from "@directus/env";
-import { tusServer } from "../services/tus/index.js";
+import { getTusServer } from "../services/tus/index.js";
 import { AuthorizationService } from "../services/authorization.js";
 import asyncHandler from "../utils/async-handler.js";
 import type { PermissionsAction } from "@directus/types";
 import { ForbiddenError } from "@directus/errors";
-
-const env = useEnv();
-
-const handler = tusServer.handle.bind(tusServer);
-const router = Router();
+import { RESUMABLE_UPLOADS } from "../constants.js";
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
@@ -49,31 +44,30 @@ const checkFileAccess = () => asyncHandler(async (req, _res, next) => {
 	return next();
 });
 
-router.post('/', checkFileAccess(), handler);
-router.patch('/:id', checkFileAccess(), handler);
-router.delete('/:id', checkFileAccess(), handler);
+export async function registerTusEndpoints(app: Application) {
+	if (!RESUMABLE_UPLOADS.ENABLED) return;
 
-router.options('/:id', checkFileAccess(), handler);
+	const tusServer = await getTusServer();
+	const handler = tusServer.handle.bind(tusServer);
+	const router = Router();
 
-router.head('/:id', checkFileAccess(), handler,/*async (req, res) => {
-	const context = createTusContext(req);
-	const handler2 = new HeadHandler(tusServer.datastore, tusServer.options);
+	router.post('/', checkFileAccess(), handler);
+	router.patch('/:id', checkFileAccess(), handler);
+	router.delete('/:id', checkFileAccess(), handler);
 
-	await handler2.send(req, res, context).catch((err) => {
-		res.status(err.status_code);
-		res.send(err.body);
-	})
+	router.options('/:id', checkFileAccess(), handler);
+	router.head('/:id', checkFileAccess(), handler);
 
-	return res;
-}*/);
-
-export const tusRouter = router;
-
-const TUS_CLEANUP_CRON_RULE = (env['TUS_CLEANUP_CRON_RULE'] ?? '45 * * * *') as string;
+	app.use('/files/tus', router);
+}
 
 export function scheduleTusCleanup() {
-	if (validateCron(TUS_CLEANUP_CRON_RULE)) {
-		scheduleSynchronizedJob('tus-cleanup', TUS_CLEANUP_CRON_RULE, async () => {
+	if (!RESUMABLE_UPLOADS.ENABLED) return;
+
+	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
+		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
+			const tusServer = await getTusServer();
+
 			await tusServer.cleanUpExpiredUploads();
 		});
 	}

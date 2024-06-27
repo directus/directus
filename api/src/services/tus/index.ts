@@ -1,3 +1,3 @@
-export * from './service.js';
+export * from './server.js';
 export * from './lockers.js';
-export * from './adapters/index.js';
+export * from './adapters.js';
