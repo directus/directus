@@ -121,7 +121,7 @@ onUnmounted(() => {
 				<v-icon name="not_started" />
 				<span>{{ t('resume') }}</span>
 			</v-button>
-			<v-icon class="remove" name="close" clickable @click="emit('remove')" />
+			<v-icon v-tooltip="t('cancel')" class="remove" name="close" clickable @click="emit('remove')" />
 		</div>
 	</v-list-item>
 </template>
@@ -137,6 +137,7 @@ onUnmounted(() => {
 		display: flex;
 		flex-direction: column;
 		flex: 1;
+		line-break: anywhere;
 
 		gap: 4px;
 	}
