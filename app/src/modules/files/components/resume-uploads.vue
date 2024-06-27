@@ -16,8 +16,11 @@ const { uploads: resumableUploads, remove } = useResumableUploads();
 const sortedUploads = computed(() => {
 	// Sort uploads so that running uploads are listed first
 	return [...resumableUploads.value].sort((a, b) => {
-		if (activeUploads.value.has(a.urlStorageKey)) return -1;
-		if (activeUploads.value.has(b.urlStorageKey)) return 1;
+		if (activeUploads.value.has(a.urlStorageKey) != activeUploads.value.has(b.urlStorageKey)) {
+			if (activeUploads.value.has(a.urlStorageKey)) return -1;
+			if (activeUploads.value.has(b.urlStorageKey)) return 1;
+		}
+
 		return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
 	});
 });
@@ -25,6 +28,7 @@ const sortedUploads = computed(() => {
 function close() {
 	dialogActive.value = false;
 	error.value = null;
+	console.log(dialogActive.value);
 }
 
 watch(dialogActive, () => {
@@ -40,19 +44,17 @@ function onUploadStarted(upload: PreviousUpload) {
 function onUploadDone(upload: PreviousUpload) {
 	activeUploads.value.delete(upload.urlStorageKey);
 }
+
+function onUploadError(upload: PreviousUpload, err: Error | null) {
+	activeUploads.value.delete(upload.urlStorageKey);
+	error.value = err;
+}
 </script>
 
 <template>
-	<v-dialog v-if="resumableUploads.length > 0" v-model="dialogActive" @esc="close">
+	<v-dialog v-if="resumableUploads.length > 0 || dialogActive" v-model="dialogActive" @esc="close">
 		<template #activator="{ on }">
-			<v-button
-				v-if="resumableUploads.length > 0"
-				v-tooltip.bottom="t('resume_uploads')"
-				rounded
-				icon
-				secondary
-				@click="on"
-			>
+			<v-button v-tooltip.bottom="t('resume_uploads')" rounded icon secondary @click="on">
 				<v-icon name="clock_loader_40" outline />
 			</v-button>
 		</template>
@@ -78,7 +80,7 @@ function onUploadDone(upload: PreviousUpload) {
 							:upload="upload"
 							@upload="onUploadStarted(upload)"
 							@done="onUploadDone(upload)"
-							@error="error = $event"
+							@error="onUploadError(upload, $event)"
 							@remove="remove(upload.urlStorageKey)"
 						/>
 					</v-list>
