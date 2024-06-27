@@ -519,7 +519,7 @@ export default {
 		const { useFieldsStore, usePermissionsStore } = useStores();
 		const fieldsStore = useFieldsStore();
 		const permissionsStore = usePermissionsStore();
-		const hasPermission = permissionsStore(props.collection, 'create');
+		const hasPermission = permissionsStore.hasPermission(props.collection, 'create');
 		const api = useApi();
 		const { primaryKeyField } = useCollection(props.collection);
 
