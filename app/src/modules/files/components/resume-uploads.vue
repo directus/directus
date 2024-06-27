@@ -44,6 +44,11 @@ function onUploadStarted(upload: PreviousUpload) {
 function onUploadDone(upload: PreviousUpload) {
 	activeUploads.value.delete(upload.urlStorageKey);
 }
+
+function onUploadError(upload: PreviousUpload, err: Error | null) {
+	activeUploads.value.delete(upload.urlStorageKey);
+	error.value = err;
+}
 </script>
 
 <template>
@@ -75,7 +80,7 @@ function onUploadDone(upload: PreviousUpload) {
 							:upload="upload"
 							@upload="onUploadStarted(upload)"
 							@done="onUploadDone(upload)"
-							@error="error = $event"
+							@error="onUploadError(upload, $event)"
 							@remove="remove(upload.urlStorageKey)"
 						/>
 					</v-list>

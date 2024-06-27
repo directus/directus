@@ -95,6 +95,14 @@ onUnmounted(() => {
 
 <template>
 	<v-list-item :class="{ uploading }">
+		<div v-if="uploading" class="actions">
+			<v-button v-if="!paused" v-tooltip="t('pause')" x-small secondary icon rounded @click="pause">
+				<v-icon name="pause_circle" />
+			</v-button>
+			<v-button v-else v-tooltip="t('resume')" x-small secondary icon rounded @click="start">
+				<v-icon name="not_started" />
+			</v-button>
+		</div>
 		<div class="info">
 			<span v-tooltip="upload.metadata.filename" class="name">
 				{{ upload.metadata.filename }}
@@ -117,12 +125,7 @@ onUnmounted(() => {
 				<span>{{ t('resume') }}</span>
 				<input ref="input" class="browse" type="file" :multiple="false" hidden @input="onBrowseSelect" />
 			</v-button>
-			<v-button v-else-if="!paused" v-tooltip="t('pause')" x-small secondary icon rounded @click="pause">
-				<v-icon name="pause_circle" />
-			</v-button>
-			<v-button v-else v-tooltip="t('resume')" x-small secondary icon rounded @click="start">
-				<v-icon name="not_started" />
-			</v-button>
+
 			<v-icon v-tooltip="t('cancel')" class="remove" name="close" clickable @click="emit('remove')" />
 		</div>
 	</v-list-item>
