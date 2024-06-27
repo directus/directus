@@ -47,9 +47,9 @@
 		left: calc(50% - 5px);
 		width: 0;
 		height: 0;
-		border-right: 5px solid transparent;
-		border-bottom: 5px solid var(--tooltip-background-color);
-		border-left: 5px solid transparent;
+		border-right: 6px solid transparent;
+		border-bottom: 6px solid var(--tooltip-background-color);
+		border-left: 6px solid transparent;
 		content: '';
 	}
 
@@ -66,10 +66,10 @@
 		top: unset;
 		bottom: -5px;
 		left: calc(50% - 5px);
-		border-top: 5px solid var(--tooltip-background-color);
-		border-right: 5px solid transparent;
+		border-top: 6px solid var(--tooltip-background-color);
+		border-right: 6px solid transparent;
 		border-bottom: unset;
-		border-left: 5px solid transparent;
+		border-left: 6px solid transparent;
 	}
 
 	&.top.start::after {
@@ -85,10 +85,10 @@
 		top: calc(50% - 5px);
 		right: -5px;
 		left: unset;
-		border-top: 5px solid transparent;
+		border-top: 6px solid transparent;
 		border-right: unset;
-		border-bottom: 5px solid transparent;
-		border-left: 5px solid var(--tooltip-background-color);
+		border-bottom: 6px solid transparent;
+		border-left: 6px solid var(--tooltip-background-color);
 	}
 
 	&.left.start::after {
@@ -103,9 +103,9 @@
 	&.right::after {
 		top: calc(50% - 5px);
 		left: -5px;
-		border-top: 5px solid transparent;
-		border-right: 5px solid var(--tooltip-background-color);
-		border-bottom: 5px solid transparent;
+		border-top: 6px solid transparent;
+		border-right: 6px solid var(--tooltip-background-color);
+		border-bottom: 6px solid transparent;
 		border-left: unset;
 	}
 
