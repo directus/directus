@@ -44,7 +44,7 @@
 	&::after {
 		position: absolute;
 		top: -5px;
-		left: calc(50% - 5px);
+		left: calc(50% - 6px);
 		width: 0;
 		height: 0;
 		border-right: 6px solid transparent;
@@ -65,7 +65,7 @@
 	&.top::after {
 		top: unset;
 		bottom: -5px;
-		left: calc(50% - 5px);
+		left: calc(50% - 6px);
 		border-top: 6px solid var(--tooltip-background-color);
 		border-right: 6px solid transparent;
 		border-bottom: unset;
@@ -82,7 +82,7 @@
 	}
 
 	&.left::after {
-		top: calc(50% - 5px);
+		top: calc(50% - 6px);
 		right: -5px;
 		left: unset;
 		border-top: 6px solid transparent;
@@ -101,7 +101,7 @@
 	}
 
 	&.right::after {
-		top: calc(50% - 5px);
+		top: calc(50% - 6px);
 		left: -5px;
 		border-top: 6px solid transparent;
 		border-right: 6px solid var(--tooltip-background-color);
