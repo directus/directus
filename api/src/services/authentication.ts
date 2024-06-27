@@ -417,7 +417,10 @@ export class AuthenticationService {
 		// Clear expired sessions for the current user
 		await this.knex('directus_sessions')
 			.delete()
-			.where('user', '=', record.user_id)
+			.where({
+				user: record.user_id,
+				share: record.share_id,
+			})
 			.andWhere('expires', '<', new Date());
 
 		return {
@@ -476,6 +479,7 @@ export class AuthenticationService {
 		await this.knex('directus_sessions').insert({
 			token: newSessionToken,
 			user: sessionRecord['user_id'],
+			share: sessionRecord['share_id'],
 			expires: sessionExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
