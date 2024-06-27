@@ -105,7 +105,7 @@ export class LocalFileStore extends TusDataStore {
 					...fileData.tus_data,
 					offset,
 				},
-			})
+			});
 
 			return offset;
 		});
@@ -139,60 +139,6 @@ export class LocalFileStore extends TusDataStore {
 
 				throw error;
 			});
-	}
-
-	private async getFileById(tus_id: string) {
-		const results = await this.getService().readByQuery({
-			filter: {
-				tus_id: { _eq: tus_id },
-				// uploaded_by: { _eq: this.service.accountability!.user! }
-			},
-		})/*
-		.catch((e) => { console.error(e)})*/;
-
-		if (!results || !results[0]) {
-			throw ERRORS.FILE_NOT_FOUND;
-		}
-
-		return results[0] as File;
-	}
-
-	override async deleteExpired(): Promise<number> {
-		const now = new Date();
-		const toDelete: Promise<void>[] = [];
-
-		const uploadFiles = (await this.getService().readByQuery({
-			filter: { tus_id: { _null: false } },
-		})) as undefined | File[];
-
-		if (!uploadFiles) return 0;
-
-		for (const fileData of uploadFiles) {
-			try {
-				if (
-					fileData &&
-					fileData.tus_data &&
-					'creation_date' in fileData.tus_data &&
-					this.getExpiration() > 0 &&
-					fileData.tus_data['size'] !== fileData.tus_data['offset'] &&
-					fileData.tus_data['creation_date']
-				) {
-					const creation = new Date(fileData.tus_data['creation_date']);
-					const expires = new Date(creation.getTime() + this.getExpiration());
-
-					if (now > expires) {
-						toDelete.push(this.remove(fileData.id));
-					}
-				}
-			} catch (error) {
-				if (error !== ERRORS.FILE_NO_LONGER_EXISTS) {
-					throw error;
-				}
-			}
-		}
-
-		await Promise.all(toDelete);
-		return toDelete.length;
 	}
 }
 
