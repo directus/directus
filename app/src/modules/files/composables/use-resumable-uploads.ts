@@ -6,10 +6,12 @@ import * as tus from 'tus-js-client';
 
 export type PreviousUpload = tus.PreviousUpload & {
 	uploadUrl: string;
+	progress: number;
 };
 
 export function useResumableUploads() {
 	const server = useServerStore();
+	const loading = ref(false);
 	const uploads = ref<PreviousUpload[]>([]);
 	const api = useApi();
 
@@ -26,30 +28,47 @@ export function useResumableUploads() {
 		const { urlStorage } = tus.defaultOptions;
 		const infos = (await urlStorage.findAllUploads()) as PreviousUpload[];
 
-		const serverAvailability = (
-			await Promise.allSettled(
-				infos.map(({ uploadUrl }) =>
-					uploadUrl
-						? api.head(uploadUrl, {
-								headers: {
-									'Tus-Resumable': '1.0.0',
-								},
-						  })
-						: Promise.resolve(null),
-				),
-			)
-		).map((result) => result.status === 'fulfilled');
+		loading.value = true;
 
-		uploads.value = [];
+		try {
+			const serverInfos = (
+				await Promise.allSettled(
+					infos.map(({ uploadUrl }) =>
+						uploadUrl
+							? api.head(uploadUrl, {
+									headers: {
+										'Tus-Resumable': '1.0.0',
+									},
+							  })
+							: Promise.reject(),
+					),
+				)
+			).map((result) => {
+				if (result.status === 'fulfilled') {
+					return {
+						progress: progressFromHeader(result.value.headers),
+					};
+				} else {
+					return null;
+				}
+			});
 
-		serverAvailability.forEach((available, index) => {
-			if (available) {
-				uploads.value.push(infos[index]);
-			} else {
-				// Clean up after TUS (this helps this function keep the requests to a minimum on the next call)
-				urlStorage.removeUpload(infos[index].urlStorageKey);
-			}
-		});
+			uploads.value = [];
+
+			serverInfos.forEach((serverInfo, index) => {
+				if (serverInfo) {
+					uploads.value.push({
+						...infos[index],
+						...serverInfo,
+					});
+				} else {
+					// Clean up after TUS (this helps this function keep the requests to a minimum on the next call)
+					urlStorage.removeUpload(infos[index].urlStorageKey);
+				}
+			});
+		} catch (_) {
+			loading.value = false;
+		}
 	}
 
 	async function remove(urlStorageKey: string) {
@@ -63,8 +82,21 @@ export function useResumableUploads() {
 					'Tus-Resumable': '1.0.0',
 				},
 			});
+
+			await refresh();
 		} catch (_e) {
 			// Ignore
 		}
 	}
+}
+
+function progressFromHeader(headers: Record<string, any>) {
+	const uploaded = headers['upload-offset'];
+	const total = headers['upload-length'];
+
+	if (uploaded && total) {
+		return Math.round((uploaded / total) * 100);
+	}
+
+	return 0;
 }

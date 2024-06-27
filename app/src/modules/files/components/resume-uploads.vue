@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import VDivider from '@/components/v-divider.vue';
 import ResumableUploadItem from '@/modules/files/components/resumable-upload-item.vue';
-import { useResumableUploads } from '@/modules/files/composables/use-resumable-uploads';
-import { ref, watch } from 'vue';
+import { PreviousUpload, useResumableUploads } from '@/modules/files/composables/use-resumable-uploads';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
 const dialogActive = ref(false);
 const error = ref<Error | null>(null);
+const activeUploads = ref(new Set());
 
 const { uploads: resumableUploads, remove } = useResumableUploads();
+
+const sortedUploads = computed(() => {
+	// Sort uploads so that running uploads are listed first
+	return [...resumableUploads.value].sort((a, b) => {
+		if (activeUploads.value.has(a.urlStorageKey)) return -1;
+		if (activeUploads.value.has(b.urlStorageKey)) return 1;
+		return 0;
+	});
+});
 
 function close() {
 	dialogActive.value = false;
@@ -22,10 +32,18 @@ watch(dialogActive, () => {
 		error.value = null;
 	}
 });
+
+function onUploadStarted(upload: PreviousUpload) {
+	activeUploads.value.add(upload.urlStorageKey);
+}
+
+function onUploadDone(upload: PreviousUpload) {
+	activeUploads.value.delete(upload.urlStorageKey);
+}
 </script>
 
 <template>
-	<v-dialog v-model="dialogActive" @esc="close">
+	<v-dialog v-if="resumableUploads.length > 0" v-model="dialogActive" @esc="close">
 		<template #activator="{ on }">
 			<v-button
 				v-if="resumableUploads.length > 0"
@@ -41,28 +59,30 @@ watch(dialogActive, () => {
 
 		<v-card>
 			<v-card-title>
-				<div>{{ t('resume_uploads') }}</div>
+				{{ t('resume_uploads') }}
 			</v-card-title>
 			<v-card-text>
-				<div class="info">
-					{{ t('resumable_uploads_info') }}
-				</div>
-				<v-notice v-if="error" type="danger">
-					{{ error.response?.data?.errors?.[0]?.message || error?.message }}
-				</v-notice>
-				<v-divider />
-				<v-list>
-					<span v-if="resumableUploads.length === 0" class="empty">{{ t('no_resumable_uploads') }}</span>
-					<resumable-upload-item
-						v-for="upload in resumableUploads"
-						:key="upload.urlStorageKey"
-						:upload="upload"
-						@upload="error = null"
-						@error="error = $event"
-						@remove="remove(upload.urlStorageKey)"
-					/>
-				</v-list>
-				<!--				<v-input v-model="newFolderName" autofocus :placeholder="t('folder_name')" @keyup.enter="addFolder" />-->
+				<span v-if="resumableUploads.length === 0" class="empty">{{ t('no_resumable_uploads') }}</span>
+				<template v-else>
+					<div class="info">
+						{{ t('resumable_uploads_info') }}
+					</div>
+					<v-notice v-if="error" type="danger">
+						{{ error.response?.data?.errors?.[0]?.message || error?.message }}
+					</v-notice>
+					<v-divider />
+					<v-list>
+						<resumable-upload-item
+							v-for="upload in sortedUploads"
+							:key="upload.urlStorageKey"
+							:upload="upload"
+							@upload="onUploadStarted(upload)"
+							@done="onUploadDone(upload)"
+							@error="error = $event"
+							@remove="remove(upload.urlStorageKey)"
+						/>
+					</v-list>
+				</template>
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ t('cancel') }}</v-button>
@@ -81,6 +101,7 @@ watch(dialogActive, () => {
 }
 
 .empty {
+	margin-top: 24px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -97,10 +118,6 @@ watch(dialogActive, () => {
 		flex-direction: column;
 		overflow-y: hidden;
 		gap: 12px;
-	}
-
-	.v-card-actions {
-		flex-direction: row;
 	}
 }
 

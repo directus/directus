@@ -22,13 +22,13 @@ const { t } = useI18n();
 const input = ref<HTMLInputElement | null>(null);
 const uploading = ref(false);
 const paused = ref(false);
-const progress = ref(0);
+const progress = ref(props.upload.progress ?? 0);
 let controller: tus.Upload | null = null;
 
 async function performUpload(file: File) {
 	uploading.value = true;
 	paused.value = false;
-	progress.value = 0;
+	progress.value = props.upload.progress;
 
 	const preset = omit(props.upload.metadata, ['filename', 'filetype']);
 
@@ -94,12 +94,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<v-list-item>
+	<v-list-item :class="{ uploading }">
 		<div class="info">
-			<span class="name">
+			<span v-tooltip="upload.metadata.filename" class="name">
 				{{ upload.metadata.filename }}
 			</span>
-			<v-progress-linear v-if="uploading" :value="progress" rounded />
+			<div v-if="uploading || progress" class="progress">
+				<div v-if="uploading">{{ progress }}%</div>
+				<v-progress-linear :value="progress" rounded />
+			</div>
 		</div>
 		<div class="actions">
 			<v-button
@@ -107,19 +110,18 @@ onUnmounted(() => {
 				v-tooltip="t('click_to_browse')"
 				x-small
 				secondary
+				class="browser"
 				@click="openFileBrowser"
 			>
 				<v-icon name="not_started" />
 				<span>{{ t('resume') }}</span>
 				<input ref="input" class="browse" type="file" :multiple="false" hidden @input="onBrowseSelect" />
 			</v-button>
-			<v-button v-else-if="!paused" x-small secondary @click="pause">
+			<v-button v-else-if="!paused" v-tooltip="t('pause')" x-small secondary icon rounded @click="pause">
 				<v-icon name="pause_circle" />
-				<span>{{ t('pause') }}</span>
 			</v-button>
-			<v-button v-else x-small secondary @click="start">
+			<v-button v-else v-tooltip="t('resume')" x-small secondary icon rounded @click="start">
 				<v-icon name="not_started" />
-				<span>{{ t('resume') }}</span>
 			</v-button>
 			<v-icon v-tooltip="t('cancel')" class="remove" name="close" clickable @click="emit('remove')" />
 		</div>
@@ -131,15 +133,41 @@ onUnmounted(() => {
 	display: flex;
 	justify-content: stretch;
 	align-items: center;
-	gap: 20px;
+
+	.progress {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		font-variant: tabular-nums;
+		font-size: 10px;
+		line-height: 10px;
+		color: var(--theme--foreground-subdued);
+
+		.v-progress-linear {
+			transition: height 100ms ease-in-out;
+		}
+	}
+
+	&.uploading {
+		--v-progress-linear-height: 8px;
+		padding: 10px 0;
+	}
 
 	.info {
+		flex: 1;
 		display: flex;
 		flex-direction: column;
-		flex: 1;
-		line-break: anywhere;
-
 		gap: 4px;
+		margin-left: 8px;
+		margin-right: 20px;
+
+		overflow: hidden;
+
+		.name {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 	}
 
 	.actions {
@@ -150,9 +178,11 @@ onUnmounted(() => {
 		gap: 8px;
 		padding-right: 6px;
 
-		.v-button :deep(.x-small) {
+		.v-button.resume {
 			padding: 0 12px 0 6px;
+		}
 
+		.v-button :deep(.x-small) {
 			.content {
 				gap: 6px;
 			}

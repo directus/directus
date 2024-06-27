@@ -44,6 +44,9 @@ export async function uploadFile(
 				// retryDelays: [0, 3000, 5000, 10000, 20000],
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 				metadata: fileInfo,
+				// Allow user to re-upload of the same file
+				// https://github.com/tus/tus-js-client/blob/main/docs/api.md#removefingerprintonsuccess
+				removeFingerprintOnSuccess: true,
 				onBeforeRequest(req) {
 					const xml = req.getUnderlyingObject();
 					xml.withCredentials = true;
@@ -82,7 +85,16 @@ export async function uploadFile(
 				},
 			});
 
-			options?.onChunkedUpload?.(upload);
+			options?.onChunkedUpload?.({
+				start() {
+					upload.start();
+				},
+				abort: () => {
+					upload.abort();
+					// Notify listeners that the upload was aborted/paused
+					emitter.emit(Events.tusResumableUploadsChanged);
+				},
+			});
 
 			// Check if there are any previous uploads to continue.
 			upload.findPreviousUploads().then((previousUploads: tus.PreviousUpload[]) => {
