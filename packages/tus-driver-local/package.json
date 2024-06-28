@@ -25,16 +25,13 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@tus/utils": "0.2.0",
-		"mime-types": "2.1.35",
-		"@directus/format-title": "workspace:*",
-		"@directus/tus-driver": "workspace:*"
+		"@directus/tus-driver": "workspace:*",
+		"@tus/utils": "0.2.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/node": "18.19.33",
-		"@types/mime-types": "2.1.4",
 		"@vitest/coverage-v8": "1.5.3",
 		"tsup": "8.1.0",
 		"typescript": "5.4.5",

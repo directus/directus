@@ -18,9 +18,10 @@ export async function getTusAdapter(): Promise<TusDataStore> {
 
 	const config = {
 		constants: RESUMABLE_UPLOADS,
+		location,
 		options,
 		logger,
-	}
+	};
 
 	// return the correct adapter based on the env
 	switch (driver) {

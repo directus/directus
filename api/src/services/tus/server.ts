@@ -7,6 +7,7 @@ import type { TusDataStore } from '@directus/tus-driver';
 import { useEnv } from '@directus/env';
 import { Server } from '@tus/server';
 import type { Request } from 'express';
+import { cloneDeep } from 'lodash-es';
 import { getTusAdapter } from './adapters.js';
 import { getTusLocker } from './lockers.js';
 import type { IncomingMessage } from 'node:http';
@@ -38,7 +39,8 @@ export async function getTusServer() {
 			maxSize: RESUMABLE_UPLOADS.MAX_SIZE,
 			async onIncomingRequest(msg: IncomingMessage) {
 				const req = msg as Request;
-				const schema = req.schema;
+				// Make sure that the schema modification does not influence anything else
+				const schema = cloneDeep(req.schema);
 
 				if (req.method === 'PATCH' && schema.collections['directus_files']) {
 					// dont add revisions for each individual chunks
@@ -46,10 +48,12 @@ export async function getTusServer() {
 				}
 
 				// set the sudo service
-				store.setService(new ItemsService('directus_files', {
-					accountability: { ...req.accountability!, admin: true },
-					schema: schema,
-				}));
+				store.setService(
+					new ItemsService('directus_files', {
+						accountability: { ...req.accountability!, admin: true },
+						schema: schema,
+					}),
+				);
 			},
 			async onUploadFinish(req: any, res, upload) {
 				const service = new FilesService({

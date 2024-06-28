@@ -3,22 +3,22 @@
  *
  * https://tus.io/
  */
-import os from 'node:os';
-import fs, { promises as fsProm } from 'node:fs';
-import stream, { promises as streamProm } from 'node:stream';
-import type { Readable } from 'node:stream';
-import { Agent as HttpAgent } from 'node:http';
-import { Agent as HttpsAgent } from 'node:https';
-import { NodeHttpHandler } from '@smithy/node-http-handler';
+import AWS, { S3, type S3ClientConfig } from '@aws-sdk/client-s3';
 import { TusDataStore, type TusDataStoreConfig } from '@directus/tus-driver';
 import type { File } from '@directus/types';
-import formatTitle from '@directus/format-title';
+import { normalizePath } from '@directus/utils';
 
-import AWS, { S3, type S3ClientConfig } from '@aws-sdk/client-s3';
+import { Permit, Semaphore } from '@shopify/semaphore';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { ERRORS, StreamSplitter, TUS_RESUMABLE, Upload } from '@tus/utils';
 
-import { StreamSplitter, Upload, TUS_RESUMABLE } from '@tus/utils';
-
-import { Semaphore, Permit } from '@shopify/semaphore';
+import fs, { promises as fsProm } from 'node:fs';
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
+import os from 'node:os';
+import { join } from 'node:path';
+import type { Readable } from 'node:stream';
+import stream, { promises as streamProm } from 'node:stream';
 
 export type MetadataValue = {
 	file: Upload;
@@ -61,6 +61,7 @@ export type MetadataValue = {
 // to S3.
 export class S3FileStore extends TusDataStore {
 	private bucket: string;
+	private root: string;
 	private client: S3;
 	private useTags = true;
 	private partUploadSemaphore: Semaphore;
@@ -90,7 +91,7 @@ export class S3FileStore extends TusDataStore {
 			}),
 		};
 
-		const { bucket, key, secret, endpoint, region, forcePathStyle } = config.options;
+		const { bucket, key, secret, endpoint, region, forcePathStyle, root } = config.options;
 
 		if ((!secret && key) || (!key && secret)) {
 			throw new Error('Both `key` and `secret` are required when defined');
@@ -124,11 +125,16 @@ export class S3FileStore extends TusDataStore {
 
 		this.extensions = ['creation', 'termination', 'expiration'];
 
+		this.root = (root ?? '') as string;
 		this.bucket = bucket as string;
 		this.preferredPartSize = config.constants.CHUNK_SIZE;
 		this.client = new S3(s3ClientConfig);
 		// TODO do we need this?
 		this.partUploadSemaphore = new Semaphore(60);
+	}
+
+	private key(file: Pick<File, 'filename_disk'>) {
+		return normalizePath(join(this.root, file.filename_disk));
 	}
 
 	protected shouldUseExpirationTags() {
@@ -144,13 +150,14 @@ export class S3FileStore extends TusDataStore {
 	}
 
 	private async uploadPart(
+		file: File,
 		metadata: MetadataValue,
 		readStream: fs.ReadStream | Readable,
 		partNumber: number,
 	): Promise<string> {
 		const data = await this.client.uploadPart({
 			Bucket: this.bucket,
-			Key: metadata.file.id,
+			Key: this.key(file),
 			UploadId: metadata['upload-id'],
 			PartNumber: partNumber,
 			Body: readStream,
@@ -164,12 +171,13 @@ export class S3FileStore extends TusDataStore {
 	 * Uploads a stream to s3 using multiple parts
 	 */
 	private async uploadParts(
+		file: File,
 		metadata: MetadataValue,
 		readStream: stream.Readable,
 		currentPartNumber: number,
 		offset: number,
 	): Promise<number> {
-		const size = metadata.file.size;
+		const size = file.filesize;
 		const promises: Promise<void>[] = [];
 		let pendingChunkFilepath: string | null = null;
 		let bytesUploaded = 0;
@@ -204,10 +212,9 @@ export class S3FileStore extends TusDataStore {
 						readable.on('error', reject);
 
 						if (partSize >= this.minPartSize || isFinalPart) {
-							await this.uploadPart(metadata, readable, partNumber);
+							await this.uploadPart(file, metadata, readable, partNumber);
 						} else {
-							// eslint-disable-next-line no-console
-							console.error('incomplete part?');
+							// This can happen if the upload is aborted by the user mid chunk or a network issue happens
 							// await this.uploadIncompletePart(metadata.file.id, readable);
 						}
 
@@ -253,10 +260,10 @@ export class S3FileStore extends TusDataStore {
 	 * Completes a multipart upload on S3.
 	 * This is where S3 concatenates all the uploaded parts.
 	 */
-	private async finishMultipartUpload(metadata: MetadataValue, parts: Array<AWS.Part>) {
+	private async finishMultipartUpload(file: File, metadata: MetadataValue, parts: Array<AWS.Part>) {
 		const response = await this.client.completeMultipartUpload({
 			Bucket: this.bucket,
-			Key: metadata.file.id,
+			Key: this.key(file),
 			UploadId: metadata['upload-id'],
 			MultipartUpload: {
 				Parts: parts.map((part) => {
@@ -275,13 +282,12 @@ export class S3FileStore extends TusDataStore {
 	 * Gets the number of complete parts/chunks already uploaded to S3.
 	 * Retrieves only consecutive parts.
 	 */
-	private async retrieveParts(id: string, partNumberMarker?: string): Promise<Array<AWS.Part>> {
-		const fileData = await this.getFileById(id);
-		const uploadId = fileData.tus_data!['metadata']['upload-id'] as string;
+	private async retrieveParts(file: File, partNumberMarker?: string): Promise<Array<AWS.Part>> {
+		const uploadId = file.tus_data!['metadata']['upload-id'] as string;
 
 		const params: AWS.ListPartsCommandInput = {
 			Bucket: this.bucket,
-			Key: id,
+			Key: this.key(file),
 			UploadId: uploadId,
 			PartNumberMarker: partNumberMarker!,
 		};
@@ -291,7 +297,7 @@ export class S3FileStore extends TusDataStore {
 		let parts = data.Parts ?? [];
 
 		if (data.IsTruncated) {
-			const rest = await this.retrieveParts(id, data.NextPartNumberMarker);
+			const rest = await this.retrieveParts(file, data.NextPartNumberMarker);
 			parts = [...parts, ...rest];
 		}
 
@@ -318,7 +324,7 @@ export class S3FileStore extends TusDataStore {
 		else if (size <= this.preferredPartSize * this.maxMultipartParts) {
 			optimalPartSize = this.preferredPartSize;
 			// The upload is too big for the preferred size.
-			// We devide the size with the max amount of parts and round it up.
+			// We divide the size with the max amount of parts and round it up.
 		} else {
 			optimalPartSize = Math.ceil(size / this.maxMultipartParts);
 		}
@@ -332,15 +338,13 @@ export class S3FileStore extends TusDataStore {
 	 * about the upload itself like: `upload-id`, `upload-length`, etc.
 	 */
 	public override async create(upload: Upload) {
-		upload.metadata = upload.metadata ?? {};
-		const fileName = upload.metadata['filename']!;
-		const fileType = upload.metadata['filetype'] ?? 'application/octet-stream';
+		await super.create(upload);
 
-
+		const fileData = await this.getFileById(upload.id);
 
 		const request: AWS.CreateMultipartUploadCommandInput = {
 			Bucket: this.bucket,
-			Key: upload.id,
+			Key: this.key(fileData),
 			Metadata: { 'tus-version': TUS_RESUMABLE },
 		};
 
@@ -352,28 +356,23 @@ export class S3FileStore extends TusDataStore {
 			request.CacheControl = upload.metadata['cacheControl'];
 		}
 
-		const res = await this.client.createMultipartUpload(request);
+		try {
+			const res = await this.client.createMultipartUpload(request);
 
-		upload.metadata['upload-id'] = res.UploadId!;
+			// @ts-expect-error
+			upload.metadata['upload-id'] = res.UploadId!;
 
-		// @ts-expect-error
-		upload.storage = { type: 's3', path: res.Key as string, bucket: this.bucket };
+			await this.getService().updateOne(fileData.id, {
+				tus_data: upload,
+			});
 
-		const fileData: Partial<File> = {
-			tus_id: upload.id,
-			tus_data: upload,
-			type: fileType,
-			filesize: upload.size!,
-			filename_download: fileName,
-			title: formatTitle(fileName),
-			storage: 'local',
-		};
+			return upload;
+		} catch (error) {
+			// Clean up created file
+			await this.getService().deleteOne(fileData.id);
 
-		upload.creation_date = new Date().toISOString();
-
-		await this.getService().createOne(fileData);
-
-		return upload;
+			throw error;
+		}
 	}
 
 	/**
@@ -391,13 +390,13 @@ export class S3FileStore extends TusDataStore {
 
 		// Metadata request needs to happen first
 		// const metadata = await this.getMetadata(id);
-		const parts = await this.retrieveParts(id);
+		const parts = await this.retrieveParts(fileData);
 		// @ts-expect-error
 		const partNumber: number = parts.length > 0 ? parts[parts.length - 1].PartNumber! : 0;
 		const nextPartNumber = partNumber + 1;
 		const requestedOffset = offset;
 
-		const bytesUploaded = await this.uploadParts(metadata, src, nextPartNumber, offset);
+		const bytesUploaded = await this.uploadParts(fileData, metadata, src, nextPartNumber, offset);
 
 		// The size of the incomplete part should not be counted, because the
 		// process of the incomplete part should be fully transparent to the user.
@@ -405,8 +404,8 @@ export class S3FileStore extends TusDataStore {
 
 		if (data.size === newOffset) {
 			try {
-				const parts = await this.retrieveParts(id);
-				await this.finishMultipartUpload(metadata, parts);
+				const parts = await this.retrieveParts(fileData);
+				await this.finishMultipartUpload(fileData, metadata, parts);
 				// await this.completeMetadata(metadata.file);
 			} catch (error) {
 				this.logger.error(`[${id}] failed to finish upload`, error);
@@ -417,7 +416,7 @@ export class S3FileStore extends TusDataStore {
 		await this.getService().updateOne(fileData.id, {
 			tus_data: {
 				...fileData.tus_data,
-				offset,
+				offset: newOffset,
 			},
 		});
 
@@ -432,8 +431,36 @@ export class S3FileStore extends TusDataStore {
 
 	override async remove(tus_id: string): Promise<void> {
 		const file = await this.getFileById(tus_id);
+		const key = this.key(file);
 
 		await this.getService().deleteOne(file.id);
+
+		try {
+			// @ts-expect-error
+			const { 'upload-id': uploadId } = file.tus_data.metadata;
+
+			if (uploadId) {
+				await this.client.abortMultipartUpload({
+					Bucket: this.bucket,
+					Key: key,
+					UploadId: uploadId,
+				});
+			}
+		} catch (error: any) {
+			if (error?.code && ['NotFound', 'NoSuchKey', 'NoSuchUpload'].includes(error.Code)) {
+				this.logger.trace(`[${tus_id}: No file found.`, error);
+				throw ERRORS.FILE_NOT_FOUND;
+			}
+
+			throw error;
+		}
+
+		await this.client.deleteObjects({
+			Bucket: this.bucket,
+			Delete: {
+				Objects: [{ Key: key }],
+			},
+		});
 	}
 
 	protected getExpirationDate(created_at: string) {

@@ -1,5 +1,8 @@
 import type { Accountability, Item, PrimaryKey, Query, File } from '@directus/types';
-import { DataStore, ERRORS } from '@tus/utils';
+import formatTitle from '@directus/format-title';
+import { extension } from 'mime-types';
+import { DataStore, ERRORS, Upload } from '@tus/utils';
+import { extname } from 'node:path';
 import type { Logger } from 'pino';
 import type { Knex } from 'knex';
 
@@ -30,14 +33,17 @@ export type TusDataStoreConfig = {
 		SCHEDULE: string;
 	};
 	options: Record<string, unknown>;
+	/** Storage location name **/
+	location: string;
 	logger: Logger<never>;
 };
 
 export class TusDataStore extends DataStore {
-	chunkSize: number;
-	maxSize: number;
-	expirationTime: number;
-	logger: Logger<never>;
+	protected chunkSize: number;
+	protected maxSize: number;
+	protected expirationTime: number;
+	protected logger: Logger<never>;
+	protected location: string;
 	protected service: AbstractService | undefined;
 
 	constructor(config: TusDataStoreConfig) {
@@ -47,6 +53,7 @@ export class TusDataStore extends DataStore {
 		this.maxSize = config.constants.MAX_SIZE;
 		this.expirationTime = config.constants.EXPIRATION_TIME;
 		this.logger = config.logger;
+		this.location = config.location;
 		this.service = undefined;
 	}
 
@@ -57,6 +64,39 @@ export class TusDataStore extends DataStore {
 
 	setService(service: AbstractService) {
 		this.service = service;
+	}
+
+	public override async create(upload: Upload): Promise<Upload> {
+		upload.creation_date = new Date().toISOString();
+
+		upload.metadata ??= {};
+		const fileName = upload.metadata['filename']!;
+		const fileType = upload.metadata['filetype'] ?? 'application/octet-stream';
+
+		const fileData: Partial<File> = {
+			tus_id: upload.id,
+			tus_data: upload,
+			type: fileType,
+			filesize: upload.size!,
+			filename_download: fileName,
+			title: formatTitle(fileName),
+			storage: this.location,
+		};
+
+		if (upload.metadata['folder']) {
+			fileData.folder = upload.metadata['folder'];
+		}
+
+		const primaryKey = await this.getService().createOne(fileData);
+
+		const fileExtension = extname(fileName!) || (fileType && '.' + extension(fileType)) || '';
+		const diskFileName = primaryKey + (fileExtension || '');
+
+		await this.getService().updateOne(primaryKey!, {
+			filename_disk: diskFileName,
+		});
+
+		return upload;
 	}
 
 	protected async getFileById(tus_id: string) {
@@ -99,7 +139,7 @@ export class TusDataStore extends DataStore {
 					const expires = new Date(creation.getTime() + this.getExpiration());
 
 					if (now > expires) {
-						toDelete.push(this.remove(fileData.id));
+						toDelete.push(this.remove(fileData.tus_id!));
 					}
 				}
 			} catch (error) {

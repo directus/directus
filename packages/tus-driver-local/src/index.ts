@@ -11,7 +11,6 @@ import fsProm from 'fs/promises';
 import { ERRORS, Upload } from '@tus/utils';
 import { TusDataStore, type TusDataStoreConfig } from '@directus/tus-driver';
 import type { File } from '@directus/types';
-import formatTitle from '@directus/format-title';
 
 const FILE_DOESNT_EXIST = 'ENOENT';
 
@@ -25,39 +24,24 @@ export class LocalFileStore extends TusDataStore {
 		this.extensions = ['creation', 'termination', 'expiration'];
 	}
 
-	override async create(file: Upload): Promise<Upload> {
-		file.metadata = file.metadata ?? {};
-		const fileName = file.metadata['filename']!;
-		const fileType = file.metadata['filetype'] ?? 'application/octet-stream';
+	override async create(upload: Upload): Promise<Upload> {
+		await super.create(upload);
 
-		const fileData: Partial<File> = {
-			tus_id: file.id,
-			tus_data: file,
-			type: fileType,
-			filesize: file.size!,
-			filename_download: fileName,
-			title: formatTitle(fileName),
-			storage: 'local',
-		};
+		const fileData = await this.getFileById(upload.id);
 
-		const key = await this.getService().createOne(fileData);
+		await fsProm.writeFile(path.join(this.directory, fileData.filename_disk), '');
 
-		const fileExt = extension(fileData.type!);
-		const diskFileName = `${key}.${fileExt}`;
-
-		await fsProm.writeFile(path.join(this.directory, diskFileName), '');
-
-		await this.getService().updateOne(key!, {
-			filename_disk: diskFileName,
-		});
-
-		return file;
+		return upload;
 	}
 
 	override async remove(tus_id: string): Promise<void> {
 		const file = await this.getFileById(tus_id);
 
 		await this.getService().deleteOne(file.id);
+
+		if (file.filename_disk) {
+			await fsProm.unlink(path.join(this.directory, file.filename_disk));
+		}
 	}
 
 	override async write(readable: IncomingMessage | stream.Readable, file_id: string, offset: number): Promise<number> {
