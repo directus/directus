@@ -323,8 +323,6 @@ async function getDBQuery(
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
-			dbQuery.orderByRaw(orderByString, orderByFields);
-
 			if (hasMultiRelationalSort) {
 				dbQuery = helpers.schema.applyMultiRelationalSort(
 					knex,
@@ -334,6 +332,13 @@ async function getDBQuery(
 					orderByString,
 					orderByFields,
 				);
+
+				// Only order by directus_row_number, as the directus_row_number is derived from the row_number window function
+				// that already orders the rows within the partition by the sort fields, so ordering by it will give
+				// the correct order.
+				dbQuery.orderBy('directus_row_number', 'asc');
+			} else {
+				dbQuery.orderByRaw(orderByString, orderByFields);
 			}
 		} else {
 			sortRecords.map((sortRecord) => {
@@ -359,19 +364,7 @@ async function getDBQuery(
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-	if (sortRecords && needsInnerQuery) {
-		const hasMaxLimit =
-			'QUERY_LIMIT_MAX' in env &&
-			Number(env['QUERY_LIMIT_MAX']) >= 0 &&
-			!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
-			Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
-
-		if (hasMaxLimit) {
-			dbQuery.limit(Number(env['QUERY_LIMIT_MAX']));
-		} else {
-			dbQuery.clear('limit');
-		}
-
+	if (sortRecords) {
 		innerQuerySortRecords.map((innerQuerySortRecord) => {
 			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});
