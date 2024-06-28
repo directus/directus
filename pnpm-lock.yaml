@@ -204,14 +204,14 @@ importers:
         specifier: 0.4.1
         version: 0.4.1
       graphql:
-        specifier: 16.8.2
-        version: 16.8.2
+        specifier: 16.9.0
+        version: 16.9.0
       graphql-compose:
         specifier: 9.0.11
-        version: 9.0.11(graphql@16.8.2)
+        version: 9.0.11(graphql@16.9.0)
       graphql-ws:
         specifier: 5.16.0
-        version: 5.16.0(graphql@16.8.2)
+        version: 5.16.0(graphql@16.9.0)
       helmet:
         specifier: 7.1.0
         version: 7.1.0
@@ -2106,7 +2106,7 @@ importers:
         version: 14.0.1
       graphql-ws:
         specifier: 5.16.0
-        version: 5.16.0(graphql@16.8.2)
+        version: 5.16.0(graphql@16.9.0)
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -7543,8 +7543,8 @@ packages:
     peerDependencies:
       graphql: '>=0.11 <=16'
 
-  graphql@16.8.2:
-    resolution: {integrity: sha512-cvVIBILwuoSyD54U4cF/UXDh5yAobhNV/tPygI4lZhgOIJQE/WLWC4waBRb4I6bDVYb3OVx3lfHbaQOEoUD5sg==}
+  graphql@16.9.0:
+    resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gray-matter@4.0.3:
@@ -18857,20 +18857,20 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  graphql-compose@9.0.11(graphql@16.8.2):
+  graphql-compose@9.0.11(graphql@16.9.0):
     dependencies:
-      graphql: 16.8.2
-      graphql-type-json: 0.3.2(graphql@16.8.2)
+      graphql: 16.9.0
+      graphql-type-json: 0.3.2(graphql@16.9.0)
 
-  graphql-type-json@0.3.2(graphql@16.8.2):
+  graphql-type-json@0.3.2(graphql@16.9.0):
     dependencies:
-      graphql: 16.8.2
+      graphql: 16.9.0
 
-  graphql-ws@5.16.0(graphql@16.8.2):
+  graphql-ws@5.16.0(graphql@16.9.0):
     dependencies:
-      graphql: 16.8.2
+      graphql: 16.9.0
 
-  graphql@16.8.2: {}
+  graphql@16.9.0: {}
 
   gray-matter@4.0.3:
     dependencies:
