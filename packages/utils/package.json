@@ -36,7 +36,7 @@
 		"@directus/system-data": "workspace:*",
 		"date-fns": "3.6.0",
 		"fs-extra": "11.2.0",
-		"joi": "17.13.1",
+		"joi": "17.13.3",
 		"js-yaml": "4.1.0",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3"

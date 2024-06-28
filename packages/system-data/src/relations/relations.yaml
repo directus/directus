@@ -55,7 +55,7 @@ data:
     many_field: parent
     one_collection: directus_folders
 
-  ### Files
+  ### Files
   - many_collection: directus_files
     many_field: folder
     one_collection: directus_folders
@@ -103,6 +103,10 @@ data:
   - many_collection: directus_settings
     many_field: storage_default_folder
     one_collection: directus_folders
+
+  - many_collection: directus_settings
+    many_field: public_registration_role
+    one_collection: directus_roles
 
   ### Panels
   - many_collection: directus_panels
@@ -195,3 +199,8 @@ data:
   - many_collection: directus_versions
     many_field: user_updated
     one_collection: directus_users
+
+  ### Webhooks
+  - many_collection: directus_webhooks
+    many_field: migrated_flow
+    one_collection: directus_flows
