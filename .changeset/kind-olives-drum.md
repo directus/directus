@@ -1,5 +1,5 @@
 ---
-'@directus/api': minor
+'@directus/api': patch
 ---
 
-Fix accessing the shared link as an anonymous user
+Fixed session verification for shares
