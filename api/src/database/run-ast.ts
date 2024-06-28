@@ -333,9 +333,10 @@ async function getDBQuery(
 					orderByFields,
 				);
 
-				// Only order by directus_row_number, as the directus_row_number is derived from the row_number window function
-				// that already orders the rows within the partition by the sort fields, so ordering by it will give
-				// the correct order.
+				// Only order by directus_row_number, as the directus_row_number is derived from a window function that is
+				// ordered by the sort fields within every primary key partition. Since the only relevant result is the first
+				// row of this partition, the order by here ensures that all rows with a directus_row_number = 1 show up first
+				// in the inner query result, and are correctly truncated by the limit, but not earlier.
 				dbQuery.orderBy('directus_row_number', 'asc');
 			} else {
 				dbQuery.orderByRaw(orderByString, orderByFields);
